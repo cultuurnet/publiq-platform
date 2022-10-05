@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Support\Facades\Broadcast;
+declare(strict_types=1);
 
 /*
 |--------------------------------------------------------------------------
