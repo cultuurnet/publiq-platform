@@ -5,7 +5,6 @@ declare(strict_types=1);
 return Publiq\PhpCsFixer\Config::fromFolders(
     [
         'app/',
-        'bootstrap/',
         'config/',
         'database/',
         'public/',
@@ -13,7 +12,4 @@ return Publiq\PhpCsFixer\Config::fromFolders(
         'routes/',
         'tests/',
     ],
-    [
-        'bootstrap/cache/',
-    ]
 );
