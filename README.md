@@ -5,7 +5,7 @@
 
 ## Installation
 
-- Clone the repository and put the working directory to `pulbiq-platform`
+- Clone the repository and put the working directory to `publiq-platform`
 ```
 $ git clone git@github.com:cultuurnet/publiq-platform.git
 $ cd publiq-platform
