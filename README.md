@@ -16,14 +16,19 @@ $ cd publiq-platform
 $ cp .env.example .env
 ```
 
+- Install composer dependencies with lightweight container
+```
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v $(pwd):/var/www/html \
+    -w /var/www/html \
+    laravelsail/php81-composer:latest \
+    composer install
+```
+
 - Start the docker containers
 ```
 $ docker-compose up -d
-```
-
-- Install composer dependencies
-```
-$ docker-compose exec laravel composer install
 ```
 
 - Generate application key
