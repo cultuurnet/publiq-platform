@@ -6,5 +6,5 @@ namespace App\Models;
 
 final class User
 {
-
+    public int $id;
 }
