@@ -1,7 +1,7 @@
 # publiq-platform
 
 ## Pre-requisites
-- Docker Desktop
+- Docker Desktop, can be downloaded from [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop)
 
 ## Installation
 
