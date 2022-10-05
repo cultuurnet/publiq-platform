@@ -16,7 +16,7 @@ $ cd publiq-platform
 $ cp .env.example .env
 ```
 
-- Install composer dependencies with lightweight container
+- Install composer dependencies with lightweight container (this container can be deleted after installation)
 ```
 docker run --rm \
     -u "$(id -u):$(id -g)" \
