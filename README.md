@@ -2,18 +2,13 @@
 
 ## Pre-requisites
 - Docker Desktop
-- PHP 8.1 (for the installation of the project)
 
 ## Installation
 
-- Clone the repository
+- Clone the repository and put the working directory to `pulbiq-platform`
 ```
 $ git clone git@github.com:cultuurnet/publiq-platform.git
-```
-
-- Install dependencies
-```
-$ composer install
+$ cd publiq-platform
 ```
 
 - Create `.env` file
@@ -21,23 +16,43 @@ $ composer install
 $ cp .env.example .env
 ```
 
+- Start the docker containers
+```
+$ docker-compose up -d
+```
+
+- Install composer dependencies
+```
+$ docker-compose exec laravel composer install
+```
+
 - Generate application key
 ```
-$ php artisan key:generate
+$ docker-compose exec laravel php artisan key:generate
 ```
 
 ## Usage
 
-- Start the application
+- Start the application containers in detached mode
 ```
-$ ./vendor/bin/sail up
+$ docker-compose up -d
 ```
 
 - Visit the application at [http://localhost](http://localhost)
+
+- Stopping the application containers
+```
+$ docker-compose down
+```
+
+- Start an interactive shell session
+```
+$ docker-compose exec laravel sh
+```
 
 ## Testing
 
 - Run tests
 ```
-$ ./vendor/bin/sail php artisan test
+$ docker-compose exec laravel php artisan test
 ```
