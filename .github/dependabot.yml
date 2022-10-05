@@ -1,0 +1,12 @@
+version: 2
+updates:
+  - package-ecosystem: composer
+    directory: "/"
+    schedule:
+      day: monday
+      time: "02:00"
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      day: monday
+      time: "02:15"
