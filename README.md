@@ -33,21 +33,19 @@ $ docker-compose exec laravel php artisan key:generate
 
 ## Usage
 
-- Start the application containers in detached mode
+- Start the application containers in detached mode and then visit the application at [http://localhost](http://localhost)
 ```
 $ docker-compose up -d
-```
-
-- Visit the application at [http://localhost](http://localhost)
-
-- Stopping the application containers
-```
-$ docker-compose down
 ```
 
 - Start an interactive shell session
 ```
 $ docker-compose exec laravel sh
+```
+
+- Stopping the application containers
+```
+$ docker-compose down
 ```
 
 ## Testing
