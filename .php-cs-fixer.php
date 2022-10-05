@@ -12,5 +12,8 @@ return Publiq\PhpCsFixer\Config::fromFolders(
         'resources/',
         'routes/',
         'tests/',
+    ],
+    [
+        'bootstrap/cache/',
     ]
 );
