@@ -23,7 +23,7 @@ jobs:
           update: true
 
       - name: 🔢 Create .env file
-        run: cp .env.example .env
+        run: cp .env.ci .env
 
       - name: 📦 Install composer dependencies
         run: composer install --quiet --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
@@ -56,7 +56,7 @@ jobs:
           update: true
 
       - name: 🔢 Create .env file
-        run: cp .env.example .env
+        run: cp .env.ci .env
 
       - name: 📦 Install composer dependencies
         run: composer install --quiet --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
@@ -101,7 +101,7 @@ jobs:
           update: true
 
       - name: 🔢 Create .env file
-        run: cp .env.example .env
+        run: cp .env.ci .env
 
       - name: 📦 Install composer dependencies
         run: composer install --quiet --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
