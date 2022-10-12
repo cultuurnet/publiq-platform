@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Organizations\Models;
 
 use App\Models\UuidModel;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 final class AddressModel extends UuidModel
@@ -21,4 +22,12 @@ final class AddressModel extends UuidModel
         'city',
         'country',
     ];
+
+    /**
+     * @return BelongsTo<OrganizationModel>
+     */
+    public function organization(): BelongsTo
+    {
+        return $this->belongsTo(OrganizationModel::class);
+    }
 }
