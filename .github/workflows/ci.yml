@@ -25,11 +25,10 @@ jobs:
       - name: 🔢 Create .env file
         run: cp .env.ci .env
 
-      - name: 🔑 Laravel Nova authentication
-        run: composer config http-basic.nova.laravel.com "${NOVA_USERNAME}" "${NOVA_PASSWORD}"
-
       - name: 📦 Install composer dependencies
-        run: composer install --quiet --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+        run: |
+          composer config "http-basic.nova.laravel.com" "${{ secrets.NOVA_USERNAME }}" "${{ secrets.NOVA_PASSWORD }}"
+          composer install --quiet --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
       - name: 🔑 Generate a laravel key
         run: php artisan key:generate
