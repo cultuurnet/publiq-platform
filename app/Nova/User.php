@@ -21,7 +21,8 @@ final class User extends Resource
      * @var array<string>
      */
     public static $search = [
-        'name', 'email',
+        'name',
+        'email',
     ];
 
     /**
