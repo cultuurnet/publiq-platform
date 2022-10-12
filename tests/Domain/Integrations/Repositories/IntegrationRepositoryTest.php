@@ -31,6 +31,8 @@ final class IntegrationRepositoryTest extends TestCase
 
     public function test_it_can_save_an_integration(): void
     {
+        $integrationId = Uuid::uuid4();
+
         $subscription = new Subscription(
             Uuid::uuid4(),
             'Basic Plan',
@@ -41,21 +43,42 @@ final class IntegrationRepositoryTest extends TestCase
             1499
         );
 
-        $integration = new Integration(
+        $technicalContact = new Contact(
             Uuid::uuid4(),
+            $integrationId,
+            ContactType::Technical,
+            'Jane',
+            'Doe',
+            'jane.doe@anonymous.com'
+        );
+
+        $organizationContact = new Contact(
+            Uuid::uuid4(),
+            $integrationId,
+            ContactType::Organization,
+            'John',
+            'Doe',
+            'john.doe@anonymous.com'
+        );
+
+        $contributor = new Contact(
+            Uuid::uuid4(),
+            $integrationId,
+            ContactType::Contributor,
+            'Jimmy',
+            'Doe',
+            'jimmy.doe@anonymous.com'
+        );
+
+        $contacts = [$technicalContact, $organizationContact, $contributor];
+
+        $integration = new Integration(
+            $integrationId,
             IntegrationType::SearchApi,
             'Test Integration',
             'Test Integration description',
             $subscription,
-            [
-                new Contact(
-                    Uuid::uuid4(),
-                    ContactType::Technical,
-                    'Jane',
-                    'Doe',
-                    'jane.doe@anonymous.com'
-                ),
-            ]
+            $contacts
         );
 
         $this->integrationRepository->save($integration);
@@ -67,5 +90,16 @@ final class IntegrationRepositoryTest extends TestCase
             'description' => $integration->description,
             'subscription_id' => $integration->subscription->id->toString(),
         ]);
+
+        foreach ($integration->contacts as $contact) {
+            $this->assertDatabaseHas('contact', [
+                'id' => $contact->id->toString(),
+                'integration_id' => $contact->integrationId->toString(),
+                'type' => $contact->type,
+                'first_name' => $contact->firstName,
+                'last_name' => $contact->lastName,
+                'email' => $contact->email,
+            ]);
+        }
     }
 }
