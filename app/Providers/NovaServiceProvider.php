@@ -37,6 +37,11 @@ final class NovaServiceProvider extends NovaApplicationServiceProvider
         );
     }
 
+    protected function resources(): void
+    {
+        Nova::resourcesIn(app_path('Nova/Resources'));
+    }
+
     /**
      * @return array<Dashboard>
      */

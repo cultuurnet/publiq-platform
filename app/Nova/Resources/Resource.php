@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Nova;
+namespace App\Nova\Resources;
 
 use Illuminate\Database\Eloquent\Builder;
 use Laravel\Nova\Http\Requests\NovaRequest;

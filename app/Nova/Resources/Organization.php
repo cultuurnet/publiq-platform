@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Nova;
+namespace App\Nova\Resources;
 
 use App\Domain\Organizations\Models\AddressModel;
 use App\Domain\Organizations\Models\OrganizationModel;
