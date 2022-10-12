@@ -59,3 +59,12 @@ $ docker-compose down
 ```
 $ docker-compose exec laravel php artisan test
 ```
+
+## Nova
+
+- Create a new Nova admin user with the following command
+```
+$ docker-compose exec laravel php artisan nova:user
+```
+
+- Visit the application at [http://localhost/admin](http://localhost/admin) and login with the credentials you just created
