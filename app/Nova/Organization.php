@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Nova;
 
+use App\Domain\Organizations\Models\AddressModel;
 use App\Domain\Organizations\Models\OrganizationModel;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasOne;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
+/** @property AddressModel $address */
 final class Organization extends Resource
 {
     public static string $model = OrganizationModel::class;

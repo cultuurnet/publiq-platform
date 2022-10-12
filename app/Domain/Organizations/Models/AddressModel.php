@@ -24,7 +24,7 @@ final class AddressModel extends UuidModel
     ];
 
     /**
-     * @return BelongsTo<OrganizationModel>
+     * @return BelongsTo<OrganizationModel, AddressModel>
      */
     public function organization(): BelongsTo
     {
