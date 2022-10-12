@@ -32,9 +32,9 @@ final class SubscriptionRepositoryTest extends TestCase
             'Basic Plan',
             'Basic Plan description',
             Currency::EUR,
-            999,
+            14.99,
             BillingInterval::Monthly,
-            1499
+            99.99
         );
 
         $this->subscriptionRepository->save($subscription);
@@ -44,9 +44,9 @@ final class SubscriptionRepositoryTest extends TestCase
             'name' => $subscription->name,
             'description' => $subscription->description,
             'currency' => $subscription->currency,
-            'price' => $subscription->price,
+            'price' => 1499,
             'billing_interval' => $subscription->billingInterval,
-            'fee' => $subscription->fee,
+            'fee' => 9999,
         ]);
     }
 }

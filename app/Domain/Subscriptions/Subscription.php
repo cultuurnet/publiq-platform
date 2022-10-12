@@ -13,9 +13,9 @@ final class Subscription
         public readonly string $name,
         public readonly string $description,
         public readonly Currency $currency,
-        public readonly int $price,
+        public readonly float $price,
         public readonly BillingInterval $billingInterval,
-        public readonly ?int $fee,
+        public readonly ?float $fee,
     ) {
     }
 }
