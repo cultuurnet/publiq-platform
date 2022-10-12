@@ -51,7 +51,6 @@ final class IntegrationRepositoryTest extends TestCase
                 new Contact(
                     Uuid::uuid4(),
                     ContactType::Technical,
-                    'Test Organization',
                     'Jane',
                     'Doe',
                     'jane.doe@anonymous.com'
