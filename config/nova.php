@@ -89,6 +89,10 @@ return [
 
     'passwords' => env('NOVA_PASSWORDS', null),
 
+    'users' => [
+        'dev@publiq.be'
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Nova Route Middleware

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Nova\Dashboards\Main;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Laravel\Nova\Dashboard;
@@ -30,9 +31,10 @@ final class NovaServiceProvider extends NovaApplicationServiceProvider
 
     protected function gate(): void
     {
-        Gate::define('viewNova', static function ($user) {
-            return in_array($user->email, []);
-        });
+        Gate::define(
+            'viewNova',
+            fn ($user) => in_array($user->email, Config::get('nova.users'), true)
+        );
     }
 
     /**
