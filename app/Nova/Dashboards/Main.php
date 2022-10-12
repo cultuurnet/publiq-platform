@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Nova\Dashboards;
 
 use Laravel\Nova\Card;
@@ -14,7 +16,7 @@ final class Main extends Dashboard
     public function cards(): array
     {
         return [
-            new Help,
+            new Help(),
         ];
     }
 }

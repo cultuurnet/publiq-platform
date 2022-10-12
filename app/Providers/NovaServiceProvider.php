@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use App\Nova\Dashboards\Main;
@@ -9,7 +11,7 @@ use Laravel\Nova\Dashboard;
 use Laravel\Nova\Nova;
 use Laravel\Nova\NovaApplicationServiceProvider;
 
-class NovaServiceProvider extends NovaApplicationServiceProvider
+final class NovaServiceProvider extends NovaApplicationServiceProvider
 {
     public function boot(): void
     {
@@ -39,7 +41,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     protected function dashboards(): array
     {
         return [
-            new Main,
+            new Main(),
         ];
     }
 
