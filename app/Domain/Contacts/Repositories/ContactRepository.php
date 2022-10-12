@@ -14,7 +14,6 @@ final class ContactRepository
         ContactModel::query()->create([
             'id' => $contact->id->toString(),
             'type' => $contact->type,
-            'organization' => $contact->organization,
             'first_name' => $contact->firstName,
             'last_name' => $contact->lastName,
             'email' => $contact->email,

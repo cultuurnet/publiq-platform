@@ -16,7 +16,6 @@ final class ContactModel extends UuidModel
     protected $fillable = [
         'id',
         'type',
-        'organization',
         'first_name',
         'last_name',
         'email',
