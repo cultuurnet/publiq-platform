@@ -47,7 +47,8 @@ final class Organization extends Resource
 
             Text::make(
                 'Address',
-                fn () => $this->address->street . ', ' . $this->address->zip . ' ' . $this->address->city)
+                fn () => $this->address->street . ', ' . $this->address->zip . ' ' . $this->address->city
+            )
                 ->onlyOnIndex(),
 
             HasOne::make('Address'),
