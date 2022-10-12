@@ -12,7 +12,6 @@ return new class () extends Migration {
         Schema::create('contact', static function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('type');
-            $table->string('organization');
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email');

@@ -29,7 +29,6 @@ final class ContactRepositoryTest extends TestCase
         $contact = new Contact(
             Uuid::uuid4(),
             ContactType::Technical,
-            'Test Organization',
             'Jane',
             'Doe',
             'jane.doe@anonymous.com'
@@ -40,7 +39,6 @@ final class ContactRepositoryTest extends TestCase
         $this->assertDatabaseHas('contact', [
             'id' => $contact->id->toString(),
             'type' => $contact->type,
-            'organization' => $contact->organization,
             'first_name' => $contact->firstName,
             'last_name' => $contact->lastName,
             'email' => $contact->email,
