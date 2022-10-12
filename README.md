@@ -16,6 +16,18 @@ $ cd publiq-platform
 $ cp .env.example .env
 ```
 
+- Create an `auth.json` file inside the root of the project to install Laravel Nova
+```
+{
+    "http-basic": {
+        "nova.laravel.com": {
+            "username": "dev@publiq.be",
+            "password": "***"
+        }
+    }
+}
+```
+
 - Install composer dependencies with lightweight container (this container can be deleted after installation)
 ```
 docker run --rm \
@@ -66,5 +78,12 @@ $ docker-compose exec laravel php artisan test
 ```
 $ docker-compose exec laravel php artisan nova:user
 ```
+Visit the application at [http://localhost/admin](http://localhost/admin) and login with the credentials you just created
 
-- Visit the application at [http://localhost/admin](http://localhost/admin) and login with the credentials you just created
+- Check the Laravel Nova license key registration with
+```
+$ php artisan nova:check-license
+```
+This requires:
+- correct value of the `NOVA_LICENSE_KEY` environment variable in the `.env` file
+- correct production URL on [https://nova.laravel.com/licenses](https://nova.laravel.com/licenses)
