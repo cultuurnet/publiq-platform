@@ -12,3 +12,4 @@ parameters:
         - routes/
         - tests/
     level: 8
+    checkGenericClassInNonGenericObjectType: false
