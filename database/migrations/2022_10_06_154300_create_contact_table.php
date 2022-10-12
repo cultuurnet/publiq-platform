@@ -11,6 +11,7 @@ return new class () extends Migration {
     {
         Schema::create('contact', static function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->uuid('integration_id');
             $table->string('type');
             $table->string('first_name');
             $table->string('last_name');
