@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-final class User
+final class User extends UuidModel
 {
     public int $id;
 }
