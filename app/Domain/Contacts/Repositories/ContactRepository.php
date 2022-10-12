@@ -13,6 +13,7 @@ final class ContactRepository
     {
         ContactModel::query()->create([
             'id' => $contact->id->toString(),
+            'integration_id' => $contact->integrationId->toString(),
             'type' => $contact->type,
             'first_name' => $contact->firstName,
             'last_name' => $contact->lastName,
