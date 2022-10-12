@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domain\Subscriptions\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-final class SubscriptionModel extends Model
+final class SubscriptionModel extends UuidModel
 {
     use SoftDeletes;
 

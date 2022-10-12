@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Domain\Integrations\Models;
 
 use App\Domain\Contacts\Models\ContactModel;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-final class IntegrationModel extends Model
+final class IntegrationModel extends UuidModel
 {
     use SoftDeletes;
 
