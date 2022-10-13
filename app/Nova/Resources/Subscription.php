@@ -9,6 +9,7 @@ use App\Domain\Subscriptions\Currency;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
 use Laravel\Nova\Fields\Currency as CurrencyField;
 use Laravel\Nova\Fields\Field;
+use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -32,7 +33,7 @@ final class Subscription extends Resource
     public function fields(NovaRequest $request): array
     {
         return [
-            Text::make('Id')
+            ID::make()
                 ->readonly(),
 
             Text::make('Name')
