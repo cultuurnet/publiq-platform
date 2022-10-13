@@ -8,6 +8,7 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Field;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
@@ -55,6 +56,8 @@ final class Integration extends Resource
             BelongsTo::make('Subscription')
                 ->withoutTrashed()
                 ->rules('required'),
+
+            HasMany::make('Contacts'),
         ];
     }
 }
