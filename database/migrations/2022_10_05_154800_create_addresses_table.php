@@ -9,13 +9,13 @@ use Illuminate\Support\Facades\Schema;
 return new class () extends Migration {
     public function up(): void
     {
-        Schema::create('contact', static function (Blueprint $table) {
+        Schema::create('addresses', static function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('integration_id');
-            $table->string('type');
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->string('email');
+            $table->uuid('organization_id');
+            $table->string('street');
+            $table->string('zip');
+            $table->string('city');
+            $table->string('country');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -23,6 +23,6 @@ return new class () extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('contact');
+        Schema::dropIfExists('addresses');
     }
 };
