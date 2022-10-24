@@ -11,7 +11,7 @@ final class AddressModel extends UuidModel
 {
     use SoftDeletes;
 
-    protected $table = 'address';
+    protected $table = 'addresses';
 
     protected $fillable = [
         'id',

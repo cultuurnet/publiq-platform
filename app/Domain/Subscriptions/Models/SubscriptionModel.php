@@ -11,7 +11,7 @@ final class SubscriptionModel extends UuidModel
 {
     use SoftDeletes;
 
-    protected $table = 'subscription';
+    protected $table = 'subscriptions';
 
     protected $fillable = [
         'id',

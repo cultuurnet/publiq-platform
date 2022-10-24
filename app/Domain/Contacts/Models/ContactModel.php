@@ -13,7 +13,7 @@ final class ContactModel extends UuidModel
 {
     use SoftDeletes;
 
-    protected $table = 'contact';
+    protected $table = 'contacts';
 
     protected $fillable = [
         'id',
