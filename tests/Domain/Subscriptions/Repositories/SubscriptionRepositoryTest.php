@@ -39,7 +39,7 @@ final class SubscriptionRepositoryTest extends TestCase
 
         $this->subscriptionRepository->save($subscription);
 
-        $this->assertDatabaseHas('subscription', [
+        $this->assertDatabaseHas('subscriptions', [
             'id' => $subscription->id->toString(),
             'name' => $subscription->name,
             'description' => $subscription->description,

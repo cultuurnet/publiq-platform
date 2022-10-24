@@ -83,7 +83,7 @@ final class IntegrationRepositoryTest extends TestCase
 
         $this->integrationRepository->save($integration);
 
-        $this->assertDatabaseHas('integration', [
+        $this->assertDatabaseHas('integrations', [
             'id' => $integration->id->toString(),
             'type' => $integration->type,
             'name' => $integration->name,
@@ -92,7 +92,7 @@ final class IntegrationRepositoryTest extends TestCase
         ]);
 
         foreach ($integration->contacts as $contact) {
-            $this->assertDatabaseHas('contact', [
+            $this->assertDatabaseHas('contacts', [
                 'id' => $contact->id->toString(),
                 'integration_id' => $contact->integrationId->toString(),
                 'type' => $contact->type,
