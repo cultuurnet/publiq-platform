@@ -6,6 +6,7 @@ namespace App\Domain\Subscriptions\Repositories;
 
 use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Domain\Subscriptions\Subscription;
+use Illuminate\Support\Collection;
 
 final class SubscriptionRepository
 {
@@ -20,5 +21,10 @@ final class SubscriptionRepository
             'billing_interval' => $subscription->billingInterval,
             'fee' => $subscription->fee,
         ]);
+    }
+
+    public function all(): Collection
+    {
+        return SubscriptionModel::query()->get();
     }
 }
