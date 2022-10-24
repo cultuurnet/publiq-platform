@@ -65,11 +65,31 @@ $ docker-compose exec laravel sh
 $ docker-compose down
 ```
 
-## Testing
+## Makefile
+
+- Brining up the application containers
+```
+$ make up
+```
+
+- Stopping the application containers
+```
+$ make down
+```
+
+- Run linting
+```
+$ make lint
+```
+
+- Static analysis
+```
+$ make stan
+```
 
 - Run tests
 ```
-$ docker-compose exec laravel php artisan test
+$ make test
 ```
 
 ## Nova

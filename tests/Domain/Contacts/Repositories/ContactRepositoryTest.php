@@ -37,7 +37,7 @@ final class ContactRepositoryTest extends TestCase
 
         $this->contactRepository->save($contact);
 
-        $this->assertDatabaseHas('contact', [
+        $this->assertDatabaseHas('contacts', [
             'id' => $contact->id->toString(),
             'integration_id' => $contact->integrationId->toString(),
             'type' => $contact->type,

@@ -15,7 +15,7 @@ final class IntegrationModel extends UuidModel
 {
     use SoftDeletes;
 
-    protected $table = 'integration';
+    protected $table = 'integrations';
 
     protected $fillable = [
         'id',

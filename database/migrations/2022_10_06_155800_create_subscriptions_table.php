@@ -9,10 +9,14 @@ use Illuminate\Support\Facades\Schema;
 return new class () extends Migration {
     public function up(): void
     {
-        Schema::create('organization', static function (Blueprint $table) {
+        Schema::create('subscriptions', static function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
-            $table->string('vat')->nullable();
+            $table->string('description');
+            $table->string('currency');
+            $table->integer('price');
+            $table->string('billing_interval');
+            $table->integer('fee')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -20,6 +24,6 @@ return new class () extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('organization');
+        Schema::dropIfExists('subscriptions');
     }
 };

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Domain\Organization\Repositories;
+namespace Tests\Domain\Organizations\Repositories;
 
 use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Organization;
@@ -35,7 +35,7 @@ final class OrganizationRepositoryTest extends TestCase
 
         $this->organizationRepository->save($organization);
 
-        $this->assertDatabaseHas('organization', [
+        $this->assertDatabaseHas('organizations', [
             'id' => $organization->id->toString(),
             'name' => $organization->name,
             'vat' => $organization->vat,
@@ -64,13 +64,13 @@ final class OrganizationRepositoryTest extends TestCase
 
         $this->organizationRepository->save($organization);
 
-        $this->assertDatabaseHas('organization', [
+        $this->assertDatabaseHas('organizations', [
             'id' => $organization->id->toString(),
             'name' => $organization->name,
             'vat' => $organization->vat,
         ]);
 
-        $this->assertDatabaseHas('address', [
+        $this->assertDatabaseHas('addresses', [
             'id' => $address->id,
             'organization_id' => $address->organizationId->toString(),
             'street' => $address->street,
@@ -91,7 +91,7 @@ final class OrganizationRepositoryTest extends TestCase
 
         $this->organizationRepository->save($organization);
 
-        $this->assertDatabaseHas('organization', [
+        $this->assertDatabaseHas('organizations', [
             'id' => $organization->id->toString(),
             'name' => $organization->name,
             'vat' => $organization->vat,

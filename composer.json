@@ -1,8 +1,8 @@
 {
-    "name": "laravel/laravel",
+    "name": "cultuurnet/publiq-platform",
     "type": "project",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "description": "Publiq platform",
+    "keywords": ["UDB3", "Publiq"],
     "license": "MIT",
     "require": {
         "php": "^8.1.0",
@@ -41,6 +41,9 @@
         }
     },
     "scripts": {
+        "lint": "vendor/bin/php-cs-fixer fix",
+        "test": "php artisan test",
+        "stan": "vendor/bin/phpstan analyse",
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"

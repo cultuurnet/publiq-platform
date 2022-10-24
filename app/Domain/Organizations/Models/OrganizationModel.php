@@ -12,7 +12,7 @@ final class OrganizationModel extends UuidModel
 {
     use SoftDeletes;
 
-    protected $table = 'organization';
+    protected $table = 'organizations';
 
     protected $fillable = [
         'id',
