@@ -12,5 +12,5 @@ final class UserModel extends UuidModel implements AuthenticatableContract
 {
     use Authenticatable;
 
-    protected $table = 'user';
+    protected $table = 'users';
 }
