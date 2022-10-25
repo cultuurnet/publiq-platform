@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Integrations\Controllers;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreIntegration extends FormRequest
+final class StoreIntegration extends FormRequest
 {
     /**
      * @return array<string, mixed>

@@ -74,7 +74,7 @@ final class IntegrationController extends Controller
             $storeIntegration->input('description'),
             Uuid::fromString($storeIntegration->input('subscriptionId')),
             [
-                $contactOrganization, $contactPartner
+                $contactOrganization, $contactPartner,
             ]
         );
 
