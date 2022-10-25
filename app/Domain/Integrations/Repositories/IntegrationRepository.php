@@ -7,6 +7,7 @@ namespace App\Domain\Integrations\Repositories;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Models\IntegrationModel;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 final class IntegrationRepository
@@ -33,5 +34,10 @@ final class IntegrationRepository
                 ]);
             }
         });
+    }
+
+    public function all(): Collection
+    {
+        return IntegrationModel::query()->get();
     }
 }
