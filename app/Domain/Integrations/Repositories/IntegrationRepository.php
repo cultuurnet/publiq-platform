@@ -19,7 +19,7 @@ final class IntegrationRepository
                 'type' => $integration->type,
                 'name' => $integration->name,
                 'description' => $integration->description,
-                'subscription_id' => $integration->subscription->id->toString(),
+                'subscription_id' => $integration->subscriptionId,
             ]);
 
             foreach ($integration->contacts as $contact) {

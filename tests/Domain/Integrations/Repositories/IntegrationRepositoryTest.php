@@ -32,16 +32,7 @@ final class IntegrationRepositoryTest extends TestCase
     public function test_it_can_save_an_integration(): void
     {
         $integrationId = Uuid::uuid4();
-
-        $subscription = new Subscription(
-            Uuid::uuid4(),
-            'Basic Plan',
-            'Basic Plan description',
-            Currency::EUR,
-            999,
-            BillingInterval::Monthly,
-            1499
-        );
+        $subscriptionId = Uuid::uuid4();
 
         $technicalContact = new Contact(
             Uuid::uuid4(),
@@ -77,7 +68,7 @@ final class IntegrationRepositoryTest extends TestCase
             IntegrationType::SearchApi,
             'Test Integration',
             'Test Integration description',
-            $subscription,
+            $subscriptionId,
             $contacts
         );
 
@@ -88,7 +79,7 @@ final class IntegrationRepositoryTest extends TestCase
             'type' => $integration->type,
             'name' => $integration->name,
             'description' => $integration->description,
-            'subscription_id' => $integration->subscription->id->toString(),
+            'subscription_id' => $subscriptionId,
         ]);
 
         foreach ($integration->contacts as $contact) {
