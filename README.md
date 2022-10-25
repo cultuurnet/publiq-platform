@@ -96,12 +96,32 @@ $ make up
 $ make down
 ```
 
+- Install composer dependencies
+```
+$ make composer-install
+```
+
+- Install npm dependencies
+```
+$ make npm-install
+```
+
+- Watch frontend assets
+```
+$ make watch
+```
+
+- Build frontend assets
+```
+$ make build
+```
+
 - Run linting
 ```
 $ make lint
 ```
 
-- Static analysis
+- Run static analysis
 ```
 $ make stan
 ```
