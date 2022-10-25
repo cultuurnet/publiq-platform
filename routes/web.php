@@ -22,4 +22,5 @@ Route::get('/', static fn () => Inertia::render('Index'));
 
 Route::get('/subscriptions', [SubscriptionController::class, 'index']);
 
+Route::get('/integrations', [IntegrationController::class, 'index'])->name('integrations.index');
 Route::get('/integrations/create', [IntegrationController::class, 'create']);

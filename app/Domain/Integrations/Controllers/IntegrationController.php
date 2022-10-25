@@ -19,6 +19,13 @@ final class IntegrationController extends Controller
         $this->subscriptionRepository = $subscriptionRepository;
     }
 
+    public function index(): Response
+    {
+        return Inertia::render('Integrations/Index', [
+            'integrations' => $this->integrationRepository->all(),
+        ]);
+    }
+
     public function create(): Response
     {
         return Inertia::render('Integrations/Create', [
