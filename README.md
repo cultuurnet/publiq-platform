@@ -3,7 +3,9 @@
 ## Pre-requisites
 - Docker Desktop, can be downloaded from [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop)
 
-## Installation
+## Installation and setup
+
+### Backend
 
 - Clone the repository and put the working directory to `publiq-platform`
 ```
@@ -46,6 +48,23 @@ $ docker-compose up -d
 - Generate application key
 ```
 $ docker-compose exec laravel php artisan key:generate
+```
+
+### Frontend
+
+- Install npm dependencies
+```
+$ docker-compose exec laravel npm install
+```
+
+- Build the frontend assets
+```
+$ docker-compose exec laravel npm run build
+```
+
+- Watch the frontend assets
+```
+$ docker-compose exec laravel npm run dev
 ```
 
 ## Usage
