@@ -1,11 +1,14 @@
-import React from "react";
+import React from 'react';
+import Layout from '../Shared/Layout';
 
 const Index = () => {
   return (
     <div>
-      <h1>Index Page</h1>
+      <h3>Index Page</h3>
     </div>
   )
 };
+
+Index.layout = page => <Layout children={page} />;
 
 export default Index;
