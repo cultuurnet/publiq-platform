@@ -17,8 +17,6 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Index');
-});
+Route::get('/', static fn () => Inertia::render('Index'));
 
 Route::get('/subscriptions', [SubscriptionController::class, 'index']);
