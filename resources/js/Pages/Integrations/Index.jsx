@@ -12,6 +12,6 @@ const Index = ({integrations}) => {
   )
 };
 
-Index.layout = page => <Layout children={page} />;
+Index.layout = page => <Layout>{page}</Layout>;
 
 export default Index;
