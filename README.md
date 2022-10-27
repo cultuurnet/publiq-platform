@@ -48,6 +48,11 @@ $ docker-compose up -d
 $ docker-compose exec laravel php artisan key:generate
 ```
 
+- Execute migrations
+```
+$ docker-compose exec laravel php artisan migrate
+```
+
 ## Usage
 
 - Start the application containers in detached mode and then visit the application at [http://localhost](http://localhost)
@@ -75,6 +80,11 @@ $ make up
 - Stopping the application containers
 ```
 $ make down
+```
+
+- Running migrations
+```
+$ make migrate
 ```
 
 - Run linting
