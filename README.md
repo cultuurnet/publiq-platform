@@ -50,6 +50,11 @@ $ docker-compose up -d
 $ docker-compose exec laravel php artisan key:generate
 ```
 
+- Execute migrations
+```
+$ docker-compose exec laravel php artisan migrate
+```
+
 ### Frontend
 
 - Install npm dependencies
@@ -114,6 +119,11 @@ $ make watch
 - Build frontend assets
 ```
 $ make build
+```
+
+- Running migrations
+```
+$ make migrate
 ```
 
 - Run linting
