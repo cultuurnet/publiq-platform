@@ -95,6 +95,11 @@ $ make shell
 $ make install
 ```
 
+- Generate a new application key for encryption (also included in `make install`)
+```
+$ make key-generate
+```
+
 - Install composer dependencies (also included in `make install`)
 ```
 $ make composer-install
