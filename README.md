@@ -5,8 +5,6 @@
 
 ## Installation and setup
 
-### Backend
-
 - Clone the repository and put the working directory to `publiq-platform`
 ```
 $ git clone git@github.com:cultuurnet/publiq-platform.git
@@ -42,35 +40,22 @@ docker run --rm \
 
 - Start the docker containers
 ```
-$ docker-compose up -d
+$ make up
 ```
 
-- Generate application key
+- Install the backend and frontend apps
 ```
-$ docker-compose exec laravel php artisan key:generate
-```
-
-- Execute migrations
-```
-$ docker-compose exec laravel php artisan migrate
+$ make install
 ```
 
-### Frontend
-
-- Install npm dependencies
-```
-$ docker-compose exec laravel npm install
-```
-
-- Build the frontend assets
-```
-$ docker-compose exec laravel npm run build
-```
-
-- Watch the frontend assets
+- Watch the frontend assets (development only)
 ```
 $ docker-compose exec laravel npm run dev
 ```
+
+## Updating
+
+After pulling new changes via git, you can update the backend and frontend applications by re-running `make install`.
 
 ## Usage
 
