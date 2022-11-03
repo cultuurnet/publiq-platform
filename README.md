@@ -57,6 +57,22 @@ $ docker-compose exec laravel npm run dev
 
 After pulling new changes via git, you can update the backend and frontend applications by re-running `make install`.
 
+## Nova
+
+- Create a new Nova admin user with the following command
+```
+$ docker-compose exec laravel php artisan nova:user
+```
+Visit the application at [http://localhost/admin](http://localhost/admin) and login with the credentials you just created
+
+- Check the Laravel Nova license key registration with
+```
+$ php artisan nova:check-license
+```
+This requires:
+- correct value of the `NOVA_LICENSE_KEY` environment variable in the `.env` file
+- correct production URL on [https://nova.laravel.com/licenses](https://nova.laravel.com/licenses)
+
 ## Makefile
 
 - Bringing up the application containers
@@ -113,19 +129,3 @@ $ make stan
 ```
 $ make test
 ```
-
-## Nova
-
-- Create a new Nova admin user with the following command
-```
-$ docker-compose exec laravel php artisan nova:user
-```
-Visit the application at [http://localhost/admin](http://localhost/admin) and login with the credentials you just created
-
-- Check the Laravel Nova license key registration with
-```
-$ php artisan nova:check-license
-```
-This requires:
-- correct value of the `NOVA_LICENSE_KEY` environment variable in the `.env` file
-- correct production URL on [https://nova.laravel.com/licenses](https://nova.laravel.com/licenses)
