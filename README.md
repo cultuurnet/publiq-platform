@@ -90,12 +90,17 @@ $ make down
 $ make shell
 ```
 
-- Install composer dependencies
+- Install/update the backend and frontend applications
+```
+$ make install
+```
+
+- Install composer dependencies (also included in `make install`)
 ```
 $ make composer-install
 ```
 
-- Install npm dependencies
+- Install npm dependencies (also included in `make install`)
 ```
 $ make npm-install
 ```
@@ -105,12 +110,12 @@ $ make npm-install
 $ make watch
 ```
 
-- Build frontend assets
+- Build frontend assets (also included in `make install`)
 ```
 $ make build
 ```
 
-- Running migrations
+- Running migrations (also included in `make install`)
 ```
 $ make migrate
 ```
