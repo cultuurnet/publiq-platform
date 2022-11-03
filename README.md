@@ -57,23 +57,6 @@ $ docker-compose exec laravel npm run dev
 
 After pulling new changes via git, you can update the backend and frontend applications by re-running `make install`.
 
-## Usage
-
-- Start the application containers in detached mode and then visit the application at [http://localhost](http://localhost)
-```
-$ docker-compose up -d
-```
-
-- Start an interactive shell session
-```
-$ docker-compose exec laravel sh
-```
-
-- Stopping the application containers
-```
-$ docker-compose down
-```
-
 ## Makefile
 
 - Bringing up the application containers
