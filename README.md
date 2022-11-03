@@ -76,7 +76,7 @@ $ docker-compose down
 
 ## Makefile
 
-- Brining up the application containers
+- Bringing up the application containers
 ```
 $ make up
 ```
