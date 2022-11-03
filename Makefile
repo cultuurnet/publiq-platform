@@ -1,10 +1,12 @@
-.PHONY: up down composer-install npm-install key-generate migrate lint stan test watch build
+.PHONY: up down install composer-install npm-install key-generate migrate lint stan test watch build
 
 up:
 	vendor/bin/sail up -d
 
 down:
 	vendor/bin/sail down
+
+install: composer-install key-generate migrate npm-install build
 
 composer-install:
 	vendor/bin/sail composer install
