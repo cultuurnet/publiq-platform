@@ -86,6 +86,11 @@ $ make up
 $ make down
 ```
 
+- Start an interactive shell session
+```
+$ make shell
+```
+
 - Install composer dependencies
 ```
 $ make composer-install
