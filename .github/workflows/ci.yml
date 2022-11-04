@@ -26,7 +26,9 @@ jobs:
         run: cp .env.ci .env
 
       - name: 📦 Install composer dependencies
-        run: composer install --quiet --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+        run: |
+          composer config "http-basic.nova.laravel.com" "${{ secrets.NOVA_USERNAME }}" "${{ secrets.NOVA_PASSWORD }}"
+          composer install --quiet --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
       - name: 🔑 Generate a laravel key
         run: php artisan key:generate
@@ -59,7 +61,9 @@ jobs:
         run: cp .env.ci .env
 
       - name: 📦 Install composer dependencies
-        run: composer install --quiet --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+        run: |
+          composer config "http-basic.nova.laravel.com" "${{ secrets.NOVA_USERNAME }}" "${{ secrets.NOVA_PASSWORD }}"
+          composer install --quiet --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
       - name: 🔑 Generate a laravel key
         run: php artisan key:generate
@@ -104,7 +108,9 @@ jobs:
         run: cp .env.ci .env
 
       - name: 📦 Install composer dependencies
-        run: composer install --quiet --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+        run: |
+          composer config "http-basic.nova.laravel.com" "${{ secrets.NOVA_USERNAME }}" "${{ secrets.NOVA_PASSWORD }}"
+          composer install --quiet --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
       - name: 🔑 Generate a laravel key
         run: php artisan key:generate
