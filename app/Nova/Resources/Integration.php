@@ -41,7 +41,7 @@ final class Integration extends Resource
                 ->options([
                     IntegrationType::EntryApi->value => IntegrationType::EntryApi->name,
                     IntegrationType::SearchApi->value => IntegrationType::SearchApi->name,
-                    IntegrationType::UitpasApi->value => IntegrationType::UitpasApi->name,
+                    IntegrationType::Widgets->value => IntegrationType::Widgets->name,
                 ])
                 ->rules('required'),
 
