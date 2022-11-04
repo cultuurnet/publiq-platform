@@ -23,7 +23,7 @@ jobs:
           update: true
 
       - name: 🔢 Create .env file
-        run: cp .env.example .env
+        run: cp .env.ci .env
 
       - name: 📦 Install composer dependencies
         run: composer install --quiet --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
@@ -56,7 +56,7 @@ jobs:
           update: true
 
       - name: 🔢 Create .env file
-        run: cp .env.example .env
+        run: cp .env.ci .env
 
       - name: 📦 Install composer dependencies
         run: composer install --quiet --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
@@ -70,6 +70,18 @@ jobs:
   test:
     name: Run tests
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: false
+          MYSQL_ROOT_PASSWORD: secret
+          MYSQL_USER: ppf-user
+          MYSQL_PASSWORD: secret
+          MYSQL_DATABASE: testing
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
       - name: 📤 Checkout project
         uses: actions/checkout@v2
@@ -89,7 +101,7 @@ jobs:
           update: true
 
       - name: 🔢 Create .env file
-        run: cp .env.example .env
+        run: cp .env.ci .env
 
       - name: 📦 Install composer dependencies
         run: composer install --quiet --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
