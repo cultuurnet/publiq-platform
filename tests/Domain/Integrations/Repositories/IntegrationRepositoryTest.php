@@ -37,6 +37,7 @@ final class IntegrationRepositoryTest extends TestCase
             Uuid::uuid4(),
             'Basic Plan',
             'Basic Plan description',
+            IntegrationType::SearchApi,
             Currency::EUR,
             999,
             BillingInterval::Monthly,

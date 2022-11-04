@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Subscriptions;
 
+use App\Domain\Integrations\IntegrationType;
 use Ramsey\Uuid\UuidInterface;
 
 final class Subscription
@@ -12,6 +13,7 @@ final class Subscription
         public readonly UuidInterface $id,
         public readonly string $name,
         public readonly string $description,
+        public readonly IntegrationType $integrationType,
         public readonly Currency $currency,
         public readonly int $price,
         public readonly BillingInterval $billingInterval,

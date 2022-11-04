@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Domain\Subscriptions\Repositories;
 
+use App\Domain\Integrations\IntegrationType;
 use App\Domain\Subscriptions\BillingInterval;
 use App\Domain\Subscriptions\Currency;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
@@ -31,6 +32,7 @@ final class SubscriptionRepositoryTest extends TestCase
             Uuid::uuid4(),
             'Basic Plan',
             'Basic Plan description',
+            IntegrationType::SearchApi,
             Currency::EUR,
             999,
             BillingInterval::Monthly,
@@ -43,6 +45,7 @@ final class SubscriptionRepositoryTest extends TestCase
             'id' => $subscription->id->toString(),
             'name' => $subscription->name,
             'description' => $subscription->description,
+            'integration_type' => $subscription->integrationType,
             'currency' => $subscription->currency,
             'price' => $subscription->price,
             'billing_interval' => $subscription->billingInterval,
