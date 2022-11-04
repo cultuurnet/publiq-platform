@@ -50,7 +50,7 @@ $ make install
 
 - Watch the frontend assets (development only)
 ```
-$ docker-compose exec laravel npm run dev
+$ make watch
 ```
 
 ## Updating
