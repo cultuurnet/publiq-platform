@@ -13,6 +13,7 @@ return new class () extends Migration {
             $table->uuid('id')->primary();
             $table->string('name');
             $table->string('description');
+            $table->string('integration_type');
             $table->string('currency');
             $table->integer('price');
             $table->string('billing_interval');

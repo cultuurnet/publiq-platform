@@ -68,11 +68,6 @@ final class OrganizationRepositoryTest extends TestCase
             'id' => $organization->id->toString(),
             'name' => $organization->name,
             'vat' => $organization->vat,
-        ]);
-
-        $this->assertDatabaseHas('addresses', [
-            'id' => $address->id,
-            'organization_id' => $address->organizationId->toString(),
             'street' => $address->street,
             'zip' => $address->zip,
             'city' => $address->city,

@@ -22,7 +22,7 @@ $ cp .env.example .env
     "http-basic": {
         "nova.laravel.com": {
             "username": "dev@publiq.be",
-            "password": "***"
+            "password": "laravel nova license key here"
         }
     }
 }
