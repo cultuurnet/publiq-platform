@@ -3,7 +3,7 @@
 ## Pre-requisites
 - Docker Desktop, can be downloaded from [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop)
 
-## Installation
+## Installation and setup
 
 - Clone the repository and put the working directory to `publiq-platform`
 ```
@@ -40,67 +40,22 @@ docker run --rm \
 
 - Start the docker containers
 ```
-$ docker-compose up -d
-```
-
-- Generate application key
-```
-$ docker-compose exec laravel php artisan key:generate
-```
-
-- Execute migrations
-```
-$ docker-compose exec laravel php artisan migrate
-```
-
-## Usage
-
-- Start the application containers in detached mode and then visit the application at [http://localhost](http://localhost)
-```
-$ docker-compose up -d
-```
-
-- Start an interactive shell session
-```
-$ docker-compose exec laravel sh
-```
-
-- Stopping the application containers
-```
-$ docker-compose down
-```
-
-## Makefile
-
-- Brining up the application containers
-```
 $ make up
 ```
 
-- Stopping the application containers
+- Install the backend and frontend apps
 ```
-$ make down
-```
-
-- Running migrations
-```
-$ make migrate
+$ make install
 ```
 
-- Run linting
+- Watch the frontend assets (development only)
 ```
-$ make lint
-```
-
-- Static analysis
-```
-$ make stan
+$ make watch
 ```
 
-- Run tests
-```
-$ make test
-```
+## Updating
+
+After pulling new changes via git, you can update the backend and frontend applications by re-running `make install`.
 
 ## Nova
 
@@ -117,3 +72,70 @@ $ php artisan nova:check-license
 This requires:
 - correct value of the `NOVA_LICENSE_KEY` environment variable in the `.env` file
 - correct production URL on [https://nova.laravel.com/licenses](https://nova.laravel.com/licenses)
+
+## Makefile
+
+- Bringing up the application containers
+```
+$ make up
+```
+
+- Stopping the application containers
+```
+$ make down
+```
+
+- Start an interactive shell session
+```
+$ make shell
+```
+
+- Install/update the backend and frontend applications
+```
+$ make install
+```
+
+- Generate a new application key for encryption (also included in `make install`)
+```
+$ make key-generate
+```
+
+- Install composer dependencies (also included in `make install`)
+```
+$ make composer-install
+```
+
+- Install npm dependencies (also included in `make install`)
+```
+$ make npm-install
+```
+
+- Watch frontend assets
+```
+$ make watch
+```
+
+- Build frontend assets (also included in `make install`)
+```
+$ make build
+```
+
+- Running migrations (also included in `make install`)
+```
+$ make migrate
+```
+
+- Run linting
+```
+$ make lint
+```
+
+- Run static analysis
+```
+$ make stan
+```
+
+- Run tests
+```
+$ make test
+```
