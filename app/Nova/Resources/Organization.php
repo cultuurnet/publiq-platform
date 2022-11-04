@@ -4,15 +4,12 @@ declare(strict_types=1);
 
 namespace App\Nova\Resources;
 
-use App\Domain\Organizations\Models\AddressModel;
 use App\Domain\Organizations\Models\OrganizationModel;
 use Laravel\Nova\Fields\Field;
-use Laravel\Nova\Fields\HasOne;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-/** @property AddressModel $address */
 final class Organization extends Resource
 {
     public static string $model = OrganizationModel::class;
@@ -25,10 +22,10 @@ final class Organization extends Resource
     public static $search = [
         'name',
         'vat',
-        'address.street',
-        'address.zip',
-        'address.city',
-        'address.country',
+        'street',
+        'zip',
+        'city',
+        'country',
     ];
 
     /**
@@ -48,13 +45,21 @@ final class Organization extends Resource
                 ->sortable()
                 ->rules('required', 'max:255'),
 
-            Text::make(
-                'Address',
-                fn () => $this->address->street . ', ' . $this->address->zip . ' ' . $this->address->city
-            )
-                ->onlyOnIndex(),
+            Text::make('Street')
+                ->sortable()
+                ->rules('required', 'max:255'),
 
-            HasOne::make('Address'),
+            Text::make('Zip')
+                ->sortable()
+                ->rules('required', 'max:255'),
+
+            Text::make('City')
+                ->sortable()
+                ->rules('required', 'max:255'),
+
+            Text::make('Country')
+                ->sortable()
+                ->rules('required', 'max:255'),
         ];
     }
 }
