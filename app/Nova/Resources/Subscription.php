@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Nova\Resources;
 
+use App\Domain\Integrations\IntegrationType;
 use App\Domain\Subscriptions\BillingInterval;
 use App\Domain\Subscriptions\Currency;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
@@ -43,6 +44,14 @@ final class Subscription extends Resource
             Text::make('Description')
                 ->rules('required', 'max:255')
                 ->onlyOnForms(),
+
+            Select::make('Integration Type', 'integration_type')
+                ->options([
+                    IntegrationType::EntryApi->value => IntegrationType::EntryApi->name,
+                    IntegrationType::SearchApi->value => IntegrationType::SearchApi->name,
+                    IntegrationType::Widgets->value => IntegrationType::Widgets->name,
+                ])
+                ->rules('required'),
 
             CurrencyField::make('Price')
                 ->currency(Currency::EUR->value)
