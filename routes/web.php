@@ -21,6 +21,7 @@ use Inertia\Inertia;
 Route::get('/', static fn () => Inertia::render('Index'));
 
 Route::get('/login', \Auth0\Laravel\Http\Controller\Stateful\Login::class)->name('login');
+Route::get('/admin/login', static fn() => redirect('/login'));
 Route::get('/logout', \Auth0\Laravel\Http\Controller\Stateful\Logout::class)->name('logout');
 Route::get('/auth/callback', \Auth0\Laravel\Http\Controller\Stateful\Callback::class)->name('auth0.callback');
 
