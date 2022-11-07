@@ -10,6 +10,9 @@ use Illuminate\Contracts\Auth\Authenticatable;
 
 final class UserRepository implements Repository
 {
+    /**
+     * @param array<string> $user
+     */
     public function fromSession(array $user): ?Authenticatable
     {
         return new UserModel([
@@ -19,6 +22,9 @@ final class UserRepository implements Repository
         ]);
     }
 
+    /**
+     * @param array<string> $user
+     */
     public function fromAccessToken(array $user): ?Authenticatable
     {
         return null;
