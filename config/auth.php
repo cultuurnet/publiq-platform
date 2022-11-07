@@ -73,7 +73,7 @@ return [
 
         'auth0' => [
             'driver' => 'auth0',
-            'repository' => App\Domain\Auth\Repositories\UserRepository::class
+            'repository' => App\Domain\Auth\Repositories\UserRepository::class,
         ],
     ],
 

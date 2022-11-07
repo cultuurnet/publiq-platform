@@ -15,7 +15,7 @@ final class UserRepository implements Repository
         return new UserModel([
             'id' => $user['sub'] ?? $user['user_id'] ?? null,
             'name' => $user['name'],
-            'email' => $user['email']
+            'email' => $user['email'],
         ]);
     }
 
