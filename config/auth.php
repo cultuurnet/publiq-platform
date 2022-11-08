@@ -115,4 +115,12 @@ return [
 
     'password_timeout' => 10800,
 
+
+    'login_parameters' => [
+        'locale' => 'nl',
+        'referred' => 'publiq-platform',
+        'prompt' => 'login',
+        'skip_verify_legacy' => 'true',
+        'product_display_name' => 'publiq platform',
+    ],
 ];
