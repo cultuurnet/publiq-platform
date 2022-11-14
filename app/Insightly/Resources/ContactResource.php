@@ -1,0 +1,46 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Insightly\Resources;
+
+use App\Domain\Contacts\Contact;
+use App\Insightly\InsightlyClient;
+use App\Insightly\Json;
+use App\Insightly\Serializers\ContactSerializer;
+use GuzzleHttp\Psr7\Request;
+
+final class ContactResource
+{
+    private string $path = 'Contacts/';
+
+    public function __construct(private readonly InsightlyClient $insightlyClient)
+    {
+    }
+
+    public function create(Contact $contact): int
+    {
+        $request = new Request(
+            'POST',
+            $this->path,
+            [],
+            Json::encode((new ContactSerializer())->toInsightlyArray($contact))
+        );
+
+        $response = $this->insightlyClient->sendRequest($request);
+
+        $contactAsArray = Json::decodeAssociatively($response->getBody()->getContents());
+
+        return $contactAsArray['CONTACT_ID'];
+    }
+
+    public function delete(int $id): void
+    {
+        $request = new Request(
+            'DELETE',
+            $this->path . $id
+        );
+
+        $this->insightlyClient->sendRequest($request);
+    }
+}

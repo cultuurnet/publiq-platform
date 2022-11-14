@@ -22,6 +22,11 @@ final class InsightlyClient
     ) {
     }
 
+    public function contacts(): ContactResource
+    {
+        return new ContactResource($this);
+    }
+
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
         $requestWithHeaders = $request
