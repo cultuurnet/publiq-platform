@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Domain\Integrations;
 
 use App\Domain\Contacts\Contact;
-use App\Domain\Subscriptions\Subscription;
 use Ramsey\Uuid\UuidInterface;
 
 final class Integration
@@ -18,7 +17,7 @@ final class Integration
         public readonly IntegrationType $type,
         public readonly string $name,
         public readonly string $description,
-        public readonly Subscription $subscription,
+        public readonly UuidInterface $subscriptionId,
         public readonly array $contacts,
     ) {
     }

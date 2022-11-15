@@ -7,6 +7,7 @@ namespace App\Domain\Integrations\Repositories;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Models\IntegrationModel;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 final class IntegrationRepository
@@ -19,7 +20,7 @@ final class IntegrationRepository
                 'type' => $integration->type,
                 'name' => $integration->name,
                 'description' => $integration->description,
-                'subscription_id' => $integration->subscription->id->toString(),
+                'subscription_id' => $integration->subscriptionId,
             ]);
 
             foreach ($integration->contacts as $contact) {
@@ -33,5 +34,10 @@ final class IntegrationRepository
                 ]);
             }
         });
+    }
+
+    public function all(): Collection
+    {
+        return IntegrationModel::query()->get();
     }
 }

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Domain\Integrations\Controllers\IntegrationController;
 use App\Domain\Subscriptions\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -17,8 +18,10 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Index');
-});
+Route::get('/', static fn () => Inertia::render('Index'));
 
 Route::get('/subscriptions', [SubscriptionController::class, 'index']);
+
+Route::get('/integrations', [IntegrationController::class, 'index'])->name('integrations.index');
+Route::get('/integrations/create', [IntegrationController::class, 'create']);
+Route::post('/integrations', [IntegrationController::class, 'store']);

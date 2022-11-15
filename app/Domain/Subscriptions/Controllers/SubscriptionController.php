@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Subscriptions\Controllers;
 
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
-use Illuminate\Routing\Controller;
+use App\Http\Controllers\Controller;
 use Inertia\Inertia;
 use Inertia\Response;
 
