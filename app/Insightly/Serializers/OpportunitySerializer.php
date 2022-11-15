@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Insightly\Serializers;
 
 use App\Domain\Integrations\Integration;
-use App\Domain\Integrations\IntegrationType;
 use App\Insightly\Objects\OpportunityStage;
 use App\Insightly\Objects\OpportunityState;
 use App\Insightly\Pipelines;
