@@ -23,10 +23,10 @@ use Inertia\Inertia;
 
 Route::get('/', static fn () => Inertia::render('Index'));
 
-Route::get('/login', Login::class)->name('login');
+Route::get('/login', Login::class);
 Route::get('/admin/login', static fn () => redirect('/login'));
-Route::get('/logout', Logout::class)->name('logout');
-Route::get('/auth/callback', Callback::class)->name('auth.callback');
+Route::get('/logout', Logout::class);
+Route::get('/auth/callback', Callback::class);
 
 Route::get('/subscriptions', [SubscriptionController::class, 'index']);
 
