@@ -10,6 +10,7 @@ use App\Insightly\Exceptions\DeleteFailed;
 use App\Insightly\Exceptions\RecordLimitReached;
 use App\Insightly\Exceptions\RecordNotFound;
 use App\Insightly\Resources\ContactResource;
+use App\Insightly\Resources\OpportunityResource;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -18,13 +19,19 @@ final class InsightlyClient
 {
     public function __construct(
         private readonly ClientInterface $httpClient,
-        private readonly string $apiKey
+        private readonly string $apiKey,
+        readonly Pipelines $pipelines
     ) {
     }
 
     public function contacts(): ContactResource
     {
         return new ContactResource($this);
+    }
+
+    public function opportunities(): OpportunityResource
+    {
+        return new OpportunityResource($this);
     }
 
     public function sendRequest(RequestInterface $request): ResponseInterface
