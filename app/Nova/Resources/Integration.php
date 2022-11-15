@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Nova\Resources;
 
+use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
+use Illuminate\Database\Eloquent\Model;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
@@ -61,4 +63,10 @@ final class Integration extends Resource
             HasMany::make('Contacts'),
         ];
     }
+
+    public static function afterCreate(NovaRequest $request, Model $model): void
+    {
+        /** @var IntegrationModel $model */
+        IntegrationCreated::dispatch($model->id);
+    }i
 }
