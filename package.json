@@ -1,4 +1,5 @@
 {
+    "name": "publiq-platform",
     "private": true,
     "scripts": {
         "dev": "vite",
