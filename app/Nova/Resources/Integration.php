@@ -68,5 +68,5 @@ final class Integration extends Resource
     {
         /** @var IntegrationModel $model */
         IntegrationCreated::dispatch($model->id);
-    }i
+    }
 }
