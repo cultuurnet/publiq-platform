@@ -1,12 +1,12 @@
 import React from 'react';
 import Layout from '../../Shared/Layout';
 
-const Index = ({subscriptions}) => {
+const Index = ({integrations}) => {
   return (
     <div>
-      <h3>Subscriptions Page</h3>
+      <h3>Integrations Page</h3>
       <ul>
-        {subscriptions.map((subscription) => <li key={subscription.id}>{subscription.name}</li>)}
+        {integrations.map((integration) => <li key={integration.id}>{integration.name}</li>)}
       </ul>
     </div>
   )
