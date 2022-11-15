@@ -3,10 +3,10 @@
 declare(strict_types=1);
 
 use App\Domain\Auth\Controllers\Login;
+use App\Domain\Auth\Controllers\Logout;
 use App\Domain\Integrations\Controllers\IntegrationController;
 use App\Domain\Subscriptions\Controllers\SubscriptionController;
 use Auth0\Laravel\Http\Controller\Stateful\Callback;
-use Auth0\Laravel\Http\Controller\Stateful\Logout;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -25,7 +25,10 @@ Route::get('/', static fn () => Inertia::render('Index'));
 
 Route::get('/login', Login::class);
 Route::get('/admin/login', static fn () => redirect('/login'));
+
 Route::get('/logout', Logout::class);
+Route::post('/admin/logout', Logout::class);
+
 Route::get('/auth/callback', Callback::class);
 
 Route::get('/subscriptions', [SubscriptionController::class, 'index']);
