@@ -6,7 +6,10 @@ namespace Tests\Insightly;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
+use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationType;
 use App\Insightly\InsightlyClient;
+use App\Insightly\Pipelines;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Config;
 use Ramsey\Uuid\Uuid;
@@ -27,7 +30,8 @@ final class InsightlyClientTest extends TestCase
                     'http_errors' => false,
                 ]
             ),
-            Config::get('insightly.api_key')
+            Config::get('insightly.api_key'),
+            new Pipelines(Config::get('insightly.pipelines'))
         );
     }
 
@@ -49,5 +53,25 @@ final class InsightlyClientTest extends TestCase
         $this->assertNotNull($contactId);
 
         $this->insightlyClient->contacts()->delete($contactId);
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_create_an_opportunity(): void
+    {
+        $integration = new Integration(
+            Uuid::uuid4(),
+            IntegrationType::SearchApi,
+            'Test Integration',
+            'Test Integration description',
+            Uuid::uuid4(),
+            []
+        );
+
+        $contactId = $this->insightlyClient->opportunities()->create($integration);
+        $this->assertNotNull($contactId);
+
+        $this->insightlyClient->opportunities()->delete($contactId);
     }
 }
