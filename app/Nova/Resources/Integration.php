@@ -16,6 +16,7 @@ use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Resource;
+use Ramsey\Uuid\Uuid;
 
 final class Integration extends Resource
 {
@@ -67,6 +68,6 @@ final class Integration extends Resource
     public static function afterCreate(NovaRequest $request, Model $model): void
     {
         /** @var IntegrationModel $model */
-        IntegrationCreated::dispatch($model->id);
+        IntegrationCreated::dispatch(Uuid::fromString($model->id));
     }
 }
