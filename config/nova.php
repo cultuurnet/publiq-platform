@@ -91,6 +91,7 @@ return [
 
     'users' => [
         'dev@publiq.be',
+        'simon.debruijn@publiq.be',
     ],
 
     /*
