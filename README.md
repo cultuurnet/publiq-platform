@@ -65,6 +65,13 @@ $ docker-compose exec laravel php artisan nova:user
 ```
 Visit the application at [http://localhost/admin](http://localhost/admin) and login with the credentials you just created
 
+- On localhost Laravel Nova allows all authenticated users. On other hosts a check is done on email. The allowed emails are configured inside the config `users` in `config/nova.php`. For example:
+```
+'users' => [
+    'dev@publiq.be',
+],
+```
+
 - Check the Laravel Nova license key registration with
 ```
 $ php artisan nova:check-license
@@ -72,6 +79,14 @@ $ php artisan nova:check-license
 This requires:
 - correct value of the `NOVA_LICENSE_KEY` environment variable in the `.env` file
 - correct production URL on [https://nova.laravel.com/licenses](https://nova.laravel.com/licenses)
+
+## Auth0
+
+Authentication will be handled by Auth0. The following environment variables need to be set in the `.env` file:
+- `AUTH0_DOMAIN`
+- `AUTH0_CLIENT_ID`
+- `AUTH0_CLIENT_SECRET`
+- `AUTH0_REDIRECT_URI`
 
 ## Makefile
 

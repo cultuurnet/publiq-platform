@@ -16,7 +16,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
+        'guard' => 'auth0',
         'passwords' => 'users',
     ],
 
@@ -41,6 +41,10 @@ return [
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
+        ],
+        'auth0' => [
+            'driver' => 'auth0',
+            'provider' => 'auth0',
         ],
     ],
 
@@ -67,10 +71,11 @@ return [
             'model' => App\Domain\Users\Models\UserModel::class,
          ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'auth0' => [
+            'driver' => 'auth0',
+            'model' => App\Domain\Users\Models\UserModel::class,
+            'repository' => App\Domain\Auth\Repositories\UserRepository::class,
+        ],
     ],
 
     /*
@@ -110,4 +115,12 @@ return [
 
     'password_timeout' => 10800,
 
+
+    'login_parameters' => [
+        'locale' => 'nl',
+        'referred' => 'publiq-platform',
+        'prompt' => 'login',
+        'skip_verify_legacy' => 'true',
+        'product_display_name' => 'publiq platform',
+    ],
 ];
