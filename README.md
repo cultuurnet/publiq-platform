@@ -65,7 +65,7 @@ $ docker-compose exec laravel php artisan nova:user
 ```
 Visit the application at [http://localhost/admin](http://localhost/admin) and login with the credentials you just created
 
-- On localhost Laravel Nova allows all authenticated users. On other hosts a check is done on email. The allowed emails are configured inside the config `nova.users`
+- On localhost Laravel Nova allows all authenticated users. On other hosts a check is done on email. The allowed emails are configured inside the config `users` in `config/nova.php`. For example:
 ```
 'users' => [
     'dev@publiq.be',
