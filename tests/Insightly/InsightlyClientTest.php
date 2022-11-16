@@ -11,7 +11,6 @@ use App\Domain\Integrations\IntegrationType;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Pipelines;
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Config;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
@@ -26,12 +25,12 @@ final class InsightlyClientTest extends TestCase
         $this->insightlyClient = new InsightlyClient(
             new Client(
                 [
-                    'base_uri' => Config::get('insightly.host'),
+                    'base_uri' => config('insightly.host'),
                     'http_errors' => false,
                 ]
             ),
-            Config::get('insightly.api_key'),
-            new Pipelines(Config::get('insightly.pipelines'))
+            config('insightly.api_key'),
+            new Pipelines(config('insightly.pipelines'))
         );
     }
 
