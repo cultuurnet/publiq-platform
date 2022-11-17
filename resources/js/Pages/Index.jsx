@@ -6,9 +6,9 @@ const Index = () => {
     <div>
       <h3>Index Page</h3>
     </div>
-  )
+  );
 };
 
-Index.layout = page => <Layout>{page}</Layout>;
+Index.layout = (page) => <Layout>{page}</Layout>;
 
 export default Index;

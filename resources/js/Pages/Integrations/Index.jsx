@@ -1,17 +1,19 @@
 import React from 'react';
 import Layout from '../../Shared/Layout';
 
-const Index = ({integrations}) => {
+const Index = ({ integrations }) => {
   return (
     <div>
       <h3>Integrations Page</h3>
       <ul>
-        {integrations.map((integration) => <li key={integration.id}>{integration.name}</li>)}
+        {integrations.map((integration) => (
+          <li key={integration.id}>{integration.name}</li>
+        ))}
       </ul>
     </div>
-  )
+  );
 };
 
-Index.layout = page => <Layout>{page}</Layout>;
+Index.layout = (page) => <Layout>{page}</Layout>;
 
 export default Index;
