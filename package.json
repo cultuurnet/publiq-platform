@@ -6,7 +6,7 @@
         "build": "vite build",
         "format": "prettier --write 'resources/js/**/*.{js,jsx,ts,tsx}'",
         "format:check": "prettier --check 'resources/js/**/*.{js,jsx,ts,tsx}'"
-    },    
+    },
     "dependencies": {
         "@inertiajs/inertia": "^0.11.1",
         "@inertiajs/inertia-react": "^0.8.1",
@@ -15,7 +15,11 @@
         "react-dom": "^18.2.0"
     },
     "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "^5.43.0",
+        "@typescript-eslint/parser": "^5.43.0",
         "axios": "^0.27",
+        "eslint": "^8.27.0",
+        "eslint-plugin-react": "^7.31.10",
         "laravel-vite-plugin": "^0.6.0",
         "lodash": "^4.17.19",
         "postcss": "^8.1.14",
