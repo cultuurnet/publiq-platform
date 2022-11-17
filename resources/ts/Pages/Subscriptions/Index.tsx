@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import Layout from '../../Shared/Layout';
 
-const Index = ({ subscriptions }) => {
+type Props = {
+  subscriptions: { id: string; name: string }[];
+};
+
+const Index = ({ subscriptions }: Props) => {
   return (
     <div>
       <h3>Subscriptions Page</h3>
@@ -14,6 +18,6 @@ const Index = ({ subscriptions }) => {
   );
 };
 
-Index.layout = (page) => <Layout>{page}</Layout>;
+Index.layout = (page: ReactNode) => <Layout>{page}</Layout>;
 
 export default Index;

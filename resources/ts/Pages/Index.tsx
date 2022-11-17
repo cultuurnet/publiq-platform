@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import Layout from '../Shared/Layout';
 
 const Index = () => {
@@ -9,6 +9,6 @@ const Index = () => {
   );
 };
 
-Index.layout = (page) => <Layout>{page}</Layout>;
+Index.layout = (page: ReactNode) => <Layout>{page}</Layout>;
 
 export default Index;

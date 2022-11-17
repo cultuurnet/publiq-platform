@@ -1,13 +1,15 @@
 {
   "compilerOptions": {
-    "target": "ES2015",
-    "module": "ES6",
+    "target": "ES6",
+    "module": "commonjs",
     "noEmit": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
-    "rootDir": "resources/ts",
-    "jsx": "react"
-  }
+    "jsx": "react",
+    "lib": ["ESNext", "DOM"]
+  },
+  "include": ["resources/ts"],
+  "exclude": ["node_modules"]
 }

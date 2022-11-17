@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { FormEvent, ReactNode } from 'react';
 import { useForm } from '@inertiajs/inertia-react';
 import Layout from '../../Shared/Layout';
 
-const Index = ({ integrationTypes, subscriptions }) => {
+type Props = {
+  integrationTypes: string[];
+  subscriptions: { id: string; name: string }[];
+};
+
+const Index = ({ integrationTypes, subscriptions }: Props) => {
   const { data, setData, errors, post, processing } = useForm({
     integrationType: '',
     subscriptionId: '',
@@ -16,7 +21,7 @@ const Index = ({ integrationTypes, subscriptions }) => {
     emailPartner: '',
   });
 
-  function handleSubmit(e) {
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     post('/integrations');
   }
@@ -171,6 +176,6 @@ const Index = ({ integrationTypes, subscriptions }) => {
   );
 };
 
-Index.layout = (page) => <Layout>{page}</Layout>;
+Index.layout = (page: ReactNode) => <Layout>{page}</Layout>;
 
 export default Index;
