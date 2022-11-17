@@ -16,6 +16,7 @@ final class SubscriptionRepository
             'id' => $subscription->id->toString(),
             'name' => $subscription->name,
             'description' => $subscription->description,
+            'integration_type' => $subscription->integrationType,
             'currency' => $subscription->currency,
             'price' => $subscription->price,
             'billing_interval' => $subscription->billingInterval,

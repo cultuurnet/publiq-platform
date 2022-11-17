@@ -13,6 +13,10 @@ return new class () extends Migration {
             $table->uuid('id')->primary();
             $table->string('name');
             $table->string('vat')->nullable();
+            $table->string('street')->nullable();
+            $table->string('zip')->nullable();
+            $table->string('city')->nullable();
+            $table->string('country')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Domain\Organizations\Models;
 
 use App\Models\UuidModel;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 final class OrganizationModel extends UuidModel
@@ -18,13 +17,9 @@ final class OrganizationModel extends UuidModel
         'id',
         'name',
         'vat',
+        'street',
+        'zip',
+        'city',
+        'country',
     ];
-
-    /**
-     * @return HasOne<AddressModel>
-     */
-    public function address(): HasOne
-    {
-        return $this->hasOne(AddressModel::class, 'organization_id');
-    }
 }

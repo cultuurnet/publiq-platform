@@ -5,8 +5,6 @@
 
 ## Installation and setup
 
-### Backend
-
 - Clone the repository and put the working directory to `publiq-platform`
 ```
 $ git clone git@github.com:cultuurnet/publiq-platform.git
@@ -24,7 +22,7 @@ $ cp .env.example .env
     "http-basic": {
         "nova.laravel.com": {
             "username": "dev@publiq.be",
-            "password": "***"
+            "password": "laravel nova license key here"
         }
     }
 }
@@ -42,56 +40,57 @@ docker run --rm \
 
 - Start the docker containers
 ```
-$ docker-compose up -d
+$ make up
 ```
 
-- Generate application key
+- Install the backend and frontend apps
 ```
-$ docker-compose exec laravel php artisan key:generate
-```
-
-- Execute migrations
-```
-$ docker-compose exec laravel php artisan migrate
+$ make install
 ```
 
-### Frontend
-
-- Install npm dependencies
+- Watch the frontend assets (development only)
 ```
-$ docker-compose exec laravel npm install
+$ make watch
 ```
 
-- Build the frontend assets
+## Updating
+
+After pulling new changes via git, you can update the backend and frontend applications by re-running `make install`.
+
+## Nova
+
+- Create a new Nova admin user with the following command
 ```
-$ docker-compose exec laravel npm run build
+$ docker-compose exec laravel php artisan nova:user
+```
+Visit the application at [http://localhost/admin](http://localhost/admin) and login with the credentials you just created
+
+- On localhost Laravel Nova allows all authenticated users. On other hosts a check is done on email. The allowed emails are configured inside the config `users` in `config/nova.php`. For example:
+```
+'users' => [
+    'dev@publiq.be',
+],
 ```
 
-- Watch the frontend assets
+- Check the Laravel Nova license key registration with
 ```
-$ docker-compose exec laravel npm run dev
+$ php artisan nova:check-license
 ```
+This requires:
+- correct value of the `NOVA_LICENSE_KEY` environment variable in the `.env` file
+- correct production URL on [https://nova.laravel.com/licenses](https://nova.laravel.com/licenses)
 
-## Usage
+## Auth0
 
-- Start the application containers in detached mode and then visit the application at [http://localhost](http://localhost)
-```
-$ docker-compose up -d
-```
-
-- Start an interactive shell session
-```
-$ docker-compose exec laravel sh
-```
-
-- Stopping the application containers
-```
-$ docker-compose down
-```
+Authentication will be handled by Auth0. The following environment variables need to be set in the `.env` file:
+- `AUTH0_DOMAIN`
+- `AUTH0_CLIENT_ID`
+- `AUTH0_CLIENT_SECRET`
+- `AUTH0_REDIRECT_URI`
 
 ## Makefile
 
-- Brining up the application containers
+- Bringing up the application containers
 ```
 $ make up
 ```
@@ -101,12 +100,27 @@ $ make up
 $ make down
 ```
 
-- Install composer dependencies
+- Start an interactive shell session
+```
+$ make shell
+```
+
+- Install/update the backend and frontend applications
+```
+$ make install
+```
+
+- Generate a new application key for encryption (also included in `make install`)
+```
+$ make key-generate
+```
+
+- Install composer dependencies (also included in `make install`)
 ```
 $ make composer-install
 ```
 
-- Install npm dependencies
+- Install npm dependencies (also included in `make install`)
 ```
 $ make npm-install
 ```
@@ -116,12 +130,12 @@ $ make npm-install
 $ make watch
 ```
 
-- Build frontend assets
+- Build frontend assets (also included in `make install`)
 ```
 $ make build
 ```
 
-- Running migrations
+- Running migrations (also included in `make install`)
 ```
 $ make migrate
 ```
@@ -140,19 +154,3 @@ $ make stan
 ```
 $ make test
 ```
-
-## Nova
-
-- Create a new Nova admin user with the following command
-```
-$ docker-compose exec laravel php artisan nova:user
-```
-Visit the application at [http://localhost/admin](http://localhost/admin) and login with the credentials you just created
-
-- Check the Laravel Nova license key registration with
-```
-$ php artisan nova:check-license
-```
-This requires:
-- correct value of the `NOVA_LICENSE_KEY` environment variable in the `.env` file
-- correct production URL on [https://nova.laravel.com/licenses](https://nova.laravel.com/licenses)

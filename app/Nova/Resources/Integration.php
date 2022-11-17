@@ -13,6 +13,7 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Resource;
 
 final class Integration extends Resource
 {
@@ -41,7 +42,7 @@ final class Integration extends Resource
                 ->options([
                     IntegrationType::EntryApi->value => IntegrationType::EntryApi->name,
                     IntegrationType::SearchApi->value => IntegrationType::SearchApi->name,
-                    IntegrationType::UitpasApi->value => IntegrationType::UitpasApi->name,
+                    IntegrationType::Widgets->value => IntegrationType::Widgets->name,
                 ])
                 ->rules('required'),
 
