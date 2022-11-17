@@ -7,7 +7,8 @@
         "format": "prettier --write 'resources/ts/**/*.{js,jsx,ts,tsx}'",
         "format:check": "prettier --check 'resources/ts/**/*.{js,jsx,ts,tsx}'",
         "lint": "eslint --fix 'resources/ts/**/*.{js,jsx,ts,tsx}'",
-        "lint:check": "eslint 'resources/ts/**/*.{js,jsx,ts,tsx}'"
+        "lint:check": "eslint 'resources/ts/**/*.{js,jsx,ts,tsx}'",
+        "types:check": "tsc"
     },
     "dependencies": {
         "@inertiajs/inertia": "^0.11.1",
