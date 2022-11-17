@@ -153,12 +153,37 @@ $ make npm-install
 
 - Watch frontend assets
 ```
-$ make watch
+$ make npm-dev
 ```
 
 - Build frontend assets (also included in `make install`)
 ```
-$ make build
+$ make npm-build
+```
+
+- Format frontend files (with auto fixing)
+```
+$ make npm-format
+```
+
+- Check formatting frontend files
+```
+$ make npm-format-check
+```
+
+- Lint frontend files (with auto fixing)
+```
+$ make npm-lint
+```
+
+- Check linting frontend files
+```
+$ make npm-lint-check
+```
+
+- Check typing frontend files
+```
+$ make npm-types-check
 ```
 
 - Running migrations (also included in `make install`)
