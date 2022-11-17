@@ -6,6 +6,13 @@
         "build": "vite build",
         "format": "prettier --write 'resources/js/**/*.{js,jsx,ts,tsx}'",
         "format:check": "prettier --check 'resources/js/**/*.{js,jsx,ts,tsx}'"
+    },    
+    "dependencies": {
+        "@inertiajs/inertia": "^0.11.1",
+        "@inertiajs/inertia-react": "^0.8.1",
+        "@vitejs/plugin-react": "^2.1.0",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0"
     },
     "devDependencies": {
         "axios": "^0.27",
@@ -14,12 +21,5 @@
         "postcss": "^8.1.14",
         "prettier": "2.7.1",
         "vite": "^3.0.0"
-    },
-    "dependencies": {
-        "@inertiajs/inertia": "^0.11.1",
-        "@inertiajs/inertia-react": "^0.8.1",
-        "@vitejs/plugin-react": "^2.1.0",
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0"
     }
 }
