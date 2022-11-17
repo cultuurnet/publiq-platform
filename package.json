@@ -24,6 +24,7 @@
         "lodash": "^4.17.19",
         "postcss": "^8.1.14",
         "prettier": "2.7.1",
+        "typescript": "4.8.4",
         "vite": "^3.0.0"
     }
 }
