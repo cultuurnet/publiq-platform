@@ -4,10 +4,10 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "format": "prettier --write 'resources/js/**/*.{js,jsx,ts,tsx}'",
-        "format:check": "prettier --check 'resources/js/**/*.{js,jsx,ts,tsx}'",
-        "lint": "eslint --fix 'resources/js/**/*.{js,jsx,ts,tsx}'",
-        "lint:check": "eslint 'resources/js/**/*.{js,jsx,ts,tsx}'"
+        "format": "prettier --write 'resources/ts/**/*.{js,jsx,ts,tsx}'",
+        "format:check": "prettier --check 'resources/ts/**/*.{js,jsx,ts,tsx}'",
+        "lint": "eslint --fix 'resources/ts/**/*.{js,jsx,ts,tsx}'",
+        "lint:check": "eslint 'resources/ts/**/*.{js,jsx,ts,tsx}'"
     },
     "dependencies": {
         "@inertiajs/inertia": "^0.11.1",
