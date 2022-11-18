@@ -5,14 +5,12 @@ type HeadingProps = {
 };
 
 const levelToHeadingComponent = {
-  1: ({ children: text }: HeadingProps) => <h1 className="text-4xl">{text}</h1>,
-  2: ({ children: text }: HeadingProps) => <h2 className="text-2xl">{text}</h2>,
-  3: ({ children: text }: HeadingProps) => <h3 className="text-xl">{text}</h3>,
-  4: ({ children: text }: HeadingProps) => <h4 className="text-lg">{text}</h4>,
-  5: ({ children: text }: HeadingProps) => (
-    <h5 className="text-base">{text}</h5>
-  ),
-  6: ({ children: text }: HeadingProps) => <h6 className="text-sm">{text}</h6>,
+  1: ({ children }: HeadingProps) => <h1 className="text-4xl">{children}</h1>,
+  2: ({ children }: HeadingProps) => <h2 className="text-2xl">{children}</h2>,
+  3: ({ children }: HeadingProps) => <h3 className="text-xl">{children}</h3>,
+  4: ({ children }: HeadingProps) => <h4 className="text-lg">{children}</h4>,
+  5: ({ children }: HeadingProps) => <h5 className="text-base">{children}</h5>,
+  6: ({ children }: HeadingProps) => <h6 className="text-sm">{children}</h6>,
 } as const;
 
 type Props = {
