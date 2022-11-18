@@ -1,4 +1,4 @@
-import React, { FormEvent, ReactNode, useEffect } from 'react';
+import React, { FormEvent, ReactNode } from 'react';
 import { useForm } from '@inertiajs/inertia-react';
 import Layout from '../../Shared/Layout';
 import { Heading } from '../../Shared/Heading';
