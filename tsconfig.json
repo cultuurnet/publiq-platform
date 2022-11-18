@@ -8,7 +8,8 @@
     "strict": true,
     "skipLibCheck": true,
     "jsx": "react",
-    "lib": ["ESNext", "DOM"]
+    "lib": ["ESNext", "DOM"],
+    "resolveJsonModule": true
   },
   "include": ["resources/ts"],
   "exclude": ["node_modules"]
