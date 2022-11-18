@@ -32,7 +32,7 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
       <Heading level={2}>Integratie toevoegen</Heading>
 
       <form onSubmit={handleSubmit}>
-        <h4>Type integratie</h4>
+        <Heading level={3}>Type integratie</Heading>
         <select
           name="integrationType"
           id="integrationType"
@@ -50,7 +50,7 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
           <div className="error">{errors.integrationType}</div>
         )}
 
-        <h4>Plan</h4>
+        <Heading level={3}>Plan</Heading>
         <select
           name="subscriptionId"
           id="subscriptionId"
@@ -68,7 +68,7 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
           <div className="error">{errors.subscriptionId}</div>
         )}
 
-        <h4>Naam integratie</h4>
+        <Heading level={3}>Naam integratie</Heading>
         <input
           type="text"
           name="name"
@@ -78,7 +78,7 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
         />
         {errors.name && <div className="error">{errors.name}</div>}
 
-        <h4>Doel van de integratie</h4>
+        <Heading level={3}>Doel van de integratie</Heading>
         <input
           type="text"
           name="description"
@@ -90,7 +90,7 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
           <div className="error">{errors.description}</div>
         )}
 
-        <h4>Contact organisatie</h4>
+        <Heading level={3}>Contact organisatie</Heading>
         <input
           type="text"
           name="firstNameOrganisation"
@@ -127,7 +127,7 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
           <div className="error">{errors.emailOrganisation}</div>
         )}
 
-        <h4>Contact technische partner</h4>
+        <Heading level={3}>Contact technische partner</Heading>
         <input
           type="text"
           name="firstNamePartner"
@@ -164,7 +164,7 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
           <div className="error">{errors.emailPartner}</div>
         )}
 
-        <h4>Gebruiksvoorwaarden</h4>
+        <Heading level={3}>Gebruiksvoorwaarden</Heading>
         <input type="checkbox" id="agreement" name="agreement" required />
         <label htmlFor="agreement">Ik ga akkoord</label>
 
