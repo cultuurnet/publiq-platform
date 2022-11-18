@@ -1,5 +1,5 @@
 import React, { FC, useId } from 'react';
-import { classNames } from '../utils/classnames';
+import { classNames } from '../utils/classNames';
 
 type LabelPosition = 'top' | 'left' | 'right';
 
