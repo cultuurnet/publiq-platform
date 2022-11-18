@@ -4,9 +4,9 @@ import Footer from './Footer';
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <div>
+    <div className="px-3 lg:px-6">
       <Header />
-      {children}
+      <section className="pb-8">{children}</section>
       <Footer />
     </div>
   );

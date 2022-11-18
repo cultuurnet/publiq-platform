@@ -1,7 +1,8 @@
-import React, { FormEvent, ReactNode } from 'react';
+import React, { FormEvent, ReactNode, useEffect } from 'react';
 import { useForm } from '@inertiajs/inertia-react';
 import Layout from '../../Shared/Layout';
 import { Heading } from '../../Shared/Heading';
+import { FormElement } from '../../Shared/FormElement';
 
 type Props = {
   integrationTypes: string[];
@@ -31,148 +32,196 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
   }
 
   return (
-    <div>
+    <div className="flex flex-col gap-5">
       <Heading level={2}>Integratie toevoegen</Heading>
 
-      <form onSubmit={handleSubmit}>
-        <Heading level={3}>Type integratie</Heading>
-        <select
-          name="integrationType"
-          id="integrationType"
-          value={data.integrationType}
-          onChange={(e) => setData('integrationType', e.target.value)}
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        <FormElement
+          label="Type integratie"
+          labelSize="xl"
+          Component={({ id }) => (
+            <select
+              id={id}
+              name="integrationType"
+              value={data.integrationType}
+              onChange={(e) => setData('integrationType', e.target.value)}
+            >
+              <option value="">Kies...</option>
+              {integrationTypes.map((integrationType) => (
+                <option value={integrationType} key={integrationType}>
+                  {integrationType}
+                </option>
+              ))}
+            </select>
+          )}
+          error={errors.integrationType}
+        />
+        <FormElement
+          label="Plan"
+          labelSize="xl"
+          Component={({ id }) => (
+            <select
+              id={id}
+              name="subscriptionId"
+              value={data.subscriptionId}
+              onChange={(e) => setData('subscriptionId', e.target.value)}
+            >
+              <option value="">Kies...</option>
+              {subscriptions.map((subscription) => (
+                <option value={subscription.id} key={subscription.id}>
+                  {subscription.name}
+                </option>
+              ))}
+            </select>
+          )}
+          error={errors.subscriptionId}
+        />
+        <FormElement
+          label="Naam integratie"
+          labelSize="xl"
+          Component={({ id }) => (
+            <input
+              id={id}
+              type="text"
+              name="name"
+              value={data.name}
+              onChange={(e) => setData('name', e.target.value)}
+            />
+          )}
+          error={errors.name}
+        />
+        <FormElement
+          label="Doel van de integratie"
+          labelSize="xl"
+          Component={({ id }) => (
+            <input
+              id={id}
+              type="text"
+              name="description"
+              value={data.description}
+              onChange={(e) => setData('description', e.target.value)}
+            />
+          )}
+          error={errors.description}
+        />
+
+        <div>
+          <span className="text-xl">Contact organisatie</span>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+            <FormElement
+              label="Voornaam"
+              Component={({ id }) => (
+                <input
+                  id={id}
+                  type="text"
+                  name="firstNameOrganisation"
+                  value={data.firstNameOrganisation}
+                  onChange={(e) =>
+                    setData('firstNameOrganisation', e.target.value)
+                  }
+                  placeholder="Voornaam"
+                />
+              )}
+              error={errors.firstNameOrganisation}
+            />
+            <FormElement
+              label="Achternaam"
+              Component={({ id }) => (
+                <input
+                  id={id}
+                  type="text"
+                  name="lastNameOrganisation"
+                  value={data.lastNameOrganisation}
+                  onChange={(e) =>
+                    setData('lastNameOrganisation', e.target.value)
+                  }
+                  placeholder="Achternaam"
+                />
+              )}
+              error={errors.lastNameOrganisation}
+            />
+            <FormElement
+              label="Email"
+              Component={({ id }) => (
+                <input
+                  id={id}
+                  type="email"
+                  name="emailOrganisation"
+                  value={data.emailOrganisation}
+                  onChange={(e) => setData('emailOrganisation', e.target.value)}
+                  placeholder="Email"
+                />
+              )}
+              error={errors.emailOrganisation}
+            />
+          </div>
+        </div>
+
+        <div>
+          <span className="text-xl">Contact technische partner</span>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+            <FormElement
+              label="Firstname"
+              Component={({ id }) => (
+                <input
+                  id={id}
+                  type="text"
+                  name="firstNamePartner"
+                  value={data.firstNamePartner}
+                  onChange={(e) => setData('firstNamePartner', e.target.value)}
+                  placeholder="Voornaam"
+                />
+              )}
+              error={errors.firstNamePartner}
+            />
+            <FormElement
+              label="Lastname"
+              Component={({ id }) => (
+                <input
+                  id={id}
+                  type="text"
+                  name="lastNamePartner"
+                  value={data.lastNamePartner}
+                  onChange={(e) => setData('lastNamePartner', e.target.value)}
+                  placeholder="Achternaam"
+                />
+              )}
+              error={errors.lastNamePartner}
+            />
+            <FormElement
+              label="Email"
+              Component={({ id }) => (
+                <input
+                  id={id}
+                  type="email"
+                  name="emailPartner"
+                  value={data.emailPartner}
+                  onChange={(e) => setData('emailPartner', e.target.value)}
+                  placeholder="Email"
+                />
+              )}
+              error={errors.emailPartner}
+            />
+          </div>
+        </div>
+
+        <div>
+          <span className="text-xl">Gebruiksvoorwaarden</span>
+          <FormElement
+            label="Ik ga akkoord"
+            labelPosition="right"
+            Component={({ id }) => (
+              <input id={id} type="checkbox" name="agreement" />
+            )}
+            error={errors.emailPartner}
+          />
+        </div>
+
+        <button
+          type="submit"
+          disabled={processing}
+          className="px-4 py-2 font-semibold text-sm bg-cyan-500 text-white rounded-full shadow-sm"
         >
-          <option value="">Kies...</option>
-          {integrationTypes.map((integrationType) => (
-            <option value={integrationType} key={integrationType}>
-              {integrationType}
-            </option>
-          ))}
-        </select>
-        {errors.integrationType && (
-          <div className="error">{errors.integrationType}</div>
-        )}
-
-        <Heading level={3}>Plan</Heading>
-        <select
-          name="subscriptionId"
-          id="subscriptionId"
-          value={data.subscriptionId}
-          onChange={(e) => setData('subscriptionId', e.target.value)}
-        >
-          <option value="">Kies...</option>
-          {subscriptions.map((subscription) => (
-            <option value={subscription.id} key={subscription.id}>
-              {subscription.name}
-            </option>
-          ))}
-        </select>
-        {errors.subscriptionId && (
-          <div className="error">{errors.subscriptionId}</div>
-        )}
-
-        <Heading level={3}>Naam integratie</Heading>
-        <input
-          type="text"
-          name="name"
-          id="name"
-          value={data.name}
-          onChange={(e) => setData('name', e.target.value)}
-        />
-        {errors.name && <div className="error">{errors.name}</div>}
-
-        <Heading level={3}>Doel van de integratie</Heading>
-        <input
-          type="text"
-          name="description"
-          id="description"
-          value={data.description}
-          onChange={(e) => setData('description', e.target.value)}
-        />
-        {errors.description && (
-          <div className="error">{errors.description}</div>
-        )}
-
-        <Heading level={3}>Contact organisatie</Heading>
-        <input
-          type="text"
-          name="firstNameOrganisation"
-          id="firstNameOrganisation"
-          value={data.firstNameOrganisation}
-          onChange={(e) => setData('firstNameOrganisation', e.target.value)}
-          placeholder="Voornaam"
-        />
-        {errors.firstNameOrganisation && (
-          <div className="error">{errors.firstNameOrganisation}</div>
-        )}
-
-        <input
-          type="text"
-          name="lastNameOrganisation"
-          id="lastNameOrganisation"
-          value={data.lastNameOrganisation}
-          onChange={(e) => setData('lastNameOrganisation', e.target.value)}
-          placeholder="Achternaam"
-        />
-        {errors.lastNameOrganisation && (
-          <div className="error">{errors.lastNameOrganisation}</div>
-        )}
-
-        <input
-          type="email"
-          name="emailOrganisation"
-          id="emailOrganisation"
-          value={data.emailOrganisation}
-          onChange={(e) => setData('emailOrganisation', e.target.value)}
-          placeholder="Emailadres"
-        />
-        {errors.emailOrganisation && (
-          <div className="error">{errors.emailOrganisation}</div>
-        )}
-
-        <Heading level={3}>Contact technische partner</Heading>
-        <input
-          type="text"
-          name="firstNamePartner"
-          id="firstNamePartner"
-          value={data.firstNamePartner}
-          onChange={(e) => setData('firstNamePartner', e.target.value)}
-          placeholder="Voornaam"
-        />
-        {errors.firstNamePartner && (
-          <div className="error">{errors.firstNamePartner}</div>
-        )}
-
-        <input
-          type="text"
-          name="lastNamePartner"
-          id="lastNamePartner"
-          value={data.lastNamePartner}
-          onChange={(e) => setData('lastNamePartner', e.target.value)}
-          placeholder="Achternaam"
-        />
-        {errors.lastNamePartner && (
-          <div className="error">{errors.lastNamePartner}</div>
-        )}
-
-        <input
-          type="email"
-          name="emailPartner"
-          id="emailPartner"
-          value={data.emailPartner}
-          onChange={(e) => setData('emailPartner', e.target.value)}
-          placeholder="Emailadres"
-        />
-        {errors.emailPartner && (
-          <div className="error">{errors.emailPartner}</div>
-        )}
-
-        <Heading level={3}>Gebruiksvoorwaarden</Heading>
-        <input type="checkbox" id="agreement" name="agreement" required />
-        <label htmlFor="agreement">Ik ga akkoord</label>
-
-        <br />
-        <button type="submit" disabled={processing}>
           Integratie aanmaken
         </button>
       </form>

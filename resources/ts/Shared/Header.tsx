@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 export default function Header() {
   const { t } = useTranslation();
   return (
-    <header>
+    <header className="mt-2 mb-4">
       <Heading level={1}>{t('title')}</Heading>
     </header>
   );
