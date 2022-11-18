@@ -8,19 +8,22 @@ type Props = {
   subscriptions: { id: string; name: string }[];
 };
 
+const initialFormValues = {
+  integrationType: '',
+  subscriptionId: '',
+  name: '',
+  description: '',
+  firstNameOrganisation: '',
+  lastNameOrganisation: '',
+  emailOrganisation: '',
+  firstNamePartner: '',
+  lastNamePartner: '',
+  emailPartner: '',
+};
+
 const Index = ({ integrationTypes, subscriptions }: Props) => {
-  const { data, setData, errors, post, processing } = useForm({
-    integrationType: '',
-    subscriptionId: '',
-    name: '',
-    description: '',
-    firstNameOrganisation: '',
-    lastNameOrganisation: '',
-    emailOrganisation: '',
-    firstNamePartner: '',
-    lastNamePartner: '',
-    emailPartner: '',
-  });
+  const { data, setData, errors, post, processing } =
+    useForm(initialFormValues);
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
