@@ -14,9 +14,6 @@ install: composer-install key-generate migrate npm-install build
 composer-install:
 	vendor/bin/sail composer install
 
-npm-install:
-	vendor/bin/sail npm install
-
 key-generate:
 	vendor/bin/sail artisan key:generate
 
@@ -32,8 +29,26 @@ stan:
 test:
 	vendor/bin/sail composer test
 
-watch:
+npm-install:
+	vendor/bin/sail npm install
+
+npm-dev:
 	vendor/bin/sail npm run dev
 
-build:
+npm-build:
 	vendor/bin/sail npm run build
+
+npm-format:
+	vendor/bin/sail npm run format
+
+npm-format-check:
+	vendor/bin/sail npm run format:check
+
+npm-lint:
+	vendor/bin/sail npm run lint
+
+npm-lint-check:
+	vendor/bin/sail npm run lint:check
+
+npm-types-check:
+	vendor/bin/sail npm run types:check
