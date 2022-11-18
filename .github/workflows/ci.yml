@@ -122,32 +122,10 @@ jobs:
     name: Check formatting frontend files
     runs-on: ubuntu-latest
     steps:
-      - name: 📤 Checkout project
-        uses: actions/checkout@v2
-
-      - name: 📩 Fetch vendor from cache
-        uses: actions/cache@v1
-        id: cache
+      - uses: actions/setup-node@v3
         with:
-          path: vendor
-          key: composer-${{ hashFiles('**/composer.lock') }}
-
-      - name: 🐘 Setup PHP
-        uses: shivammathur/setup-php@master
-        with:
-          php-version: "8.1"
-        env:
-          update: true
-
-      - name: 🔢 Create .env file
-        run: cp .env.ci .env
-
-      - name: 📦 Install composer dependencies
-        run: |
-          composer config "http-basic.nova.laravel.com" "${{ secrets.NOVA_USERNAME }}" "${{ secrets.NOVA_PASSWORD }}"
-          composer install --quiet --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-
+          node-version: 16.17
       - name: Install npm dependencies
-        run: vendor/bin/sail npm install
+        run: npm ci
       - name: Run format check
-        run: vendor/bin/sail npm run format:check
+        run: npm run format:check
