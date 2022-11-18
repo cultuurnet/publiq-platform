@@ -146,3 +146,16 @@ jobs:
         - name: Run lint check
           run: npm run lint:check
 
+  frontend-types-check:
+      name: Check types frontend files
+      runs-on: ubuntu-latest
+      steps:
+        - name: 📤 Checkout project
+          uses: actions/checkout@v2
+        - uses: actions/setup-node@v3
+          with:
+            node-version: 16.17
+        - name: Install npm dependencies
+          run: npm ci
+        - name: Run types check
+          run: npm run types:check
