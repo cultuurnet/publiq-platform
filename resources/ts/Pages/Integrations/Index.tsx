@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import { Heading } from '../../Shared/Heading';
 import Layout from '../../Shared/Layout';
 
 type Props = {
@@ -8,7 +9,7 @@ type Props = {
 const Index = ({ integrations }: Props) => {
   return (
     <div>
-      <h3>Integrations Page</h3>
+      <Heading level={2}>Integrations Page</Heading>
       <ul>
         {integrations.map((integration) => (
           <li key={integration.id}>{integration.name}</li>

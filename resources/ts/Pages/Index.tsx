@@ -1,10 +1,11 @@
 import React, { ReactNode } from 'react';
+import { Heading } from '../Shared/Heading';
 import Layout from '../Shared/Layout';
 
 const Index = () => {
   return (
     <div>
-      <h3>Index Page</h3>
+      <Heading level={2}>Index Page</Heading>
     </div>
   );
 };

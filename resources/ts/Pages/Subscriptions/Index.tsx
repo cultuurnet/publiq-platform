@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import { Heading } from '../../Shared/Heading';
 import Layout from '../../Shared/Layout';
 
 type Props = {
@@ -8,7 +9,7 @@ type Props = {
 const Index = ({ subscriptions }: Props) => {
   return (
     <div>
-      <h3>Subscriptions Page</h3>
+      <Heading level={2}>Subscriptions Page</Heading>
       <ul>
         {subscriptions.map((subscription) => (
           <li key={subscription.id}>{subscription.name}</li>

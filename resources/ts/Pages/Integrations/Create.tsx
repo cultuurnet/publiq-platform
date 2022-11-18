@@ -1,6 +1,7 @@
 import React, { FormEvent, ReactNode } from 'react';
 import { useForm } from '@inertiajs/inertia-react';
 import Layout from '../../Shared/Layout';
+import { Heading } from '../../Shared/Heading';
 
 type Props = {
   integrationTypes: string[];
@@ -28,7 +29,7 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
 
   return (
     <div>
-      <h2>Integratie toevoegen</h2>
+      <Heading level={2}>Integratie toevoegen</Heading>
 
       <form onSubmit={handleSubmit}>
         <h4>Type integratie</h4>
