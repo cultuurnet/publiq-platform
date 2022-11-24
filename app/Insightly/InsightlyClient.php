@@ -11,7 +11,6 @@ use App\Insightly\Exceptions\RecordLimitReached;
 use App\Insightly\Exceptions\RecordNotFound;
 use App\Insightly\Resources\ContactResource;
 use App\Insightly\Resources\OpportunityResource;
-use GuzzleHttp\Psr7\Response;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
