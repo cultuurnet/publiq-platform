@@ -19,6 +19,10 @@ final class CreateOpportunity implements ShouldQueue
 
     public function handle(IntegrationCreated $integrationCreated): void
     {
+        if (empty(config('insightly.api_key'))) {
+            return;
+        }
+
         $this->insightlyClient->opportunities()->create(
             $this->integrationRepository->getById($integrationCreated->id)
         );

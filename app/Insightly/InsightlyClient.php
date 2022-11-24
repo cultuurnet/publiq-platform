@@ -37,10 +37,6 @@ final class InsightlyClient
 
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
-        if (empty(config('insightly.api_key'))) {
-            return new Response(204);
-        }
-
         $requestWithHeaders = $request
             ->withAddedHeader(
                 'Authorization',
