@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Integrations\Repositories;
 
 use App\Domain\Contacts\Models\ContactModel;
+use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
@@ -36,6 +37,8 @@ final class IntegrationRepository
                     'email' => $contact->email,
                 ]);
             }
+
+            IntegrationCreated::dispatch($integration->id);
         });
     }
 

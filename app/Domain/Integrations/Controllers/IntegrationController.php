@@ -6,7 +6,6 @@ namespace App\Domain\Integrations\Controllers;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
-use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
@@ -80,8 +79,6 @@ final class IntegrationController extends Controller
         );
 
         $this->integrationRepository->save($integration);
-
-        IntegrationCreated::dispatch($integrationId);
 
         return Redirect::route('integrations.index');
     }
