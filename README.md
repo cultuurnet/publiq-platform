@@ -59,11 +59,7 @@ After pulling new changes via git, you can update the backend and frontend appli
 
 ## Nova
 
-- Create a new Nova admin user with the following command
-```
-$ docker-compose exec laravel php artisan nova:user
-```
-Visit the application at [http://localhost/admin](http://localhost/admin) and login with the credentials you just created
+Visit the application at [http://localhost/admin](http://localhost/admin) and login with your UiTiD credentials from the acceptance environment.
 
 - On localhost Laravel Nova allows all authenticated users. On other hosts a check is done on email. The allowed emails are configured inside the config `users` in `config/nova.php`. For example:
 ```
