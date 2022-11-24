@@ -29,8 +29,10 @@ final class IntegrationModel extends UuidModel
 
     protected static function booted(): void
     {
-        self::created(static fn ($integrationModel) => IntegrationCreated::dispatch(
-            Uuid::fromString($integrationModel->id))
+        self::created(
+            static fn ($integrationModel) => IntegrationCreated::dispatch(
+            Uuid::fromString($integrationModel->id)
+        )
         );
     }
 
