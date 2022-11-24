@@ -84,6 +84,12 @@ Authentication will be handled by Auth0. The following environment variables nee
 - `AUTH0_CLIENT_SECRET`
 - `AUTH0_REDIRECT_URI`
 
+## Insightly
+
+The following environment variables need to be set in the `.env` file
+- `INSIGHTLY_HOST`
+- `INSIGHTLY_API_KEY`
+
 ## Front-end setup Visual Studio Code
 
 The code formatter Prettier is used for javascript/typescript files. To make sure the Visual Studio Code `format on save` action doesn't influence non-frontend files you need to add a `.vscode/settings.json` file and add the following config:
