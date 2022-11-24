@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Domain\Integrations\Models;
 
 use App\Domain\Contacts\Models\ContactModel;
+use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Ramsey\Uuid\Uuid;
 
 final class IntegrationModel extends UuidModel
 {
@@ -24,6 +26,13 @@ final class IntegrationModel extends UuidModel
         'description',
         'subscription_id',
     ];
+
+    protected static function booted(): void
+    {
+        self::created(static fn ($integrationModel) => IntegrationCreated::dispatch(
+            Uuid::fromString($integrationModel->id))
+        );
+    }
 
     /**
      * @return HasMany<ContactModel>
