@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Insightly;
+namespace App;
 
 final class Json
 {

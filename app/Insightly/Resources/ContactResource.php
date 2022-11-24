@@ -6,7 +6,7 @@ namespace App\Insightly\Resources;
 
 use App\Domain\Contacts\Contact;
 use App\Insightly\InsightlyClient;
-use App\Insightly\Json;
+use App\Json;
 use App\Insightly\Serializers\ContactSerializer;
 use GuzzleHttp\Psr7\Request;
 
