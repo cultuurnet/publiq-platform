@@ -50,7 +50,7 @@ $ make install
 
 - Watch the frontend assets (development only)
 ```
-$ make watch
+$ make npm-dev
 ```
 
 ## Updating

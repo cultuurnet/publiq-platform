@@ -1,4 +1,4 @@
-.PHONY: up down shell install composer-install npm-install key-generate migrate lint stan test watch build
+.PHONY: up down shell install composer-install npm-install key-generate migrate lint stan
 
 up:
 	vendor/bin/sail up -d
@@ -9,7 +9,7 @@ down:
 shell:
 	docker-compose exec laravel sh
 
-install: composer-install key-generate migrate npm-install build
+install: composer-install key-generate migrate npm-install npm-build
 
 composer-install:
 	vendor/bin/sail composer install
