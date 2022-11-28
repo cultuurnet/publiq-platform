@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Domain\Integrations\IntegrationType;
-use App\Domain\Subscriptions\BillingInterval;
 use App\Domain\Subscriptions\Currency;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Domain\Subscriptions\Subscription;
@@ -23,7 +22,6 @@ final class SubscriptionsSeeder extends Seeder
             IntegrationType::SearchApi,
             Currency::EUR,
             999,
-            BillingInterval::Monthly,
             1499
         );
 
