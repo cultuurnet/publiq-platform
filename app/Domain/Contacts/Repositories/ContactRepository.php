@@ -25,6 +25,20 @@ final class ContactRepository
         ]);
     }
 
+    public function getById(UuidInterface $id): Contact
+    {
+        $contactModel = ContactModel::query()->findOrFail($id);
+
+        return new Contact(
+            Uuid::fromString($contactModel->id),
+            Uuid::fromString($contactModel->integration_id),
+            ContactType::from($contactModel->type),
+            $contactModel->first_name,
+            $contactModel->last_name,
+            $contactModel->email,
+        );
+    }
+
     public function getByIntegrationId(UuidInterface $integrationId): Collection
     {
         $contactModels = ContactModel::query()->where('integration_id', $integrationId->toString())->get();
