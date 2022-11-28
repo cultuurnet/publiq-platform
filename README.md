@@ -50,7 +50,7 @@ $ make install
 
 - Watch the frontend assets (development only)
 ```
-$ make watch
+$ make npm-dev
 ```
 
 ## Updating
@@ -59,11 +59,7 @@ After pulling new changes via git, you can update the backend and frontend appli
 
 ## Nova
 
-- Create a new Nova admin user with the following command
-```
-$ docker-compose exec laravel php artisan nova:user
-```
-Visit the application at [http://localhost/admin](http://localhost/admin) and login with the credentials you just created
+Visit the application at [http://localhost/admin](http://localhost/admin) and login with your UiTiD credentials from the acceptance environment.
 
 - On localhost Laravel Nova allows all authenticated users. On other hosts a check is done on email. The allowed emails are configured inside the config `users` in `config/nova.php`. For example:
 ```
@@ -87,6 +83,12 @@ Authentication will be handled by Auth0. The following environment variables nee
 - `AUTH0_CLIENT_ID`
 - `AUTH0_CLIENT_SECRET`
 - `AUTH0_REDIRECT_URI`
+
+## Insightly
+
+The following environment variables need to be set in the `.env` file
+- `INSIGHTLY_HOST`
+- `INSIGHTLY_API_KEY`
 
 ## Front-end setup Visual Studio Code
 
