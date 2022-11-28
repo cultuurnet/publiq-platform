@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Domain\Subscriptions\Repositories;
 
 use App\Domain\Integrations\IntegrationType;
-use App\Domain\Subscriptions\BillingInterval;
 use App\Domain\Subscriptions\Currency;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Domain\Subscriptions\Subscription;
@@ -35,7 +34,6 @@ final class SubscriptionRepositoryTest extends TestCase
             IntegrationType::SearchApi,
             Currency::EUR,
             14.99,
-            BillingInterval::Monthly,
             99.99
         );
 
@@ -48,7 +46,6 @@ final class SubscriptionRepositoryTest extends TestCase
             'integration_type' => $subscription->integrationType,
             'currency' => $subscription->currency,
             'price' => 1499,
-            'billing_interval' => $subscription->billingInterval,
             'fee' => 9999,
         ]);
     }
