@@ -46,4 +46,44 @@ final class ContactRepositoryTest extends TestCase
             'email' => $contact->email,
         ]);
     }
+
+    public function test_it_can_get_all_contacts_from_an_integration(): void
+    {
+        $integrationId = Uuid::uuid4();
+        $otherIntegrationId = Uuid::uuid4();
+
+        $contactJane = new Contact(
+            Uuid::uuid4(),
+            $integrationId,
+            ContactType::Technical,
+            'Jane',
+            'Doe',
+            'jane.doe@anonymous.com'
+        );
+        $this->contactRepository->save($contactJane);
+
+        $contactJohn = new Contact(
+            Uuid::uuid4(),
+            $integrationId,
+            ContactType::Technical,
+            'John',
+            'Doe',
+            'jane.doe@anonymous.com'
+        );
+        $this->contactRepository->save($contactJohn);
+
+        $contactJef = new Contact(
+            Uuid::uuid4(),
+            $otherIntegrationId,
+            ContactType::Technical,
+            'Jef',
+            'Doe',
+            'jef.doe@anonymous.com'
+        );
+        $this->contactRepository->save($contactJef);
+
+        $contacts = $this->contactRepository->getByIntegrationId($integrationId);
+
+        $this->assertEquals($contacts, collect([$contactJohn, $contactJane]));
+    }
 }
