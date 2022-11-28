@@ -16,7 +16,6 @@ final class Subscription
         public readonly IntegrationType $integrationType,
         public readonly Currency $currency,
         public readonly float $price,
-        public readonly BillingInterval $billingInterval,
         public readonly ?float $fee,
     ) {
     }
