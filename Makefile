@@ -29,6 +29,8 @@ stan:
 test:
 	vendor/bin/sail composer test
 
+ci: lint stan test
+
 npm-install:
 	vendor/bin/sail npm install
 
