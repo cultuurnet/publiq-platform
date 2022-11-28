@@ -19,7 +19,6 @@ final class SubscriptionRepository
             'integration_type' => $subscription->integrationType,
             'currency' => $subscription->currency,
             'price' => $subscription->price,
-            'billing_interval' => $subscription->billingInterval,
             'fee' => $subscription->fee,
         ]);
     }

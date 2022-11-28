@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Nova\Resources;
 
 use App\Domain\Integrations\IntegrationType;
-use App\Domain\Subscriptions\BillingInterval;
 use App\Domain\Subscriptions\Currency;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
 use Laravel\Nova\Fields\Currency as CurrencyField;
@@ -58,13 +57,6 @@ final class Subscription extends Resource
                 ->currency(Currency::EUR->value)
                 ->min(0)
                 ->step(0.01)
-                ->rules('required'),
-
-            Select::make('Interval', 'billing_interval')
-                ->options([
-                    BillingInterval::Monthly->value => BillingInterval::Monthly->name,
-                    BillingInterval::Yearly->value => BillingInterval::Yearly->name,
-                ])
                 ->rules('required'),
 
             CurrencyField::make('Fee')
