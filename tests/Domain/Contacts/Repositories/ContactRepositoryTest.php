@@ -86,7 +86,7 @@ final class ContactRepositoryTest extends TestCase
             ContactType::Technical,
             'John',
             'Doe',
-            'jane.doe@anonymous.com'
+            'john.doe@anonymous.com'
         );
         $this->contactRepository->save($contactJohn);
 
@@ -100,8 +100,12 @@ final class ContactRepositoryTest extends TestCase
         );
         $this->contactRepository->save($contactJef);
 
-        $foundContacts = $this->contactRepository->getByIntegrationId($integrationId);
+        $foundContacts = $this->contactRepository->getByIntegrationId($integrationId)->toArray();
+        usort($foundContacts, static fn (Contact $c1, Contact $c2) => strcmp($c1->firstName, $c2->firstName));
 
-        $this->assertEquals($foundContacts, collect([$contactJohn, $contactJane]));
+        $this->assertEquals(
+            $foundContacts,
+            [$contactJane, $contactJohn]
+        );
     }
 }
