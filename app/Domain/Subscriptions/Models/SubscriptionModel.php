@@ -21,7 +21,6 @@ final class SubscriptionModel extends UuidModel
         'currency',
         'integration_type',
         'price',
-        'billing_interval',
         'fee',
     ];
 
