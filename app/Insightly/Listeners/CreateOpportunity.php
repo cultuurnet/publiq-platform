@@ -7,13 +7,18 @@ namespace App\Insightly\Listeners;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Insightly\InsightlyClient;
+use App\Insightly\InsightlyMapping;
+use App\Insightly\Repositories\InsightlyMappingRepository;
+use App\Insightly\Resources\ResourceType;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Log;
 
 final class CreateOpportunity implements ShouldQueue
 {
     public function __construct(
         private readonly InsightlyClient $insightlyClient,
-        private readonly IntegrationRepository $integrationRepository
+        private readonly IntegrationRepository $integrationRepository,
+        private readonly InsightlyMappingRepository $insightlyMappingRepository
     ) {
     }
 
@@ -23,8 +28,14 @@ final class CreateOpportunity implements ShouldQueue
             return;
         }
 
-        $this->insightlyClient->opportunities()->create(
+        $insightlyId = $this->insightlyClient->opportunities()->create(
             $this->integrationRepository->getById($integrationCreated->id)
         );
+
+        $this->insightlyMappingRepository->save(new InsightlyMapping(
+            $integrationCreated->id,
+            $insightlyId,
+            ResourceType::Opportunity
+        ));
     }
 }
