@@ -38,6 +38,25 @@ final class CreateContact implements ShouldQueue
 
         $integrationMapping = $this->insightlyMappingRepository->getById($contact->integrationId);
         $this->insightlyClient->opportunities()->linkContact($integrationMapping->insightlyId, $contactInsightlyId);
+
+        Log::info(
+            'Contact created',
+            [
+                'domain' => 'insightly',
+                'contact_id' => $contactCreated->id->toString(),
+            ]
+        );
+    }
+
+    public function failed(ContactCreated $contactCreated, \Throwable $exception): void
+    {
+        Log::error(
+            'Failed to create contact',
+            [
+                'domain' => 'insightly',
+                'contact_id' => $contactCreated->id->toString(),
+                'exception' => $exception,
+            ]
         );
     }
 }

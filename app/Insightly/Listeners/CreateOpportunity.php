@@ -37,5 +37,25 @@ final class CreateOpportunity implements ShouldQueue
             $insightlyId,
             ResourceType::Opportunity
         ));
+
+        Log::info(
+            'Opportunity created for integration',
+            [
+                'domain' => 'insightly',
+                'integration_id' => $integrationCreated->id->toString(),
+            ]
+        );
+    }
+
+    public function failed(IntegrationCreated $integrationCreated, \Throwable $exception): void
+    {
+        Log::error(
+            'Failed to create opportunity for integration',
+            [
+                'domain' => 'insightly',
+                'integration_id' => $integrationCreated->id->toString(),
+                'exception' => $exception,
+            ]
+        );
     }
 }
