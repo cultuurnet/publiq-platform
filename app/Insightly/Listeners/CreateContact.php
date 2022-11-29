@@ -7,13 +7,18 @@ namespace App\Insightly\Listeners;
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Insightly\InsightlyClient;
+use App\Insightly\InsightlyMapping;
+use App\Insightly\Repositories\InsightlyMappingRepository;
+use App\Insightly\Resources\ResourceType;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Log;
 
 final class CreateContact implements ShouldQueue
 {
     public function __construct(
         private readonly InsightlyClient $insightlyClient,
-        private readonly ContactRepository $contactRepository
+        private readonly ContactRepository $contactRepository,
+        private readonly InsightlyMappingRepository $insightlyMappingRepository
     ) {
     }
 
@@ -23,8 +28,16 @@ final class CreateContact implements ShouldQueue
             return;
         }
 
-        $this->insightlyClient->contacts()->create(
-            $this->contactRepository->getById($contactCreated->id)
+        $contact = $this->contactRepository->getById($contactCreated->id);
+        $contactInsightlyId = $this->insightlyClient->contacts()->create($contact);
+        $this->insightlyMappingRepository->save(new InsightlyMapping(
+            $contactCreated->id,
+            $contactInsightlyId,
+            ResourceType::Contact
+        ));
+
+        $integrationMapping = $this->insightlyMappingRepository->getById($contact->integrationId);
+        $this->insightlyClient->opportunities()->linkContact($integrationMapping->insightlyId, $contactInsightlyId);
         );
     }
 }
