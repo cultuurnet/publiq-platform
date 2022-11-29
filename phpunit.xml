@@ -6,7 +6,10 @@
 >
     <testsuites>
         <testsuite name="Domain">
-            <directory suffix="Test.php">./tests/Domain</directory>
+            <directory>./tests/Domain</directory>
+        </testsuite>
+        <testsuite name="Insightly">
+            <directory>./tests/Insightly/Repositories</directory>
         </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true">
