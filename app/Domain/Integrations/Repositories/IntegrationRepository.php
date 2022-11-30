@@ -41,8 +41,7 @@ final class IntegrationRepository
             }
 
             OwnerModel::query()->create([
-                'id' => $owner->id->toString(),
-                'auth0_id' => $owner->auth0Id,
+                'owner_id' => $owner->ownerId,
                 'integration_id' => $integration->id->toString(),
                 'owner_type' => $owner->ownerType,
             ]);
