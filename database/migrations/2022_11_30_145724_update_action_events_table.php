@@ -10,7 +10,7 @@ return new class () extends Migration {
     public function up(): void
     {
         Schema::table('action_events', function (Blueprint $table) {
-            $table->string('user_id', 42)->change();
+            $table->string('user_id', 255)->change();
         });
     }
 
