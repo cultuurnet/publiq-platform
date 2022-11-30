@@ -8,6 +8,9 @@ use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
+use App\Domain\Integrations\Models\OwnerModel;
+use App\Domain\Integrations\Owner;
+use App\Domain\Integrations\OwnerId;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
@@ -15,9 +18,9 @@ use Ramsey\Uuid\UuidInterface;
 
 final class IntegrationRepository
 {
-    public function save(Integration $integration): void
+    public function save(Integration $integration, Owner $owner): void
     {
-        DB::transaction(static function () use ($integration): void {
+        DB::transaction(static function () use ($integration, $owner): void {
             IntegrationModel::query()->create([
                 'id' => $integration->id->toString(),
                 'type' => $integration->type,
@@ -36,6 +39,13 @@ final class IntegrationRepository
                     'email' => $contact->email,
                 ]);
             }
+
+            OwnerModel::query()->create([
+                'id' => $owner->id->toString(),
+                'auth0_id' => $owner->auth0Id,
+                'integration_id' => $integration->id->toString(),
+                'owner_type' => $owner->ownerType,
+            ]);
         });
     }
 
@@ -51,6 +61,11 @@ final class IntegrationRepository
             Uuid::fromString($integrationModel->subscription_id),
             []
         );
+    }
+
+    public function getByOwnerId(OwnerId $ownerId): Collection
+    {
+
     }
 
     public function all(): Collection
