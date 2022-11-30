@@ -9,6 +9,9 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
+use App\Domain\Integrations\Owner;
+use App\Domain\Integrations\OwnerId;
+use App\Domain\Integrations\OwnerType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
@@ -70,7 +73,15 @@ final class IntegrationRepositoryTest extends TestCase
             $contacts
         );
 
-        $this->integrationRepository->save($integration);
+        $ownerId = new OwnerId('auth0|' . Uuid::uuid4()->toString());
+
+        $owner = new Owner(
+            $ownerId,
+            $integrationId,
+            OwnerType::Integrator
+        );
+
+        $this->integrationRepository->save($integration, $owner);
 
         $this->assertDatabaseHas('integrations', [
             'id' => $integration->id->toString(),
