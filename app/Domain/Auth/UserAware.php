@@ -10,7 +10,8 @@ use Illuminate\Contracts\Auth\Factory;
 
 trait UserAware
 {
-    public function getUser(): UserModel {
+    public function getUser(): UserModel
+    {
         /** @var Factory $auth */
         $auth = auth();
 
