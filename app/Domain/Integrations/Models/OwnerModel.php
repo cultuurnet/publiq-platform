@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Models;
 
-use App\Domain\Contacts\Models\ContactModel;
 use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-final class OwnerModel extends UuidModel
+final class OwnerModel extends Model
 {
     use SoftDeletes;
 

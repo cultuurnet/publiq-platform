@@ -64,7 +64,8 @@ final class IntegrationRepository
 
     public function getByOwnerId(OwnerId $ownerId): Collection
     {
-
+        $ownerModel = OwnerModel::query()->where('owner_id', '=', $ownerId->id)->get();
+        return IntegrationModel::query()->whereBelongsTo($ownerModel)->get();
     }
 
     public function all(): Collection
