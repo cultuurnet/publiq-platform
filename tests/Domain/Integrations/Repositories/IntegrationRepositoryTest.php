@@ -101,6 +101,12 @@ final class IntegrationRepositoryTest extends TestCase
                 'email' => $contact->email,
             ]);
         }
+
+        $this->assertDatabaseHas('owners', [
+            'owner_id' => $ownerId->id,
+            'integration_id' => $integration->id->toString(),
+            'owner_type' => OwnerType::Integrator,
+        ]);
     }
 
     public function test_it_can_get_an_integration_by_id(): void
