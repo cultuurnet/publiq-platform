@@ -6,7 +6,8 @@ namespace App\Domain\Integrations\Models;
 
 use App\Domain\Contacts\Models\ContactModel;
 use App\Models\UuidModel;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 final class OwnerModel extends UuidModel
@@ -20,4 +21,12 @@ final class OwnerModel extends UuidModel
         'integration_id',
         'owner_type',
     ];
+
+    /**
+     * @return BelongsTo<IntegrationModel, OwnerModel>
+     */
+    public function integration(): BelongsTo
+    {
+        return $this->belongsTo(IntegrationModel::class, 'integration_id');
+    }
 }
