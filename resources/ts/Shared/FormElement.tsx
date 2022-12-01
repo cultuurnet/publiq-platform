@@ -1,4 +1,4 @@
-import React, { cloneElement, memo, ReactElement, useId, useMemo } from 'react';
+import React, { cloneElement, memo, ReactElement, useId } from 'react';
 import { classNames } from '../utils/classNames';
 
 type LabelPosition = 'top' | 'left' | 'right';
