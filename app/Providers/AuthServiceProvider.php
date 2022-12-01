@@ -15,6 +15,6 @@ final class AuthServiceProvider extends ServiceProvider
 
         $this->app->when(Login::class)
             ->needs('$loginParams')
-            ->give(config('auth.login_parameters'));
+            ->giveConfig('auth.login_parameters');
     }
 }

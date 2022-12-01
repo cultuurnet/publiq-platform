@@ -8,6 +8,7 @@ use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
@@ -89,5 +90,29 @@ final class IntegrationRepositoryTest extends TestCase
                 'email' => $contact->email,
             ]);
         }
+    }
+
+    public function test_it_can_get_an_integration_by_id(): void
+    {
+        $integration = new Integration(
+            Uuid::uuid4(),
+            IntegrationType::SearchApi,
+            'Test Integration',
+            'Test Integration description',
+            Uuid::uuid4(),
+            []
+        );
+
+        IntegrationModel::query()->insert([
+            'id' => $integration->id->toString(),
+            'type' => $integration->type,
+            'name' => $integration->name,
+            'description' => $integration->description,
+            'subscription_id' => $integration->subscriptionId,
+        ]);
+
+        $integrationFromRepository = $this->integrationRepository->getById($integration->id);
+
+        $this->assertEquals($integration, $integrationFromRepository);
     }
 }

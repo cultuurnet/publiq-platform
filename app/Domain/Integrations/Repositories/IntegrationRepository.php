@@ -6,9 +6,12 @@ namespace App\Domain\Integrations\Repositories;
 
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 final class IntegrationRepository
 {
@@ -34,6 +37,20 @@ final class IntegrationRepository
                 ]);
             }
         });
+    }
+
+    public function getById(UuidInterface $id): Integration
+    {
+        $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
+
+        return new Integration(
+            Uuid::fromString($integrationModel->id),
+            IntegrationType::from($integrationModel->type),
+            $integrationModel->name,
+            $integrationModel->description,
+            Uuid::fromString($integrationModel->subscription_id),
+            []
+        );
     }
 
     public function all(): Collection
