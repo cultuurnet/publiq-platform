@@ -52,30 +52,32 @@ type Props = {
   component: ReactElement;
 };
 
-export const FormElement = memo<Props>(
-  ({ label, labelPosition = "top", labelSize = "base", component, error }) => {
-    const id = useId();
+export const FormElement = ({
+  label,
+  labelPosition = "top",
+  labelSize = "base",
+  component,
+  error,
+}: Props) => {
+  const id = useId();
 
-    const clonedComponent = cloneElement(component, { ...component.props, id });
+  const clonedComponent = cloneElement(component, { ...component.props, id });
 
-    return (
-      <div className="flex flex-col">
-        <Wrapper labelPosition={labelPosition}>
-          <div
-            className={classNames(
-              "flex gap-1",
-              getFlexDirection(labelPosition),
-              getAlignItems(labelPosition)
-            )}
-          >
-            {label && <Label id={id} label={label} labelSize={labelSize} />}
-            {clonedComponent}
-          </div>
-        </Wrapper>
-        {error && <span className="text-red-500">{error}</span>}
-      </div>
-    );
-  }
-);
-
-FormElement.displayName = "FormElement";
+  return (
+    <div className="flex flex-col">
+      <Wrapper labelPosition={labelPosition}>
+        <div
+          className={classNames(
+            "flex gap-1",
+            getFlexDirection(labelPosition),
+            getAlignItems(labelPosition)
+          )}
+        >
+          {label && <Label id={id} label={label} labelSize={labelSize} />}
+          {clonedComponent}
+        </div>
+      </Wrapper>
+      {error && <span className="text-red-500">{error}</span>}
+    </div>
+  );
+};
