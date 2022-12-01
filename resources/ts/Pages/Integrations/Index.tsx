@@ -1,6 +1,6 @@
-import React, { ReactNode } from 'react';
-import { Heading } from '../../Shared/Heading';
-import Layout from '../../Shared/Layout';
+import React, { ReactNode } from "react";
+import { Heading } from "../../Shared/Heading";
+import Layout from "../../Shared/Layout";
 
 type Props = {
   integrations: { id: string; name: string }[];

@@ -1,8 +1,8 @@
-import React, { FormEvent, ReactNode } from 'react';
-import { useForm } from '@inertiajs/inertia-react';
-import Layout from '../../Shared/Layout';
-import { Heading } from '../../Shared/Heading';
-import { FormElement } from '../../Shared/FormElement';
+import React, { FormEvent, ReactNode } from "react";
+import { useForm } from "@inertiajs/inertia-react";
+import Layout from "../../Shared/Layout";
+import { Heading } from "../../Shared/Heading";
+import { FormElement } from "../../Shared/FormElement";
 
 type Props = {
   integrationTypes: string[];
@@ -10,16 +10,16 @@ type Props = {
 };
 
 const initialFormValues = {
-  integrationType: '',
-  subscriptionId: '',
-  name: '',
-  description: '',
-  firstNameOrganisation: '',
-  lastNameOrganisation: '',
-  emailOrganisation: '',
-  firstNamePartner: '',
-  lastNamePartner: '',
-  emailPartner: '',
+  integrationType: "",
+  subscriptionId: "",
+  name: "",
+  description: "",
+  firstNameOrganisation: "",
+  lastNameOrganisation: "",
+  emailOrganisation: "",
+  firstNamePartner: "",
+  lastNamePartner: "",
+  emailPartner: "",
 };
 
 const Index = ({ integrationTypes, subscriptions }: Props) => {
@@ -28,7 +28,7 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    post('/integrations');
+    post("/integrations");
   }
 
   return (
@@ -43,7 +43,7 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
             <select
               name="integrationType"
               value={data.integrationType}
-              onChange={(e) => setData('integrationType', e.target.value)}
+              onChange={(e) => setData("integrationType", e.target.value)}
             >
               <option value="">Kies...</option>
               {integrationTypes.map((integrationType) => (
@@ -62,7 +62,7 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
             <select
               name="subscriptionId"
               value={data.subscriptionId}
-              onChange={(e) => setData('subscriptionId', e.target.value)}
+              onChange={(e) => setData("subscriptionId", e.target.value)}
             >
               <option value="">Kies...</option>
               {subscriptions.map((subscription) => (
@@ -82,7 +82,7 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
               type="text"
               name="name"
               value={data.name}
-              onChange={(e) => setData('name', e.target.value)}
+              onChange={(e) => setData("name", e.target.value)}
             />
           }
           error={errors.name}
@@ -95,7 +95,7 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
               type="text"
               name="description"
               value={data.description}
-              onChange={(e) => setData('description', e.target.value)}
+              onChange={(e) => setData("description", e.target.value)}
             />
           }
           error={errors.description}
@@ -112,7 +112,7 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
                   name="firstNameOrganisation"
                   value={data.firstNameOrganisation}
                   onChange={(e) =>
-                    setData('firstNameOrganisation', e.target.value)
+                    setData("firstNameOrganisation", e.target.value)
                   }
                   placeholder="Voornaam"
                 />
@@ -127,7 +127,7 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
                   name="lastNameOrganisation"
                   value={data.lastNameOrganisation}
                   onChange={(e) =>
-                    setData('lastNameOrganisation', e.target.value)
+                    setData("lastNameOrganisation", e.target.value)
                   }
                   placeholder="Achternaam"
                 />
@@ -141,7 +141,7 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
                   type="email"
                   name="emailOrganisation"
                   value={data.emailOrganisation}
-                  onChange={(e) => setData('emailOrganisation', e.target.value)}
+                  onChange={(e) => setData("emailOrganisation", e.target.value)}
                   placeholder="Email"
                 />
               }
@@ -160,7 +160,7 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
                   type="text"
                   name="firstNamePartner"
                   value={data.firstNamePartner}
-                  onChange={(e) => setData('firstNamePartner', e.target.value)}
+                  onChange={(e) => setData("firstNamePartner", e.target.value)}
                   placeholder="Voornaam"
                 />
               }
@@ -173,7 +173,7 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
                   type="text"
                   name="lastNamePartner"
                   value={data.lastNamePartner}
-                  onChange={(e) => setData('lastNamePartner', e.target.value)}
+                  onChange={(e) => setData("lastNamePartner", e.target.value)}
                   placeholder="Achternaam"
                 />
               }
@@ -186,7 +186,7 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
                   type="email"
                   name="emailPartner"
                   value={data.emailPartner}
-                  onChange={(e) => setData('emailPartner', e.target.value)}
+                  onChange={(e) => setData("emailPartner", e.target.value)}
                   placeholder="Email"
                 />
               }

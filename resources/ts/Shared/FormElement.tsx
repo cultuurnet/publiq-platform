@@ -1,9 +1,9 @@
-import React, { cloneElement, memo, ReactElement, useId } from 'react';
-import { classNames } from '../utils/classNames';
+import React, { cloneElement, memo, ReactElement, useId } from "react";
+import { classNames } from "../utils/classNames";
 
-type LabelPosition = 'top' | 'left' | 'right';
+type LabelPosition = "top" | "left" | "right";
 
-type LabelSize = 'base' | 'lg' | 'xl';
+type LabelSize = "base" | "lg" | "xl";
 
 type WrapperProps = {
   labelPosition?: LabelPosition;
@@ -11,7 +11,7 @@ type WrapperProps = {
 };
 
 const Wrapper = ({ labelPosition, children }: WrapperProps) => {
-  if (labelPosition !== 'right') {
+  if (labelPosition !== "right") {
     return children;
   }
 
@@ -19,14 +19,14 @@ const Wrapper = ({ labelPosition, children }: WrapperProps) => {
 };
 
 const getFlexDirection = (labelPosition: LabelPosition | undefined) => {
-  if (!labelPosition) return 'flex-col';
-  if (labelPosition === 'top') return 'flex-col';
-  if (labelPosition === 'left') return 'flex-row';
-  if (labelPosition === 'right') return 'flex-row-reverse';
+  if (!labelPosition) return "flex-col";
+  if (labelPosition === "top") return "flex-col";
+  if (labelPosition === "left") return "flex-row";
+  if (labelPosition === "right") return "flex-row-reverse";
 };
 
 const getAlignItems = (labelPosition: LabelPosition | undefined) => {
-  if (labelPosition === 'right') return 'items-center';
+  if (labelPosition === "right") return "items-center";
   return;
 };
 
@@ -37,12 +37,12 @@ type LabelProps = {
 };
 
 const Label = memo(({ id, labelSize, label }: LabelProps) => (
-  <label htmlFor={id} className={labelSize ? `text-${labelSize}` : ''}>
+  <label htmlFor={id} className={labelSize ? `text-${labelSize}` : ""}>
     {label}
   </label>
 ));
 
-Label.displayName = 'Label';
+Label.displayName = "Label";
 
 type Props = {
   label?: string;
@@ -53,7 +53,7 @@ type Props = {
 };
 
 export const FormElement = memo<Props>(
-  ({ label, labelPosition = 'top', labelSize = 'base', component, error }) => {
+  ({ label, labelPosition = "top", labelSize = "base", component, error }) => {
     const id = useId();
 
     const clonedComponent = cloneElement(component, { ...component.props, id });
@@ -63,9 +63,9 @@ export const FormElement = memo<Props>(
         <Wrapper labelPosition={labelPosition}>
           <div
             className={classNames(
-              'flex gap-1',
+              "flex gap-1",
               getFlexDirection(labelPosition),
-              getAlignItems(labelPosition),
+              getAlignItems(labelPosition)
             )}
           >
             {label && <Label id={id} label={label} labelSize={labelSize} />}
@@ -75,7 +75,7 @@ export const FormElement = memo<Props>(
         {error && <span className="text-red-500">{error}</span>}
       </div>
     );
-  },
+  }
 );
 
-FormElement.displayName = 'FormElement';
+FormElement.displayName = "FormElement";
