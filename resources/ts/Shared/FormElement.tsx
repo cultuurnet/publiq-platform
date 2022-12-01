@@ -1,4 +1,4 @@
-import React, { FC, useId } from 'react';
+import React, { cloneElement, memo, ReactElement, useId, useMemo } from 'react';
 import { classNames } from '../utils/classNames';
 
 type LabelPosition = 'top' | 'left' | 'right';
@@ -30,45 +30,52 @@ const getAlignItems = (labelPosition: LabelPosition | undefined) => {
   return;
 };
 
+type LabelProps = {
+  id: string;
+  label: string;
+  labelSize: LabelSize;
+};
+
+const Label = memo(({ id, labelSize, label }: LabelProps) => (
+  <label htmlFor={id} className={labelSize ? `text-${labelSize}` : ''}>
+    {label}
+  </label>
+));
+
+Label.displayName = 'Label';
+
 type Props = {
   label?: string;
   labelPosition?: LabelPosition;
   labelSize?: LabelSize;
   error?: string;
-  Component: FC<{ id: string }>;
+  component: ReactElement;
 };
 
-export const FormElement: FC<Props> = ({
-  label,
-  labelPosition = 'top',
-  labelSize = 'base',
-  Component,
-  error,
-}) => {
-  const id = useId();
+export const FormElement = memo<Props>(
+  ({ label, labelPosition = 'top', labelSize = 'base', component, error }) => {
+    const id = useId();
 
-  return (
-    <div className="flex flex-col">
-      <Wrapper labelPosition={labelPosition}>
-        <div
-          className={classNames(
-            'flex gap-1',
-            getFlexDirection(labelPosition),
-            getAlignItems(labelPosition),
-          )}
-        >
-          {label && (
-            <label
-              htmlFor={id}
-              className={labelSize ? `text-${labelSize}` : ''}
-            >
-              {label}
-            </label>
-          )}
-          <Component id={id} />
-        </div>
-      </Wrapper>
-      {error && <span className="text-red-500">{error}</span>}
-    </div>
-  );
-};
+    const clonedComponent = cloneElement(component, { ...component.props, id });
+
+    return (
+      <div className="flex flex-col">
+        <Wrapper labelPosition={labelPosition}>
+          <div
+            className={classNames(
+              'flex gap-1',
+              getFlexDirection(labelPosition),
+              getAlignItems(labelPosition),
+            )}
+          >
+            {label && <Label id={id} label={label} labelSize={labelSize} />}
+            {clonedComponent}
+          </div>
+        </Wrapper>
+        {error && <span className="text-red-500">{error}</span>}
+      </div>
+    );
+  },
+);
+
+FormElement.displayName = 'FormElement';

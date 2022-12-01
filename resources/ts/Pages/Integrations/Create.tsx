@@ -39,9 +39,8 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
         <FormElement
           label="Type integratie"
           labelSize="xl"
-          Component={({ id }) => (
+          component={
             <select
-              id={id}
               name="integrationType"
               value={data.integrationType}
               onChange={(e) => setData('integrationType', e.target.value)}
@@ -53,15 +52,14 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
                 </option>
               ))}
             </select>
-          )}
+          }
           error={errors.integrationType}
         />
         <FormElement
           label="Plan"
           labelSize="xl"
-          Component={({ id }) => (
+          component={
             <select
-              id={id}
               name="subscriptionId"
               value={data.subscriptionId}
               onChange={(e) => setData('subscriptionId', e.target.value)}
@@ -73,35 +71,33 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
                 </option>
               ))}
             </select>
-          )}
+          }
           error={errors.subscriptionId}
         />
         <FormElement
           label="Naam integratie"
           labelSize="xl"
-          Component={({ id }) => (
+          component={
             <input
-              id={id}
               type="text"
               name="name"
               value={data.name}
               onChange={(e) => setData('name', e.target.value)}
             />
-          )}
+          }
           error={errors.name}
         />
         <FormElement
           label="Doel van de integratie"
           labelSize="xl"
-          Component={({ id }) => (
+          component={
             <input
-              id={id}
               type="text"
               name="description"
               value={data.description}
               onChange={(e) => setData('description', e.target.value)}
             />
-          )}
+          }
           error={errors.description}
         />
 
@@ -110,9 +106,8 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
             <FormElement
               label="Voornaam"
-              Component={({ id }) => (
+              component={
                 <input
-                  id={id}
                   type="text"
                   name="firstNameOrganisation"
                   value={data.firstNameOrganisation}
@@ -121,14 +116,13 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
                   }
                   placeholder="Voornaam"
                 />
-              )}
+              }
               error={errors.firstNameOrganisation}
             />
             <FormElement
               label="Achternaam"
-              Component={({ id }) => (
+              component={
                 <input
-                  id={id}
                   type="text"
                   name="lastNameOrganisation"
                   value={data.lastNameOrganisation}
@@ -137,21 +131,20 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
                   }
                   placeholder="Achternaam"
                 />
-              )}
+              }
               error={errors.lastNameOrganisation}
             />
             <FormElement
               label="Email"
-              Component={({ id }) => (
+              component={
                 <input
-                  id={id}
                   type="email"
                   name="emailOrganisation"
                   value={data.emailOrganisation}
                   onChange={(e) => setData('emailOrganisation', e.target.value)}
                   placeholder="Email"
                 />
-              )}
+              }
               error={errors.emailOrganisation}
             />
           </div>
@@ -162,44 +155,41 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
             <FormElement
               label="Firstname"
-              Component={({ id }) => (
+              component={
                 <input
-                  id={id}
                   type="text"
                   name="firstNamePartner"
                   value={data.firstNamePartner}
                   onChange={(e) => setData('firstNamePartner', e.target.value)}
                   placeholder="Voornaam"
                 />
-              )}
+              }
               error={errors.firstNamePartner}
             />
             <FormElement
               label="Lastname"
-              Component={({ id }) => (
+              component={
                 <input
-                  id={id}
                   type="text"
                   name="lastNamePartner"
                   value={data.lastNamePartner}
                   onChange={(e) => setData('lastNamePartner', e.target.value)}
                   placeholder="Achternaam"
                 />
-              )}
+              }
               error={errors.lastNamePartner}
             />
             <FormElement
               label="Email"
-              Component={({ id }) => (
+              component={
                 <input
-                  id={id}
                   type="email"
                   name="emailPartner"
                   value={data.emailPartner}
                   onChange={(e) => setData('emailPartner', e.target.value)}
                   placeholder="Email"
                 />
-              )}
+              }
               error={errors.emailPartner}
             />
           </div>
@@ -210,9 +200,7 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
           <FormElement
             label="Ik ga akkoord"
             labelPosition="right"
-            Component={({ id }) => (
-              <input id={id} type="checkbox" name="agreement" />
-            )}
+            component={<input type="checkbox" name="agreement" />}
             error={errors.emailPartner}
           />
         </div>

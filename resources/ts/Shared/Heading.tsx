@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo } from 'react';
+import React, { memo, ReactNode, useMemo } from 'react';
 
 type HeadingProps = {
   children: ReactNode;
@@ -18,11 +18,13 @@ type Props = {
   children: ReactNode;
 };
 
-export const Heading = ({ level, children }: Props) => {
+export const Heading = memo(({ level, children }: Props) => {
   const HeadingComponent = useMemo(
     () => levelToHeadingComponent[level],
     [level],
   );
 
   return <HeadingComponent>{children}</HeadingComponent>;
-};
+});
+
+Heading.displayName = 'Heading';
