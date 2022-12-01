@@ -40,8 +40,8 @@ type Props = {
 
 export const FormElement: FC<Props> = ({
   label,
-  labelPosition,
-  labelSize,
+  labelPosition = 'top',
+  labelSize = 'base',
   Component,
   error,
 }) => {
@@ -71,9 +71,4 @@ export const FormElement: FC<Props> = ({
       {error && <span className="text-red-500">{error}</span>}
     </div>
   );
-};
-
-FormElement.defaultProps = {
-  labelPosition: 'top',
-  labelSize: 'base',
 };
