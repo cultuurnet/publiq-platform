@@ -56,4 +56,13 @@ return [
         'home'  => env('AUTH0_ROUTE_HOME', '/'),
         'login' => env('AUTH0_ROUTE_LOGIN', 'login'),
     ],
+
+    // Configuration used for the Management API
+    'management' => [
+        'domain' => env('AUTH0_MANAGEMENT_DOMAIN'),
+        'clientId' => env('AUTH0_MANAGEMENT_CLIENT_ID'),
+        'clientSecret' => env('AUTH0_MANAGEMENT_CLIENT_SECRET'),
+        'cookieSecret' => env('AUTH0_MANAGEMENT_COOKIE_SECRET', env('APP_KEY')),
+        'audience' => env('AUTH0_MANAGEMENT_AUDIENCE'),
+    ],
 ];
