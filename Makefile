@@ -1,4 +1,4 @@
-.PHONY: up down bash install composer-install npm-install key-generate migrate lint stan
+.PHONY: up down bash install composer-install npm-install key-generate migrate lint stan ci
 
 up:
 	vendor/bin/sail up -d
