@@ -6,7 +6,10 @@ use App\Domain\Auth\Controllers\Login;
 use App\Domain\Auth\Controllers\Logout;
 use App\Domain\Integrations\Controllers\IntegrationController;
 use App\Domain\Subscriptions\Controllers\SubscriptionController;
+use App\Json;
 use Auth0\Laravel\Http\Controller\Stateful\Callback;
+use Auth0\SDK\API\Management;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -36,3 +39,9 @@ Route::get('/subscriptions', [SubscriptionController::class, 'index']);
 Route::get('/integrations', [IntegrationController::class, 'index'])->name('integrations.index');
 Route::get('/integrations/create', [IntegrationController::class, 'create']);
 Route::post('/integrations', [IntegrationController::class, 'store']);
+
+Route::get('/users', static function (Request $request, Management $management) {
+    $response = $management->users()->getAll(['q' => 'email:*' . $request->get('email') . '*']);
+
+    return Json::decodeAssociatively((string) $response->getBody());
+});
