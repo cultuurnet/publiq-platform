@@ -35,6 +35,14 @@ final class IntegrationModel extends UuidModel
     }
 
     /**
+     * @return HasMany<OwnerModel>
+     */
+    public function owners(): HasMany
+    {
+        return $this->hasMany(OwnerModel::class, 'integration_id');
+    }
+
+    /**
      * @return HasMany<ContactModel>
      */
     public function contacts(): HasMany
