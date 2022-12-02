@@ -78,11 +78,21 @@ This requires:
 
 ## Auth0
 
+### Authentication
+
 Authentication will be handled by Auth0. The following environment variables need to be set in the `.env` file:
 - `AUTH0_DOMAIN`
 - `AUTH0_CLIENT_ID`
 - `AUTH0_CLIENT_SECRET`
 - `AUTH0_REDIRECT_URI`
+
+### Management API
+
+Besides simple authentication an integration with the Management API of Auth0 is required. The following environment variables need to be set in the `.env` file:
+- `AUTH0_MANAGEMENT_DOMAIN`
+- `AUTH0_MANAGEMENT_CLIENT_ID`
+- `AUTH0_MANAGEMENT_CLIENT_SECRET`
+- `AUTH0_MANAGEMENT_AUDIENCE`
 
 ## Insightly
 
