@@ -50,16 +50,9 @@ final class IntegrationRepository
 
     public function getById(UuidInterface $id): Integration
     {
+        /** @var IntegrationModel $integrationModel */
         $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
-
-        return new Integration(
-            Uuid::fromString($integrationModel->id),
-            IntegrationType::from($integrationModel->type),
-            $integrationModel->name,
-            $integrationModel->description,
-            Uuid::fromString($integrationModel->subscription_id),
-            []
-        );
+        return $this->modelToIntegration($integrationModel);
     }
 
     public function getByOwnerId(OwnerId $ownerId): Collection
@@ -71,5 +64,17 @@ final class IntegrationRepository
     public function all(): Collection
     {
         return IntegrationModel::query()->get();
+    }
+
+    private function modelToIntegration(IntegrationModel $integrationModel): Integration
+    {
+        return new Integration(
+            Uuid::fromString($integrationModel->id),
+            IntegrationType::from($integrationModel->type),
+            $integrationModel->name,
+            $integrationModel->description,
+            Uuid::fromString($integrationModel->subscription_id),
+            []
+        );
     }
 }
