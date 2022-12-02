@@ -132,4 +132,41 @@ final class IntegrationRepositoryTest extends TestCase
 
         $this->assertEquals($integration, $integrationFromRepository);
     }
+
+    public function test_it_can_get_integrations_by_owner_id(): void
+    {
+        $ownerId = new OwnerId('auth0|' . Uuid::uuid4()->toString());
+
+        $integration = new Integration(
+            Uuid::uuid4(),
+            IntegrationType::SearchApi,
+            'Search Integration',
+            'Search Integration description',
+            Uuid::uuid4(),
+            []
+        );
+
+        $otherIntegration = new Integration(
+            Uuid::uuid4(),
+            IntegrationType::Widgets,
+            'Widgets Integration',
+            'Widgets Integration description',
+            Uuid::uuid4(),
+            []
+        );
+
+        $owner = new Owner(
+            $ownerId,
+            $integration->id,
+            OwnerType::Integrator
+        );
+
+        $this->integrationRepository->save($integration, $owner);
+        $this->integrationRepository->save($otherIntegration, $owner);
+
+        $integrations = $this->integrationRepository->getByOwnerId($ownerId);
+
+        $this->assertCount(2, $integrations);
+        $this->assertEquals(collect([$integration, $otherIntegration]), $integrations);
+    }
 }
