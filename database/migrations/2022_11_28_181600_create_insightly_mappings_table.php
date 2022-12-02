@@ -11,8 +11,8 @@ return new class () extends Migration {
     {
         Schema::create('insightly_mappings', static function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('insightly_id');
-            $table->string('resource_type');
+            $table->string('insightly_id')->index();
+            $table->string('resource_type')->index();
             $table->softDeletes();
             $table->timestamps();
         });
