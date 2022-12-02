@@ -1,6 +1,6 @@
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import nl from '../../translations/nl.json';
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
+import nl from "../../translations/nl.json";
 
 export const initializeI18n = async () => {
   try {
@@ -8,14 +8,14 @@ export const initializeI18n = async () => {
       resources: {
         nl: { translation: nl },
       },
-      lng: 'nl',
-      fallbackLng: 'nl',
+      lng: "nl",
+      fallbackLng: "nl",
 
       interpolation: {
         escapeValue: false,
       },
     });
   } catch (error) {
-    console.error('Failed to initialize i18n:', error);
+    console.error("Failed to initialize i18n:", error);
   }
 };
