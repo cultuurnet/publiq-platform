@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Auth0\Auth0Client;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Pipelines;
-use App\Json;
-use Auth0\SDK\API\Management;
-use Auth0\SDK\Auth0;
+use Auth0\SDK\Configuration\SdkConfiguration;
 use GuzzleHttp\Client;
 use Illuminate\Support\ServiceProvider;
 
@@ -29,22 +28,16 @@ final class AppServiceProvider extends ServiceProvider
             );
         });
 
-        $this->app->singleton(Management::class, function () {
-            $auth0 = new Auth0([
-                'domain' => config('auth0.management.domain'),
-                'clientId' => config('auth0.management.clientId'),
-                'clientSecret' => config('auth0.management.clientSecret'),
-                'cookieSecret' => config('auth0.management.cookieSecret'),
-            ]);
+        $this->app->singleton(Auth0Client::class, function () {
+            $configuration = new SdkConfiguration(
+                domain: config('auth0.management.domain'),
+                clientId: config('auth0.management.clientId'),
+                clientSecret: config('auth0.management.clientSecret'),
+                audience: [config('auth0.management.audience')],
+                cookieSecret: config('auth0.management.cookieSecret'),
+            );
 
-            $response = $auth0->authentication()->clientCredentials([
-                'audience' => config('auth0.management.audience'),
-            ]);
-
-            $response = Json::decodeAssociatively((string) $response->getBody());
-            $auth0->configuration()->setManagementToken($response['access_token']);
-
-            return $auth0->management();
+            return new Auth0Client($configuration);
         });
     }
 
