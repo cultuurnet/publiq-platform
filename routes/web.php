@@ -35,7 +35,7 @@ Route::get('/subscriptions', [SubscriptionController::class, 'index']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/integrations', [IntegrationController::class, 'index'])->name('integrations.index');
-    Route::get('/integrations/create', [IntegrationController::class, 'create'])->middleware('auth');;
+    Route::get('/integrations/create', [IntegrationController::class, 'create'])->middleware('auth');
+    ;
     Route::post('/integrations', [IntegrationController::class, 'store']);
 });
-
