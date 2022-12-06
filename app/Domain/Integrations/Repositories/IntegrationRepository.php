@@ -51,6 +51,7 @@ final class IntegrationRepository
             ->select('integrations.*')
             ->join('contacts', 'integrations.id', '=', 'contacts.integration_id')
             ->where('contacts.email', $email)
+            ->distinct('integrations.id')
             ->orderBy('integrations.created_at')
             ->get();
 

@@ -160,13 +160,22 @@ final class IntegrationRepositoryTest extends TestCase
             'Doe',
         );
 
+        $otherTechnicalContact = new Contact(
+            Uuid::uuid4(),
+            $widgetsIntegrationId,
+            'jane.doe@anonymous.com',
+            ContactType::Technical,
+            'Jane',
+            'Doe',
+        );
+
         $widgetsIntegration = new Integration(
             $widgetsIntegrationId,
             IntegrationType::Widgets,
             'Widgets Integration',
             'Widgets Integration description',
             Uuid::uuid4(),
-            [$contributor]
+            [$contributor, $otherTechnicalContact]
         );
 
         $this->integrationRepository->save($widgetsIntegration);
