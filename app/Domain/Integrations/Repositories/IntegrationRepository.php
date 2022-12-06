@@ -63,9 +63,4 @@ final class IntegrationRepository
 
         return $integrations;
     }
-
-    public function all(): Collection
-    {
-        return IntegrationModel::query()->get();
-    }
 }
