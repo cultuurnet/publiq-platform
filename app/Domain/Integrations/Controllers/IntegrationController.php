@@ -58,7 +58,7 @@ final class IntegrationController extends Controller
             Uuid::uuid4(),
             $integrationId,
             $storeIntegration->input('emailOrganisation'),
-            ContactType::Organization,
+            ContactType::Functional,
             $storeIntegration->input('firstNameOrganisation'),
             $storeIntegration->input('lastNameOrganisation')
         );

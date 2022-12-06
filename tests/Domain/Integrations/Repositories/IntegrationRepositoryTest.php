@@ -45,7 +45,7 @@ final class IntegrationRepositoryTest extends TestCase
             Uuid::uuid4(),
             $integrationId,
             'john.doe@anonymous.com',
-            ContactType::Organization,
+            ContactType::Functional,
             'John',
             'Doe'
         );
@@ -133,7 +133,7 @@ final class IntegrationRepositoryTest extends TestCase
             Uuid::uuid4(),
             $searchIntegrationId,
             'john.doe@anonymous.com',
-            ContactType::Organization,
+            ContactType::Functional,
             'John',
             'Doe'
         );

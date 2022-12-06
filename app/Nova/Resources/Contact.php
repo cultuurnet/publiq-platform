@@ -40,7 +40,7 @@ final class Contact extends Resource
 
             Select::make('Type')
                 ->options([
-                    ContactType::Organization->value => ContactType::Organization->name,
+                    ContactType::Functional->value => ContactType::Functional->name,
                     ContactType::Technical->value => ContactType::Technical->name,
                     ContactType::Contributor->value => ContactType::Contributor->name,
                 ])

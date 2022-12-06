@@ -6,7 +6,7 @@ namespace App\Domain\Contacts;
 
 enum ContactType: string
 {
-    case Organization = 'organization';
+    case Functional = 'functional';
     case Technical = 'technical';
     case Contributor = 'contributor';
 }
