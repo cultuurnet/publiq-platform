@@ -36,7 +36,9 @@ final class IntegrationController extends Controller
     public function index(): Response
     {
         return Inertia::render('Integrations/Index', [
-            'integrations' => $this->integrationRepository->all(),
+            'integrations' => $this->integrationRepository->getByContactEmail(
+                $this->getUser()->email
+            ),
         ]);
     }
 
