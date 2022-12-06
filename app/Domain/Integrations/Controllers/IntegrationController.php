@@ -4,33 +4,28 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Controllers;
 
-use App\Domain\Auth\UserAware;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Facades\Auth;
 
-final class IntegrationController extends Controller
+final class IntegrationController extends AuthController
 {
-    use UserAware;
-
-    private SubscriptionRepository $subscriptionRepository;
-    private IntegrationRepository $integrationRepository;
-
     public function __construct(
-        SubscriptionRepository $subscriptionRepository,
-        IntegrationRepository $integrationRepository
+        private readonly SubscriptionRepository $subscriptionRepository,
+        private readonly IntegrationRepository $integrationRepository,
+        readonly Auth $auth
     ) {
-        $this->subscriptionRepository = $subscriptionRepository;
-        $this->integrationRepository = $integrationRepository;
+        parent::__construct($auth);
     }
 
     public function index(): Response
