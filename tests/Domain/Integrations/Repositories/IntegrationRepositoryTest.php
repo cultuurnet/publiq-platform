@@ -35,28 +35,28 @@ final class IntegrationRepositoryTest extends TestCase
         $technicalContact = new Contact(
             Uuid::uuid4(),
             $integrationId,
+            'jane.doe@anonymous.com',
             ContactType::Technical,
             'Jane',
             'Doe',
-            'jane.doe@anonymous.com'
         );
 
         $organizationContact = new Contact(
             Uuid::uuid4(),
             $integrationId,
+            'john.doe@anonymous.com',
             ContactType::Organization,
             'John',
-            'Doe',
-            'john.doe@anonymous.com'
+            'Doe'
         );
 
         $contributor = new Contact(
             Uuid::uuid4(),
             $integrationId,
+            'jimmy.doe@anonymous.com',
             ContactType::Contributor,
             'Jimmy',
-            'Doe',
-            'jimmy.doe@anonymous.com'
+            'Doe'
         );
 
         $contacts = [$technicalContact, $organizationContact, $contributor];
