@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Controllers;
 
+use App\Domain\Auth\UserAware;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
@@ -19,6 +20,8 @@ use Ramsey\Uuid\Uuid;
 
 final class IntegrationController extends Controller
 {
+    use UserAware;
+
     private SubscriptionRepository $subscriptionRepository;
     private IntegrationRepository $integrationRepository;
 
@@ -52,19 +55,28 @@ final class IntegrationController extends Controller
         $contactOrganization = new Contact(
             Uuid::uuid4(),
             $integrationId,
+            $storeIntegration->input('emailOrganisation'),
             ContactType::Organization,
             $storeIntegration->input('firstNameOrganisation'),
-            $storeIntegration->input('lastNameOrganisation'),
-            $storeIntegration->input('emailOrganisation')
+            $storeIntegration->input('lastNameOrganisation')
         );
 
         $contactPartner = new Contact(
             Uuid::uuid4(),
             $integrationId,
+            $storeIntegration->input('emailPartner'),
             ContactType::Technical,
             $storeIntegration->input('firstNamePartner'),
-            $storeIntegration->input('lastNamePartner'),
-            $storeIntegration->input('emailPartner')
+            $storeIntegration->input('lastNamePartner')
+        );
+
+        $contributor = new Contact(
+            Uuid::uuid4(),
+            $integrationId,
+            $this->getUser()->email,
+            ContactType::Contributor,
+            $this->getUser()->name,
+            ''
         );
 
         $integration = new Integration(
@@ -74,7 +86,7 @@ final class IntegrationController extends Controller
             $storeIntegration->input('description'),
             Uuid::fromString($storeIntegration->input('subscriptionId')),
             [
-                $contactOrganization, $contactPartner,
+                $contactOrganization, $contactPartner, $contributor,
             ]
         );
 
