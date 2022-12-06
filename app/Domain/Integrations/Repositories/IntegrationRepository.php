@@ -44,6 +44,23 @@ final class IntegrationRepository
 
         return $integrationModel->toDomain();
     }
+
+    public function getByContactEmail(string $email): Collection
+    {
+        $integrationModels = IntegrationModel::query()
+            ->select('integrations.*')
+            ->join('contacts', 'integrations.id', '=', 'contacts.integration_id')
+            ->where('contacts.email', $email)
+            ->orderBy('integrations.created_at')
+            ->get();
+
+        $integrations = new Collection();
+
+        foreach ($integrationModels as $integrationModel) {
+            $integrations->add($integrationModel->toDomain());
+        }
+
+        return $integrations;
     }
 
     public function all(): Collection
