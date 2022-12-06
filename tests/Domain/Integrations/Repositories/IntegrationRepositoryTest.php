@@ -9,6 +9,9 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
+use App\Domain\Integrations\Owner;
+use App\Domain\Integrations\OwnerId;
+use App\Domain\Integrations\OwnerType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
@@ -70,7 +73,15 @@ final class IntegrationRepositoryTest extends TestCase
             $contacts
         );
 
-        $this->integrationRepository->save($integration);
+        $ownerId = new OwnerId('auth0|' . Uuid::uuid4()->toString());
+
+        $owner = new Owner(
+            $ownerId,
+            $integrationId,
+            OwnerType::Integrator
+        );
+
+        $this->integrationRepository->save($integration, $owner);
 
         $this->assertDatabaseHas('integrations', [
             'id' => $integration->id->toString(),
@@ -90,6 +101,12 @@ final class IntegrationRepositoryTest extends TestCase
                 'email' => $contact->email,
             ]);
         }
+
+        $this->assertDatabaseHas('owners', [
+            'owner_id' => $ownerId->id,
+            'integration_id' => $integration->id->toString(),
+            'owner_type' => OwnerType::Integrator,
+        ]);
     }
 
     public function test_it_can_get_an_integration_by_id(): void
@@ -114,5 +131,42 @@ final class IntegrationRepositoryTest extends TestCase
         $integrationFromRepository = $this->integrationRepository->getById($integration->id);
 
         $this->assertEquals($integration, $integrationFromRepository);
+    }
+
+    public function test_it_can_get_integrations_by_owner_id(): void
+    {
+        $ownerId = new OwnerId('auth0|' . Uuid::uuid4()->toString());
+
+        $integration = new Integration(
+            Uuid::uuid4(),
+            IntegrationType::SearchApi,
+            'Search Integration',
+            'Search Integration description',
+            Uuid::uuid4(),
+            []
+        );
+
+        $otherIntegration = new Integration(
+            Uuid::uuid4(),
+            IntegrationType::Widgets,
+            'Widgets Integration',
+            'Widgets Integration description',
+            Uuid::uuid4(),
+            []
+        );
+
+        $owner = new Owner(
+            $ownerId,
+            $integration->id,
+            OwnerType::Integrator
+        );
+
+        $this->integrationRepository->save($integration, $owner);
+        $this->integrationRepository->save($otherIntegration, $owner);
+
+        $integrations = $this->integrationRepository->getByOwnerId($ownerId);
+
+        $this->assertCount(2, $integrations);
+        $this->assertEquals(collect([$integration, $otherIntegration]), $integrations);
     }
 }

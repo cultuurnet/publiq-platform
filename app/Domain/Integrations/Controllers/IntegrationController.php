@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Controllers;
 
+use App\Domain\Auth\UserAware;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\Owner;
+use App\Domain\Integrations\OwnerId;
+use App\Domain\Integrations\OwnerType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Http\Controllers\Controller;
@@ -19,6 +23,8 @@ use Ramsey\Uuid\Uuid;
 
 final class IntegrationController extends Controller
 {
+    use UserAware;
+
     private SubscriptionRepository $subscriptionRepository;
     private IntegrationRepository $integrationRepository;
 
@@ -78,7 +84,13 @@ final class IntegrationController extends Controller
             ]
         );
 
-        $this->integrationRepository->save($integration);
+        $owner = new Owner(
+            new OwnerId($this->getUser()->id),
+            $integrationId,
+            OwnerType::Integrator
+        );
+
+        $this->integrationRepository->save($integration, $owner);
 
         return Redirect::route('integrations.index');
     }
