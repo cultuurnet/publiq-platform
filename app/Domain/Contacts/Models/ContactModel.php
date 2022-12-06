@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Contacts\Models;
 
+use App\Domain\Contacts\Contact;
+use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Models\UuidModel;
@@ -39,5 +41,17 @@ final class ContactModel extends UuidModel
     public function integration(): BelongsTo
     {
         return $this->belongsTo(IntegrationModel::class, 'integration_id');
+    }
+
+    public function toDomain(): Contact
+    {
+        return new Contact(
+            Uuid::fromString($this->id),
+            Uuid::fromString($this->integration_id),
+            $this->email,
+            ContactType::from($this->type),
+            $this->first_name,
+            $this->last_name
+        );
     }
 }

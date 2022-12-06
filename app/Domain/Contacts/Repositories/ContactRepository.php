@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace App\Domain\Contacts\Repositories;
 
 use App\Domain\Contacts\Contact;
-use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Models\ContactModel;
 use Illuminate\Support\Collection;
-use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 final class ContactRepository
@@ -27,16 +25,10 @@ final class ContactRepository
 
     public function getById(UuidInterface $id): Contact
     {
+        /** @var ContactModel $contactModel */
         $contactModel = ContactModel::query()->findOrFail($id);
 
-        return new Contact(
-            Uuid::fromString($contactModel->id),
-            Uuid::fromString($contactModel->integration_id),
-            ContactType::from($contactModel->type),
-            $contactModel->first_name,
-            $contactModel->last_name,
-            $contactModel->email,
-        );
+        return $contactModel->toDomain();
     }
 
     public function getByIntegrationId(UuidInterface $integrationId): Collection
@@ -46,14 +38,7 @@ final class ContactRepository
         $contacts = new Collection();
 
         foreach ($contactModels as $contactModel) {
-            $contacts->add(new Contact(
-                Uuid::fromString($contactModel->id),
-                Uuid::fromString($contactModel->integration_id),
-                ContactType::from($contactModel->type),
-                $contactModel->first_name,
-                $contactModel->last_name,
-                $contactModel->email,
-            ));
+            $contacts->add($contactModel->toDomain());
         }
 
         return $contacts;
