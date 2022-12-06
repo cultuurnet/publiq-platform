@@ -19,7 +19,7 @@ return new class () extends Migration {
             $table->softDeletes();
             $table->timestamps();
 
-            $table->unique(['integration_id','email']);
+            $table->unique(['integration_id', 'email', 'type']);
         });
     }
 
