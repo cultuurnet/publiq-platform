@@ -6,6 +6,8 @@ namespace App\Domain\Integrations\Models;
 
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Integrations\Events\IntegrationCreated;
+use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationType;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -48,5 +50,20 @@ final class IntegrationModel extends UuidModel
     public function subscription(): belongsTo
     {
         return $this->belongsTo(SubscriptionModel::class, 'subscription_id');
+    }
+
+    public function toDomain(): Integration
+    {
+        return new Integration(
+            Uuid::fromString($this->id),
+            IntegrationType::from($this->type),
+            $this->name,
+            $this->description,
+            Uuid::fromString($this->subscription_id),
+            $this->contacts()
+                ->get()
+                ->map(fn (ContactModel $contactModel) => $contactModel->toDomain())
+                ->toArray()
+        );
     }
 }
