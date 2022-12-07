@@ -42,7 +42,11 @@ final class CreateContact implements ShouldQueue
         ));
 
         $integrationMapping = $this->insightlyMappingRepository->getById($contact->integrationId);
-        $this->insightlyClient->opportunities()->linkContact($integrationMapping->insightlyId, $contactInsightlyId);
+        $this->insightlyClient->opportunities()->linkContact(
+            $integrationMapping->insightlyId,
+            $contactInsightlyId,
+            $contact->type
+        );
 
         Log::info(
             'Contact created',
