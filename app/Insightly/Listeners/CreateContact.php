@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Insightly\Listeners;
 
+use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Insightly\InsightlyClient;
@@ -29,6 +30,10 @@ final class CreateContact implements ShouldQueue
         }
 
         $contact = $this->contactRepository->getById($contactCreated->id);
+        if ($contact->type === ContactType::Contributor) {
+            return;
+        }
+
         $contactInsightlyId = $this->insightlyClient->contacts()->create($contact);
         $this->insightlyMappingRepository->save(new InsightlyMapping(
             $contactCreated->id,
