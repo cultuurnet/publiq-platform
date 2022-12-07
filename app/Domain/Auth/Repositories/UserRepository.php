@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Auth\Repositories;
 
-use App\Domain\Users\Models\UserModel;
+use App\Domain\Auth\Models\UserModel;
 use Auth0\Laravel\Contract\Auth\User\Repository;
 use Illuminate\Contracts\Auth\Authenticatable;
 

@@ -42,10 +42,10 @@ final class InsightlyClientTest extends TestCase
         $contact = new Contact(
             Uuid::uuid4(),
             Uuid::uuid4(),
+            'jane.doe@anonymous.com',
             ContactType::Technical,
             'Jane',
-            'Doe',
-            'jane.doe@anonymous.com'
+            'Doe'
         );
 
         $contactId = $this->insightlyClient->contacts()->create($contact);

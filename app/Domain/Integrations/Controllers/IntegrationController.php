@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Controllers;
 
+use App\Domain\Auth\CurrentUser;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
@@ -19,21 +20,19 @@ use Ramsey\Uuid\Uuid;
 
 final class IntegrationController extends Controller
 {
-    private SubscriptionRepository $subscriptionRepository;
-    private IntegrationRepository $integrationRepository;
-
     public function __construct(
-        SubscriptionRepository $subscriptionRepository,
-        IntegrationRepository $integrationRepository
+        private readonly SubscriptionRepository $subscriptionRepository,
+        private readonly IntegrationRepository $integrationRepository,
+        private readonly CurrentUser $currentUser
     ) {
-        $this->subscriptionRepository = $subscriptionRepository;
-        $this->integrationRepository = $integrationRepository;
     }
 
     public function index(): Response
     {
         return Inertia::render('Integrations/Index', [
-            'integrations' => $this->integrationRepository->all(),
+            'integrations' => $this->integrationRepository->getByContactEmail(
+                $this->currentUser->email()
+            ),
         ]);
     }
 
@@ -52,19 +51,28 @@ final class IntegrationController extends Controller
         $contactOrganization = new Contact(
             Uuid::uuid4(),
             $integrationId,
-            ContactType::Organization,
+            $storeIntegration->input('emailOrganisation'),
+            ContactType::Functional,
             $storeIntegration->input('firstNameOrganisation'),
-            $storeIntegration->input('lastNameOrganisation'),
-            $storeIntegration->input('emailOrganisation')
+            $storeIntegration->input('lastNameOrganisation')
         );
 
         $contactPartner = new Contact(
             Uuid::uuid4(),
             $integrationId,
+            $storeIntegration->input('emailPartner'),
             ContactType::Technical,
             $storeIntegration->input('firstNamePartner'),
-            $storeIntegration->input('lastNamePartner'),
-            $storeIntegration->input('emailPartner')
+            $storeIntegration->input('lastNamePartner')
+        );
+
+        $contributor = new Contact(
+            Uuid::uuid4(),
+            $integrationId,
+            $this->currentUser->email(),
+            ContactType::Contributor,
+            $this->currentUser->name(),
+            ''
         );
 
         $integration = new Integration(
@@ -74,7 +82,7 @@ final class IntegrationController extends Controller
             $storeIntegration->input('description'),
             Uuid::fromString($storeIntegration->input('subscriptionId')),
             [
-                $contactOrganization, $contactPartner,
+                $contactOrganization, $contactPartner, $contributor,
             ]
         );
 

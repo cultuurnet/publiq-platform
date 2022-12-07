@@ -16,7 +16,6 @@ return new class () extends Migration {
             $table->string('integration_type');
             $table->string('currency');
             $table->integer('price');
-            $table->string('billing_interval');
             $table->integer('fee')->nullable();
             $table->softDeletes();
             $table->timestamps();

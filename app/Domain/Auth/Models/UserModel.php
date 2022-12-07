@@ -2,13 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Users\Models;
+namespace App\Domain\Auth\Models;
 
 use App\Models\UuidModel;
 use Auth0\Laravel\Contract\Model\Stateful\User as StatefulUser;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 
+/**
+ * @property string $id
+ * @property string $email
+ * @property string $name
+ */
 final class UserModel extends UuidModel implements AuthenticatableContract, StatefulUser
 {
     use Authenticatable;
@@ -17,7 +22,7 @@ final class UserModel extends UuidModel implements AuthenticatableContract, Stat
 
     protected $fillable = [
         'id',
-        'name',
         'email',
+        'name',
     ];
 }
