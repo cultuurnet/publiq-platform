@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Users\Models;
+namespace App\Domain\Auth\Models;
 
 use App\Models\UuidModel;
 use Auth0\Laravel\Contract\Model\Stateful\User as StatefulUser;

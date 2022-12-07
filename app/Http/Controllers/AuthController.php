@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Domain\Users\Models\UserModel;
+use App\Domain\Auth\Models\UserModel;
 use Illuminate\Support\Facades\Auth;
 
 abstract class AuthController extends Controller
