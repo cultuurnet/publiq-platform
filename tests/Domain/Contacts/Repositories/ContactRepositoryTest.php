@@ -29,10 +29,10 @@ final class ContactRepositoryTest extends TestCase
         $contact = new Contact(
             Uuid::uuid4(),
             Uuid::uuid4(),
+            'jane.doe@anonymous.com',
             ContactType::Technical,
             'Jane',
-            'Doe',
-            'jane.doe@anonymous.com'
+            'Doe'
         );
 
         $this->contactRepository->save($contact);
@@ -52,10 +52,10 @@ final class ContactRepositoryTest extends TestCase
         $contact = new Contact(
             Uuid::uuid4(),
             Uuid::uuid4(),
+            'jane.doe@anonymous.com',
             ContactType::Technical,
             'Jane',
-            'Doe',
-            'jane.doe@anonymous.com'
+            'Doe'
         );
 
         $this->contactRepository->save($contact);
@@ -73,39 +73,37 @@ final class ContactRepositoryTest extends TestCase
         $contactJane = new Contact(
             Uuid::uuid4(),
             $integrationId,
+            'jane.doe@anonymous.com',
             ContactType::Technical,
             'Jane',
-            'Doe',
-            'jane.doe@anonymous.com'
+            'Doe'
         );
         $this->contactRepository->save($contactJane);
 
         $contactJohn = new Contact(
             Uuid::uuid4(),
             $integrationId,
+            'john.doe@anonymous.com',
             ContactType::Technical,
             'John',
-            'Doe',
-            'john.doe@anonymous.com'
+            'Doe'
         );
         $this->contactRepository->save($contactJohn);
 
         $contactJef = new Contact(
             Uuid::uuid4(),
             $otherIntegrationId,
+            'jef.doe@anonymous.com',
             ContactType::Technical,
             'Jef',
-            'Doe',
-            'jef.doe@anonymous.com'
+            'Doe'
         );
         $this->contactRepository->save($contactJef);
 
-        $foundContacts = $this->contactRepository->getByIntegrationId($integrationId)->toArray();
-        usort($foundContacts, static fn (Contact $c1, Contact $c2) => strcmp($c1->firstName, $c2->firstName));
+        $foundContacts = $this->contactRepository->getByIntegrationId($integrationId);
 
-        $this->assertEquals(
-            $foundContacts,
-            [$contactJane, $contactJohn]
-        );
+        $this->assertCount(2, $foundContacts);
+        $this->assertTrue($foundContacts->contains($contactJane));
+        $this->assertTrue($foundContacts->contains($contactJohn));
     }
 }

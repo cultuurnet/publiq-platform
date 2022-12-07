@@ -68,12 +68,12 @@ return [
     'providers' => [
          'users' => [
             'driver' => 'eloquent',
-            'model' => App\Domain\Users\Models\UserModel::class,
+            'model' => App\Domain\Auth\Models\UserModel::class,
          ],
 
         'auth0' => [
             'driver' => 'auth0',
-            'model' => App\Domain\Users\Models\UserModel::class,
+            'model' => App\Domain\Auth\Models\UserModel::class,
             'repository' => App\Domain\Auth\Repositories\UserRepository::class,
         ],
     ],

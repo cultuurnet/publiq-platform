@@ -35,28 +35,28 @@ final class IntegrationRepositoryTest extends TestCase
         $technicalContact = new Contact(
             Uuid::uuid4(),
             $integrationId,
+            'jane.doe@anonymous.com',
             ContactType::Technical,
             'Jane',
             'Doe',
-            'jane.doe@anonymous.com'
         );
 
         $organizationContact = new Contact(
             Uuid::uuid4(),
             $integrationId,
-            ContactType::Organization,
+            'john.doe@anonymous.com',
+            ContactType::Functional,
             'John',
-            'Doe',
-            'john.doe@anonymous.com'
+            'Doe'
         );
 
         $contributor = new Contact(
             Uuid::uuid4(),
             $integrationId,
+            'jimmy.doe@anonymous.com',
             ContactType::Contributor,
             'Jimmy',
-            'Doe',
-            'jimmy.doe@anonymous.com'
+            'Doe'
         );
 
         $contacts = [$technicalContact, $organizationContact, $contributor];
@@ -114,5 +114,76 @@ final class IntegrationRepositoryTest extends TestCase
         $integrationFromRepository = $this->integrationRepository->getById($integration->id);
 
         $this->assertEquals($integration, $integrationFromRepository);
+    }
+
+    public function test_it_can_get_integrations_by_contact_email(): void
+    {
+        $searchIntegrationId = Uuid::uuid4();
+
+        $technicalContact = new Contact(
+            Uuid::uuid4(),
+            $searchIntegrationId,
+            'jane.doe@anonymous.com',
+            ContactType::Technical,
+            'Jane',
+            'Doe',
+        );
+
+        $organizationContact = new Contact(
+            Uuid::uuid4(),
+            $searchIntegrationId,
+            'john.doe@anonymous.com',
+            ContactType::Functional,
+            'John',
+            'Doe'
+        );
+
+        $searchIntegration = new Integration(
+            $searchIntegrationId,
+            IntegrationType::SearchApi,
+            'Search Integration',
+            'Search Integration description',
+            Uuid::uuid4(),
+            [$technicalContact, $organizationContact]
+        );
+
+        $this->integrationRepository->save($searchIntegration);
+
+        $widgetsIntegrationId = Uuid::uuid4();
+
+        $contributor = new Contact(
+            Uuid::uuid4(),
+            $widgetsIntegrationId,
+            'jane.doe@anonymous.com',
+            ContactType::Contributor,
+            'Jane',
+            'Doe',
+        );
+
+        $otherTechnicalContact = new Contact(
+            Uuid::uuid4(),
+            $widgetsIntegrationId,
+            'jane.doe@anonymous.com',
+            ContactType::Technical,
+            'Jane',
+            'Doe',
+        );
+
+        $widgetsIntegration = new Integration(
+            $widgetsIntegrationId,
+            IntegrationType::Widgets,
+            'Widgets Integration',
+            'Widgets Integration description',
+            Uuid::uuid4(),
+            [$contributor, $otherTechnicalContact]
+        );
+
+        $this->integrationRepository->save($widgetsIntegration);
+
+        $foundIntegrations = $this->integrationRepository->getByContactEmail('jane.doe@anonymous.com');
+
+        $this->assertCount(2, $foundIntegrations);
+        $this->assertTrue($foundIntegrations->contains($searchIntegration));
+        $this->assertTrue($foundIntegrations->contains($widgetsIntegration));
     }
 }
