@@ -4,35 +4,34 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Controllers;
 
+use App\Domain\Auth\CurrentUser;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 use Ramsey\Uuid\Uuid;
-use Illuminate\Support\Facades\Auth;
 
-final class IntegrationController extends AuthController
+final class IntegrationController extends Controller
 {
     public function __construct(
         private readonly SubscriptionRepository $subscriptionRepository,
         private readonly IntegrationRepository $integrationRepository,
-        readonly Auth $auth
+        private readonly CurrentUser $currentUser
     ) {
-        parent::__construct($auth);
     }
 
     public function index(): Response
     {
         return Inertia::render('Integrations/Index', [
             'integrations' => $this->integrationRepository->getByContactEmail(
-                $this->getUser()->email
+                $this->currentUser->email()
             ),
         ]);
     }
@@ -70,9 +69,9 @@ final class IntegrationController extends AuthController
         $contributor = new Contact(
             Uuid::uuid4(),
             $integrationId,
-            $this->getUser()->email,
+            $this->currentUser->email(),
             ContactType::Contributor,
-            $this->getUser()->name,
+            $this->currentUser->name(),
             ''
         );
 
