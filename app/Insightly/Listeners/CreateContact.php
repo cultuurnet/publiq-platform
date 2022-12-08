@@ -16,6 +16,11 @@ use Illuminate\Support\Facades\Log;
 
 final class CreateContact implements ShouldQueue
 {
+    private array $allowedContactTypes = [
+        ContactType::Technical,
+        ContactType::Functional,
+    ];
+
     public function __construct(
         private readonly InsightlyClient $insightlyClient,
         private readonly ContactRepository $contactRepository,
@@ -30,7 +35,7 @@ final class CreateContact implements ShouldQueue
         }
 
         $contact = $this->contactRepository->getById($contactCreated->id);
-        if ($contact->type === ContactType::Contributor) {
+        if (!in_array($contact->type, $this->allowedContactTypes, true)) {
             return;
         }
 
