@@ -22,6 +22,7 @@ final class IntegrationRepository
                 'name' => $integration->name,
                 'description' => $integration->description,
                 'subscription_id' => $integration->subscriptionId,
+                'status' => $integration->status,
             ]);
 
             foreach ($integration->contacts as $contact) {
