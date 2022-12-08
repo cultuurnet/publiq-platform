@@ -13,10 +13,13 @@ use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 
 final class IntegrationModel extends UuidModel
 {
+    use SoftDeletes;
+
     protected $table = 'integrations';
 
     protected $fillable = [
