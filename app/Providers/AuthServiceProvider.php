@@ -14,7 +14,7 @@ final class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         $loginParameters = [];
-        parse_str(config('auth.auth0_login_parameters'), $loginParameters);
+        parse_str(config('auth.auth0_login_parameters', ''), $loginParameters);
 
         $this->app->when(Login::class)
             ->needs('$loginParams')
