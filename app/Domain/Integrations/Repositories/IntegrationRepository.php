@@ -46,7 +46,7 @@ final class IntegrationRepository
         return $integrationModel->toDomain();
     }
 
-    public function deleteById(UuidInterface $id): bool|null
+    public function deleteById(UuidInterface $id): bool
     {
         /** @var IntegrationModel $integrationModel */
         $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
