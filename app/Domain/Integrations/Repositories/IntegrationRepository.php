@@ -46,6 +46,13 @@ final class IntegrationRepository
         return $integrationModel->toDomain();
     }
 
+    public function deleteById(UuidInterface $id): bool|null
+    {
+        /** @var IntegrationModel $integrationModel */
+        $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
+        return $integrationModel->delete();
+    }
+
     public function getByContactEmail(string $email): Collection
     {
         $integrationModels = IntegrationModel::query()
