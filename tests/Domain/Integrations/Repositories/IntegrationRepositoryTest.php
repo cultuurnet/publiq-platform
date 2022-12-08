@@ -7,6 +7,7 @@ namespace Tests\Domain\Integrations\Repositories;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
@@ -67,7 +68,8 @@ final class IntegrationRepositoryTest extends TestCase
             'Test Integration',
             'Test Integration description',
             $subscriptionId,
-            $contacts
+            $contacts,
+            IntegrationStatus::Draft,
         );
 
         $this->integrationRepository->save($integration);
@@ -100,7 +102,8 @@ final class IntegrationRepositoryTest extends TestCase
             'Test Integration',
             'Test Integration description',
             Uuid::uuid4(),
-            []
+            [],
+            IntegrationStatus::Draft,
         );
 
         IntegrationModel::query()->insert([
@@ -144,7 +147,8 @@ final class IntegrationRepositoryTest extends TestCase
             'Search Integration',
             'Search Integration description',
             Uuid::uuid4(),
-            [$technicalContact, $organizationContact]
+            [$technicalContact, $organizationContact],
+            IntegrationStatus::Draft,
         );
 
         $this->integrationRepository->save($searchIntegration);
@@ -175,7 +179,8 @@ final class IntegrationRepositoryTest extends TestCase
             'Widgets Integration',
             'Widgets Integration description',
             Uuid::uuid4(),
-            [$contributor, $otherTechnicalContact]
+            [$contributor, $otherTechnicalContact],
+            IntegrationStatus::Draft
         );
 
         $this->integrationRepository->save($widgetsIntegration);

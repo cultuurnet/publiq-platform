@@ -7,6 +7,7 @@ namespace Tests\Insightly;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Pipelines;
@@ -65,7 +66,8 @@ final class InsightlyClientTest extends TestCase
             'Test Integration',
             'Test Integration description',
             Uuid::uuid4(),
-            []
+            [],
+            IntegrationStatus::Draft,
         );
 
         $contactId = $this->insightlyClient->opportunities()->create($integration);
