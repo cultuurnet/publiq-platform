@@ -12,19 +12,19 @@ return [
     'strategy' => env('AUTH0_STRATEGY', \Auth0\SDK\Configuration\SdkConfiguration::STRATEGY_REGULAR),
 
     // Auth0 domain for your tenant, found in your Auth0 Application settings.
-    'domain' => env('AUTH0_DOMAIN'),
+    'domain' => env('AUTH0_LOGIN_DOMAIN'),
 
     // If you have configured Auth0 to use a custom domain, configure it here.
     'customDomain' => env('AUTH0_CUSTOM_DOMAIN'),
 
     // Client ID, found in the Auth0 Application settings.
-    'clientId' => env('AUTH0_CLIENT_ID'),
+    'clientId' => env('AUTH0_LOGIN_CLIENT_ID'),
 
     // Authentication callback URI, as defined in your Auth0 Application settings.
-    'redirectUri' => env('AUTH0_REDIRECT_URI', env('APP_URL') . '/callback'),
+    'redirectUri' => env('AUTH0_LOGIN_REDIRECT_URI', env('APP_URL') . '/callback'),
 
     // Client Secret, found in the Auth0 Application settings.
-    'clientSecret' => env('AUTH0_CLIENT_SECRET'),
+    'clientSecret' => env('AUTH0_LOGIN_CLIENT_SECRET'),
 
     // One or more API identifiers, found in your Auth0 API settings. The SDK uses the first value for building links. If provided, at least one of these values must match the 'aud' claim to validate an ID Token successfully.
     'audience' => \Auth0\Laravel\Configuration::stringToArrayOrNull(env('AUTH0_AUDIENCE')),
