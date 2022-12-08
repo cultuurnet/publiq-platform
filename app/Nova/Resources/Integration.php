@@ -59,8 +59,6 @@ final class Integration extends Resource
                 ->withoutTrashed()
                 ->rules('required'),
 
-            HasMany::make('Contacts'),
-
             Select::make('Status')
                 ->options([
                     IntegrationStatus::Draft->value => IntegrationStatus::Draft->name,
@@ -69,6 +67,8 @@ final class Integration extends Resource
                     IntegrationStatus::Deleted->value => IntegrationStatus::Deleted->name,
                 ])
                 ->default(IntegrationStatus::Draft->value),
+
+            HasMany::make('Contacts'),
         ];
     }
 }
