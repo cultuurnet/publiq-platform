@@ -18,8 +18,8 @@ final class Integration
         public readonly string $name,
         public readonly string $description,
         public readonly UuidInterface $subscriptionId,
-        public readonly array $contacts,
         public readonly IntegrationStatus $status,
+        public readonly array $contacts
     ) {
     }
 }

@@ -65,11 +65,11 @@ final class IntegrationModel extends UuidModel
             $this->name,
             $this->description,
             Uuid::fromString($this->subscription_id),
+            IntegrationStatus::from($this->status),
             $this->contacts()
                 ->get()
                 ->map(fn (ContactModel $contactModel) => $contactModel->toDomain())
-                ->toArray(),
-            IntegrationStatus::from($this->status)
+                ->toArray()
         );
     }
 }
