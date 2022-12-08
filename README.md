@@ -79,10 +79,10 @@ This requires:
 ## Auth0
 
 Authentication will be handled by Auth0. The following environment variables need to be set in the `.env` file:
-- `AUTH0_DOMAIN`
-- `AUTH0_CLIENT_ID`
-- `AUTH0_CLIENT_SECRET`
-- `AUTH0_REDIRECT_URI`
+- `AUTH0_LOGIN_DOMAIN`
+- `AUTH0_LOGIN_CLIENT_ID`
+- `AUTH0_LOGIN_CLIENT_SECRET`
+- `AUTH0_LOGIN_REDIRECT_URI`
 
 ## Insightly
 
