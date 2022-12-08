@@ -8,6 +8,15 @@ use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property string $id
+ * @property string $name
+ * @property string $description
+ * @property string $currency
+ * @property string $integration_type
+ * @property int $price
+ * @property int $fee
+ */
 final class SubscriptionModel extends UuidModel
 {
     use SoftDeletes;
