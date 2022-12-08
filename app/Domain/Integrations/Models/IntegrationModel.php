@@ -7,18 +7,16 @@ namespace App\Domain\Integrations\Models;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 
 final class IntegrationModel extends UuidModel
 {
-    use SoftDeletes;
-
     protected $table = 'integrations';
 
     protected $fillable = [
@@ -27,6 +25,7 @@ final class IntegrationModel extends UuidModel
         'name',
         'description',
         'subscription_id',
+        'status',
     ];
 
     protected static function booted(): void
@@ -34,6 +33,10 @@ final class IntegrationModel extends UuidModel
         self::created(
             static fn ($integrationModel) => IntegrationCreated::dispatch(Uuid::fromString($integrationModel->id))
         );
+    }
+    public function delete()
+    {
+        $this->setKeysForSaveQuery($this->newModelQuery())->update(['status' => IntegrationStatus::Deleted]);
     }
 
     /**
@@ -63,7 +66,8 @@ final class IntegrationModel extends UuidModel
             $this->contacts()
                 ->get()
                 ->map(fn (ContactModel $contactModel) => $contactModel->toDomain())
-                ->toArray()
+                ->toArray(),
+            IntegrationStatus::from($this->status)
         );
     }
 }
