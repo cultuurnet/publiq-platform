@@ -9,7 +9,7 @@ down:
 bash:
 	docker-compose exec laravel bash
 
-install: composer-install key-generate migrate npm-install npm-build
+install: composer-install key-generate migrate seed npm-install npm-build
 
 composer-install:
 	vendor/bin/sail composer install
