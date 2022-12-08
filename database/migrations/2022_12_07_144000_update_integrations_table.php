@@ -10,8 +10,7 @@ return new class () extends Migration {
     public function up(): void
     {
         Schema::table('integrations', function (Blueprint $table) {
-            $table->string('status')->default('draft');
-            $table->dropSoftDeletes();
+            $table->string('status');
         });
     }
 
@@ -19,7 +18,6 @@ return new class () extends Migration {
     {
         Schema::table('integrations', function (Blueprint $table) {
             $table->dropColumn('status');
-            $table->softDeletes();
         });
     }
 };
