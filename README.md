@@ -79,16 +79,37 @@ This requires:
 ## Auth0
 
 Authentication will be handled by Auth0. The following environment variables need to be set in the `.env` file:
-- `AUTH0_DOMAIN`
-- `AUTH0_CLIENT_ID`
-- `AUTH0_CLIENT_SECRET`
-- `AUTH0_REDIRECT_URI`
+- `AUTH0_LOGIN_DOMAIN`
+- `AUTH0_LOGIN_CLIENT_ID`
+- `AUTH0_LOGIN_CLIENT_SECRET`
+- `AUTH0_LOGIN_REDIRECT_URI`
 
 ## Insightly
 
 The following environment variables need to be set in the `.env` file
 - `INSIGHTLY_HOST`
 - `INSIGHTLY_API_KEY`
+
+## Horizon
+
+### Configuration
+
+By default Laravel processes jobs synchronously, because `QUEUE_CONNECTION` is set to `sync`.
+
+To enable Horizon, set the `QUEUE_CONNECTION` environment variable to `redis` in the `.env` file.
+
+Once asynchronous processing is enabled, you also need to start the queues with `make horizon`.
+
+### Monitoring
+
+Horizon has a dashboard for monitoring the queue. It can be accessed at [http://localhost/horizon](http://localhost/horizon).
+
+- On localhost Horizon allows all authenticated users. On other hosts a check is done on email. The allowed emails are configured inside the config `users` in `config/nova.php`. For example:
+```
+'users' => [
+    'dev@pulic.be`,
+],
+```
 
 ## Front-end setup Visual Studio Code
 

@@ -23,6 +23,9 @@ migrate:
 seed:
 	vendor/bin/sail artisan db:seed
 
+horizon:
+	vendor/bin/sail artisan horizon
+
 lint:
 	vendor/bin/sail composer lint
 
