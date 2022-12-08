@@ -6,7 +6,9 @@ namespace App\Domain\Subscriptions\Repositories;
 
 use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Domain\Subscriptions\Subscription;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
+use Ramsey\Uuid\UuidInterface;
 
 final class SubscriptionRepository
 {
@@ -21,6 +23,16 @@ final class SubscriptionRepository
             'price' => $subscription->price,
             'fee' => $subscription->fee,
         ]);
+    }
+
+    /**
+     * @throws ModelNotFoundException
+     */
+    public function getById(UuidInterface $id): Subscription
+    {
+        /** @var SubscriptionModel $subscription */
+        $subscription = SubscriptionModel::query()->findOrFail($id->toString());
+        return $subscription->toDomain();
     }
 
     public function all(): Collection

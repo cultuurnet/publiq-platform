@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Insightly\Listeners;
 
+use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Insightly\InsightlyClient;
@@ -15,6 +16,11 @@ use Illuminate\Support\Facades\Log;
 
 final class CreateContact implements ShouldQueue
 {
+    private array $allowedContactTypes = [
+        ContactType::Technical,
+        ContactType::Functional,
+    ];
+
     public function __construct(
         private readonly InsightlyClient $insightlyClient,
         private readonly ContactRepository $contactRepository,
@@ -29,6 +35,10 @@ final class CreateContact implements ShouldQueue
         }
 
         $contact = $this->contactRepository->getById($contactCreated->id);
+        if (!in_array($contact->type, $this->allowedContactTypes, true)) {
+            return;
+        }
+
         $contactInsightlyId = $this->insightlyClient->contacts()->create($contact);
         $this->insightlyMappingRepository->save(new InsightlyMapping(
             $contactCreated->id,
@@ -37,7 +47,11 @@ final class CreateContact implements ShouldQueue
         ));
 
         $integrationMapping = $this->insightlyMappingRepository->getById($contact->integrationId);
-        $this->insightlyClient->opportunities()->linkContact($integrationMapping->insightlyId, $contactInsightlyId);
+        $this->insightlyClient->opportunities()->linkContact(
+            $integrationMapping->insightlyId,
+            $contactInsightlyId,
+            $contact->type
+        );
 
         Log::info(
             'Contact created',
