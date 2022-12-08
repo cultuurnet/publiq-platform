@@ -49,4 +49,23 @@ final class SubscriptionRepositoryTest extends TestCase
             'fee' => 9999,
         ]);
     }
+
+    public function test_it_can_get_a_subscription(): void
+    {
+        $subscription = new Subscription(
+            Uuid::uuid4(),
+            'Basic Plan',
+            'Basic Plan description',
+            IntegrationType::SearchApi,
+            Currency::EUR,
+            14.99,
+            99.99
+        );
+
+        $this->subscriptionRepository->save($subscription);
+
+        $foundSubscription = $this->subscriptionRepository->getById($subscription->id);
+
+        $this->assertEquals($subscription, $foundSubscription);
+    }
 }
