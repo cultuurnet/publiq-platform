@@ -102,7 +102,7 @@ Once asynchronous processing is enabled, you also need to start the queues with 
 
 ### Monitoring
 
-Horizon is a dashboard for monitoring the queue. It can be accessed at [http://localhost/horizon](http://localhost/horizon).
+Horizon has a dashboard for monitoring the queue. It can be accessed at [http://localhost/horizon](http://localhost/horizon).
 
 - On localhost Horizon allows all authenticated users. On other hosts a check is done on email. The allowed emails are configured inside the config `users` in `config/nova.php`. For example:
 ```
