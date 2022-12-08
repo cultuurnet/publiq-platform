@@ -20,6 +20,9 @@ key-generate:
 migrate:
 	vendor/bin/sail artisan migrate
 
+seed:
+	vendor/bin/sail artisan db:seed
+
 lint:
 	vendor/bin/sail composer lint
 
