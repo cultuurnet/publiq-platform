@@ -36,10 +36,9 @@ final class IntegrationModel extends UuidModel
         self::created(
             static fn ($integrationModel) => IntegrationCreated::dispatch(Uuid::fromString($integrationModel->id))
         );
-    }
-    public function delete()
-    {
-        $this->setKeysForSaveQuery($this->newModelQuery())->update(['status' => IntegrationStatus::Deleted]);
+        self::deleting(
+            static fn ($integrationModel) => $integrationModel->update(['status', IntegrationStatus::Deleted])
+        );
     }
 
     /**
