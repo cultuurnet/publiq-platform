@@ -90,6 +90,27 @@ The following environment variables need to be set in the `.env` file
 - `INSIGHTLY_HOST`
 - `INSIGHTLY_API_KEY`
 
+## Horizon
+
+### Configuration
+
+By default Laravel processes jobs synchronously, because `QUEUE_CONNECTION` is set to `sync`.
+
+To enable Horizon, set the `QUEUE_CONNECTION` environment variable to `redis` in the `.env` file.
+
+Once asynchronous processing is enabled, you also need to start the queues with `make horizon`.
+
+### Monitoring
+
+Horizon is a dashboard for monitoring the queue. It can be accessed at [http://localhost/horizon](http://localhost/horizon).
+
+- On localhost Horizon allows all authenticated users. On other hosts a check is done on email. The allowed emails are configured inside the config `users` in `config/nova.php`. For example:
+```
+'users' => [
+    'dev@pulic.be`,
+],
+```
+
 ## Front-end setup Visual Studio Code
 
 The code formatter Prettier is used for javascript/typescript files. To make sure the Visual Studio Code `format on save` action doesn't influence non-frontend files you need to add a `.vscode/settings.json` file and add the following config:
