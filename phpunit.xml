@@ -9,7 +9,8 @@
             <directory>./tests/Domain</directory>
         </testsuite>
         <testsuite name="Insightly">
-            <directory>./tests/Insightly/Repositories</directory>
+            <directory>./tests/Insightly</directory>
+            <exclude>./tests/Insightly/InsightlyClientTest.php</exclude>
         </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true">

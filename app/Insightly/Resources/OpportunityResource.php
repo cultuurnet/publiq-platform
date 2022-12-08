@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Insightly\Resources;
 
+use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Serializers\LinkSerializer;
@@ -70,13 +71,13 @@ final class OpportunityResource
         $this->insightlyClient->sendRequest($stageRequest);
     }
 
-    public function linkContact(int $opportunityId, int $contactId): void
+    public function linkContact(int $opportunityId, int $contactId, ContactType $contactType): void
     {
         $request = new Request(
             'POST',
             'Opportunities/' . $opportunityId . '/Links',
             [],
-            Json::encode((new LinkSerializer())->contactToLink($contactId))
+            Json::encode((new LinkSerializer())->contactToLink($contactId, $contactType))
         );
 
         $this->insightlyClient->sendRequest($request);
