@@ -11,11 +11,14 @@ use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 
 final class CreateContact implements ShouldQueue
 {
+    use Queueable;
+
     private array $allowedContactTypes = [
         ContactType::Technical,
         ContactType::Functional,

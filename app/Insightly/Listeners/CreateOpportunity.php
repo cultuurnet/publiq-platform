@@ -10,11 +10,14 @@ use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 
 final class CreateOpportunity implements ShouldQueue
 {
+    use Queueable;
+
     public function __construct(
         private readonly InsightlyClient $insightlyClient,
         private readonly IntegrationRepository $integrationRepository,
