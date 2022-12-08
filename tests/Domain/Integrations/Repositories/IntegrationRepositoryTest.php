@@ -199,42 +199,13 @@ final class IntegrationRepositoryTest extends TestCase
         $integrationId = Uuid::uuid4();
         $subscriptionId = Uuid::uuid4();
 
-        $technicalContact = new Contact(
-            Uuid::uuid4(),
-            $integrationId,
-            'jane.doe@anonymous.com',
-            ContactType::Technical,
-            'Jane',
-            'Doe',
-        );
-
-        $organizationContact = new Contact(
-            Uuid::uuid4(),
-            $integrationId,
-            'john.doe@anonymous.com',
-            ContactType::Functional,
-            'John',
-            'Doe'
-        );
-
-        $contributor = new Contact(
-            Uuid::uuid4(),
-            $integrationId,
-            'jimmy.doe@anonymous.com',
-            ContactType::Contributor,
-            'Jimmy',
-            'Doe'
-        );
-
-        $contacts = [$technicalContact, $organizationContact, $contributor];
-
         $integration = new Integration(
             $integrationId,
             IntegrationType::SearchApi,
             'Test Integration',
             'Test Integration description',
             $subscriptionId,
-            $contacts,
+            [],
             IntegrationStatus::Draft,
         );
 
@@ -248,16 +219,7 @@ final class IntegrationRepositoryTest extends TestCase
             'name' => $integration->name,
             'description' => $integration->description,
             'subscription_id' => $subscriptionId,
-            'status' => IntegrationStatus::Deleted->value,
-        ]);
-
-        $this->assertDatabaseHas('integrations', [
-            'id' => $integration->id->toString(),
-            'type' => $integration->type,
-            'name' => $integration->name,
-            'description' => $integration->description,
-            'subscription_id' => $subscriptionId,
-            'status' => IntegrationStatus::Deleted->value,
+            'status' => IntegrationStatus::Deleted,
         ]);
     }
 }
