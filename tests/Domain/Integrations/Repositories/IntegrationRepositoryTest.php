@@ -196,15 +196,12 @@ final class IntegrationRepositoryTest extends TestCase
 
     public function test_it_can_delete_an_integration(): void
     {
-        $integrationId = Uuid::uuid4();
-        $subscriptionId = Uuid::uuid4();
-
         $integration = new Integration(
-            $integrationId,
+            Uuid::uuid4(),
             IntegrationType::SearchApi,
             'Test Integration',
             'Test Integration description',
-            $subscriptionId,
+            Uuid::uuid4(),
             [],
             IntegrationStatus::Draft,
         );
@@ -218,7 +215,7 @@ final class IntegrationRepositoryTest extends TestCase
             'type' => $integration->type,
             'name' => $integration->name,
             'description' => $integration->description,
-            'subscription_id' => $subscriptionId,
+            'subscription_id' => $integration->subscriptionId,
             'status' => IntegrationStatus::Deleted,
         ]);
     }
