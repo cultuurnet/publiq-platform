@@ -80,6 +80,7 @@ final class IntegrationRepositoryTest extends TestCase
             'name' => $integration->name,
             'description' => $integration->description,
             'subscription_id' => $subscriptionId,
+            'status' => $integration->status,
         ]);
 
         foreach ($integration->contacts as $contact) {
@@ -112,6 +113,7 @@ final class IntegrationRepositoryTest extends TestCase
             'name' => $integration->name,
             'description' => $integration->description,
             'subscription_id' => $integration->subscriptionId,
+            'status' => $integration->status,
         ]);
 
         $integrationFromRepository = $this->integrationRepository->getById($integration->id);
