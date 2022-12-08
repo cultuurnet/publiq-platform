@@ -32,7 +32,7 @@ final class NovaServiceProvider extends NovaApplicationServiceProvider
     {
         Gate::define(
             'viewNova',
-            fn ($user) => in_array($user->email, config('nova.users'), true)
+            static fn ($user) => in_array($user->email, config('nova.users'), true)
         );
     }
 
