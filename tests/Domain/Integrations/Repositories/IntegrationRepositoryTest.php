@@ -193,4 +193,71 @@ final class IntegrationRepositoryTest extends TestCase
         $this->assertTrue($foundIntegrations->contains($searchIntegration));
         $this->assertTrue($foundIntegrations->contains($widgetsIntegration));
     }
+
+    public function test_it_can_delete_an_integration(): void
+    {
+        $integrationId = Uuid::uuid4();
+        $subscriptionId = Uuid::uuid4();
+
+        $technicalContact = new Contact(
+            Uuid::uuid4(),
+            $integrationId,
+            'jane.doe@anonymous.com',
+            ContactType::Technical,
+            'Jane',
+            'Doe',
+        );
+
+        $organizationContact = new Contact(
+            Uuid::uuid4(),
+            $integrationId,
+            'john.doe@anonymous.com',
+            ContactType::Functional,
+            'John',
+            'Doe'
+        );
+
+        $contributor = new Contact(
+            Uuid::uuid4(),
+            $integrationId,
+            'jimmy.doe@anonymous.com',
+            ContactType::Contributor,
+            'Jimmy',
+            'Doe'
+        );
+
+        $contacts = [$technicalContact, $organizationContact, $contributor];
+
+        $integration = new Integration(
+            $integrationId,
+            IntegrationType::SearchApi,
+            'Test Integration',
+            'Test Integration description',
+            $subscriptionId,
+            $contacts,
+            IntegrationStatus::Draft,
+        );
+
+        $this->integrationRepository->save($integration);
+
+        $this->integrationRepository->deleteById($integration->id);
+
+        $this->assertSoftDeleted('integrations', [
+            'id' => $integration->id->toString(),
+            'type' => $integration->type,
+            'name' => $integration->name,
+            'description' => $integration->description,
+            'subscription_id' => $subscriptionId,
+            'status' => IntegrationStatus::Deleted->value,
+        ]);
+
+        $this->assertDatabaseHas('integrations', [
+            'id' => $integration->id->toString(),
+            'type' => $integration->type,
+            'name' => $integration->name,
+            'description' => $integration->description,
+            'subscription_id' => $subscriptionId,
+            'status' => IntegrationStatus::Deleted->value,
+        ]);
+    }
 }
