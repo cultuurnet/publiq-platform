@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Nova\Resources;
 
+use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
 use Laravel\Nova\Fields\BelongsTo;
@@ -59,6 +60,15 @@ final class Integration extends Resource
                 ->rules('required'),
 
             HasMany::make('Contacts'),
+
+            Select::make('Status')
+                ->options([
+                    IntegrationStatus::Draft->value => IntegrationStatus::Draft->name,
+                    IntegrationStatus::Active->value => IntegrationStatus::Active->name,
+                    IntegrationStatus::Blocked->value => IntegrationStatus::Blocked->name,
+                    IntegrationStatus::Deleted->value => IntegrationStatus::Deleted->name,
+                ])
+                ->default(IntegrationStatus::Draft->value),
         ];
     }
 }
