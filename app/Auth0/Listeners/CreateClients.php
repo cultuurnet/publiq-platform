@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Auth0\Listeners;
 
 use App\Auth0\Auth0ClusterSDK;
-use App\Auth0\Repositories\Auth0ClientRepository;
+use App\Auth0\Repositories\EloquentAuth0ClientRepository;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use Illuminate\Bus\Queueable;
@@ -18,7 +18,7 @@ final class CreateClients implements ShouldQueue
     public function __construct(
         private readonly Auth0ClusterSDK $auth0ClusterSDK,
         private readonly IntegrationRepository $integrationRepository,
-        private readonly Auth0ClientRepository $auth0ClientRepository
+        private readonly EloquentAuth0ClientRepository $auth0ClientRepository
     ) {
     }
 

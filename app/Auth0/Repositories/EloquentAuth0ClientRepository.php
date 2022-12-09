@@ -10,7 +10,7 @@ use App\Auth0\Models\Auth0ClientModel;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\UuidInterface;
 
-final class Auth0ClientRepository
+final class EloquentAuth0ClientRepository
 {
     public function save(Auth0Client ...$auth0Clients): void
     {
