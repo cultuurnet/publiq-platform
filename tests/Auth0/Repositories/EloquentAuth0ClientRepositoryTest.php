@@ -23,7 +23,10 @@ final class EloquentAuth0ClientRepositoryTest extends TestCase
         $this->repository = new EloquentAuth0ClientRepository();
     }
 
-    public function test_it_can_save_one_or_more_clients(): void
+    /**
+     * @test
+     */
+    public function it_can_save_one_or_more_clients(): void
     {
         $integrationId = Uuid::uuid4();
 
