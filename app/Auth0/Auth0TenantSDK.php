@@ -10,6 +10,7 @@ use App\Json;
 use Auth0\SDK\Auth0;
 use Auth0\SDK\Configuration\SdkConfiguration;
 use Auth0\SDK\Contract\API\ManagementInterface;
+use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 
 final class Auth0TenantSDK
@@ -75,16 +76,19 @@ final class Auth0TenantSDK
             ]
         );
 
-        $statusCode = $response->getStatusCode();
-        $body = $response->getBody()->getContents();
-        if ($statusCode !== 201) {
-            throw Auth0SDKException::forResponse($response);
-        }
+        $this->guardResponseStatus(201, $response);
 
-        $data = Json::decodeAssociatively($body);
+        $data = Json::decodeAssociatively($response->getBody()->getContents());
         $clientId = $data['client_id'];
         $clientSecret = $data['client_secret'];
 
         return new Auth0Client($integration->id, $clientId, $clientSecret, $this->auth0Tenant);
+    }
+
+    private function guardResponseStatus(int $expectedStatusCode, ResponseInterface $response): void
+    {
+        if ($response->getStatusCode() !== $expectedStatusCode) {
+            throw Auth0SDKException::forResponse($response);
+        }
     }
 }
