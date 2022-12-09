@@ -78,9 +78,7 @@ final class Auth0TenantSDK
         $statusCode = $response->getStatusCode();
         $body = $response->getBody()->getContents();
         if ($statusCode !== 201) {
-            throw new RuntimeException(
-                'Auth0 responded with status code ' . $statusCode . ' instead of 201. Response body: ' . $body
-            );
+            throw Auth0SDKException::forResponse($response);
         }
 
         $data = Json::decodeAssociatively($body);
