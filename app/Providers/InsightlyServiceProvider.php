@@ -26,7 +26,7 @@ final class InsightlyServiceProvider extends ServiceProvider
                         'http_errors' => false,
                     ]
                 ),
-                config('insightly.api_key'),
+                config('insightly.api_key') ?? '',
                 new Pipelines(config('insightly.pipelines'))
             );
         });
