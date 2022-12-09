@@ -13,11 +13,11 @@ final class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        $loginParameters = [];
-        parse_str(config('auth.auth0_login_parameters'), $loginParameters);
+        $auth0LoginParameters = [];
+        parse_str(config('auth0.login_parameters'), $auth0LoginParameters);
 
         $this->app->when(Login::class)
             ->needs('$loginParams')
-            ->give($loginParameters);
+            ->give($auth0LoginParameters);
     }
 }
