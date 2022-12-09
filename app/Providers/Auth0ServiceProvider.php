@@ -26,10 +26,15 @@ final class Auth0ServiceProvider extends ServiceProvider
                     $tenantConfig['clientSecret'] !== ''
             );
 
+            $tenants = array_map(
+                static fn (string|int $tenant) => Auth0Tenant::from((string) $tenant),
+                array_keys($tenantsConfig)
+            );
+
             return new Auth0ClusterSDK(
                 ...array_map(
-                    static fn (array $tenantConfig, string $tenant) => new Auth0TenantSDK(
-                        Auth0Tenant::from($tenant),
+                    static fn (array $tenantConfig, Auth0Tenant $tenant) => new Auth0TenantSDK(
+                        $tenant,
                         new SdkConfiguration(
                             strategy: SdkConfiguration::STRATEGY_MANAGEMENT_API,
                             domain: $tenantConfig['domain'],
@@ -39,7 +44,7 @@ final class Auth0ServiceProvider extends ServiceProvider
                         )
                     ),
                     $tenantsConfig,
-                    array_keys($tenantsConfig)
+                    $tenants
                 )
             );
         });
