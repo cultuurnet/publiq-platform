@@ -29,8 +29,8 @@ final class Auth0ClientModel extends Model
     {
         return new Auth0Client(
             Uuid::fromString($this->integration_id),
-            $this->client_id,
-            $this->client_secret,
+            $this->auth0_client_id,
+            $this->auth0_client_secret,
             Auth0Tenant::from($this->auth0_tenant)
         );
     }
