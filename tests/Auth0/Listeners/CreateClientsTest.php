@@ -70,11 +70,11 @@ final class CreateClientsTest extends TestCase
             ->method('sendRequest')
             ->willReturnOnConsecutiveCalls(
                 new Response(201, [], Json::encode(['client_id' => 'client-id-1', 'client_secret' => 'client-secret-1'])),
-                new Response(201, [], Json::encode(['id' => 'grant-id-1',])),
+                new Response(201, [], Json::encode(['id' => 'grant-id-1'])),
                 new Response(201, [], Json::encode(['client_id' => 'client-id-2', 'client_secret' => 'client-secret-2'])),
-                new Response(201, [], Json::encode(['id' => 'grant-id-2',])),
+                new Response(201, [], Json::encode(['id' => 'grant-id-2'])),
                 new Response(201, [], Json::encode(['client_id' => 'client-id-3', 'client_secret' => 'client-secret-3'])),
-                new Response(201, [], Json::encode(['id' => 'grant-id-3',])),
+                new Response(201, [], Json::encode(['id' => 'grant-id-3'])),
             );
 
         $expectedClients = [
