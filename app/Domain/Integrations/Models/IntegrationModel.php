@@ -7,6 +7,7 @@ namespace App\Domain\Integrations\Models;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Models\UuidModel;
@@ -27,12 +28,16 @@ final class IntegrationModel extends UuidModel
         'name',
         'description',
         'subscription_id',
+        'status',
     ];
 
     protected static function booted(): void
     {
         self::created(
             static fn ($integrationModel) => IntegrationCreated::dispatch(Uuid::fromString($integrationModel->id))
+        );
+        self::deleted(
+            static fn ($integrationModel) => $integrationModel->update(['status' => IntegrationStatus::Deleted])
         );
     }
 
@@ -60,6 +65,7 @@ final class IntegrationModel extends UuidModel
             $this->name,
             $this->description,
             Uuid::fromString($this->subscription_id),
+            IntegrationStatus::from($this->status),
             $this->contacts()
                 ->get()
                 ->map(fn (ContactModel $contactModel) => $contactModel->toDomain())

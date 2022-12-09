@@ -7,6 +7,7 @@ namespace Tests\Domain\Integrations\Repositories;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
@@ -67,6 +68,7 @@ final class IntegrationRepositoryTest extends TestCase
             'Test Integration',
             'Test Integration description',
             $subscriptionId,
+            IntegrationStatus::Draft,
             $contacts
         );
 
@@ -78,6 +80,7 @@ final class IntegrationRepositoryTest extends TestCase
             'name' => $integration->name,
             'description' => $integration->description,
             'subscription_id' => $subscriptionId,
+            'status' => $integration->status,
         ]);
 
         foreach ($integration->contacts as $contact) {
@@ -100,6 +103,7 @@ final class IntegrationRepositoryTest extends TestCase
             'Test Integration',
             'Test Integration description',
             Uuid::uuid4(),
+            IntegrationStatus::Draft,
             []
         );
 
@@ -109,6 +113,7 @@ final class IntegrationRepositoryTest extends TestCase
             'name' => $integration->name,
             'description' => $integration->description,
             'subscription_id' => $integration->subscriptionId,
+            'status' => $integration->status,
         ]);
 
         $integrationFromRepository = $this->integrationRepository->getById($integration->id);
@@ -144,7 +149,8 @@ final class IntegrationRepositoryTest extends TestCase
             'Search Integration',
             'Search Integration description',
             Uuid::uuid4(),
-            [$technicalContact, $organizationContact]
+            IntegrationStatus::Draft,
+            [$technicalContact, $organizationContact],
         );
 
         $this->integrationRepository->save($searchIntegration);
@@ -175,6 +181,7 @@ final class IntegrationRepositoryTest extends TestCase
             'Widgets Integration',
             'Widgets Integration description',
             Uuid::uuid4(),
+            IntegrationStatus::Draft,
             [$contributor, $otherTechnicalContact]
         );
 
@@ -185,5 +192,31 @@ final class IntegrationRepositoryTest extends TestCase
         $this->assertCount(2, $foundIntegrations);
         $this->assertTrue($foundIntegrations->contains($searchIntegration));
         $this->assertTrue($foundIntegrations->contains($widgetsIntegration));
+    }
+
+    public function test_it_can_delete_an_integration(): void
+    {
+        $integration = new Integration(
+            Uuid::uuid4(),
+            IntegrationType::SearchApi,
+            'Test Integration',
+            'Test Integration description',
+            Uuid::uuid4(),
+            IntegrationStatus::Draft,
+            []
+        );
+
+        $this->integrationRepository->save($integration);
+
+        $this->integrationRepository->deleteById($integration->id);
+
+        $this->assertSoftDeleted('integrations', [
+            'id' => $integration->id->toString(),
+            'type' => $integration->type,
+            'name' => $integration->name,
+            'description' => $integration->description,
+            'subscription_id' => $integration->subscriptionId,
+            'status' => IntegrationStatus::Deleted,
+        ]);
     }
 }
