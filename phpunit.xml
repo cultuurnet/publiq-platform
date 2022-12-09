@@ -5,6 +5,9 @@
          colors="true"
 >
     <testsuites>
+        <testsuite name="Auth0">
+            <directory>./tests/Auth0</directory>
+        </testsuite>
         <testsuite name="Domain">
             <directory>./tests/Domain</directory>
         </testsuite>
