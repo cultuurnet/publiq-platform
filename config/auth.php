@@ -114,6 +114,4 @@ return [
     */
 
     'password_timeout' => 10800,
-
-    'auth0_login_parameters' => env('AUTH0_LOGIN_PARAMETERS', ''),
 ];

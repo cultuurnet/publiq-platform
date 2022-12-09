@@ -56,4 +56,7 @@ return [
         'home'  => env('AUTH0_LOGIN_ROUTE_HOME', '/'),
         'login' => env('AUTH0_LOGIN_ROUTE_LOGIN', 'login'),
     ],
+
+    // URL parameters to include in the /authorize redirect
+    'login_parameters' => env('AUTH0_LOGIN_PARAMETERS', ''),
 ];
