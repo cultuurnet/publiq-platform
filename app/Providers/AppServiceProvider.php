@@ -42,7 +42,13 @@ final class AppServiceProvider extends ServiceProvider
                             audience: [$tenantConfig['audience']],
                         )
                     ),
-                    config('auth0.tenants')
+                    array_filter(
+                        config('auth0.tenants'),
+                        static fn (array $tenantConfig) =>
+                            $tenantConfig['domain'] !== '' &&
+                            $tenantConfig['clientId'] !== '' &&
+                            $tenantConfig['clientSecret'] !== ''
+                    )
                 )
             );
         });
