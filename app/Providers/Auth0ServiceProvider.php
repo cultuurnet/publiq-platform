@@ -8,6 +8,8 @@ use App\Auth0\Auth0ClusterSDK;
 use App\Auth0\Auth0Tenant;
 use App\Auth0\Auth0TenantSDK;
 use App\Auth0\Listeners\CreateClients;
+use App\Auth0\Repositories\Auth0ClientRepository;
+use App\Auth0\Repositories\EloquentAuth0ClientRepository;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use Auth0\SDK\Configuration\SdkConfiguration;
 use Illuminate\Support\Facades\Event;
@@ -17,6 +19,10 @@ final class Auth0ServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->singleton(Auth0ClientRepository::class, function () {
+            return $this->app->get(EloquentAuth0ClientRepository::class);
+        });
+
         $this->app->singleton(Auth0ClusterSDK::class, function () {
             // Filter out tenants with missing config (consider them disabled)
             $tenantsConfig = array_filter(
