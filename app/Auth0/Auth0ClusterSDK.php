@@ -23,6 +23,7 @@ final class Auth0ClusterSDK
     public function createClientsForIntegration(Integration $integration): Auth0ClientsForIntegration
     {
         return new Auth0ClientsForIntegration(
+            $integration->id,
             ...array_map(
                 static fn (Auth0TenantSDK $sdk) => $sdk->createClientForIntegration($integration),
                 $this->auth0TenantSDKs

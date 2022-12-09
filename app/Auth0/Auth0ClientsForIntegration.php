@@ -9,23 +9,25 @@ use Ramsey\Uuid\UuidInterface;
 
 final class Auth0ClientsForIntegration
 {
-    public readonly UuidInterface $integrationId;
     private array $auth0ClientPerTenant;
 
     public function __construct(
+        public readonly UuidInterface $integrationId,
         Auth0Client ...$auth0Clients
     ) {
-        $integrationIds = [];
         foreach ($auth0Clients as $auth0Client) {
-            $integrationIds[] = $auth0Client->integrationId->toString();
+            if (!$auth0Client->integrationId->equals($this->integrationId)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Client with id %s of integration id %s does not belong to expected integration id %s',
+                        $auth0Client->clientId,
+                        $auth0Client->integrationId->toString(),
+                        $this->integrationId->toString()
+                    )
+                );
+            }
             $this->auth0ClientPerTenant[$auth0Client->tenant->value] = $auth0Client;
         }
-
-        $integrationIds = array_unique($integrationIds);
-        if (count($integrationIds) !== 1) {
-            throw new InvalidArgumentException('Cannot combine clients for multiple integrations in one Auth0ClientsForIntegration object. (Integration ids: ' . implode(', ', $integrationIds) . ')');
-        }
-        $this->integrationId = $integrationIds[0];
     }
 
     public function getClientForTenant(Auth0Tenant $tenant): ?Auth0Client

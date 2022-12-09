@@ -45,6 +45,6 @@ final class Auth0ClientRepository
             ->map(static fn (Auth0ClientModel $auth0ClientModel) => $auth0ClientModel->toDomain())
             ->toArray();
 
-        return new Auth0ClientsForIntegration(...$auth0Clients);
+        return new Auth0ClientsForIntegration($integrationId, ...$auth0Clients);
     }
 }
