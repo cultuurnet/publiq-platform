@@ -6,7 +6,7 @@ namespace App\Auth0;
 
 enum Auth0Tenant: string
 {
-    case Acc = 'acc';
-    case Test = 'test';
-    case Prod = 'prod';
+    case Acceptance = 'acc';
+    case Testing = 'test';
+    case Production = 'prod';
 }
