@@ -38,7 +38,7 @@ final class Auth0TenantSDK
             IntegrationType::EntryApi => 'entry sapi',
         };
 
-        $response = $this->management->clients()->create(
+        $clientResponse = $this->management->clients()->create(
             $name,
             [
                 'app_type' => 'regular_web', // The app type has no real meaning/implications, but regular_web is the most logical for generic clients for integrators
@@ -74,12 +74,14 @@ final class Auth0TenantSDK
                 ],
             ]
         );
+        $this->guardResponseStatus(201, $clientResponse);
 
-        $this->guardResponseStatus(201, $response);
-
-        $data = Json::decodeAssociatively($response->getBody()->getContents());
+        $data = Json::decodeAssociatively($clientResponse->getBody()->getContents());
         $clientId = $data['client_id'];
         $clientSecret = $data['client_secret'];
+
+        $grantResponse = $this->management->clientGrants()->create($clientId, 'https://api.publiq.be');
+        $this->guardResponseStatus(201, $grantResponse);
 
         return new Auth0Client($integration->id, $clientId, $clientSecret, $this->auth0Tenant);
     }
