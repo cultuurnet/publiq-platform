@@ -191,6 +191,7 @@ return [
         /*
          * Application Service Providers...
          */
+        App\Domain\Integrations\IntegrationServiceProvider::class,
         App\Providers\Auth0ServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
