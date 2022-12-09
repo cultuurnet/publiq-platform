@@ -28,6 +28,16 @@ final class CurrentUser
         return $this->user()->name;
     }
 
+    public function firstName(): string
+    {
+        return $this->user()->first_name;
+    }
+
+    public function lastName(): string
+    {
+        return $this->user()->last_name;
+    }
+
     private function user(): UserModel
     {
         /** @var UserModel $user */
