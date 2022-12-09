@@ -11,7 +11,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\UuidInterface;
 
-final class EloquentIntegrationRepository
+final class EloquentIntegrationRepository implements IntegrationRepository
 {
     public function save(Integration $integration): void
     {
