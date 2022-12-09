@@ -13,7 +13,7 @@ return new class () extends Migration {
             $table->uuid('integration_id')->primary();
             $table->string('auth0_client_id')->index();
             $table->string('auth0_client_secret');
-            $table->string('auth0_tenant');
+            $table->string('auth0_tenant')->index();
             $table->unique(['integration_id', 'auth0_tenant']);
             $table->softDeletes();
             $table->timestamps();
