@@ -20,7 +20,7 @@ final class UserRepository implements Repository
             'name' => $user['name'],
             'email' => $user['email'],
             'first_name' => $user['given_name'],
-            'last_name' => $user['family_name'],
+            'last_name' => $user['family_name'] ?? '',
         ]);
     }
 
