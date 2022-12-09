@@ -71,8 +71,8 @@ final class IntegrationController extends Controller
             $integrationId,
             $this->currentUser->email(),
             ContactType::Contributor,
-            $this->currentUser->name(),
-            ''
+            $this->currentUser->firstName(),
+            $this->currentUser->lastName()
         );
 
         $integration = new Integration(
