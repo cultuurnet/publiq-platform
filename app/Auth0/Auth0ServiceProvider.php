@@ -2,11 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Providers;
+namespace App\Auth0;
 
-use App\Auth0\Auth0ClusterSDK;
-use App\Auth0\Auth0Tenant;
-use App\Auth0\Auth0TenantSDK;
 use App\Auth0\Listeners\CreateClients;
 use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Auth0\Repositories\EloquentAuth0ClientRepository;
