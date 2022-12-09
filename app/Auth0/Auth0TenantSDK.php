@@ -11,7 +11,6 @@ use Auth0\SDK\Auth0;
 use Auth0\SDK\Configuration\SdkConfiguration;
 use Auth0\SDK\Contract\API\ManagementInterface;
 use Psr\Http\Message\ResponseInterface;
-use RuntimeException;
 
 final class Auth0TenantSDK
 {
