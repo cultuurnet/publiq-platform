@@ -31,6 +31,7 @@ final class Auth0ServiceProvider extends ServiceProvider
                     static fn (array $tenantConfig, string $tenant) => new Auth0TenantSDK(
                         Auth0Tenant::from($tenant),
                         new SdkConfiguration(
+                            strategy: SdkConfiguration::STRATEGY_MANAGEMENT_API,
                             domain: $tenantConfig['domain'],
                             clientId: $tenantConfig['clientId'],
                             clientSecret: $tenantConfig['clientSecret'],
