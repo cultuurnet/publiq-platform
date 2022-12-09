@@ -6,15 +6,17 @@ namespace App\Auth0\Models;
 
 use App\Auth0\Auth0Client;
 use App\Auth0\Auth0Tenant;
-use App\Models\UuidModel;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 
-final class Auth0ClientModel extends UuidModel
+final class Auth0ClientModel extends Model
 {
     use SoftDeletes;
 
     protected $table = 'auth0_clients';
+    protected $primaryKey = null;
+    public $incrementing = false;
 
     protected $fillable = [
         'integration_id',
