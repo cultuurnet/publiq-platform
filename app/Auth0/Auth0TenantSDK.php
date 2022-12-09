@@ -33,7 +33,7 @@ final class Auth0TenantSDK
     {
         $name = sprintf('%s <id: %s>', $integration->name, $integration->id->toString());
 
-        $apis = match($integration->type) {
+        $apis = match ($integration->type) {
             IntegrationType::SearchApi, IntegrationType::Widgets => 'sapi',
             IntegrationType::EntryApi => 'entry sapi',
         };
