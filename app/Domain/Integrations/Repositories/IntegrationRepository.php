@@ -22,6 +22,7 @@ final class IntegrationRepository
                 'name' => $integration->name,
                 'description' => $integration->description,
                 'subscription_id' => $integration->subscriptionId,
+                'status' => $integration->status,
             ]);
 
             foreach ($integration->contacts as $contact) {
@@ -43,6 +44,13 @@ final class IntegrationRepository
         $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
 
         return $integrationModel->toDomain();
+    }
+
+    public function deleteById(UuidInterface $id): ?bool
+    {
+        /** @var IntegrationModel $integrationModel */
+        $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
+        return $integrationModel->delete();
     }
 
     public function getByContactEmail(string $email): Collection

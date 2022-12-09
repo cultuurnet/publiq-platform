@@ -8,6 +8,7 @@ use App\Domain\Auth\CurrentUser;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
@@ -71,8 +72,8 @@ final class IntegrationController extends Controller
             $integrationId,
             $this->currentUser->email(),
             ContactType::Contributor,
-            $this->currentUser->name(),
-            ''
+            $this->currentUser->firstName(),
+            $this->currentUser->lastName()
         );
 
         $integration = new Integration(
@@ -81,6 +82,7 @@ final class IntegrationController extends Controller
             $storeIntegration->input('name'),
             $storeIntegration->input('description'),
             Uuid::fromString($storeIntegration->input('subscriptionId')),
+            IntegrationStatus::Draft,
             [
                 $contactOrganization, $contactPartner, $contributor,
             ]
