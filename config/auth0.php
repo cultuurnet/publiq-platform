@@ -59,4 +59,29 @@ return [
 
     // URL parameters to include in the /authorize redirect
     'login_parameters' => env('AUTH0_LOGIN_PARAMETERS', ''),
+
+    // Tenant configuration, used to store/update clients in Auth0.
+    // Note that local/staging/acceptance/testing environments of publiq platform should actually use the DEV tenant as
+    // replacements for the acc/test/prod tenants. Otherwise, they will create real clients on the acc/test/prod tenants
+    // which we do not want.
+    'tenants' => [
+        'acc' => [
+            'domain' => env('AUTH0_ACC_TENANT_DOMAIN'),
+            'clientId' => env('AUTH0_ACC_TENANT_CLIENT_ID'),
+            'clientSecret' => env('AUTH0_ACC_TENANT_CLIENT_SECRET'),
+            'audience' => 'https://' . env('AUTH0_ACC_TENANT_DOMAIN') . '/api/v2/',
+        ],
+        'test' => [
+            'domain' => env('AUTH0_TEST_TENANT_DOMAIN'),
+            'clientId' => env('AUTH0_TEST_TENANT_CLIENT_ID'),
+            'clientSecret' => env('AUTH0_TEST_TENANT_CLIENT_SECRET'),
+            'audience' => 'https://' . env('AUTH0_TEST_TENANT_DOMAIN') . '/api/v2/',
+        ],
+        'prod' => [
+            'domain' => env('AUTH0_PROD_TENANT_DOMAIN'),
+            'clientId' => env('AUTH0_PROD_TENANT_CLIENT_ID'),
+            'clientSecret' => env('AUTH0_PROD_TENANT_CLIENT_SECRET'),
+            'audience' => 'https://' . env('AUTH0_PROD_TENANT_DOMAIN') . '/api/v2/',
+        ],
+    ],
 ];
