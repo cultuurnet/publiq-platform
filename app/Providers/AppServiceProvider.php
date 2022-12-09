@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Auth0\Listeners\CreateClients;
+use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Pipelines;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
 final class AppServiceProvider extends ServiceProvider
@@ -25,6 +28,8 @@ final class AppServiceProvider extends ServiceProvider
                 new Pipelines(config('insightly.pipelines'))
             );
         });
+
+        Event::listen(IntegrationCreated::class, [CreateClients::class, 'handle']);
     }
 
     public function boot(): void
