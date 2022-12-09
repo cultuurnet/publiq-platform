@@ -8,7 +8,7 @@ use App\Auth0\Auth0ClusterSDK;
 use App\Auth0\Auth0Tenant;
 use App\Auth0\Auth0TenantSDK;
 use Auth0\SDK\Configuration\SdkConfiguration;
-use GuzzleHttp\ClientInterface;
+use Psr\Http\Client\ClientInterface;
 
 trait CreatesMockAuth0ClusterSDK
 {
