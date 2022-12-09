@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Auth0\Repositories;
 
 use App\Auth0\Auth0Client;
+use App\Auth0\Auth0ClientsForIntegration;
 use App\Auth0\Auth0Tenant;
 use App\Auth0\Repositories\EloquentAuth0ClientRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -69,5 +70,39 @@ final class EloquentAuth0ClientRepositoryTest extends TestCase
             'auth0_client_secret' => 'client-secret-3',
             'auth0_tenant' => 'prod',
         ]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_get_all_clients_for_an_integration_id(): void
+    {
+        $integrationId = Uuid::uuid4();
+
+        $client1 = new Auth0Client(
+            $integrationId,
+            'client-id-1',
+            'client-secret-1',
+            Auth0Tenant::Acceptance
+        );
+        $client2 = new Auth0Client(
+            $integrationId,
+            'client-id-2',
+            'client-secret-2',
+            Auth0Tenant::Testing
+        );
+        $client3 = new Auth0Client(
+            $integrationId,
+            'client-id-3',
+            'client-secret-3',
+            Auth0Tenant::Production
+        );
+
+        $this->repository->save($client1, $client2, $client3);
+
+        $expected = new Auth0ClientsForIntegration($integrationId, $client1, $client2, $client3);
+        $actual = $this->repository->getByIntegrationId($integrationId);
+
+        $this->assertEquals($expected, $actual);
     }
 }
