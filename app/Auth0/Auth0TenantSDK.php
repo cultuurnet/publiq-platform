@@ -41,7 +41,7 @@ final class Auth0TenantSDK
         $response = $this->management->clients()->create(
             $name,
             [
-                'app_type' => 'regular', // The app type has no real meaning/implications, but regular_web is the most logical for generic clients for integrators
+                'app_type' => 'regular_web', // The app type has no real meaning/implications, but regular_web is the most logical for generic clients for integrators
                 'client_metadata' => [
                     'publiq-apis' => $apis,
                 ],
