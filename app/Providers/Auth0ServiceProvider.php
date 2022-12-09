@@ -18,6 +18,7 @@ final class Auth0ServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(Auth0ClusterSDK::class, function () {
+            // Filter out tenants with missing config (consider them disabled)
             $tenantsConfig = array_filter(
                 config('auth0.tenants'),
                 static fn (array $tenantConfig) =>
@@ -26,11 +27,13 @@ final class Auth0ServiceProvider extends ServiceProvider
                     $tenantConfig['clientSecret'] !== ''
             );
 
+            // Create Auth0Tenant objects based on the tenants config keys
             $tenants = array_map(
                 static fn (string|int $tenant) => Auth0Tenant::from((string) $tenant),
                 array_keys($tenantsConfig)
             );
 
+            // Create a cluster with a tenant SDK per (enabled) tenant config
             return new Auth0ClusterSDK(
                 ...array_map(
                     static fn (array $tenantConfig, Auth0Tenant $tenant) => new Auth0TenantSDK(
