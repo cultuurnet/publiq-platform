@@ -31,7 +31,7 @@ final class Auth0TenantSDK
 
     public function createClientForIntegration(Integration $integration): Auth0Client
     {
-        $name = sprintf('%s <id: %s>', $integration->name, $integration->id->toString());
+        $name = sprintf('%s (id: %s)', $integration->name, $integration->id->toString());
 
         $apis = match ($integration->type) {
             IntegrationType::SearchApi, IntegrationType::Widgets => 'sapi',
