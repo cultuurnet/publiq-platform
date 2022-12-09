@@ -15,6 +15,7 @@ return new class () extends Migration {
             $table->string('auth0_client_secret');
             $table->string('auth0_tenant')->index();
             $table->unique(['integration_id', 'auth0_tenant']);
+            $table->unique(['auth0_client_id', 'auth0_tenant']);
             $table->softDeletes();
             $table->timestamps();
         });
