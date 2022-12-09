@@ -19,7 +19,7 @@ final class UserRepository implements Repository
             'id' => $user['sub'] ?? $user['user_id'] ?? null,
             'name' => $user['name'],
             'email' => $user['email'],
-            'first_name' => $user['given_name'],
+            'first_name' => $user['https://publiq.be/first_name'],
             'last_name' => $user['family_name'] ?? '',
         ]);
     }
