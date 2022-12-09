@@ -18,6 +18,14 @@ final class Auth0ServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(Auth0ClusterSDK::class, function () {
+            $tenantsConfig = array_filter(
+                config('auth0.tenants'),
+                static fn (array $tenantConfig) =>
+                    $tenantConfig['domain'] !== '' &&
+                    $tenantConfig['clientId'] !== '' &&
+                    $tenantConfig['clientSecret'] !== ''
+            );
+
             return new Auth0ClusterSDK(
                 ...array_map(
                     static fn (array $tenantConfig, string $tenant) => new Auth0TenantSDK(
@@ -29,13 +37,8 @@ final class Auth0ServiceProvider extends ServiceProvider
                             audience: [$tenantConfig['audience']],
                         )
                     ),
-                    array_filter(
-                        config('auth0.tenants'),
-                        static fn (array $tenantConfig) =>
-                            $tenantConfig['domain'] !== '' &&
-                            $tenantConfig['clientId'] !== '' &&
-                            $tenantConfig['clientSecret'] !== ''
-                    )
+                    $tenantsConfig,
+                    array_keys($tenantsConfig)
                 )
             );
         });
