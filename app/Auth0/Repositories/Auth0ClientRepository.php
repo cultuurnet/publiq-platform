@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Auth0\Repositories;
 
 use App\Auth0\Auth0Client;
