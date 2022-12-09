@@ -7,7 +7,10 @@ namespace App\Providers;
 use App\Auth0\Auth0ClusterSDK;
 use App\Auth0\Auth0Tenant;
 use App\Auth0\Auth0TenantSDK;
+use App\Auth0\Listeners\CreateClients;
+use App\Domain\Integrations\Events\IntegrationCreated;
 use Auth0\SDK\Configuration\SdkConfiguration;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
 final class Auth0ServiceProvider extends ServiceProvider
@@ -36,5 +39,7 @@ final class Auth0ServiceProvider extends ServiceProvider
                 )
             );
         });
+
+        Event::listen(IntegrationCreated::class, [CreateClients::class, 'handle']);
     }
 }
