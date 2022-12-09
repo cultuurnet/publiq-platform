@@ -10,22 +10,22 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
-use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Domain\Integrations\Repositories\EloquentIntegrationRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
-final class IntegrationRepositoryTest extends TestCase
+final class EloquentIntegrationRepositoryTest extends TestCase
 {
     use RefreshDatabase;
 
-    private IntegrationRepository $integrationRepository;
+    private EloquentIntegrationRepository $integrationRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->integrationRepository = new IntegrationRepository();
+        $this->integrationRepository = new EloquentIntegrationRepository();
     }
 
     public function test_it_can_save_an_integration(): void
