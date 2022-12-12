@@ -193,10 +193,10 @@ return [
          */
         App\Auth0\Auth0ServiceProvider::class,
         App\Domain\Integrations\IntegrationServiceProvider::class,
+        App\Insightly\InsightlyServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\HorizonServiceProvider::class,
-        App\Providers\InsightlyServiceProvider::class,
         App\Providers\NovaServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 

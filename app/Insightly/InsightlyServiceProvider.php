@@ -2,14 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Providers;
+namespace App\Insightly;
 
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Integrations\Events\IntegrationCreated;
-use App\Insightly\InsightlyClient;
 use App\Insightly\Listeners\CreateContact;
 use App\Insightly\Listeners\CreateOpportunity;
-use App\Insightly\Pipelines;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
