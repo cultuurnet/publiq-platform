@@ -16,12 +16,6 @@ abstract class TestCase extends BaseTestCase
         $this->disableConfigExternalApis();
     }
 
-    protected function tearDown(): void
-    {
-        $this->disableConfigExternalApis();
-        parent::tearDown();
-    }
-
     protected function disableConfigExternalApis(): void
     {
         app('config')->set('insightly.api_key', '');
