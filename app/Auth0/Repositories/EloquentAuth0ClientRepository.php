@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Auth0\Repositories;
 
 use App\Auth0\Auth0Client;
-use App\Auth0\Auth0ClientsForIntegration;
 use App\Auth0\Models\Auth0ClientModel;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\UuidInterface;
@@ -37,14 +36,12 @@ final class EloquentAuth0ClientRepository implements Auth0ClientRepository
         });
     }
 
-    public function getByIntegrationId(UuidInterface $integrationId): Auth0ClientsForIntegration
+    public function getByIntegrationId(UuidInterface $integrationId): array
     {
-        $auth0Clients = Auth0ClientModel::query()
+        return Auth0ClientModel::query()
             ->where('integration_id', $integrationId->toString())
             ->get()
             ->map(static fn (Auth0ClientModel $auth0ClientModel) => $auth0ClientModel->toDomain())
             ->toArray();
-
-        return new Auth0ClientsForIntegration($integrationId, ...$auth0Clients);
     }
 }

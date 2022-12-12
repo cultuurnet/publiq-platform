@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Auth0\Repositories;
 
 use App\Auth0\Auth0Client;
-use App\Auth0\Auth0ClientsForIntegration;
 use App\Auth0\Auth0Tenant;
 use App\Auth0\Repositories\EloquentAuth0ClientRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -100,8 +99,11 @@ final class EloquentAuth0ClientRepositoryTest extends TestCase
 
         $this->repository->save($client1, $client2, $client3);
 
-        $expected = new Auth0ClientsForIntegration($integrationId, $client1, $client2, $client3);
+        $expected = [$client1, $client2, $client3];
         $actual = $this->repository->getByIntegrationId($integrationId);
+
+        sort($expected);
+        sort($actual);
 
         $this->assertEquals($expected, $actual);
     }
