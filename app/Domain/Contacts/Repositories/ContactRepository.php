@@ -31,6 +31,9 @@ final class ContactRepository
         return $contactModel->toDomain();
     }
 
+    /**
+     * @return Collection<int, Contact>
+     */
     public function getByIntegrationId(UuidInterface $integrationId): Collection
     {
         $contactModels = ContactModel::query()->where('integration_id', $integrationId->toString())->get();

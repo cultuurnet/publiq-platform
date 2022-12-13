@@ -33,10 +33,6 @@ final class CreateContact implements ShouldQueue
 
     public function handle(ContactCreated $contactCreated): void
     {
-        if (empty(config('insightly.api_key'))) {
-            return;
-        }
-
         $contact = $this->contactRepository->getById($contactCreated->id);
         if (!in_array($contact->type, $this->allowedContactTypes, true)) {
             return;

@@ -7,7 +7,6 @@ namespace Tests\Insightly\Listeners;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Events\ContactCreated;
-use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
@@ -43,7 +42,6 @@ final class CreateContactTest extends TestCase
 
         $this->insightlyMappingRepository = new InsightlyMappingRepository();
 
-        app('config')->set('insightly.api_key', 'api-key');
         $this->createContact = new CreateContact(
             new InsightlyClient(
                 $this->client,
@@ -60,9 +58,6 @@ final class CreateContactTest extends TestCase
      */
     public function it_uploads_a_contact(): void
     {
-        // Disable the model events
-        ContactModel::unsetEventDispatcher();
-
         $contact = new Contact(
             Uuid::uuid4(),
             Uuid::uuid4(),
