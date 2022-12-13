@@ -53,6 +53,9 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         return $integrationModel->delete();
     }
 
+    /**
+     * @return Collection<int, Integration>
+     */
     public function getByContactEmail(string $email): Collection
     {
         $integrationModels = IntegrationModel::query()

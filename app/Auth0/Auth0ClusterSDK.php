@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Auth0;
 
 use App\Domain\Integrations\Integration;
+use Illuminate\Support\Collection;
 
 final class Auth0ClusterSDK
 {
@@ -20,12 +21,17 @@ final class Auth0ClusterSDK
         }
     }
 
-    public function createClientsForIntegration(Integration $integration): array
+    /**
+     * @return Collection<int, Auth0Client>
+     */
+    public function createClientsForIntegration(Integration $integration): Collection
     {
-        return array_values(
-            array_map(
-                static fn (Auth0TenantSDK $sdk) => $sdk->createClientForIntegration($integration),
-                $this->auth0TenantSDKs
+        return collect(
+            array_values(
+                array_map(
+                    static fn (Auth0TenantSDK $sdk) => $sdk->createClientForIntegration($integration),
+                    $this->auth0TenantSDKs
+                )
             )
         );
     }
