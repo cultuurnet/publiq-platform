@@ -9,6 +9,8 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Organizations\Address;
+use App\Domain\Organizations\Organization;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Pipelines;
 use GuzzleHttp\Client;
@@ -35,10 +37,7 @@ final class InsightlyClientTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
-    public function it_can_create_a_contact(): void
+    public function test_it_can_create_a_contact(): void
     {
         $contact = new Contact(
             Uuid::uuid4(),
@@ -55,10 +54,7 @@ final class InsightlyClientTest extends TestCase
         $this->insightlyClient->contacts()->delete($contactId);
     }
 
-    /**
-     * @test
-     */
-    public function it_can_create_an_opportunity(): void
+    public function test_it_can_create_an_opportunity(): void
     {
         $integration = new Integration(
             Uuid::uuid4(),
@@ -74,5 +70,27 @@ final class InsightlyClientTest extends TestCase
         $this->assertNotNull($contactId);
 
         $this->insightlyClient->opportunities()->delete($contactId);
+    }
+
+    public function test_it_can_create_an_organization(): void
+    {
+        $organizationId = Uuid::uuid4();
+
+        $organization = new Organization(
+            $organizationId,
+            'Test Organization',
+            null,
+            new Address(
+                'Henegouwenkaai 41-43',
+                '1080',
+                'Brussel',
+                'België'
+            )
+        );
+
+        $organizationId = $this->insightlyClient->organizations()->create($organization);
+        $this->assertNotNull($organizationId);
+
+        $this->insightlyClient->opportunities()->delete($organizationId);
     }
 }
