@@ -6,6 +6,8 @@ namespace App\Providers;
 
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Contacts\Repositories\EloquentContactRepository;
+use App\Domain\Organizations\Repositories\EloquentOrganizationRepository;
+use App\Domain\Organizations\Repositories\OrganizationRepository;
 use Illuminate\Support\ServiceProvider;
 
 final class AppServiceProvider extends ServiceProvider
@@ -13,5 +15,6 @@ final class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(ContactRepository::class, EloquentContactRepository::class);
+        $this->app->bind(OrganizationRepository::class, EloquentOrganizationRepository::class);
     }
 }
