@@ -26,9 +26,9 @@ final class CreateContactTest extends TestCase
 {
     private CreateContact $createContact;
 
-    private MockObject $client;
+    private ClientInterface&MockObject $client;
 
-    private ContactRepository $contactRepository;
+    private ContactRepository&MockObject $contactRepository;
 
     private InsightlyMappingRepository $insightlyMappingRepository;
 
@@ -38,7 +38,7 @@ final class CreateContactTest extends TestCase
 
         $this->client = $this->createMock(ClientInterface::class);
 
-        $this->contactRepository = new ContactRepository();
+        $this->contactRepository = $this->createMock(ContactRepository::class);
 
         $this->insightlyMappingRepository = new InsightlyMappingRepository();
 
@@ -66,7 +66,11 @@ final class CreateContactTest extends TestCase
             'Jane',
             'Doe'
         );
-        $this->contactRepository->save($contact);
+
+        $this->contactRepository->expects(self::once())
+            ->method('getById')
+            ->with($contact->id)
+            ->willReturn($contact);
 
         $insightlyIntegrationMapping = new InsightlyMapping(
             $contact->integrationId,
@@ -104,7 +108,10 @@ final class CreateContactTest extends TestCase
             'Doe'
         );
 
-        $this->contactRepository->save($contact);
+        $this->contactRepository->expects(self::once())
+            ->method('getById')
+            ->with($contact->id)
+            ->willReturn($contact);
 
         $this->client->expects($this->never())
             ->method('sendRequest');
