@@ -15,6 +15,7 @@ use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Resource;
+use Publiq\ClientCredentials\ClientCredentials;
 
 final class Integration extends Resource
 {
@@ -69,6 +70,8 @@ final class Integration extends Resource
                 ->default(IntegrationStatus::Draft->value),
 
             HasMany::make('Contacts'),
+
+            ClientCredentials::make(),
         ];
     }
 }
