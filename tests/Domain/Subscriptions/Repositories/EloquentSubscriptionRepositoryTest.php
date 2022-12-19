@@ -12,7 +12,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
-final class SubscriptionRepositoryTest extends TestCase
+final class EloquentSubscriptionRepositoryTest extends TestCase
 {
     use RefreshDatabase;
 

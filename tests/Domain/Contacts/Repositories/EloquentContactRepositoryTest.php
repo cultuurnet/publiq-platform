@@ -11,7 +11,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
-final class ContactRepositoryTest extends TestCase
+final class EloquentContactRepositoryTest extends TestCase
 {
     use RefreshDatabase;
 
