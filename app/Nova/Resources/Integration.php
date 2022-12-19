@@ -20,6 +20,9 @@ use Laravel\Nova\Resource;
 use Laravel\Nova\ResourceTool;
 use Publiq\ClientCredentials\ClientCredentials;
 
+/**
+ * @property string $id
+ */
 final class Integration extends Resource
 {
     public static string $model = IntegrationModel::class;
