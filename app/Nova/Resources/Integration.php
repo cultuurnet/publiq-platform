@@ -17,6 +17,7 @@ use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Resource;
+use Laravel\Nova\ResourceTool;
 use Publiq\ClientCredentials\ClientCredentials;
 
 final class Integration extends Resource
@@ -34,7 +35,7 @@ final class Integration extends Resource
     ];
 
     /**
-     * @return array<Field>
+     * @return array<Field|ResourceTool>
      */
     public function fields(NovaRequest $request): array
     {
