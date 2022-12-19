@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace App\Domain\Subscriptions\Controllers;
 
-use App\Domain\Subscriptions\Repositories\EloquentSubscriptionRepository;
+use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Http\Controllers\Controller;
 use Inertia\Inertia;
 use Inertia\Response;
 
 final class SubscriptionController extends Controller
 {
-    private EloquentSubscriptionRepository $subscriptionRepository;
+    private SubscriptionRepository $subscriptionRepository;
 
-    public function __construct(EloquentSubscriptionRepository $subscriptionRepository)
+    public function __construct(SubscriptionRepository $subscriptionRepository)
     {
         $this->subscriptionRepository = $subscriptionRepository;
     }
