@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface;
 
-final class EloquentSubscriptionRepository
+final class EloquentSubscriptionRepository implements SubscriptionRepository
 {
     public function save(Subscription $subscription): void
     {
