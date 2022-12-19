@@ -6,22 +6,12 @@ use Laravel\Nova\ResourceTool;
 
 class ClientCredentials extends ResourceTool
 {
-    /**
-     * Get the displayable name of the resource tool.
-     *
-     * @return string
-     */
-    public function name()
+    public function name(): string
     {
         return 'Client Credentials';
     }
 
-    /**
-     * Get the component name for the resource tool.
-     *
-     * @return string
-     */
-    public function component()
+    public function component(): string
     {
         return 'client-credentials';
     }
