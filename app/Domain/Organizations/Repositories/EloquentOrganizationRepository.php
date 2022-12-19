@@ -7,7 +7,7 @@ namespace App\Domain\Organizations\Repositories;
 use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\Organizations\Organization;
 
-final class OrganizationRepository
+final class EloquentOrganizationRepository
 {
     public function save(Organization $organization): void
     {
