@@ -27,6 +27,13 @@ final class OrganizationModel extends UuidModel
         'country',
     ];
 
+    protected static function booted(): void
+    {
+        self::created(
+            static fn ($organizationModel) => OrganizationCreated::dispatch(Uuid::fromString($organizationModel->id))
+        );
+    }
+
     public function toDomain(): Organization
     {
         $address = new Address(
