@@ -13,7 +13,7 @@ use App\Insightly\InsightlyMapping;
 use App\Insightly\Listeners\CreateContact;
 use App\Insightly\Models\InsightlyMappingModel;
 use App\Insightly\Pipelines;
-use App\Insightly\Repositories\InsightlyMappingRepository;
+use App\Insightly\Repositories\EloquentInsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use App\Json;
 use GuzzleHttp\Psr7\Response;
@@ -30,7 +30,7 @@ final class CreateContactTest extends TestCase
 
     private ContactRepository&MockObject $contactRepository;
 
-    private InsightlyMappingRepository $insightlyMappingRepository;
+    private EloquentInsightlyMappingRepository $insightlyMappingRepository;
 
     protected function setUp(): void
     {
@@ -40,7 +40,7 @@ final class CreateContactTest extends TestCase
 
         $this->contactRepository = $this->createMock(ContactRepository::class);
 
-        $this->insightlyMappingRepository = new InsightlyMappingRepository();
+        $this->insightlyMappingRepository = new EloquentInsightlyMappingRepository();
 
         $this->createContact = new CreateContact(
             new InsightlyClient(

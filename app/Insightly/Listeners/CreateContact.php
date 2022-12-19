@@ -9,7 +9,7 @@ use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
-use App\Insightly\Repositories\InsightlyMappingRepository;
+use App\Insightly\Repositories\EloquentInsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -27,7 +27,7 @@ final class CreateContact implements ShouldQueue
     public function __construct(
         private readonly InsightlyClient $insightlyClient,
         private readonly ContactRepository $contactRepository,
-        private readonly InsightlyMappingRepository $insightlyMappingRepository
+        private readonly EloquentInsightlyMappingRepository $insightlyMappingRepository
     ) {
     }
 

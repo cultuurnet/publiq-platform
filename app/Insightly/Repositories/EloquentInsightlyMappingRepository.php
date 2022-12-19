@@ -10,7 +10,7 @@ use App\Insightly\Resources\ResourceType;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-final class InsightlyMappingRepository
+final class EloquentInsightlyMappingRepository
 {
     public function save(InsightlyMapping $insightlyMapping): void
     {
