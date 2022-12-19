@@ -13,4 +13,9 @@ final class Address
         public readonly string $country
     ) {
     }
+
+    public function isEmpty(): bool
+    {
+        return $this->street === '' && $this->zip === '' && $this->city === '' && $this->country === '';
+    }
 }
