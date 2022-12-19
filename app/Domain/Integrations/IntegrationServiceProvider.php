@@ -12,8 +12,6 @@ final class IntegrationServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->app->singleton(IntegrationRepository::class, function () {
-            return $this->app->get(EloquentIntegrationRepository::class);
-        });
+        $this->app->bind(IntegrationRepository::class, EloquentIntegrationRepository::class);
     }
 }
