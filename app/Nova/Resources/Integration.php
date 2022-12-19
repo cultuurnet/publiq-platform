@@ -6,7 +6,6 @@ namespace App\Nova\Resources;
 
 use App\Auth0\Auth0Tenant;
 use App\Auth0\Models\Auth0ClientModel;
-use App\Auth0\Repositories\EloquentAuth0ClientRepository;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
@@ -19,7 +18,6 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Resource;
 use Publiq\ClientCredentials\ClientCredentials;
-use Ramsey\Uuid\Uuid;
 
 final class Integration extends Resource
 {
