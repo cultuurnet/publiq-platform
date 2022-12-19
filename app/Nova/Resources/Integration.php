@@ -40,22 +40,6 @@ final class Integration extends Resource
      */
     public function fields(NovaRequest $request): array
     {
-        $auth0ClientCredentials = ClientCredentials::make(
-            title: 'UiTiD v2 (Auth0) Client Credentials',
-            idLabel: 'Client id',
-            secretLabel: 'Client secret',
-            environmentLabel: 'Environment'
-        );
-
-        $auth0Clients = $this->id ? (new EloquentAuth0ClientRepository())->getByIntegrationId(Uuid::fromString($this->id)) : [];
-        foreach ($auth0Clients as $auth0Client) {
-            $auth0ClientCredentials->withSet(
-                $auth0Client->tenant->name,
-                $auth0Client->clientId,
-                $auth0Client->clientSecret
-            );
-        }
-
         return [
             ID::make()
                 ->readonly(),
@@ -89,7 +73,19 @@ final class Integration extends Resource
                 ])
                 ->default(IntegrationStatus::Draft->value),
 
-            $auth0ClientCredentials,
+            ClientCredentials::make(
+                title: 'UiTiD v2 (Auth0) Client Credentials',
+                modelClassName: Auth0ClientModel::class,
+                idColumn: 'auth0_client_id',
+                idLabel: 'Client id',
+                secretColumn: 'auth0_client_secret',
+                secretLabel: 'Client secret',
+                environmentColumn: 'auth0_tenant',
+                environmentLabel: 'Environment',
+                environmentEnumClass: Auth0Tenant::class,
+                filterColumn: 'integration_id',
+                filterValue: $this->id,
+            ),
 
             HasMany::make('Contacts'),
         ];
