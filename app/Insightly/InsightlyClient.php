@@ -11,6 +11,7 @@ use App\Insightly\Exceptions\RecordLimitReached;
 use App\Insightly\Exceptions\RecordNotFound;
 use App\Insightly\Resources\ContactResource;
 use App\Insightly\Resources\OpportunityResource;
+use App\Insightly\Resources\OrganizationResource;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -32,6 +33,11 @@ final class InsightlyClient
     public function opportunities(): OpportunityResource
     {
         return new OpportunityResource($this);
+    }
+
+    public function organizations(): OrganizationResource
+    {
+        return new OrganizationResource($this);
     }
 
     public function sendRequest(RequestInterface $request): ResponseInterface
