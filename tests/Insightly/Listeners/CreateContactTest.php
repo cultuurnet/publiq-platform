@@ -17,9 +17,10 @@ use App\Insightly\Resources\ResourceType;
 use App\Json;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
+use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
-use Tests\TestCase;
 
 final class CreateContactTest extends TestCase
 {
@@ -33,8 +34,6 @@ final class CreateContactTest extends TestCase
 
     protected function setUp(): void
     {
-        parent::setUp();
-
         $this->client = $this->createMock(ClientInterface::class);
 
         $this->contactRepository = $this->createMock(ContactRepository::class);
@@ -48,7 +47,8 @@ final class CreateContactTest extends TestCase
                 new Pipelines([])
             ),
             $this->contactRepository,
-            $this->insightlyMappingRepository
+            $this->insightlyMappingRepository,
+            $this->createMock(LoggerInterface::class),
         );
     }
 
