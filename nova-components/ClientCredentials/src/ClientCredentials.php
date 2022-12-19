@@ -4,7 +4,7 @@ namespace Publiq\ClientCredentials;
 
 use Laravel\Nova\ResourceTool;
 
-class ClientCredentials extends ResourceTool
+final class ClientCredentials extends ResourceTool
 {
     public function name(): string
     {
