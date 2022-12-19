@@ -11,9 +11,8 @@ use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Listeners\CreateContact;
-use App\Insightly\Models\InsightlyMappingModel;
 use App\Insightly\Pipelines;
-use App\Insightly\Repositories\EloquentInsightlyMappingRepository;
+use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use App\Json;
 use GuzzleHttp\Psr7\Response;
@@ -30,7 +29,7 @@ final class CreateContactTest extends TestCase
 
     private ContactRepository&MockObject $contactRepository;
 
-    private EloquentInsightlyMappingRepository $insightlyMappingRepository;
+    private InsightlyMappingRepository&MockObject $insightlyMappingRepository;
 
     protected function setUp(): void
     {
@@ -40,7 +39,7 @@ final class CreateContactTest extends TestCase
 
         $this->contactRepository = $this->createMock(ContactRepository::class);
 
-        $this->insightlyMappingRepository = new EloquentInsightlyMappingRepository();
+        $this->insightlyMappingRepository = $this->createMock(InsightlyMappingRepository::class);
 
         $this->createContact = new CreateContact(
             new InsightlyClient(
@@ -58,9 +57,12 @@ final class CreateContactTest extends TestCase
      */
     public function it_uploads_a_contact(): void
     {
+        $integrationId = Uuid::uuid4();
+        $contactId = Uuid::uuid4();
+
         $contact = new Contact(
-            Uuid::uuid4(),
-            Uuid::uuid4(),
+            $contactId,
+            $integrationId,
             'jane.doe@anonymous.com',
             ContactType::Technical,
             'Jane',
@@ -72,26 +74,30 @@ final class CreateContactTest extends TestCase
             ->with($contact->id)
             ->willReturn($contact);
 
-        $insightlyIntegrationMapping = new InsightlyMapping(
-            $contact->integrationId,
-            45872,
-            ResourceType::Opportunity
-        );
-        $this->insightlyMappingRepository->save($insightlyIntegrationMapping);
-
+        $insightlyId = 985413;
         $this->client->expects($this->exactly(2))
             ->method('sendRequest')
             ->willReturnOnConsecutiveCalls(
-                new Response(200, [], Json::encode(['CONTACT_ID' => 985413])),
+                new Response(200, [], Json::encode(['CONTACT_ID' => $insightlyId])),
                 new Response(200, [])
             );
 
-        $this->createContact->handle(new ContactCreated($contact->id));
+        $insightlyIntegrationMapping = new InsightlyMapping(
+            $contactId,
+            $insightlyId,
+            ResourceType::Contact
+        );
 
-        $this->assertDatabaseHas(InsightlyMappingModel::class, [
-            'id' => $contact->id->toString(),
-            'resource_type' => 'contact',
-        ]);
+        $this->insightlyMappingRepository->expects(self::once())
+            ->method('save')
+            ->with($insightlyIntegrationMapping);
+
+        $this->insightlyMappingRepository->expects(self::once())
+            ->method('getById')
+            ->with($integrationId)
+            ->willReturn($insightlyIntegrationMapping);
+
+        $this->createContact->handle(new ContactCreated($contact->id));
     }
 
     /**
