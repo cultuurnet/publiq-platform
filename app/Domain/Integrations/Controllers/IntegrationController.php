@@ -11,7 +11,7 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\EloquentIntegrationRepository;
-use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
+use App\Domain\Subscriptions\Repositories\EloquentSubscriptionRepository;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
@@ -22,9 +22,9 @@ use Ramsey\Uuid\Uuid;
 final class IntegrationController extends Controller
 {
     public function __construct(
-        private readonly SubscriptionRepository        $subscriptionRepository,
-        private readonly EloquentIntegrationRepository $integrationRepository,
-        private readonly CurrentUser                   $currentUser
+        private readonly EloquentSubscriptionRepository $subscriptionRepository,
+        private readonly EloquentIntegrationRepository  $integrationRepository,
+        private readonly CurrentUser                    $currentUser
     ) {
     }
 
