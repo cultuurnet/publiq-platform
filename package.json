@@ -8,7 +8,9 @@
         "format:check": "prettier --check 'resources/ts/**/*.{js,jsx,ts,tsx}'",
         "lint": "eslint --fix 'resources/ts/**/*.{js,jsx,ts,tsx}'",
         "lint:check": "eslint 'resources/ts/**/*.{js,jsx,ts,tsx}'",
-        "types:check": "tsc"
+        "types:check": "tsc",
+        "build-client-credentials": "cd nova-components/ClientCredentials && npm run dev",
+        "build-client-credentials-prod": "cd nova-components/ClientCredentials && npm run prod"
     },
     "dependencies": {
         "@inertiajs/inertia": "^0.11.1",
