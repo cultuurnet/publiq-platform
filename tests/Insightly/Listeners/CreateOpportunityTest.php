@@ -20,6 +20,7 @@ use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
+use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
@@ -47,6 +48,7 @@ final class CreateOpportunityTest extends TestCase
             ),
             $this->integrationRepository,
             $this->insightlyMappingRepository,
+            $this->createMock(LoggerInterface::class),
         );
     }
 
