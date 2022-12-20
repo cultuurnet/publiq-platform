@@ -19,7 +19,7 @@ final class OrganizationSerializer
         ];
 
         if ($organization->vat) {
-            $organizationAsArray['CUSTOMFIELDS'] = (new VatSerializer())->toInsightlyArray($organization->vat);
+            $organizationAsArray['CUSTOMFIELDS'][] = (new VatSerializer())->toInsightlyArray($organization->vat);
         }
 
         return $organizationAsArray;
