@@ -12,7 +12,7 @@ final class Organization
         public readonly UuidInterface $id,
         public readonly string $name,
         public readonly ?string $vat,
-        public readonly ?Address $address
+        public readonly Address $address
     ) {
     }
 }

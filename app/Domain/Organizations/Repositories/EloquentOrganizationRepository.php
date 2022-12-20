@@ -16,10 +16,10 @@ final class EloquentOrganizationRepository implements OrganizationRepository
             'id' => $organization->id->toString(),
             'name' => $organization->name,
             'vat' => $organization->vat,
-            'street' => $organization->address?->street,
-            'zip' => $organization->address?->zip,
-            'city' => $organization->address?->city,
-            'country' => $organization->address?->country,
+            'street' => $organization->address->street,
+            'zip' => $organization->address->zip,
+            'city' => $organization->address->city,
+            'country' => $organization->address->country,
         ]);
     }
 

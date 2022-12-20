@@ -36,18 +36,16 @@ final class OrganizationModel extends UuidModel
 
     public function toDomain(): Organization
     {
-        $address = new Address(
-            $this->street ?: '',
-            $this->zip ?: '',
-            $this->city ?: '',
-            $this->country ?: '',
-        );
-
         return new Organization(
             Uuid::fromString($this->id),
             $this->name,
             $this->vat,
-            $address->isEmpty() ? null : $address,
+            new Address(
+                $this->street ?: '',
+                $this->zip ?: '',
+                $this->city ?: '',
+                $this->country ?: '',
+            )
         );
     }
 }

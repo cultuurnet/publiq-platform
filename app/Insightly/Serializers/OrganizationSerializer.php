@@ -13,9 +13,9 @@ final class OrganizationSerializer
     {
         $organizationAsArray = [
             'ORGANISATION_NAME' => $organization->name,
-            'ADDRESS_BILLING_STREET' => $organization->address?->street,
-            'ADDRESS_BILLING_POSTCODE' => $organization->address?->zip,
-            'ADDRESS_BILLING_CITY' => $organization->address?->street,
+            'ADDRESS_BILLING_STREET' => $organization->address->street,
+            'ADDRESS_BILLING_POSTCODE' => $organization->address->zip,
+            'ADDRESS_BILLING_CITY' => $organization->address->street,
         ];
 
         if ($organization->vat) {
