@@ -37,13 +37,13 @@ final class CreateOpportunity implements ShouldQueue
             ResourceType::Opportunity
         ));
 
-        Log::info(
-            'Opportunity created for integration',
-            [
-                'domain' => 'insightly',
-                'integration_id' => $integrationCreated->id->toString(),
-            ]
-        );
+//        Log::info(
+//            'Opportunity created for integration',
+//            [
+//                'domain' => 'insightly',
+//                'integration_id' => $integrationCreated->id->toString(),
+//            ]
+//        );
     }
 
     public function failed(IntegrationCreated $integrationCreated, \Throwable $exception): void
