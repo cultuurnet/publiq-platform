@@ -31,7 +31,7 @@ final class OrganizationResource
 
         $contactAsArray = Json::decodeAssociatively($response->getBody()->getContents());
 
-        return $contactAsArray['ORGANIZATION_ID'];
+        return $contactAsArray['ORGANISATION_ID'];
     }
 
     public function delete(int $id): void
