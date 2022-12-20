@@ -6,23 +6,23 @@ namespace Tests\Domain\Subscriptions\Repositories;
 
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Subscriptions\Currency;
-use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
+use App\Domain\Subscriptions\Repositories\EloquentSubscriptionRepository;
 use App\Domain\Subscriptions\Subscription;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
-final class SubscriptionRepositoryTest extends TestCase
+final class EloquentSubscriptionRepositoryTest extends TestCase
 {
     use RefreshDatabase;
 
-    private SubscriptionRepository $subscriptionRepository;
+    private EloquentSubscriptionRepository $subscriptionRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->subscriptionRepository = new SubscriptionRepository();
+        $this->subscriptionRepository = new EloquentSubscriptionRepository();
     }
 
     public function test_it_can_save_a_subscription(): void

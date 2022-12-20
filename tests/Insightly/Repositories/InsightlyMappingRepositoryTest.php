@@ -6,7 +6,7 @@ namespace Tests\Insightly\Repositories;
 
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Models\InsightlyMappingModel;
-use App\Insightly\Repositories\InsightlyMappingRepository;
+use App\Insightly\Repositories\EloquentInsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
@@ -16,7 +16,7 @@ final class InsightlyMappingRepositoryTest extends TestCase
 {
     use RefreshDatabase;
 
-    private InsightlyMappingRepository $insightlyMappingRepository;
+    private EloquentInsightlyMappingRepository $insightlyMappingRepository;
 
     private InsightlyMapping $insightlyMapping;
 
@@ -24,7 +24,7 @@ final class InsightlyMappingRepositoryTest extends TestCase
     {
         parent::setUp();
 
-        $this->insightlyMappingRepository = new InsightlyMappingRepository();
+        $this->insightlyMappingRepository = new EloquentInsightlyMappingRepository();
 
         $this->insightlyMapping = new InsightlyMapping(
             Uuid::uuid4(),
