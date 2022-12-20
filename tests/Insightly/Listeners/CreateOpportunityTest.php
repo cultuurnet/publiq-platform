@@ -52,10 +52,7 @@ final class CreateOpportunityTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
-    public function it_creates_an_opportunity(): void
+    public function test_it_creates_an_opportunity(): void
     {
         $integrationId = Uuid::uuid4();
         $insightlyId = 42;
