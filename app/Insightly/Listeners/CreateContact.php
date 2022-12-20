@@ -13,7 +13,7 @@ use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Facades\Log;
+use Psr\Log\LoggerInterface;
 
 final class CreateContact implements ShouldQueue
 {
@@ -27,7 +27,8 @@ final class CreateContact implements ShouldQueue
     public function __construct(
         private readonly InsightlyClient $insightlyClient,
         private readonly ContactRepository $contactRepository,
-        private readonly InsightlyMappingRepository $insightlyMappingRepository
+        private readonly InsightlyMappingRepository $insightlyMappingRepository,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -52,7 +53,7 @@ final class CreateContact implements ShouldQueue
             $contact->type
         );
 
-        Log::info(
+        $this->logger->info(
             'Contact created',
             [
                 'domain' => 'insightly',
@@ -63,7 +64,7 @@ final class CreateContact implements ShouldQueue
 
     public function failed(ContactCreated $contactCreated, \Throwable $exception): void
     {
-        Log::error(
+        $this->logger->error(
             'Failed to create contact',
             [
                 'domain' => 'insightly',

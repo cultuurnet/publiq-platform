@@ -11,36 +11,34 @@ use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Listeners\CreateContact;
-use App\Insightly\Models\InsightlyMappingModel;
 use App\Insightly\Pipelines;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use App\Json;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
+use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
-use Tests\TestCase;
 
 final class CreateContactTest extends TestCase
 {
     private CreateContact $createContact;
 
-    private MockObject $client;
+    private ClientInterface&MockObject $client;
 
-    private ContactRepository $contactRepository;
+    private ContactRepository&MockObject $contactRepository;
 
-    private InsightlyMappingRepository $insightlyMappingRepository;
+    private InsightlyMappingRepository&MockObject $insightlyMappingRepository;
 
     protected function setUp(): void
     {
-        parent::setUp();
-
         $this->client = $this->createMock(ClientInterface::class);
 
-        $this->contactRepository = new ContactRepository();
+        $this->contactRepository = $this->createMock(ContactRepository::class);
 
-        $this->insightlyMappingRepository = new InsightlyMappingRepository();
+        $this->insightlyMappingRepository = $this->createMock(InsightlyMappingRepository::class);
 
         $this->createContact = new CreateContact(
             new InsightlyClient(
@@ -49,7 +47,8 @@ final class CreateContactTest extends TestCase
                 new Pipelines([])
             ),
             $this->contactRepository,
-            $this->insightlyMappingRepository
+            $this->insightlyMappingRepository,
+            $this->createMock(LoggerInterface::class),
         );
     }
 
@@ -58,36 +57,47 @@ final class CreateContactTest extends TestCase
      */
     public function it_uploads_a_contact(): void
     {
+        $integrationId = Uuid::uuid4();
+        $contactId = Uuid::uuid4();
+
         $contact = new Contact(
-            Uuid::uuid4(),
-            Uuid::uuid4(),
+            $contactId,
+            $integrationId,
             'jane.doe@anonymous.com',
             ContactType::Technical,
             'Jane',
             'Doe'
         );
-        $this->contactRepository->save($contact);
 
-        $insightlyIntegrationMapping = new InsightlyMapping(
-            $contact->integrationId,
-            45872,
-            ResourceType::Opportunity
-        );
-        $this->insightlyMappingRepository->save($insightlyIntegrationMapping);
+        $this->contactRepository->expects(self::once())
+            ->method('getById')
+            ->with($contact->id)
+            ->willReturn($contact);
 
+        $insightlyId = 985413;
         $this->client->expects($this->exactly(2))
             ->method('sendRequest')
             ->willReturnOnConsecutiveCalls(
-                new Response(200, [], Json::encode(['CONTACT_ID' => 985413])),
+                new Response(200, [], Json::encode(['CONTACT_ID' => $insightlyId])),
                 new Response(200, [])
             );
 
-        $this->createContact->handle(new ContactCreated($contact->id));
+        $insightlyIntegrationMapping = new InsightlyMapping(
+            $contactId,
+            $insightlyId,
+            ResourceType::Contact
+        );
 
-        $this->assertDatabaseHas(InsightlyMappingModel::class, [
-            'id' => $contact->id->toString(),
-            'resource_type' => 'contact',
-        ]);
+        $this->insightlyMappingRepository->expects(self::once())
+            ->method('save')
+            ->with($insightlyIntegrationMapping);
+
+        $this->insightlyMappingRepository->expects(self::once())
+            ->method('getById')
+            ->with($integrationId)
+            ->willReturn($insightlyIntegrationMapping);
+
+        $this->createContact->handle(new ContactCreated($contact->id));
     }
 
     /**
@@ -104,7 +114,10 @@ final class CreateContactTest extends TestCase
             'Doe'
         );
 
-        $this->contactRepository->save($contact);
+        $this->contactRepository->expects(self::once())
+            ->method('getById')
+            ->with($contact->id)
+            ->willReturn($contact);
 
         $this->client->expects($this->never())
             ->method('sendRequest');

@@ -45,6 +45,7 @@ final class EloquentOrganizationRepositoryTest extends TestCase
     public function test_it_can_save_an_organization_with_address(): void
     {
         $organizationId = Uuid::uuid4();
+
         $organization = new Organization(
             $organizationId,
             'Test Organization',

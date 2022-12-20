@@ -6,22 +6,22 @@ namespace Tests\Domain\Contacts\Repositories;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
-use App\Domain\Contacts\Repositories\ContactRepository;
+use App\Domain\Contacts\Repositories\EloquentContactRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
-final class ContactRepositoryTest extends TestCase
+final class EloquentContactRepositoryTest extends TestCase
 {
     use RefreshDatabase;
 
-    private ContactRepository $contactRepository;
+    private EloquentContactRepository $contactRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->contactRepository = new ContactRepository();
+        $this->contactRepository = new EloquentContactRepository();
     }
 
     public function test_it_can_save_a_contact(): void
