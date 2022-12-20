@@ -25,9 +25,9 @@ final class CreateClientsTest extends TestCase
 {
     use CreatesMockAuth0ClusterSDK;
 
-    private MockObject $httpClient;
-    private MockObject $integrationRepository;
-    private MockObject $clientRepository;
+    private ClientInterface&MockObject $httpClient;
+    private IntegrationRepository&MockObject $integrationRepository;
+    private Auth0ClientRepository&MockObject $clientRepository;
     private CreateClients $createClients;
 
     protected function setUp(): void

@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace App\Insightly\Listeners;
 
 use App\Domain\Integrations\Events\IntegrationCreated;
-use App\Domain\Integrations\Repositories\EloquentIntegrationRepository;
+use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Facades\Log;
+use Psr\Log\LoggerInterface;
 
 final class CreateOpportunity implements ShouldQueue
 {
@@ -20,8 +20,9 @@ final class CreateOpportunity implements ShouldQueue
 
     public function __construct(
         private readonly InsightlyClient               $insightlyClient,
-        private readonly EloquentIntegrationRepository $integrationRepository,
-        private readonly InsightlyMappingRepository    $insightlyMappingRepository
+        private readonly IntegrationRepository $integrationRepository,
+        private readonly InsightlyMappingRepository $insightlyMappingRepository,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -37,7 +38,7 @@ final class CreateOpportunity implements ShouldQueue
             ResourceType::Opportunity
         ));
 
-        Log::info(
+        $this->logger->info(
             'Opportunity created for integration',
             [
                 'domain' => 'insightly',
@@ -48,7 +49,7 @@ final class CreateOpportunity implements ShouldQueue
 
     public function failed(IntegrationCreated $integrationCreated, \Throwable $exception): void
     {
-        Log::error(
+        $this->logger->error(
             'Failed to create opportunity for integration',
             [
                 'domain' => 'insightly',

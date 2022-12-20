@@ -6,22 +6,22 @@ namespace Tests\Domain\Organizations\Repositories;
 
 use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Organization;
-use App\Domain\Organizations\Repositories\OrganizationRepository;
+use App\Domain\Organizations\Repositories\EloquentOrganizationRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
-final class OrganizationRepositoryTest extends TestCase
+final class EloquentOrganizationRepositoryTest extends TestCase
 {
     use RefreshDatabase;
 
-    private OrganizationRepository $organizationRepository;
+    private EloquentOrganizationRepository $organizationRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->organizationRepository = new OrganizationRepository();
+        $this->organizationRepository = new EloquentOrganizationRepository();
     }
 
     public function test_it_can_save_an_organization(): void

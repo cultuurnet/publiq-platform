@@ -8,6 +8,8 @@ use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Insightly\Listeners\CreateContact;
 use App\Insightly\Listeners\CreateOpportunity;
+use App\Insightly\Repositories\EloquentInsightlyMappingRepository;
+use App\Insightly\Repositories\InsightlyMappingRepository;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
@@ -16,6 +18,8 @@ final class InsightlyServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->bind(InsightlyMappingRepository::class, EloquentInsightlyMappingRepository::class);
+
         $this->app->singleton(InsightlyClient::class, function () {
             return new InsightlyClient(
                 new Client(
