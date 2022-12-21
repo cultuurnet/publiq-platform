@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Insightly\Serializers;
 
 use App\Domain\Organizations\Organization;
+use App\Insightly\Serializers\CustomFields\InvoiceEmailSerializer;
 use App\Insightly\Serializers\CustomFields\VatSerializer;
 
 final class OrganizationSerializer
@@ -17,6 +18,9 @@ final class OrganizationSerializer
             'ADDRESS_BILLING_STREET' => $organization->address->street,
             'ADDRESS_BILLING_POSTCODE' => $organization->address->zip,
             'ADDRESS_BILLING_CITY' => $organization->address->city,
+            'CUSTOMFIELDS' => [
+                (new InvoiceEmailSerializer())->toInsightlyArray($organization->invoiceEmail),
+            ],
         ];
 
         if ($organization->vat) {
