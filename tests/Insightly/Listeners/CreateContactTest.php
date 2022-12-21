@@ -8,9 +8,9 @@ use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Contacts\Repositories\ContactRepository;
-use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Interfaces\ContactResource;
+use App\Insightly\Interfaces\CrmClient;
 use App\Insightly\Interfaces\OpportunityResource;
 use App\Insightly\Listeners\CreateContact;
 use App\Insightly\Repositories\InsightlyMappingRepository;
@@ -28,7 +28,7 @@ final class CreateContactTest extends TestCase
 
     private InsightlyMappingRepository&MockObject $insightlyMappingRepository;
 
-    private InsightlyClient&MockObject $insightlyClient;
+    private CrmClient&MockObject $insightlyClient;
 
     private ContactResource&MockObject $contactResource;
 
@@ -40,7 +40,7 @@ final class CreateContactTest extends TestCase
 
         $this->insightlyMappingRepository = $this->createMock(InsightlyMappingRepository::class);
 
-        $this->insightlyClient = $this->createMock(InsightlyClient::class);
+        $this->insightlyClient = $this->createMock(CrmClient::class);
         $this->contactResource = $this->createMock(ContactResource::class);
         $this->opportunityResource = $this->createMock(OpportunityResource::class);
         $this->insightlyClient->expects($this->any())

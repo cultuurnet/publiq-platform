@@ -10,6 +10,7 @@ use App\Insightly\Exceptions\DeleteFailed;
 use App\Insightly\Exceptions\RecordLimitReached;
 use App\Insightly\Exceptions\RecordNotFound;
 use App\Insightly\Interfaces\ContactResource;
+use App\Insightly\Interfaces\CrmClient;
 use App\Insightly\Interfaces\OpportunityResource;
 use App\Insightly\Resources\InsightlyContactResource;
 use App\Insightly\Resources\InsightlyOpportunityResource;
@@ -18,7 +19,7 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-class InsightlyClient
+final class InsightlyClient implements CrmClient
 {
     public function __construct(
         private readonly ClientInterface $httpClient,
