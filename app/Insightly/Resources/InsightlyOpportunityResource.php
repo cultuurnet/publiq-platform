@@ -14,7 +14,7 @@ use App\Insightly\Serializers\OpportunitySerializer;
 use App\Insightly\Serializers\OpportunityStageSerializer;
 use GuzzleHttp\Psr7\Request;
 
-class OpportunityResource
+class InsightlyOpportunityResource
 {
     private string $path = 'Opportunities/';
 
