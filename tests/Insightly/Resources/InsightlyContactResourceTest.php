@@ -64,6 +64,16 @@ final class InsightlyContactResourceTest extends TestCase
         $this->assertEquals($insightlyId, $returnedId);
     }
 
+    public function test_it_deletes_a_contact(): void
+    {
+        $expectedRequest = new Request('DELETE', 'Contacts/42');
+        $this->insightlyClient->expects($this->once())
+            ->method('sendRequest')
+            ->with(self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedRequest, $actualRequest)));
+
+        $this->resource->delete(42);
+    }
+
     private static function assertRequestIsTheSame(Request $expected, Request $actual): bool
     {
         self::assertEquals($expected->getHeaders(), $actual->getHeaders());
