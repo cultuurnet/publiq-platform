@@ -47,26 +47,29 @@ final class CreateOpportunityTest extends TestCase
 
     public function test_it_creates_an_opportunity(): void
     {
+        // Given
         $integrationId = Uuid::uuid4();
         $insightlyId = 42;
 
         $integration = $this->givenThereIsAnIntegrationWithId($integrationId);
 
+        // Then it creates the opportunity at Insightly
         $this->opportunityResource->expects($this->once())
             ->method('create')
             ->with($integration)
             ->willReturn($insightlyId);
 
+        // Then it stores the insightlyId mapping
         $insightlyIntegrationMapping = new InsightlyMapping(
             $integrationId,
             $insightlyId,
             ResourceType::Opportunity,
         );
-
         $this->insightlyMappingRepository->expects(self::once())
             ->method('save')
             ->with($insightlyIntegrationMapping);
 
+        // When
         $event = new IntegrationCreated($integrationId);
         $this->listener->handle($event);
     }
