@@ -6,6 +6,7 @@ namespace App\Domain\Organizations\Models;
 
 use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Events\OrganizationCreated;
+use App\Domain\Organizations\Events\OrganizationUpdated;
 use App\Domain\Organizations\Organization;
 use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -31,6 +32,9 @@ final class OrganizationModel extends UuidModel
     {
         self::created(
             static fn ($organizationModel) => OrganizationCreated::dispatch(Uuid::fromString($organizationModel->id))
+        );
+        self::updated(
+            static fn ($organizationModel) => OrganizationUpdated::dispatch(Uuid::fromString($organizationModel->id))
         );
     }
 
