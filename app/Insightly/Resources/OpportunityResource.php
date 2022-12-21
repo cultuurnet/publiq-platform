@@ -7,11 +7,11 @@ namespace App\Insightly\Resources;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
 use App\Insightly\InsightlyClient;
-use App\Insightly\Serializers\LinkSerializer;
-use App\Json;
 use App\Insightly\Objects\OpportunityStage;
+use App\Insightly\Serializers\LinkSerializer;
 use App\Insightly\Serializers\OpportunitySerializer;
 use App\Insightly\Serializers\OpportunityStageSerializer;
+use App\Json;
 use GuzzleHttp\Psr7\Request;
 
 final class OpportunityResource
