@@ -9,9 +9,6 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Insightly\InsightlyMapping;
-use App\Insightly\Interfaces\ContactResource;
-use App\Insightly\Interfaces\CrmClient;
-use App\Insightly\Interfaces\OpportunityResource;
 use App\Insightly\Listeners\CreateContact;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
@@ -19,20 +16,17 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
+use Tests\MockCrmClient;
 
 final class CreateContactTest extends TestCase
 {
+    use MockCrmClient;
+
     private CreateContact $createContact;
 
     private ContactRepository&MockObject $contactRepository;
 
     private InsightlyMappingRepository&MockObject $insightlyMappingRepository;
-
-    private CrmClient&MockObject $insightlyClient;
-
-    private ContactResource&MockObject $contactResource;
-
-    private OpportunityResource&MockObject $opportunityResource;
 
     protected function setUp(): void
     {
@@ -40,15 +34,7 @@ final class CreateContactTest extends TestCase
 
         $this->insightlyMappingRepository = $this->createMock(InsightlyMappingRepository::class);
 
-        $this->insightlyClient = $this->createMock(CrmClient::class);
-        $this->contactResource = $this->createMock(ContactResource::class);
-        $this->opportunityResource = $this->createMock(OpportunityResource::class);
-        $this->insightlyClient->expects($this->any())
-            ->method('contacts')
-            ->willReturn($this->contactResource);
-        $this->insightlyClient->expects($this->any())
-            ->method('opportunities')
-            ->willReturn($this->opportunityResource);
+        $this->mockCrmClient();
 
         $this->createContact = new CreateContact(
             $this->insightlyClient,
