@@ -16,7 +16,7 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-final class InsightlyClient
+class InsightlyClient
 {
     public function __construct(
         private readonly ClientInterface $httpClient,

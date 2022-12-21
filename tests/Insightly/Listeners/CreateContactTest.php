@@ -11,14 +11,12 @@ use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Listeners\CreateContact;
-use App\Insightly\Pipelines;
 use App\Insightly\Repositories\InsightlyMappingRepository;
+use App\Insightly\Resources\ContactResource;
+use App\Insightly\Resources\OpportunityResource;
 use App\Insightly\Resources\ResourceType;
-use App\Json;
-use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Client\ClientInterface;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 
@@ -26,26 +24,34 @@ final class CreateContactTest extends TestCase
 {
     private CreateContact $createContact;
 
-    private ClientInterface&MockObject $client;
-
     private ContactRepository&MockObject $contactRepository;
 
     private InsightlyMappingRepository&MockObject $insightlyMappingRepository;
 
+    private InsightlyClient&MockObject $insightlyClient;
+
+    private ContactResource&MockObject $contactResource;
+
+    private OpportunityResource&MockObject $opportunityResource;
+
     protected function setUp(): void
     {
-        $this->client = $this->createMock(ClientInterface::class);
-
         $this->contactRepository = $this->createMock(ContactRepository::class);
 
         $this->insightlyMappingRepository = $this->createMock(InsightlyMappingRepository::class);
 
+        $this->insightlyClient = $this->createMock(InsightlyClient::class);
+        $this->contactResource = $this->createMock(ContactResource::class);
+        $this->opportunityResource = $this->createMock(OpportunityResource::class);
+        $this->insightlyClient->expects($this->any())
+            ->method('contacts')
+            ->willReturn($this->contactResource);
+        $this->insightlyClient->expects($this->any())
+            ->method('opportunities')
+            ->willReturn($this->opportunityResource);
+
         $this->createContact = new CreateContact(
-            new InsightlyClient(
-                $this->client,
-                'api-key',
-                new Pipelines([])
-            ),
+            $this->insightlyClient,
             $this->contactRepository,
             $this->insightlyMappingRepository,
             $this->createMock(LoggerInterface::class),
@@ -75,12 +81,12 @@ final class CreateContactTest extends TestCase
             ->willReturn($contact);
 
         $insightlyId = 985413;
-        $this->client->expects($this->exactly(2))
-            ->method('sendRequest')
-            ->willReturnOnConsecutiveCalls(
-                new Response(200, [], Json::encode(['CONTACT_ID' => $insightlyId])),
-                new Response(200, [])
-            );
+        $this->contactResource->expects($this->once())
+            ->method('create')
+            ->willReturn($insightlyId);
+
+        $this->opportunityResource->expects($this->once())
+            ->method('linkContact');
 
         $insightlyIntegrationMapping = new InsightlyMapping(
             $contactId,
@@ -119,8 +125,8 @@ final class CreateContactTest extends TestCase
             ->with($contact->id)
             ->willReturn($contact);
 
-        $this->client->expects($this->never())
-            ->method('sendRequest');
+        $this->insightlyClient->expects($this->never())
+            ->method('contacts');
 
         $this->createContact->handle(new ContactCreated($contact->id));
     }
