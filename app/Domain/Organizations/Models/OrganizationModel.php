@@ -21,6 +21,7 @@ final class OrganizationModel extends UuidModel
     protected $fillable = [
         'id',
         'name',
+        'invoice_email',
         'vat',
         'street',
         'zip',
@@ -43,13 +44,14 @@ final class OrganizationModel extends UuidModel
         return new Organization(
             Uuid::fromString($this->id),
             $this->name,
+            $this->invoice_email,
             $this->vat,
             new Address(
                 $this->street ?: '',
                 $this->zip ?: '',
                 $this->city ?: '',
                 $this->country ?: '',
-            )
+            ),
         );
     }
 }

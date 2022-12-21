@@ -15,6 +15,7 @@ final class EloquentOrganizationRepository implements OrganizationRepository
         OrganizationModel::query()->create([
             'id' => $organization->id->toString(),
             'name' => $organization->name,
+            'invoice_email' => $organization->invoiceEmail,
             'vat' => $organization->vat,
             'street' => $organization->address->street,
             'zip' => $organization->address->zip,
