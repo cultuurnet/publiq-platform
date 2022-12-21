@@ -11,9 +11,9 @@ use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Interfaces\ContactResource;
+use App\Insightly\Interfaces\OpportunityResource;
 use App\Insightly\Listeners\CreateContact;
 use App\Insightly\Repositories\InsightlyMappingRepository;
-use App\Insightly\Resources\InsightlyOpportunityResource;
 use App\Insightly\Resources\ResourceType;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -32,7 +32,7 @@ final class CreateContactTest extends TestCase
 
     private ContactResource&MockObject $contactResource;
 
-    private InsightlyOpportunityResource&MockObject $opportunityResource;
+    private OpportunityResource&MockObject $opportunityResource;
 
     protected function setUp(): void
     {
@@ -42,7 +42,7 @@ final class CreateContactTest extends TestCase
 
         $this->insightlyClient = $this->createMock(InsightlyClient::class);
         $this->contactResource = $this->createMock(ContactResource::class);
-        $this->opportunityResource = $this->createMock(InsightlyOpportunityResource::class);
+        $this->opportunityResource = $this->createMock(OpportunityResource::class);
         $this->insightlyClient->expects($this->any())
             ->method('contacts')
             ->willReturn($this->contactResource);

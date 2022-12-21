@@ -7,6 +7,7 @@ namespace App\Insightly\Resources;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
 use App\Insightly\InsightlyClient;
+use App\Insightly\Interfaces\OpportunityResource;
 use App\Insightly\Serializers\LinkSerializer;
 use App\Json;
 use App\Insightly\Objects\OpportunityStage;
@@ -14,7 +15,7 @@ use App\Insightly\Serializers\OpportunitySerializer;
 use App\Insightly\Serializers\OpportunityStageSerializer;
 use GuzzleHttp\Psr7\Request;
 
-class InsightlyOpportunityResource
+final class InsightlyOpportunityResource implements OpportunityResource
 {
     private string $path = 'Opportunities/';
 
