@@ -8,4 +8,5 @@ enum ResourceType: string
 {
     case Contact = 'contact';
     case Opportunity = 'opportunity';
+    case Organization = 'organization';
 }

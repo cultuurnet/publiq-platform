@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace App\Domain\Organizations\Models;
 
+use App\Domain\Organizations\Address;
+use App\Domain\Organizations\Events\OrganizationCreated;
+use App\Domain\Organizations\Organization;
 use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Ramsey\Uuid\Uuid;
 
 final class OrganizationModel extends UuidModel
 {
@@ -22,4 +26,26 @@ final class OrganizationModel extends UuidModel
         'city',
         'country',
     ];
+
+    protected static function booted(): void
+    {
+        self::created(
+            static fn ($organizationModel) => OrganizationCreated::dispatch(Uuid::fromString($organizationModel->id))
+        );
+    }
+
+    public function toDomain(): Organization
+    {
+        return new Organization(
+            Uuid::fromString($this->id),
+            $this->name,
+            $this->vat,
+            new Address(
+                $this->street ?: '',
+                $this->zip ?: '',
+                $this->city ?: '',
+                $this->country ?: '',
+            )
+        );
+    }
 }

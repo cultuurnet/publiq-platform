@@ -30,7 +30,12 @@ final class EloquentOrganizationRepositoryTest extends TestCase
             Uuid::uuid4(),
             'Test Organization',
             null,
-            null
+            new Address(
+                'Henegouwenkaai 41-43',
+                '1080',
+                'Brussel',
+                'België'
+            )
         );
 
         $this->organizationRepository->save($organization);
@@ -39,39 +44,10 @@ final class EloquentOrganizationRepositoryTest extends TestCase
             'id' => $organization->id->toString(),
             'name' => $organization->name,
             'vat' => $organization->vat,
-        ]);
-    }
-
-    public function test_it_can_save_an_organization_with_address(): void
-    {
-        $organizationId = Uuid::uuid4();
-
-        $address = new Address(
-            Uuid::uuid4(),
-            $organizationId,
-            'Henegouwenkaai 41-43',
-            '1080',
-            'Brussel',
-            'België'
-        );
-
-        $organization = new Organization(
-            $organizationId,
-            'Test Organization',
-            null,
-            $address
-        );
-
-        $this->organizationRepository->save($organization);
-
-        $this->assertDatabaseHas('organizations', [
-            'id' => $organization->id->toString(),
-            'name' => $organization->name,
-            'vat' => $organization->vat,
-            'street' => $address->street,
-            'zip' => $address->zip,
-            'city' => $address->city,
-            'country' => $address->country,
+            'street' => $organization->address->street,
+            'zip' => $organization->address->zip,
+            'city' => $organization->address->city,
+            'country' => $organization->address->country,
         ]);
     }
 
@@ -81,7 +57,12 @@ final class EloquentOrganizationRepositoryTest extends TestCase
             Uuid::uuid4(),
             'Test Organization',
             'BE 0475 250 609',
-            null
+            new Address(
+                'Henegouwenkaai 41-43',
+                '1080',
+                'Brussel',
+                'België'
+            )
         );
 
         $this->organizationRepository->save($organization);
@@ -90,6 +71,48 @@ final class EloquentOrganizationRepositoryTest extends TestCase
             'id' => $organization->id->toString(),
             'name' => $organization->name,
             'vat' => $organization->vat,
+            'street' => $organization->address->street,
+            'zip' => $organization->address->zip,
+            'city' => $organization->address->city,
+            'country' => $organization->address->country,
         ]);
+    }
+
+    public function test_it_can_get_an_organization(): void
+    {
+        $organization = new Organization(
+            Uuid::uuid4(),
+            'Test Organization',
+            null,
+            new Address(
+                'Henegouwenkaai 41-43',
+                '1080',
+                'Brussel',
+                'België'
+            )
+        );
+
+        $this->organizationRepository->save($organization);
+
+        $this->assertEquals($organization, $this->organizationRepository->getById($organization->id));
+    }
+
+    public function test_it_can_get_an_organization_with_vat(): void
+    {
+        $organization = new Organization(
+            Uuid::uuid4(),
+            'Test Organization',
+            'BE 0475 250 609',
+            new Address(
+                'Henegouwenkaai 41-43',
+                '1080',
+                'Brussel',
+                'België'
+            )
+        );
+
+        $this->organizationRepository->save($organization);
+
+        $this->assertEquals($organization, $this->organizationRepository->getById($organization->id));
     }
 }
