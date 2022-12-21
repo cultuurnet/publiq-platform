@@ -16,6 +16,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use Tests\MockCrmClient;
 
 final class CreateContactTest extends TestCase
@@ -49,46 +50,38 @@ final class CreateContactTest extends TestCase
      */
     public function it_uploads_a_contact(): void
     {
+        // Given
         $integrationId = Uuid::uuid4();
         $contactId = Uuid::uuid4();
+        $contactType = ContactType::Technical;
+        $contactInsightlyId = 985413;
+        $integrationInsightlyId = 3333;
 
-        $contact = new Contact(
-            $contactId,
-            $integrationId,
-            'jane.doe@anonymous.com',
-            ContactType::Technical,
-            'Jane',
-            'Doe'
-        );
+        $contact = $this->givenThereIsAContactForAnIntegration($contactId, $integrationId, $contactType);
+        $this->givenTheIntegrationIsMappedToInsightly($integrationId, $integrationInsightlyId);
 
-        $this->contactRepository->expects(self::once())
-            ->method('getById')
-            ->with($contact->id)
-            ->willReturn($contact);
-
-        $insightlyId = 985413;
+        // Then it stores the contact at Insightly
         $this->contactResource->expects($this->once())
             ->method('create')
-            ->willReturn($insightlyId);
+            ->with($contact)
+            ->willReturn($contactInsightlyId);
 
-        $this->opportunityResource->expects($this->once())
-            ->method('linkContact');
-
-        $insightlyIntegrationMapping = new InsightlyMapping(
+        // Then it stores the mapping
+        $expectedContactMapping = new InsightlyMapping(
             $contactId,
-            $insightlyId,
+            $contactInsightlyId,
             ResourceType::Contact
         );
-
         $this->insightlyMappingRepository->expects(self::once())
             ->method('save')
-            ->with($insightlyIntegrationMapping);
+            ->with($expectedContactMapping);
 
-        $this->insightlyMappingRepository->expects(self::once())
-            ->method('getById')
-            ->with($integrationId)
-            ->willReturn($insightlyIntegrationMapping);
+        // Then it links the contact to the integration at Insightly
+        $this->opportunityResource->expects($this->once())
+            ->method('linkContact')
+            ->with($integrationInsightlyId, $contactInsightlyId, $contactType);
 
+        // When
         $this->createContact->handle(new ContactCreated($contact->id));
     }
 
@@ -97,11 +90,25 @@ final class CreateContactTest extends TestCase
      */
     public function it_does_not_upload_a_contributor(): void
     {
+        $contactId = Uuid::uuid4();
+        $this->givenThereIsAContactForAnIntegration($contactId, Uuid::uuid4(), ContactType::Contributor);
+
+        $this->insightlyClient->expects($this->never())
+            ->method('contacts');
+
+        $this->createContact->handle(new ContactCreated($contactId));
+    }
+
+    private function givenThereIsAContactForAnIntegration(
+        UuidInterface $contactId,
+        UuidInterface $integrationId,
+        ContactType $contactType,
+    ): Contact {
         $contact = new Contact(
-            Uuid::uuid4(),
-            Uuid::uuid4(),
+            $contactId,
+            $integrationId,
             'jane.doe@anonymous.com',
-            ContactType::Contributor,
+            $contactType,
             'Jane',
             'Doe'
         );
@@ -111,9 +118,22 @@ final class CreateContactTest extends TestCase
             ->with($contact->id)
             ->willReturn($contact);
 
-        $this->insightlyClient->expects($this->never())
-            ->method('contacts');
+        return $contact;
+    }
 
-        $this->createContact->handle(new ContactCreated($contact->id));
+    private function givenTheIntegrationIsMappedToInsightly(
+        UuidInterface $integrationId,
+        int $integrationInsightlyId
+    ): void {
+        $insightlyIntegrationMapping = new InsightlyMapping(
+            $integrationId,
+            $integrationInsightlyId,
+            ResourceType::Opportunity,
+        );
+
+        $this->insightlyMappingRepository->expects(self::once())
+            ->method('getById')
+            ->with($integrationId)
+            ->willReturn($insightlyIntegrationMapping);
     }
 }
