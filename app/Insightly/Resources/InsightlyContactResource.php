@@ -10,7 +10,7 @@ use App\Json;
 use App\Insightly\Serializers\ContactSerializer;
 use GuzzleHttp\Psr7\Request;
 
-class ContactResource
+class InsightlyContactResource
 {
     private string $path = 'Contacts/';
 

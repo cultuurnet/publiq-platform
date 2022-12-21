@@ -9,7 +9,7 @@ use App\Insightly\Exceptions\BadRequest;
 use App\Insightly\Exceptions\DeleteFailed;
 use App\Insightly\Exceptions\RecordLimitReached;
 use App\Insightly\Exceptions\RecordNotFound;
-use App\Insightly\Resources\ContactResource;
+use App\Insightly\Resources\InsightlyContactResource;
 use App\Insightly\Resources\InsightlyOpportunityResource;
 use App\Insightly\Resources\OrganizationResource;
 use Psr\Http\Client\ClientInterface;
@@ -25,9 +25,9 @@ class InsightlyClient
     ) {
     }
 
-    public function contacts(): ContactResource
+    public function contacts(): InsightlyContactResource
     {
-        return new ContactResource($this);
+        return new InsightlyContactResource($this);
     }
 
     public function opportunities(): InsightlyOpportunityResource
