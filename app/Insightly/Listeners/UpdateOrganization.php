@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Insightly\Listeners;
 
-use App\Domain\Organizations\Events\OrganizationCreated;
 use App\Domain\Organizations\Events\OrganizationUpdated;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
 use App\Insightly\InsightlyClient;
