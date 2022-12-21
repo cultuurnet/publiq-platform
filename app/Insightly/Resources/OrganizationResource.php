@@ -34,6 +34,18 @@ final class OrganizationResource
         return $contactAsArray['ORGANISATION_ID'];
     }
 
+    public function update(Organization $organization, int $insightlyId): void
+    {
+        $request = new Request(
+            'PUT',
+            $this->path,
+            [],
+            Json::encode((new OrganizationSerializer())->toInsighltyArrayForUpdate($organization, $insightlyId))
+        );
+
+        $this->insightlyClient->sendRequest($request);
+    }
+
     public function delete(int $id): void
     {
         $request = new Request(

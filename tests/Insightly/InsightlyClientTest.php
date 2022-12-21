@@ -23,7 +23,7 @@ final class InsightlyClientTest extends TestCase
 
     protected function setUp(): void
     {
-        parent::setUp();
+        $this->createApplication();
 
         $this->insightlyClient = new InsightlyClient(
             new Client(
@@ -48,10 +48,10 @@ final class InsightlyClientTest extends TestCase
             'Doe'
         );
 
-        $contactId = $this->insightlyClient->contacts()->create($contact);
-        $this->assertNotNull($contactId);
+        $insightlyId = $this->insightlyClient->contacts()->create($contact);
+        $this->assertNotNull($insightlyId);
 
-        $this->insightlyClient->contacts()->delete($contactId);
+        $this->insightlyClient->contacts()->delete($insightlyId);
     }
 
     public function test_it_can_create_an_opportunity(): void
@@ -66,10 +66,10 @@ final class InsightlyClientTest extends TestCase
             []
         );
 
-        $contactId = $this->insightlyClient->opportunities()->create($integration);
-        $this->assertNotNull($contactId);
+        $insightlyId = $this->insightlyClient->opportunities()->create($integration);
+        $this->assertNotNull($insightlyId);
 
-        $this->insightlyClient->opportunities()->delete($contactId);
+        $this->insightlyClient->opportunities()->delete($insightlyId);
     }
 
     public function test_it_can_create_an_organization(): void
@@ -88,9 +88,44 @@ final class InsightlyClientTest extends TestCase
             )
         );
 
-        $organizationId = $this->insightlyClient->organizations()->create($organization);
+        $insightlyId = $this->insightlyClient->organizations()->create($organization);
+        $this->assertNotNull($insightlyId);
+
+        $this->insightlyClient->opportunities()->delete($insightlyId);
+    }
+
+    public function test_it_can_update_an_organization(): void
+    {
+        $organizationId = Uuid::uuid4();
+
+        $organization = new Organization(
+            $organizationId,
+            'Test Organization',
+            null,
+            new Address(
+                'Henegouwenkaai 41-43',
+                '1080',
+                'Brussel',
+                'België'
+            )
+        );
+
+        $insightlyId = $this->insightlyClient->organizations()->create($organization);
         $this->assertNotNull($organizationId);
 
-        $this->insightlyClient->opportunities()->delete($organizationId);
+        $updatedOrganization = new Organization(
+            $organizationId,
+            'Updated Organization',
+            null,
+            new Address(
+                'Sluisstraat 1',
+                '3000',
+                'Leuven',
+                'België'
+            )
+        );
+        $this->insightlyClient->organizations()->update($updatedOrganization, $insightlyId);
+
+        $this->insightlyClient->opportunities()->delete($insightlyId);
     }
 }
