@@ -42,7 +42,7 @@ final class UpdateOrganization implements ShouldQueue
         );
     }
 
-    public function failed(OrganizationCreated $organizationCreated, \Throwable $exception): void
+    public function failed(OrganizationUpdated $organizationCreated, \Throwable $exception): void
     {
         $this->logger->error(
             'Failed to update organization',
