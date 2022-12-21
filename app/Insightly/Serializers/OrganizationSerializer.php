@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Insightly\Serializers;
 
 use App\Domain\Organizations\Organization;
+use App\Insightly\Serializers\CustomFields\VatSerializer;
 
 final class OrganizationSerializer
 {
