@@ -50,10 +50,11 @@ final class CreateOpportunityTest extends TestCase
         $integrationId = Uuid::uuid4();
         $insightlyId = 42;
 
-        $this->givenThereIsAnIntegrationWithId($integrationId);
+        $integration = $this->givenThereIsAnIntegrationWithId($integrationId);
 
         $this->opportunityResource->expects($this->once())
             ->method('create')
+            ->with($integration)
             ->willReturn($insightlyId);
 
         $insightlyIntegrationMapping = new InsightlyMapping(
@@ -70,7 +71,7 @@ final class CreateOpportunityTest extends TestCase
         $this->listener->handle($event);
     }
 
-    private function givenThereIsAnIntegrationWithId(UuidInterface $integrationId): void
+    private function givenThereIsAnIntegrationWithId(UuidInterface $integrationId): Integration
     {
         $integration = new Integration(
             $integrationId,
@@ -86,5 +87,7 @@ final class CreateOpportunityTest extends TestCase
             ->method('getById')
             ->with($integrationId)
             ->willReturn($integration);
+
+        return $integration;
     }
 }

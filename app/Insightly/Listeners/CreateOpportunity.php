@@ -6,8 +6,8 @@ namespace App\Insightly\Listeners;
 
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
+use App\Insightly\Interfaces\CrmClient;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use Illuminate\Bus\Queueable;
@@ -19,7 +19,7 @@ final class CreateOpportunity implements ShouldQueue
     use Queueable;
 
     public function __construct(
-        private readonly InsightlyClient               $insightlyClient,
+        private readonly CrmClient $insightlyClient,
         private readonly IntegrationRepository $integrationRepository,
         private readonly InsightlyMappingRepository $insightlyMappingRepository,
         private readonly LoggerInterface $logger,
