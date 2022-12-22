@@ -41,7 +41,7 @@ final class InsightlyOpportunityResourceTest extends TestCase
                 'id' => $this->pipelineId,
                 'stages' => [
                     OpportunityStage::TEST->value => $this->testStageId,
-                    OpportunityStage::OFFER->value => $this->offerStageId
+                    OpportunityStage::OFFER->value => $this->offerStageId,
                 ],
             ],
         ]);
@@ -145,7 +145,7 @@ final class InsightlyOpportunityResourceTest extends TestCase
 
     public function test_it_deletes_an_opportunity(): void
     {
-        $expectedRequest = new Request('DELETE','Opportunities/42');
+        $expectedRequest = new Request('DELETE', 'Opportunities/42');
         $this->insightlyClient->expects($this->once())
             ->method('sendRequest')
             ->with($expectedRequest);
@@ -163,7 +163,7 @@ final class InsightlyOpportunityResourceTest extends TestCase
                 'PIPELINE_ID' => $this->pipelineId,
                 'PIPELINE_STAGE_CHANGE' => [
                     'STAGE_ID' => $this->offerStageId,
-                ]
+                ],
             ])
         );
 
