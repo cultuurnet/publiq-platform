@@ -6,7 +6,7 @@ namespace App\Insightly\Resources;
 
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
-use App\Insightly\InsightlyClient;
+use App\Insightly\Interfaces\CrmClient;
 use App\Insightly\Interfaces\OpportunityResource;
 use App\Insightly\Serializers\LinkSerializer;
 use App\Json;
@@ -31,7 +31,7 @@ final class InsightlyOpportunityResource implements OpportunityResource
             $this->path,
             [],
             Json::encode(
-                (new OpportunitySerializer($this->insightlyClient->pipelines))
+                (new OpportunitySerializer($this->insightlyClient->getPipelines()))
                     ->toInsightlyArray($integration)
             )
         );
@@ -64,7 +64,7 @@ final class InsightlyOpportunityResource implements OpportunityResource
             $this->path . $id . '/Pipeline',
             [],
             Json::encode(
-                (new OpportunityStageSerializer($this->insightlyClient->pipelines))
+                (new OpportunityStageSerializer($this->insightlyClient->getPipelines()))
                     ->toInsightlyArray($stage)
             )
         );

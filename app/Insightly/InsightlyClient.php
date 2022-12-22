@@ -61,6 +61,11 @@ final class InsightlyClient implements CrmClient
         return $response;
     }
 
+    public function getPipelines(): Pipelines
+    {
+        return $this->pipelines;
+    }
+
     private function validateResponse(ResponseInterface $response): void
     {
         switch ($response->getStatusCode()) {
