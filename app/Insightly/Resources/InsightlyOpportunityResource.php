@@ -20,7 +20,7 @@ final class InsightlyOpportunityResource implements OpportunityResource
     private string $path = 'Opportunities/';
 
     public function __construct(
-        private readonly InsightlyClient $insightlyClient,
+        private readonly CrmClient $insightlyClient,
     ) {
     }
 
