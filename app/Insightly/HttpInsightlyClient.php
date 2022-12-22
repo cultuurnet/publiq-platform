@@ -19,7 +19,7 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-final class InsightlyClient implements CrmClient
+final class HttpInsightlyClient implements CrmClient
 {
     public function __construct(
         private readonly ClientInterface $httpClient,
