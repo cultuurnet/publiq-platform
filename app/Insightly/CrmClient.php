@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Insightly\Interfaces;
+namespace App\Insightly;
 
-use App\Insightly\Pipelines;
+use App\Insightly\Resources\ContactResource;
+use App\Insightly\Resources\OpportunityResource;
 use App\Insightly\Resources\OrganizationResource;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Insightly\Interfaces;
+namespace App\Insightly\Resources;
 
 use App\Domain\Contacts\Contact;
 

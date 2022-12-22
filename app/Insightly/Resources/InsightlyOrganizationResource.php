@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Insightly\Resources;
 
 use App\Domain\Organizations\Organization;
-use App\Insightly\Interfaces\CrmClient;
+use App\Insightly\CrmClient;
 use App\Insightly\Serializers\OrganizationSerializer;
 use App\Json;
 use GuzzleHttp\Psr7\Request;

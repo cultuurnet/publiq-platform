@@ -7,7 +7,7 @@ namespace App\Insightly\Listeners;
 use App\Domain\Organizations\Events\OrganizationCreated;
 use App\Domain\Organizations\Events\OrganizationUpdated;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
-use App\Insightly\Interfaces\CrmClient;
+use App\Insightly\CrmClient;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

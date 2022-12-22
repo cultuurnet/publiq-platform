@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace App\Insightly\Resources;
 
 use App\Domain\Contacts\Contact;
-use App\Insightly\Interfaces\ContactResource;
-use App\Insightly\Interfaces\CrmClient;
-use App\Json;
+use App\Insightly\CrmClient;
 use App\Insightly\Serializers\ContactSerializer;
+use App\Json;
 use GuzzleHttp\Psr7\Request;
 
 final class InsightlyContactResource implements ContactResource

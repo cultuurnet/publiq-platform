@@ -6,8 +6,8 @@ namespace App\Insightly\Listeners;
 
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Insightly\CrmClient;
 use App\Insightly\InsightlyMapping;
-use App\Insightly\Interfaces\CrmClient;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use Illuminate\Bus\Queueable;
