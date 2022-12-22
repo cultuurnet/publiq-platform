@@ -5,12 +5,22 @@ declare(strict_types=1);
 namespace App\Insightly\Listeners;
 
 use App\Domain\Organizations\Events\OrganizationDeleted;
+use App\Insightly\InsightlyClient;
+use App\Insightly\Repositories\InsightlyMappingRepository;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Psr\Log\LoggerInterface;
 
 final class DeleteOrganization implements ShouldQueue
 {
     use Queueable;
+
+    public function __construct(
+        private readonly InsightlyClient $insightlyClient,
+        private readonly InsightlyMappingRepository $insightlyMappingRepository,
+        private readonly LoggerInterface $logger
+    ) {
+    }
 
     public function handle(OrganizationDeleted $organizationDeleted): void
     {
