@@ -87,4 +87,62 @@ final class InsightlyOrganizationResourceTest extends TestCase
             ]),
         ];
     }
+
+    /**
+     * @dataProvider provideUpdateCases
+     */
+    public function test_it_updates_an_organization(Organization $organization, int $insightlyId, string $expectedRequest): void
+    {
+        $expectedRequest = new Request('PUT', 'Organizations/', [], $expectedRequest);
+
+        $this->insightlyClient->expects($this->once())
+            ->method('sendRequest')
+            ->with(self::callback(fn ($actualRequest) => self::assertRequestIsTheSame($expectedRequest, $actualRequest)));
+
+        $this->resource->update($organization, $insightlyId);
+    }
+
+    public function provideUpdateCases(): Iterator
+    {
+        yield 'Organization without vat' => [
+            'organization' => new Organization(
+                Uuid::uuid4(),
+                'madewithlove',
+                null,
+                new Address('Sluisstraat 79', '3000', 'Leuven', 'Belgium')
+            ),
+            'insightlyId' => 42,
+            'expectedRequest' => Json::encode([
+                'ORGANISATION_NAME' => 'madewithlove',
+                'ADDRESS_BILLING_STREET' => 'Sluisstraat 79',
+                'ADDRESS_BILLING_POSTCODE' => '3000',
+                'ADDRESS_BILLING_CITY' => 'Leuven',
+                'ORGANISATION_ID' => 42,
+            ]),
+        ];
+
+        yield 'Organization with vat' => [
+            'organization' => new Organization(
+                Uuid::uuid4(),
+                'madewithlove',
+                'BE1234567890',
+                new Address('Sluisstraat 79', '3000', 'Leuven', 'Belgium')
+            ),
+            'insightlyId' => 42,
+            'expectedRequest' => Json::encode([
+                'ORGANISATION_NAME' => 'madewithlove',
+                'ADDRESS_BILLING_STREET' => 'Sluisstraat 79',
+                'ADDRESS_BILLING_POSTCODE' => '3000',
+                'ADDRESS_BILLING_CITY' => 'Leuven',
+                'CUSTOMFIELDS' => [
+                    [
+                        'FIELD_NAME' => 'BTW_nummer__c',
+                        'CUSTOM_FIELD_ID' => 'BTW_nummer__c',
+                        'FIELD_VALUE' => 'BE1234567890',
+                    ],
+                ],
+                'ORGANISATION_ID' => 42,
+            ]),
+        ];
+    }
 }
