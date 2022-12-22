@@ -7,7 +7,7 @@ namespace App\Insightly\Listeners;
 use App\Domain\Organizations\Events\OrganizationCreated;
 use App\Domain\Organizations\Events\OrganizationUpdated;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
-use App\Insightly\InsightlyClient;
+use App\Insightly\Interfaces\CrmClient;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -18,7 +18,7 @@ final class UpdateOrganization implements ShouldQueue
     use Queueable;
 
     public function __construct(
-        private readonly InsightlyClient $insightlyClient,
+        private readonly CrmClient $insightlyClient,
         private readonly OrganizationRepository $organizationRepository,
         private readonly InsightlyMappingRepository $insightlyMappingRepository,
         private readonly LoggerInterface $logger

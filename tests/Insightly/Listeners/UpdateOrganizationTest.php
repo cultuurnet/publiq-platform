@@ -8,23 +8,21 @@ use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Events\OrganizationUpdated;
 use App\Domain\Organizations\Organization;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
-use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Listeners\UpdateOrganization;
 use App\Insightly\Pipelines;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
-use App\Json;
-use GuzzleHttp\Psr7\Request;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Client\ClientInterface;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
+use Tests\MockCrmClient;
 
 final class UpdateOrganizationTest extends TestCase
 {
-    private ClientInterface&MockObject $client;
+    use MockCrmClient;
 
     private OrganizationRepository&MockObject $organizationRepository;
 
@@ -34,16 +32,12 @@ final class UpdateOrganizationTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->client = $this->createMock(ClientInterface::class);
+        $this->mockCrmClient(new Pipelines(['opportunities'=>['id' => 3, 'stages' => ['test'=> 4]]]));
         $this->organizationRepository = $this->createMock(OrganizationRepository::class);
         $this->insightlyMappingRepository = $this->createMock(InsightlyMappingRepository::class);
 
         $this->listener = new UpdateOrganization(
-            new InsightlyClient(
-                $this->client,
-                'api-key',
-                new Pipelines(['opportunities'=>['id' => 3, 'stages' => ['test'=> 4]]])
-            ),
+            $this->insightlyClient,
             $this->organizationRepository,
             $this->insightlyMappingRepository,
             $this->createMock(LoggerInterface::class),
@@ -52,8 +46,27 @@ final class UpdateOrganizationTest extends TestCase
 
     public function test_it_updates_an_organizer(): void
     {
+        // Given
+        $organizationId = Uuid::uuid4();
+        $insightlyId = 1234;
+
+        $organization = $this->givenThereIsAnOrganization($organizationId);
+        $this->givenTheInsightlyIdForTheIntegrationIs($insightlyId, $organizationId);
+
+        // Then it updates the organization at Insightly
+        $this->organizationResource->expects($this->once())
+            ->method('update')
+            ->with($organization, $insightlyId);
+
+        // When
+        $event = new OrganizationUpdated($organization->id);
+        $this->listener->handle($event);
+    }
+
+    private function givenThereIsAnOrganization(UuidInterface $id): Organization
+    {
         $organization = new Organization(
-            Uuid::uuid4(),
+            $id,
             'Test Organization',
             'BE 0475 250 609',
             new Address(
@@ -68,45 +81,19 @@ final class UpdateOrganizationTest extends TestCase
             ->with($organization->id)
             ->willReturn($organization);
 
-        $insightlyId = 1234;
+        return $organization;
+    }
+
+    private function givenTheInsightlyIdForTheIntegrationIs(int $insightlyId, UuidInterface $organizationId): void
+    {
         $insightlyIntegrationMapping = new InsightlyMapping(
-            $organization->id,
+            $organizationId,
             $insightlyId,
             ResourceType::Organization,
         );
         $this->insightlyMappingRepository->expects(self::once())
             ->method('getById')
-            ->with($organization->id)
+            ->with($organizationId)
             ->willReturn($insightlyIntegrationMapping);
-
-        $this->client->expects($this->once())
-            ->method('sendRequest')
-            ->with(
-                $this->callback(
-                    function (Request $request) use ($organization, $insightlyId): bool {
-                        $expected = [
-                            'ORGANISATION_NAME' => $organization->name,
-                            'ADDRESS_BILLING_STREET' => $organization->address->street,
-                            'ADDRESS_BILLING_POSTCODE' => $organization->address->zip,
-                            'ADDRESS_BILLING_CITY' => $organization->address->city,
-                            'CUSTOMFIELDS' => [
-                                [
-                                    'FIELD_NAME' => 'BTW_nummer__c',
-                                    'CUSTOM_FIELD_ID' => 'BTW_nummer__c',
-                                    'FIELD_VALUE' => $organization->vat,
-                                ],
-                            ],
-                            'ORGANISATION_ID' => $insightlyId,
-                        ];
-
-                        return $request->getMethod() === 'PUT'
-                            && $request->getUri()->getPath() === 'Organizations/'
-                            && Json::decodeAssociatively((string) $request->getBody()) === $expected;
-                    }
-                )
-            );
-
-        $event = new OrganizationUpdated($organization->id);
-        $this->listener->handle($event);
     }
 }
