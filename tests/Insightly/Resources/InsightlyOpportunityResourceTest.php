@@ -174,7 +174,10 @@ final class InsightlyOpportunityResourceTest extends TestCase
         $this->resource->updateStage(42, OpportunityStage::OFFER);
     }
 
-    public function test_it_links_a_contact_to_an_opportunity(): void
+    /**
+     * @dataProvider provideContactTypes
+     */
+    public function test_it_links_a_contact_to_an_opportunity(ContactType $contactType, string $expectedRole): void
     {
         $expectedRequest = new Request(
             'POST',
@@ -183,7 +186,7 @@ final class InsightlyOpportunityResourceTest extends TestCase
             Json::encode([
                 'LINK_OBJECT_ID' => 3,
                 'LINK_OBJECT_NAME' => 'Contact',
-                'ROLE' => 'Technisch',
+                'ROLE' => $expectedRole,
             ])
         );
 
@@ -191,6 +194,19 @@ final class InsightlyOpportunityResourceTest extends TestCase
             ->method('sendRequest')
             ->with(self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedRequest, $actualRequest)));
 
-        $this->resource->linkContact(42, 3, ContactType::Technical);
+        $this->resource->linkContact(42, 3, $contactType);
+    }
+
+    public function provideContactTypes(): Iterator
+    {
+        yield 'Technical' => [
+            'contactType' => ContactType::Technical,
+            'expectedRole' => 'Technisch',
+        ];
+
+        yield 'Functional' => [
+            'contactType' => ContactType::Functional,
+            'expectedRole' => 'Aanvrager',
+        ];
     }
 }
