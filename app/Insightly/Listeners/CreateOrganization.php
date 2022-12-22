@@ -6,7 +6,7 @@ namespace App\Insightly\Listeners;
 
 use App\Domain\Organizations\Events\OrganizationCreated;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
-use App\Insightly\CrmClient;
+use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
@@ -19,10 +19,10 @@ final class CreateOrganization implements ShouldQueue
     use Queueable;
 
     public function __construct(
-        private readonly CrmClient $insightlyClient,
-        private readonly OrganizationRepository $organizationRepository,
+        private readonly InsightlyClient            $insightlyClient,
+        private readonly OrganizationRepository     $organizationRepository,
         private readonly InsightlyMappingRepository $insightlyMappingRepository,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface            $logger
     ) {
     }
 

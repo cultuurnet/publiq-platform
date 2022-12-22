@@ -10,7 +10,7 @@ use App\Insightly\Resources\OrganizationResource;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-interface CrmClient
+interface InsightlyClient
 {
     public function contacts(): ContactResource;
 

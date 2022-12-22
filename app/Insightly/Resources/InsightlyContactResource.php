@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Insightly\Resources;
 
 use App\Domain\Contacts\Contact;
-use App\Insightly\CrmClient;
+use App\Insightly\InsightlyClient;
 use App\Insightly\Serializers\ContactSerializer;
 use App\Json;
 use GuzzleHttp\Psr7\Request;
@@ -14,7 +14,7 @@ final class InsightlyContactResource implements ContactResource
 {
     private string $path = 'Contacts/';
 
-    public function __construct(private readonly CrmClient $insightlyClient)
+    public function __construct(private readonly InsightlyClient $insightlyClient)
     {
     }
 

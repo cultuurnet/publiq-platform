@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Insightly\Resources;
 
 use App\Domain\Organizations\Organization;
-use App\Insightly\CrmClient;
+use App\Insightly\InsightlyClient;
 use App\Insightly\Serializers\OrganizationSerializer;
 use App\Json;
 use GuzzleHttp\Psr7\Request;
@@ -14,7 +14,7 @@ final class InsightlyOrganizationResource implements OrganizationResource
 {
     private string $path = 'Organizations/';
 
-    public function __construct(private readonly CrmClient $insightlyClient)
+    public function __construct(private readonly InsightlyClient $insightlyClient)
     {
     }
 

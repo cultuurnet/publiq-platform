@@ -7,7 +7,7 @@ namespace App\Insightly\Listeners;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Contacts\Repositories\ContactRepository;
-use App\Insightly\CrmClient;
+use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
@@ -25,10 +25,10 @@ final class CreateContact implements ShouldQueue
     ];
 
     public function __construct(
-        private readonly CrmClient $insightlyClient,
-        private readonly ContactRepository $contactRepository,
+        private readonly InsightlyClient            $insightlyClient,
+        private readonly ContactRepository          $contactRepository,
         private readonly InsightlyMappingRepository $insightlyMappingRepository,
-        private readonly LoggerInterface $logger,
+        private readonly LoggerInterface            $logger,
     ) {
     }
 

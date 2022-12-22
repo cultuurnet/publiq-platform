@@ -6,7 +6,7 @@ namespace App\Insightly\Resources;
 
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
-use App\Insightly\CrmClient;
+use App\Insightly\InsightlyClient;
 use App\Insightly\Objects\OpportunityStage;
 use App\Insightly\Serializers\LinkSerializer;
 use App\Insightly\Serializers\OpportunitySerializer;
@@ -19,7 +19,7 @@ final class InsightlyOpportunityResource implements OpportunityResource
     private string $path = 'Opportunities/';
 
     public function __construct(
-        private readonly CrmClient $insightlyClient,
+        private readonly InsightlyClient $insightlyClient,
     ) {
     }
 

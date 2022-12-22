@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use App\Insightly\CrmClient;
+use App\Insightly\InsightlyClient;
 use App\Insightly\Pipelines;
 use App\Insightly\Resources\ContactResource;
 use App\Insightly\Resources\OpportunityResource;
@@ -13,7 +13,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 trait MockCrmClient
 {
-    private CrmClient&MockObject $insightlyClient;
+    private InsightlyClient&MockObject $insightlyClient;
 
     private ContactResource&MockObject $contactResource;
 
@@ -23,7 +23,7 @@ trait MockCrmClient
 
     private function mockCrmClient(?Pipelines $pipelines = null): void
     {
-        $this->insightlyClient = $this->createMock(CrmClient::class);
+        $this->insightlyClient = $this->createMock(InsightlyClient::class);
         $this->contactResource = $this->createMock(ContactResource::class);
         $this->opportunityResource = $this->createMock(OpportunityResource::class);
         $this->organizationResource = $this->createMock(OrganizationResource::class);
