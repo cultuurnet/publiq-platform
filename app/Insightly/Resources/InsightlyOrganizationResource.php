@@ -10,7 +10,7 @@ use App\Insightly\Serializers\OrganizationSerializer;
 use App\Json;
 use GuzzleHttp\Psr7\Request;
 
-final class OrganizationResource
+final class InsightlyOrganizationResource
 {
     private string $path = 'Organizations/';
 

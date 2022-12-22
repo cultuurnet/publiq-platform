@@ -14,7 +14,7 @@ use App\Insightly\Interfaces\CrmClient;
 use App\Insightly\Interfaces\OpportunityResource;
 use App\Insightly\Resources\InsightlyContactResource;
 use App\Insightly\Resources\InsightlyOpportunityResource;
-use App\Insightly\Resources\OrganizationResource;
+use App\Insightly\Resources\InsightlyOrganizationResource;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -38,9 +38,9 @@ final class InsightlyClient implements CrmClient
         return new InsightlyOpportunityResource($this);
     }
 
-    public function organizations(): OrganizationResource
+    public function organizations(): InsightlyOrganizationResource
     {
-        return new OrganizationResource($this);
+        return new InsightlyOrganizationResource($this);
     }
 
     public function sendRequest(RequestInterface $request): ResponseInterface
