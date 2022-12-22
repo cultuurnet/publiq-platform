@@ -28,7 +28,9 @@ final class InsightlyOpportunityResourceTest extends TestCase
 
     private int $pipelineId = 1;
 
-    private int $stageId = 2;
+    private int $testStageId = 2;
+
+    private int $offerStageId = 3;
 
     protected function setUp(): void
     {
@@ -36,7 +38,8 @@ final class InsightlyOpportunityResourceTest extends TestCase
             'opportunities' => [
                 'id' => $this->pipelineId,
                 'stages' => [
-                    OpportunityStage::TEST->value => $this->stageId,
+                    OpportunityStage::TEST->value => $this->testStageId,
+                    OpportunityStage::OFFER->value => $this->offerStageId
                 ],
             ],
         ]);
@@ -69,7 +72,7 @@ final class InsightlyOpportunityResourceTest extends TestCase
                 'OPPORTUNITY_STATE' => OpportunityState::OPEN->value,
                 'OPPORTUNITY_DETAILS' => $description,
                 'PIPELINE_ID' => $this->pipelineId,
-                'STAGE_ID' => $this->stageId,
+                'STAGE_ID' => $this->testStageId,
                 'CUSTOMFIELDS' => [
                     [
                         'FIELD_NAME' => 'Product__c',
@@ -87,7 +90,7 @@ final class InsightlyOpportunityResourceTest extends TestCase
             Json::encode([
                 'PIPELINE_ID' => $this->pipelineId,
                 'PIPELINE_STAGE_CHANGE' => [
-                    'STAGE_ID' => $this->stageId,
+                    'STAGE_ID' => $this->testStageId,
                 ],
             ])
         );
@@ -113,5 +116,26 @@ final class InsightlyOpportunityResourceTest extends TestCase
             ->with($expectedRequest);
 
         $this->resource->delete(42);
+    }
+
+    public function test_it_updates_the_stage_of_the_opportunity(): void
+    {
+        $expectedRequest = new Request(
+            'PUT',
+            'Opportunities/42/Pipeline',
+            [],
+            Json::encode([
+                'PIPELINE_ID' => $this->pipelineId,
+                'PIPELINE_STAGE_CHANGE' => [
+                    'STAGE_ID' => $this->offerStageId,
+                ]
+            ])
+        );
+
+        $this->insightlyClient->expects($this->once())
+            ->method('sendRequest')
+            ->with(self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedRequest, $actualRequest)));
+
+        $this->resource->updateStage(42, OpportunityStage::OFFER);
     }
 }
