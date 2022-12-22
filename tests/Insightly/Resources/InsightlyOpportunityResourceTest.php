@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Insightly\Resources;
 
+use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
@@ -137,5 +138,25 @@ final class InsightlyOpportunityResourceTest extends TestCase
             ->with(self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedRequest, $actualRequest)));
 
         $this->resource->updateStage(42, OpportunityStage::OFFER);
+    }
+
+    public function test_it_links_a_contact_to_an_opportunity(): void
+    {
+        $expectedRequest = new Request(
+            'POST',
+            'Opportunities/42/Links',
+            [],
+            Json::encode([
+                'LINK_OBJECT_ID' => 3,
+                'LINK_OBJECT_NAME' => 'Contact',
+                'ROLE' => 'Technisch',
+            ])
+        );
+
+        $this->insightlyClient->expects($this->once())
+            ->method('sendRequest')
+            ->with(self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedRequest, $actualRequest)));
+
+        $this->resource->linkContact(42, 3, ContactType::Technical);
     }
 }
