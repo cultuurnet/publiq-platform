@@ -7,10 +7,12 @@ namespace App\Insightly;
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Organizations\Events\OrganizationCreated;
+use App\Domain\Organizations\Events\OrganizationDeleted;
 use App\Domain\Organizations\Events\OrganizationUpdated;
 use App\Insightly\Listeners\CreateContact;
 use App\Insightly\Listeners\CreateOpportunity;
 use App\Insightly\Listeners\CreateOrganization;
+use App\Insightly\Listeners\DeleteOrganization;
 use App\Insightly\Listeners\UpdateOrganization;
 use App\Insightly\Repositories\EloquentInsightlyMappingRepository;
 use App\Insightly\Repositories\InsightlyMappingRepository;
@@ -42,6 +44,7 @@ final class InsightlyServiceProvider extends ServiceProvider
             Event::listen(ContactCreated::class, [CreateContact::class, 'handle']);
             Event::listen(OrganizationCreated::class, [CreateOrganization::class, 'handle']);
             Event::listen(OrganizationUpdated::class, [UpdateOrganization::class, 'handle']);
+            Event::listen(OrganizationDeleted::class, [DeleteOrganization::class, 'handle']);
         }
     }
 
