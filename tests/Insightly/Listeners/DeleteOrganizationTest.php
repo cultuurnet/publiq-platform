@@ -68,6 +68,10 @@ final class DeleteOrganizationTest extends TestCase
                 )
             );
 
+        $this->insightlyMappingRepository->expects(self::once())
+            ->method('deleteById')
+            ->with($organizationId);
+
         $event = new OrganizationDeleted($organizationId);
         $this->listener->handle($event);
     }

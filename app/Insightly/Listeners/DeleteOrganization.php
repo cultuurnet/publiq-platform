@@ -28,6 +28,8 @@ final class DeleteOrganization implements ShouldQueue
 
         $this->insightlyClient->organizations()->delete($insightlyMapping->insightlyId);
 
+        $this->insightlyMappingRepository->deleteById($organizationDeleted->id);
+
         $this->logger->info(
             'Organization deleted',
             [
