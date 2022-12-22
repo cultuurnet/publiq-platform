@@ -15,6 +15,7 @@ use App\Insightly\Resources\InsightlyOpportunityResource;
 use App\Json;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Iterator;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use Tests\AssertRequest;
@@ -49,7 +50,10 @@ final class InsightlyOpportunityResourceTest extends TestCase
         $this->resource = new InsightlyOpportunityResource($this->insightlyClient);
     }
 
-    public function test_it_creates_an_opportunity(): void
+    /**
+     * @dataProvider provideIntegrationTypes
+     */
+    public function test_it_creates_an_opportunity(IntegrationType $integrationType, array $expectedCustomFields): void
     {
         $name = 'my integration';
         $description = 'description';
@@ -57,7 +61,7 @@ final class InsightlyOpportunityResourceTest extends TestCase
 
         $integration = new Integration(
             Uuid::uuid4(),
-            IntegrationType::EntryApi,
+            $integrationType,
             $name,
             $description,
             Uuid::uuid4(),
@@ -74,13 +78,7 @@ final class InsightlyOpportunityResourceTest extends TestCase
                 'OPPORTUNITY_DETAILS' => $description,
                 'PIPELINE_ID' => $this->pipelineId,
                 'STAGE_ID' => $this->testStageId,
-                'CUSTOMFIELDS' => [
-                    [
-                        'FIELD_NAME' => 'Product__c',
-                        'CUSTOM_FIELD_ID' => 'Product__c',
-                        'FIELD_VALUE' => 'Entry API V3',
-                    ],
-                ],
+                'CUSTOMFIELDS' => $expectedCustomFields,
             ]),
         );
 
@@ -107,6 +105,42 @@ final class InsightlyOpportunityResourceTest extends TestCase
 
         $returnedId = $this->resource->create($integration);
         $this->assertEquals($insightlyId, $returnedId);
+    }
+
+    public function provideIntegrationTypes(): Iterator
+    {
+        yield 'Entry api' => [
+            'integrationType' => IntegrationType::EntryApi,
+            'expectedCustomFields' => [
+                [
+                    'FIELD_NAME' => 'Product__c',
+                    'CUSTOM_FIELD_ID' => 'Product__c',
+                    'FIELD_VALUE' => 'Entry API V3',
+                ],
+            ],
+        ];
+
+        yield 'Search api' => [
+            'integrationType' => IntegrationType::SearchApi,
+            'expectedCustomFields' => [
+                [
+                    'FIELD_NAME' => 'Product__c',
+                    'CUSTOM_FIELD_ID' => 'Product__c',
+                    'FIELD_VALUE' => 'Publicatie Search API V3',
+                ],
+            ],
+        ];
+
+        yield 'Widget api' => [
+            'integrationType' => IntegrationType::Widgets,
+            'expectedCustomFields' => [
+                [
+                    'FIELD_NAME' => 'Product__c',
+                    'CUSTOM_FIELD_ID' => 'Product__c',
+                    'FIELD_VALUE' => 'Publicatie Widgets V3',
+                ],
+            ],
+        ];
     }
 
     public function test_it_deletes_an_opportunity(): void
