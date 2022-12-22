@@ -19,11 +19,11 @@ use Iterator;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use Tests\AssertRequest;
-use Tests\MockCrmClient;
+use Tests\MockInsightlyClient;
 
 final class InsightlyOpportunityResourceTest extends TestCase
 {
-    use MockCrmClient;
+    use MockInsightlyClient;
     use AssertRequest;
 
     private InsightlyOpportunityResource $resource;

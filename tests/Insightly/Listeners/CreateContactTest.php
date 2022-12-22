@@ -17,11 +17,11 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
-use Tests\MockCrmClient;
+use Tests\MockInsightlyClient;
 
 final class CreateContactTest extends TestCase
 {
-    use MockCrmClient;
+    use MockInsightlyClient;
 
     private CreateContact $createContact;
 

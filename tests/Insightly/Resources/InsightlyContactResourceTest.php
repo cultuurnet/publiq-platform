@@ -13,11 +13,11 @@ use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use Tests\AssertRequest;
-use Tests\MockCrmClient;
+use Tests\MockInsightlyClient;
 
 final class InsightlyContactResourceTest extends TestCase
 {
-    use MockCrmClient;
+    use MockInsightlyClient;
     use AssertRequest;
 
     private InsightlyContactResource $resource;

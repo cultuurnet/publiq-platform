@@ -11,7 +11,7 @@ use App\Insightly\Resources\OpportunityResource;
 use App\Insightly\Resources\OrganizationResource;
 use PHPUnit\Framework\MockObject\MockObject;
 
-trait MockCrmClient
+trait MockInsightlyClient
 {
     private InsightlyClient&MockObject $insightlyClient;
 
