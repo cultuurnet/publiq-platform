@@ -104,4 +104,14 @@ final class InsightlyOpportunityResourceTest extends TestCase
         $returnedId = $this->resource->create($integration);
         $this->assertEquals($insightlyId, $returnedId);
     }
+
+    public function test_it_deletes_an_opportunity(): void
+    {
+        $expectedRequest = new Request('DELETE','Opportunities/42');
+        $this->insightlyClient->expects($this->once())
+            ->method('sendRequest')
+            ->with($expectedRequest);
+
+        $this->resource->delete(42);
+    }
 }
