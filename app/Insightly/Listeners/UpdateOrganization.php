@@ -36,7 +36,7 @@ final class UpdateOrganization implements ShouldQueue
             'Organization updated',
             [
                 'domain' => 'insightly',
-                'contact_id' => $organizationUpdated->id->toString(),
+                'organization_id' => $organizationUpdated->id->toString(),
             ]
         );
     }
@@ -47,7 +47,7 @@ final class UpdateOrganization implements ShouldQueue
             'Failed to update organization',
             [
                 'domain' => 'insightly',
-                'contact_id' => $organizationCreated->id->toString(),
+                'organization_id' => $organizationCreated->id->toString(),
                 'exception' => $exception,
             ]
         );
