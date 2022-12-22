@@ -145,4 +145,14 @@ final class InsightlyOrganizationResourceTest extends TestCase
             ]),
         ];
     }
+
+    public function test_it_deletes_an_organization(): void
+    {
+        $expectedRequest = new Request('DELETE', 'Organizations/42');
+        $this->insightlyClient->expects($this->once())
+            ->method('sendRequest')
+            ->with(self::callback(fn ($actualRequest) => self::assertRequestIsTheSame($expectedRequest, $actualRequest)));
+
+        $this->resource->delete(42);
+    }
 }
