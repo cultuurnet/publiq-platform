@@ -7,6 +7,7 @@ namespace App\Domain\Contacts\Models;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Events\ContactCreated;
+use App\Domain\Contacts\Events\ContactUpdated;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,6 +33,9 @@ final class ContactModel extends UuidModel
     {
         self::created(
             static fn ($contactModel) => ContactCreated::dispatch(Uuid::fromString($contactModel->id))
+        );
+        self::updated(
+            static fn ($contactModel) => ContactUpdated::dispatch(Uuid::fromString($contactModel->id))
         );
     }
 
