@@ -13,7 +13,11 @@ use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
+/**
+ * @property string $id
+ */
 final class ContactModel extends UuidModel
 {
     use SoftDeletes;
@@ -32,10 +36,10 @@ final class ContactModel extends UuidModel
     protected static function booted(): void
     {
         self::created(
-            static fn ($contactModel) => ContactCreated::dispatch(Uuid::fromString($contactModel->id))
+            static fn (ContactModel $contactModel) => ContactCreated::dispatch($contactModel->getId())
         );
         self::updated(
-            static fn ($contactModel) => ContactUpdated::dispatch(Uuid::fromString($contactModel->id))
+            static fn (ContactModel $contactModel) => ContactUpdated::dispatch($contactModel->getId())
         );
     }
 
@@ -50,12 +54,17 @@ final class ContactModel extends UuidModel
     public function toDomain(): Contact
     {
         return new Contact(
-            Uuid::fromString($this->id),
+            $this->getId(),
             Uuid::fromString($this->integration_id),
             $this->email,
             ContactType::from($this->type),
             $this->first_name,
             $this->last_name
         );
+    }
+
+    public function getId(): UuidInterface
+    {
+        return Uuid::fromString($this->id);
     }
 }
