@@ -18,6 +18,7 @@ use Ramsey\Uuid\UuidInterface;
 /**
  * @property string $id
  * @property string $integration_id
+ * @property string $type
  */
 final class ContactModel extends UuidModel
 {
@@ -58,7 +59,7 @@ final class ContactModel extends UuidModel
             $this->getId(),
             $this->getIntegrationId(),
             $this->email,
-            ContactType::from($this->type),
+            $this->getType(),
             $this->first_name,
             $this->last_name
         );
@@ -72,5 +73,10 @@ final class ContactModel extends UuidModel
     public function getIntegrationId(): UuidInterface
     {
         return Uuid::fromString($this->integration_id);
+    }
+
+    public function getType(): ContactType
+    {
+        return ContactType::from($this->type);
     }
 }
