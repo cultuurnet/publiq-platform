@@ -19,6 +19,9 @@ use Ramsey\Uuid\UuidInterface;
  * @property string $id
  * @property string $integration_id
  * @property string $type
+ * @property string $email
+ * @property string $first_name
+ * @property string $last_name
  */
 final class ContactModel extends UuidModel
 {
