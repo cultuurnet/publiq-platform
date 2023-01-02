@@ -24,7 +24,7 @@ final class IntegrationController extends Controller
     public function __construct(
         private readonly SubscriptionRepository $subscriptionRepository,
         private readonly IntegrationRepository  $integrationRepository,
-        private readonly CurrentUser                    $currentUser
+        private readonly CurrentUser $currentUser
     ) {
     }
 

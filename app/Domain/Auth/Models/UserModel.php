@@ -27,4 +27,14 @@ final class UserModel extends Model implements AuthenticatableContract, Stateful
         'first_name',
         'last_name',
     ];
+
+    public function getIncrementing(): bool
+    {
+        return false;
+    }
+
+    public function getKeyType(): string
+    {
+        return 'string';
+    }
 }
