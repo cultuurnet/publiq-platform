@@ -79,6 +79,7 @@ final class InsightlyClientTest extends TestCase
         $organization = new Organization(
             $organizationId,
             'Test Organization',
+            'facturatie@publiq.be',
             null,
             new Address(
                 'Henegouwenkaai 41-43',
@@ -101,6 +102,7 @@ final class InsightlyClientTest extends TestCase
         $organization = new Organization(
             $organizationId,
             'Test Organization',
+            'facturatie@publiq.be',
             null,
             new Address(
                 'Henegouwenkaai 41-43',
@@ -116,6 +118,7 @@ final class InsightlyClientTest extends TestCase
         $updatedOrganization = new Organization(
             $organizationId,
             'Updated Organization',
+            'invoicing@publiq.be',
             null,
             new Address(
                 'Sluisstraat 1',

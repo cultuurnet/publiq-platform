@@ -79,6 +79,7 @@ final class CreateOrganizationTest extends TestCase
             $id,
             'Test Organization',
             'BE 0475 250 609',
+            'facturatie@publiq.be',
             new Address(
                 'Henegouwenkaai 41-43',
                 '1080',

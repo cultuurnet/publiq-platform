@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Insightly\Listeners;
 
-use App\Domain\Organizations\Events\OrganizationCreated;
 use App\Domain\Organizations\Events\OrganizationUpdated;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
 use App\Insightly\InsightlyClient;
@@ -37,18 +36,18 @@ final class UpdateOrganization implements ShouldQueue
             'Organization updated',
             [
                 'domain' => 'insightly',
-                'contact_id' => $organizationUpdated->id->toString(),
+                'organization_id' => $organizationUpdated->id->toString(),
             ]
         );
     }
 
-    public function failed(OrganizationCreated $organizationCreated, \Throwable $exception): void
+    public function failed(OrganizationUpdated $organizationCreated, \Throwable $exception): void
     {
         $this->logger->error(
             'Failed to update organization',
             [
                 'domain' => 'insightly',
-                'contact_id' => $organizationCreated->id->toString(),
+                'organization_id' => $organizationCreated->id->toString(),
                 'exception' => $exception,
             ]
         );
