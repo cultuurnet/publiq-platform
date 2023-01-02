@@ -56,7 +56,7 @@ final class Contact extends Resource
 
             Text::make('Email')
                 ->sortable()
-                ->rules('required', 'max:255'),
+                ->rules('required', 'email', 'max:255'),
 
             BelongsTo::make('Integration')
                 ->withoutTrashed()
