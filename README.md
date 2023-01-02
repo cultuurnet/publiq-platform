@@ -149,9 +149,9 @@ $ make up
 $ make down
 ```
 
-- Start an interactive shell session
+- Start an interactive bash session
 ```
-$ make shell
+$ make bash
 ```
 
 - Install/update the backend and frontend applications
