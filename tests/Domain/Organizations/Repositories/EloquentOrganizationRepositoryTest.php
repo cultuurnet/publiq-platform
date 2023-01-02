@@ -29,6 +29,7 @@ final class EloquentOrganizationRepositoryTest extends TestCase
         $organization = new Organization(
             Uuid::uuid4(),
             'Test Organization',
+            'facturatie@publiq.be',
             null,
             new Address(
                 'Henegouwenkaai 41-43',
@@ -43,6 +44,7 @@ final class EloquentOrganizationRepositoryTest extends TestCase
         $this->assertDatabaseHas('organizations', [
             'id' => $organization->id->toString(),
             'name' => $organization->name,
+            'invoice_email' => $organization->invoiceEmail,
             'vat' => $organization->vat,
             'street' => $organization->address->street,
             'zip' => $organization->address->zip,
@@ -57,6 +59,7 @@ final class EloquentOrganizationRepositoryTest extends TestCase
             Uuid::uuid4(),
             'Test Organization',
             'BE 0475 250 609',
+            'facturatie@publiq.be',
             new Address(
                 'Henegouwenkaai 41-43',
                 '1080',
@@ -70,6 +73,7 @@ final class EloquentOrganizationRepositoryTest extends TestCase
         $this->assertDatabaseHas('organizations', [
             'id' => $organization->id->toString(),
             'name' => $organization->name,
+            'invoice_email' => $organization->invoiceEmail,
             'vat' => $organization->vat,
             'street' => $organization->address->street,
             'zip' => $organization->address->zip,
@@ -83,6 +87,7 @@ final class EloquentOrganizationRepositoryTest extends TestCase
         $organization = new Organization(
             Uuid::uuid4(),
             'Test Organization',
+            'facturatie@publiq.be',
             null,
             new Address(
                 'Henegouwenkaai 41-43',
@@ -102,6 +107,7 @@ final class EloquentOrganizationRepositoryTest extends TestCase
         $organization = new Organization(
             Uuid::uuid4(),
             'Test Organization',
+            'facturatie@publiq.be',
             'BE 0475 250 609',
             new Address(
                 'Henegouwenkaai 41-43',

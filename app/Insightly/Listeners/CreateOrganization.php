@@ -41,7 +41,7 @@ final class CreateOrganization implements ShouldQueue
             'Organization created',
             [
                 'domain' => 'insightly',
-                'contact_id' => $organizationCreated->id->toString(),
+                'organization_id' => $organizationCreated->id->toString(),
             ]
         );
     }
@@ -52,7 +52,7 @@ final class CreateOrganization implements ShouldQueue
             'Failed to create organization',
             [
                 'domain' => 'insightly',
-                'contact_id' => $organizationCreated->id->toString(),
+                'organization_id' => $organizationCreated->id->toString(),
                 'exception' => $exception,
             ]
         );
