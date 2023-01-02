@@ -11,7 +11,7 @@ use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Organization;
-use App\Insightly\InsightlyClient;
+use App\Insightly\HttpInsightlyClient;
 use App\Insightly\Pipelines;
 use GuzzleHttp\Client;
 use Ramsey\Uuid\Uuid;
@@ -19,13 +19,13 @@ use Tests\TestCase;
 
 final class InsightlyClientTest extends TestCase
 {
-    private InsightlyClient $insightlyClient;
+    private HttpInsightlyClient $insightlyClient;
 
     protected function setUp(): void
     {
         $this->createApplication();
 
-        $this->insightlyClient = new InsightlyClient(
+        $this->insightlyClient = new HttpInsightlyClient(
             new Client(
                 [
                     'base_uri' => config('insightly.host'),

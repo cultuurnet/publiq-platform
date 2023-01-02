@@ -5,22 +5,20 @@ declare(strict_types=1);
 namespace Tests\Insightly\Listeners;
 
 use App\Domain\Organizations\Events\OrganizationDeleted;
-use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Listeners\DeleteOrganization;
 use App\Insightly\Pipelines;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
-use GuzzleHttp\Psr7\Request;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Client\ClientInterface;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
+use Tests\MockInsightlyClient;
 
 final class DeleteOrganizationTest extends TestCase
 {
-    private ClientInterface&MockObject $client;
+    use MockInsightlyClient;
 
     private InsightlyMappingRepository&MockObject $insightlyMappingRepository;
 
@@ -28,15 +26,11 @@ final class DeleteOrganizationTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->client = $this->createMock(ClientInterface::class);
+        $this->mockCrmClient(new Pipelines(['opportunities'=>['id' => 3, 'stages' => ['test'=> 4]]]));
         $this->insightlyMappingRepository = $this->createMock(InsightlyMappingRepository::class);
 
         $this->listener = new DeleteOrganization(
-            new InsightlyClient(
-                $this->client,
-                'api-key',
-                new Pipelines(['opportunities'=>['id' => 3, 'stages' => ['test'=> 4]]])
-            ),
+            $this->insightlyClient,
             $this->insightlyMappingRepository,
             $this->createMock(LoggerInterface::class),
         );
@@ -57,16 +51,9 @@ final class DeleteOrganizationTest extends TestCase
             ->with($organizationId)
             ->willReturn($insightlyIntegrationMapping);
 
-        $this->client->expects($this->once())
-            ->method('sendRequest')
-            ->with(
-                $this->callback(
-                    function (Request $request) use ($insightlyId): bool {
-                        return $request->getMethod() === 'DELETE'
-                            && $request->getUri()->getPath() === 'Organizations/' . $insightlyId;
-                    }
-                )
-            );
+        $this->organizationResource->expects($this->once())
+            ->method('delete')
+            ->with($insightlyId);
 
         $this->insightlyMappingRepository->expects(self::once())
             ->method('deleteById')

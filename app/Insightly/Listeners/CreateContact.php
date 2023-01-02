@@ -25,10 +25,10 @@ final class CreateContact implements ShouldQueue
     ];
 
     public function __construct(
-        private readonly InsightlyClient $insightlyClient,
-        private readonly ContactRepository $contactRepository,
+        private readonly InsightlyClient            $insightlyClient,
+        private readonly ContactRepository          $contactRepository,
         private readonly InsightlyMappingRepository $insightlyMappingRepository,
-        private readonly LoggerInterface $logger,
+        private readonly LoggerInterface            $logger,
     ) {
     }
 

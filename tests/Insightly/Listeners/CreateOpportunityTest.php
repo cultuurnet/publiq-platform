@@ -9,24 +9,20 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Listeners\CreateOpportunity;
-use App\Insightly\Pipelines;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
-use App\Json;
-use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Client\ClientInterface;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
+use Tests\MockInsightlyClient;
 
 final class CreateOpportunityTest extends TestCase
 {
-    private ClientInterface&MockObject $client;
+    use MockInsightlyClient;
 
     private IntegrationRepository&MockObject $integrationRepository;
 
@@ -36,16 +32,13 @@ final class CreateOpportunityTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->client = $this->createMock(ClientInterface::class);
         $this->integrationRepository = $this->createMock(IntegrationRepository::class);
         $this->insightlyMappingRepository = $this->createMock(InsightlyMappingRepository::class);
 
+        $this->mockCrmClient();
+
         $this->listener = new CreateOpportunity(
-            new InsightlyClient(
-                $this->client,
-                'api-key',
-                new Pipelines(['opportunities'=>['id' => 3, 'stages' => ['test'=> 4]]])
-            ),
+            $this->insightlyClient,
             $this->integrationRepository,
             $this->insightlyMappingRepository,
             $this->createMock(LoggerInterface::class),
@@ -54,33 +47,34 @@ final class CreateOpportunityTest extends TestCase
 
     public function test_it_creates_an_opportunity(): void
     {
+        // Given
         $integrationId = Uuid::uuid4();
         $insightlyId = 42;
 
-        $this->givenThereIsAnIntegrationWithId($integrationId);
+        $integration = $this->givenThereIsAnIntegrationWithId($integrationId);
 
-        $this->client->expects($this->exactly(2))
-            ->method('sendRequest')
-            ->willReturnOnConsecutiveCalls(
-                new Response(200, [], Json::encode(['OPPORTUNITY_ID' => $insightlyId])),
-                new Response(200, [])
-            );
+        // Then it creates the opportunity at Insightly
+        $this->opportunityResource->expects($this->once())
+            ->method('create')
+            ->with($integration)
+            ->willReturn($insightlyId);
 
+        // Then it stores the insightlyId mapping
         $insightlyIntegrationMapping = new InsightlyMapping(
             $integrationId,
             $insightlyId,
             ResourceType::Opportunity,
         );
-
         $this->insightlyMappingRepository->expects(self::once())
             ->method('save')
             ->with($insightlyIntegrationMapping);
 
+        // When
         $event = new IntegrationCreated($integrationId);
         $this->listener->handle($event);
     }
 
-    private function givenThereIsAnIntegrationWithId(UuidInterface $integrationId): void
+    private function givenThereIsAnIntegrationWithId(UuidInterface $integrationId): Integration
     {
         $integration = new Integration(
             $integrationId,
@@ -96,5 +90,7 @@ final class CreateOpportunityTest extends TestCase
             ->method('getById')
             ->with($integrationId)
             ->willReturn($integration);
+
+        return $integration;
     }
 }

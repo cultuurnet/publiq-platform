@@ -19,10 +19,10 @@ final class CreateOpportunity implements ShouldQueue
     use Queueable;
 
     public function __construct(
-        private readonly InsightlyClient               $insightlyClient,
-        private readonly IntegrationRepository $integrationRepository,
+        private readonly InsightlyClient            $insightlyClient,
+        private readonly IntegrationRepository      $integrationRepository,
         private readonly InsightlyMappingRepository $insightlyMappingRepository,
-        private readonly LoggerInterface $logger,
+        private readonly LoggerInterface            $logger,
     ) {
     }
 

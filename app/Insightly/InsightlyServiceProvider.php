@@ -26,8 +26,8 @@ final class InsightlyServiceProvider extends ServiceProvider
     {
         $this->app->bind(InsightlyMappingRepository::class, EloquentInsightlyMappingRepository::class);
 
-        $this->app->singleton(InsightlyClient::class, function () {
-            return new InsightlyClient(
+        $this->app->singleton(HttpInsightlyClient::class, function () {
+            return new HttpInsightlyClient(
                 new Client(
                     [
                         'base_uri' => config('insightly.host'),
