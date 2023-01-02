@@ -6,10 +6,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 📤 Checkout project
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: 📩 Fetch vendor from cache
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         id: cache
         with:
           path: vendor
@@ -41,10 +41,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 📤 Checkout project
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: 📩 Fetch vendor from cache
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         id: cache
         with:
           path: vendor
@@ -88,10 +88,10 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
       - name: 📤 Checkout project
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: 📩 Fetch vendor from cache
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         id: cache
         with:
           path: vendor
@@ -123,7 +123,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 📤 Checkout project
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 16.17
@@ -137,7 +137,7 @@ jobs:
       runs-on: ubuntu-latest
       steps:
         - name: 📤 Checkout project
-          uses: actions/checkout@v2
+          uses: actions/checkout@v3
         - uses: actions/setup-node@v3
           with:
             node-version: 16.17
@@ -151,7 +151,7 @@ jobs:
       runs-on: ubuntu-latest
       steps:
         - name: 📤 Checkout project
-          uses: actions/checkout@v2
+          uses: actions/checkout@v3
         - uses: actions/setup-node@v3
           with:
             node-version: 16.17
