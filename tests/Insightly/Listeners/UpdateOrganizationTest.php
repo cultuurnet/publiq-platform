@@ -56,6 +56,7 @@ final class UpdateOrganizationTest extends TestCase
             Uuid::uuid4(),
             'Test Organization',
             'BE 0475 250 609',
+            'facturatie@publiq.be',
             new Address(
                 'Henegouwenkaai 41-43',
                 '1080',
@@ -90,6 +91,11 @@ final class UpdateOrganizationTest extends TestCase
                             'ADDRESS_BILLING_POSTCODE' => $organization->address->zip,
                             'ADDRESS_BILLING_CITY' => $organization->address->city,
                             'CUSTOMFIELDS' => [
+                                [
+                                    'FIELD_NAME' => 'Email_boekhouding__c',
+                                    'CUSTOM_FIELD_ID' => 'Email_boekhouding__c',
+                                    'FIELD_VALUE' => $organization->invoiceEmail,
+                                ],
                                 [
                                     'FIELD_NAME' => 'BTW_nummer__c',
                                     'CUSTOM_FIELD_ID' => 'BTW_nummer__c',

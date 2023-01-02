@@ -42,6 +42,10 @@ final class Organization extends Resource
                 ->sortable()
                 ->rules('required', 'max:255'),
 
+            Text::make('Invoice Email', 'invoice_email')
+                ->sortable()
+                ->rules('required', 'email', 'max:255'),
+
             Text::make('Vat')
                 ->sortable()
                 ->rules('required', 'max:255'),
