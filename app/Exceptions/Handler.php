@@ -47,8 +47,10 @@ final class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             if (app()->bound('sentry')) {
                 configureScope(function (Scope $scope): void {
-                    $user = Auth::user();
-                    $scope->setUser(['id' => $user->id ?? 'guest']);
+                    if (!app()->runningInConsole()) {
+                        $user = Auth::user();
+                        $scope->setUser(['id' => $user->id ?? 'guest']);
+                    }
                 });
 
                 app('sentry')->captureException($e);
