@@ -72,6 +72,11 @@ final class InsightlyClientTest extends TestCase
         $this->insightlyClient->opportunities()->delete($insightlyId);
     }
 
+    public function test_it_can_create_a_project(): void
+    {
+        $this->assertNotNull(null);
+    }
+
     public function test_it_can_create_an_organization(): void
     {
         $organizationId = Uuid::uuid4();
