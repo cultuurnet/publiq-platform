@@ -26,6 +26,6 @@ final class CreateClients implements ShouldQueue
     {
         $integration = $this->integrationRepository->getById($integrationCreated->id);
         $auth0Clients = $this->auth0ClusterSDK->createClientsForIntegration($integration);
-        $this->auth0ClientRepository->save(...$auth0Clients);
+        $this->auth0ClientRepository->save(...$auth0Clients->toArray());
     }
 }
