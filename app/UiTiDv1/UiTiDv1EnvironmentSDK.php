@@ -9,7 +9,7 @@ use App\Json;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Subscriber\Oauth\Oauth1;
+use GuzzleHttp\Psr7\Query;
 use Psr\Http\Message\ResponseInterface;
 use SimpleXMLElement;
 
@@ -50,7 +50,7 @@ final class UiTiDv1EnvironmentSDK
         string $consumerSecret,
     ): ClientInterface {
         $handlerStack = HandlerStack::create();
-        $middleware = new Oauth1([
+        $middleware = new OAuth1([
             'consumer_key' => $consumerKey,
             'consumer_secret' => $consumerSecret,
             'token' => '',
