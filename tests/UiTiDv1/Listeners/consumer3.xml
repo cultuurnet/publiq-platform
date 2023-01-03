@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<consumer xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:cdb="http://www.cultuurdatabank.com/XMLSchema/CdbXSD/3.1/FINAL">
+    <consumerKey>mock-consumer-key-3</consumerKey>
+    <consumerSecret>mock-consumer-secret-3</consumerSecret>
+    <description>Mock description</description>
+    <creationDate>2023-01-02T15:44Z</creationDate>
+    <id>4135</id>
+    <name>Mock Integration</name>
+    <status>ACTIVE</status>
+    <apiKeySapi3>mock-api-key-3</apiKeySapi3>
+    <confirmationMailEnabled>true</confirmationMailEnabled>
+    <registrationType>NICK</registrationType>
+    <skipLightEmailVerification>false</skipLightEmailVerification>
+</consumer>
