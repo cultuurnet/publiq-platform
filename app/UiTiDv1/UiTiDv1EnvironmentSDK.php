@@ -9,7 +9,6 @@ use App\Json;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Subscriber\Oauth\Oauth1;
 use Psr\Http\Message\ResponseInterface;
 use SimpleXMLElement;
@@ -73,13 +72,15 @@ final class UiTiDv1EnvironmentSDK
 
     private function sendPostRequest(string $path, array $formData): ResponseInterface
     {
-        $headers = ['content-type' => 'application/x-www-form-urlencoded'];
+        // Make sure to encode the form data using Query::build() and use the "body" option, as opposed to using the
+        // "form_params" option. While form_params supports parameters with multiple values, it encodes them with a []
+        // suffix which is not supported by UiTiD v1.
         $options = [
-            'form_params' => $formData,
             'http_errors' => false,
+            'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
+            'body' => Query::build($formData),
         ];
-        $request = new Request('POST', $path, $headers);
-        $response = $this->httpClient->send($request, $options);
+        $response = $this->httpClient->request('POST', $path, $options);
 
         $status = $response->getStatusCode();
         if ($status < 200 || $status > 299) {
