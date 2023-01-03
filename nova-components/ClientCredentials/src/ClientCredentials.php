@@ -7,20 +7,14 @@ use InvalidArgumentException;
 use Laravel\Nova\ResourceTool;
 
 /**
- * @method static static make(string $title, string $modelClassName, string $idColumn, string $idLabel, string $secretColumn, string $secretLabel, string $environmentColumn, string $environmentLabel, string $environmentEnumClass, string $filterColumn, ?string $filterValue)
+ * @method static static make(string $title, string $modelClassName, array $columns, string $filterColumn, ?string $filterValue)
  */
 final class ClientCredentials extends ResourceTool
 {
     public function __construct(
         private readonly string $title,
         string $modelClassName,
-        string $idColumn,
-        string $idLabel,
-        string $secretColumn,
-        string $secretLabel,
-        string $environmentColumn,
-        string $environmentLabel,
-        string $environmentEnumClass,
+        array $columns,
         string $filterColumn,
         ?string $filterValue,
     ) {
@@ -32,29 +26,27 @@ final class ClientCredentials extends ResourceTool
         if (!is_subclass_of($modelClassName, Model::class)) {
             throw new InvalidArgumentException($modelClassName . ' class does not extend ' . Model::class);
         }
-        if (!enum_exists($environmentEnumClass)) {
-            throw new InvalidArgumentException($environmentEnumClass . ' is not an enum class');
-        }
 
         $this->withMeta([
             'title' => $title,
-            'idLabel' => $idLabel,
-            'secretLabel' => $secretLabel,
-            'environmentLabel' => $environmentLabel,
-            'sets' => [],
+            'headers' => array_values($columns),
+            'rows' => [],
         ]);
 
         if ($filterValue) {
-            $sets = $modelClassName::query()
+            $rows = $modelClassName::query()
                 ->where($filterColumn, $filterValue)
                 ->get()
-                ->map(fn (object $model): array => [
-                    'id' => $model->{$idColumn},
-                    'secret' => $model->{$secretColumn},
-                    'env' => $environmentEnumClass::from($model->{$environmentColumn})->name,
-                ])
+                ->map(
+                    static fn (object $model): array => array_values(
+                        array_map(
+                            static fn (string $column): string => (string) $model->{$column},
+                            array_keys($columns)
+                        )
+                    )
+                )
                 ->toArray();
-            $this->withMeta(['sets' => $sets]);
+            $this->withMeta(['rows' => $rows]);
         }
     }
 
