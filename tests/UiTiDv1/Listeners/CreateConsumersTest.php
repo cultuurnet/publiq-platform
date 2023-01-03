@@ -97,9 +97,9 @@ final class CreateConsumersTest extends TestCase
                 ]
             )
             ->willReturnOnConsecutiveCalls(
-                new Response(200, [], file_get_contents(__DIR__ . '/consumer1.xml')),
-                new Response(200, [], file_get_contents(__DIR__ . '/consumer2.xml')),
-                new Response(200, [], file_get_contents(__DIR__ . '/consumer3.xml')),
+                new Response(200, [], (string) file_get_contents(__DIR__ . '/consumer1.xml')),
+                new Response(200, [], (string) file_get_contents(__DIR__ . '/consumer2.xml')),
+                new Response(200, [], (string) file_get_contents(__DIR__ . '/consumer3.xml')),
             );
 
         $expectedConsumers = [
