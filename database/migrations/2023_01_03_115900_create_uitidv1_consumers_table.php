@@ -11,12 +11,15 @@ return new class () extends Migration {
     {
         Schema::create('uitidv1_consumers', static function (Blueprint $table) {
             $table->uuid('integration_id')->index();
+            $table->string('consumer_id')->index();
             $table->string('consumer_key')->index();
             $table->string('consumer_secret');
             $table->string('api_key');
             $table->string('environment')->index();
+            $table->unique(['integration_id', 'consumer_id']);
             $table->unique(['integration_id', 'consumer_key']);
-            $table->unique(['consumer_key', 'environment']);
+            $table->unique(['environment', 'consumer_id']);
+            $table->unique(['environment', 'consumer_key']);
             $table->softDeletes();
             $table->timestamps();
         });
