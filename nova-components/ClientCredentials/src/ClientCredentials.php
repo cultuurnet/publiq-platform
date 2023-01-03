@@ -12,7 +12,7 @@ use Laravel\Nova\ResourceTool;
 final class ClientCredentials extends ResourceTool
 {
     public function __construct(
-        string $title,
+        private readonly string $title,
         string $modelClassName,
         string $idColumn,
         string $idLabel,
@@ -60,7 +60,7 @@ final class ClientCredentials extends ResourceTool
 
     public function name(): string
     {
-        return 'Client Credentials';
+        return $this->title;
     }
 
     public function component(): string
