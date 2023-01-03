@@ -75,8 +75,8 @@ final class UiTiDv1EnvironmentSDK
             'form_params' => $formData,
             'http_errors' => false,
         ];
-        $request = new Request('POST', $path, $headers, $options);
-        $response = $this->httpClient->send($request);
+        $request = new Request('POST', $path, $headers);
+        $response = $this->httpClient->send($request, $options);
 
         $status = $response->getStatusCode();
         if ($status < 200 || $status > 299) {
