@@ -76,7 +76,7 @@ final class Integration extends Resource
                 ->default(IntegrationStatus::Draft->value),
 
             ClientCredentials::make(
-                title: 'UiTiD v2 (Auth0) Client Credentials',
+                title: 'UiTiD v2 Client Credentials (Auth0)',
                 modelClassName: Auth0ClientModel::class,
                 idColumn: 'auth0_client_id',
                 idLabel: 'Client id',
