@@ -105,6 +105,7 @@ final class CreateConsumersTest extends TestCase
         $expectedConsumers = [
             new UiTiDv1Consumer(
                 $integrationId,
+                '4135',
                 'mock-consumer-key-1',
                 'mock-consumer-secret-1',
                 'mock-api-key-1',
@@ -112,6 +113,7 @@ final class CreateConsumersTest extends TestCase
             ),
             new UiTiDv1Consumer(
                 $integrationId,
+                '4136',
                 'mock-consumer-key-2',
                 'mock-consumer-secret-2',
                 'mock-api-key-2',
@@ -119,6 +121,7 @@ final class CreateConsumersTest extends TestCase
             ),
             new UiTiDv1Consumer(
                 $integrationId,
+                '4137',
                 'mock-consumer-key-3',
                 'mock-consumer-secret-3',
                 'mock-api-key-3',

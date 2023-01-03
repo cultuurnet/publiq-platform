@@ -38,11 +38,19 @@ final class UiTiDv1EnvironmentSDK
         // This way we don't need to deal with XPath to read the values.
         $xml = new SimpleXMLElement($response->getBody()->getContents());
         $data = Json::decodeAssociatively(Json::encode($xml));
+        $consumerId = (string) $data['id'];
         $consumerKey = $data['consumerKey'];
         $consumerSecret = $data['consumerSecret'];
         $apiKey = $data['apiKeySapi3'];
 
-        return new UiTiDv1Consumer($integration->id, $consumerKey, $consumerSecret, $apiKey, $this->environment);
+        return new UiTiDv1Consumer(
+            $integration->id,
+            $consumerId,
+            $consumerKey,
+            $consumerSecret,
+            $apiKey,
+            $this->environment
+        );
     }
 
     public static function createOAuth1HttpClient(

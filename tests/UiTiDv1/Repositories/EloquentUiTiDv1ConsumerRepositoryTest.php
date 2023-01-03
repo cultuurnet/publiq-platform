@@ -32,6 +32,7 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
 
         $consumer1 = new UiTiDv1Consumer(
             $integrationId,
+            '1',
             'consumer-key-1',
             'consumer-secret-1',
             'api-key-1',
@@ -39,6 +40,7 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
         );
         $consumer2 = new UiTiDv1Consumer(
             $integrationId,
+            '2',
             'consumer-key-2',
             'consumer-secret-2',
             'api-key-2',
@@ -46,6 +48,7 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
         );
         $consumer3 = new UiTiDv1Consumer(
             $integrationId,
+            '3',
             'consumer-key-3',
             'consumer-secret-3',
             'api-key-3',
@@ -56,6 +59,7 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
 
         $this->assertDatabaseHas('uitidv1_consumers', [
             'integration_id' => $integrationId->toString(),
+            'consumer_id' => '1',
             'consumer_key' => 'consumer-key-1',
             'consumer_secret' => 'consumer-secret-1',
             'api_key' => 'api-key-1',
@@ -63,6 +67,7 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
         ]);
         $this->assertDatabaseHas('uitidv1_consumers', [
             'integration_id' => $integrationId->toString(),
+            'consumer_id' => '2',
             'consumer_key' => 'consumer-key-2',
             'consumer_secret' => 'consumer-secret-2',
             'api_key' => 'api-key-2',
@@ -70,6 +75,7 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
         ]);
         $this->assertDatabaseHas('uitidv1_consumers', [
             'integration_id' => $integrationId->toString(),
+            'consumer_id' => '3',
             'consumer_key' => 'consumer-key-3',
             'consumer_secret' => 'consumer-secret-3',
             'api_key' => 'api-key-3',
@@ -86,6 +92,7 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
 
         $consumer1 = new UiTiDv1Consumer(
             $integrationId,
+            '1',
             'consumer-key-1',
             'consumer-secret-1',
             'api-key-1',
@@ -93,6 +100,7 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
         );
         $consumer2 = new UiTiDv1Consumer(
             $integrationId,
+            '2',
             'consumer-key-2',
             'consumer-secret-2',
             'api-key-2',
@@ -100,6 +108,7 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
         );
         $consumer3 = new UiTiDv1Consumer(
             $integrationId,
+            '3',
             'consumer-key-3',
             'consumer-secret-3',
             'api-key-3',

@@ -10,6 +10,7 @@ final class UiTiDv1Consumer
 {
     public function __construct(
         public readonly UuidInterface $integrationId,
+        public readonly string $consumerId,
         public readonly string $consumerKey,
         public readonly string $consumerSecret,
         public readonly string $apiKey,

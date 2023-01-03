@@ -22,11 +22,12 @@ final class EloquentUiTiDv1ConsumerRepository implements UiTiDv1ConsumerReposito
                 UiTiDv1ConsumerModel::query()
                     ->updateOrCreate(
                         [
-                            'consumer_key' => $uitidv1Consumer->consumerKey,
+                            'consumer_id' => $uitidv1Consumer->consumerId,
                             'environment' => $uitidv1Consumer->environment->value,
                         ],
                         [
                             'integration_id' => $uitidv1Consumer->integrationId->toString(),
+                            'consumer_id' => $uitidv1Consumer->consumerId,
                             'consumer_key' => $uitidv1Consumer->consumerKey,
                             'consumer_secret' => $uitidv1Consumer->consumerSecret,
                             'api_key' => $uitidv1Consumer->apiKey,

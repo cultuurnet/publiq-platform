@@ -20,6 +20,7 @@ final class UiTiDv1ConsumerModel extends Model
 
     protected $fillable = [
         'integration_id',
+        'consumer_id',
         'consumer_key',
         'consumer_secret',
         'api_key',
@@ -30,6 +31,7 @@ final class UiTiDv1ConsumerModel extends Model
     {
         return new UiTiDv1Consumer(
             Uuid::fromString($this->integration_id),
+            (string) $this->consumer_id,
             $this->consumer_key,
             $this->consumer_secret,
             $this->api_key,
