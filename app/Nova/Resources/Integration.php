@@ -9,6 +9,8 @@ use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
+use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
+use App\UiTiDv1\UiTiDv1Environment;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
@@ -74,6 +76,20 @@ final class Integration extends Resource
                     IntegrationStatus::Deleted->value => IntegrationStatus::Deleted->name,
                 ])
                 ->default(IntegrationStatus::Draft->value),
+
+            ClientCredentials::make(
+                title: 'UiTiD v1 Consumer Credentials',
+                modelClassName: UiTiDv1ConsumerModel::class,
+                idColumn: 'consumer_key',
+                idLabel: 'Consumer key',
+                secretColumn: 'consumer_secret',
+                secretLabel: 'Consumer secret',
+                environmentColumn: 'environment',
+                environmentLabel: 'Environment',
+                environmentEnumClass: UiTiDv1Environment::class,
+                filterColumn: 'integration_id',
+                filterValue: $this->id,
+            ),
 
             ClientCredentials::make(
                 title: 'UiTiD v2 Client Credentials (Auth0)',
