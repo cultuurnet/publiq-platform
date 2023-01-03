@@ -19,10 +19,10 @@ final class CreateOrganization implements ShouldQueue
     use Queueable;
 
     public function __construct(
-        private readonly InsightlyClient            $insightlyClient,
-        private readonly OrganizationRepository     $organizationRepository,
+        private readonly InsightlyClient $insightlyClient,
+        private readonly OrganizationRepository $organizationRepository,
         private readonly InsightlyMappingRepository $insightlyMappingRepository,
-        private readonly LoggerInterface            $logger
+        private readonly LoggerInterface $logger
     ) {
     }
 
