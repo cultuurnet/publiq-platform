@@ -32,7 +32,7 @@ final class UiTiDv1EnvironmentSDK
             'group' => $this->permissionGroupsPerIntegrationType[$integration->type->value] ?? [],
         ];
 
-        $response = $this->sendPostRequest('/serviceconsumer', $formData);
+        $response = $this->sendPostRequest('serviceconsumer', $formData);
 
         // Easiest way to convert XML to an array is by encoding an SimpleXMLELement as JSON and then decoding it again.
         // This way we don't need to deal with XPath to read the values.
@@ -58,6 +58,9 @@ final class UiTiDv1EnvironmentSDK
             'token_secret' => ''
         ]);
         $handlerStack->push($middleware);
+
+        // Make sure the base URL always has a single trailing slash.
+        $baseUrl = rtrim($baseUrl, '/') . '/';
 
         return new Client(
             [
