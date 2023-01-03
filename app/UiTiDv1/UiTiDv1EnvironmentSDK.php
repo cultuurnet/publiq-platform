@@ -19,7 +19,8 @@ final class UiTiDv1EnvironmentSDK
         public readonly UiTiDv1Environment $environment,
         private readonly ClientInterface $httpClient,
         private readonly array $permissionGroupsPerIntegrationType
-    ) {}
+    ) {
+    }
 
     public function createConsumerForIntegration(Integration $integration): UiTiDv1Consumer
     {
@@ -54,7 +55,7 @@ final class UiTiDv1EnvironmentSDK
             'consumer_key' => $consumerKey,
             'consumer_secret' => $consumerSecret,
             'token' => '',
-            'token_secret' => ''
+            'token_secret' => '',
         ]);
         $handlerStack->push($middleware);
 
@@ -65,7 +66,7 @@ final class UiTiDv1EnvironmentSDK
             [
                 'base_uri' => $baseUrl,
                 'handler' => $handlerStack,
-                'auth' => 'oauth'
+                'auth' => 'oauth',
             ]
         );
     }
