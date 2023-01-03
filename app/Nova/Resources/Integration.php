@@ -82,6 +82,7 @@ final class Integration extends Resource
                 modelClassName: UiTiDv1ConsumerModel::class,
                 columns: [
                     'environment' => 'Environment',
+                    'api_key' => 'API key',
                     'consumer_key' => 'Consumer key',
                     'consumer_secret' => 'Consumer secret',
                 ],
