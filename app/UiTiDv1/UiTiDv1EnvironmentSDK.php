@@ -34,7 +34,7 @@ final class UiTiDv1EnvironmentSDK
 
         $response = $this->sendPostRequest('serviceconsumer', $formData);
 
-        // Easiest way to convert XML to an array is by encoding an SimpleXMLELement as JSON and then decoding it again.
+        // Easiest way to convert XML to an array is by encoding an SimpleXMLElement as JSON and then decoding it again.
         // This way we don't need to deal with XPath to read the values.
         $xml = new SimpleXMLElement($response->getBody()->getContents());
         $data = Json::decodeAssociatively(Json::encode($xml));
