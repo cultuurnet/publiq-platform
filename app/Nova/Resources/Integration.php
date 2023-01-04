@@ -44,6 +44,13 @@ final class Integration extends Resource
      */
     public function fields(NovaRequest $request): array
     {
+        $uitidActionUrlTemplates = array_filter(
+            array_map(
+                static fn (array $envConfig): ?string => $envConfig['consumerDetailUrlTemplate'] ?? null,
+                config('uitidv1.environments')
+            )
+        );
+
         return [
             ID::make()
                 ->readonly(),
@@ -89,7 +96,12 @@ final class Integration extends Resource
                 filterColumn: 'integration_id',
                 filterValue: $this->id,
                 actionLabel: 'Open in UiTiD v1',
-                actionUrlCallback: fn (UiTiDv1ConsumerModel $model): ?string => 'https://acc.uitid.be/uitid/rest/admin/serviceconsumers/' . $model->consumer_id,
+                actionUrlCallback: static function (UiTiDv1ConsumerModel $model) use ($uitidActionUrlTemplates): ?string {
+                    if (isset($uitidActionUrlTemplates[$model->environment])) {
+                        return sprintf($uitidActionUrlTemplates[$model->environment], $model->consumer_id);
+                    }
+                    return null;
+                },
             ),
 
             ClientCredentials::make(

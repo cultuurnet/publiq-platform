@@ -17,6 +17,7 @@ return [
                 'search-api' => env('UITID_V1_ACC_GROUPS_SEARCH_API'),
                 'widgets' => env('UITID_V1_ACC_GROUPS_WIDGETS'),
             ],
+            'consumerDetailUrlTemplate' => env('UITID_V1_ACC_CONSUMER_DETAILS_URL_TEMPLATE'),
         ],
         'test' => [
             'baseUrl' => env('UITID_V1_TEST_URL'),
@@ -27,6 +28,7 @@ return [
                 'search-api' => env('UITID_V1_TEST_GROUPS_SEARCH_API'),
                 'widgets' => env('UITID_V1_TEST_GROUPS_WIDGETS'),
             ],
+            'consumerDetailUrlTemplate' => env('UITID_V1_TEST_CONSUMER_DETAILS_URL_TEMPLATE'),
         ],
         'prod' => [
             'baseUrl' => env('UITID_V1_PROD_URL'),
@@ -37,6 +39,7 @@ return [
                 'search-api' => env('UITID_V1_PROD_GROUPS_SEARCH_API'),
                 'widgets' => env('UITID_V1_PROD_GROUPS_WIDGETS'),
             ],
+            'consumerDetailUrlTemplate' => env('UITID_V1_PROD_CONSUMER_DETAILS_URL_TEMPLATE'),
         ],
     ],
 ];
