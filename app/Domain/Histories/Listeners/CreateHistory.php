@@ -23,7 +23,7 @@ final class CreateHistory
         $this->historyRepository->create(
             new History(
                 Uuid::uuid4(),
-                $data['id'],
+                $data[0]->id,
                 $eventName,
                 $this->currentUser->id(),
                 Carbon::now(),
