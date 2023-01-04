@@ -87,7 +87,7 @@ final class InsightlyClientTest extends TestCase
         $insightlyId = $this->insightlyClient->projects()->create($integration);
         $this->assertNotNull($insightlyId);
 
-        $this->insightlyClient->opportunities()->delete($insightlyId);
+        $this->insightlyClient->projects()->delete($insightlyId);
     }
 
     public function test_it_can_create_an_organization(): void
