@@ -42,17 +42,21 @@ final class Integration extends Resource
      */
     public function fields(NovaRequest $request): array
     {
+        $uitidEnvironmentsConfig = config('uitidv1.environments');
+        $uitidEnvironments = array_keys($uitidEnvironmentsConfig);
         $uitidActionUrlTemplates = array_filter(
             array_map(
                 static fn (array $envConfig): ?string => $envConfig['consumerDetailUrlTemplate'] ?? null,
-                config('uitidv1.environments')
+                $uitidEnvironmentsConfig
             )
         );
 
+        $auth0TenantsConfig = config('auth0.tenants');
+        $auth0Tenants = array_keys($auth0TenantsConfig);
         $auth0ActionUrlTemplates = array_filter(
             array_map(
                 static fn (array $tenantConfig): ?string => $tenantConfig['clientDetailUrlTemplate'] ?? null,
-                config('auth0.tenants')
+                $auth0TenantsConfig
             )
         );
 
@@ -100,6 +104,8 @@ final class Integration extends Resource
                 ],
                 filterColumn: 'integration_id',
                 filterValue: $this->id,
+                sortColumn: 'environment',
+                sortValues: $uitidEnvironments,
                 actionLabel: 'Open in UiTiD v1',
                 actionUrlCallback: static function (UiTiDv1ConsumerModel $model) use ($uitidActionUrlTemplates): ?string {
                     if (isset($uitidActionUrlTemplates[$model->environment])) {
@@ -119,6 +125,8 @@ final class Integration extends Resource
                 ],
                 filterColumn: 'integration_id',
                 filterValue: $this->id,
+                sortColumn: 'auth0_tenant',
+                sortValues: $auth0Tenants,
                 actionLabel: 'Open in Auth0',
                 actionUrlCallback: static function (Auth0ClientModel $model) use ($auth0ActionUrlTemplates): ?string {
                     if (isset($auth0ActionUrlTemplates[$model->auth0_tenant])) {

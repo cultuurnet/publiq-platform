@@ -2,13 +2,14 @@
 
 namespace Publiq\ClientCredentials;
 
+use App\Auth0\Models\Auth0ClientModel;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 use Laravel\Nova\ResourceTool;
 
 /**
- * @method static static make(string $title, string $modelClassName, array $columns, string $filterColumn, ?string $filterValue, ?string $actionLabel = null, ?callable $actionUrlCallback = null)
+ * @method static static make(string $title, string $modelClassName, array $columns, string $filterColumn, ?string $filterValue, ?string $sortColumn = null, ?array $sortValues = null, ?string $actionLabel = null, ?callable $actionUrlCallback = null)
  */
 final class ClientCredentials extends ResourceTool
 {
@@ -18,6 +19,8 @@ final class ClientCredentials extends ResourceTool
         array $columns,
         string $filterColumn,
         ?string $filterValue,
+        ?string $sortColumn = null,
+        ?array $sortValues = null,
         ?string $actionLabel = null,
         ?callable $actionUrlCallback = null
     ) {
@@ -41,8 +44,24 @@ final class ClientCredentials extends ResourceTool
         $models = new Collection();
         if ($filterValue) {
             $models = $modelClassName::query()
-                ->where($filterColumn, $filterValue)
-                ->get();
+                ->where($filterColumn, '=', $filterValue);
+
+            // When sorting by a specific list of values, make sure we only retrieve rows with those values.
+            if ($sortColumn && $sortValues) {
+                $models = $models->whereIn($sortColumn, $sortValues);
+            }
+
+            $models = $models->get();
+        }
+
+        if ($sortColumn && $sortValues) {
+            $models = $models
+                ->sort(
+                    static fn (object $model1, object $model2): int =>
+                        array_search($model1->{$sortColumn}, array_values($sortValues), false) <=>
+                        array_search($model2->{$sortColumn}, array_values($sortValues), false)
+                )
+                ->values();
         }
 
         $rows = $models
