@@ -10,6 +10,7 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
+use App\Insightly\Models\InsightlyMappingModel;
 use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -52,9 +53,22 @@ final class IntegrationModel extends UuidModel
     /**
      * @return BelongsTo<SubscriptionModel, IntegrationModel>
      */
-    public function subscription(): belongsTo
+    public function subscription(): BelongsTo
     {
         return $this->belongsTo(SubscriptionModel::class, 'subscription_id');
+    }
+
+    /**
+     * @return BelongsTo<InsightlyMappingModel, IntegrationModel>
+     */
+    public function insightlyMapping(): BelongsTo
+    {
+        return $this->belongsTo(InsightlyMappingModel::class, 'id');
+    }
+
+    public function insightlyId(): ?string
+    {
+        return $this->insightlyMapping ? $this->insightlyMapping->insightly_id : null;
     }
 
     public function toDomain(): Integration
