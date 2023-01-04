@@ -17,6 +17,7 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
 use Tests\UiTiDv1\CreatesMockUiTiDv1ClusterSDK;
 
@@ -40,7 +41,8 @@ final class CreateConsumersTest extends TestCase
         $this->createConsumers = new CreateConsumers(
             $this->createMockUiTiDv1ClusterSDK($this->httpClient),
             $this->integrationRepository,
-            $this->consumerRepository
+            $this->consumerRepository,
+            new NullLogger()
         );
     }
 
