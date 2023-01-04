@@ -19,6 +19,8 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Resource;
 use Laravel\Nova\ResourceTool;
 use Publiq\ClientCredentials\ClientCredentials;
+use Publiq\InsightlyLink\InsightlyLink;
+use Publiq\InsightlyLink\InsightlyType;
 
 /**
  * @property string $id
@@ -74,6 +76,9 @@ final class Integration extends Resource
                     IntegrationStatus::Deleted->value => IntegrationStatus::Deleted->name,
                 ])
                 ->default(IntegrationStatus::Draft->value),
+
+            InsightlyLink::make('Insightly ID', fn () => $this->insightlyId())
+                ->type(InsightlyType::Opportunity),
 
             ClientCredentials::make(
                 title: 'UiTiD v2 (Auth0) Client Credentials',
