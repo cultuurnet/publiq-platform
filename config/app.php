@@ -193,6 +193,7 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         App\Auth0\Auth0ServiceProvider::class,
+        App\Domain\Histories\HistoryServiceProvider::class,
         App\Domain\Integrations\IntegrationServiceProvider::class,
         App\Insightly\InsightlyServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
