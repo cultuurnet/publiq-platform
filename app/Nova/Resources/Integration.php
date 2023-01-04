@@ -88,6 +88,8 @@ final class Integration extends Resource
                 ],
                 filterColumn: 'integration_id',
                 filterValue: $this->id,
+                actionLabel: 'Open in UiTiD v1',
+                actionUrlCallback: fn (UiTiDv1ConsumerModel $model): ?string => 'https://acc.uitid.be/uitid/rest/admin/serviceconsumers/' . $model->consumer_id,
             ),
 
             ClientCredentials::make(
@@ -100,6 +102,8 @@ final class Integration extends Resource
                 ],
                 filterColumn: 'integration_id',
                 filterValue: $this->id,
+                actionLabel: 'Open in Auth0',
+                actionUrlCallback: fn (Auth0ClientModel $model): ?string => 'https://manage.auth0.com/dashboard/eu/publiq-acc/' . $model->client_id . '/settings',
             ),
 
             HasMany::make('Contacts'),
