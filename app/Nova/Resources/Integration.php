@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace App\Nova\Resources;
 
-use App\Auth0\Auth0Tenant;
 use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
-use App\UiTiDv1\UiTiDv1Environment;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
