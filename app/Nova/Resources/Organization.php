@@ -13,6 +13,9 @@ use Laravel\Nova\Resource;
 use Publiq\InsightlyLink\InsightlyLink;
 use Publiq\InsightlyLink\InsightlyType;
 
+/**
+ * @mixin OrganizationModel
+ */
 final class Organization extends Resource
 {
     public static string $model = OrganizationModel::class;

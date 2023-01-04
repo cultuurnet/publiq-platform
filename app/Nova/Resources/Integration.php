@@ -23,7 +23,7 @@ use Publiq\InsightlyLink\InsightlyLink;
 use Publiq\InsightlyLink\InsightlyType;
 
 /**
- * @property string $id
+ * @mixin IntegrationModel
  */
 final class Integration extends Resource
 {

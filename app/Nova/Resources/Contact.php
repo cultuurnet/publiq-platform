@@ -16,6 +16,9 @@ use Laravel\Nova\Resource;
 use Publiq\InsightlyLink\InsightlyLink;
 use Publiq\InsightlyLink\InsightlyType;
 
+/**
+ * @mixin ContactModel
+ */
 final class Contact extends Resource
 {
     public static string $model = ContactModel::class;
