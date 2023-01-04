@@ -7,7 +7,7 @@ use InvalidArgumentException;
 use Laravel\Nova\ResourceTool;
 
 /**
- * @method static static make(string $title, string $modelClassName, array $columns, string $filterColumn, ?string $filterValue)
+ * @method static static make(string $title, string $modelClassName, array $columns, string $filterColumn, ?string $filterValue, ?string $actionLabel = null, ?callable $actionUrlCallback = null)
  */
 final class ClientCredentials extends ResourceTool
 {
@@ -17,6 +17,8 @@ final class ClientCredentials extends ResourceTool
         array $columns,
         string $filterColumn,
         ?string $filterValue,
+        ?string $actionLabel = null,
+        ?callable $actionUrlCallback = null
     ) {
         parent::__construct();
 
@@ -31,12 +33,16 @@ final class ClientCredentials extends ResourceTool
             'title' => $title,
             'headers' => array_values($columns),
             'rows' => [],
+            'actionLabel' => $actionLabel,
+            'actionUrls' => [],
         ]);
 
         if ($filterValue) {
-            $rows = $modelClassName::query()
+            $models = $modelClassName::query()
                 ->where($filterColumn, $filterValue)
-                ->get()
+                ->get();
+
+            $rows = $models
                 ->map(
                     static fn (object $model): array => array_values(
                         array_map(
@@ -47,6 +53,13 @@ final class ClientCredentials extends ResourceTool
                 )
                 ->toArray();
             $this->withMeta(['rows' => $rows]);
+
+            if ($actionUrlCallback) {
+                $actionUrls = $models
+                    ->map($actionUrlCallback)
+                    ->toArray();
+                $this->withMeta(['actionUrls' => $actionUrls]);
+            }
         }
     }
 

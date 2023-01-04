@@ -7,13 +7,21 @@
                     <th v-for="header in headers" class="text-left px-2 whitespace-nowrap uppercase text-gray-500 text-xxs tracking-wide py-2">
                         <span>{{ header }}</span>
                     </th>
+                    <th v-if="showActions" class="text-left px-2 whitespace-nowrap uppercase text-gray-500 text-xxs tracking-wide py-2">
+                        <span>Actions</span>
+                    </th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="row in rows" class="group">
+                <tr v-for="(row, index) in rows" class="group">
                     <td v-for="cell in row" class="px-2 py-2 border-t border-gray-100 dark:border-gray-700 whitespace-nowrap dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-900">
                         <div class="text-left">
                             <span class="text-90 whitespace-nowrap">{{ cell }}</span>
+                        </div>
+                    </td>
+                    <td v-if="showActions" class="px-2 py-2 border-t border-gray-100 dark:border-gray-700 whitespace-nowrap dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-900">
+                        <div class="text-left">
+                            <span class="text-90 whitespace-nowrap"><a v-if="actionUrls[index]" :href="actionUrls[index]" target="_blank" class="link-default">{{actionLabel}}</a></span>
                         </div>
                     </td>
                 </tr>
@@ -38,6 +46,15 @@ export default {
         rows() {
             return this.panel.fields[0]['rows']
         },
+        actionLabel() {
+            return this.panel.fields[0]['actionLabel']
+        },
+        actionUrls() {
+            return this.panel.fields[0]['actionUrls']
+        },
+        showActions() {
+            return this.actionLabel !== null && this.actionUrls.length > 0;
+        }
     },
 }
 </script>
