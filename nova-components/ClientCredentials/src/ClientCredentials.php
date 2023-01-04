@@ -2,6 +2,7 @@
 
 namespace Publiq\ClientCredentials;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 use Laravel\Nova\ResourceTool;
@@ -37,29 +38,30 @@ final class ClientCredentials extends ResourceTool
             'actionUrls' => [],
         ]);
 
+        $models = new Collection();
         if ($filterValue) {
             $models = $modelClassName::query()
                 ->where($filterColumn, $filterValue)
                 ->get();
+        }
 
-            $rows = $models
-                ->map(
-                    static fn (object $model): array => array_values(
-                        array_map(
-                            static fn (string $column): string => (string) $model->{$column},
-                            array_keys($columns)
-                        )
+        $rows = $models
+            ->map(
+                static fn (object $model): array => array_values(
+                    array_map(
+                        static fn (string $column): string => (string) $model->{$column},
+                        array_keys($columns)
                     )
                 )
-                ->toArray();
-            $this->withMeta(['rows' => $rows]);
+            )
+            ->toArray();
+        $this->withMeta(['rows' => $rows]);
 
-            if ($actionUrlCallback) {
-                $actionUrls = $models
-                    ->map($actionUrlCallback)
-                    ->toArray();
-                $this->withMeta(['actionUrls' => $actionUrls]);
-            }
+        if ($actionUrlCallback) {
+            $actionUrls = $models
+                ->map($actionUrlCallback)
+                ->toArray();
+            $this->withMeta(['actionUrls' => $actionUrls]);
         }
     }
 
