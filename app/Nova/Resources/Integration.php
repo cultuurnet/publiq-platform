@@ -51,6 +51,13 @@ final class Integration extends Resource
             )
         );
 
+        $auth0ActionUrlTemplates = array_filter(
+            array_map(
+                static fn (array $tenantConfig): ?string => $tenantConfig['clientDetailUrlTemplate'] ?? null,
+                config('auth0.tenants')
+            )
+        );
+
         return [
             ID::make()
                 ->readonly(),
@@ -115,7 +122,12 @@ final class Integration extends Resource
                 filterColumn: 'integration_id',
                 filterValue: $this->id,
                 actionLabel: 'Open in Auth0',
-                actionUrlCallback: fn (Auth0ClientModel $model): ?string => 'https://manage.auth0.com/dashboard/eu/publiq-dev/applications/' . $model->auth0_client_id . '/settings',
+                actionUrlCallback: static function (Auth0ClientModel $model) use ($auth0ActionUrlTemplates): ?string {
+                    if (isset($auth0ActionUrlTemplates[$model->auth0_tenant])) {
+                        return sprintf($auth0ActionUrlTemplates[$model->auth0_tenant], $model->auth0_client_id);
+                    }
+                    return null;
+                },
             ),
 
             HasMany::make('Contacts'),
