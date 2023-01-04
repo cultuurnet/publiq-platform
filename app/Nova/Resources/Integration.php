@@ -103,7 +103,7 @@ final class Integration extends Resource
                 filterColumn: 'integration_id',
                 filterValue: $this->id,
                 actionLabel: 'Open in Auth0',
-                actionUrlCallback: fn (Auth0ClientModel $model): ?string => 'https://manage.auth0.com/dashboard/eu/publiq-acc/' . $model->client_id . '/settings',
+                actionUrlCallback: fn (Auth0ClientModel $model): ?string => 'https://manage.auth0.com/dashboard/eu/publiq-dev/applications/' . $model->auth0_client_id . '/settings',
             ),
 
             HasMany::make('Contacts'),
