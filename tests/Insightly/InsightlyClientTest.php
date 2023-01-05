@@ -72,6 +72,24 @@ final class InsightlyClientTest extends TestCase
         $this->insightlyClient->opportunities()->delete($insightlyId);
     }
 
+    public function test_it_can_create_a_project(): void
+    {
+        $integration = new Integration(
+            Uuid::uuid4(),
+            IntegrationType::SearchApi,
+            'Test Integration',
+            'Test Integration description',
+            Uuid::uuid4(),
+            IntegrationStatus::Draft,
+            []
+        );
+
+        $insightlyId = $this->insightlyClient->projects()->create($integration);
+        $this->assertNotNull($insightlyId);
+
+        $this->insightlyClient->projects()->delete($insightlyId);
+    }
+
     public function test_it_can_create_an_organization(): void
     {
         $organizationId = Uuid::uuid4();

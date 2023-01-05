@@ -2,27 +2,27 @@
 
 namespace Publiq\ClientCredentials;
 
+use App\Auth0\Models\Auth0ClientModel;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 use Laravel\Nova\ResourceTool;
 
 /**
- * @method static static make(string $title, string $modelClassName, string $idColumn, string $idLabel, string $secretColumn, string $secretLabel, string $environmentColumn, string $environmentLabel, string $environmentEnumClass, string $filterColumn, ?string $filterValue)
+ * @method static static make(string $title, string $modelClassName, array $columns, string $filterColumn, ?string $filterValue, ?string $sortColumn = null, ?array $sortValues = null, ?string $actionLabel = null, ?callable $actionUrlCallback = null)
  */
 final class ClientCredentials extends ResourceTool
 {
     public function __construct(
-        string $title,
+        private readonly string $title,
         string $modelClassName,
-        string $idColumn,
-        string $idLabel,
-        string $secretColumn,
-        string $secretLabel,
-        string $environmentColumn,
-        string $environmentLabel,
-        string $environmentEnumClass,
+        array $columns,
         string $filterColumn,
         ?string $filterValue,
+        ?string $sortColumn = null,
+        ?array $sortValues = null,
+        ?string $actionLabel = null,
+        ?callable $actionUrlCallback = null
     ) {
         parent::__construct();
 
@@ -32,35 +32,61 @@ final class ClientCredentials extends ResourceTool
         if (!is_subclass_of($modelClassName, Model::class)) {
             throw new InvalidArgumentException($modelClassName . ' class does not extend ' . Model::class);
         }
-        if (!enum_exists($environmentEnumClass)) {
-            throw new InvalidArgumentException($environmentEnumClass . ' is not an enum class');
-        }
 
         $this->withMeta([
             'title' => $title,
-            'idLabel' => $idLabel,
-            'secretLabel' => $secretLabel,
-            'environmentLabel' => $environmentLabel,
-            'sets' => [],
+            'headers' => array_values($columns),
+            'rows' => [],
+            'actionLabel' => $actionLabel,
+            'actionUrls' => [],
         ]);
 
+        $models = new Collection();
         if ($filterValue) {
-            $sets = $modelClassName::query()
-                ->where($filterColumn, $filterValue)
-                ->get()
-                ->map(fn (object $model): array => [
-                    'id' => $model->{$idColumn},
-                    'secret' => $model->{$secretColumn},
-                    'env' => $environmentEnumClass::from($model->{$environmentColumn})->name,
-                ])
+            $models = $modelClassName::query()
+                ->where($filterColumn, '=', $filterValue);
+
+            // When sorting by a specific list of values, make sure we only retrieve rows with those values.
+            if ($sortColumn && $sortValues) {
+                $models = $models->whereIn($sortColumn, $sortValues);
+            }
+
+            $models = $models->get();
+        }
+
+        if ($sortColumn && $sortValues) {
+            $models = $models
+                ->sort(
+                    static fn (object $model1, object $model2): int =>
+                        array_search($model1->{$sortColumn}, array_values($sortValues), false) <=>
+                        array_search($model2->{$sortColumn}, array_values($sortValues), false)
+                )
+                ->values();
+        }
+
+        $rows = $models
+            ->map(
+                static fn (object $model): array => array_values(
+                    array_map(
+                        static fn (string $column): string => (string) $model->{$column},
+                        array_keys($columns)
+                    )
+                )
+            )
+            ->toArray();
+        $this->withMeta(['rows' => $rows]);
+
+        if ($actionUrlCallback) {
+            $actionUrls = $models
+                ->map($actionUrlCallback)
                 ->toArray();
-            $this->withMeta(['sets' => $sets]);
+            $this->withMeta(['actionUrls' => $actionUrls]);
         }
     }
 
     public function name(): string
     {
-        return 'Client Credentials';
+        return $this->title;
     }
 
     public function component(): string

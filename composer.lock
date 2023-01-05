@@ -4,8 +4,44 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1bde9af2b7c433cf5165c2cd3fa308d7",
+    "content-hash": "4da9148f746255f02a815ef069e83550",
     "packages": [
+        {
+            "name": "Publiq/insightly-link",
+            "version": "dev-PPF-105-insightly-link",
+            "dist": {
+                "type": "path",
+                "url": "./nova-components/InsightlyLink",
+                "reference": "d6dde750352294f723cbaa84c0b9dc6bcacf3e14"
+            },
+            "require": {
+                "php": "^7.3|^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Publiq\\InsightlyLink\\FieldServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Publiq\\InsightlyLink\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "A Laravel Nova field.",
+            "keywords": [
+                "laravel",
+                "nova"
+            ],
+            "transport-options": {
+                "relative": true
+            }
+        },
         {
             "name": "auth0/auth0-php",
             "version": "8.3.6",

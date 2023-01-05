@@ -15,6 +15,7 @@
         "laravel/nova": "^4.0",
         "laravel/tinker": "^2.7",
         "publiq/client-credentials": "*",
+        "publiq/insightly-link": "*",
         "sentry/sentry-laravel": "^3.1"
     },
     "require-dev": {
@@ -37,6 +38,10 @@
         {
             "type": "path",
             "url": "./nova-components/ClientCredentials"
+        },
+        {
+            "type": "path",
+            "url": "./nova-components/InsightlyLink"
         }
     ],
     "autoload": {
