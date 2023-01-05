@@ -70,18 +70,21 @@ return [
             'clientId' => env('AUTH0_ACC_TENANT_CLIENT_ID'),
             'clientSecret' => env('AUTH0_ACC_TENANT_CLIENT_SECRET'),
             'audience' => 'https://' . env('AUTH0_ACC_TENANT_DOMAIN') . '/api/v2/',
+            'clientDetailUrlTemplate' => env('AUTH0_ACC_TENANT_CLIENT_DETAILS_URL_TEMPLATE'),
         ],
         'test' => [
             'domain' => env('AUTH0_TEST_TENANT_DOMAIN'),
             'clientId' => env('AUTH0_TEST_TENANT_CLIENT_ID'),
             'clientSecret' => env('AUTH0_TEST_TENANT_CLIENT_SECRET'),
             'audience' => 'https://' . env('AUTH0_TEST_TENANT_DOMAIN') . '/api/v2/',
+            'clientDetailUrlTemplate' => env('AUTH0_TEST_TENANT_CLIENT_DETAILS_URL_TEMPLATE'),
         ],
         'prod' => [
             'domain' => env('AUTH0_PROD_TENANT_DOMAIN'),
             'clientId' => env('AUTH0_PROD_TENANT_CLIENT_ID'),
             'clientSecret' => env('AUTH0_PROD_TENANT_CLIENT_SECRET'),
             'audience' => 'https://' . env('AUTH0_PROD_TENANT_DOMAIN') . '/api/v2/',
+            'clientDetailUrlTemplate' => env('AUTH0_PROD_TENANT_CLIENT_DETAILS_URL_TEMPLATE'),
         ],
     ],
 ];
