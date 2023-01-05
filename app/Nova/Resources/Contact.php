@@ -13,7 +13,12 @@ use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Resource;
+use Publiq\InsightlyLink\InsightlyLink;
+use Publiq\InsightlyLink\InsightlyType;
 
+/**
+ * @mixin ContactModel
+ */
 final class Contact extends Resource
 {
     public static string $model = ContactModel::class;
@@ -61,6 +66,9 @@ final class Contact extends Resource
             BelongsTo::make('Integration')
                 ->withoutTrashed()
                 ->rules('required'),
+
+            InsightlyLink::make('Insightly ID', fn () => $this->insightlyId())
+                ->type(InsightlyType::Contact),
         ];
     }
 }
