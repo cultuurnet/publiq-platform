@@ -12,10 +12,10 @@ final class History
     public function __construct(
         public readonly UuidInterface $id,
         public readonly UuidInterface $itemId,
-        public readonly string $type,
         public readonly string $userId,
+        public readonly string $type,
+        public readonly string $action,
         public readonly Carbon $timestamp,
-        public readonly string $action
     ) {
     }
 }
