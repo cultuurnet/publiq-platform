@@ -24,11 +24,22 @@ final class CreateHistory
             new History(
                 Uuid::uuid4(),
                 $data[0]->id,
-                $eventName,
                 $this->currentUser->id(),
-                Carbon::now(),
-                $eventName
+                $this->getTypeName($eventName),
+                $this->getActionName($eventName),
+                Carbon::now()
             )
         );
+    }
+
+    private function getTypeName(string $eventName): string
+    {
+        return explode('\\', $eventName)[2];
+    }
+
+    private function getActionName(string $eventName): string
+    {
+        $arr = explode('\\', $eventName);
+        return end($arr);
     }
 }
