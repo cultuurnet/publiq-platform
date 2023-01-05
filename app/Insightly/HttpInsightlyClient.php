@@ -13,8 +13,10 @@ use App\Insightly\Resources\ContactResource;
 use App\Insightly\Resources\InsightlyContactResource;
 use App\Insightly\Resources\InsightlyOpportunityResource;
 use App\Insightly\Resources\InsightlyOrganizationResource;
+use App\Insightly\Resources\InsightlyProjectResource;
 use App\Insightly\Resources\OpportunityResource;
 use App\Insightly\Resources\OrganizationResource;
+use App\Insightly\Resources\ProjectResource;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -36,6 +38,11 @@ final class HttpInsightlyClient implements InsightlyClient
     public function opportunities(): OpportunityResource
     {
         return new InsightlyOpportunityResource($this);
+    }
+
+    public function projects(): ProjectResource
+    {
+        return new InsightlyProjectResource($this);
     }
 
     public function organizations(): OrganizationResource
