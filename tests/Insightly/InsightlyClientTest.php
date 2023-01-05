@@ -37,7 +37,7 @@ final class InsightlyClientTest extends TestCase
         );
     }
 
-    public function test_it_can_create_a_contact(): void
+    public function test_it_can_create_and_update_a_contact(): void
     {
         $contact = new Contact(
             Uuid::uuid4(),
@@ -50,6 +50,17 @@ final class InsightlyClientTest extends TestCase
 
         $insightlyId = $this->insightlyClient->contacts()->create($contact);
         $this->assertNotNull($insightlyId);
+
+        $updatedContact = new Contact(
+            Uuid::uuid4(),
+            Uuid::uuid4(),
+            'jane.doe@anonymous.com',
+            ContactType::Technical,
+            'Jeanne',
+            'Doe'
+        );
+
+        $this->insightlyClient->contacts()->update($updatedContact, $insightlyId);
 
         $this->insightlyClient->contacts()->delete($insightlyId);
     }
