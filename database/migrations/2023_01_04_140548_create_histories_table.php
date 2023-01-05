@@ -11,6 +11,11 @@ return new class () extends Migration {
     {
         Schema::create('histories', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->uuid('item_id');
+            $table->string('user_id');
+            $table->string('type');
+            $table->string('action');
+            $table->date('timestamp');
         });
     }
 
