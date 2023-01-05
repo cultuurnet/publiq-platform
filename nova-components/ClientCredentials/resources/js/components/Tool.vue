@@ -4,32 +4,24 @@
         <table class="w-full bg-white dark:bg-gray-800 shadow mt-3 py-2 px-6">
             <thead class="bg-gray-50 dark:bg-gray-800">
                 <tr>
-                    <th class="text-left px-2 whitespace-nowrap uppercase text-gray-500 text-xxs tracking-wide py-2">
-                        <span>{{ environmentLabel }}</span>
+                    <th v-for="header in headers" class="text-left px-2 whitespace-nowrap uppercase text-gray-500 text-xxs tracking-wide py-2">
+                        <span>{{ header }}</span>
                     </th>
-                    <th class="text-left px-2 whitespace-nowrap uppercase text-gray-500 text-xxs tracking-wide py-2">
-                        <span>{{ idLabel }}</span>
-                    </th>
-                    <th class="text-left px-2 whitespace-nowrap uppercase text-gray-500 text-xxs tracking-wide py-2">
-                        <span>{{ secretLabel }}</span>
+                    <th v-if="showActions" class="text-left px-2 whitespace-nowrap uppercase text-gray-500 text-xxs tracking-wide py-2">
+                        <span>Actions</span>
                     </th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="set in sets" class="group">
-                    <td class="px-2 py-2 border-t border-gray-100 dark:border-gray-700 whitespace-nowrap dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-900">
+                <tr v-for="(row, index) in rows" class="group">
+                    <td v-for="cell in row" class="px-2 py-2 border-t border-gray-100 dark:border-gray-700 whitespace-nowrap dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-900">
                         <div class="text-left">
-                            <span class="text-90 whitespace-nowrap">{{ set.env }}</span>
+                            <span class="text-90 whitespace-nowrap">{{ cell }}</span>
                         </div>
                     </td>
-                    <td class="px-2 py-2 border-t border-gray-100 dark:border-gray-700 whitespace-nowrap dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-900">
+                    <td v-if="showActions" class="px-2 py-2 border-t border-gray-100 dark:border-gray-700 whitespace-nowrap dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-900">
                         <div class="text-left">
-                            <span class="text-90 whitespace-nowrap">{{ set.id }}</span>
-                        </div>
-                    </td>
-                    <td class="px-2 py-2 border-t border-gray-100 dark:border-gray-700 whitespace-nowrap dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-900">
-                        <div class="text-left">
-                            <span class="text-90 whitespace-nowrap">{{ set.secret }}</span>
+                            <span class="text-90 whitespace-nowrap"><a v-if="actionUrls[index]" :href="actionUrls[index]" target="_blank" class="link-default">{{actionLabel}}</a></span>
                         </div>
                     </td>
                 </tr>
@@ -48,18 +40,21 @@ export default {
         title () {
             return this.panel.fields[0]['title']
         },
-        idLabel() {
-            return this.panel.fields[0]['idLabel']
+        headers() {
+            return this.panel.fields[0]['headers']
         },
-        secretLabel() {
-            return this.panel.fields[0]['secretLabel']
+        rows() {
+            return this.panel.fields[0]['rows']
         },
-        environmentLabel() {
-            return this.panel.fields[0]['environmentLabel']
+        actionLabel() {
+            return this.panel.fields[0]['actionLabel']
         },
-        sets() {
-            return this.panel.fields[0]['sets']
+        actionUrls() {
+            return this.panel.fields[0]['actionUrls']
         },
+        showActions() {
+            return this.actionLabel !== null && this.actionUrls.length > 0;
+        }
     },
 }
 </script>
