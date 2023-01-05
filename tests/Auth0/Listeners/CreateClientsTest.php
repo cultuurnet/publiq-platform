@@ -18,6 +18,7 @@ use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
+use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
 use Tests\Auth0\CreatesMockAuth0ClusterSDK;
 
@@ -41,7 +42,8 @@ final class CreateClientsTest extends TestCase
         $this->createClients = new CreateClients(
             $this->createMockAuth0ClusterSDK($this->httpClient),
             $this->integrationRepository,
-            $this->clientRepository
+            $this->clientRepository,
+            new NullLogger()
         );
     }
 

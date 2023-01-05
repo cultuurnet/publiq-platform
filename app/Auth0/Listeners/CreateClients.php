@@ -10,6 +10,8 @@ use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Psr\Log\LoggerInterface;
+use Throwable;
 
 final class CreateClients implements ShouldQueue
 {
@@ -18,7 +20,8 @@ final class CreateClients implements ShouldQueue
     public function __construct(
         private readonly Auth0ClusterSDK $auth0ClusterSDK,
         private readonly IntegrationRepository $integrationRepository,
-        private readonly Auth0ClientRepository $auth0ClientRepository
+        private readonly Auth0ClientRepository $auth0ClientRepository,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -27,5 +30,21 @@ final class CreateClients implements ShouldQueue
         $integration = $this->integrationRepository->getById($integrationCreated->id);
         $auth0Clients = $this->auth0ClusterSDK->createClientsForIntegration($integration);
         $this->auth0ClientRepository->save(...$auth0Clients);
+
+        foreach ($auth0Clients as $auth0Client) {
+            $this->logger->info('Auth0 client created', [
+                'integration_id' => $integrationCreated->id->toString(),
+                'tenant' => $auth0Client->tenant->value,
+                'client_id' => $auth0Client->clientId,
+            ]);
+        }
+    }
+
+    public function failed(IntegrationCreated $integrationCreated, Throwable $throwable): void
+    {
+        $this->logger->error('Failed to create Auth0 client(s)', [
+            'integration_id' => $integrationCreated->id->toString(),
+            'exception' => $throwable,
+        ]);
     }
 }
