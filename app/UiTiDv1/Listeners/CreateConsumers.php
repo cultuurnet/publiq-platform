@@ -2,25 +2,25 @@
 
 declare(strict_types=1);
 
-namespace App\Auth0\Listeners;
+namespace App\UiTiDv1\Listeners;
 
-use App\Auth0\Auth0ClusterSDK;
-use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
+use App\UiTiDv1\UiTiDv1ClusterSDK;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
-final class CreateClients implements ShouldQueue
+final class CreateConsumers implements ShouldQueue
 {
     use Queueable;
 
     public function __construct(
-        private readonly Auth0ClusterSDK $auth0ClusterSDK,
+        private readonly UiTiDv1ClusterSDK $clusterSDK,
         private readonly IntegrationRepository $integrationRepository,
-        private readonly Auth0ClientRepository $auth0ClientRepository,
+        private readonly UiTiDv1ConsumerRepository $consumerRepository,
         private readonly LoggerInterface $logger,
     ) {
     }
@@ -28,21 +28,22 @@ final class CreateClients implements ShouldQueue
     public function handle(IntegrationCreated $integrationCreated): void
     {
         $integration = $this->integrationRepository->getById($integrationCreated->id);
-        $auth0Clients = $this->auth0ClusterSDK->createClientsForIntegration($integration);
-        $this->auth0ClientRepository->save(...$auth0Clients);
+        $consumers = $this->clusterSDK->createConsumersForIntegration($integration);
+        $this->consumerRepository->save(...$consumers);
 
-        foreach ($auth0Clients as $auth0Client) {
-            $this->logger->info('Auth0 client created', [
+        foreach ($consumers as $consumer) {
+            $this->logger->info('UiTiD v1 consumer created', [
                 'integration_id' => $integrationCreated->id->toString(),
-                'tenant' => $auth0Client->tenant->value,
-                'client_id' => $auth0Client->clientId,
+                'tenant' => $consumer->environment->value,
+                'consumer_id' => $consumer->consumerId,
+                'consumer_key' => $consumer->consumerKey,
             ]);
         }
     }
 
     public function failed(IntegrationCreated $integrationCreated, Throwable $throwable): void
     {
-        $this->logger->error('Failed to create Auth0 client(s)', [
+        $this->logger->error('Failed to create UiTiD v1 consumer(s)', [
             'integration_id' => $integrationCreated->id->toString(),
             'exception' => $throwable,
         ]);
