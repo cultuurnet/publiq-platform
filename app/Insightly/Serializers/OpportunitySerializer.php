@@ -8,6 +8,7 @@ use App\Domain\Integrations\Integration;
 use App\Insightly\Objects\OpportunityStage;
 use App\Insightly\Objects\OpportunityState;
 use App\Insightly\Pipelines;
+use App\Insightly\Serializers\CustomFields\IntegrationTypeSerializer;
 
 final class OpportunitySerializer
 {

@@ -9,6 +9,7 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Contacts\Events\ContactUpdated;
 use App\Domain\Integrations\Models\IntegrationModel;
+use App\Insightly\Models\InsightlyMappingModel;
 use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -54,6 +55,19 @@ final class ContactModel extends UuidModel
     public function integration(): BelongsTo
     {
         return $this->belongsTo(IntegrationModel::class, 'integration_id');
+    }
+
+    /**
+     * @return BelongsTo<InsightlyMappingModel, ContactModel>
+     */
+    public function insightlyMapping(): BelongsTo
+    {
+        return $this->belongsTo(InsightlyMappingModel::class, 'id');
+    }
+
+    public function insightlyId(): ?string
+    {
+        return $this->insightlyMapping ? $this->insightlyMapping->insightly_id : null;
     }
 
     public function toDomain(): Contact

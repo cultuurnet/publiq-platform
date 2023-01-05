@@ -6,9 +6,12 @@ namespace App\Domain\Organizations\Models;
 
 use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Events\OrganizationCreated;
+use App\Domain\Organizations\Events\OrganizationDeleted;
 use App\Domain\Organizations\Events\OrganizationUpdated;
 use App\Domain\Organizations\Organization;
+use App\Insightly\Models\InsightlyMappingModel;
 use App\Models\UuidModel;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 
@@ -21,6 +24,7 @@ final class OrganizationModel extends UuidModel
     protected $fillable = [
         'id',
         'name',
+        'invoice_email',
         'vat',
         'street',
         'zip',
@@ -36,6 +40,22 @@ final class OrganizationModel extends UuidModel
         self::updated(
             static fn ($organizationModel) => OrganizationUpdated::dispatch(Uuid::fromString($organizationModel->id))
         );
+        self::deleted(
+            static fn ($organizationModel) => OrganizationDeleted::dispatch(Uuid::fromString($organizationModel->id))
+        );
+    }
+
+    /**
+     * @return BelongsTo<InsightlyMappingModel, OrganizationModel>
+     */
+    public function insightlyMapping(): BelongsTo
+    {
+        return $this->belongsTo(InsightlyMappingModel::class, 'id');
+    }
+
+    public function insightlyId(): ?string
+    {
+        return $this->insightlyMapping ? $this->insightlyMapping->insightly_id : null;
     }
 
     public function toDomain(): Organization
@@ -43,13 +63,14 @@ final class OrganizationModel extends UuidModel
         return new Organization(
             Uuid::fromString($this->id),
             $this->name,
+            $this->invoice_email,
             $this->vat,
             new Address(
                 $this->street ?: '',
                 $this->zip ?: '',
                 $this->city ?: '',
                 $this->country ?: '',
-            )
+            ),
         );
     }
 }

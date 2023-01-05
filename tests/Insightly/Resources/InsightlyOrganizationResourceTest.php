@@ -54,6 +54,7 @@ final class InsightlyOrganizationResourceTest extends TestCase
             'organization' => new Organization(
                 Uuid::uuid4(),
                 'madewithlove',
+                'facturatie@madewithlove.be',
                 null,
                 new Address('Sluisstraat 79', '3000', 'Leuven', 'Belgium')
             ),
@@ -62,6 +63,13 @@ final class InsightlyOrganizationResourceTest extends TestCase
                 'ADDRESS_BILLING_STREET' => 'Sluisstraat 79',
                 'ADDRESS_BILLING_POSTCODE' => '3000',
                 'ADDRESS_BILLING_CITY' => 'Leuven',
+                'CUSTOMFIELDS' => [
+                    [
+                        'FIELD_NAME' => 'Email_boekhouding__c',
+                        'CUSTOM_FIELD_ID' => 'Email_boekhouding__c',
+                        'FIELD_VALUE' => 'facturatie@madewithlove.be',
+                    ],
+                ],
             ]),
         ];
 
@@ -69,6 +77,7 @@ final class InsightlyOrganizationResourceTest extends TestCase
             'organization' => new Organization(
                 Uuid::uuid4(),
                 'madewithlove',
+                'facturatie@madewithlove.be',
                 'BE1234567890',
                 new Address('Sluisstraat 79', '3000', 'Leuven', 'Belgium')
             ),
@@ -78,6 +87,11 @@ final class InsightlyOrganizationResourceTest extends TestCase
                 'ADDRESS_BILLING_POSTCODE' => '3000',
                 'ADDRESS_BILLING_CITY' => 'Leuven',
                 'CUSTOMFIELDS' => [
+                    [
+                        'FIELD_NAME' => 'Email_boekhouding__c',
+                        'CUSTOM_FIELD_ID' => 'Email_boekhouding__c',
+                        'FIELD_VALUE' => 'facturatie@madewithlove.be',
+                    ],
                     [
                         'FIELD_NAME' => 'BTW_nummer__c',
                         'CUSTOM_FIELD_ID' => 'BTW_nummer__c',
@@ -108,6 +122,7 @@ final class InsightlyOrganizationResourceTest extends TestCase
             'organization' => new Organization(
                 Uuid::uuid4(),
                 'madewithlove',
+                'facturatie@madewithlove.be',
                 null,
                 new Address('Sluisstraat 79', '3000', 'Leuven', 'Belgium')
             ),
@@ -117,6 +132,13 @@ final class InsightlyOrganizationResourceTest extends TestCase
                 'ADDRESS_BILLING_STREET' => 'Sluisstraat 79',
                 'ADDRESS_BILLING_POSTCODE' => '3000',
                 'ADDRESS_BILLING_CITY' => 'Leuven',
+                'CUSTOMFIELDS' => [
+                    [
+                        'FIELD_NAME' => 'Email_boekhouding__c',
+                        'CUSTOM_FIELD_ID' => 'Email_boekhouding__c',
+                        'FIELD_VALUE' => 'facturatie@madewithlove.be',
+                    ],
+                ],
                 'ORGANISATION_ID' => 42,
             ]),
         ];
@@ -125,6 +147,7 @@ final class InsightlyOrganizationResourceTest extends TestCase
             'organization' => new Organization(
                 Uuid::uuid4(),
                 'madewithlove',
+                'facturatie@madewithlove.be',
                 'BE1234567890',
                 new Address('Sluisstraat 79', '3000', 'Leuven', 'Belgium')
             ),
@@ -135,6 +158,11 @@ final class InsightlyOrganizationResourceTest extends TestCase
                 'ADDRESS_BILLING_POSTCODE' => '3000',
                 'ADDRESS_BILLING_CITY' => 'Leuven',
                 'CUSTOMFIELDS' => [
+                    [
+                        'FIELD_NAME' => 'Email_boekhouding__c',
+                        'CUSTOM_FIELD_ID' => 'Email_boekhouding__c',
+                        'FIELD_VALUE' => 'facturatie@madewithlove.be',
+                    ],
                     [
                         'FIELD_NAME' => 'BTW_nummer__c',
                         'CUSTOM_FIELD_ID' => 'BTW_nummer__c',

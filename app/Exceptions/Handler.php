@@ -5,7 +5,11 @@ declare(strict_types=1);
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Auth;
+use Sentry\State\Scope;
 use Throwable;
+
+use function Sentry\configureScope;
 
 final class Handler extends ExceptionHandler
 {
@@ -38,14 +42,19 @@ final class Handler extends ExceptionHandler
         'password_confirmation',
     ];
 
-    /**
-     * Register the exception handling callbacks for the application.
-     *
-     * @return void
-     */
-    public function register()
+    public function register(): void
     {
         $this->reportable(function (Throwable $e) {
+            if (app()->bound('sentry')) {
+                configureScope(function (Scope $scope): void {
+                    if (!app()->runningInConsole()) {
+                        $user = Auth::user();
+                        $scope->setUser(['id' => $user->id ?? 'guest']);
+                    }
+                });
+
+                app('sentry')->captureException($e);
+            }
         });
     }
 }

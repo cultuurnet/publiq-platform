@@ -19,10 +19,10 @@ final class CreateOrganization implements ShouldQueue
     use Queueable;
 
     public function __construct(
-        private readonly InsightlyClient            $insightlyClient,
-        private readonly OrganizationRepository     $organizationRepository,
+        private readonly InsightlyClient $insightlyClient,
+        private readonly OrganizationRepository $organizationRepository,
         private readonly InsightlyMappingRepository $insightlyMappingRepository,
-        private readonly LoggerInterface            $logger
+        private readonly LoggerInterface $logger
     ) {
     }
 
@@ -41,7 +41,7 @@ final class CreateOrganization implements ShouldQueue
             'Organization created',
             [
                 'domain' => 'insightly',
-                'contact_id' => $organizationCreated->id->toString(),
+                'organization_id' => $organizationCreated->id->toString(),
             ]
         );
     }
@@ -52,7 +52,7 @@ final class CreateOrganization implements ShouldQueue
             'Failed to create organization',
             [
                 'domain' => 'insightly',
-                'contact_id' => $organizationCreated->id->toString(),
+                'organization_id' => $organizationCreated->id->toString(),
                 'exception' => $exception,
             ]
         );

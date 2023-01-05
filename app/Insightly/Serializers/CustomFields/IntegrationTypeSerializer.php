@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Insightly\Serializers;
+namespace App\Insightly\Serializers\CustomFields;
 
 use App\Domain\Integrations\IntegrationType;
 

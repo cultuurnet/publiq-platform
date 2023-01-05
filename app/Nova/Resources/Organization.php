@@ -10,7 +10,12 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Resource;
+use Publiq\InsightlyLink\InsightlyLink;
+use Publiq\InsightlyLink\InsightlyType;
 
+/**
+ * @mixin OrganizationModel
+ */
 final class Organization extends Resource
 {
     public static string $model = OrganizationModel::class;
@@ -42,6 +47,10 @@ final class Organization extends Resource
                 ->sortable()
                 ->rules('required', 'max:255'),
 
+            Text::make('Invoice Email', 'invoice_email')
+                ->sortable()
+                ->rules('required', 'email', 'max:255'),
+
             Text::make('Vat')
                 ->sortable()
                 ->rules('required', 'max:255'),
@@ -61,6 +70,9 @@ final class Organization extends Resource
             Text::make('Country')
                 ->sortable()
                 ->rules('required', 'max:255'),
+
+            InsightlyLink::make('Insightly ID', fn () => $this->insightlyId())
+                ->type(InsightlyType::Organization),
         ];
     }
 }

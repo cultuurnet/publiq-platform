@@ -6,9 +6,9 @@ namespace App\Insightly\Objects;
 
 enum OpportunityStage: string
 {
-    case TEST = 'test';
-    case REQUEST = 'request';
-    case INFORMATION = 'information';
-    case OFFER = 'offer';
-    case CLOSED = 'closed';
+    case TEST = 'test'; // Toegang tot test
+    case REQUEST = 'request'; // Aanvraag
+    case INFORMATION = 'information'; // Informatie/toelichting
+    case OFFER = 'offer'; // Voorstel
+    case CLOSED = 'closed'; // Closed
 }
