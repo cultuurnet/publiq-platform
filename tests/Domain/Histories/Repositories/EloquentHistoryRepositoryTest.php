@@ -44,7 +44,7 @@ final class EloquentHistoryRepositoryTest extends TestCase
             'user_id' => $history->userId,
             'type' => $history->type,
             'action' => $history->action,
-            'timestamp' => $history->timestamp
+            'timestamp' => $history->timestamp,
         ]);
     }
 }

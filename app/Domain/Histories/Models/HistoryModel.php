@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Domain\Histories\Models;
 
-use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Histories\History;
 use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -44,6 +43,5 @@ final class HistoryModel extends UuidModel
             $this->action,
             (new Carbon())->rawParse($this->timestamp)
         );
-
     }
 }

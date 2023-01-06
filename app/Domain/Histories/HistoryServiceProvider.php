@@ -17,7 +17,8 @@ final class HistoryServiceProvider extends ServiceProvider
         $this->app->bind(HistoryRepository::class, EloquentHistoryRepository::class);
 
         Event::listen(
-            'App\Domain\*', [CreateHistory::class, 'handle']
+            'App\Domain\*',
+            [CreateHistory::class, 'handle']
         );
     }
 

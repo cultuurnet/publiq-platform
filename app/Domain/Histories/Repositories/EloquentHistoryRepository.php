@@ -9,7 +9,7 @@ use App\Domain\Histories\Models\HistoryModel;
 
 final class EloquentHistoryRepository implements HistoryRepository
 {
-    function create(History $history): void
+    public function create(History $history): void
     {
         HistoryModel::query()->create([
             'id' => $history->id,
@@ -17,7 +17,7 @@ final class EloquentHistoryRepository implements HistoryRepository
             'user_id' => $history->userId,
             'type' => $history->type,
             'action' => $history->action,
-            'timestamp' => $history->timestamp
+            'timestamp' => $history->timestamp,
         ]);
     }
 }
