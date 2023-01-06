@@ -8,6 +8,7 @@ use App\Domain\Contacts\Events\ContactUpdated;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Repositories\InsightlyMappingRepository;
+use App\Insightly\SyncIsAllowed;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
@@ -28,6 +29,10 @@ final class UpdateContact implements ShouldQueue
     public function handle(ContactUpdated $contactUpdated): void
     {
         $contact = $this->contactRepository->getById($contactUpdated->id);
+        if (!SyncIsAllowed::forContact($contact)) {
+            return;
+        }
+
         $insightlyMapping = $this->insightlyMappingRepository->getById($contact->id);
 
         $this->insightlyClient->contacts()->update($contact, $insightlyMapping->insightlyId);

@@ -52,7 +52,7 @@ final class UpdateContactTest extends TestCase
         $contactId = Uuid::uuid4();
         $insightlyId = 42;
 
-        $contact = $this->givenThereIsAContact($contactId);
+        $contact = $this->givenThereIsAContact($contactId, ContactType::Technical);
         $this->givenTheContactIsMappedToInsightly($contactId, $insightlyId);
 
         $this->contactResource->expects($this->once())
@@ -63,13 +63,29 @@ final class UpdateContactTest extends TestCase
         $this->updateContact->handle($event);
     }
 
-    private function givenThereIsAContact(UuidInterface $contactId): Contact
+    /**
+     * @test
+     */
+    public function it_does_not_update_a_contributor(): void
+    {
+        $contactId = Uuid::uuid4();
+
+        $this->givenThereIsAContact($contactId, ContactType::Contributor);
+
+        $this->contactResource->expects($this->never())
+            ->method('update');
+
+        $event = new ContactUpdated($contactId);
+        $this->updateContact->handle($event);
+    }
+
+    private function givenThereIsAContact(UuidInterface $contactId, ContactType $contactType): Contact
     {
         $contact = new Contact(
             $contactId,
             Uuid::uuid4(),
             'jane.doe@anonymous.com',
-            ContactType::Technical,
+            $contactType,
             'Jane',
             'Doe'
         );
