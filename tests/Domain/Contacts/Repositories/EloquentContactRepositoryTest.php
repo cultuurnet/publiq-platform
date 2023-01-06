@@ -9,10 +9,13 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\EloquentContactRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
+use Tests\MockUser;
 use Tests\TestCase;
 
 final class EloquentContactRepositoryTest extends TestCase
 {
+    use MockUser;
+
     use RefreshDatabase;
 
     private EloquentContactRepository $contactRepository;
@@ -20,6 +23,8 @@ final class EloquentContactRepositoryTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->createMockUser();
 
         $this->contactRepository = new EloquentContactRepository();
     }
