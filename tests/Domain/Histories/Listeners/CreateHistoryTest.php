@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Domain\Histories\Listeners;
 
 use App\Domain\Auth\CurrentUser;
+use App\Domain\Auth\Models\UserModel;
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Histories\Listeners\CreateHistory;
 use App\Domain\Histories\Repositories\HistoryRepository;
@@ -14,7 +15,6 @@ use App\Domain\Organizations\Events\OrganizationDeleted;
 use App\Domain\Organizations\Events\OrganizationUpdated;
 use Illuminate\Support\Facades\Auth;
 use Iterator;
-use Mockery;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
@@ -31,14 +31,21 @@ final class CreateHistoryTest extends TestCase
 
         $this->historyRepository = $this->createMock(HistoryRepository::class);
 
-        $currentUser = new CurrentUser(new Auth());
-        $mockUser = Mockery::mock($currentUser);
-        $mockUser->shouldReceive('id')
-            ->andReturn(Uuid::uuid4());
+        Auth::shouldReceive('user')
+            ->once()
+            ->andreturn(
+                new UserModel([
+                    'id' => 'auth|0' . Uuid::uuid4()->toString(),
+                    'name' => 'Jane_Doe',
+                    'email' => 'jane.doe@test.com',
+                    'first_name' => 'Jane',
+                    'last_name' => 'Doe',
+                    ])
+            );
 
         $this->createHistory = new CreateHistory(
             $this->historyRepository,
-            $currentUser
+            new CurrentUser(new Auth())
         );
     }
 
