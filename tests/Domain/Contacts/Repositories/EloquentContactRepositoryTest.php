@@ -22,8 +22,6 @@ final class EloquentContactRepositoryTest extends TestCase
     {
         parent::setUp();
 
-        ContactModel::unsetEventDispatcher();
-
         $this->contactRepository = new EloquentContactRepository();
     }
 

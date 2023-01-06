@@ -25,8 +25,6 @@ final class EloquentIntegrationRepositoryTest extends TestCase
     {
         parent::setUp();
 
-        IntegrationModel::unsetEventDispatcher();
-
         $this->integrationRepository = new EloquentIntegrationRepository();
     }
 

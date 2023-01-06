@@ -22,8 +22,6 @@ final class EloquentOrganizationRepositoryTest extends TestCase
     {
         parent::setUp();
 
-        OrganizationModel::unsetEventDispatcher();
-
         $this->organizationRepository = new EloquentOrganizationRepository();
     }
 
