@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domain\Histories\Models;
 
+use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Histories\History;
 use App\Models\UuidModel;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Ramsey\Uuid\Uuid;
 
@@ -23,6 +25,14 @@ final class HistoryModel extends UuidModel
         'action',
         'timestamp',
     ];
+
+    /**
+     * @return BelongsTo<UuidModel, HistoryModel>
+     */
+    public function integration(): BelongsTo
+    {
+        return $this->belongsTo(UuidModel::class, 'domain_id');
+    }
 
     public function toDomain(): History
     {
