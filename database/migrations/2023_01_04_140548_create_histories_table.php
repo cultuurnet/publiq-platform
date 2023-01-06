@@ -15,7 +15,7 @@ return new class () extends Migration {
             $table->string('user_id');
             $table->string('type');
             $table->string('action');
-            $table->date('timestamp');
+            $table->timestamp('timestamp');
         });
     }
 
