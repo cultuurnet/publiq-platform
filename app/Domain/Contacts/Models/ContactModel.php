@@ -14,7 +14,6 @@ use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidInterface;
 
 /**
  * @property string $id
@@ -42,10 +41,10 @@ final class ContactModel extends UuidModel
     protected static function booted(): void
     {
         self::created(
-            static fn (ContactModel $contactModel) => ContactCreated::dispatch($contactModel->getId())
+            static fn (ContactModel $contactModel) => ContactCreated::dispatch($contactModel->toDomain()->id)
         );
         self::updated(
-            static fn (ContactModel $contactModel) => ContactUpdated::dispatch($contactModel->getId())
+            static fn (ContactModel $contactModel) => ContactUpdated::dispatch($contactModel->toDomain()->id)
         );
     }
 
@@ -73,27 +72,12 @@ final class ContactModel extends UuidModel
     public function toDomain(): Contact
     {
         return new Contact(
-            $this->getId(),
-            $this->getIntegrationId(),
+            Uuid::fromString($this->id),
+            Uuid::fromString($this->integration_id),
             $this->email,
-            $this->getType(),
+            ContactType::from($this->type),
             $this->first_name,
             $this->last_name
         );
-    }
-
-    public function getId(): UuidInterface
-    {
-        return Uuid::fromString($this->id);
-    }
-
-    public function getIntegrationId(): UuidInterface
-    {
-        return Uuid::fromString($this->integration_id);
-    }
-
-    public function getType(): ContactType
-    {
-        return ContactType::from($this->type);
     }
 }
