@@ -6,7 +6,6 @@ namespace Tests\Domain\Contacts\Repositories;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
-use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Contacts\Repositories\EloquentContactRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;

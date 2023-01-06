@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Domain\Organizations\Repositories;
 
 use App\Domain\Organizations\Address;
-use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\Organizations\Organization;
 use App\Domain\Organizations\Repositories\EloquentOrganizationRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
