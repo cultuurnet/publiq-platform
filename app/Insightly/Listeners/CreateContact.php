@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Insightly\Listeners;
 
-use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
+use App\Insightly\SyncIsAllowed;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
@@ -18,11 +18,6 @@ use Psr\Log\LoggerInterface;
 final class CreateContact implements ShouldQueue
 {
     use Queueable;
-
-    private array $allowedContactTypes = [
-        ContactType::Technical,
-        ContactType::Functional,
-    ];
 
     public function __construct(
         private readonly InsightlyClient $insightlyClient,
@@ -35,7 +30,7 @@ final class CreateContact implements ShouldQueue
     public function handle(ContactCreated $contactCreated): void
     {
         $contact = $this->contactRepository->getById($contactCreated->id);
-        if (!in_array($contact->type, $this->allowedContactTypes, true)) {
+        if (!SyncIsAllowed::forContact($contact)) {
             return;
         }
 

@@ -7,6 +7,7 @@ namespace App\Domain\Contacts\Models;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Events\ContactCreated;
+use App\Domain\Contacts\Events\ContactUpdated;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Insightly\Models\InsightlyMappingModel;
 use App\Models\UuidModel;
@@ -14,6 +15,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 
+/**
+ * @property string $id
+ * @property string $integration_id
+ * @property string $type
+ * @property string $email
+ * @property string $first_name
+ * @property string $last_name
+ */
 final class ContactModel extends UuidModel
 {
     use SoftDeletes;
@@ -32,7 +41,10 @@ final class ContactModel extends UuidModel
     protected static function booted(): void
     {
         self::created(
-            static fn ($contactModel) => ContactCreated::dispatch(Uuid::fromString($contactModel->id))
+            static fn (ContactModel $contactModel) => ContactCreated::dispatch($contactModel->toDomain()->id)
+        );
+        self::updated(
+            static fn (ContactModel $contactModel) => ContactUpdated::dispatch($contactModel->toDomain()->id)
         );
     }
 

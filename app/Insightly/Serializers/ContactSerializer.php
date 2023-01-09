@@ -17,4 +17,13 @@ final class ContactSerializer
             'EMAIL_ADDRESS' => $contact->email,
         ];
     }
+
+    /** @return array<string, string|int> */
+    public function toInsightlyArrayForUpdate(Contact $contact, int $insightlyId): array
+    {
+        $insightlyArray = $this->toInsightlyArray($contact);
+        $insightlyArray['CONTACT_ID'] = $insightlyId;
+
+        return $insightlyArray;
+    }
 }

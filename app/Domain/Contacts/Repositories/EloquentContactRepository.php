@@ -16,7 +16,7 @@ final class EloquentContactRepository implements ContactRepository
         ContactModel::query()->create([
             'id' => $contact->id->toString(),
             'integration_id' => $contact->integrationId->toString(),
-            'type' => $contact->type,
+            'type' => $contact->type->value,
             'first_name' => $contact->firstName,
             'last_name' => $contact->lastName,
             'email' => $contact->email,
