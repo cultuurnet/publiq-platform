@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Domain\Histories\Listeners;
 
 use App\Domain\Contacts\Events\ContactCreated;
+use App\Domain\Histories\EventToModelMapping;
 use App\Domain\Histories\History;
 use App\Domain\Histories\Listeners\CreateHistory;
 use App\Domain\Histories\Repositories\HistoryRepository;
@@ -15,9 +16,9 @@ use App\Domain\Organizations\Events\OrganizationUpdated;
 use Illuminate\Support\Carbon;
 use Iterator;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use Tests\MockUser;
+use Tests\TestCase;
 
 final class CreateHistoryTest extends TestCase
 {
@@ -38,7 +39,6 @@ final class CreateHistoryTest extends TestCase
         $this->historyRepository = $this->createMock(HistoryRepository::class);
 
         $currentUser = $this->createMockUser();
-        $this->userId = $currentUser->id();
 
         $this->createHistory = new CreateHistory(
             $this->historyRepository,
@@ -49,8 +49,11 @@ final class CreateHistoryTest extends TestCase
     /**
      * @dataProvider provideEvents
      */
-    public function test_saving_history(string $eventName, array $data, string $type, string $action): void
+    public function test_saving_history(string $eventName, array $data): void
     {
+        $arr = explode('\\', $eventName);
+        $action = end($arr);
+
         $this->historyRepository->expects($this->once())
             ->method('create')
             ->with(
@@ -58,8 +61,8 @@ final class CreateHistoryTest extends TestCase
                     $this->isInstanceOf(History::class),
                     $this->containsEqual($data[0]->id),
                     $this->containsEqual($this->userId),
-                    $this->containsEqual($type),
-                    $this->containsEqual($action),
+                    $this->containsEqual(EventToModelMapping::MAPPING[$eventName]),
+                    $this->containsEqual($eventName),
                     $this->containsEqual(Carbon::now())
                 )
             );
@@ -76,8 +79,6 @@ final class CreateHistoryTest extends TestCase
                     'id' => Uuid::uuid4(),
                 ],
             ],
-            'type' => 'Contacts',
-            'action' => 'ContactCreated',
         ];
 
         yield 'integration created' => [
@@ -87,8 +88,6 @@ final class CreateHistoryTest extends TestCase
                     'id' => Uuid::uuid4(),
                 ],
             ],
-            'type' => 'Integrations',
-            'action' => 'IntegrationCreated',
         ];
 
         yield 'organization created' => [
@@ -98,8 +97,6 @@ final class CreateHistoryTest extends TestCase
                     'id' => Uuid::uuid4(),
                 ],
             ],
-            'type' => 'Organizations',
-            'action' => 'OrganizationCreated',
         ];
 
         yield 'organization deleted' => [
@@ -109,8 +106,6 @@ final class CreateHistoryTest extends TestCase
                     'id' => Uuid::uuid4(),
                 ],
             ],
-            'type' => 'Organizations',
-            'action' => 'OrganizationDeleted',
         ];
 
         yield 'organization updated' => [
@@ -120,8 +115,6 @@ final class CreateHistoryTest extends TestCase
                     'id' => Uuid::uuid4(),
                 ],
             ],
-            'type' => 'Organizations',
-            'action' => 'OrganizationUpdated',
         ];
     }
 }
