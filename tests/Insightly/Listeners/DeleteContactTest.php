@@ -6,12 +6,13 @@ namespace Tests\Insightly\Listeners;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
-use App\Domain\Contacts\Events\ContactUpdated;
+use App\Domain\Contacts\Events\ContactDeleted;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Insightly\InsightlyMapping;
-use App\Insightly\Listeners\UpdateContact;
+use App\Insightly\Listeners\DeleteContact;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
+use Iterator;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
@@ -19,11 +20,11 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Tests\MockInsightlyClient;
 
-final class UpdateContactTest extends TestCase
+final class DeleteContactTest extends TestCase
 {
     use MockInsightlyClient;
 
-    private UpdateContact $updateContact;
+    private DeleteContact $deleteContact;
 
     private ContactRepository&MockObject $contactRepository;
 
@@ -36,7 +37,7 @@ final class UpdateContactTest extends TestCase
         $this->contactRepository = $this->createMock(ContactRepository::class);
         $this->insightlyMappingRepository = $this->createMock(InsightlyMappingRepository::class);
 
-        $this->updateContact = new UpdateContact(
+        $this->deleteContact = new DeleteContact(
             $this->insightlyClient,
             $this->contactRepository,
             $this->insightlyMappingRepository,
@@ -45,38 +46,46 @@ final class UpdateContactTest extends TestCase
     }
 
     /**
-     * @test
+     * @dataProvider provideDeleteContactCases
      */
-    public function it_updates_a_contact(): void
+    public function test_it_deletes_a_contact_person(ContactType $contactType): void
     {
         $contactId = Uuid::uuid4();
         $insightlyId = 42;
 
-        $contact = $this->givenThereIsAContact($contactId, ContactType::Technical);
+        $this->givenThereIsAContact($contactId, $contactType);
         $this->givenTheContactIsMappedToInsightly($contactId, $insightlyId);
 
         $this->contactResource->expects($this->once())
-            ->method('update')
-            ->with($contact, $insightlyId);
+            ->method('delete')
+            ->with($insightlyId);
 
-        $event = new ContactUpdated($contactId);
-        $this->updateContact->handle($event);
+        $event = new ContactDeleted($contactId);
+        $this->deleteContact->handle($event);
     }
 
-    /**
-     * @test
-     */
-    public function it_does_not_update_a_contributor(): void
+    public function test_it_does_not_try_to_delete_a_contributor(): void
     {
         $contactId = Uuid::uuid4();
 
         $this->givenThereIsAContact($contactId, ContactType::Contributor);
 
         $this->contactResource->expects($this->never())
-            ->method('update');
+            ->method('delete');
 
-        $event = new ContactUpdated($contactId);
-        $this->updateContact->handle($event);
+        $event = new ContactDeleted($contactId);
+        $this->deleteContact->handle($event);
+    }
+
+    public function provideDeleteContactCases(): Iterator
+    {
+        yield 'functional' => [
+            'contactType' => ContactType::Functional,
+        ];
+
+        yield 'technical' => [
+            'contactType' => ContactType::Technical,
+        ];
     }
 
     private function givenThereIsAContact(UuidInterface $contactId, ContactType $contactType): Contact
