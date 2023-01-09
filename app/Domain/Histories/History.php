@@ -13,8 +13,8 @@ final class History
         public readonly UuidInterface $id,
         public readonly UuidInterface $itemId,
         public readonly string $userId,
-        public readonly string $type,
-        public readonly string $action,
+        public readonly string $model,
+        public readonly string $event,
         public readonly Carbon $timestamp,
     ) {
     }

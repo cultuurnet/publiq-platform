@@ -13,8 +13,8 @@ return new class () extends Migration {
             $table->uuid('id')->primary();
             $table->uuid('item_id');
             $table->string('user_id');
-            $table->string('type');
-            $table->string('action');
+            $table->string('model');
+            $table->string('event');
             $table->timestamp('timestamp');
         });
     }

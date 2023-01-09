@@ -15,8 +15,8 @@ final class EloquentHistoryRepository implements HistoryRepository
             'id' => $history->id,
             'item_id' => $history->itemId,
             'user_id' => $history->userId,
-            'type' => $history->type,
-            'action' => $history->action,
+            'model' => $history->model,
+            'event' => $history->event,
             'timestamp' => $history->timestamp,
         ]);
     }

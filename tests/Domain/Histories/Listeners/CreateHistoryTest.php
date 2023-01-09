@@ -51,9 +51,6 @@ final class CreateHistoryTest extends TestCase
      */
     public function test_saving_history(string $eventName, array $data): void
     {
-        $arr = explode('\\', $eventName);
-        $action = end($arr);
-
         $this->historyRepository->expects($this->once())
             ->method('create')
             ->with(

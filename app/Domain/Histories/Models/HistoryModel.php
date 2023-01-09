@@ -16,8 +16,8 @@ final class HistoryModel extends UuidModel
         'id',
         'item_id',
         'user_id',
-        'type',
-        'action',
+        'model',
+        'event',
         'timestamp',
     ];
 }
