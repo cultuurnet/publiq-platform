@@ -11,12 +11,14 @@ use Ramsey\Uuid\Uuid;
 
 trait MockUser
 {
+    private string $userId;
+
     private function createMockUser(): CurrentUser
     {
-        $userId = 'auth0|' . Uuid::uuid4()->toString();
+        $this->userId = 'auth0|' . Uuid::uuid4()->toString();
 
         $userModel = new UserModel([
-            'id' => $userId,
+            'id' => $this->userId,
             'name' => 'Jane_Doe',
             'email' => 'jane.doe@test.com',
             'first_name' => 'Jane',
