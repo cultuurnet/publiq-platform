@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Domain\Histories\Listeners;
 
 use App\Domain\Contacts\Events\ContactCreated;
+use App\Domain\Contacts\Events\ContactUpdated;
 use App\Domain\Histories\EventToModelMapping;
 use App\Domain\Histories\History;
 use App\Domain\Histories\Listeners\CreateHistory;
@@ -69,8 +70,17 @@ final class CreateHistoryTest extends TestCase
 
     public function provideEvents(): Iterator
     {
-        yield 'create contact' => [
+        yield 'contact created' => [
             'eventName' => ContactCreated::class,
+            'data' => [
+                0 => (object)[
+                    'id' => Uuid::uuid4(),
+                ],
+            ],
+        ];
+
+        yield 'contact updated' => [
+            'eventName' => ContactUpdated::class,
             'data' => [
                 0 => (object)[
                     'id' => Uuid::uuid4(),
@@ -96,8 +106,8 @@ final class CreateHistoryTest extends TestCase
             ],
         ];
 
-        yield 'organization deleted' => [
-            'eventName' => OrganizationDeleted::class,
+        yield 'organization updated' => [
+            'eventName' => OrganizationUpdated::class,
             'data' => [
                 0 => (object)[
                     'id' => Uuid::uuid4(),
@@ -105,8 +115,8 @@ final class CreateHistoryTest extends TestCase
             ],
         ];
 
-        yield 'organization updated' => [
-            'eventName' => OrganizationUpdated::class,
+        yield 'organization deleted' => [
+            'eventName' => OrganizationDeleted::class,
             'data' => [
                 0 => (object)[
                     'id' => Uuid::uuid4(),
