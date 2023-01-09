@@ -29,7 +29,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
                 ContactModel::query()->create([
                     'id' => $contact->id->toString(),
                     'integration_id' => $integration->id->toString(),
-                    'type' => $contact->type,
+                    'type' => $contact->type->value,
                     'first_name' => $contact->firstName,
                     'last_name' => $contact->lastName,
                     'email' => $contact->email,
