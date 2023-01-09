@@ -13,13 +13,10 @@ use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\EloquentIntegrationRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
-use Tests\MockUser;
 use Tests\TestCase;
 
 final class EloquentIntegrationRepositoryTest extends TestCase
 {
-    use MockUser;
-
     use RefreshDatabase;
 
     private EloquentIntegrationRepository $integrationRepository;

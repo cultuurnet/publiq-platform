@@ -9,13 +9,10 @@ use App\Domain\Organizations\Organization;
 use App\Domain\Organizations\Repositories\EloquentOrganizationRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
-use Tests\MockUser;
 use Tests\TestCase;
 
 final class EloquentOrganizationRepositoryTest extends TestCase
 {
-    use MockUser;
-
     use RefreshDatabase;
 
     private EloquentOrganizationRepository $organizationRepository;
