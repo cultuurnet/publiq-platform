@@ -44,16 +44,16 @@
         },
         {
             "name": "auth0/auth0-php",
-            "version": "8.3.6",
+            "version": "8.3.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/auth0/auth0-PHP.git",
-                "reference": "fd3161b6c50103b2c53c07637f82ab2f1cfa9c14"
+                "reference": "cb15b21273b516bcb76aee4f9ee652f9fe3c3968"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/auth0/auth0-PHP/zipball/fd3161b6c50103b2c53c07637f82ab2f1cfa9c14",
-                "reference": "fd3161b6c50103b2c53c07637f82ab2f1cfa9c14",
+                "url": "https://api.github.com/repos/auth0/auth0-PHP/zipball/cb15b21273b516bcb76aee4f9ee652f9fe3c3968",
+                "reference": "cb15b21273b516bcb76aee4f9ee652f9fe3c3968",
                 "shasum": ""
             },
             "require": {
@@ -72,20 +72,21 @@
                 "psr/http-message-implementation": "^1.0"
             },
             "require-dev": {
-                "firebase/php-jwt": "^6.2",
+                "ergebnis/composer-normalize": "^2.28",
+                "firebase/php-jwt": "^6.3",
                 "hyperf/event": "^2.2",
                 "laravel/pint": "^1.2",
-                "mockery/mockery": "^1.4",
+                "mockery/mockery": "^1.5",
                 "nyholm/psr7": "^1.5",
                 "pestphp/pest": "^1.21",
                 "php-http/mock-client": "^1.5",
-                "phpstan/phpstan": "^1.7",
-                "phpstan/phpstan-strict-rules": "1.4.3",
+                "phpstan/phpstan": "^1.9",
+                "phpstan/phpstan-strict-rules": "^1.4.4",
                 "phpunit/phpunit": "^9.5",
-                "rector/rector": "^0.13.6",
+                "rector/rector": "^0.14.7",
                 "squizlabs/php_codesniffer": "^3.7",
                 "symfony/cache": "^4.4 || ^5.4 || ^6.1",
-                "vimeo/psalm": "^4.24",
+                "vimeo/psalm": "^4.30",
                 "wikimedia/composer-merge-plugin": "^2.0"
             },
             "type": "library",
@@ -105,7 +106,7 @@
                     "homepage": "https://auth0.com/"
                 }
             ],
-            "description": "Auth0 PHP SDK. Straight-forward and tested methods for accessing Auth0 Authentication and Management API endpoints.",
+            "description": "PHP SDK for Auth0 Authentication and Management APIs.",
             "homepage": "https://github.com/auth0/auth0-PHP",
             "keywords": [
                 "Authentication",
@@ -125,22 +126,22 @@
             ],
             "support": {
                 "issues": "https://github.com/auth0/auth0-PHP/issues",
-                "source": "https://github.com/auth0/auth0-PHP/tree/8.3.6"
+                "source": "https://github.com/auth0/auth0-PHP/tree/8.3.8"
             },
-            "time": "2022-10-25T00:24:14+00:00"
+            "time": "2022-12-02T07:16:25+00:00"
         },
         {
             "name": "auth0/login",
-            "version": "7.2.2",
+            "version": "7.4.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/auth0/laravel-auth0.git",
-                "reference": "d5ddb10565d19b3f8d5bc473396f1a67a6287a3b"
+                "url": "git@github.com:auth0/laravel-auth0.git",
+                "reference": "7020d5ff05a6aa6039dfa5481e1b47947e701e2d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/auth0/laravel-auth0/zipball/d5ddb10565d19b3f8d5bc473396f1a67a6287a3b",
-                "reference": "d5ddb10565d19b3f8d5bc473396f1a67a6287a3b",
+                "url": "https://api.github.com/repos/auth0/laravel-auth0/zipball/7020d5ff05a6aa6039dfa5481e1b47947e701e2d",
+                "reference": "7020d5ff05a6aa6039dfa5481e1b47947e701e2d",
                 "shasum": ""
             },
             "require": {
@@ -238,7 +239,7 @@
                 "issues": "https://github.com/auth0/laravel-auth0/issues",
                 "source": "https://github.com/auth0/laravel-auth0"
             },
-            "time": "2022-10-20T04:08:35+00:00"
+            "time": "2022-12-13T01:10:51+00:00"
         },
         {
             "name": "brick/math",
