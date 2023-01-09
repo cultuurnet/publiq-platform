@@ -66,6 +66,41 @@ final class InsightlyContactResourceTest extends TestCase
         $this->assertEquals($insightlyId, $returnedId);
     }
 
+    public function test_it_updates_a_contact(): void
+    {
+        $insightlyId = 42;
+        $email = 'jane.doe@anonymous.com';
+        $firstName = 'Jane';
+        $lastName = 'Doe';
+
+        $contact = new Contact(
+            Uuid::uuid4(),
+            Uuid::uuid4(),
+            $email,
+            ContactType::Functional,
+            $firstName,
+            $lastName
+        );
+
+        $expectedRequest = new Request(
+            'PUT',
+            'Contacts/',
+            [],
+            Json::encode([
+                'FIRST_NAME' => $firstName,
+                'LAST_NAME' => $lastName,
+                'EMAIL_ADDRESS' => $email,
+                'CONTACT_ID' => $insightlyId,
+            ]),
+        );
+
+        $this->insightlyClient->expects($this->once())
+            ->method('sendRequest')
+            ->with(self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedRequest, $actualRequest)));
+
+        $this->resource->update($contact, $insightlyId);
+    }
+
     public function test_it_deletes_a_contact(): void
     {
         $expectedRequest = new Request('DELETE', 'Contacts/42');
