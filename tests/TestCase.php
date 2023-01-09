@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use App\Domain\Contacts\Models\ContactModel;
+use App\Domain\Integrations\Models\IntegrationModel;
+use App\Domain\Organizations\Models\OrganizationModel;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -13,12 +16,8 @@ abstract class TestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->disableConfigExternalApis();
-    }
-
-    protected function disableConfigExternalApis(): void
-    {
-        app('config')->set('insightly.api_key', '');
-        app('config')->set('auth0.tenants', []);
+        IntegrationModel::unsetEventDispatcher();
+        OrganizationModel::unsetEventDispatcher();
+        ContactModel::unsetEventDispatcher();
     }
 }
