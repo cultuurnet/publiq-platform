@@ -10,5 +10,7 @@ interface ContactResource
 {
     public function create(Contact $contact): int;
 
+    public function update(Contact $contact, int $insightlyId): void;
+
     public function delete(int $id): void;
 }
