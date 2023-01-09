@@ -28,8 +28,6 @@ final class EloquentIntegrationRepositoryTest extends TestCase
     {
         parent::setUp();
 
-        $this->createMockUser();
-
         $this->integrationRepository = new EloquentIntegrationRepository();
     }
 

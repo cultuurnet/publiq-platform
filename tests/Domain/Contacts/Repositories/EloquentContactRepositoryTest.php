@@ -24,8 +24,6 @@ final class EloquentContactRepositoryTest extends TestCase
     {
         parent::setUp();
 
-        $this->createMockUser();
-
         $this->contactRepository = new EloquentContactRepository();
     }
 

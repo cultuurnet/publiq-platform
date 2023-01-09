@@ -24,8 +24,6 @@ final class EloquentOrganizationRepositoryTest extends TestCase
     {
         parent::setUp();
 
-        $this->createMockUser();
-
         $this->organizationRepository = new EloquentOrganizationRepository();
     }
 
