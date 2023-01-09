@@ -37,6 +37,8 @@ final class DeleteContact implements ShouldQueue
 
         $this->insightlyClient->contacts()->delete($insightlyMapping->insightlyId);
 
+        $this->insightlyMappingRepository->deleteById($contactDeleted->id);
+
         $this->logger->info(
             'Contact deleted',
             [

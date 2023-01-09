@@ -60,6 +60,10 @@ final class DeleteContactTest extends TestCase
             ->method('delete')
             ->with($insightlyId);
 
+        $this->insightlyMappingRepository->expects($this->once())
+            ->method('deleteById')
+            ->with($contactId);
+
         $event = new ContactDeleted($contactId);
         $this->deleteContact->handle($event);
     }
