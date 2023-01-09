@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Histories\Listeners;
 
 use App\Domain\Auth\CurrentUser;
+use App\Domain\Histories\EventToModelMapping;
 use App\Domain\Histories\History;
 use App\Domain\Histories\Repositories\HistoryRepository;
 use Illuminate\Support\Carbon;
@@ -25,21 +26,10 @@ final class CreateHistory
                 Uuid::uuid4(),
                 $data[0]->id,
                 $this->currentUser->id(),
-                $this->getTypeName($eventName),
-                $this->getActionName($eventName),
+                EventToModelMapping::MAPPING[$eventName],
+                $eventName,
                 Carbon::now()
             )
         );
-    }
-
-    private function getTypeName(string $eventName): string
-    {
-        return explode('\\', $eventName)[2];
-    }
-
-    private function getActionName(string $eventName): string
-    {
-        $arr = explode('\\', $eventName);
-        return end($arr);
     }
 }
