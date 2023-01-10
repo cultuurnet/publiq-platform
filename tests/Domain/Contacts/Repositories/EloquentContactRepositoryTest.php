@@ -6,7 +6,9 @@ namespace Tests\Domain\Contacts\Repositories;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
+use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Contacts\Repositories\EloquentContactRepository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
@@ -105,5 +107,43 @@ final class EloquentContactRepositoryTest extends TestCase
         $this->assertCount(2, $foundContacts);
         $this->assertTrue($foundContacts->contains($contactJane));
         $this->assertTrue($foundContacts->contains($contactJohn));
+    }
+
+    public function test_it_can_find_deleted_contact_by_id(): void
+    {
+        $contact = new Contact(
+            Uuid::uuid4(),
+            Uuid::uuid4(),
+            'jane.doe@anonymous.com',
+            ContactType::Technical,
+            'Jane',
+            'Doe'
+        );
+
+        $this->contactRepository->save($contact);
+
+        /** @var ContactModel $contactModel */
+        $contactModel = ContactModel::query()->findOrFail($contact->id);
+        $contactModel->delete();
+
+        $deletedContact = $this->contactRepository->getDeletedById($contact->id);
+        $this->assertEquals($contact, $deletedContact);
+    }
+
+    public function test_it_does_not_find_active_contacts_when_finding_deleted(): void
+    {
+        $contact = new Contact(
+            Uuid::uuid4(),
+            Uuid::uuid4(),
+            'jane.doe@anonymous.com',
+            ContactType::Technical,
+            'Jane',
+            'Doe'
+        );
+
+        $this->contactRepository->save($contact);
+
+        $this->expectException(ModelNotFoundException::class);
+        $this->contactRepository->getDeletedById($contact->id);
     }
 }
