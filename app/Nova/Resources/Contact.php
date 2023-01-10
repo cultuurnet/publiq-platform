@@ -8,6 +8,7 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Models\ContactModel;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Field;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
@@ -69,6 +70,8 @@ final class Contact extends Resource
 
             InsightlyLink::make('Insightly ID', fn () => $this->insightlyId())
                 ->type(InsightlyType::Contact),
+
+            HasMany::make('ActivityLog'),
         ];
     }
 }
