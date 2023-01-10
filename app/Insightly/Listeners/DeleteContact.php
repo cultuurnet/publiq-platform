@@ -28,7 +28,7 @@ final class DeleteContact implements ShouldQueue
 
     public function handle(ContactDeleted $contactDeleted): void
     {
-        $contact = $this->contactRepository->getById($contactDeleted->id);
+        $contact = $this->contactRepository->getDeletedById($contactDeleted->id);
         if (!SyncIsAllowed::forContact($contact)) {
             return;
         }

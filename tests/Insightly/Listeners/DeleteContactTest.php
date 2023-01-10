@@ -53,7 +53,7 @@ final class DeleteContactTest extends TestCase
         $contactId = Uuid::uuid4();
         $insightlyId = 42;
 
-        $this->givenThereIsAContact($contactId, $contactType);
+        $this->givenThereIsADeletedContact($contactId, $contactType);
         $this->givenTheContactIsMappedToInsightly($contactId, $insightlyId);
 
         $this->contactResource->expects($this->once())
@@ -72,7 +72,7 @@ final class DeleteContactTest extends TestCase
     {
         $contactId = Uuid::uuid4();
 
-        $this->givenThereIsAContact($contactId, ContactType::Contributor);
+        $this->givenThereIsADeletedContact($contactId, ContactType::Contributor);
 
         $this->contactResource->expects($this->never())
             ->method('delete');
@@ -92,7 +92,7 @@ final class DeleteContactTest extends TestCase
         ];
     }
 
-    private function givenThereIsAContact(UuidInterface $contactId, ContactType $contactType): Contact
+    private function givenThereIsADeletedContact(UuidInterface $contactId, ContactType $contactType): Contact
     {
         $contact = new Contact(
             $contactId,
@@ -104,7 +104,7 @@ final class DeleteContactTest extends TestCase
         );
 
         $this->contactRepository->expects(self::once())
-            ->method('getById')
+            ->method('getDeletedById')
             ->with($contact->id)
             ->willReturn($contact);
 
