@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Nova\Resources;
 
-use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
@@ -51,25 +50,5 @@ final class ActivityLog extends Resource
 
             Code::make('Metadata', 'properties')->json(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
         ];
-    }
-
-    public static function authorizedToCreate(Request $request): bool
-    {
-        return false;
-    }
-
-    public function authorizedToDelete(Request $request): bool
-    {
-        return false;
-    }
-
-    public function authorizedToUpdate(Request $request): bool
-    {
-        return false;
-    }
-
-    public function authorizedToReplicate(Request $request): bool
-    {
-        return false;
     }
 }
