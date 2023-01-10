@@ -1,46 +1,48 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Domain\Auth\Models\UserModel;
 use App\Domain\Contacts\Models\ContactModel;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class ContactPolicy
+final class ContactPolicy
 {
     use HandlesAuthorization;
 
-    public function viewAny(UserModel $userModel)
+    public function viewAny(UserModel $userModel): bool
     {
         return true;
     }
 
-    public function view(UserModel $userModel, ContactModel $contactModel)
+    public function view(UserModel $userModel, ContactModel $contactModel): bool
     {
         return true;
     }
 
-    public function create(UserModel $userModel)
+    public function create(UserModel $userModel): bool
     {
         return true;
     }
 
-    public function update(UserModel $userModel, ContactModel $contactModel)
+    public function update(UserModel $userModel, ContactModel $contactModel): bool
     {
         return true;
     }
 
-    public function delete(UserModel $userModel, ContactModel $contactModel)
+    public function delete(UserModel $userModel, ContactModel $contactModel): bool
     {
         return true;
     }
 
-    public function restore(UserModel $userModel, ContactModel $contactModel)
+    public function restore(UserModel $userModel, ContactModel $contactModel): bool
     {
         return false;
     }
 
-    public function forceDelete(UserModel $userModel, ContactModel $contactModel)
+    public function forceDelete(UserModel $userModel, ContactModel $contactModel): bool
     {
         return true;
     }
