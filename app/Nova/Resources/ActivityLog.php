@@ -22,6 +22,8 @@ final class ActivityLog extends Resource
 
     public static $title = 'description';
 
+    public static $displayInNavigation = false;
+
     /**
      * @var array<string>
      */
