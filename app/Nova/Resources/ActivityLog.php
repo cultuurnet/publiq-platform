@@ -39,25 +39,17 @@ final class ActivityLog extends Resource
     public function fields(NovaRequest $request): array
     {
         return [
-                ID::make()
-                    ->readonly()
-                    ->onlyOnDetail(),
+            ID::make()->onlyOnDetail(),
 
-            DateTime::make('Timestamp', 'created_at')
-                ->readonly(),
+            DateTime::make('Timestamp', 'created_at'),
 
-            Text::make('Action', 'event')
-                ->readonly(),
+            Text::make('Action', 'event'),
 
-            Text::make('Item ID', 'subject_id')
-                ->onlyOnDetail()
-                ->readonly(),
+            Text::make('Item Id', 'subject_id')->onlyOnDetail(),
 
-            Text::make('User ID', 'causer_id')
-            ->readonly(),
+            Text::make('User Id', 'causer_id'),
 
-            Code::make('Metadata', 'properties')->json(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
-            ->readonly(),
+            Code::make('Metadata', 'properties')->json(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
         ];
     }
 
