@@ -49,6 +49,7 @@ final class Contact extends Resource
                     ContactType::Technical->value => ContactType::Technical->name,
                     ContactType::Contributor->value => ContactType::Contributor->name,
                 ])
+                ->readonly(fn (NovaRequest $request) => $request->isUpdateOrUpdateAttachedRequest())
                 ->rules('required'),
 
             Text::make('First Name', 'first_name')
