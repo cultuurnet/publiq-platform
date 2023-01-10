@@ -37,4 +37,13 @@ final class UserModel extends Model implements AuthenticatableContract, Stateful
     {
         return 'string';
     }
+
+    public static function createSystemUser(): UserModel
+    {
+        return new UserModel([
+            'id' => '00000000-0000-0000-0000-000000000000',
+            'name' => 'SystemUser',
+            'email' => 'noreply@publiq.be',
+        ]);
+    }
 }
