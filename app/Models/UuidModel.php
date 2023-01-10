@@ -39,7 +39,10 @@ abstract class UuidModel extends Model
 
     public function getActivitylogOptions(): LogOptions
     {
-        return (new LogOptions())->logAll();
+        return LogOptions::defaults()
+            ->logAll()
+            ->dontSubmitEmptyLogs()
+            ->logOnlyDirty();
     }
 
     /**
