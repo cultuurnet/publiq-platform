@@ -12,7 +12,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
-final class InsightlyMappingRepositoryTest extends TestCase
+final class EloquentInsightlyMappingRepositoryTest extends TestCase
 {
     use RefreshDatabase;
 

@@ -7,6 +7,7 @@ namespace App\Domain\Contacts\Models;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Events\ContactCreated;
+use App\Domain\Contacts\Events\ContactDeleted;
 use App\Domain\Contacts\Events\ContactUpdated;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Insightly\Models\InsightlyMappingModel;
@@ -45,6 +46,9 @@ final class ContactModel extends UuidModel
         );
         self::updated(
             static fn (ContactModel $contactModel) => ContactUpdated::dispatch($contactModel->toDomain()->id)
+        );
+        self::deleted(
+            static fn (ContactModel $contactModel) => ContactDeleted::dispatch($contactModel->toDomain()->id)
         );
     }
 
