@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Insightly;
 
 use App\Domain\Contacts\Events\ContactCreated;
+use App\Domain\Contacts\Events\ContactDeleted;
 use App\Domain\Contacts\Events\ContactUpdated;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Organizations\Events\OrganizationCreated;
@@ -13,6 +14,7 @@ use App\Domain\Organizations\Events\OrganizationUpdated;
 use App\Insightly\Listeners\CreateContact;
 use App\Insightly\Listeners\CreateOpportunity;
 use App\Insightly\Listeners\CreateOrganization;
+use App\Insightly\Listeners\DeleteContact;
 use App\Insightly\Listeners\UpdateContact;
 use App\Insightly\Listeners\DeleteOrganization;
 use App\Insightly\Listeners\UpdateOrganization;
@@ -44,6 +46,7 @@ final class InsightlyServiceProvider extends ServiceProvider
         if (!empty(config('insightly.api_key'))) {
             Event::listen(IntegrationCreated::class, [CreateOpportunity::class, 'handle']);
             Event::listen(ContactCreated::class, [CreateContact::class, 'handle']);
+            Event::listen(ContactDeleted::class, [DeleteContact::class, 'handle']);
             Event::listen(OrganizationCreated::class, [CreateOrganization::class, 'handle']);
             Event::listen(OrganizationUpdated::class, [UpdateOrganization::class, 'handle']);
             Event::listen(ContactUpdated::class, [UpdateContact::class, 'handle']);

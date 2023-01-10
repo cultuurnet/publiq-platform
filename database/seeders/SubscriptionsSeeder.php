@@ -16,6 +16,8 @@ final class SubscriptionsSeeder extends Seeder
 {
     public function run(SubscriptionRepository $subscriptionRepository): void
     {
+        activity()->disableLogging();
+
         $subscriptionId = Uuid::fromString('b46745a1-feb5-45fd-8fa9-8e3ef25aac26');
 
         try {
