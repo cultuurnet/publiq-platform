@@ -29,9 +29,9 @@ final class ActivityLog extends Resource
      * @var array<string>
      */
     public static $search = [
-                'description',
-                'subject_id',
-            ];
+        'description',
+        'subject_id',
+    ];
 
     /**
      * @return array<Field>
