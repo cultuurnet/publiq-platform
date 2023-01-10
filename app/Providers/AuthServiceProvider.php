@@ -5,10 +5,16 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Domain\Auth\Controllers\Login;
+use App\Domain\Contacts\Models\ContactModel;
+use App\Policies\ContactPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 final class AuthServiceProvider extends ServiceProvider
 {
+    protected $policies = [
+        ContactModel::class => ContactPolicy::class,
+    ];
+
     public function boot(): void
     {
         $this->registerPolicies();
