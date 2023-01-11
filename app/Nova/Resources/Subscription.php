@@ -9,6 +9,7 @@ use App\Domain\Subscriptions\Currency;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
 use Laravel\Nova\Fields\Currency as CurrencyField;
 use Laravel\Nova\Fields\Field;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
@@ -69,6 +70,8 @@ final class Subscription extends Resource
                     fn ($request, $model, $attribute) => $model->{$attribute} = Currency::EUR->value
                 )
                 ->hide(),
+
+            HasMany::make('ActivityLog'),
         ];
     }
 }

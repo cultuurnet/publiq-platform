@@ -4,11 +4,17 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Domain\Activity\Policies\ActivityPolicy;
 use App\Domain\Auth\Controllers\Login;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Spatie\Activitylog\Models\Activity;
 
 final class AuthServiceProvider extends ServiceProvider
 {
+    protected $policies = [
+        Activity::class => ActivityPolicy::class,
+    ];
+
     public function boot(): void
     {
         $this->registerPolicies();

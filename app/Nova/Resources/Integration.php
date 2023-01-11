@@ -142,6 +142,8 @@ final class Integration extends Resource
             ),
 
             HasMany::make('Contacts'),
+
+            HasMany::make('ActivityLog'),
         ];
     }
 }
