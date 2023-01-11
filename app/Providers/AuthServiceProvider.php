@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Domain\Activity\Policies\ActivityPolicy;
 use App\Domain\Auth\Controllers\Login;
-use App\Policies\ActivityPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Spatie\Activitylog\Models\Activity;
 

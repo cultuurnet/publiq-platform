@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Policies;
+namespace App\Domain\Activity\Policies;
 
 use App\Domain\Auth\Models\UserModel;
 use Illuminate\Auth\Access\HandlesAuthorization;
