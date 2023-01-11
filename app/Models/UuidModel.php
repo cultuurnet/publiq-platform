@@ -36,7 +36,6 @@ abstract class UuidModel extends Model
         return 'string';
     }
 
-
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
