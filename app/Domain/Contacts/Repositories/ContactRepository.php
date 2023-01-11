@@ -14,6 +14,8 @@ interface ContactRepository
 
     public function getById(UuidInterface $id): Contact;
 
+    public function getDeletedById(UuidInterface $id): Contact;
+
     /**
      * @return Collection<int, Contact>
      */

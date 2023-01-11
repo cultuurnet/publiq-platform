@@ -6,6 +6,7 @@ namespace App\Nova\Resources;
 
 use App\Domain\Organizations\Models\OrganizationModel;
 use Laravel\Nova\Fields\Field;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -73,6 +74,8 @@ final class Organization extends Resource
 
             InsightlyLink::make('Insightly ID', fn () => $this->insightlyId())
                 ->type(InsightlyType::Organization),
+
+            HasMany::make('ActivityLog'),
         ];
     }
 }

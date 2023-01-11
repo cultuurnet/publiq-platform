@@ -5,10 +5,16 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Ramsey\Uuid\Uuid;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Models\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 abstract class UuidModel extends Model
 {
+    use LogsActivity;
+
     protected static function boot(): void
     {
         parent::boot();
@@ -28,5 +34,21 @@ abstract class UuidModel extends Model
     public function getKeyType(): string
     {
         return 'string';
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll()
+            ->dontSubmitEmptyLogs()
+            ->logOnlyDirty();
+    }
+
+    /**
+     * @return HasMany<Activity>
+     */
+    public function activityLog(): HasMany
+    {
+        return $this->hasMany(Activity::class, 'subject_id');
     }
 }

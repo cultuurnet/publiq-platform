@@ -46,4 +46,12 @@ final class EloquentContactRepository implements ContactRepository
 
         return $contacts;
     }
+
+    public function getDeletedById(UuidInterface $id): Contact
+    {
+        /** @var ContactModel $contactModel */
+        $contactModel = ContactModel::onlyTrashed()->findOrFail($id);
+
+        return $contactModel->toDomain();
+    }
 }
