@@ -14,7 +14,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
-final class DeleteContact implements ShouldQueue
+final class UnlinkContact implements ShouldQueue
 {
     use Queueable;
 

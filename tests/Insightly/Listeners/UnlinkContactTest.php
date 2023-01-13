@@ -9,7 +9,7 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Events\ContactDeleted;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Insightly\InsightlyMapping;
-use App\Insightly\Listeners\DeleteContact;
+use App\Insightly\Listeners\UnlinkContact;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use Iterator;
@@ -20,11 +20,11 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Tests\MockInsightlyClient;
 
-final class DeleteContactTest extends TestCase
+final class UnlinkContactTest extends TestCase
 {
     use MockInsightlyClient;
 
-    private DeleteContact $deleteContact;
+    private UnlinkContact $deleteContact;
 
     private ContactRepository&MockObject $contactRepository;
 
@@ -37,7 +37,7 @@ final class DeleteContactTest extends TestCase
         $this->contactRepository = $this->createMock(ContactRepository::class);
         $this->insightlyMappingRepository = $this->createMock(InsightlyMappingRepository::class);
 
-        $this->deleteContact = new DeleteContact(
+        $this->deleteContact = new UnlinkContact(
             $this->insightlyClient,
             $this->contactRepository,
             $this->insightlyMappingRepository,
