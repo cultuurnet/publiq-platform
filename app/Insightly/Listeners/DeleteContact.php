@@ -33,10 +33,13 @@ final class DeleteContact implements ShouldQueue
             return;
         }
 
-        $insightlyMapping = $this->insightlyMappingRepository->getById($contact->id);
+        $contactInsightlyId = $this->insightlyMappingRepository->getById($contact->id)->insightlyId;
+        $integrationInsightlyId = $this->insightlyMappingRepository->getById($contact->integrationId)->insightlyId;
+
+        $this->insightlyClient->opportunities()->unlinkContact($integrationInsightlyId, $contactInsightlyId);
 
         $this->logger->info(
-            'Contact deleted',
+            'Contact unlinked from opportunity.',
             [
                 'domain' => 'insightly',
                 'contact_id' => $contactDeleted->id->toString(),
@@ -47,7 +50,7 @@ final class DeleteContact implements ShouldQueue
     public function failed(ContactDeleted $contactDeleted, Throwable $exception): void
     {
         $this->logger->error(
-            'Failed to delete contact',
+            'Failed to unlink contact from opportunity.',
             [
                 'domain' => 'insightly',
                 'contact_id' => $contactDeleted->id->toString(),
