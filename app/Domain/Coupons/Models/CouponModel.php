@@ -21,7 +21,6 @@ final class CouponModel extends UuidModel
         'id',
         'integration_id',
         'code',
-        'is_used',
     ];
 
     /**
