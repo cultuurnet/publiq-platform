@@ -11,7 +11,7 @@ return new class () extends Migration {
     {
         Schema::create('coupons', static function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('integration_id')->nullable();
+            $table->uuid('integration_id')->index()->nullable();
             $table->string('code')->unique();
             $table->softDeletes();
             $table->timestamps();
