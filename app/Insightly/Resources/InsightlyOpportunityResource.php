@@ -6,6 +6,7 @@ namespace App\Insightly\Resources;
 
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
+use App\Insightly\Exceptions\ContactCannotBeUnlinked;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Objects\OpportunityStage;
 use App\Insightly\Serializers\LinkSerializer;
@@ -83,6 +84,9 @@ final class InsightlyOpportunityResource implements OpportunityResource
         $this->insightlyClient->sendRequest($request);
     }
 
+    /**
+     * @throws ContactCannotBeUnlinked
+     */
     public function unlinkContact(int $opportunityId, int $contactId): void
     {
         $getLinksRequest = new Request(
@@ -102,6 +106,10 @@ final class InsightlyOpportunityResource implements OpportunityResource
             if ($objectId === $opportunityId && $linkName === 'Contact' && $linkObjectId === $contactId) {
                 $linkId = $opportunityLink['LINK_ID'];
             }
+        }
+
+        if ($linkId === null) {
+            throw new ContactCannotBeUnlinked();
         }
 
         $request = new Request(

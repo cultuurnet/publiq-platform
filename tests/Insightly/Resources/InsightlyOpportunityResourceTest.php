@@ -8,6 +8,7 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
+use App\Insightly\Exceptions\ContactCannotBeUnlinked;
 use App\Insightly\Objects\OpportunityStage;
 use App\Insightly\Objects\OpportunityState;
 use App\Insightly\Pipelines;
@@ -270,6 +271,40 @@ final class InsightlyOpportunityResourceTest extends TestCase
                 new Response(202)
             );
 
+        $this->resource->unlinkContact($opportunityId, $contactId);
+    }
+
+    public function test_it_throws_when_contact_cannot_be_found_in_the_opportunity_links(): void
+    {
+        $opportunityId = 42;
+        $contactId = 53;
+        $linkId = 64;
+
+        $expectedLinksGetRequest = new Request(
+            'GET',
+            'Opportunities/42/Links'
+        );
+
+        $opportunityLinks = [
+            [
+                'DETAILS' => null,
+                'ROLE' => 'Aanvrager',
+                'LINK_ID' => mt_rand(100, 1000),
+                'OBJECT_NAME' => 'Opportunity',
+                'OBJECT_ID' => $opportunityId,
+                'LINK_OBJECT_NAME' => 'Contact',
+                'LINK_OBJECT_ID' => mt_rand(100, 1000),
+            ],
+        ];
+
+        $opportunityLinks = Arr::shuffle($opportunityLinks);
+
+        $this->insightlyClient->expects($this->once())
+            ->method('sendRequest')
+            ->with(self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedLinksGetRequest, $actualRequest)))
+            ->willReturn(new Response(200, [], Json::encode($opportunityLinks)), );
+
+        $this->expectException(ContactCannotBeUnlinked::class);
         $this->resource->unlinkContact($opportunityId, $contactId);
     }
 }

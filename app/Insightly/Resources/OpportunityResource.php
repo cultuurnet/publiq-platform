@@ -6,6 +6,7 @@ namespace App\Insightly\Resources;
 
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
+use App\Insightly\Exceptions\ContactCannotBeUnlinked;
 use App\Insightly\Objects\OpportunityStage;
 
 interface OpportunityResource
@@ -18,5 +19,8 @@ interface OpportunityResource
 
     public function linkContact(int $opportunityId, int $contactId, ContactType $contactType): void;
 
+    /**
+     * @throws ContactCannotBeUnlinked
+     */
     public function unlinkContact(int $opportunityId, int $contactId): void;
 }
