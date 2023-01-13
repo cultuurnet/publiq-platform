@@ -9,6 +9,7 @@ use App\Insightly\InsightlyClient;
 use App\Insightly\Serializers\ContactSerializer;
 use App\Json;
 use GuzzleHttp\Psr7\Request;
+use Illuminate\Support\Arr;
 
 final class InsightlyContactResource implements ContactResource
 {
@@ -54,5 +55,22 @@ final class InsightlyContactResource implements ContactResource
         );
 
         $this->insightlyClient->sendRequest($request);
+    }
+
+    /**
+     * @return int[]
+     */
+    public function findByEmail(string $email): array
+    {
+        $request = new Request(
+            'GET',
+            $this->path . "Search?field_name=email_address&field_value=$email&brief=true"
+        );
+
+        $response = $this->insightlyClient->sendRequest($request);
+
+        $foundContacts = Json::decodeAssociatively($response->getBody()->getContents());
+
+        return Arr::pluck($foundContacts, 'CONTACT_ID');
     }
 }

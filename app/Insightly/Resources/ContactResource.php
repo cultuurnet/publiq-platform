@@ -13,4 +13,6 @@ interface ContactResource
     public function update(Contact $contact, int $insightlyId): void;
 
     public function delete(int $id): void;
+
+    public function findByEmail(string $email): array;
 }
