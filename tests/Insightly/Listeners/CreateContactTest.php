@@ -12,6 +12,7 @@ use App\Insightly\InsightlyMapping;
 use App\Insightly\Listeners\CreateContact;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
+use Illuminate\Support\Arr;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -101,6 +102,47 @@ final class CreateContactTest extends TestCase
         $contact = $this->givenThereIsAContactForAnIntegration($contactId, $integrationId, $contactType);
         $this->givenTheIntegrationIsMappedToInsightly($integrationId, $integrationInsightlyId);
         $this->givenTheContactIdsFoundByEmailAre($contact->email, [$contactInsightlyId]);
+
+        // Then it does not create a contact at Insightly
+        $this->contactResource->expects($this->never())
+            ->method('create');
+
+        // Then it stores the mapping
+        $expectedContactMapping = new InsightlyMapping(
+            $contactId,
+            $contactInsightlyId,
+            ResourceType::Contact
+        );
+        $this->insightlyMappingRepository->expects(self::once())
+            ->method('save')
+            ->with($expectedContactMapping);
+
+        // Then it links the contact to the integration at Insightly
+        $this->opportunityResource->expects($this->once())
+            ->method('linkContact')
+            ->with($integrationInsightlyId, $contactInsightlyId, $contactType);
+
+        // When
+        $this->createContact->handle(new ContactCreated($contact->id));
+    }
+
+    /**
+     * @test
+     */
+    public function it_links_an_the_contact_with_lowest_id_when_multiple_were_found(): void
+    {
+        // Given
+        $integrationId = Uuid::uuid4();
+        $contactId = Uuid::uuid4();
+        $contactType = ContactType::Technical;
+        $contactInsightlyId = 42;
+        $integrationInsightlyId = 3333;
+
+        $foundContactIds = [52, 136, 68, $contactInsightlyId, 124, 88, 99];
+
+        $contact = $this->givenThereIsAContactForAnIntegration($contactId, $integrationId, $contactType);
+        $this->givenTheIntegrationIsMappedToInsightly($integrationId, $integrationInsightlyId);
+        $this->givenTheContactIdsFoundByEmailAre($contact->email, $foundContactIds);
 
         // Then it does not create a contact at Insightly
         $this->contactResource->expects($this->never())

@@ -13,6 +13,7 @@ use App\Insightly\Resources\ResourceType;
 use App\Insightly\SyncIsAllowed;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Arr;
 use Psr\Log\LoggerInterface;
 
 final class CreateContact implements ShouldQueue
@@ -39,6 +40,7 @@ final class CreateContact implements ShouldQueue
         if (empty($contactIds)) {
             $contactInsightlyId = $this->insightlyClient->contacts()->create($contact);
         } else {
+            $contactIds = array_values(Arr::sort($contactIds));
             $contactInsightlyId = $contactIds[0];
         }
 
