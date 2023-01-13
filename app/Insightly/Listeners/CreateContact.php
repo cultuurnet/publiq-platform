@@ -34,6 +34,8 @@ final class CreateContact implements ShouldQueue
             return;
         }
 
+        $contactIds = $this->insightlyClient->contacts()->findByEmail($contact->email);
+
         $contactInsightlyId = $this->insightlyClient->contacts()->create($contact);
         $this->insightlyMappingRepository->save(new InsightlyMapping(
             $contactCreated->id,

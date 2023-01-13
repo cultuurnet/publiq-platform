@@ -48,7 +48,7 @@ final class CreateContactTest extends TestCase
     /**
      * @test
      */
-    public function it_uploads_a_contact(): void
+    public function it_creates_a_new_contact_when_no_insightly_contact_could_be_found(): void
     {
         // Given
         $integrationId = Uuid::uuid4();
@@ -59,6 +59,7 @@ final class CreateContactTest extends TestCase
 
         $contact = $this->givenThereIsAContactForAnIntegration($contactId, $integrationId, $contactType);
         $this->givenTheIntegrationIsMappedToInsightly($integrationId, $integrationInsightlyId);
+        $this->givenTheContactIdsFoundByEmailAre($contact->email, []);
 
         // Then it stores the contact at Insightly
         $this->contactResource->expects($this->once())
@@ -135,5 +136,13 @@ final class CreateContactTest extends TestCase
             ->method('getById')
             ->with($integrationId)
             ->willReturn($insightlyIntegrationMapping);
+    }
+
+    private function givenTheContactIdsFoundByEmailAre(string $email, array $contactIds): void
+    {
+        $this->contactResource->expects($this->once())
+            ->method('findByEmail')
+            ->with($email)
+            ->willReturn($contactIds);
     }
 }
