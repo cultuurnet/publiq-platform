@@ -39,4 +39,15 @@ final class CouponModel extends UuidModel
             $this->code
         );
     }
+
+    public function getStatus(): CouponStatus
+    {
+        if ($this->integration_id !== null) {
+            return CouponStatus::Used;
+        }
+        if ($this->is_distributed) {
+            return CouponStatus::Distributed;
+        }
+        return CouponStatus::Free;
+    }
 }
