@@ -11,8 +11,7 @@ final class Coupon
     public function __construct(
         public readonly UuidInterface $id,
         public readonly ?UuidInterface $integrationId,
-        public readonly string $code,
-        public readonly bool $isUsed,
+        public readonly string $code
     ) {
     }
 }

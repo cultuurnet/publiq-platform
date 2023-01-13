@@ -24,10 +24,6 @@ final class CouponModel extends UuidModel
         'is_used',
     ];
 
-    protected $casts = [
-        'is_used' => 'boolean',
-    ];
-
     /**
      * @return BelongsTo<IntegrationModel, CouponModel>
      */
@@ -41,8 +37,7 @@ final class CouponModel extends UuidModel
         return new Coupon(
             Uuid::fromString($this->id),
             $this->integration_id !== null ? Uuid::fromString($this->integration_id) : null,
-            $this->code,
-            $this->is_used
+            $this->code
         );
     }
 }

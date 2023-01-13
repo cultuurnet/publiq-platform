@@ -27,7 +27,7 @@ final class CouponsSeeder extends Seeder
             '4ecd49c3-29ad-40ff-9c44-af7269cc4af0' => 'seed1234569',
         ];
 
-        foreach ($couponList as $couponKey => $couponCode ) {
+        foreach ($couponList as $couponKey => $couponCode) {
             $couponId = Uuid::fromString($couponKey);
 
             try {
@@ -40,8 +40,7 @@ final class CouponsSeeder extends Seeder
             $coupon = new Coupon(
                 $couponId,
                 null,
-                $couponCode,
-                false
+                $couponCode
             );
 
             $couponRepository->save($coupon);

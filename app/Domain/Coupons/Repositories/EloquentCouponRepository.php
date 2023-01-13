@@ -16,7 +16,6 @@ final class EloquentCouponRepository implements CouponRepository
             'id' => $coupon->id->toString(),
             'integration_id' => $coupon->integrationId,
             'code' => $coupon->code,
-            'is_used' => $coupon->isUsed,
         ]);
     }
 

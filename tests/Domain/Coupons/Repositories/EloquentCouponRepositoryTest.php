@@ -29,8 +29,7 @@ final class EloquentCouponRepositoryTest extends TestCase
         $coupon = new Coupon(
             Uuid::uuid4(),
             null,
-            '12345678901',
-            false
+            '12345678901'
         );
 
         $this->couponRepository->save($coupon);
@@ -49,8 +48,7 @@ final class EloquentCouponRepositoryTest extends TestCase
         $coupon = new Coupon(
             Uuid::uuid4(),
             null,
-            $uniqueCode,
-            false
+            $uniqueCode
         );
 
         $this->couponRepository->save($coupon);
@@ -58,8 +56,7 @@ final class EloquentCouponRepositoryTest extends TestCase
         $duplicateCoupon = new Coupon(
             Uuid::uuid4(),
             null,
-            $uniqueCode,
-            false
+            $uniqueCode
         );
 
         $this->expectException(QueryException::class);
@@ -89,16 +86,14 @@ final class EloquentCouponRepositoryTest extends TestCase
         $coupon = new Coupon(
             Uuid::uuid4(),
             $integrationId,
-            '12345678901',
-            true
+            '12345678901'
         );
         $this->couponRepository->save($coupon);
 
         $unrelatedCoupon = new Coupon(
             Uuid::uuid4(),
             $unrelatedIntegrationId,
-            '10987654321',
-            true
+            '10987654321'
         );
         $this->couponRepository->save($unrelatedCoupon);
 
