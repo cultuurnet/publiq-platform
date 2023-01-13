@@ -38,7 +38,6 @@ final class EloquentCouponRepositoryTest extends TestCase
             'id' => $coupon->id,
             'integration_id' => null,
             'code' => $coupon->code,
-            'is_used' => false,
         ]);
     }
 
@@ -67,14 +66,12 @@ final class EloquentCouponRepositoryTest extends TestCase
             'id' => $coupon->id,
             'integration_id' => null,
             'code' => $uniqueCode,
-            'is_used' => false,
         ]);
 
         $this->assertDatabaseMissing('coupons', [
             'id' => $duplicateCoupon->id,
             'integration_id' => null,
             'code' => $uniqueCode,
-            'is_used' => false,
         ]);
     }
 
