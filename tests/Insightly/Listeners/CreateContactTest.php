@@ -89,6 +89,45 @@ final class CreateContactTest extends TestCase
     /**
      * @test
      */
+    public function it_links_an_insightly_contact_when_a_contact_was_found(): void
+    {
+        // Given
+        $integrationId = Uuid::uuid4();
+        $contactId = Uuid::uuid4();
+        $contactType = ContactType::Technical;
+        $contactInsightlyId = 985413;
+        $integrationInsightlyId = 3333;
+
+        $contact = $this->givenThereIsAContactForAnIntegration($contactId, $integrationId, $contactType);
+        $this->givenTheIntegrationIsMappedToInsightly($integrationId, $integrationInsightlyId);
+        $this->givenTheContactIdsFoundByEmailAre($contact->email, [$contactInsightlyId]);
+
+        // Then it does not create a contact at Insightly
+        $this->contactResource->expects($this->never())
+            ->method('create');
+
+        // Then it stores the mapping
+        $expectedContactMapping = new InsightlyMapping(
+            $contactId,
+            $contactInsightlyId,
+            ResourceType::Contact
+        );
+        $this->insightlyMappingRepository->expects(self::once())
+            ->method('save')
+            ->with($expectedContactMapping);
+
+        // Then it links the contact to the integration at Insightly
+        $this->opportunityResource->expects($this->once())
+            ->method('linkContact')
+            ->with($integrationInsightlyId, $contactInsightlyId, $contactType);
+
+        // When
+        $this->createContact->handle(new ContactCreated($contact->id));
+    }
+
+    /**
+     * @test
+     */
     public function it_does_not_upload_a_contributor(): void
     {
         $contactId = Uuid::uuid4();
