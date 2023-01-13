@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Domain\Coupons\Repositories;
 
 use App\Domain\Coupons\Coupon;
+use App\Domain\Coupons\CouponStatus;
 use App\Domain\Coupons\Repositories\EloquentCouponRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -28,14 +29,17 @@ final class EloquentCouponRepositoryTest extends TestCase
     {
         $coupon = new Coupon(
             Uuid::uuid4(),
+            false,
             null,
-            '12345678901'
+            '12345678901',
+            CouponStatus::Free
         );
 
         $this->couponRepository->save($coupon);
 
         $this->assertDatabaseHas('coupons', [
             'id' => $coupon->id,
+            'is_distributed' => false,
             'integration_id' => null,
             'code' => $coupon->code,
         ]);
@@ -46,16 +50,20 @@ final class EloquentCouponRepositoryTest extends TestCase
         $uniqueCode = '12345678901';
         $coupon = new Coupon(
             Uuid::uuid4(),
+            false,
             null,
-            $uniqueCode
+            $uniqueCode,
+            CouponStatus::Free
         );
 
         $this->couponRepository->save($coupon);
 
         $duplicateCoupon = new Coupon(
             Uuid::uuid4(),
+            false,
             null,
-            $uniqueCode
+            $uniqueCode,
+            CouponStatus::Free
         );
 
         $this->expectException(QueryException::class);
@@ -64,12 +72,14 @@ final class EloquentCouponRepositoryTest extends TestCase
 
         $this->assertDatabaseHas('coupons', [
             'id' => $coupon->id,
+            'is_distributed' => false,
             'integration_id' => null,
             'code' => $uniqueCode,
         ]);
 
         $this->assertDatabaseMissing('coupons', [
             'id' => $duplicateCoupon->id,
+            'is_distributed' => false,
             'integration_id' => null,
             'code' => $uniqueCode,
         ]);
@@ -82,15 +92,19 @@ final class EloquentCouponRepositoryTest extends TestCase
 
         $coupon = new Coupon(
             Uuid::uuid4(),
+            true,
             $integrationId,
-            '12345678901'
+            '12345678901',
+            CouponStatus::Used,
         );
         $this->couponRepository->save($coupon);
 
         $unrelatedCoupon = new Coupon(
             Uuid::uuid4(),
+            true,
             $unrelatedIntegrationId,
-            '10987654321'
+            '10987654321',
+            CouponStatus::Used
         );
         $this->couponRepository->save($unrelatedCoupon);
 
