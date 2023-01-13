@@ -15,6 +15,7 @@ use App\Insightly\Resources\InsightlyOpportunityResource;
 use App\Json;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Support\Arr;
 use Iterator;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
@@ -208,5 +209,67 @@ final class InsightlyOpportunityResourceTest extends TestCase
             'contactType' => ContactType::Functional,
             'expectedRole' => 'Aanvrager',
         ];
+    }
+
+    public function test_it_unlinks_a_contact_from_an_opportunity(): void
+    {
+        $opportunityId = 42;
+        $contactId = 53;
+        $linkId = 64;
+
+        $expectedLinksGetRequest = new Request(
+            'GET',
+            'Opportunities/42/Links'
+        );
+
+        $expectedDeleteLinkRequest = new Request(
+            'DELETE',
+            'Opportunities/42/Links/64'
+        );
+
+        $opportunityLinks = [
+            [
+                'DETAILS' => null,
+                'ROLE' => 'Aanvrager',
+                'LINK_ID' => $linkId,
+                'OBJECT_NAME' => 'Opportunity',
+                'OBJECT_ID' => $opportunityId,
+                'LINK_OBJECT_NAME' => 'Contact',
+                'LINK_OBJECT_ID' => $contactId,
+            ],
+            [
+                'DETAILS' => null,
+                'ROLE' => 'Aanvrager',
+                'LINK_ID' => mt_rand(100, 1000),
+                'OBJECT_NAME' => 'Opportunity',
+                'OBJECT_ID' => $opportunityId,
+                'LINK_OBJECT_NAME' => 'Contact',
+                'LINK_OBJECT_ID' => mt_rand(100, 1000),
+            ],
+            [
+                'DETAILS' => null,
+                'ROLE' => 'Technisch',
+                'LINK_ID' => mt_rand(100, 1000),
+                'OBJECT_NAME' => 'Opportunity',
+                'OBJECT_ID' => $opportunityId,
+                'LINK_OBJECT_NAME' => 'Contact',
+                'LINK_OBJECT_ID' => mt_rand(100, 1000),
+            ],
+        ];
+
+        $opportunityLinks = Arr::shuffle($opportunityLinks);
+
+        $this->insightlyClient->expects($this->exactly(2))
+            ->method('sendRequest')
+            ->withConsecutive(
+                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedLinksGetRequest, $actualRequest))],
+                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedDeleteLinkRequest, $actualRequest))],
+            )
+            ->willReturnOnConsecutiveCalls(
+                new Response(200, [], Json::encode($opportunityLinks)),
+                new Response(202)
+            );
+
+        $this->resource->unlinkContact($opportunityId, $contactId);
     }
 }

@@ -82,4 +82,33 @@ final class InsightlyOpportunityResource implements OpportunityResource
 
         $this->insightlyClient->sendRequest($request);
     }
+
+    public function unlinkContact(int $opportunityId, int $contactId): void
+    {
+        $getLinksRequest = new Request(
+            'GET',
+            'Opportunities/' . $opportunityId . '/Links',
+        );
+        $getLinksResponse = $this->insightlyClient->sendRequest($getLinksRequest);
+
+        $opportunityLinksAsArray = Json::decodeAssociatively($getLinksResponse->getBody()->getContents());
+
+        $linkId = null;
+        foreach ($opportunityLinksAsArray as $opportunityLink) {
+            $objectId = $opportunityLink['OBJECT_ID'];
+            $linkName = $opportunityLink['LINK_OBJECT_NAME'];
+            $linkObjectId = $opportunityLink['LINK_OBJECT_ID'];
+
+            if ($objectId === $opportunityId && $linkName === 'Contact' && $linkObjectId === $contactId) {
+                $linkId = $opportunityLink['LINK_ID'];
+            }
+        }
+
+        $request = new Request(
+            'DELETE',
+            'Opportunities/' . $opportunityId . '/Links/' . $linkId,
+        );
+
+        $this->insightlyClient->sendRequest($request);
+    }
 }

@@ -17,4 +17,6 @@ interface OpportunityResource
     public function updateStage(int $id, OpportunityStage $stage): void;
 
     public function linkContact(int $opportunityId, int $contactId, ContactType $contactType): void;
+
+    public function unlinkContact(int $opportunityId, int $contactId): void;
 }
