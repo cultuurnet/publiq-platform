@@ -13,7 +13,6 @@ return new class () extends Migration {
             $table->uuid('id')->primary();
             $table->uuid('integration_id')->nullable();
             $table->string('code')->unique();
-            $table->boolean('is_used')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });
