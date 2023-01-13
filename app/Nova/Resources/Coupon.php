@@ -12,6 +12,7 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Resource;
+use Maatwebsite\LaravelNovaExcel\Actions\DownloadExcel;
 
 /**
  * @mixin CouponModel
@@ -26,8 +27,7 @@ final class Coupon extends Resource
      * @var array<string>
      */
     public static $search = [
-        'code',
-        'is_used',
+        'code'
     ];
 
     /**
@@ -40,7 +40,13 @@ final class Coupon extends Resource
             BelongsTo::make('Integration')
                 ->withoutTrashed(),
             Text::make('Coupon code', 'code'),
-            Boolean::make('Used', 'is_used'),
+        ];
+    }
+
+    public function actions(NovaRequest $request): array
+    {
+        return [
+            (new DownloadExcel())->withHeadings(),
         ];
     }
 }
