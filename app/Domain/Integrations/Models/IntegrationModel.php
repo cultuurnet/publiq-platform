@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Integrations\Models;
 
 use App\Domain\Contacts\Models\ContactModel;
+use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
@@ -14,6 +15,7 @@ use App\Insightly\Models\InsightlyMappingModel;
 use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 
@@ -51,6 +53,14 @@ final class IntegrationModel extends UuidModel
     public function contacts(): HasMany
     {
         return $this->hasMany(ContactModel::class, 'integration_id');
+    }
+
+    /**
+     * @return HasOne<CouponModel>
+     */
+    public function coupon(): HasOne
+    {
+        return $this->hasOne(CouponModel::class, 'integration_id');
     }
 
     /**
