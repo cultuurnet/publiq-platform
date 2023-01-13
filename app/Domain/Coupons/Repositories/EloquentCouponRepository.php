@@ -27,7 +27,7 @@ final class EloquentCouponRepository implements CouponRepository
         return $couponModel->toDomain();
     }
 
-    public function getByIntegrationId(UuidInterface $integrationId): ?Coupon
+    public function getByIntegrationId(UuidInterface $integrationId): Coupon
     {
         /** @var CouponModel $couponModel */
         $couponModel = CouponModel::query()->where('integration_id', $integrationId->toString())->firstOrFail();
