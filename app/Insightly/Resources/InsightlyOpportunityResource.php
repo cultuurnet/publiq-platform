@@ -84,10 +84,7 @@ final class InsightlyOpportunityResource implements OpportunityResource
         $this->insightlyClient->sendRequest($request);
     }
 
-    /**
-     * @throws ContactCannotBeUnlinked
-     */
-    public function unlinkContact(int $opportunityId, int $contactId): void
+    private function getLinks(int $opportunityId): array
     {
         $getLinksRequest = new Request(
             'GET',
@@ -95,7 +92,15 @@ final class InsightlyOpportunityResource implements OpportunityResource
         );
         $getLinksResponse = $this->insightlyClient->sendRequest($getLinksRequest);
 
-        $opportunityLinksAsArray = Json::decodeAssociatively($getLinksResponse->getBody()->getContents());
+        return Json::decodeAssociatively($getLinksResponse->getBody()->getContents());
+    }
+
+    /**
+     * @throws ContactCannotBeUnlinked
+     */
+    public function unlinkContact(int $opportunityId, int $contactId): void
+    {
+        $opportunityLinksAsArray = $this->getLinks($opportunityId);
 
         $linkId = null;
         foreach ($opportunityLinksAsArray as $opportunityLink) {
