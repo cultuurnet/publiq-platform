@@ -13,7 +13,6 @@ final class Coupon
         public readonly bool $isDistributed,
         public readonly ?UuidInterface $integrationId,
         public readonly string $code,
-        public readonly CouponStatus $status,
     ) {
     }
 }

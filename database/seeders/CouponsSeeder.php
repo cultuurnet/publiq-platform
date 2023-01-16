@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Domain\Coupons\Coupon;
-use App\Domain\Coupons\CouponStatus;
 use App\Domain\Coupons\Repositories\CouponRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Seeder;
@@ -43,7 +42,6 @@ final class CouponsSeeder extends Seeder
                 false,
                 null,
                 $couponCode,
-                CouponStatus::Free
             );
 
             $couponRepository->save($coupon);

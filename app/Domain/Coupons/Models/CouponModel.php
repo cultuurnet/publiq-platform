@@ -44,7 +44,6 @@ final class CouponModel extends UuidModel
             $this->is_distributed,
             $this->integration_id !== null ? Uuid::fromString($this->integration_id) : null,
             $this->code,
-            $this->getStatus()
         );
     }
 

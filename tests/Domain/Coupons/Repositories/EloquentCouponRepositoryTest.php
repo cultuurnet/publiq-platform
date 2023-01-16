@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Domain\Coupons\Repositories;
 
 use App\Domain\Coupons\Coupon;
-use App\Domain\Coupons\CouponStatus;
 use App\Domain\Coupons\Repositories\EloquentCouponRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -31,8 +30,7 @@ final class EloquentCouponRepositoryTest extends TestCase
             Uuid::uuid4(),
             false,
             null,
-            '12345678901',
-            CouponStatus::Free
+            '12345678901'
         );
 
         $this->couponRepository->save($coupon);
@@ -53,7 +51,6 @@ final class EloquentCouponRepositoryTest extends TestCase
             false,
             null,
             $uniqueCode,
-            CouponStatus::Free
         );
 
         $this->couponRepository->save($coupon);
@@ -63,7 +60,6 @@ final class EloquentCouponRepositoryTest extends TestCase
             false,
             null,
             $uniqueCode,
-            CouponStatus::Free
         );
 
         $this->expectException(QueryException::class);
@@ -95,7 +91,6 @@ final class EloquentCouponRepositoryTest extends TestCase
             true,
             $integrationId,
             '12345678901',
-            CouponStatus::Used,
         );
         $this->couponRepository->save($coupon);
 
@@ -104,7 +99,6 @@ final class EloquentCouponRepositoryTest extends TestCase
             true,
             $unrelatedIntegrationId,
             '10987654321',
-            CouponStatus::Used
         );
         $this->couponRepository->save($unrelatedCoupon);
 
