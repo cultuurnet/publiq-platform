@@ -39,8 +39,9 @@ final class CouponsSeeder extends Seeder
 
             $coupon = new Coupon(
                 $couponId,
+                false,
                 null,
-                $couponCode
+                $couponCode,
             );
 
             $couponRepository->save($coupon);
