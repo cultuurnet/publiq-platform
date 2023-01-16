@@ -6,6 +6,7 @@ namespace App\Insightly\Listeners;
 
 use App\Domain\Contacts\Events\ContactDeleted;
 use App\Domain\Contacts\Repositories\ContactRepository;
+use App\Insightly\Exceptions\ContactCannotBeUnlinked;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\SyncIsAllowed;
@@ -36,7 +37,18 @@ final class UnlinkContact implements ShouldQueue
         $contactInsightlyId = $this->insightlyMappingRepository->getById($contact->id)->insightlyId;
         $integrationInsightlyId = $this->insightlyMappingRepository->getById($contact->integrationId)->insightlyId;
 
-        $this->insightlyClient->opportunities()->unlinkContact($integrationInsightlyId, $contactInsightlyId);
+        try {
+            $this->insightlyClient->opportunities()->unlinkContact($integrationInsightlyId, $contactInsightlyId);
+        } catch (ContactCannotBeUnlinked $exception) {
+            $this->logger->warning(
+                'Contact can not be unlinked from opportunity.',
+                [
+                    'domain' => 'insightly',
+                    'contact_id' => $contactDeleted->id->toString(),
+                    'exception_message' => $exception->getMessage(),
+                ]
+            );
+        }
 
         $this->logger->info(
             'Contact unlinked from opportunity.',

@@ -114,7 +114,7 @@ final class InsightlyOpportunityResource implements OpportunityResource
         }
 
         if ($linkId === null) {
-            throw new ContactCannotBeUnlinked();
+            throw new ContactCannotBeUnlinked('Contact is not linked to the opportunity.');
         }
 
         $request = new Request(

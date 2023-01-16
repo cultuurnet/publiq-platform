@@ -8,6 +8,7 @@ use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Events\ContactDeleted;
 use App\Domain\Contacts\Repositories\ContactRepository;
+use App\Insightly\Exceptions\ContactCannotBeUnlinked;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Listeners\UnlinkContact;
 use App\Insightly\Repositories\InsightlyMappingRepository;
@@ -80,6 +81,30 @@ final class UnlinkContactTest extends TestCase
 
         $this->opportunityResource->expects($this->never())
             ->method('unlinkContact');
+
+        $event = new ContactDeleted($contactId);
+        $this->deleteContact->handle($event);
+    }
+
+    public function test_it_does_not_throw_exception_when_ContactCannotBeUnlinked_is_thrown(): void
+    {
+        $contactId = Uuid::uuid4();
+        $contactInsightlyId = 42;
+        $integrationId = Uuid::uuid4();
+        $integrationInsightlyId = 53;
+
+        $this->givenThereIsADeletedContact($contactId, ContactType::Functional, $integrationId);
+        $this->givenTheContactAndIntegrationAreMappedToInsightly(
+            $contactId,
+            $contactInsightlyId,
+            $integrationId,
+            $integrationInsightlyId,
+        );
+
+        $this->opportunityResource->expects($this->once())
+            ->method('unlinkContact')
+            ->with($integrationInsightlyId, $contactInsightlyId)
+            ->willThrowException(new ContactCannotBeUnlinked());
 
         $event = new ContactDeleted($contactId);
         $this->deleteContact->handle($event);
