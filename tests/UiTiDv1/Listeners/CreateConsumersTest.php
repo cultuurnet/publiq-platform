@@ -59,7 +59,8 @@ final class CreateConsumersTest extends TestCase
             'Mock description',
             Uuid::uuid4(),
             IntegrationStatus::Draft,
-            []
+            [],
+            collect([])
         );
 
         $this->integrationRepository->expects($this->once())

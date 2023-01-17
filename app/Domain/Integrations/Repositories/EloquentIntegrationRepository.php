@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Integrations\Repositories;
 
 use App\Domain\Contacts\Models\ContactModel;
+use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Models\IntegrationModel;
 use Illuminate\Support\Collection;
@@ -33,6 +34,15 @@ final class EloquentIntegrationRepository implements IntegrationRepository
                     'first_name' => $contact->firstName,
                     'last_name' => $contact->lastName,
                     'email' => $contact->email,
+                ]);
+            }
+
+            foreach ($integration->coupon as $coupon) {
+                CouponModel::query()->create([
+                    'id' => $coupon->id->toString(),
+                    'is_distributed' => $coupon->isDistributed,
+                    'integration_id' => $integration->id->toString(),
+                    'code' => $coupon->code,
                 ]);
             }
         });

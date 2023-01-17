@@ -74,7 +74,8 @@ final class InsightlyClientTest extends TestCase
             'Test Integration description',
             Uuid::uuid4(),
             IntegrationStatus::Draft,
-            []
+            [],
+            collect([]),
         );
 
         $insightlyId = $this->insightlyClient->opportunities()->create($integration);
@@ -92,7 +93,8 @@ final class InsightlyClientTest extends TestCase
             'Test Integration description',
             Uuid::uuid4(),
             IntegrationStatus::Draft,
-            []
+            [],
+            collect([])
         );
 
         $insightlyId = $this->insightlyClient->projects()->create($integration);

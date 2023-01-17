@@ -85,7 +85,8 @@ final class IntegrationController extends Controller
             IntegrationStatus::Draft,
             [
                 $contactOrganization, $contactPartner, $contributor,
-            ]
+            ],
+            collect([]),
         );
 
         $this->integrationRepository->save($integration);

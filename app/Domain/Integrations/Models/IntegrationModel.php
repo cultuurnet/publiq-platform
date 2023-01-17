@@ -96,7 +96,10 @@ final class IntegrationModel extends UuidModel
             $this->contacts()
                 ->get()
                 ->map(fn (ContactModel $contactModel) => $contactModel->toDomain())
-                ->toArray()
+                ->toArray(),
+            $this->coupon()
+                ->get()
+                ->map(fn (CouponModel $couponModel) => $couponModel->toDomain())
         );
     }
 }

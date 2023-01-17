@@ -84,6 +84,7 @@ final class CreateOpportunityTest extends TestCase
             Uuid::uuid4(),
             IntegrationStatus::Draft,
             [],
+            collect([])
         );
 
         $this->integrationRepository->expects($this->once())

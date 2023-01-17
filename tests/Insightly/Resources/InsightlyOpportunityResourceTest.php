@@ -68,7 +68,8 @@ final class InsightlyOpportunityResourceTest extends TestCase
             $description,
             Uuid::uuid4(),
             IntegrationStatus::Draft,
-            []
+            [],
+            collect([])
         );
         $expectedCreateRequest = new Request(
             'POST',
