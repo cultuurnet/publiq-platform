@@ -14,6 +14,7 @@
         "laravel/horizon": "^5.10",
         "laravel/nova": "^4.0",
         "laravel/tinker": "^2.7",
+        "maatwebsite/laravel-nova-excel": "^1.3",
         "publiq/client-credentials": "*",
         "publiq/insightly-link": "*",
         "sentry/sentry-laravel": "^3.1",
