@@ -8,6 +8,7 @@ use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
+use App\Nova\Actions\ActivateIntegration;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Field;
