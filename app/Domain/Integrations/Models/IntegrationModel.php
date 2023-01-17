@@ -102,4 +102,12 @@ final class IntegrationModel extends UuidModel
                 ->map(fn (CouponModel $couponModel) => $couponModel->toDomain())
         );
     }
+
+    public function activateWithCoupon(string $couponCode): void
+    {
+        $this->update([
+            'status' => IntegrationStatus::Active,
+            'coupon' => $couponCode,
+        ]);
+    }
 }

@@ -149,4 +149,11 @@ final class Integration extends Resource
             HasMany::make('ActivityLog'),
         ];
     }
+
+    public function actions(NovaRequest $request): array
+    {
+        return [
+            (new ActivateIntegration())->onlyOnTableRow(),
+        ];
+    }
 }
