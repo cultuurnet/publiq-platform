@@ -12,6 +12,7 @@ use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
+use Laravel\Nova\Fields\HasOne;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
@@ -142,6 +143,8 @@ final class Integration extends Resource
             ),
 
             HasMany::make('Contacts'),
+
+            HasOne::make('Coupon'),
 
             HasMany::make('ActivityLog'),
         ];
