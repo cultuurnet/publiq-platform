@@ -152,9 +152,11 @@ final class Integration extends Resource
 
     public function actions(NovaRequest $request): array
     {
+        /** @var IntegrationModel $integrationModel */
+        $integrationModel = $this->model();
         return [
             (new ActivateIntegration())->onlyOnTableRow(
-                $this->model()->status === IntegrationStatus::Draft->value
+                $integrationModel->status === IntegrationStatus::Draft->value
             ),
         ];
     }
