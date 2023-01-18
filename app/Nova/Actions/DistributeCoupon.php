@@ -17,7 +17,7 @@ final class DistributeCoupon extends Action
     use InteractsWithQueue;
     use Queueable;
 
-    public function handle(ActionFields $fields, Collection $coupons)
+    public function handle(ActionFields $fields, Collection $coupons): void
     {
         /** @var CouponModel $coupon */
         foreach ($coupons as $coupon) {

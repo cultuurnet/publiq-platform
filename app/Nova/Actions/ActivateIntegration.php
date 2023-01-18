@@ -20,7 +20,7 @@ final class ActivateIntegration extends Action
 
     public function handle(ActionFields $fields, Collection $integrations): void
     {
-        $coupon = CouponModel::query()->where('code', '=', $fields->coupon);
+        $coupon = CouponModel::query()->where('code', '=', $fields->get('coupon'));
         $integration = $integrations->first();
 
         $coupon->update([
