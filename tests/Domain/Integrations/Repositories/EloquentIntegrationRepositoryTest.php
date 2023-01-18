@@ -6,8 +6,7 @@ namespace Tests\Domain\Integrations\Repositories;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
-use App\Domain\Coupons\Coupon;
-use App\Domain\Coupons\Repositories\EloquentCouponRepository;
+use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
@@ -230,15 +229,12 @@ final class EloquentIntegrationRepositoryTest extends TestCase
 
         $integrationId = Uuid::uuid4();
 
-        $coupon = new Coupon(
-            $couponId,
-            true,
-            null,
-            $couponCode
-        );
-
-        $couponRepository = new EloquentCouponRepository();
-        $couponRepository->save($coupon);
+        CouponModel::query()->insert([
+            'id' => $couponId->toString(),
+            'is_distributed' => true,
+            'integration_id' => null,
+            'code' => $couponCode,
+        ]);
 
         $searchIntegration = new Integration(
             $integrationId,
@@ -279,15 +275,12 @@ final class EloquentIntegrationRepositoryTest extends TestCase
 
         $integrationId = Uuid::uuid4();
 
-        $coupon = new Coupon(
-            $couponId,
-            true,
-            null,
-            $couponCode
-        );
-
-        $couponRepository = new EloquentCouponRepository();
-        $couponRepository->save($coupon);
+        CouponModel::query()->insert([
+            'id' => $couponId->toString(),
+            'is_distributed' => true,
+            'integration_id' => null,
+            'code' => $couponCode,
+        ]);
 
         $searchIntegration = new Integration(
             $integrationId,
@@ -312,15 +305,12 @@ final class EloquentIntegrationRepositoryTest extends TestCase
 
         $integrationId = Uuid::uuid4();
 
-        $coupon = new Coupon(
-            $couponId,
-            true,
-            Uuid::uuid4(),
-            $couponCode
-        );
-
-        $couponRepository = new EloquentCouponRepository();
-        $couponRepository->save($coupon);
+        CouponModel::query()->insert([
+            'id' => $couponId->toString(),
+            'is_distributed' => true,
+            'integration_id' => Uuid::uuid4(),
+            'code' => $couponCode,
+        ]);
 
         $searchIntegration = new Integration(
             $integrationId,
