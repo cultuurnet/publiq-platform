@@ -89,6 +89,18 @@ final class IntegrationModel extends UuidModel
         return $this->coupon()->value('code');
     }
 
+    public function activateWithCoupon(string $couponCode)
+    {
+        $coupon = CouponModel::query()
+            ->where('code', '=', $couponCode)
+            ->whereNull('integration_id')
+            ->firstOrFail();
+
+        $coupon->update([
+            'integration_id' => $this->id,
+        ]);
+    }
+
     public function toDomain(): Integration
     {
         return new Integration(

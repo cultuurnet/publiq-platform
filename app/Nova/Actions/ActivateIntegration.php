@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Nova\Actions;
 
 use App\Domain\Coupons\Models\CouponModel;
+use App\Domain\Integrations\Models\IntegrationModel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Queue\InteractsWithQueue;
@@ -22,15 +23,9 @@ final class ActivateIntegration extends Action
     public function handle(ActionFields $fields, Collection $integrations): array
     {
         try {
+            /** @var IntegrationModel $integration */
             $integration = $integrations->first();
-            $coupon = CouponModel::query()
-                ->where('code', '=', $fields->get('coupon'))
-                ->whereNull('integration_id')
-                ->firstOrFail();
-
-            $coupon->update([
-                'integration_id' => $integration->id,
-                ]);
+            $integration->activateWithCoupon($fields->get('coupon'));
             return Action::message('Integration ' . $integration->name . ' activated with coupon ' . $fields->get('coupon'));
         } catch (ModelNotFoundException $exception) {
             return Action::danger($fields->get('coupon') . ' is not an valid coupon.');
