@@ -93,6 +93,7 @@ final class IntegrationModel extends UuidModel
     {
         $coupon = CouponModel::query()
             ->where('code', '=', $couponCode)
+            ->where('is_distributed', '=', true)
             ->whereNull('integration_id')
             ->firstOrFail();
 
