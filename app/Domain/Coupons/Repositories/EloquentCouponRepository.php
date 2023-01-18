@@ -14,6 +14,7 @@ final class EloquentCouponRepository implements CouponRepository
     {
         CouponModel::query()->create([
             'id' => $coupon->id->toString(),
+            'is_distributed' => $coupon->isDistributed,
             'integration_id' => $coupon->integrationId,
             'code' => $coupon->code,
         ]);

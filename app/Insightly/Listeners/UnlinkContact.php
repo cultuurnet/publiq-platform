@@ -6,6 +6,7 @@ namespace App\Insightly\Listeners;
 
 use App\Domain\Contacts\Events\ContactDeleted;
 use App\Domain\Contacts\Repositories\ContactRepository;
+use App\Insightly\Exceptions\ContactCannotBeUnlinked;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\SyncIsAllowed;
@@ -14,7 +15,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
-final class DeleteContact implements ShouldQueue
+final class UnlinkContact implements ShouldQueue
 {
     use Queueable;
 
@@ -33,14 +34,24 @@ final class DeleteContact implements ShouldQueue
             return;
         }
 
-        $insightlyMapping = $this->insightlyMappingRepository->getById($contact->id);
+        $contactInsightlyId = $this->insightlyMappingRepository->getById($contact->id)->insightlyId;
+        $integrationInsightlyId = $this->insightlyMappingRepository->getById($contact->integrationId)->insightlyId;
 
-        $this->insightlyClient->contacts()->delete($insightlyMapping->insightlyId);
-
-        $this->insightlyMappingRepository->deleteById($contactDeleted->id);
+        try {
+            $this->insightlyClient->opportunities()->unlinkContact($integrationInsightlyId, $contactInsightlyId);
+        } catch (ContactCannotBeUnlinked $exception) {
+            $this->logger->warning(
+                'Contact can not be unlinked from opportunity.',
+                [
+                    'domain' => 'insightly',
+                    'contact_id' => $contactDeleted->id->toString(),
+                    'exception_message' => $exception->getMessage(),
+                ]
+            );
+        }
 
         $this->logger->info(
-            'Contact deleted',
+            'Contact unlinked from opportunity.',
             [
                 'domain' => 'insightly',
                 'contact_id' => $contactDeleted->id->toString(),
@@ -51,7 +62,7 @@ final class DeleteContact implements ShouldQueue
     public function failed(ContactDeleted $contactDeleted, Throwable $exception): void
     {
         $this->logger->error(
-            'Failed to delete contact',
+            'Failed to unlink contact from opportunity.',
             [
                 'domain' => 'insightly',
                 'contact_id' => $contactDeleted->id->toString(),

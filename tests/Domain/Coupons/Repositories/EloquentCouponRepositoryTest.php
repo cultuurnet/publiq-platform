@@ -28,6 +28,7 @@ final class EloquentCouponRepositoryTest extends TestCase
     {
         $coupon = new Coupon(
             Uuid::uuid4(),
+            false,
             null,
             '12345678901'
         );
@@ -36,6 +37,7 @@ final class EloquentCouponRepositoryTest extends TestCase
 
         $this->assertDatabaseHas('coupons', [
             'id' => $coupon->id,
+            'is_distributed' => false,
             'integration_id' => null,
             'code' => $coupon->code,
         ]);
@@ -46,16 +48,18 @@ final class EloquentCouponRepositoryTest extends TestCase
         $uniqueCode = '12345678901';
         $coupon = new Coupon(
             Uuid::uuid4(),
+            false,
             null,
-            $uniqueCode
+            $uniqueCode,
         );
 
         $this->couponRepository->save($coupon);
 
         $duplicateCoupon = new Coupon(
             Uuid::uuid4(),
+            false,
             null,
-            $uniqueCode
+            $uniqueCode,
         );
 
         $this->expectException(QueryException::class);
@@ -64,12 +68,14 @@ final class EloquentCouponRepositoryTest extends TestCase
 
         $this->assertDatabaseHas('coupons', [
             'id' => $coupon->id,
+            'is_distributed' => false,
             'integration_id' => null,
             'code' => $uniqueCode,
         ]);
 
         $this->assertDatabaseMissing('coupons', [
             'id' => $duplicateCoupon->id,
+            'is_distributed' => false,
             'integration_id' => null,
             'code' => $uniqueCode,
         ]);
@@ -82,15 +88,17 @@ final class EloquentCouponRepositoryTest extends TestCase
 
         $coupon = new Coupon(
             Uuid::uuid4(),
+            true,
             $integrationId,
-            '12345678901'
+            '12345678901',
         );
         $this->couponRepository->save($coupon);
 
         $unrelatedCoupon = new Coupon(
             Uuid::uuid4(),
+            true,
             $unrelatedIntegrationId,
-            '10987654321'
+            '10987654321',
         );
         $this->couponRepository->save($unrelatedCoupon);
 
