@@ -100,6 +100,8 @@ final class IntegrationModel extends UuidModel
         $coupon->update([
             'integration_id' => $this->id,
         ]);
+
+        $this->update(['status' => IntegrationStatus::Active]);
     }
 
     public function toDomain(): Integration
