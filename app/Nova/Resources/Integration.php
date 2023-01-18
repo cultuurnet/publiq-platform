@@ -8,6 +8,7 @@ use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
+use App\Nova\Actions\ActivateIntegration;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Field;
@@ -144,6 +145,13 @@ final class Integration extends Resource
             HasMany::make('Contacts'),
 
             HasMany::make('ActivityLog'),
+        ];
+    }
+
+    public function actions(NovaRequest $request): array
+    {
+        return [
+            (new ActivateIntegration())->onlyOnTableRow(),
         ];
     }
 }
