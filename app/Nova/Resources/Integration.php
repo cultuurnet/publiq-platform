@@ -99,7 +99,7 @@ final class Integration extends Resource
             InsightlyLink::make('Insightly ID', fn () => $this->insightlyId())
                 ->type(InsightlyType::Opportunity),
 
-            Text::make('Coupon', fn () => $this->coupon()->value('code')),
+            Text::make('Coupon', fn () => $this->couponCode()),
 
             ClientCredentials::make(
                 title: 'UiTiD v1 Consumer Credentials',

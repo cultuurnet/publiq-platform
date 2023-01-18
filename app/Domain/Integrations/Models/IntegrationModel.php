@@ -84,6 +84,11 @@ final class IntegrationModel extends UuidModel
         return $this->insightlyMapping ? $this->insightlyMapping->insightly_id : null;
     }
 
+    public function couponCode(): ?string
+    {
+        return $this->coupon()->value('code');
+    }
+
     public function toDomain(): Integration
     {
         return new Integration(
