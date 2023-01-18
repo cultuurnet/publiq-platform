@@ -62,9 +62,17 @@ final class InsightlyContactResource implements ContactResource
      */
     public function findByEmail(string $email): array
     {
+        $query = http_build_query(
+            [
+                'field_name' => 'email_address',
+                'field_value' => $email,
+                'brief' => true,
+            ]
+        );
+
         $request = new Request(
             'GET',
-            $this->path . "Search?field_name=email_address&field_value=$email&brief=true"
+            $this->path . "Search?$query"
         );
 
         $response = $this->insightlyClient->sendRequest($request);
