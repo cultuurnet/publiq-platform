@@ -6,11 +6,14 @@ namespace Tests\Domain\Integrations\Repositories;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
+use App\Domain\Coupons\Coupon;
+use App\Domain\Coupons\Repositories\EloquentCouponRepository;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\EloquentIntegrationRepository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
@@ -218,5 +221,120 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'subscription_id' => $integration->subscriptionId,
             'status' => IntegrationStatus::Deleted,
         ]);
+    }
+
+    public function test_it_can_activate_with_a_coupon(): void
+    {
+        $couponId = uuid::uuid4();
+        $couponCode = '123';
+
+        $integrationId = Uuid::uuid4();
+
+        $coupon = new Coupon(
+            $couponId,
+            true,
+            null,
+            $couponCode
+        );
+
+        $couponRepository = new EloquentCouponRepository();
+        $couponRepository->save($coupon);
+
+        $searchIntegration = new Integration(
+            $integrationId,
+            IntegrationType::SearchApi,
+            'Search Integration',
+            'Search Integration description',
+            Uuid::uuid4(),
+            IntegrationStatus::Draft,
+            [],
+        );
+
+        $this->integrationRepository->save($searchIntegration);
+
+        $this->integrationRepository->activateWithCoupon($integrationId, $couponCode);
+
+        $this->assertDatabaseHas('integrations', [
+            'id' => $searchIntegration->id->toString(),
+            'type' => $searchIntegration->type,
+            'name' => $searchIntegration->name,
+            'description' => $searchIntegration->description,
+            'subscription_id' => $searchIntegration->subscriptionId,
+            'status' => IntegrationStatus::Active,
+        ]);
+
+        $this->assertDatabaseHas('coupons', [
+            'id' => $couponId->toString(),
+            'is_distributed' => true,
+            'integration_id' => $searchIntegration->id->toString(),
+            'code' => $couponCode,
+        ]);
+    }
+
+    public function test_it_will_fail_on_unknown_coupon_code(): void
+    {
+        $couponId = uuid::uuid4();
+        $couponCode = '123';
+        $fakeCouponCode = '321';
+
+        $integrationId = Uuid::uuid4();
+
+        $coupon = new Coupon(
+            $couponId,
+            true,
+            null,
+            $couponCode
+        );
+
+        $couponRepository = new EloquentCouponRepository();
+        $couponRepository->save($coupon);
+
+        $searchIntegration = new Integration(
+            $integrationId,
+            IntegrationType::SearchApi,
+            'Search Integration',
+            'Search Integration description',
+            Uuid::uuid4(),
+            IntegrationStatus::Draft,
+            [],
+        );
+
+        $this->integrationRepository->save($searchIntegration);
+
+        $this->expectException(ModelNotFoundException::class);
+        $this->integrationRepository->activateWithCoupon($integrationId, $fakeCouponCode);
+    }
+
+    public function test_it_will_fail_on_a_used_coupon(): void
+    {
+        $couponId = uuid::uuid4();
+        $couponCode = '123';
+
+        $integrationId = Uuid::uuid4();
+
+        $coupon = new Coupon(
+            $couponId,
+            true,
+            Uuid::uuid4(),
+            $couponCode
+        );
+
+        $couponRepository = new EloquentCouponRepository();
+        $couponRepository->save($coupon);
+
+        $searchIntegration = new Integration(
+            $integrationId,
+            IntegrationType::SearchApi,
+            'Search Integration',
+            'Search Integration description',
+            Uuid::uuid4(),
+            IntegrationStatus::Draft,
+            [],
+        );
+
+        $this->integrationRepository->save($searchIntegration);
+
+        $this->expectException(ModelNotFoundException::class);
+        $this->integrationRepository->activateWithCoupon($integrationId, $couponCode);
     }
 }

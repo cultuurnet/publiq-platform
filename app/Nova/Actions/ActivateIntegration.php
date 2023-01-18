@@ -29,7 +29,7 @@ final class ActivateIntegration extends Action
         try {
             /** @var IntegrationModel $integration */
             $integration = $integrations->first();
-            $repository->activateWithCoupon(Uuid::fromString($integration->getKey('id')), $fields->get('coupon'));
+            $repository->activateWithCoupon(Uuid::fromString($integration->id), $fields->get('coupon'));
             return Action::message('Integration ' . $integration->name . ' activated with coupon ' . $fields->get('coupon'));
         } catch (ModelNotFoundException $exception) {
             return Action::danger($fields->get('coupon') . ' is not an valid coupon.');
