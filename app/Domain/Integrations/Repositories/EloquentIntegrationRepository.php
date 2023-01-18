@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Domain\Integrations\Repositories;
 
 use App\Domain\Contacts\Models\ContactModel;
+use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\Models\IntegrationModel;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -73,5 +75,28 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         }
 
         return $integrations;
+    }
+
+    public function activateWithCoupon(UuidInterface $id, string $couponCode): void
+    {
+        $integration = $this->getById($id);
+
+        DB::transaction(static function () use ($couponCode, $integration): void {
+            CouponModel::query()
+                ->where('code', '=', $couponCode)
+                ->whereNull('integration_id')
+                ->firstOrFail()
+                ->update([
+                        'is_distributed' => true,
+                        'integration_id' => $integration->id,
+                ]);
+
+            IntegrationModel::query()
+                ->where('id', '=', $integration->id)
+                ->firstOrFail()
+                ->update([
+                    'status' => IntegrationStatus::Active,
+                ]);
+        });
     }
 }
