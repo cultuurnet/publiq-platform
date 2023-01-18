@@ -221,7 +221,7 @@ final class CreateContactTest extends TestCase
     private function givenTheContactIdsFoundByEmailAre(string $email, array $contactIds): void
     {
         $this->contactResource->expects($this->once())
-            ->method('findByEmail')
+            ->method('findIdsByEmail')
             ->with($email)
             ->willReturn($contactIds);
     }

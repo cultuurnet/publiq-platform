@@ -60,7 +60,7 @@ final class InsightlyContactResource implements ContactResource
     /**
      * @return int[]
      */
-    public function findByEmail(string $email): array
+    public function findIdsByEmail(string $email): array
     {
         $query = http_build_query(
             [

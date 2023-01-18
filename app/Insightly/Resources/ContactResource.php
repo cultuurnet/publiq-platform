@@ -14,5 +14,5 @@ interface ContactResource
 
     public function delete(int $id): void;
 
-    public function findByEmail(string $email): array;
+    public function findIdsByEmail(string $email): array;
 }

@@ -136,7 +136,7 @@ final class InsightlyContactResourceTest extends TestCase
             ->with(self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedRequest, $actualRequest)))
             ->willReturn($response);
 
-        $foundContactIds = $this->resource->findByEmail('info@publiq.be');
+        $foundContactIds = $this->resource->findIdsByEmail('info@publiq.be');
 
         $expectedContactIds = [42, 53];
         $this->assertEquals($expectedContactIds, $foundContactIds);
