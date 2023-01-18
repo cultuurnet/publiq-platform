@@ -110,4 +110,35 @@ final class InsightlyContactResourceTest extends TestCase
 
         $this->resource->delete(42);
     }
+
+    public function test_it_can_search_contacts_on_email_address(): void
+    {
+        $expectedRequest = new Request(
+            'GET',
+            '/Contacts/Search?field_name=email_address&field_value=info@publiq.be&brief=true'
+        );
+
+        $foundContacts = [
+            [
+                'CONTACT_ID' => 42,
+                'EMAIL_ADDRESS' => 'info@publiq.be',
+            ],
+            [
+                'CONTACT_ID' => 53,
+                'EMAIL_ADDRESS' => 'info@publiq.be',
+            ],
+        ];
+
+        $response = new Response(200, [], Json::encode($foundContacts));
+
+        $this->insightlyClient->expects($this->once())
+            ->method('sendRequest')
+            ->with(self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedRequest, $actualRequest)))
+            ->willReturn($response);
+
+        $foundContactIds = $this->resource->findIdsByEmail('info@publiq.be');
+
+        $expectedContactIds = [42, 53];
+        $this->assertEquals($expectedContactIds, $foundContactIds);
+    }
 }
