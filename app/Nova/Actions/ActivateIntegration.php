@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Nova\Actions;
 
-use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Models\IntegrationModel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

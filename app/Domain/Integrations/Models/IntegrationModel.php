@@ -89,7 +89,7 @@ final class IntegrationModel extends UuidModel
         return $this->coupon()->value('code');
     }
 
-    public function activateWithCoupon(string $couponCode)
+    public function activateWithCoupon(string $couponCode): void
     {
         $coupon = CouponModel::query()
             ->where('code', '=', $couponCode)
