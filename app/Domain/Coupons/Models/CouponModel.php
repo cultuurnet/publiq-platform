@@ -12,6 +12,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 
+/**
+ * @property string $code
+ */
 final class CouponModel extends UuidModel
 {
     use SoftDeletes;
