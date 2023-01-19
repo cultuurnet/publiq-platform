@@ -26,6 +26,7 @@ final class MigrateProjects extends Command
 
     public function handle(): int
     {
+        Event::forget(IntegrationCreated::class);
 
         CauserResolver::setCauser(UserModel::createSystemUser());
 
