@@ -11,6 +11,7 @@ return new class () extends Migration {
     {
         Schema::create('coupons', static function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->boolean('is_distributed')->default(false);
             $table->uuid('integration_id')->index()->nullable();
             $table->string('code')->unique();
             $table->softDeletes();
