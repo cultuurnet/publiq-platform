@@ -34,8 +34,8 @@ final class UnlinkContact implements ShouldQueue
             return;
         }
 
-        $contactInsightlyId = $this->insightlyMappingRepository->getById($contact->id)->insightlyId;
-        $integrationInsightlyId = $this->insightlyMappingRepository->getById($contact->integrationId)->insightlyId;
+        $contactInsightlyId = $this->insightlyMappingRepository->getBySubjectId($contact->id)->insightlyId;
+        $integrationInsightlyId = $this->insightlyMappingRepository->getBySubjectId($contact->integrationId)->insightlyId;
 
         try {
             $this->insightlyClient->opportunities()->unlinkContact($integrationInsightlyId, $contactInsightlyId);

@@ -45,14 +45,15 @@ final class CreateContact implements ShouldQueue
             $contactInsightlyId = $contactIds[0];
         }
 
+        $insightlyMappingId = Uuid::uuid4();
         $this->insightlyMappingRepository->save(new InsightlyMapping(
-            Uuid::uuid4(),
+            $insightlyMappingId,
             $contactCreated->id,
             $contactInsightlyId,
             ResourceType::Contact
         ));
 
-        $integrationMapping = $this->insightlyMappingRepository->getById($contact->integrationId);
+        $integrationMapping = $this->insightlyMappingRepository->getBySubjectId($contact->integrationId);
         $this->insightlyClient->opportunities()->linkContact(
             $integrationMapping->insightlyId,
             $contactInsightlyId,

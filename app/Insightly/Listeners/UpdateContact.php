@@ -33,7 +33,7 @@ final class UpdateContact implements ShouldQueue
             return;
         }
 
-        $insightlyMapping = $this->insightlyMappingRepository->getById($contact->id);
+        $insightlyMapping = $this->insightlyMappingRepository->getBySubjectId($contact->id);
 
         $this->insightlyClient->contacts()->update($contact, $insightlyMapping->insightlyId);
 
