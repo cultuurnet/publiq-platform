@@ -156,10 +156,13 @@ final class Integration extends Resource
     {
         /** @var IntegrationModel $integrationModel */
         $integrationModel = $this->model();
+
         return [
-            (new ActivateIntegration(App::make(IntegrationRepository::class)))->onlyOnTableRow(
-                $integrationModel->status === IntegrationStatus::Draft->value
-            ),
+            (new ActivateIntegration(App::make(IntegrationRepository::class)))
+                ->onlyOnTableRow($integrationModel->status === IntegrationStatus::Draft->value)
+                ->confirmText('Are you sure you want to activate this integration?')
+                ->confirmButtonText('Activate')
+                ->cancelButtonText("Don't activate"),
         ];
     }
 }
