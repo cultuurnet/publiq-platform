@@ -40,7 +40,11 @@ final class ActivateIntegration extends Action
     public function fields(NovaRequest $request): array
     {
         return [
-            Text::make('Coupon'),
+            Text::make('Coupon', 'coupon')
+                ->rules(
+                    'required',
+                    'exists:coupons,code'
+                ),
         ];
     }
 }
