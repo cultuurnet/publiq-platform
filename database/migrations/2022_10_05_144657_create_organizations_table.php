@@ -12,6 +12,7 @@ return new class () extends Migration {
         Schema::create('organizations', static function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
+            $table->string('invoice_email');
             $table->string('vat')->nullable();
             $table->string('street')->nullable();
             $table->string('zip')->nullable();
