@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace App\Console\Migrations;
 
+use App\Domain\Auth\Models\UserModel;
+use App\Domain\Coupons\Models\CouponModel;
+use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
+use Spatie\Activitylog\Facades\CauserResolver;
 
 final class MigrateProjects extends Command
 {
@@ -21,6 +26,9 @@ final class MigrateProjects extends Command
 
     public function handle(): int
     {
+
+        CauserResolver::setCauser(UserModel::createSystemUser());
+
         // Read the projects from CSV file
         $projectsAsArray = $this->readCsvFile('projects.csv');
 
@@ -41,6 +49,7 @@ final class MigrateProjects extends Command
 
             $name = $projectAsArray[3];
             $description = $projectAsArray[16];
+            $couponCode = $projectAsArray[8];
 
             $status = IntegrationStatus::Draft;
             if ($projectAsArray[7] == 'active') {
@@ -59,8 +68,10 @@ final class MigrateProjects extends Command
             $this->info('Importing project ' . $name);
 
             $now = Carbon::now();
-            IntegrationModel::query()->insert([
-                'id' => Uuid::uuid4(),
+            $integrationId = Uuid::uuid4();
+
+            $integrationModel = new IntegrationModel([
+                'id' => $integrationId->toString(),
                 'name' => $name,
                 'description' => $description,
                 'type' => IntegrationType::SearchApi,
@@ -69,6 +80,7 @@ final class MigrateProjects extends Command
                 'created_at' => $now,
                 'updated_at' => $now,
             ]);
+            $integrationModel->save();
         }
 
         return 0;
