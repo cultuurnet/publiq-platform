@@ -13,6 +13,8 @@ use Ramsey\Uuid\Uuid;
 
 final class MigrateProjects extends Command
 {
+    use ReadCsvFile;
+
     protected $signature = 'migrate:projects';
 
     protected $description = 'Migrate the projects provided in the projects.csv CSV file';
@@ -70,18 +72,5 @@ final class MigrateProjects extends Command
         }
 
         return 0;
-    }
-
-    private function readCsvFile(string $csvFile): array
-    {
-        $rows = [];
-        $fileHandle = fopen($csvFile, 'rb');
-
-        while (!feof($fileHandle)) {
-            $rows[] = fgetcsv($fileHandle);
-        }
-        fclose($fileHandle);
-
-        return $rows;
     }
 }

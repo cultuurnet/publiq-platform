@@ -11,6 +11,8 @@ use Ramsey\Uuid\Uuid;
 
 final class MigrateCoupons extends Command
 {
+    use ReadCsvFile;
+
     protected $signature = 'migrate:coupons';
 
     protected $description = 'Migrate the coupons provided in the coupons.csv CSV file';
@@ -56,18 +58,5 @@ final class MigrateCoupons extends Command
         }
 
         return 0;
-    }
-
-    private function readCsvFile(string $csvFile): array
-    {
-        $rows = [];
-        $fileHandle = fopen($csvFile, 'rb');
-
-        while (!feof($fileHandle)) {
-            $rows[] = fgetcsv($fileHandle);
-        }
-        fclose($fileHandle);
-
-        return $rows;
     }
 }
