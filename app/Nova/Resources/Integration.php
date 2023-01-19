@@ -101,7 +101,12 @@ final class Integration extends Resource
             InsightlyLink::make('Insightly ID', fn () => $this->insightlyId())
                 ->type(InsightlyType::Opportunity),
 
-            Text::make('Coupon', fn () => $this->couponCode())->onlyOnDetail(),
+            Text::make('Coupon', function () {
+                $couponUrl = config('nova.path'). '/resources/coupons/' . $this->couponId();
+                return '<a href="' . $couponUrl . '" class="link-default">' . $this->couponCode() . '</a>';
+            })
+                ->asHtml()
+                ->onlyOnDetail(),
 
             ClientCredentials::make(
                 title: 'UiTiD v1 Consumer Credentials',
