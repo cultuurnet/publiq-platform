@@ -15,6 +15,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Arr;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 
 final class CreateContact implements ShouldQueue
 {
@@ -45,6 +46,7 @@ final class CreateContact implements ShouldQueue
         }
 
         $this->insightlyMappingRepository->save(new InsightlyMapping(
+            Uuid::uuid4(),
             $contactCreated->id,
             $contactInsightlyId,
             ResourceType::Contact
