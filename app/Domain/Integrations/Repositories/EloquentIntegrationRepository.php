@@ -77,7 +77,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         return $integrations;
     }
 
-    public function activateWithCoupon(UuidInterface $id, string $couponCode): void
+    public function activateWithCouponCode(UuidInterface $id, string $couponCode): void
     {
         $integration = $this->getById($id);
 
@@ -87,8 +87,8 @@ final class EloquentIntegrationRepository implements IntegrationRepository
                 ->whereNull('integration_id')
                 ->firstOrFail()
                 ->update([
-                        'is_distributed' => true,
-                        'integration_id' => $integration->id,
+                    'is_distributed' => true,
+                    'integration_id' => $integration->id,
                 ]);
 
             IntegrationModel::query()

@@ -248,7 +248,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
 
         $this->integrationRepository->save($searchIntegration);
 
-        $this->integrationRepository->activateWithCoupon($integrationId, $couponCode);
+        $this->integrationRepository->activateWithCouponCode($integrationId, $couponCode);
 
         $this->assertDatabaseHas('integrations', [
             'id' => $searchIntegration->id->toString(),
@@ -295,7 +295,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         $this->integrationRepository->save($searchIntegration);
 
         $this->expectException(ModelNotFoundException::class);
-        $this->integrationRepository->activateWithCoupon($integrationId, $fakeCouponCode);
+        $this->integrationRepository->activateWithCouponCode($integrationId, $fakeCouponCode);
     }
 
     public function test_it_will_fail_on_a_used_coupon(): void
@@ -325,6 +325,6 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         $this->integrationRepository->save($searchIntegration);
 
         $this->expectException(ModelNotFoundException::class);
-        $this->integrationRepository->activateWithCoupon($integrationId, $couponCode);
+        $this->integrationRepository->activateWithCouponCode($integrationId, $couponCode);
     }
 }
