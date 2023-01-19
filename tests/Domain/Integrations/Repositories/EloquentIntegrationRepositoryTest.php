@@ -231,7 +231,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
 
         CouponModel::query()->insert([
             'id' => $couponId->toString(),
-            'is_distributed' => true,
+            'is_distributed' => false,
             'integration_id' => null,
             'code' => $couponCode,
         ]);
