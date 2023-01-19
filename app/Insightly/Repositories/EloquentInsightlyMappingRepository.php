@@ -16,6 +16,7 @@ final class EloquentInsightlyMappingRepository implements InsightlyMappingReposi
     {
         InsightlyMappingModel::query()->create([
             'id' => $insightlyMapping->id,
+            'subject_id' => $insightlyMapping->subjectId,
             'insightly_id' => $insightlyMapping->insightlyId,
             'resource_type' => $insightlyMapping->resourceType,
         ]);
@@ -25,6 +26,14 @@ final class EloquentInsightlyMappingRepository implements InsightlyMappingReposi
     {
         /** @var InsightlyMappingModel $insightlyMappingModel */
         $insightlyMappingModel = InsightlyMappingModel::query()->findOrFail($id);
+
+        return $this->modelToInsightlyMapping($insightlyMappingModel);
+    }
+
+    public function getBySubjectId(UuidInterface $subjectId): InsightlyMapping
+    {
+        /** @var InsightlyMappingModel $insightlyMappingModel */
+        $insightlyMappingModel = InsightlyMappingModel::query()->where('subject_id', $subjectId)->firstOrFail();
 
         return $this->modelToInsightlyMapping($insightlyMappingModel);
     }
@@ -48,6 +57,7 @@ final class EloquentInsightlyMappingRepository implements InsightlyMappingReposi
     {
         return new InsightlyMapping(
             Uuid::fromString($insightlyMappingModel->id),
+            Uuid::fromString($insightlyMappingModel->subject_id),
             (int) $insightlyMappingModel->insightly_id,
             ResourceType::from($insightlyMappingModel->resource_type)
         );
