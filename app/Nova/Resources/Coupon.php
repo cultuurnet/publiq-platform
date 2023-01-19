@@ -47,7 +47,7 @@ final class Coupon extends Resource
 
             Text::make('Coupon code', 'code'),
 
-            HasMany::make('ActivityLog'),
+            HasMany::make('Activity Log'),
         ];
     }
 
