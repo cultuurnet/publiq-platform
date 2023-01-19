@@ -11,6 +11,7 @@ final class InsightlyMapping
 {
     public function __construct(
         public readonly UuidInterface $id,
+        public readonly UuidInterface $subjectId,
         public readonly int $insightlyId,
         public readonly ResourceType $resourceType
     ) {
