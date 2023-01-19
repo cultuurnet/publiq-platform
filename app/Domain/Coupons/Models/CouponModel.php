@@ -32,6 +32,11 @@ final class CouponModel extends UuidModel
         'is_distributed' => 'boolean',
     ];
 
+    public function distribute(): void
+    {
+        $this->update(['is_distributed' => true]);
+    }
+
     /**
      * @return BelongsTo<IntegrationModel, CouponModel>
      */

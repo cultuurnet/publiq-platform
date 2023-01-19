@@ -21,7 +21,7 @@ final class DistributeCoupon extends Action
     {
         /** @var CouponModel $coupon */
         foreach ($coupons as $coupon) {
-            $coupon->update(['is_distributed' => true]);
+            $coupon->distribute();
         }
     }
 
