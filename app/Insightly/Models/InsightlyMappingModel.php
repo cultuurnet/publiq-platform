@@ -15,6 +15,7 @@ final class InsightlyMappingModel extends UuidModel
 
     protected $fillable = [
         'id',
+        'subject_id',
         'insightly_id',
         'resource_type',
     ];
