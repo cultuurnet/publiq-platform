@@ -39,10 +39,14 @@ final class Coupon extends Resource
     {
         return [
             ID::make(),
+
             Boolean::make('Distributed', 'is_distributed'),
+
             BelongsTo::make('Integration')
                 ->withoutTrashed(),
+
             Text::make('Coupon code', 'code'),
+
             HasMany::make('ActivityLog'),
         ];
     }
