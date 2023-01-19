@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Console\Migrations;
 
+use App\Domain\Auth\Models\UserModel;
 use App\Domain\Coupons\Models\CouponModel;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Ramsey\Uuid\Uuid;
+use Spatie\Activitylog\Facades\CauserResolver;
 
 final class MigrateCoupons extends Command
 {
@@ -19,6 +21,8 @@ final class MigrateCoupons extends Command
 
     public function handle(): int
     {
+        CauserResolver::setCauser(UserModel::createSystemUser());
+
         // Read the coupons from CSV file
         $couponsAsArray = $this->readCsvFile('coupons.csv');
 
@@ -37,7 +41,7 @@ final class MigrateCoupons extends Command
                 continue;
             }
 
-            list($code, $isDistributed) = $couponAsArray;
+            [$code, $isDistributed] = $couponAsArray;
 
             if (strlen($code) !== 11) {
                 $this->warn('The code ' . $code . ' was not imported because length is not 11.');
@@ -47,7 +51,8 @@ final class MigrateCoupons extends Command
             $this->info('Importing code ' . $code);
 
             $now = Carbon::now();
-            CouponModel::query()->insert([
+
+            $couponModel = new CouponModel([
                 'id' => Uuid::uuid4(),
                 'is_distributed' => $isDistributed,
                 'integration_id' => null,
@@ -55,6 +60,7 @@ final class MigrateCoupons extends Command
                 'created_at' => $now,
                 'updated_at' => $now,
             ]);
+            $couponModel->save();
         }
 
         return 0;
