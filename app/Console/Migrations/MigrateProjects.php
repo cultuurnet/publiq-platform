@@ -82,6 +82,19 @@ final class MigrateProjects extends Command
                 'updated_at' => $now,
             ]);
             $integrationModel->save();
+
+            if ($couponCode !== 'NULL' && $couponCode !== 'import') {
+                $couponModel = CouponModel::query()->where('code', '=', $couponCode)->first();
+
+                if ($couponModel === null) {
+                    $this->warn('Coupon with code : ' . $couponCode . ' not found.');
+                } else {
+                    $couponModel->update([
+                        'is_distributed' => true,
+                        'integration_id' => $integrationId->toString(),
+                    ]);
+                }
+            }
         }
 
         return 0;
