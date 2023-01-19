@@ -93,6 +93,11 @@ final class IntegrationModel extends UuidModel
         return $this->coupon->code ?? null;
     }
 
+    public function couponId(): ?string
+    {
+        return $this->coupon->id ?? null;
+    }
+
     public function toDomain(): Integration
     {
         return new Integration(
