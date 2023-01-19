@@ -10,7 +10,6 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\ActionFields;
-use Laravel\Nova\Http\Requests\NovaRequest;
 
 final class DistributeCoupon extends Action
 {
@@ -23,10 +22,5 @@ final class DistributeCoupon extends Action
         foreach ($coupons as $coupon) {
             $coupon->distribute();
         }
-    }
-
-    public function fields(NovaRequest $request): array
-    {
-        return [];
     }
 }
