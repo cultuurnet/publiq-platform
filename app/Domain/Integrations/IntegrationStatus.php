@@ -10,4 +10,6 @@ enum IntegrationStatus: string
     case Active  = 'active';
     case Blocked = 'blocked';
     case Deleted = 'deleted';
+    case PendingApprovalIntegration = 'pending_approval_integration';
+    case PendingApprovalPayment = 'pending_approval_payment';
 }

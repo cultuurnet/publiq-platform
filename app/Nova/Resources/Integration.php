@@ -95,6 +95,8 @@ final class Integration extends Resource
                     IntegrationStatus::Active->value => IntegrationStatus::Active->name,
                     IntegrationStatus::Blocked->value => IntegrationStatus::Blocked->name,
                     IntegrationStatus::Deleted->value => IntegrationStatus::Deleted->name,
+                    IntegrationStatus::PendingApprovalIntegration->value => IntegrationStatus::PendingApprovalIntegration->name,
+                    IntegrationStatus::PendingApprovalPayment->value => IntegrationStatus::PendingApprovalPayment->name,
                 ])
                 ->default(IntegrationStatus::Draft->value),
 
