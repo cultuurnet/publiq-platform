@@ -26,8 +26,7 @@ final class MigrateCoupons extends Command
             return 0;
         }
 
-        if (!$this->confirm('Are you sure you want to import ' . $couponsCount . ' coupons?'))
-        {
+        if (!$this->confirm('Are you sure you want to import ' . $couponsCount . ' coupons?')) {
             return 0;
         }
 
