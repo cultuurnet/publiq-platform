@@ -11,6 +11,7 @@ return new class () extends Migration {
     {
         Schema::create('insightly_mappings', static function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->uuid('subject_id')->index();
             $table->string('insightly_id')->index();
             $table->string('resource_type')->index();
             $table->softDeletes();
