@@ -19,6 +19,7 @@ use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Tests\MockInsightlyClient;
+use Tests\UuidFactoryTest;
 
 final class CreateOrganizationTest extends TestCase
 {
@@ -30,10 +31,14 @@ final class CreateOrganizationTest extends TestCase
 
     private CreateOrganization $listener;
 
+    private UuidInterface $insightlyMappingOrganizationId;
+
     protected function setUp(): void
     {
         $this->organizationRepository = $this->createMock(OrganizationRepository::class);
         $this->insightlyMappingRepository = $this->createMock(InsightlyMappingRepository::class);
+
+        $this->insightlyMappingOrganizationId = Uuid::fromString('bc7b8e68-263c-4008-a1a5-19563ca9ad8f');
 
         $pipelines = new Pipelines(['opportunities' => ['id' => 3, 'stages' => ['test' => 4]]]);
         $this->mockCrmClient($pipelines);
@@ -42,6 +47,7 @@ final class CreateOrganizationTest extends TestCase
             $this->organizationRepository,
             $this->insightlyMappingRepository,
             $this->createMock(LoggerInterface::class),
+            new UuidFactoryTest($this->insightlyMappingOrganizationId)
         );
     }
 
@@ -60,6 +66,7 @@ final class CreateOrganizationTest extends TestCase
 
         // Then it stores the insightly id in a mapping
         $insightlyIntegrationMapping = new InsightlyMapping(
+            $this->insightlyMappingOrganizationId,
             $organizationId,
             $insightlyId,
             ResourceType::Organization,
