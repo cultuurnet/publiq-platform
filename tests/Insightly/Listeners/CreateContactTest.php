@@ -18,6 +18,7 @@ use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Tests\MockInsightlyClient;
+use Tests\UuidFactoryTest;
 
 final class CreateContactTest extends TestCase
 {
@@ -29,6 +30,8 @@ final class CreateContactTest extends TestCase
 
     private InsightlyMappingRepository&MockObject $insightlyMappingRepository;
 
+    private UuidInterface $insightlyMappingContactId;
+
     protected function setUp(): void
     {
         $this->contactRepository = $this->createMock(ContactRepository::class);
@@ -37,11 +40,14 @@ final class CreateContactTest extends TestCase
 
         $this->mockCrmClient();
 
+        $this->insightlyMappingContactId = Uuid::fromString('fb76738b-af85-47b5-ba49-9b427e0db63d');
+
         $this->createContact = new CreateContact(
             $this->insightlyClient,
             $this->contactRepository,
             $this->insightlyMappingRepository,
             $this->createMock(LoggerInterface::class),
+            new UuidFactoryTest($this->insightlyMappingContactId),
         );
     }
 
@@ -69,6 +75,7 @@ final class CreateContactTest extends TestCase
 
         // Then it stores the mapping
         $expectedContactMapping = new InsightlyMapping(
+            $this->insightlyMappingContactId,
             $contactId,
             $contactInsightlyId,
             ResourceType::Contact
@@ -108,6 +115,7 @@ final class CreateContactTest extends TestCase
 
         // Then it stores the mapping
         $expectedContactMapping = new InsightlyMapping(
+            $this->insightlyMappingContactId,
             $contactId,
             $contactInsightlyId,
             ResourceType::Contact
@@ -149,6 +157,7 @@ final class CreateContactTest extends TestCase
 
         // Then it stores the mapping
         $expectedContactMapping = new InsightlyMapping(
+            $this->insightlyMappingContactId,
             $contactId,
             $contactInsightlyId,
             ResourceType::Contact
@@ -207,13 +216,14 @@ final class CreateContactTest extends TestCase
         int $integrationInsightlyId
     ): void {
         $insightlyIntegrationMapping = new InsightlyMapping(
+            $this->insightlyMappingContactId,
             $integrationId,
             $integrationInsightlyId,
             ResourceType::Opportunity,
         );
 
         $this->insightlyMappingRepository->expects(self::once())
-            ->method('getById')
+            ->method('getBySubjectId')
             ->with($integrationId)
             ->willReturn($insightlyIntegrationMapping);
     }
