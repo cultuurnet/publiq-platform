@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Insightly\Models;
 
-use App\Models\UuidModel;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-final class InsightlyMappingModel extends UuidModel
+final class InsightlyMappingModel extends Model
 {
     use SoftDeletes;
 
