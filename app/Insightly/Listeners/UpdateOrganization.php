@@ -28,7 +28,7 @@ final class UpdateOrganization implements ShouldQueue
     {
         $organization = $this->organizationRepository->getById($organizationUpdated->id);
 
-        $insightlyMapping = $this->insightlyMappingRepository->getById($organization->id);
+        $insightlyMapping = $this->insightlyMappingRepository->getBySubjectId($organization->id);
 
         $this->insightlyClient->organizations()->update($organization, $insightlyMapping->insightlyId);
 
