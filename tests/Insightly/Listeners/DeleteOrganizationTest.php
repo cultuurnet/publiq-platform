@@ -49,7 +49,7 @@ final class DeleteOrganizationTest extends TestCase
             ResourceType::Organization,
         );
         $this->insightlyMappingRepository->expects(self::once())
-            ->method('getById')
+            ->method('getBySubjectId')
             ->with($organizationId)
             ->willReturn($insightlyIntegrationMapping);
 

@@ -24,7 +24,7 @@ final class DeleteOrganization implements ShouldQueue
 
     public function handle(OrganizationDeleted $organizationDeleted): void
     {
-        $insightlyMapping = $this->insightlyMappingRepository->getById($organizationDeleted->id);
+        $insightlyMapping = $this->insightlyMappingRepository->getBySubjectId($organizationDeleted->id);
 
         $this->insightlyClient->organizations()->delete($insightlyMapping->insightlyId);
 
