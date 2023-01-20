@@ -89,7 +89,8 @@ final class UpdateOrganizationTest extends TestCase
     private function givenTheInsightlyIdForTheIntegrationIs(
         UuidInterface $insightlyMappedOrganizationId,
         UuidInterface $organizationId,
-        int $insightlyId): void
+        int $insightlyId
+    ): void
     {
         $insightlyIntegrationMapping = new InsightlyMapping(
             $insightlyMappedOrganizationId,
