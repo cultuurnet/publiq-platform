@@ -53,6 +53,13 @@ final class EloquentInsightlyMappingRepository implements InsightlyMappingReposi
         $insightlyMappingModel->delete();
     }
 
+    public function deleteBySubjectId(UuidInterface $subjectId): void
+    {
+        /** @var InsightlyMappingModel $insightlyMappingModel */
+        $insightlyMappingModel = InsightlyMappingModel::query()->where('subject_id', $subjectId);
+        $insightlyMappingModel->delete();
+    }
+
     private function modelToInsightlyMapping(InsightlyMappingModel $insightlyMappingModel): InsightlyMapping
     {
         return new InsightlyMapping(

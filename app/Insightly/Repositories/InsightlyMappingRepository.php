@@ -18,4 +18,6 @@ interface InsightlyMappingRepository
     public function getByInsightlyId(int $insightlyId): InsightlyMapping;
 
     public function deleteById(UuidInterface $id): void;
+
+    public function deleteBySubjectId(UuidInterface $subjectId): void;
 }
