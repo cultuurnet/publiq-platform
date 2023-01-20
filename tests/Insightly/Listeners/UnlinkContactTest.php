@@ -51,15 +51,19 @@ final class UnlinkContactTest extends TestCase
      */
     public function test_it_unlinks_a_contact_person(ContactType $contactType): void
     {
+        $insightlyMappedContactId = Uuid::uuid4();
         $contactId = Uuid::uuid4();
         $contactInsightlyId = 42;
+        $insightlyMappedIntegrationId = Uuid::uuid4();
         $integrationId = Uuid::uuid4();
         $integrationInsightlyId = 53;
 
         $this->givenThereIsADeletedContact($contactId, $contactType, $integrationId);
         $this->givenTheContactAndIntegrationAreMappedToInsightly(
+            $insightlyMappedContactId,
             $contactId,
             $contactInsightlyId,
+            $insightlyMappedIntegrationId,
             $integrationId,
             $integrationInsightlyId,
         );
@@ -88,15 +92,19 @@ final class UnlinkContactTest extends TestCase
 
     public function test_it_does_not_throw_exception_when_ContactCannotBeUnlinked_is_thrown(): void
     {
+        $insightlyMappedContactId = Uuid::uuid4();
         $contactId = Uuid::uuid4();
         $contactInsightlyId = 42;
+        $insightlyMappedIntegrationId = Uuid::uuid4();
         $integrationId = Uuid::uuid4();
         $integrationInsightlyId = 53;
 
         $this->givenThereIsADeletedContact($contactId, ContactType::Functional, $integrationId);
         $this->givenTheContactAndIntegrationAreMappedToInsightly(
+            $insightlyMappedContactId,
             $contactId,
             $contactInsightlyId,
+            $insightlyMappedIntegrationId,
             $integrationId,
             $integrationInsightlyId,
         );
@@ -144,25 +152,29 @@ final class UnlinkContactTest extends TestCase
     }
 
     private function givenTheContactAndIntegrationAreMappedToInsightly(
+        UuidInterface $insightlyMappedContactId,
         UuidInterface $contactId,
         int $contactInsightlyId,
+        UuidInterface $insightlyMappedIntegrationId,
         UuidInterface $integrationId,
         int $integrationInsightlyId
     ): void {
         $insightlyContactMapping = new InsightlyMapping(
+            $insightlyMappedContactId,
             $contactId,
             $contactInsightlyId,
             ResourceType::Contact,
         );
 
         $insightlyIntegrationMapping = new InsightlyMapping(
+            $insightlyMappedIntegrationId,
             $integrationId,
             $integrationInsightlyId,
             ResourceType::Opportunity,
         );
 
         $this->insightlyMappingRepository->expects(self::exactly(2))
-            ->method('getById')
+            ->method('getBySubjectId')
             ->withConsecutive([$contactId], [$integrationId])
             ->willReturn($insightlyContactMapping, $insightlyIntegrationMapping);
     }
