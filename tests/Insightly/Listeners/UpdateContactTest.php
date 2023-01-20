@@ -49,11 +49,12 @@ final class UpdateContactTest extends TestCase
      */
     public function it_updates_a_contact(): void
     {
+        $insightlyMappingId = Uuid::uuid4();
         $contactId = Uuid::uuid4();
         $insightlyId = 42;
 
         $contact = $this->givenThereIsAContact($contactId, ContactType::Technical);
-        $this->givenTheContactIsMappedToInsightly($contactId, $insightlyId);
+        $this->givenTheContactIsMappedToInsightly($insightlyMappingId, $contactId, $insightlyId);
 
         $this->contactResource->expects($this->once())
             ->method('update')
@@ -99,17 +100,19 @@ final class UpdateContactTest extends TestCase
     }
 
     private function givenTheContactIsMappedToInsightly(
+        UuidInterface $insightlyMappingId,
         UuidInterface $contactId,
         int $contactInsightlyId
     ): void {
         $insightlyIntegrationMapping = new InsightlyMapping(
+            $insightlyMappingId,
             $contactId,
             $contactInsightlyId,
             ResourceType::Contact,
         );
 
         $this->insightlyMappingRepository->expects(self::once())
-            ->method('getById')
+            ->method('getBySubjectId')
             ->with($contactId)
             ->willReturn($insightlyIntegrationMapping);
     }
