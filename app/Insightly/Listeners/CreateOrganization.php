@@ -13,6 +13,7 @@ use App\Insightly\Resources\ResourceType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\UuidFactoryInterface;
 
 final class CreateOrganization implements ShouldQueue
 {
@@ -22,7 +23,8 @@ final class CreateOrganization implements ShouldQueue
         private readonly InsightlyClient $insightlyClient,
         private readonly OrganizationRepository $organizationRepository,
         private readonly InsightlyMappingRepository $insightlyMappingRepository,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly UuidFactoryInterface $uuidFactory,
     ) {
     }
 
@@ -32,6 +34,7 @@ final class CreateOrganization implements ShouldQueue
 
         $organizationInsightlyId = $this->insightlyClient->organizations()->create($organization);
         $this->insightlyMappingRepository->save(new InsightlyMapping(
+            $this->uuidFactory->uuid4(),
             $organizationCreated->id,
             $organizationInsightlyId,
             ResourceType::Organization
