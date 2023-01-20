@@ -10,7 +10,7 @@ return new class () extends Migration {
     public function up(): void
     {
         Schema::create('insightly_mappings', static function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->uuid('id')->index();
             $table->string('insightly_id')->index();
             $table->string('resource_type')->index();
             $table->softDeletes();
