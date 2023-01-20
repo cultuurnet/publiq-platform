@@ -38,10 +38,12 @@ final class DeleteOrganizationTest extends TestCase
 
     public function test_it_can_delete_an_organization(): void
     {
+        $insightlyMappedOrganizationId = Uuid::uuid4();
         $organizationId = Uuid::uuid4();
         $insightlyId = 1234;
 
         $insightlyIntegrationMapping = new InsightlyMapping(
+            $insightlyMappedOrganizationId,
             $organizationId,
             $insightlyId,
             ResourceType::Organization,
@@ -56,7 +58,7 @@ final class DeleteOrganizationTest extends TestCase
             ->with($insightlyId);
 
         $this->insightlyMappingRepository->expects(self::once())
-            ->method('deleteById')
+            ->method('deleteBySubjectId')
             ->with($organizationId);
 
         $event = new OrganizationDeleted($organizationId);
