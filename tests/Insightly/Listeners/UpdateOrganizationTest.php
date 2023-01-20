@@ -47,11 +47,12 @@ final class UpdateOrganizationTest extends TestCase
     public function test_it_updates_an_organizer(): void
     {
         // Given
+        $insightlyMappedOrganizationId = Uuid::uuid4();
         $organizationId = Uuid::uuid4();
         $insightlyId = 1234;
 
         $organization = $this->givenThereIsAnOrganization($organizationId);
-        $this->givenTheInsightlyIdForTheIntegrationIs($insightlyId, $organizationId);
+        $this->givenTheInsightlyIdForTheIntegrationIs($insightlyMappedOrganizationId, $organizationId, $insightlyId);
 
         // Then it updates the organization at Insightly
         $this->organizationResource->expects($this->once())
@@ -85,15 +86,19 @@ final class UpdateOrganizationTest extends TestCase
         return $organization;
     }
 
-    private function givenTheInsightlyIdForTheIntegrationIs(int $insightlyId, UuidInterface $organizationId): void
+    private function givenTheInsightlyIdForTheIntegrationIs(
+        UuidInterface $insightlyMappedOrganizationId,
+        UuidInterface $organizationId,
+        int $insightlyId): void
     {
         $insightlyIntegrationMapping = new InsightlyMapping(
+            $insightlyMappedOrganizationId,
             $organizationId,
             $insightlyId,
             ResourceType::Organization,
         );
         $this->insightlyMappingRepository->expects(self::once())
-            ->method('getById')
+            ->method('getBySubjectId')
             ->with($organizationId)
             ->willReturn($insightlyIntegrationMapping);
     }
