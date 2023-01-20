@@ -28,6 +28,7 @@ final class EloquentInsightlyMappingRepositoryTest extends TestCase
 
         $this->insightlyMapping = new InsightlyMapping(
             Uuid::uuid4(),
+            Uuid::uuid4(),
             12800763,
             ResourceType::Contact
         );
@@ -39,6 +40,7 @@ final class EloquentInsightlyMappingRepositoryTest extends TestCase
 
         $this->assertDatabaseHas(InsightlyMappingModel::class, [
             'id' => $this->insightlyMapping->id,
+            'subject_id' => $this->insightlyMapping->subjectId,
             'insightly_id' => $this->insightlyMapping->insightlyId,
             'resource_type' => $this->insightlyMapping->resourceType,
         ]);
@@ -48,6 +50,7 @@ final class EloquentInsightlyMappingRepositoryTest extends TestCase
     {
         InsightlyMappingModel::query()->insert([
             'id' => $this->insightlyMapping->id,
+            'subject_id' => $this->insightlyMapping->subjectId,
             'insightly_id' => $this->insightlyMapping->insightlyId,
             'resource_type' => $this->insightlyMapping->resourceType,
         ]);
@@ -57,10 +60,27 @@ final class EloquentInsightlyMappingRepositoryTest extends TestCase
         $this->assertEquals($this->insightlyMapping, $foundInsightlyMapping);
     }
 
+    public function test_it_can_get_a_mapping_by_subject_id(): void
+    {
+        InsightlyMappingModel::query()->insert([
+            'id' => $this->insightlyMapping->id,
+            'subject_id' => $this->insightlyMapping->subjectId,
+            'insightly_id' => $this->insightlyMapping->insightlyId,
+            'resource_type' => $this->insightlyMapping->resourceType,
+        ]);
+
+        $foundInsightlyMapping = $this->insightlyMappingRepository->getBySubjectId(
+            $this->insightlyMapping->subjectId
+        );
+
+        $this->assertEquals($this->insightlyMapping, $foundInsightlyMapping);
+    }
+
     public function test_it_can_get_a_mapping_by_insightly_id(): void
     {
         InsightlyMappingModel::query()->insert([
             'id' => $this->insightlyMapping->id,
+            'subject_id' => $this->insightlyMapping->subjectId,
             'insightly_id' => $this->insightlyMapping->insightlyId,
             'resource_type' => $this->insightlyMapping->resourceType,
         ]);
