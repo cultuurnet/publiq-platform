@@ -19,6 +19,7 @@ use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Tests\MockInsightlyClient;
+use Tests\UuidFactoryTest;
 
 final class CreateOpportunityTest extends TestCase
 {
@@ -30,6 +31,8 @@ final class CreateOpportunityTest extends TestCase
 
     private CreateOpportunity $listener;
 
+    private UuidInterface $insightlyMappingOpportunityId;
+
     protected function setUp(): void
     {
         $this->integrationRepository = $this->createMock(IntegrationRepository::class);
@@ -37,11 +40,14 @@ final class CreateOpportunityTest extends TestCase
 
         $this->mockCrmClient();
 
+        $this->insightlyMappingOpportunityId = Uuid::fromString('f717ea13-a86a-4df0-b70c-496278c92732');
+
         $this->listener = new CreateOpportunity(
             $this->insightlyClient,
             $this->integrationRepository,
             $this->insightlyMappingRepository,
             $this->createMock(LoggerInterface::class),
+            new UuidFactoryTest($this->insightlyMappingOpportunityId),
         );
     }
 
@@ -61,6 +67,7 @@ final class CreateOpportunityTest extends TestCase
 
         // Then it stores the insightlyId mapping
         $insightlyIntegrationMapping = new InsightlyMapping(
+            $this->insightlyMappingOpportunityId,
             $integrationId,
             $insightlyId,
             ResourceType::Opportunity,
