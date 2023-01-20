@@ -15,7 +15,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Arr;
 use Psr\Log\LoggerInterface;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidFactoryInterface;
 
 final class CreateContact implements ShouldQueue
 {
@@ -26,6 +26,7 @@ final class CreateContact implements ShouldQueue
         private readonly ContactRepository $contactRepository,
         private readonly InsightlyMappingRepository $insightlyMappingRepository,
         private readonly LoggerInterface $logger,
+        private readonly UuidFactoryInterface $uuidFactory,
     ) {
     }
 
@@ -45,9 +46,8 @@ final class CreateContact implements ShouldQueue
             $contactInsightlyId = $contactIds[0];
         }
 
-        $insightlyMappingId = Uuid::uuid4();
         $this->insightlyMappingRepository->save(new InsightlyMapping(
-            $insightlyMappingId,
+            $this->uuidFactory->uuid4(),
             $contactCreated->id,
             $contactInsightlyId,
             ResourceType::Contact
