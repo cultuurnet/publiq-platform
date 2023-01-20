@@ -13,6 +13,7 @@ use App\Insightly\Resources\ResourceType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\UuidFactoryInterface;
 
 final class CreateOpportunity implements ShouldQueue
 {
@@ -23,6 +24,7 @@ final class CreateOpportunity implements ShouldQueue
         private readonly IntegrationRepository $integrationRepository,
         private readonly InsightlyMappingRepository $insightlyMappingRepository,
         private readonly LoggerInterface $logger,
+        private readonly UuidFactoryInterface $uuidFactory,
     ) {
     }
 
@@ -33,6 +35,7 @@ final class CreateOpportunity implements ShouldQueue
         );
 
         $this->insightlyMappingRepository->save(new InsightlyMapping(
+            $this->uuidFactory->uuid4(),
             $integrationCreated->id,
             $insightlyId,
             ResourceType::Opportunity
