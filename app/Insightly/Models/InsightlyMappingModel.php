@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace App\Insightly\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-final class InsightlyMappingModel extends Model
+final class InsightlyMappingModel extends UuidModel
 {
     use SoftDeletes;
 
     protected $table = 'insightly_mappings';
+    protected $primaryKey = null;
+    public $incrementing = false;
 
     protected $fillable = [
         'id',
