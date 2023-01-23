@@ -68,7 +68,6 @@ final class MigrateProjects extends Command
 
             $this->info('Importing project ' . $name);
 
-            $now = Carbon::now();
             $integrationId = Uuid::uuid4();
 
             $integrationModel = new IntegrationModel([
@@ -78,8 +77,6 @@ final class MigrateProjects extends Command
                 'type' => IntegrationType::SearchApi,
                 'status' => $status,
                 'subscription_id' => 'b46745a1-feb5-45fd-8fa9-8e3ef25aac26',
-                'created_at' => $now,
-                'updated_at' => $now,
             ]);
             $integrationModel->save();
 

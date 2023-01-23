@@ -50,15 +50,11 @@ final class MigrateCoupons extends Command
 
             $this->info('Importing code ' . $code);
 
-            $now = Carbon::now();
-
             $couponModel = new CouponModel([
                 'id' => Uuid::uuid4(),
                 'is_distributed' => $isDistributed,
                 'integration_id' => null,
                 'code' => $code,
-                'created_at' => $now,
-                'updated_at' => $now,
             ]);
             $couponModel->save();
         }
