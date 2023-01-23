@@ -53,16 +53,16 @@ final class MigrateProjects extends Command
             $couponCode = $projectAsArray[8];
 
             $status = IntegrationStatus::Draft;
-            if ($projectAsArray[7] == 'active') {
+            if ($projectAsArray[7] === 'active') {
                 $status = IntegrationStatus::Active;
             }
-            if ($projectAsArray[7] == 'blocked') {
+            if ($projectAsArray[7] === 'blocked') {
                 $status = IntegrationStatus::Blocked;
             }
-            if ($projectAsArray[7] == 'application_sent') {
+            if ($projectAsArray[7] === 'application_sent') {
                 $status = IntegrationStatus::PendingApprovalIntegration;
             }
-            if ($projectAsArray[7] == 'waiting_for_payment') {
+            if ($projectAsArray[7] === 'waiting_for_payment') {
                 $status = IntegrationStatus::PendingApprovalPayment;
             }
 
