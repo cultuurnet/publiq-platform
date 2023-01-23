@@ -10,6 +10,8 @@ use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
+use App\Insightly\Models\InsightlyMappingModel;
+use App\Insightly\Resources\ResourceType;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
@@ -51,6 +53,8 @@ final class MigrateProjects extends Command
             $name = $projectAsArray[3];
             $description = $projectAsArray[16];
             $couponCode = $projectAsArray[8];
+            $opportunityId = $projectAsArray[15];
+            $projectId = $projectAsArray[14];
 
             $status = IntegrationStatus::Draft;
             if ($projectAsArray[7] === 'active') {
@@ -91,6 +95,24 @@ final class MigrateProjects extends Command
                         'integration_id' => $integrationId->toString(),
                     ]);
                 }
+            }
+
+            if ($opportunityId !== 'NULL') {
+                $opportunityMapping = new InsightlyMappingModel([
+                    'id' => $integrationId->toString(),
+                    'resource_type' => ResourceType::Opportunity,
+                    'insightly_id' => $opportunityId
+                ]);
+                $opportunityMapping->save();
+            }
+
+            if ($projectId !== 'NULL') {
+                $projectMapping = new InsightlyMappingModel([
+                    'id' => $integrationId->toString(),
+                    'resource_type' => ResourceType::Project,
+                    'insightly_id' => $projectId
+                ]);
+                $projectMapping->save();
             }
         }
 
