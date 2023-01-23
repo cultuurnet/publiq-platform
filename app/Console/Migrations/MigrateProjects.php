@@ -13,7 +13,6 @@ use App\Domain\Integrations\Models\IntegrationModel;
 use App\Insightly\Models\InsightlyMappingModel;
 use App\Insightly\Resources\ResourceType;
 use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
 use Spatie\Activitylog\Facades\CauserResolver;
@@ -101,7 +100,7 @@ final class MigrateProjects extends Command
                 $opportunityMapping = new InsightlyMappingModel([
                     'id' => $integrationId->toString(),
                     'resource_type' => ResourceType::Opportunity,
-                    'insightly_id' => $opportunityId
+                    'insightly_id' => $opportunityId,
                 ]);
                 $opportunityMapping->save();
             }
@@ -110,7 +109,7 @@ final class MigrateProjects extends Command
                 $projectMapping = new InsightlyMappingModel([
                     'id' => $integrationId->toString(),
                     'resource_type' => ResourceType::Project,
-                    'insightly_id' => $projectId
+                    'insightly_id' => $projectId,
                 ]);
                 $projectMapping->save();
             }

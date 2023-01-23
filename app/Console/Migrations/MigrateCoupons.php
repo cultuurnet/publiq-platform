@@ -7,7 +7,6 @@ namespace App\Console\Migrations;
 use App\Domain\Auth\Models\UserModel;
 use App\Domain\Coupons\Models\CouponModel;
 use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
 use Ramsey\Uuid\Uuid;
 use Spatie\Activitylog\Facades\CauserResolver;
 
