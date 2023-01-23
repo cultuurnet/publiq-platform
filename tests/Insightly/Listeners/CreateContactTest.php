@@ -8,6 +8,7 @@ use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Contacts\Repositories\ContactRepository;
+use App\Insightly\ContactLink;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Listeners\CreateContact;
 use App\Insightly\Repositories\InsightlyMappingRepository;
@@ -29,16 +30,18 @@ final class CreateContactTest extends TestCase
 
     private InsightlyMappingRepository&MockObject $insightlyMappingRepository;
 
+    private ContactLink&MockObject $contactLink;
+
     protected function setUp(): void
     {
         $this->contactRepository = $this->createMock(ContactRepository::class);
-
         $this->insightlyMappingRepository = $this->createMock(InsightlyMappingRepository::class);
-
+        $this->contactLink = $this->createMock(ContactLink::class);
         $this->mockCrmClient();
 
         $this->createContact = new CreateContact(
             $this->insightlyClient,
+            $this->contactLink,
             $this->contactRepository,
             $this->insightlyMappingRepository,
             $this->createMock(LoggerInterface::class),
@@ -48,7 +51,7 @@ final class CreateContactTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_a_new_contact_when_no_insightly_contact_could_be_found(): void
+    public function test_it_links_the_contact_to_insightly_and_links_it_to_an_opportunity(): void
     {
         // Given
         $integrationId = Uuid::uuid4();
@@ -59,11 +62,10 @@ final class CreateContactTest extends TestCase
 
         $contact = $this->givenThereIsAContactForAnIntegration($contactId, $integrationId, $contactType);
         $this->givenTheIntegrationIsMappedToInsightly($integrationId, $integrationInsightlyId);
-        $this->givenTheContactIdsFoundByEmailAre($contact->email, []);
 
         // Then it stores the contact at Insightly
-        $this->contactResource->expects($this->once())
-            ->method('create')
+        $this->contactLink->expects($this->once())
+            ->method('link')
             ->with($contact)
             ->willReturn($contactInsightlyId);
 
@@ -86,96 +88,13 @@ final class CreateContactTest extends TestCase
         $this->createContact->handle(new ContactCreated($contact->id));
     }
 
-    /**
-     * @test
-     */
-    public function it_links_an_insightly_contact_when_a_contact_was_found(): void
-    {
-        // Given
-        $integrationId = Uuid::uuid4();
-        $contactId = Uuid::uuid4();
-        $contactType = ContactType::Technical;
-        $contactInsightlyId = 985413;
-        $integrationInsightlyId = 3333;
-
-        $contact = $this->givenThereIsAContactForAnIntegration($contactId, $integrationId, $contactType);
-        $this->givenTheIntegrationIsMappedToInsightly($integrationId, $integrationInsightlyId);
-        $this->givenTheContactIdsFoundByEmailAre($contact->email, [$contactInsightlyId]);
-
-        // Then it does not create a contact at Insightly
-        $this->contactResource->expects($this->never())
-            ->method('create');
-
-        // Then it stores the mapping
-        $expectedContactMapping = new InsightlyMapping(
-            $contactId,
-            $contactInsightlyId,
-            ResourceType::Contact
-        );
-        $this->insightlyMappingRepository->expects(self::once())
-            ->method('save')
-            ->with($expectedContactMapping);
-
-        // Then it links the contact to the integration at Insightly
-        $this->opportunityResource->expects($this->once())
-            ->method('linkContact')
-            ->with($integrationInsightlyId, $contactInsightlyId, $contactType);
-
-        // When
-        $this->createContact->handle(new ContactCreated($contact->id));
-    }
-
-    /**
-     * @test
-     */
-    public function it_links_an_the_contact_with_lowest_id_when_multiple_were_found(): void
-    {
-        // Given
-        $integrationId = Uuid::uuid4();
-        $contactId = Uuid::uuid4();
-        $contactType = ContactType::Technical;
-        $contactInsightlyId = 42;
-        $integrationInsightlyId = 3333;
-
-        $foundContactIds = [52, 136, 68, $contactInsightlyId, 124, 88, 99];
-
-        $contact = $this->givenThereIsAContactForAnIntegration($contactId, $integrationId, $contactType);
-        $this->givenTheIntegrationIsMappedToInsightly($integrationId, $integrationInsightlyId);
-        $this->givenTheContactIdsFoundByEmailAre($contact->email, $foundContactIds);
-
-        // Then it does not create a contact at Insightly
-        $this->contactResource->expects($this->never())
-            ->method('create');
-
-        // Then it stores the mapping
-        $expectedContactMapping = new InsightlyMapping(
-            $contactId,
-            $contactInsightlyId,
-            ResourceType::Contact
-        );
-        $this->insightlyMappingRepository->expects(self::once())
-            ->method('save')
-            ->with($expectedContactMapping);
-
-        // Then it links the contact to the integration at Insightly
-        $this->opportunityResource->expects($this->once())
-            ->method('linkContact')
-            ->with($integrationInsightlyId, $contactInsightlyId, $contactType);
-
-        // When
-        $this->createContact->handle(new ContactCreated($contact->id));
-    }
-
-    /**
-     * @test
-     */
-    public function it_does_not_upload_a_contributor(): void
+    public function test_it_does_not_upload_a_contributor(): void
     {
         $contactId = Uuid::uuid4();
         $this->givenThereIsAContactForAnIntegration($contactId, Uuid::uuid4(), ContactType::Contributor);
 
-        $this->insightlyClient->expects($this->never())
-            ->method('contacts');
+        $this->contactLink->expects($this->never())
+            ->method('link');
 
         $this->createContact->handle(new ContactCreated($contactId));
     }
@@ -216,13 +135,5 @@ final class CreateContactTest extends TestCase
             ->method('getById')
             ->with($integrationId)
             ->willReturn($insightlyIntegrationMapping);
-    }
-
-    private function givenTheContactIdsFoundByEmailAre(string $email, array $contactIds): void
-    {
-        $this->contactResource->expects($this->once())
-            ->method('findIdsByEmail')
-            ->with($email)
-            ->willReturn($contactIds);
     }
 }
