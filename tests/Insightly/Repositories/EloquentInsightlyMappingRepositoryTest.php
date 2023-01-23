@@ -44,7 +44,7 @@ final class EloquentInsightlyMappingRepositoryTest extends TestCase
         ]);
     }
 
-    public function test_it_can_get_a_mapping_by_id(): void
+    public function test_it_can_get_a_mapping_by_id_and_type(): void
     {
         InsightlyMappingModel::query()->insert([
             'id' => $this->insightlyMapping->id,
@@ -52,7 +52,7 @@ final class EloquentInsightlyMappingRepositoryTest extends TestCase
             'resource_type' => $this->insightlyMapping->resourceType,
         ]);
 
-        $foundInsightlyMapping = $this->insightlyMappingRepository->getById($this->insightlyMapping->id);
+        $foundInsightlyMapping = $this->insightlyMappingRepository->getByIdAndType($this->insightlyMapping->id, ResourceType::Contact);
 
         $this->assertEquals($this->insightlyMapping, $foundInsightlyMapping);
     }

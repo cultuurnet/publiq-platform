@@ -50,7 +50,7 @@ final class CreateContact implements ShouldQueue
             ResourceType::Contact
         ));
 
-        $integrationMapping = $this->insightlyMappingRepository->getById($contact->integrationId);
+        $integrationMapping = $this->insightlyMappingRepository->getByIdAndType($contact->integrationId, ResourceType::Opportunity);
         $this->insightlyClient->opportunities()->linkContact(
             $integrationMapping->insightlyId,
             $contactInsightlyId,

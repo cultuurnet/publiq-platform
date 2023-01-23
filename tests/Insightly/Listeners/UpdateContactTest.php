@@ -109,8 +109,8 @@ final class UpdateContactTest extends TestCase
         );
 
         $this->insightlyMappingRepository->expects(self::once())
-            ->method('getById')
-            ->with($contactId)
+            ->method('getByIdAndType')
+            ->with($contactId, ResourceType::Contact)
             ->willReturn($insightlyIntegrationMapping);
     }
 }
