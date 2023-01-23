@@ -24,7 +24,7 @@ final class EloquentInsightlyMappingRepository implements InsightlyMappingReposi
     public function getById(UuidInterface $id): InsightlyMapping
     {
         /** @var InsightlyMappingModel $insightlyMappingModel */
-        $insightlyMappingModel = InsightlyMappingModel::query()->findOrFail($id);
+        $insightlyMappingModel = InsightlyMappingModel::query()->where('id', $id)->firstOrFail();
 
         return $this->modelToInsightlyMapping($insightlyMappingModel);
     }

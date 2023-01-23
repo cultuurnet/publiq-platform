@@ -12,6 +12,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 
+/**
+ * @property string $code
+ */
 final class CouponModel extends UuidModel
 {
     use SoftDeletes;
@@ -28,6 +31,11 @@ final class CouponModel extends UuidModel
     protected $casts = [
         'is_distributed' => 'boolean',
     ];
+
+    public function distribute(): void
+    {
+        $this->update(['is_distributed' => true]);
+    }
 
     /**
      * @return BelongsTo<IntegrationModel, CouponModel>
