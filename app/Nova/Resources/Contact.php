@@ -72,7 +72,7 @@ final class Contact extends Resource
             InsightlyLink::make('Insightly ID', fn () => $this->insightlyId())
                 ->type(InsightlyType::Contact),
 
-            HasMany::make('ActivityLog'),
+            HasMany::make('Activity Log'),
         ];
     }
 }

@@ -8,7 +8,10 @@ use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
+use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Nova\Actions\ActivateIntegration;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
+use Illuminate\Support\Facades\App;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
@@ -100,6 +103,13 @@ final class Integration extends Resource
             InsightlyLink::make('Insightly ID', fn () => $this->insightlyId())
                 ->type(InsightlyType::Opportunity),
 
+            Text::make('Coupon', function () {
+                $couponUrl = config('nova.path') . '/resources/coupons/' . $this->couponId();
+                return '<a href="' . $couponUrl . '" class="link-default">' . $this->couponCode() . '</a>';
+            })
+                ->asHtml()
+                ->onlyOnDetail(),
+
             ClientCredentials::make(
                 title: 'UiTiD v1 Consumer Credentials',
                 modelClassName: UiTiDv1ConsumerModel::class,
@@ -145,7 +155,21 @@ final class Integration extends Resource
 
             HasMany::make('Contacts'),
 
-            HasMany::make('ActivityLog'),
+            HasMany::make('Activity Log'),
+        ];
+    }
+
+    public function actions(NovaRequest $request): array
+    {
+        /** @var IntegrationModel $integrationModel */
+        $integrationModel = $this->model();
+
+        return [
+            (new ActivateIntegration(App::make(IntegrationRepository::class)))
+                ->onlyOnTableRow($integrationModel->status === IntegrationStatus::Draft->value)
+                ->confirmText('Are you sure you want to activate this integration?')
+                ->confirmButtonText('Activate')
+                ->cancelButtonText("Don't activate"),
         ];
     }
 }
