@@ -15,6 +15,7 @@ return new class () extends Migration {
             $table->string('name');
             $table->string('description');
             $table->uuid('subscription_id');
+            $table->string('status');
             $table->softDeletes();
             $table->timestamps();
         });

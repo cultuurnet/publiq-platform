@@ -19,6 +19,10 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 
+/**
+ * @property ?InsightlyMappingModel $insightlyMapping
+ * @property ?CouponModel $coupon
+ */
 final class IntegrationModel extends UuidModel
 {
     use SoftDeletes;
@@ -56,14 +60,6 @@ final class IntegrationModel extends UuidModel
     }
 
     /**
-     * @return HasOne<CouponModel>
-     */
-    public function coupon(): HasOne
-    {
-        return $this->hasOne(CouponModel::class, 'integration_id');
-    }
-
-    /**
      * @return BelongsTo<SubscriptionModel, IntegrationModel>
      */
     public function subscription(): BelongsTo
@@ -81,7 +77,25 @@ final class IntegrationModel extends UuidModel
 
     public function insightlyId(): ?string
     {
-        return $this->insightlyMapping ? $this->insightlyMapping->insightly_id : null;
+        return $this->insightlyMapping->insightly_id ?? null;
+    }
+
+    /**
+     * @return HasOne<CouponModel>
+     */
+    public function coupon(): HasOne
+    {
+        return $this->hasOne(CouponModel::class, 'integration_id');
+    }
+
+    public function couponCode(): ?string
+    {
+        return $this->coupon->code ?? null;
+    }
+
+    public function couponId(): ?string
+    {
+        return $this->coupon->id ?? null;
     }
 
     public function toDomain(): Integration
