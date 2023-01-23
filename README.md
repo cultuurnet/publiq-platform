@@ -76,19 +76,15 @@ This requires:
 - correct value of the `NOVA_LICENSE_KEY` environment variable in the `.env` file
 - correct production URL on [https://nova.laravel.com/licenses](https://nova.laravel.com/licenses)
 
-## Auth0
+## Integrations
 
-Authentication will be handled by Auth0. The following environment variables need to be set in the `.env` file:
-- `AUTH0_LOGIN_DOMAIN`
-- `AUTH0_LOGIN_CLIENT_ID`
-- `AUTH0_LOGIN_CLIENT_SECRET`
-- `AUTH0_LOGIN_REDIRECT_URI`
+The following integrations are provided:
+- Auth0, can be enabled with `AUTH0_INTEGRATION_ENABLED`
+- UiTiD, can be enabled with `UITID_INTEGRATION_ENABLED`
+- Insightly, can be enabled with `INSIGHTLY_INTEGRATION_ENABLED`
+- Sentry, can be enabled with `SENTRY_LARAVEL_INTEGRATION_ENABLED`
 
-## Insightly
-
-The following environment variables need to be set in the `.env` file
-- `INSIGHTLY_HOST`
-- `INSIGHTLY_API_KEY`
+Check their relevant parts inside the environment file for correct configuration options.
 
 ## Horizon
 
