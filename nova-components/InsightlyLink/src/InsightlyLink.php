@@ -6,7 +6,7 @@ use Laravel\Nova\Fields\Field;
 
 class InsightlyLink extends Field
 {
-    private string $baseUrl = 'https://crm.na1.insightly.com/list/%s/?blade=/details/%s/';
+    private string $baseUrl = 'https://crm.na1.insightly.com/details/%s/';
 
     /**
      * The field's component.
@@ -27,7 +27,6 @@ class InsightlyLink extends Field
     {
         $baseUrl = sprintf(
             $this->baseUrl,
-            $type->value,
             strtolower($type->value)
         );
 
