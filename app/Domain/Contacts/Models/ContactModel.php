@@ -13,6 +13,7 @@ use App\Domain\Integrations\Models\IntegrationModel;
 use App\Insightly\Models\InsightlyMappingModel;
 use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 
@@ -61,16 +62,16 @@ final class ContactModel extends UuidModel
     }
 
     /**
-     * @return BelongsTo<InsightlyMappingModel, ContactModel>
+     * @return HasMany<InsightlyMappingModel>
      */
-    public function insightlyMapping(): BelongsTo
+    public function insightlyMappings(): HasMany
     {
-        return $this->belongsTo(InsightlyMappingModel::class, 'id');
+        return $this->hasMany(InsightlyMappingModel::class, 'id');
     }
 
     public function insightlyId(): ?string
     {
-        return $this->insightlyMapping ? $this->insightlyMapping->insightly_id : null;
+        return $this->insightlyMappings()->first()->insightly_id ?? null;
     }
 
     public function toDomain(): Contact
