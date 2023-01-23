@@ -29,6 +29,7 @@ final class InsightlyServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(InsightlyMappingRepository::class, EloquentInsightlyMappingRepository::class);
+        $this->app->bind(ContactLink::class, InsightlyContactLink::class);
 
         $this->app->singleton(InsightlyClient::class, function () {
             return new HttpInsightlyClient(
