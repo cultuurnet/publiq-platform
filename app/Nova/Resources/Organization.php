@@ -75,7 +75,7 @@ final class Organization extends Resource
             InsightlyLink::make('Insightly ID', fn () => $this->insightlyId())
                 ->type(InsightlyType::Organization),
 
-            HasMany::make('ActivityLog'),
+            HasMany::make('Activity Log'),
         ];
     }
 }

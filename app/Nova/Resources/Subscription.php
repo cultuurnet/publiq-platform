@@ -71,7 +71,7 @@ final class Subscription extends Resource
                 )
                 ->hide(),
 
-            HasMany::make('ActivityLog'),
+            HasMany::make('Activity Log'),
         ];
     }
 }
