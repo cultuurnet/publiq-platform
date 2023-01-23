@@ -19,10 +19,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 
-/**
- * @property ?InsightlyMappingModel $insightlyMapping
- * @property ?CouponModel $coupon
- */
 final class IntegrationModel extends UuidModel
 {
     use SoftDeletes;
@@ -68,16 +64,17 @@ final class IntegrationModel extends UuidModel
     }
 
     /**
-     * @return BelongsTo<InsightlyMappingModel, IntegrationModel>
+     * @return HasMany<InsightlyMappingModel>
      */
-    public function insightlyMapping(): BelongsTo
+    public function insightlyMappings(): HasMany
     {
-        return $this->belongsTo(InsightlyMappingModel::class, 'id');
+        return $this->hasMany(InsightlyMappingModel::class, 'id');
     }
 
     public function insightlyId(): ?string
     {
-        return $this->insightlyMapping->insightly_id ?? null;
+        // This will also need the type once integrations can be linked to opportunity and project
+        return $this->insightlyMappings()->first()->insightly_id ?? null;
     }
 
     /**
