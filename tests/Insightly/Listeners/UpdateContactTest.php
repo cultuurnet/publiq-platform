@@ -59,7 +59,7 @@ final class UpdateContactTest extends TestCase
             ->method('update')
             ->with($contact, $insightlyId);
 
-        $event = new ContactUpdated($contactId);
+        $event = new ContactUpdated($contactId, false);
         $this->updateContact->handle($event);
     }
 
@@ -75,7 +75,7 @@ final class UpdateContactTest extends TestCase
         $this->contactResource->expects($this->never())
             ->method('update');
 
-        $event = new ContactUpdated($contactId);
+        $event = new ContactUpdated($contactId, false);
         $this->updateContact->handle($event);
     }
 

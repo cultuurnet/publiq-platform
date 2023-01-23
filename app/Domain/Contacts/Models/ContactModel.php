@@ -46,7 +46,7 @@ final class ContactModel extends UuidModel
             static fn (ContactModel $contactModel) => ContactCreated::dispatch($contactModel->toDomain()->id)
         );
         self::updated(
-            static fn (ContactModel $contactModel) => ContactUpdated::dispatch($contactModel->toDomain()->id)
+            static fn (ContactModel $contactModel) => ContactUpdated::dispatch($contactModel->toDomain()->id, $contactModel->isDirty(['email']))
         );
         self::deleted(
             static fn (ContactModel $contactModel) => ContactDeleted::dispatch($contactModel->toDomain()->id)

@@ -126,7 +126,7 @@ final class SyncContactTest extends TestCase
         $this->thenItDoesNotStoreAContactAtInsightly();
         $this->thenItUpdatesTheContactAtInsightly($contact, $this->insightlyContactId);
 
-        $this->syncContact->handleContactUpdated(new ContactUpdated($this->contactId));
+        $this->syncContact->handleContactUpdated(new ContactUpdated($this->contactId, false));
     }
 
     public function test_it_creates_a_new_insightly_contact_when_platform_contact_email_changed(): void
