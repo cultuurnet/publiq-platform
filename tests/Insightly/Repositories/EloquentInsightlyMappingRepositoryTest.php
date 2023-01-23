@@ -29,7 +29,7 @@ final class EloquentInsightlyMappingRepositoryTest extends TestCase
         $this->insightlyMapping = new InsightlyMapping(
             Uuid::uuid4(),
             12800763,
-            ResourceType::Contact
+            ResourceType::Opportunity
         );
     }
 
@@ -52,9 +52,31 @@ final class EloquentInsightlyMappingRepositoryTest extends TestCase
             'resource_type' => $this->insightlyMapping->resourceType,
         ]);
 
-        $foundInsightlyMapping = $this->insightlyMappingRepository->getByIdAndType($this->insightlyMapping->id, ResourceType::Contact);
+        $activatedIntegrationInsightlyMapping = new InsightlyMapping(
+            $this->insightlyMapping->id,
+            12800376,
+            ResourceType::Project
+        );
+
+        InsightlyMappingModel::query()->insert([
+            'id' => $this->insightlyMapping->id,
+            'insightly_id' => $activatedIntegrationInsightlyMapping->insightlyId,
+            'resource_type' => $activatedIntegrationInsightlyMapping->resourceType,
+        ]);
+
+        $foundInsightlyMapping = $this->insightlyMappingRepository->getByIdAndType(
+            $this->insightlyMapping->id,
+            ResourceType::Opportunity
+        );
 
         $this->assertEquals($this->insightlyMapping, $foundInsightlyMapping);
+
+        $foundInsightlyMappingProject = $this->insightlyMappingRepository->getByIdAndType(
+            $this->insightlyMapping->id,
+            ResourceType::Project
+        );
+
+        $this->assertEquals($activatedIntegrationInsightlyMapping, $foundInsightlyMappingProject);
     }
 
     public function test_it_can_get_a_mapping_by_insightly_id(): void
