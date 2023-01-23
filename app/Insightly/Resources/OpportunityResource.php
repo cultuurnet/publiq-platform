@@ -18,7 +18,7 @@ interface OpportunityResource
 
     public function updateStage(int $id, OpportunityStage $stage): void;
 
-    public function updateState(Integration $integration, int $id, OpportunityState $state): void;
+    public function updateState(int $id, OpportunityState $state): void;
 
     public function linkContact(int $opportunityId, int $contactId, ContactType $contactType): void;
 
