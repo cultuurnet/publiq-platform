@@ -65,4 +65,16 @@ final class InsightlyProjectResource implements ProjectResource
 
         $this->insightlyClient->sendRequest($stageRequest);
     }
+
+    public function linkOpportunity(int $projectId, int $opportunityId): void
+    {
+        $request = new Request(
+            'PUT',
+            'Projects/' . $projectId . '/Links',
+            [],
+            Json::encode((new LinkSerializer())->opportunityToLink($opportunityId))
+        );
+
+        $this->insightlyClient->sendRequest($request);
+    }
 }

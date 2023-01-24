@@ -14,4 +14,6 @@ interface ProjectResource
     public function delete(int $id): void;
 
     public function updateStage(int $id, ProjectStage $stage): void;
+
+    public function linkOpportunity(int $projectId, int $opportunityId): void;
 }
