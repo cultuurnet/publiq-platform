@@ -16,14 +16,14 @@ final class ProjectSerializer
     {
     }
 
-    public function toInsightlyArray(Integration $integration): array
+    public function toInsightlyArray(Integration $integration, ProjectState $state, ProjectStage $stage): array
     {
         return [
             'PROJECT_NAME' => $integration->name,
-            'STATUS' => ProjectState::NOT_STARTED->value,
+            'STATUS' => $state->value,
             'PROJECT_DETAILS' => $integration->description,
             'PIPELINE_ID' => $this->pipelines->getProjectsPipelineId(),
-            'STAGE_ID' => $this->pipelines->getProjectStageId(ProjectStage::TEST),
+            'STAGE_ID' => $this->pipelines->getProjectStageId($stage),
             'CUSTOMFIELDS' => [
                 (new IntegrationTypeSerializer())->toInsightlyArray($integration->type),
             ],
