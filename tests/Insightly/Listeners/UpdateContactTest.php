@@ -8,6 +8,7 @@ use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Events\ContactUpdated;
 use App\Domain\Contacts\Repositories\ContactRepository;
+use App\Insightly\ContactLink;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Listeners\UpdateContact;
 use App\Insightly\Repositories\InsightlyMappingRepository;
@@ -29,37 +30,98 @@ final class UpdateContactTest extends TestCase
 
     private InsightlyMappingRepository&MockObject $insightlyMappingRepository;
 
+    private ContactLink&MockObject $contactLink;
+
     protected function setUp(): void
     {
         $this->mockCrmClient();
 
         $this->contactRepository = $this->createMock(ContactRepository::class);
         $this->insightlyMappingRepository = $this->createMock(InsightlyMappingRepository::class);
+        $this->contactLink = $this->createMock(ContactLink::class);
 
         $this->updateContact = new UpdateContact(
             $this->insightlyClient,
+            $this->contactLink,
             $this->contactRepository,
             $this->insightlyMappingRepository,
             new NullLogger(),
         );
     }
 
-    /**
-     * @test
-     */
-    public function it_updates_a_contact(): void
+    public function test_it_updates_a_contact_when_the_email_stayed_the_same(): void
     {
         $contactId = Uuid::uuid4();
         $insightlyId = 42;
 
         $contact = $this->givenThereIsAContact($contactId, ContactType::Technical);
-        $this->givenTheContactIsMappedToInsightly($contactId, $insightlyId);
+        $this->givenTheContactAndIntegrationAreMappedToInsightly(
+            $contactId,
+            $insightlyId,
+            $contact->integrationId,
+            53
+        );
 
         $this->contactResource->expects($this->once())
             ->method('update')
             ->with($contact, $insightlyId);
 
         $event = new ContactUpdated($contactId, false);
+        $this->updateContact->handle($event);
+    }
+
+    public function test_it_links_the_contact_again_when_the_email_changed(): void
+    {
+        $contactId = Uuid::uuid4();
+        $oldInsightlyContactId = 42;
+        $newInsightlyContactId = 53;
+        $insightlyOpportunityId = 64;
+
+        $contact = $this->givenThereIsAContact($contactId, ContactType::Technical);
+
+        $this->givenTheContactAndIntegrationAreMappedToInsightly(
+            $contactId,
+            $oldInsightlyContactId,
+            $contact->integrationId,
+            $insightlyOpportunityId
+        );
+
+        // It leaves the old contact as is,
+        $this->contactResource->expects($this->never())
+            ->method('update');
+
+        // and removes the mapping,
+        $this->insightlyMappingRepository->expects($this->once())
+            ->method('deleteById')
+            ->with($contactId);
+
+        // and removes the link to the opportunity.
+        $this->opportunityResource->expects($this->once())
+            ->method('unlinkContact')
+            ->with($insightlyOpportunityId, $oldInsightlyContactId);
+
+        // It links another contact at Insightly,
+        $this->contactLink->expects($this->once())
+            ->method('link')
+            ->with($contact)
+            ->willReturn($newInsightlyContactId);
+
+        // and saves the mapping,
+        $expectedContactMapping = new InsightlyMapping(
+            $contactId,
+            $newInsightlyContactId,
+            ResourceType::Contact
+        );
+        $this->insightlyMappingRepository->expects($this->once())
+            ->method('save')
+            ->with($expectedContactMapping);
+
+        // and links the contact to the opportunity.
+        $this->opportunityResource->expects($this->once())
+            ->method('linkContact')
+            ->with($insightlyOpportunityId, $newInsightlyContactId);
+
+        $event = new ContactUpdated($contactId, true);
         $this->updateContact->handle($event);
     }
 
@@ -98,19 +160,27 @@ final class UpdateContactTest extends TestCase
         return $contact;
     }
 
-    private function givenTheContactIsMappedToInsightly(
+    private function givenTheContactAndIntegrationAreMappedToInsightly(
         UuidInterface $contactId,
-        int $contactInsightlyId
+        int $insightlyContactId,
+        UuidInterface $integrationId,
+        int $insightlyOpportunityId,
     ): void {
-        $insightlyIntegrationMapping = new InsightlyMapping(
+        $insightlyContactMapping = new InsightlyMapping(
             $contactId,
-            $contactInsightlyId,
+            $insightlyContactId,
             ResourceType::Contact,
         );
 
-        $this->insightlyMappingRepository->expects(self::once())
+        $insightlyIntegrationMapping = new InsightlyMapping(
+            $integrationId,
+            $insightlyOpportunityId,
+            ResourceType::Opportunity,
+        );
+
+        $this->insightlyMappingRepository->expects(self::atMost(2))
             ->method('getById')
-            ->with($contactId)
-            ->willReturn($insightlyIntegrationMapping);
+            ->withConsecutive([$contactId], [$integrationId])
+            ->willReturnOnConsecutiveCalls($insightlyContactMapping, $insightlyIntegrationMapping);
     }
 }
