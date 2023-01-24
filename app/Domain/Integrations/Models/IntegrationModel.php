@@ -6,6 +6,7 @@ namespace App\Domain\Integrations\Models;
 
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
+use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
