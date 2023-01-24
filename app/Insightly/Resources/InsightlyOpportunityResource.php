@@ -48,6 +48,20 @@ final class InsightlyOpportunityResource implements OpportunityResource
         return $id;
     }
 
+    public function get(int $id): array
+    {
+        $request = new Request(
+            'GET',
+            'Opportunities/' . $id
+        );
+
+        $response = $this->insightlyClient->sendRequest($request);
+
+        $opportunityAsArray = Json::decodeAssociatively($response->getBody()->getContents());
+
+        return $opportunityAsArray;
+    }
+
     public function delete(int $id): void
     {
         $request = new Request(
@@ -73,16 +87,15 @@ final class InsightlyOpportunityResource implements OpportunityResource
         $this->insightlyClient->sendRequest($stageRequest);
     }
 
-    public function updateState(Integration $integration, int $id, OpportunityState $state): void
+    public function updateState(int $id, OpportunityState $state): void
     {
+        $opportunityAsArray = $this->get($id);
+        $opportunityAsArray['OPPORTUNITY_STATE'] = $state->value;
         $stageRequest = new Request(
             'PUT',
-            $this->path . $id . '/Pipeline',
+            $this->path,
             [],
-            Json::encode(
-                (new OpportunitySerializer($this->insightlyClient->getPipelines()))
-                    ->toInsightlyArray($integration)
-            )
+            Json::encode($opportunityAsArray)
         );
 
         $this->insightlyClient->sendRequest($stageRequest);
