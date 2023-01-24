@@ -47,6 +47,11 @@ final class IntegrationModel extends UuidModel
         return parent::delete();
     }
 
+    public function dispatchActivateWithCoupon(): void
+    {
+        IntegrationActivatedWithCoupon::dispatch(Uuid::fromString($this->id));
+    }
+
     /**
      * @return HasMany<ContactModel>
      */
