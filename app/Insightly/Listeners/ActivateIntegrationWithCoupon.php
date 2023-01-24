@@ -10,6 +10,7 @@ use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Objects\OpportunityStage;
 use App\Insightly\Objects\OpportunityState;
+use App\Insightly\Objects\ProjectStage;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use Illuminate\Bus\Queueable;
@@ -50,6 +51,13 @@ final class ActivateIntegrationWithCoupon implements ShouldQueue
             $insightlyProjectId,
             ResourceType::Project
         ));
+
+        $this->insightlyClient->projects()->updateStage($insightlyProjectId, ProjectStage::TEST); //TODO: Should be live, check why it does not work.
+
+        $this->insightlyClient->projects()->linkOpportunity(
+            $insightlyProjectId,
+            $insightlyOpportunityMapping->insightlyId
+        );
 
         $this->logger->info(
             'Project created for integration',
