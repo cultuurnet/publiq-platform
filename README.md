@@ -79,10 +79,10 @@ This requires:
 ## Integrations
 
 The following integrations are provided:
-- Auth0, can be enabled with `AUTH0_INTEGRATION_ENABLED`
-- UiTiD, can be enabled with `UITID_INTEGRATION_ENABLED`
-- Insightly, can be enabled with `INSIGHTLY_INTEGRATION_ENABLED`
-- Sentry, can be enabled with `SENTRY_LARAVEL_INTEGRATION_ENABLED`
+- Auth0, can be disabled with `AUTH0_CLIENT_CREATION_ENABLED`
+- UiTiD, can be disabled with `UITID_V1_CONSUMER_CREATION_ENABLED`
+- Insightly, can be disabled with `INSIGHTLY_ENABLED`
+- Sentry, can be disabled with `SENTRY_LARAVEL_ENABLED`
 
 Check their relevant parts inside the environment file for correct configuration options.
 

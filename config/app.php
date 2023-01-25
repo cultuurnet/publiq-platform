@@ -221,6 +221,6 @@ return [
     // The preferred location to put this toggle is the sentry.php config file.
     // But the Sentry SDK has a list of allowed configs and enabled is not part of it which results in an exception.
     'sentry' => [
-        'enabled' => env('SENTRY_LARAVEL_INTEGRATION_ENABLED', false),
+        'enabled' => env('SENTRY_LARAVEL_ENABLED', true),
     ],
 ];

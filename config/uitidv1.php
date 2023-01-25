@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 return [
-    'enabled' => env('UITID_INTEGRATION_ENABLED', false),
+    'enabled' => env('UITID_V1_CONSUMER_CREATION_ENABLED', true),
 
     // UiTiD v1 environments configuration, used to store/update consumers in UiTiD v1.
     // Note that local/staging/acceptance/testing environments of publiq platform should actually use the ACC

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 return [
-    'enabled' => env('INSIGHTLY_INTEGRATION_ENABLED', false),
+    'enabled' => env('INSIGHTLY_ENABLED', true),
 
     'host' => env('INSIGHTLY_HOST', 'https://api.insight.ly/v3.1/'),
 
