@@ -21,10 +21,13 @@ final class EloquentInsightlyMappingRepository implements InsightlyMappingReposi
         ]);
     }
 
-    public function getById(UuidInterface $id): InsightlyMapping
+    public function getByIdAndType(UuidInterface $id, ResourceType $type): InsightlyMapping
     {
         /** @var InsightlyMappingModel $insightlyMappingModel */
-        $insightlyMappingModel = InsightlyMappingModel::query()->where('id', $id)->firstOrFail();
+        $insightlyMappingModel = InsightlyMappingModel::query()
+            ->where('id', $id)
+            ->where('resource_type', $type->value)
+            ->firstOrFail();
 
         return $this->modelToInsightlyMapping($insightlyMappingModel);
     }

@@ -9,6 +9,7 @@ use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Insightly\Exceptions\ContactCannotBeUnlinked;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Repositories\InsightlyMappingRepository;
+use App\Insightly\Resources\ResourceType;
 use App\Insightly\SyncIsAllowed;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -34,8 +35,8 @@ final class UnlinkContact implements ShouldQueue
             return;
         }
 
-        $contactInsightlyId = $this->insightlyMappingRepository->getById($contact->id)->insightlyId;
-        $integrationInsightlyId = $this->insightlyMappingRepository->getById($contact->integrationId)->insightlyId;
+        $contactInsightlyId = $this->insightlyMappingRepository->getByIdAndType($contact->id, ResourceType::Contact)->insightlyId;
+        $integrationInsightlyId = $this->insightlyMappingRepository->getByIdAndType($contact->integrationId, ResourceType::Opportunity)->insightlyId;
 
         try {
             $this->insightlyClient->opportunities()->unlinkContact($integrationInsightlyId, $contactInsightlyId);
