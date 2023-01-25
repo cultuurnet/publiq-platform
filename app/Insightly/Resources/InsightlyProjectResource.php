@@ -68,7 +68,7 @@ final class InsightlyProjectResource implements ProjectResource
     public function linkOpportunity(int $projectId, int $opportunityId): void
     {
         $request = new Request(
-            'PUT',
+            'POST',
             'Projects/' . $projectId . '/Links',
             [],
             Json::encode((new LinkSerializer())->opportunityToLink($opportunityId))
