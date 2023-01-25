@@ -10,7 +10,6 @@ use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Objects\OpportunityStage;
 use App\Insightly\Objects\OpportunityState;
-use App\Insightly\Objects\ProjectStage;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use Illuminate\Bus\Queueable;
@@ -31,8 +30,10 @@ final class ActivateIntegrationWithCoupon implements ShouldQueue
 
     public function handle(IntegrationActivatedWithCoupon $integrationActivatedWithCoupon): void
     {
-        $integration = $this->integrationRepository->getById($integrationActivatedWithCoupon->id);
-        $insightlyOpportunityMapping = $this->insightlyMappingRepository->getByIdAndType($integration->id, ResourceType::Opportunity);
+        $insightlyOpportunityMapping = $this->insightlyMappingRepository->getByIdAndType(
+            $integrationActivatedWithCoupon->id,
+            ResourceType::Opportunity
+        );
 
         $this->insightlyClient->opportunities()->updateStage(
             $insightlyOpportunityMapping->insightlyId,
@@ -44,6 +45,7 @@ final class ActivateIntegrationWithCoupon implements ShouldQueue
             OpportunityState::WON
         );
 
+        $integration = $this->integrationRepository->getById($integrationActivatedWithCoupon->id);
         $insightlyProjectId = $this->insightlyClient->projects()->create($integration);
 
         $this->insightlyMappingRepository->save(new InsightlyMapping(
@@ -52,15 +54,17 @@ final class ActivateIntegrationWithCoupon implements ShouldQueue
             ResourceType::Project
         ));
 
-        $this->insightlyClient->projects()->updateStage($insightlyProjectId, ProjectStage::TEST); //TODO: Should be live, check why it does not work.
+        // TODO: Set correct state and stage on project
 
         $this->insightlyClient->projects()->linkOpportunity(
             $insightlyProjectId,
             $insightlyOpportunityMapping->insightlyId
         );
 
+        // TODO: Links contacts
+
         $this->logger->info(
-            'Project created for integration',
+            'Project created for integration activated with coupon',
             [
                 'domain' => 'insightly',
                 'integration_id' => $integrationActivatedWithCoupon->id->toString(),
