@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Insightly\Listeners;
 
+use App\Domain\Coupons\Repositories\CouponRepository;
 use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Insightly\InsightlyClient;
@@ -24,6 +25,7 @@ final class ActivateIntegrationWithCoupon implements ShouldQueue
         private readonly InsightlyClient $insightlyClient,
         private readonly IntegrationRepository $integrationRepository,
         private readonly InsightlyMappingRepository $insightlyMappingRepository,
+        private readonly CouponRepository $couponRepository,
         private readonly LoggerInterface $logger,
     ) {
     }
@@ -45,8 +47,10 @@ final class ActivateIntegrationWithCoupon implements ShouldQueue
             OpportunityState::WON
         );
 
-        $integration = $this->integrationRepository->getById($integrationActivatedWithCoupon->id);
-        $insightlyProjectId = $this->insightlyClient->projects()->create($integration);
+        $insightlyProjectId = $this->insightlyClient->projects()->create(
+            $this->integrationRepository->getById($integrationActivatedWithCoupon->id),
+            $this->couponRepository->getByIntegrationId($integrationActivatedWithCoupon->id)->code
+        );
 
         $this->insightlyMappingRepository->save(new InsightlyMapping(
             $integrationActivatedWithCoupon->id,

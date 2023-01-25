@@ -23,7 +23,7 @@ final class InsightlyProjectResource implements ProjectResource
     ) {
     }
 
-    public function create(Integration $integration): int
+    public function create(Integration $integration, string $couponCode = null): int
     {
         $request = new Request(
             'POST',
@@ -31,7 +31,7 @@ final class InsightlyProjectResource implements ProjectResource
             [],
             JSON::encode(
                 (new ProjectSerializer($this->insightlyClient->getPipelines()))
-                    ->toInsightlyArray($integration)
+                    ->toInsightlyArray($integration, $couponCode)
             )
         );
         $response = $this->insightlyClient->sendRequest($request);
