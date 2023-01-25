@@ -48,20 +48,6 @@ final class InsightlyOpportunityResource implements OpportunityResource
         return $id;
     }
 
-    public function get(int $id): array
-    {
-        $request = new Request(
-            'GET',
-            'Opportunities/' . $id
-        );
-
-        $response = $this->insightlyClient->sendRequest($request);
-
-        $opportunityAsArray = Json::decodeAssociatively($response->getBody()->getContents());
-
-        return $opportunityAsArray;
-    }
-
     public function delete(int $id): void
     {
         $request = new Request(
@@ -152,5 +138,17 @@ final class InsightlyOpportunityResource implements OpportunityResource
         );
 
         $this->insightlyClient->sendRequest($request);
+    }
+
+    private function get(int $id): array
+    {
+        $request = new Request(
+            'GET',
+            'Opportunities/' . $id
+        );
+
+        $response = $this->insightlyClient->sendRequest($request);
+
+        return Json::decodeAssociatively($response->getBody()->getContents());
     }
 }
