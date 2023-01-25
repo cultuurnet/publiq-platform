@@ -48,8 +48,11 @@ final class IntegrationModel extends UuidModel
         return parent::delete();
     }
 
-    public function dispatchActivateWithCoupon(): void
+    public function activeWithCoupon(): void
     {
+        $this->update([
+            'status' => IntegrationStatus::Active,
+        ]);
         IntegrationActivatedWithCoupon::dispatch(Uuid::fromString($this->id));
     }
 
