@@ -6,6 +6,9 @@ up:
 down:
 	vendor/bin/sail down
 
+destroy:
+	vendor/bin/sail down -v
+
 bash:
 	docker-compose exec laravel bash
 
