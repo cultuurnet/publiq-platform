@@ -11,6 +11,7 @@ use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * @property string $code
@@ -35,6 +36,14 @@ final class CouponModel extends UuidModel
     public function distribute(): void
     {
         $this->update(['is_distributed' => true]);
+    }
+
+    public function useOnIntegration(UuidInterface $integrationId): void
+    {
+        $this->update([
+            'is_distributed' => true,
+            'integration_id' => $integrationId,
+        ]);
     }
 
     /**
