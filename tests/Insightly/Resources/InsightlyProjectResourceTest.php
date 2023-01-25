@@ -116,6 +116,27 @@ final class InsightlyProjectResourceTest extends TestCase
         $this->resource->updateStage(42, ProjectStage::LIVE);
     }
 
+    public function test_it_links_an_integration_to_a_project(): void
+    {
+        $insightlyProjectId = 42;
+
+        $expectedRequest = new Request(
+            'POST',
+            'Projects/' . $insightlyProjectId . '/Links',
+            [],
+            Json::encode([
+                'LINK_OBJECT_ID' => 31,
+                'LINK_OBJECT_NAME' => 'Opportunity',
+            ])
+        );
+
+        $this->insightlyClient->expects($this->once())
+            ->method('sendRequest')
+            ->with(self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedRequest, $actualRequest)));
+
+
+        $this->resource->linkOpportunity(42, 31);
+    }
 
     public function test_it_deletes_an_project(): void
     {
