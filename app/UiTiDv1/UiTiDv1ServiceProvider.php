@@ -51,9 +51,10 @@ final class UiTiDv1ServiceProvider extends ServiceProvider
         });
 
         if (config('uitidv1.enabled')) {
+            // By default, the UiTiD V1 integration is enabled. For testing purposes this can be disabled inside the .env file.
+
             // May always be registered even if there are no configured environments, because in that case the cluster SDK
-            // will just not have any environment SDKs to loop over and so it simply won't do anything.
-            // But it won't crash either.
+            // will just not have any environment SDKs to loop over and so it simply won't do anything. But it won't crash either.
             Event::listen(IntegrationCreated::class, [CreateConsumers::class, 'handle']);
         }
     }
