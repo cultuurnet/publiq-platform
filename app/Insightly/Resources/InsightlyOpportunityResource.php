@@ -77,14 +77,14 @@ final class InsightlyOpportunityResource implements OpportunityResource
     {
         $opportunityAsArray = $this->get($id);
         $opportunityAsArray['OPPORTUNITY_STATE'] = $state->value;
-        $stageRequest = new Request(
+        $stateRequest = new Request(
             'PUT',
             $this->path,
             [],
             Json::encode($opportunityAsArray)
         );
 
-        $this->insightlyClient->sendRequest($stageRequest);
+        $this->insightlyClient->sendRequest($stateRequest);
     }
 
     public function linkContact(int $opportunityId, int $contactId, ContactType $contactType): void
