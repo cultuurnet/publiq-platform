@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Insightly\Resources;
 
+use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Objects\ProjectStage;
@@ -72,6 +73,18 @@ final class InsightlyProjectResource implements ProjectResource
             'Projects/' . $projectId . '/Links',
             [],
             Json::encode((new LinkSerializer())->opportunityToLink($opportunityId))
+        );
+
+        $this->insightlyClient->sendRequest($request);
+    }
+
+    public function linkContact(int $projectId, int $contactId, ContactType $contactType): void
+    {
+        $request = new Request(
+            'POST',
+            'Projects/' . $projectId . '/Links',
+            [],
+            Json::encode((new LinkSerializer())->contactToLink($contactId, $contactType))
         );
 
         $this->insightlyClient->sendRequest($request);
