@@ -9,7 +9,6 @@ use App\Domain\Integrations\Integration;
 use App\Insightly\Exceptions\ContactCannotBeUnlinked;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Objects\OpportunityStage;
-use App\Insightly\Objects\OpportunityState;
 use App\Insightly\Serializers\LinkSerializer;
 use App\Insightly\Serializers\OpportunitySerializer;
 use App\Insightly\Serializers\OpportunityStageSerializer;
@@ -67,21 +66,6 @@ final class InsightlyOpportunityResource implements OpportunityResource
             Json::encode(
                 (new OpportunityStageSerializer($this->insightlyClient->getPipelines()))
                     ->toInsightlyArray($stage)
-            )
-        );
-
-        $this->insightlyClient->sendRequest($stageRequest);
-    }
-
-    public function updateState(Integration $integration, int $id, OpportunityState $state): void
-    {
-        $stageRequest = new Request(
-            'PUT',
-            $this->path . $id . '/Pipeline',
-            [],
-            Json::encode(
-                (new OpportunitySerializer($this->insightlyClient->getPipelines()))
-                    ->toInsightlyArray($integration)
             )
         );
 
