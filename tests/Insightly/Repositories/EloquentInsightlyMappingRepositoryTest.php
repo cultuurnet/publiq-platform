@@ -18,7 +18,7 @@ final class EloquentInsightlyMappingRepositoryTest extends TestCase
 
     private EloquentInsightlyMappingRepository $insightlyMappingRepository;
 
-    private InsightlyMapping $insightlyMapping;
+    private InsightlyMapping $opportunityMapping;
 
     protected function setUp(): void
     {
@@ -26,7 +26,7 @@ final class EloquentInsightlyMappingRepositoryTest extends TestCase
 
         $this->insightlyMappingRepository = new EloquentInsightlyMappingRepository();
 
-        $this->insightlyMapping = new InsightlyMapping(
+        $this->opportunityMapping = new InsightlyMapping(
             Uuid::uuid4(),
             12800763,
             ResourceType::Opportunity
@@ -35,62 +35,61 @@ final class EloquentInsightlyMappingRepositoryTest extends TestCase
 
     public function test_it_can_save_a_mapping(): void
     {
-        $this->insightlyMappingRepository->save($this->insightlyMapping);
+        $this->insightlyMappingRepository->save($this->opportunityMapping);
 
         $this->assertDatabaseHas(InsightlyMappingModel::class, [
-            'id' => $this->insightlyMapping->id,
-            'insightly_id' => $this->insightlyMapping->insightlyId,
-            'resource_type' => $this->insightlyMapping->resourceType,
+            'id' => $this->opportunityMapping->id,
+            'insightly_id' => $this->opportunityMapping->insightlyId,
+            'resource_type' => $this->opportunityMapping->resourceType,
         ]);
     }
 
     public function test_it_can_get_a_mapping_by_id_and_type(): void
     {
         InsightlyMappingModel::query()->insert([
-            'id' => $this->insightlyMapping->id,
-            'insightly_id' => $this->insightlyMapping->insightlyId,
-            'resource_type' => $this->insightlyMapping->resourceType,
+            'id' => $this->opportunityMapping->id,
+            'insightly_id' => $this->opportunityMapping->insightlyId,
+            'resource_type' => $this->opportunityMapping->resourceType,
         ]);
 
-        $activatedIntegrationInsightlyMapping = new InsightlyMapping(
-            $this->insightlyMapping->id,
+        $projectMapping = new InsightlyMapping(
+            $this->opportunityMapping->id,
             12800376,
             ResourceType::Project
         );
 
         InsightlyMappingModel::query()->insert([
-            'id' => $this->insightlyMapping->id,
-            'insightly_id' => $activatedIntegrationInsightlyMapping->insightlyId,
-            'resource_type' => $activatedIntegrationInsightlyMapping->resourceType,
+            'id' => $this->opportunityMapping->id,
+            'insightly_id' => $projectMapping->insightlyId,
+            'resource_type' => $projectMapping->resourceType,
         ]);
 
-        $foundInsightlyMapping = $this->insightlyMappingRepository->getByIdAndType(
-            $this->insightlyMapping->id,
+        $foundOpportunityMapping = $this->insightlyMappingRepository->getByIdAndType(
+            $this->opportunityMapping->id,
             ResourceType::Opportunity
         );
 
-        $this->assertEquals($this->insightlyMapping, $foundInsightlyMapping);
-
-        $foundInsightlyMappingProject = $this->insightlyMappingRepository->getByIdAndType(
-            $this->insightlyMapping->id,
+        $foundProjectMapping = $this->insightlyMappingRepository->getByIdAndType(
+            $this->opportunityMapping->id,
             ResourceType::Project
         );
 
-        $this->assertEquals($activatedIntegrationInsightlyMapping, $foundInsightlyMappingProject);
+        $this->assertEquals($this->opportunityMapping, $foundOpportunityMapping);
+        $this->assertEquals($projectMapping, $foundProjectMapping);
     }
 
     public function test_it_can_get_a_mapping_by_insightly_id(): void
     {
         InsightlyMappingModel::query()->insert([
-            'id' => $this->insightlyMapping->id,
-            'insightly_id' => $this->insightlyMapping->insightlyId,
-            'resource_type' => $this->insightlyMapping->resourceType,
+            'id' => $this->opportunityMapping->id,
+            'insightly_id' => $this->opportunityMapping->insightlyId,
+            'resource_type' => $this->opportunityMapping->resourceType,
         ]);
 
         $foundInsightlyMapping = $this->insightlyMappingRepository->getByInsightlyId(
-            $this->insightlyMapping->insightlyId
+            $this->opportunityMapping->insightlyId
         );
 
-        $this->assertEquals($this->insightlyMapping, $foundInsightlyMapping);
+        $this->assertEquals($this->opportunityMapping, $foundInsightlyMapping);
     }
 }
