@@ -93,8 +93,8 @@ final class UpdateOrganizationTest extends TestCase
             ResourceType::Organization,
         );
         $this->insightlyMappingRepository->expects(self::once())
-            ->method('getById')
-            ->with($organizationId)
+            ->method('getByIdAndType')
+            ->with($organizationId, ResourceType::Organization)
             ->willReturn($insightlyIntegrationMapping);
     }
 }

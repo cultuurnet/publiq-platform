@@ -7,6 +7,7 @@ namespace App\Insightly\Listeners;
 use App\Domain\Organizations\Events\OrganizationDeleted;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Repositories\InsightlyMappingRepository;
+use App\Insightly\Resources\ResourceType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
@@ -24,7 +25,10 @@ final class DeleteOrganization implements ShouldQueue
 
     public function handle(OrganizationDeleted $organizationDeleted): void
     {
-        $insightlyMapping = $this->insightlyMappingRepository->getById($organizationDeleted->id);
+        $insightlyMapping = $this->insightlyMappingRepository->getByIdAndType(
+            $organizationDeleted->id,
+            ResourceType::Organization
+        );
 
         $this->insightlyClient->organizations()->delete($insightlyMapping->insightlyId);
 

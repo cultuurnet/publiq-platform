@@ -8,6 +8,7 @@ use App\Domain\Organizations\Events\OrganizationUpdated;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Repositories\InsightlyMappingRepository;
+use App\Insightly\Resources\ResourceType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
@@ -28,7 +29,7 @@ final class UpdateOrganization implements ShouldQueue
     {
         $organization = $this->organizationRepository->getById($organizationUpdated->id);
 
-        $insightlyMapping = $this->insightlyMappingRepository->getById($organization->id);
+        $insightlyMapping = $this->insightlyMappingRepository->getByIdAndType($organization->id, ResourceType::Organization);
 
         $this->insightlyClient->organizations()->update($organization, $insightlyMapping->insightlyId);
 

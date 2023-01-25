@@ -10,4 +10,5 @@ enum ResourceType: string
     case Opportunity = 'opportunity';
     case Project = 'project';
     case Organization = 'organization';
+    case Project = 'project';
 }
