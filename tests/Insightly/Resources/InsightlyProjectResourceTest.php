@@ -82,27 +82,14 @@ final class InsightlyProjectResourceTest extends TestCase
             ]),
         );
 
-        $expectedUpdateStageRequest = new Request(
-            'PUT',
-            'Projects/1/Pipeline',
-            [],
-            Json::encode([
-                'PIPELINE_ID' => $this->pipelineId,
-                'PIPELINE_STAGE_CHANGE' => [
-                    'STAGE_ID' => $this->testStageId,
-                ],
-            ])
-        );
-
         $expectedResponse = new Response(200, [], Json::encode(['PROJECT_ID' => $insightlyId]));
 
-        $this->insightlyClient->expects($this->exactly(2))
+        $this->insightlyClient->expects($this->once())
             ->method('sendRequest')
-            ->withConsecutive(
-                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedCreateRequest, $actualRequest))],
-                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedUpdateStageRequest, $actualRequest))],
+            ->with(
+                self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedCreateRequest, $actualRequest))
             )
-            ->willReturnOnConsecutiveCalls($expectedResponse, $expectedResponse);
+            ->willReturn($expectedResponse);
 
         $returnedId = $this->resource->create($integration);
         $this->assertEquals($insightlyId, $returnedId);
