@@ -7,7 +7,6 @@ namespace App\Insightly\Resources;
 use App\Domain\Integrations\Integration;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Objects\ProjectStage;
-use App\Insightly\Objects\ProjectState;
 use App\Insightly\Serializers\LinkSerializer;
 use App\Insightly\Serializers\ProjectSerializer;
 use App\Insightly\Serializers\ProjectStageSerializer;
@@ -31,7 +30,7 @@ final class InsightlyProjectResource implements ProjectResource
             [],
             JSON::encode(
                 (new ProjectSerializer($this->insightlyClient->getPipelines()))
-                    ->toInsightlyArray($integration, ProjectState::COMPLETED, ProjectStage::TEST)
+                    ->toInsightlyArray($integration)
             )
         );
         $response = $this->insightlyClient->sendRequest($request);
