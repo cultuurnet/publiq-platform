@@ -67,6 +67,7 @@ final class Contact extends Resource
 
             BelongsTo::make('Integration')
                 ->withoutTrashed()
+                ->readonly(fn (NovaRequest $request) => $request->isUpdateOrUpdateAttachedRequest())
                 ->rules('required'),
 
             InsightlyLink::make('Insightly ID', fn () => $this->insightlyId())
