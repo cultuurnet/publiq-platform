@@ -42,9 +42,9 @@ final class InsightlyProjectResource implements ProjectResource
         return (int) $projectAsArray['PROJECT_ID'];
     }
 
-    public function updateWithCoupon(int $insightlyId, string $couponCode): void
+    public function updateWithCoupon(int $projectId, string $couponCode): void
     {
-        $projectAsArray = $this->get($insightlyId);
+        $projectAsArray = $this->get($projectId);
         $projectAsArray['CUSTOMFIELDS'][] = (new CouponSerializer())->toInsightlyArray($couponCode);
 
         $request = new Request(
@@ -57,21 +57,21 @@ final class InsightlyProjectResource implements ProjectResource
         $this->insightlyClient->sendRequest($request);
     }
 
-    public function delete(int $id): void
+    public function delete(int $projectId): void
     {
         $request = new Request(
             'DELETE',
-            $this->path . $id
+            $this->path . $projectId
         );
 
         $this->insightlyClient->sendRequest($request);
     }
 
-    public function updateStage(int $id, ProjectStage $stage): void
+    public function updateStage(int $projectId, ProjectStage $stage): void
     {
         $stageRequest = new Request(
             'PUT',
-            $this->path . $id . '/Pipeline',
+            $this->path . $projectId . '/Pipeline',
             [],
             Json::encode(
                 (new ProjectStageSerializer($this->insightlyClient->getPipelines()))
@@ -106,11 +106,11 @@ final class InsightlyProjectResource implements ProjectResource
         $this->insightlyClient->sendRequest($request);
     }
 
-    private function get(int $id): array
+    private function get(int $projectId): array
     {
         $request = new Request(
             'GET',
-            'Projects/' . $id
+            'Projects/' . $projectId
         );
 
         $response = $this->insightlyClient->sendRequest($request);
