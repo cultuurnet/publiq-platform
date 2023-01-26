@@ -12,6 +12,7 @@ use App\Insightly\InsightlyMapping;
 use App\Insightly\Objects\OpportunityStage;
 use App\Insightly\Objects\OpportunityState;
 use App\Insightly\Objects\ProjectStage;
+use App\Insightly\Objects\ProjectState;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use Illuminate\Bus\Queueable;
@@ -63,7 +64,15 @@ final class ActivateIntegrationWithCoupon implements ShouldQueue
             ResourceType::Project
         ));
 
-        $this->insightlyClient->projects()->updateStage($insightlyProjectId, ProjectStage::LIVE);
+        $this->insightlyClient->projects()->updateStage(
+            $insightlyProjectId,
+            ProjectStage::LIVE
+        );
+
+        $this->insightlyClient->projects()->updateState(
+            $insightlyProjectId,
+            ProjectState::COMPLETED
+        );
 
         $this->insightlyClient->projects()->linkOpportunity(
             $insightlyProjectId,

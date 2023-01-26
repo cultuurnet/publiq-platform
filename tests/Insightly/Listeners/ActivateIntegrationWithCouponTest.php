@@ -16,6 +16,7 @@ use App\Insightly\Listeners\ActivateIntegrationWithCoupon;
 use App\Insightly\Objects\OpportunityStage;
 use App\Insightly\Objects\OpportunityState;
 use App\Insightly\Objects\ProjectStage;
+use App\Insightly\Objects\ProjectState;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -107,6 +108,10 @@ final class ActivateIntegrationWithCouponTest extends TestCase
         $this->projectResource->expects($this->once())
             ->method('updateStage')
             ->with($insightlyProjectId, ProjectStage::LIVE);
+
+        $this->projectResource->expects($this->once())
+            ->method('updateState')
+            ->with($insightlyProjectId, ProjectState::COMPLETED);
 
         // It links the opportunity to the project
         $this->projectResource->expects($this->once())
