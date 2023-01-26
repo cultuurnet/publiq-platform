@@ -127,7 +127,7 @@ final class ActivateIntegrationWithCouponTest extends TestCase
             []
         );
 
-        $this->integrationRepository->expects($this->exactly(1))
+        $this->integrationRepository->expects($this->once())
             ->method('getById')
             ->with($integrationId)
             ->willReturn($integration);
@@ -160,7 +160,7 @@ final class ActivateIntegrationWithCouponTest extends TestCase
             $this->couponCode,
         );
 
-        $this->couponRepository->expects($this->exactly(1))
+        $this->couponRepository->expects($this->once())
             ->method('getByIntegrationId')
             ->with($integrationId)
             ->willReturn($coupon);
