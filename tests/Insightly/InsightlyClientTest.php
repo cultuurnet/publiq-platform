@@ -137,8 +137,7 @@ final class InsightlyClientTest extends TestCase
         $insightlyId = $this->insightlyClient->projects()->create($integration);
         $this->assertNotNull($insightlyId);
 
-        // TODO: Fix this in the following PR to check why only ProjectStage::TEST works
-        $this->insightlyClient->projects()->updateStage($insightlyId, ProjectStage::TEST);
+        $this->insightlyClient->projects()->updateStage($insightlyId, ProjectStage::LIVE);
 
         $this->insightlyClient->projects()->delete($insightlyId);
     }
