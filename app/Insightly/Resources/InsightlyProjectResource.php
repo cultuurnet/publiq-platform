@@ -89,4 +89,16 @@ final class InsightlyProjectResource implements ProjectResource
 
         $this->insightlyClient->sendRequest($request);
     }
+
+    private function get(int $id): array
+    {
+        $request = new Request(
+            'GET',
+            'Projects/' . $id
+        );
+
+        $response = $this->insightlyClient->sendRequest($request);
+
+        return Json::decodeAssociatively($response->getBody()->getContents());
+    }
 }
