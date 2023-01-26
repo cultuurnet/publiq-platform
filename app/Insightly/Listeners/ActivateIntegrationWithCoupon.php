@@ -48,7 +48,11 @@ final class ActivateIntegrationWithCoupon implements ShouldQueue
         );
 
         $insightlyProjectId = $this->insightlyClient->projects()->create(
-            $this->integrationRepository->getById($integrationActivatedWithCoupon->id),
+            $this->integrationRepository->getById($integrationActivatedWithCoupon->id)
+        );
+
+        $this->insightlyClient->projects()->updateWithCoupon(
+            $insightlyProjectId,
             $this->couponRepository->getByIntegrationId($integrationActivatedWithCoupon->id)->code
         );
 

@@ -23,7 +23,7 @@ final class InsightlyProjectResource implements ProjectResource
     ) {
     }
 
-    public function create(Integration $integration, string $couponCode = null): int
+    public function create(Integration $integration): int
     {
         $request = new Request(
             'POST',
@@ -31,7 +31,7 @@ final class InsightlyProjectResource implements ProjectResource
             [],
             JSON::encode(
                 (new ProjectSerializer($this->insightlyClient->getPipelines()))
-                    ->toInsightlyArray($integration, $couponCode)
+                    ->toInsightlyArray($integration)
             )
         );
         $response = $this->insightlyClient->sendRequest($request);
@@ -39,6 +39,23 @@ final class InsightlyProjectResource implements ProjectResource
         $projectAsArray = JSON::decodeAssociatively($response->getBody()->getContents());
 
         return (int) $projectAsArray['PROJECT_ID'];
+    }
+
+    public function updateWithCoupon(int $insightlyId, string $couponCode): void
+    {
+        $projectAsArray = $this->get($insightlyId);
+
+        $request = new Request(
+            'PUT',
+            $this->path,
+            [],
+            JSON::encode(
+                (new ProjectSerializer($this->insightlyClient->getPipelines()))
+                    ->toInsightlyArrayWithCoupon($projectAsArray, $couponCode)
+            )
+        );
+
+        $this->insightlyClient->sendRequest($request);
     }
 
     public function delete(int $id): void

@@ -17,9 +17,9 @@ final class ProjectSerializer
     {
     }
 
-    public function toInsightlyArray(Integration $integration, string $couponCode = null): array
+    public function toInsightlyArray(Integration $integration): array
     {
-        $projectAsArray = [
+        return [
             'PROJECT_NAME' => $integration->name,
             'STATUS' => ProjectState::NOT_STARTED->value,
             'PROJECT_DETAILS' => $integration->description,
@@ -29,11 +29,11 @@ final class ProjectSerializer
                 (new IntegrationTypeSerializer())->toInsightlyArray($integration->type),
             ],
         ];
+    }
 
-        if ($couponCode !== null) {
-            $projectAsArray['CUSTOMFIELDS'][] = (new CouponSerializer())->toInsightlyArray($couponCode);
-        }
-
+    public function toInsightlyArrayWithCoupon(array $projectAsArray, string $couponCode): array
+    {
+        $projectAsArray['CUSTOMFIELDS'][] = (new CouponSerializer())->toInsightlyArray($couponCode);
         return $projectAsArray;
     }
 }

@@ -10,7 +10,9 @@ use App\Insightly\Objects\ProjectStage;
 
 interface ProjectResource
 {
-    public function create(Integration $integration, string $couponCode = null): int;
+    public function create(Integration $integration): int;
+
+    public function updateWithCoupon(int $insightlyId, string $couponCode): void;
 
     public function delete(int $id): void;
 
