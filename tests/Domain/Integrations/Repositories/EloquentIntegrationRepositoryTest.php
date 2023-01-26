@@ -248,7 +248,6 @@ final class EloquentIntegrationRepositoryTest extends TestCase
 
         $this->integrationRepository->save($searchIntegration);
 
-        $this->withoutEvents();
         $this->integrationRepository->activateWithCouponCode($integrationId, $couponCode);
 
         $this->assertDatabaseHas('integrations', [

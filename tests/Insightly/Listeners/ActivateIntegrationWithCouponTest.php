@@ -67,10 +67,8 @@ final class ActivateIntegrationWithCouponTest extends TestCase
         $insightlyOpportunityId = 42;
         $insightlyProjectId = 51;
         $integration = $this->givenThereIsAnIntegrationWithId($this->integrationId);
-        $this->givenThereIsAnOpportunityMapping($this->integrationId);
+        $this->givenThereIsAnOpportunityMapping($this->integrationId, $insightlyOpportunityId);
         $coupon = $this->givenThereIsACoupon($this->integrationId);
-
-        $this->integrationRepository->activateWithCouponCode($this->integrationId, $this->couponCode);
 
         // Then
         // It updates the stage of the opportunity
@@ -137,7 +135,7 @@ final class ActivateIntegrationWithCouponTest extends TestCase
             []
         );
 
-        $this->integrationRepository->expects($this->exactly(1))
+        $this->integrationRepository->expects($this->once())
             ->method('getById')
             ->with($integrationId)
             ->willReturn($integration);
@@ -145,11 +143,11 @@ final class ActivateIntegrationWithCouponTest extends TestCase
         return $integration;
     }
 
-    private function givenThereIsAnOpportunityMapping(UuidInterface $integrationId): InsightlyMapping
+    private function givenThereIsAnOpportunityMapping(UuidInterface $integrationId, int $insightlyId): InsightlyMapping
     {
         $insightlyMapping = new InsightlyMapping(
             $integrationId,
-            42,
+            $insightlyId,
             ResourceType::Opportunity,
         );
 
@@ -170,7 +168,7 @@ final class ActivateIntegrationWithCouponTest extends TestCase
             $this->couponCode,
         );
 
-        $this->couponRepository->expects($this->exactly(1))
+        $this->couponRepository->expects($this->once())
             ->method('getByIntegrationId')
             ->with($integrationId)
             ->willReturn($coupon);
