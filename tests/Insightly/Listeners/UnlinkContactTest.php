@@ -162,8 +162,8 @@ final class UnlinkContactTest extends TestCase
         );
 
         $this->insightlyMappingRepository->expects(self::exactly(2))
-            ->method('getById')
-            ->withConsecutive([$contactId], [$integrationId])
+            ->method('getByIdAndType')
+            ->withConsecutive([$contactId, ResourceType::Contact], [$integrationId, ResourceType::Opportunity])
             ->willReturn($insightlyContactMapping, $insightlyIntegrationMapping);
     }
 }

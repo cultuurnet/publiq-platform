@@ -132,8 +132,8 @@ final class CreateContactTest extends TestCase
         );
 
         $this->insightlyMappingRepository->expects(self::once())
-            ->method('getById')
-            ->with($integrationId)
+            ->method('getByIdAndType')
+            ->with($integrationId, ResourceType::Opportunity)
             ->willReturn($insightlyIntegrationMapping);
     }
 }
