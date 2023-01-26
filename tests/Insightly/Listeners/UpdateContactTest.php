@@ -179,8 +179,11 @@ final class UpdateContactTest extends TestCase
         );
 
         $this->insightlyMappingRepository->expects(self::atMost(2))
-            ->method('getById')
-            ->withConsecutive([$contactId], [$integrationId])
+            ->method('getByIdAndType')
+            ->withConsecutive(
+                [$contactId, ResourceType::Contact],
+                [$integrationId, ResourceType::Opportunity],
+            )
             ->willReturnOnConsecutiveCalls($insightlyContactMapping, $insightlyIntegrationMapping);
     }
 }

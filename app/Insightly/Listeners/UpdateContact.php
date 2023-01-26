@@ -56,8 +56,14 @@ final class UpdateContact implements ShouldQueue
 
     private function handleContactEmailChange(Contact $contact): void
     {
-        $originalInsightlyContactId = $this->insightlyMappingRepository->getById($contact->id)->insightlyId;
-        $insightlyIntegrationId = $this->insightlyMappingRepository->getById($contact->integrationId)->insightlyId;
+        $originalInsightlyContactId = $this->insightlyMappingRepository->getByIdAndType(
+            $contact->id,
+            ResourceType::Contact
+        )->insightlyId;
+        $insightlyIntegrationId = $this->insightlyMappingRepository->getByIdAndType(
+            $contact->integrationId,
+            ResourceType::Opportunity
+        )->insightlyId;
 
         $newInsightlyContactId = $this->contactLink->link($contact);
 
@@ -86,7 +92,7 @@ final class UpdateContact implements ShouldQueue
 
     private function handleContactUpdate(Contact $contact): void
     {
-        $insightlyMapping = $this->insightlyMappingRepository->getById($contact->id);
+        $insightlyMapping = $this->insightlyMappingRepository->getByIdAndType($contact->id, ResourceType::Contact);
         $this->insightlyClient->contacts()->update($contact, $insightlyMapping->insightlyId);
     }
 
