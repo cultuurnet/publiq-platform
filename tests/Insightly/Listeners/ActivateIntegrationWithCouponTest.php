@@ -68,8 +68,6 @@ final class ActivateIntegrationWithCouponTest extends TestCase
         $this->givenThereIsAnOpportunityMapping($this->integrationId);
         $coupon = $this->givenThereIsACoupon($this->integrationId);
 
-        $this->integrationRepository->activateWithCouponCode($this->integrationId, $this->couponCode);
-
         // Then
         // It updates the stage of the opportunity
         $this->opportunityResource->expects($this->once())
