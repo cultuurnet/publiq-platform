@@ -13,7 +13,6 @@ use App\Insightly\InsightlyMapping;
 use App\Insightly\Listeners\SyncContact;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Iterator;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -86,8 +85,7 @@ final class SyncContactTest extends TestCase
     public function test_it_guards_unique_email_in_insightly_when_platform_contact_was_created(
         array $insightlyContactIds,
         int $expectedMappedInsightlyContactId
-    ): void
-    {
+    ): void {
         $this->givenThereIsAContactForAnIntegration(ContactType::Functional);
         $this->givenOnlyTheIntegrationIsMappedToInsightly();
         $this->givenTheInsightlyContactsFoundByEmailAre($insightlyContactIds);
@@ -124,6 +122,7 @@ final class SyncContactTest extends TestCase
         $this->givenTheInsightlyContactsFoundByEmailAre([]);
 
         $this->thenItDoesNotStoreAContactAtInsightly();
+
         $this->thenItUpdatesTheContactAtInsightly($contact, $this->insightlyContactId);
 
         $this->syncContact->handleContactUpdated(new ContactUpdated($this->contactId, false));
@@ -131,12 +130,53 @@ final class SyncContactTest extends TestCase
 
     public function test_it_creates_a_new_insightly_contact_when_platform_contact_email_changed(): void
     {
-        $this->markTestSkipped();
+        $updatedInsightlyContactId = 333;
+
+        $contact = $this->givenThereIsAContactForAnIntegration(ContactType::Functional);
+        $this->givenTheContactAndIntegrationAreMappedToInsightly();
+        $this->givenTheInsightlyContactsFoundByEmailAre([]);
+
+        $this->thenItDoesNotUpdateTheOriginalContactAtInsightly($contact, $this->insightlyContactId);
+
+        $this->thenItRemovesTheContactMapping($this->contactId);
+        $this->thenItRemovesTheContactFromTheOpportunityInInsightly($this->insightlyIntegrationId, $this->insightlyContactId);
+
+        $this->thenItStoresTheContactAtInsightly($contact, $updatedInsightlyContactId);
+        $this->thenItStoresTheContactMapping($this->contactId, $updatedInsightlyContactId);
+        $this->thenItLinksTheContactToTheIntegrationAtInsightly(
+            $this->insightlyIntegrationId,
+            $updatedInsightlyContactId,
+            ContactType::Functional
+        );
+
+        $this->syncContact->handleContactUpdated(new ContactUpdated($this->contactId, true));
     }
 
-    public function test_it_guards_unique_email_in_insightly_when_platform_contact_email_changed(): void
-    {
-        $this->markTestSkipped();
+    /**
+     * @dataProvider provideExistingEmailCases
+     */
+    public function test_it_guards_unique_email_in_insightly_when_platform_contact_email_changed(
+        array $insightlyContactIds,
+        int $expectedMappedInsightlyContactId
+    ): void {
+        $contact = $this->givenThereIsAContactForAnIntegration(ContactType::Functional);
+        $this->givenTheContactAndIntegrationAreMappedToInsightly();
+        $this->givenTheInsightlyContactsFoundByEmailAre($insightlyContactIds);
+
+        $this->thenItDoesNotUpdateTheOriginalContactAtInsightly($contact, $this->insightlyContactId);
+        $this->thenItDoesNotStoreAContactAtInsightly();
+
+        $this->thenItRemovesTheContactMapping($this->contactId);
+        $this->thenItRemovesTheContactFromTheOpportunityInInsightly($this->insightlyIntegrationId, $this->insightlyContactId);
+
+        $this->thenItStoresTheContactMapping($this->contactId, $expectedMappedInsightlyContactId);
+        $this->thenItLinksTheContactToTheIntegrationAtInsightly(
+            $this->insightlyIntegrationId,
+            $expectedMappedInsightlyContactId,
+            ContactType::Functional
+        );
+
+        $this->syncContact->handleContactUpdated(new ContactUpdated($this->contactId, true));
     }
 
     private function givenThereIsAContactForAnIntegration(ContactType $contactType): Contact
@@ -168,14 +208,8 @@ final class SyncContactTest extends TestCase
 
         $this->insightlyMappingRepository->expects($this->once())
             ->method('getByIdAndType')
-            ->withConsecutive(
-//                [$this->contactId, ResourceType::Contact],
-                [$this->integrationId, ResourceType::Opportunity],
-            )
-            ->willReturnOnConsecutiveCalls(
-//                $this->throwException(new ModelNotFoundException()),
-                $insightlyIntegrationMapping
-            );
+            ->with($this->integrationId, ResourceType::Opportunity)
+            ->willReturnOnConsecutiveCalls($insightlyIntegrationMapping);
     }
 
     private function givenTheContactAndIntegrationAreMappedToInsightly(): void
@@ -197,9 +231,11 @@ final class SyncContactTest extends TestCase
             ->withConsecutive(
                 [$this->contactId, ResourceType::Contact],
                 [$this->integrationId, ResourceType::Opportunity],
+                [$this->integrationId, ResourceType::Opportunity],
             )
             ->willReturnOnConsecutiveCalls(
                 $insightlyContactMapping,
+                $insightlyIntegrationMapping,
                 $insightlyIntegrationMapping,
             );
     }
@@ -253,5 +289,28 @@ final class SyncContactTest extends TestCase
         $this->contactResource->expects($this->once())
             ->method('update')
             ->with($contact, $insightlyContactId);
+    }
+
+    private function thenItDoesNotUpdateTheOriginalContactAtInsightly(Contact $contact, int $insightlyContactId): void
+    {
+        $this->contactResource->expects($this->never())
+            ->method('update')
+            ->with($contact, $insightlyContactId);
+    }
+
+    private function thenItRemovesTheContactMapping(UuidInterface $contactId): void
+    {
+        $this->insightlyMappingRepository->expects($this->once())
+            ->method('deleteById')
+            ->with($contactId);
+    }
+
+    private function thenItRemovesTheContactFromTheOpportunityInInsightly(
+        int $insightlyIntegrationId,
+        int $insightlyContactId
+    ): void {
+        $this->opportunityResource->expects($this->once())
+            ->method('unlinkContact')
+            ->with($insightlyIntegrationId, $insightlyContactId);
     }
 }
