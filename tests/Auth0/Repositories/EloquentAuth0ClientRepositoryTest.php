@@ -7,14 +7,11 @@ namespace Tests\Auth0\Repositories;
 use App\Auth0\Auth0Client;
 use App\Auth0\Auth0Tenant;
 use App\Auth0\Repositories\EloquentAuth0ClientRepository;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
 final class EloquentAuth0ClientRepositoryTest extends TestCase
 {
-    use RefreshDatabase;
-
     private EloquentAuth0ClientRepository $repository;
 
     protected function setUp(): void
