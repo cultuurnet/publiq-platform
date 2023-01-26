@@ -37,12 +37,12 @@ final class SyncContact implements ShouldQueue
 
         $contactIds = $this->insightlyClient->contacts()->findIdsByEmail($contact->email);
 
-//        if (empty($contactIds)) {
+        if (empty($contactIds)) {
             $contactInsightlyId = $this->insightlyClient->contacts()->create($contact);
-//        } else {
-//            $contactIds = array_values(Arr::sort($contactIds));
-//            $contactInsightlyId = $contactIds[0];
-//        }
+        } else {
+            $contactIds = array_values(Arr::sort($contactIds));
+            $contactInsightlyId = $contactIds[0];
+        }
 
         $this->insightlyMappingRepository->save(new InsightlyMapping(
             $contactCreated->id,

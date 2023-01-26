@@ -13,6 +13,7 @@ use App\Insightly\Listeners\SyncContact;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Iterator;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
@@ -78,9 +79,41 @@ final class SyncContactTest extends TestCase
         $this->syncContact->handleContactCreated(new ContactCreated($this->contactId));
     }
 
-    public function test_it_guards_unique_email_in_insightly_when_platform_contact_was_created(): void
+    /**
+     * @dataProvider provideExistingEmailCases
+     */
+    public function test_it_guards_unique_email_in_insightly_when_platform_contact_was_created(
+        array $insightlyContactIds,
+        int $expectedMappedInsightlyContactId
+    ): void
     {
-        $this->markTestSkipped();
+        $this->givenThereIsAContactForAnIntegration(ContactType::Functional);
+        $this->givenOnlyTheIntegrationIsMappedToInsightly();
+        $this->givenTheInsightlyContactsFoundByEmailAre($insightlyContactIds);
+
+        $this->thenItDoesNotStoreAContactAtInsightly();
+
+        $this->thenItStoresTheContactMapping($this->contactId, $expectedMappedInsightlyContactId);
+        $this->thenItLinksTheContactToTheIntegrationAtInsightly(
+            $this->insightlyIntegrationId,
+            $expectedMappedInsightlyContactId,
+            ContactType::Functional,
+        );
+
+        $this->syncContact->handleContactCreated(new ContactCreated($this->contactId));
+    }
+
+    public function provideExistingEmailCases(): Iterator
+    {
+        yield 'one contact found' => [
+            'insightlyContactIds' => [42],
+            'expectedMappedInsightlyContactId' => 42,
+        ];
+
+        yield 'multiple contacts found' => [
+            'insightlyContactIds' => [52, 136, 68, 42, 124, 88, 99],
+            'expectedMappedInsightlyContactId' => 42, // The lowest Id is chosen
+        ];
     }
 
     public function test_it_updates_the_insightly_contact_when_platform_contact_was_updated(): void
@@ -173,5 +206,11 @@ final class SyncContactTest extends TestCase
         $this->opportunityResource->expects($this->once())
             ->method('linkContact')
             ->with($insightlyIntegrationId, $insightlyContactId, $contactType);
+    }
+
+    private function thenItDoesNotStoreAContactAtInsightly(): void
+    {
+        $this->contactResource->expects($this->never())
+            ->method('create');
     }
 }
