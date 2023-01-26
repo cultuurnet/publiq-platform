@@ -11,6 +11,7 @@ use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Objects\OpportunityStage;
 use App\Insightly\Objects\OpportunityState;
+use App\Insightly\Objects\ProjectStage;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use Illuminate\Bus\Queueable;
@@ -62,7 +63,7 @@ final class ActivateIntegrationWithCoupon implements ShouldQueue
             ResourceType::Project
         ));
 
-        // TODO: Set correct state and stage on project
+        $this->insightlyClient->projects()->updateStage($insightlyProjectId, ProjectStage::LIVE);
 
         $this->insightlyClient->projects()->linkOpportunity(
             $insightlyProjectId,
