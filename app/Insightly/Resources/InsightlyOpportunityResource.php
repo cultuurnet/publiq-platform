@@ -9,6 +9,7 @@ use App\Domain\Integrations\Integration;
 use App\Insightly\Exceptions\ContactCannotBeUnlinked;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Objects\OpportunityStage;
+use App\Insightly\Objects\OpportunityState;
 use App\Insightly\Serializers\LinkSerializer;
 use App\Insightly\Serializers\OpportunitySerializer;
 use App\Insightly\Serializers\OpportunityStageSerializer;
@@ -72,6 +73,20 @@ final class InsightlyOpportunityResource implements OpportunityResource
         $this->insightlyClient->sendRequest($stageRequest);
     }
 
+    public function updateState(int $id, OpportunityState $state): void
+    {
+        $opportunityAsArray = $this->get($id);
+        $opportunityAsArray['OPPORTUNITY_STATE'] = $state->value;
+        $stateRequest = new Request(
+            'PUT',
+            $this->path,
+            [],
+            Json::encode($opportunityAsArray)
+        );
+
+        $this->insightlyClient->sendRequest($stateRequest);
+    }
+
     public function linkContact(int $opportunityId, int $contactId, ContactType $contactType): void
     {
         $request = new Request(
@@ -123,5 +138,17 @@ final class InsightlyOpportunityResource implements OpportunityResource
         );
 
         $this->insightlyClient->sendRequest($request);
+    }
+
+    private function get(int $id): array
+    {
+        $request = new Request(
+            'GET',
+            'Opportunities/' . $id
+        );
+
+        $response = $this->insightlyClient->sendRequest($request);
+
+        return Json::decodeAssociatively($response->getBody()->getContents());
     }
 }

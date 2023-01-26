@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Insightly\Resources;
 
+use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
@@ -82,27 +83,14 @@ final class InsightlyProjectResourceTest extends TestCase
             ]),
         );
 
-        $expectedUpdateStageRequest = new Request(
-            'PUT',
-            'Projects/1/Pipeline',
-            [],
-            Json::encode([
-                'PIPELINE_ID' => $this->pipelineId,
-                'PIPELINE_STAGE_CHANGE' => [
-                    'STAGE_ID' => $this->testStageId,
-                ],
-            ])
-        );
-
         $expectedResponse = new Response(200, [], Json::encode(['PROJECT_ID' => $insightlyId]));
 
-        $this->insightlyClient->expects($this->exactly(2))
+        $this->insightlyClient->expects($this->once())
             ->method('sendRequest')
-            ->withConsecutive(
-                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedCreateRequest, $actualRequest))],
-                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedUpdateStageRequest, $actualRequest))],
+            ->with(
+                self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedCreateRequest, $actualRequest))
             )
-            ->willReturnOnConsecutiveCalls($expectedResponse, $expectedResponse);
+            ->willReturn($expectedResponse);
 
         $returnedId = $this->resource->create($integration);
         $this->assertEquals($insightlyId, $returnedId);
@@ -129,6 +117,48 @@ final class InsightlyProjectResourceTest extends TestCase
         $this->resource->updateStage(42, ProjectStage::LIVE);
     }
 
+    public function test_it_links_an_integration_to_a_project(): void
+    {
+        $insightlyProjectId = 42;
+
+        $expectedRequest = new Request(
+            'POST',
+            'Projects/' . $insightlyProjectId . '/Links',
+            [],
+            Json::encode([
+                'LINK_OBJECT_ID' => 31,
+                'LINK_OBJECT_NAME' => 'Opportunity',
+            ])
+        );
+
+        $this->insightlyClient->expects($this->once())
+            ->method('sendRequest')
+            ->with(self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedRequest, $actualRequest)));
+
+        $this->resource->linkOpportunity(42, 31);
+    }
+
+    public function test_it_links_a_contact_to_a_project(): void
+    {
+        $insightlyProjectId = 42;
+
+        $expectedRequest = new Request(
+            'POST',
+            'Projects/' . $insightlyProjectId . '/Links',
+            [],
+            Json::encode([
+                'LINK_OBJECT_ID' => 20,
+                'LINK_OBJECT_NAME' => 'Contact',
+                'ROLE' => 'Technisch',
+            ])
+        );
+
+        $this->insightlyClient->expects($this->once())
+            ->method('sendRequest')
+            ->with(self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedRequest, $actualRequest)));
+
+        $this->resource->linkContact($insightlyProjectId, 20, ContactType::Technical);
+    }
 
     public function test_it_deletes_an_project(): void
     {
