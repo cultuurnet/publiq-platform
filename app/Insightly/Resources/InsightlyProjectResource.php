@@ -8,6 +8,7 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Objects\ProjectStage;
+use App\Insightly\Objects\ProjectState;
 use App\Insightly\Serializers\CustomFields\CouponSerializer;
 use App\Insightly\Serializers\LinkSerializer;
 use App\Insightly\Serializers\ProjectSerializer;
@@ -80,6 +81,20 @@ final class InsightlyProjectResource implements ProjectResource
         );
 
         $this->insightlyClient->sendRequest($stageRequest);
+    }
+
+    public function updateState(int $projectId, ProjectState $state): void
+    {
+        $opportunityAsArray = $this->get($projectId);
+        $opportunityAsArray['PROJECT_STATE'] = $state->value;
+        $stateRequest = new Request(
+            'PUT',
+            $this->path,
+            [],
+            Json::encode($opportunityAsArray)
+        );
+
+        $this->insightlyClient->sendRequest($stateRequest);
     }
 
     public function linkOpportunity(int $projectId, int $opportunityId): void
