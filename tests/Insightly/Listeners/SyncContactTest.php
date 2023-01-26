@@ -7,6 +7,7 @@ namespace Tests\Insightly\Listeners;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Events\ContactCreated;
+use App\Domain\Contacts\Events\ContactUpdated;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Listeners\SyncContact;
@@ -112,13 +113,20 @@ final class SyncContactTest extends TestCase
 
         yield 'multiple contacts found' => [
             'insightlyContactIds' => [52, 136, 68, 42, 124, 88, 99],
-            'expectedMappedInsightlyContactId' => 42, // The lowest Id is chosen
+            'expectedMappedInsightlyContactId' => 42, // The lowest id is chosen
         ];
     }
 
-    public function test_it_updates_the_insightly_contact_when_platform_contact_was_updated(): void
+    public function test_it_updates_the_insightly_contact_when_platform_contact_was_updated_with_same_email(): void
     {
-        $this->markTestSkipped();
+        $contact = $this->givenThereIsAContactForAnIntegration(ContactType::Functional);
+        $this->givenTheContactAndIntegrationAreMappedToInsightly();
+        $this->givenTheInsightlyContactsFoundByEmailAre([]);
+
+        $this->thenItDoesNotStoreAContactAtInsightly();
+        $this->thenItUpdatesTheContactAtInsightly($contact, $this->insightlyContactId);
+
+        $this->syncContact->handleContactUpdated(new ContactUpdated($this->contactId));
     }
 
     public function test_it_creates_a_new_insightly_contact_when_platform_contact_email_changed(): void
@@ -170,9 +178,35 @@ final class SyncContactTest extends TestCase
             );
     }
 
+    private function givenTheContactAndIntegrationAreMappedToInsightly(): void
+    {
+        $insightlyContactMapping = new InsightlyMapping(
+            $this->contactId,
+            $this->insightlyContactId,
+            ResourceType::Opportunity,
+        );
+
+        $insightlyIntegrationMapping = new InsightlyMapping(
+            $this->integrationId,
+            $this->insightlyIntegrationId,
+            ResourceType::Opportunity,
+        );
+
+        $this->insightlyMappingRepository->expects($this->any())
+            ->method('getByIdAndType')
+            ->withConsecutive(
+                [$this->contactId, ResourceType::Contact],
+                [$this->integrationId, ResourceType::Opportunity],
+            )
+            ->willReturnOnConsecutiveCalls(
+                $insightlyContactMapping,
+                $insightlyIntegrationMapping,
+            );
+    }
+
     private function givenTheInsightlyContactsFoundByEmailAre(array $contactIds): void
     {
-        $this->contactResource->expects($this->once())
+        $this->contactResource->expects($this->any())
             ->method('findIdsByEmail')
             ->with($this->contactEmail)
             ->willReturn($contactIds);
@@ -212,5 +246,12 @@ final class SyncContactTest extends TestCase
     {
         $this->contactResource->expects($this->never())
             ->method('create');
+    }
+
+    private function thenItUpdatesTheContactAtInsightly(Contact $contact, int $insightlyContactId): void
+    {
+        $this->contactResource->expects($this->once())
+            ->method('update')
+            ->with($contact, $insightlyContactId);
     }
 }

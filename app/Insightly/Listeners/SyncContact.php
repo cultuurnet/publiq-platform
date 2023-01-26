@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Insightly\Listeners;
 
 use App\Domain\Contacts\Events\ContactCreated;
+use App\Domain\Contacts\Events\ContactUpdated;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
@@ -62,6 +63,26 @@ final class SyncContact implements ShouldQueue
             [
                 'domain' => 'insightly',
                 'contact_id' => $contactCreated->id->toString(),
+            ]
+        );
+    }
+
+    public function handleContactUpdated(ContactUpdated $contactUpdated): void
+    {
+        $contact = $this->contactRepository->getById($contactUpdated->id);
+        if (!SyncIsAllowed::forContact($contact)) {
+            return;
+        }
+
+        $insightlyMapping = $this->insightlyMappingRepository->getByIdAndType($contact->id, ResourceType::Contact);
+
+        $this->insightlyClient->contacts()->update($contact, $insightlyMapping->insightlyId);
+
+        $this->logger->info(
+            'Contact updated',
+            [
+                'domain' => 'insightly',
+                'contact_id' => $contactUpdated->id->toString(),
             ]
         );
     }
