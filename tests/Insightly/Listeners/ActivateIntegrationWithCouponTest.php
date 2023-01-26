@@ -65,7 +65,7 @@ final class ActivateIntegrationWithCouponTest extends TestCase
         $insightlyOpportunityId = 42;
         $insightlyProjectId = 51;
         $integration = $this->givenThereIsAnIntegrationWithId($this->integrationId);
-        $this->givenThereIsAnOpportunityMapping($this->integrationId);
+        $this->givenThereIsAnOpportunityMapping($this->integrationId, $insightlyOpportunityId);
         $coupon = $this->givenThereIsACoupon($this->integrationId);
 
         // Then
@@ -135,11 +135,11 @@ final class ActivateIntegrationWithCouponTest extends TestCase
         return $integration;
     }
 
-    private function givenThereIsAnOpportunityMapping(UuidInterface $integrationId): InsightlyMapping
+    private function givenThereIsAnOpportunityMapping(UuidInterface $integrationId, int $insightlyId): InsightlyMapping
     {
         $insightlyMapping = new InsightlyMapping(
             $integrationId,
-            42,
+            $insightlyId,
             ResourceType::Opportunity,
         );
 
