@@ -8,7 +8,6 @@ use App\Domain\Integrations\Integration;
 use App\Insightly\Objects\ProjectStage;
 use App\Insightly\Objects\ProjectState;
 use App\Insightly\Pipelines;
-use App\Insightly\Serializers\CustomFields\CouponSerializer;
 use App\Insightly\Serializers\CustomFields\IntegrationTypeSerializer;
 
 final class ProjectSerializer
@@ -29,11 +28,5 @@ final class ProjectSerializer
                 (new IntegrationTypeSerializer())->toInsightlyArray($integration->type),
             ],
         ];
-    }
-
-    public function toInsightlyArrayWithCoupon(array $projectAsArray, string $couponCode): array
-    {
-        $projectAsArray['CUSTOMFIELDS'][] = (new CouponSerializer())->toInsightlyArray($couponCode);
-        return $projectAsArray;
     }
 }

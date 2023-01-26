@@ -8,6 +8,7 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Objects\ProjectStage;
+use App\Insightly\Serializers\CustomFields\CouponSerializer;
 use App\Insightly\Serializers\LinkSerializer;
 use App\Insightly\Serializers\ProjectSerializer;
 use App\Insightly\Serializers\ProjectStageSerializer;
@@ -44,15 +45,13 @@ final class InsightlyProjectResource implements ProjectResource
     public function updateWithCoupon(int $insightlyId, string $couponCode): void
     {
         $projectAsArray = $this->get($insightlyId);
+        $projectAsArray['CUSTOMFIELDS'][] = (new CouponSerializer())->toInsightlyArray($couponCode);
 
         $request = new Request(
             'PUT',
             $this->path,
             [],
-            JSON::encode(
-                (new ProjectSerializer($this->insightlyClient->getPipelines()))
-                    ->toInsightlyArrayWithCoupon($projectAsArray, $couponCode)
-            )
+            JSON::encode($projectAsArray)
         );
 
         $this->insightlyClient->sendRequest($request);
