@@ -13,6 +13,8 @@ interface ProjectResource
 {
     public function create(Integration $integration): int;
 
+    public function get(int $id): array;
+
     public function updateWithCoupon(int $id, string $couponCode): void;
 
     public function delete(int $id): void;
