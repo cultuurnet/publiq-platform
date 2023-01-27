@@ -103,10 +103,12 @@ final class ActivateIntegrationWithCouponTest extends TestCase
             ->method('save')
             ->with($insightlyMapping);
 
+        // It sets the correct stage of the project
         $this->projectResource->expects($this->once())
             ->method('updateStage')
             ->with($insightlyProjectId, ProjectStage::LIVE);
 
+        // It sets the correct state of the project
         $this->projectResource->expects($this->once())
             ->method('updateState')
             ->with($insightlyProjectId, ProjectState::COMPLETED);
