@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Insightly\Listeners;
 
+use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Coupons\Repositories\CouponRepository;
 use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
@@ -15,6 +16,7 @@ use App\Insightly\Objects\ProjectStage;
 use App\Insightly\Objects\ProjectState;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
+use App\Insightly\SyncIsAllowed;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
@@ -26,6 +28,7 @@ final class ActivateIntegrationWithCoupon implements ShouldQueue
     public function __construct(
         private readonly InsightlyClient $insightlyClient,
         private readonly IntegrationRepository $integrationRepository,
+        private readonly ContactRepository $contactRepository,
         private readonly InsightlyMappingRepository $insightlyMappingRepository,
         private readonly CouponRepository $couponRepository,
         private readonly LoggerInterface $logger,
