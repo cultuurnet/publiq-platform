@@ -20,10 +20,10 @@ interface OpportunityResource
 
     public function updateState(int $id, OpportunityState $state): void;
 
-    public function linkContact(int $opportunityId, int $contactId, ContactType $contactType): void;
+    public function linkContact(int $id, int $contactId, ContactType $contactType): void;
 
     /**
      * @throws ContactCannotBeUnlinked
      */
-    public function unlinkContact(int $opportunityId, int $contactId): void;
+    public function unlinkContact(int $id, int $contactId): void;
 }
