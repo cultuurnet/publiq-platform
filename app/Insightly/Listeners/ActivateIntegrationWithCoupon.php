@@ -79,7 +79,21 @@ final class ActivateIntegrationWithCoupon implements ShouldQueue
             $insightlyOpportunityMapping->insightlyId
         );
 
-        // TODO: Links contacts
+        $contacts = $this->contactRepository->getByIntegrationId($integrationActivatedWithCoupon->id);
+
+        foreach ($contacts as $contact) {
+            if (SyncIsAllowed::forContact($contact)) {
+                $insightlyContactMapping = $this->insightlyMappingRepository->getByIdAndType(
+                    $contact->id,
+                    ResourceType::Contact
+                );
+                $this->insightlyClient->projects()->linkContact(
+                    $insightlyProjectId,
+                    $insightlyContactMapping->insightlyId,
+                    $contact->type
+                );
+            }
+        }
 
         $this->logger->info(
             'Project created for integration activated with coupon',
