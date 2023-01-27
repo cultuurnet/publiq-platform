@@ -45,7 +45,7 @@ final class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->reportable(function (Throwable $e) {
-            if (app()->bound('sentry')) {
+            if (config('app.sentry.enabled') && app()->bound('sentry')) {
                 configureScope(function (Scope $scope): void {
                     if (!app()->runningInConsole()) {
                         $user = Auth::user();

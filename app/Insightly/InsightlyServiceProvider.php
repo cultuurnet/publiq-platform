@@ -45,7 +45,7 @@ final class InsightlyServiceProvider extends ServiceProvider
             );
         });
 
-        if (!empty(config('insightly.api_key'))) {
+        if (config('insightly.enabled')) {
             Event::listen(IntegrationCreated::class, [CreateOpportunity::class, 'handle']);
             Event::listen(IntegrationActivatedWithCoupon::class, [ActivateIntegrationWithCoupon::class, 'handle']);
             Event::listen(ContactCreated::class, [CreateContact::class, 'handle']);
