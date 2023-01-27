@@ -48,21 +48,21 @@ final class InsightlyOpportunityResource implements OpportunityResource
         return $id;
     }
 
-    public function delete(int $id): void
+    public function delete(int $opportunityId): void
     {
         $request = new Request(
             'DELETE',
-            $this->path . $id
+            $this->path . $opportunityId
         );
 
         $this->insightlyClient->sendRequest($request);
     }
 
-    public function updateStage(int $id, OpportunityStage $stage): void
+    public function updateStage(int $opportunityId, OpportunityStage $stage): void
     {
         $stageRequest = new Request(
             'PUT',
-            $this->path . $id . '/Pipeline',
+            $this->path . $opportunityId . '/Pipeline',
             [],
             Json::encode(
                 (new OpportunityStageSerializer($this->insightlyClient->getPipelines()))
@@ -73,9 +73,9 @@ final class InsightlyOpportunityResource implements OpportunityResource
         $this->insightlyClient->sendRequest($stageRequest);
     }
 
-    public function updateState(int $id, OpportunityState $state): void
+    public function updateState(int $opportunityId, OpportunityState $state): void
     {
-        $opportunityAsArray = $this->get($id);
+        $opportunityAsArray = $this->get($opportunityId);
         $opportunityAsArray['OPPORTUNITY_STATE'] = $state->value;
         $stateRequest = new Request(
             'PUT',
@@ -140,11 +140,11 @@ final class InsightlyOpportunityResource implements OpportunityResource
         $this->insightlyClient->sendRequest($request);
     }
 
-    private function get(int $id): array
+    private function get(int $opportunityId): array
     {
         $request = new Request(
             'GET',
-            $this->path . $id
+            $this->path . $opportunityId
         );
 
         $response = $this->insightlyClient->sendRequest($request);

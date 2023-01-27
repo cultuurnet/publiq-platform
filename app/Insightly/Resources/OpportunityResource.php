@@ -14,11 +14,11 @@ interface OpportunityResource
 {
     public function create(Integration $integration): int;
 
-    public function delete(int $id): void;
+    public function delete(int $opportunityId): void;
 
-    public function updateStage(int $id, OpportunityStage $stage): void;
+    public function updateStage(int $opportunityId, OpportunityStage $stage): void;
 
-    public function updateState(int $id, OpportunityState $state): void;
+    public function updateState(int $opportunityId, OpportunityState $state): void;
 
     public function linkContact(int $opportunityId, int $contactId, ContactType $contactType): void;
 
