@@ -7,6 +7,8 @@ declare(strict_types=1);
  * https://github.com/auth0/auth0-PHP#configuration-options.
  */
 return [
+    'enabled' => env('AUTH0_CLIENT_CREATION_ENABLED', true),
+
     // Should be assigned either 'api', 'management', or 'webapp' to indicate your application's use case for the SDK.
     // Determines what configuration options will be required.
     'strategy' => env('AUTH0_LOGIN_STRATEGY', \Auth0\SDK\Configuration\SdkConfiguration::STRATEGY_REGULAR),

@@ -55,8 +55,12 @@ final class Auth0ServiceProvider extends ServiceProvider
             );
         });
 
-        // May always be registered even if there are no configured tenants, because in that case the cluster SDK will
-        // just not have any tenant SDKs to loop over and so it simply won't do anything. But it won't crash either.
-        Event::listen(IntegrationCreated::class, [CreateClients::class, 'handle']);
+        if (config('auth0.enabled')) {
+            // By default, the Auth0 integration is enabled. For testing purposes this can be disabled inside the .env file.
+
+            // May always be registered even if there are no configured tenants, because in that case the cluster SDK will
+            // just not have any tenant SDKs to loop over and so it simply won't do anything. But it won't crash either.
+            Event::listen(IntegrationCreated::class, [CreateClients::class, 'handle']);
+        }
     }
 }

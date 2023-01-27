@@ -9,6 +9,7 @@ use App\Domain\Integrations\Integration;
 use App\Insightly\Exceptions\ContactCannotBeUnlinked;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Objects\OpportunityStage;
+use App\Insightly\Objects\OpportunityState;
 use App\Insightly\Serializers\LinkSerializer;
 use App\Insightly\Serializers\OpportunitySerializer;
 use App\Insightly\Serializers\OpportunityStageSerializer;
@@ -72,11 +73,25 @@ final class InsightlyOpportunityResource implements OpportunityResource
         $this->insightlyClient->sendRequest($stageRequest);
     }
 
-    public function linkContact(int $opportunityId, int $contactId, ContactType $contactType): void
+    public function updateState(int $id, OpportunityState $state): void
+    {
+        $opportunityAsArray = $this->get($id);
+        $opportunityAsArray['OPPORTUNITY_STATE'] = $state->value;
+        $stateRequest = new Request(
+            'PUT',
+            $this->path,
+            [],
+            Json::encode($opportunityAsArray)
+        );
+
+        $this->insightlyClient->sendRequest($stateRequest);
+    }
+
+    public function linkContact(int $id, int $contactId, ContactType $contactType): void
     {
         $request = new Request(
             'POST',
-            'Opportunities/' . $opportunityId . '/Links',
+            $this->path . $id . '/Links',
             [],
             Json::encode((new LinkSerializer())->contactToLink($contactId, $contactType))
         );
@@ -84,11 +99,11 @@ final class InsightlyOpportunityResource implements OpportunityResource
         $this->insightlyClient->sendRequest($request);
     }
 
-    private function getLinks(int $opportunityId): array
+    private function getLinks(int $id): array
     {
         $getLinksRequest = new Request(
             'GET',
-            'Opportunities/' . $opportunityId . '/Links',
+            $this->path . $id . '/Links',
         );
         $getLinksResponse = $this->insightlyClient->sendRequest($getLinksRequest);
 
@@ -98,9 +113,9 @@ final class InsightlyOpportunityResource implements OpportunityResource
     /**
      * @throws ContactCannotBeUnlinked
      */
-    public function unlinkContact(int $opportunityId, int $contactId): void
+    public function unlinkContact(int $id, int $contactId): void
     {
-        $opportunityLinksAsArray = $this->getLinks($opportunityId);
+        $opportunityLinksAsArray = $this->getLinks($id);
 
         $linkId = null;
         foreach ($opportunityLinksAsArray as $opportunityLink) {
@@ -108,7 +123,7 @@ final class InsightlyOpportunityResource implements OpportunityResource
             $linkName = $opportunityLink['LINK_OBJECT_NAME'];
             $linkObjectId = $opportunityLink['LINK_OBJECT_ID'];
 
-            if ($objectId === $opportunityId && $linkName === 'Contact' && $linkObjectId === $contactId) {
+            if ($objectId === $id && $linkName === 'Contact' && $linkObjectId === $contactId) {
                 $linkId = $opportunityLink['LINK_ID'];
             }
         }
@@ -119,9 +134,21 @@ final class InsightlyOpportunityResource implements OpportunityResource
 
         $request = new Request(
             'DELETE',
-            'Opportunities/' . $opportunityId . '/Links/' . $linkId,
+            $this->path . $id . '/Links/' . $linkId,
         );
 
         $this->insightlyClient->sendRequest($request);
+    }
+
+    private function get(int $id): array
+    {
+        $request = new Request(
+            'GET',
+            $this->path . $id
+        );
+
+        $response = $this->insightlyClient->sendRequest($request);
+
+        return Json::decodeAssociatively($response->getBody()->getContents());
     }
 }
