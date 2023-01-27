@@ -13,15 +13,15 @@ interface ProjectResource
 {
     public function create(Integration $integration): int;
 
-    public function updateWithCoupon(int $projectId, string $couponCode): void;
+    public function updateWithCoupon(int $id, string $couponCode): void;
 
-    public function delete(int $projectId): void;
+    public function delete(int $id): void;
 
-    public function updateStage(int $projectId, ProjectStage $stage): void;
+    public function updateStage(int $id, ProjectStage $stage): void;
 
-    public function updateState(int $projectId, ProjectState $state): void;
+    public function updateState(int $id, ProjectState $state): void;
 
-    public function linkOpportunity(int $projectId, int $opportunityId): void;
+    public function linkOpportunity(int $id, int $opportunityId): void;
 
-    public function linkContact(int $projectId, int $contactId, ContactType $contactType): void;
+    public function linkContact(int $id, int $contactId, ContactType $contactType): void;
 }

@@ -34,23 +34,23 @@ final class InsightlyOrganizationResource implements OrganizationResource
         return $contactAsArray['ORGANISATION_ID'];
     }
 
-    public function update(Organization $organization, int $organizationId): void
+    public function update(Organization $organization, int $id): void
     {
         $request = new Request(
             'PUT',
             $this->path,
             [],
-            Json::encode((new OrganizationSerializer())->toInsighltyArrayForUpdate($organization, $organizationId))
+            Json::encode((new OrganizationSerializer())->toInsighltyArrayForUpdate($organization, $id))
         );
 
         $this->insightlyClient->sendRequest($request);
     }
 
-    public function delete(int $organizationId): void
+    public function delete(int $id): void
     {
         $request = new Request(
             'DELETE',
-            $this->path . $organizationId
+            $this->path . $id
         );
 
         $this->insightlyClient->sendRequest($request);
