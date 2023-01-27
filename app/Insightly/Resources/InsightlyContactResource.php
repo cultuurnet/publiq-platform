@@ -35,23 +35,23 @@ final class InsightlyContactResource implements ContactResource
         return $contactAsArray['CONTACT_ID'];
     }
 
-    public function update(Contact $contact, int $insightlyId): void
+    public function update(Contact $contact, int $contactId): void
     {
         $request = new Request(
             'PUT',
             $this->path,
             [],
-            Json::encode((new ContactSerializer())->toInsightlyArrayForUpdate($contact, $insightlyId))
+            Json::encode((new ContactSerializer())->toInsightlyArrayForUpdate($contact, $contactId))
         );
 
         $this->insightlyClient->sendRequest($request);
     }
 
-    public function delete(int $id): void
+    public function delete(int $contactId): void
     {
         $request = new Request(
             'DELETE',
-            $this->path . $id
+            $this->path . $contactId
         );
 
         $this->insightlyClient->sendRequest($request);

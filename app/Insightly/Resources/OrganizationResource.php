@@ -10,7 +10,7 @@ interface OrganizationResource
 {
     public function create(Organization $organization): int;
 
-    public function update(Organization $organization, int $insightlyId): void;
+    public function update(Organization $organization, int $organizationId): void;
 
-    public function delete(int $id): void;
+    public function delete(int $organizationId): void;
 }
