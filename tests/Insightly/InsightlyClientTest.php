@@ -166,6 +166,48 @@ final class InsightlyClientTest extends TestCase
         $this->insightlyClient->projects()->delete($insightlyProjectId);
     }
 
+    public function test_it_can_link_a_contact_to_an_opportunity(): void
+    {
+        $integration = new Integration(
+            Uuid::uuid4(),
+            IntegrationType::SearchApi,
+            'Test Integration',
+            'Test Integration description',
+            Uuid::uuid4(),
+            IntegrationStatus::Draft,
+            []
+        );
+
+        $contact = new Contact(
+            Uuid::uuid4(),
+            Uuid::uuid4(),
+            'jane.doe@anonymous.com',
+            ContactType::Technical,
+            'Jane',
+            'Doe'
+        );
+
+        $insightlyOpportunityId = $this->insightlyClient->opportunities()->create($integration);
+        $insightlyContactId = $this->insightlyClient->contacts()->create($contact);
+
+        $this->insightlyClient->opportunities()->linkContact(
+            $insightlyOpportunityId,
+            $insightlyContactId,
+            ContactType::Technical
+        );
+
+        $result = $this->insightlyClient->opportunities()->get($insightlyOpportunityId);
+
+        $this->assertEquals('Technisch', $result['LINKS'][0]['ROLE']);
+        $this->assertEquals('Opportunity', $result['LINKS'][0]['OBJECT_NAME']);
+        $this->assertEquals($insightlyOpportunityId, $result['LINKS'][0]['OBJECT_ID']);
+        $this->assertEquals('Contact', $result['LINKS'][0]['LINK_OBJECT_NAME']);
+        $this->assertEquals($insightlyContactId, $result['LINKS'][0]['LINK_OBJECT_ID']);
+
+        $this->insightlyClient->opportunities()->delete($insightlyOpportunityId);
+        $this->insightlyClient->contacts()->delete($insightlyContactId);
+    }
+
     public function test_it_can_create_an_organization(): void
     {
         $organizationId = Uuid::uuid4();
