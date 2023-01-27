@@ -85,13 +85,13 @@ final class InsightlyProjectResource implements ProjectResource
 
     public function updateState(int $projectId, ProjectState $state): void
     {
-        $opportunityAsArray = $this->get($projectId);
-        $opportunityAsArray['PROJECT_STATE'] = $state->value;
+        $projectAsArray = $this->get($projectId);
+        $projectAsArray['STATUS'] = $state->value;
         $stateRequest = new Request(
             'PUT',
             $this->path,
             [],
-            Json::encode($opportunityAsArray)
+            Json::encode($projectAsArray)
         );
 
         $this->insightlyClient->sendRequest($stateRequest);
