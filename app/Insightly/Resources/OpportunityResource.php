@@ -8,6 +8,7 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
 use App\Insightly\Exceptions\ContactCannotBeUnlinked;
 use App\Insightly\Objects\OpportunityStage;
+use App\Insightly\Objects\OpportunityState;
 
 interface OpportunityResource
 {
@@ -16,6 +17,8 @@ interface OpportunityResource
     public function delete(int $id): void;
 
     public function updateStage(int $id, OpportunityStage $stage): void;
+
+    public function updateState(int $id, OpportunityState $state): void;
 
     public function linkContact(int $opportunityId, int $contactId, ContactType $contactType): void;
 

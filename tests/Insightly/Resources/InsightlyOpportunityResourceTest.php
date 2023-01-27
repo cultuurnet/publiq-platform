@@ -176,6 +176,60 @@ final class InsightlyOpportunityResourceTest extends TestCase
         $this->resource->updateStage(42, OpportunityStage::OFFER);
     }
 
+    public function test_it_updates_the_state_of_an_opportunity(): void
+    {
+        $opportunityInsightlyId = 42;
+
+        $expectedGetRequest = new Request(
+            'GET',
+            'Opportunities/42'
+        );
+
+        $opportunity = [
+            'OPPORTUNITY_NAME' => 'My opportunity',
+            'OPPORTUNITY_STATE' => OpportunityState::OPEN->value,
+            'OPPORTUNITY_DETAILS' => 'Lorem ipsum',
+            'PIPELINE_ID' => $this->pipelineId,
+            'STAGE_ID' => $this->offerStageId,
+            'CUSTOMFIELDS' => [
+                'FIELD_NAME' => 'Product__c',
+                'CUSTOM_FIELD_ID' => 'Product__c',
+                'FIELD_VALUE' => 'Publicatie Widgets V3',
+            ],
+        ];
+
+        $expectedPutRequest = new Request(
+            'PUT',
+            'Opportunities/',
+            [],
+            Json::encode([
+                'OPPORTUNITY_NAME' => 'My opportunity',
+                'OPPORTUNITY_STATE' => OpportunityState::WON->value,
+                'OPPORTUNITY_DETAILS' => 'Lorem ipsum',
+                'PIPELINE_ID' => $this->pipelineId,
+                'STAGE_ID' => $this->offerStageId,
+                'CUSTOMFIELDS' => [
+                    'FIELD_NAME' => 'Product__c',
+                    'CUSTOM_FIELD_ID' => 'Product__c',
+                    'FIELD_VALUE' => 'Publicatie Widgets V3',
+                ],
+            ])
+        );
+
+        $this->insightlyClient->expects($this->exactly(2))
+            ->method('sendRequest')
+            ->withConsecutive(
+                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedGetRequest, $actualRequest))],
+                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedPutRequest, $actualRequest))],
+            )
+            ->willReturnOnConsecutiveCalls(
+                new Response(200, [], Json::encode($opportunity)),
+                new Response(202)
+            );
+
+        $this->resource->updateState($opportunityInsightlyId, OpportunityState::WON);
+    }
+
     /**
      * @dataProvider provideContactTypes
      */
