@@ -101,7 +101,7 @@ final class InsightlyProjectResource implements ProjectResource
     {
         $request = new Request(
             'POST',
-            'Projects/' . $projectId . '/Links',
+            $this->path . $projectId . '/Links',
             [],
             Json::encode((new LinkSerializer())->opportunityToLink($opportunityId))
         );
@@ -113,7 +113,7 @@ final class InsightlyProjectResource implements ProjectResource
     {
         $request = new Request(
             'POST',
-            'Projects/' . $projectId . '/Links',
+            $this->path . $projectId . '/Links',
             [],
             Json::encode((new LinkSerializer())->contactToLink($contactId, $contactType))
         );
@@ -125,7 +125,7 @@ final class InsightlyProjectResource implements ProjectResource
     {
         $request = new Request(
             'GET',
-            'Projects/' . $projectId
+            $this->path . $projectId
         );
 
         $response = $this->insightlyClient->sendRequest($request);

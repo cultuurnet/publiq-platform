@@ -91,7 +91,7 @@ final class InsightlyOpportunityResource implements OpportunityResource
     {
         $request = new Request(
             'POST',
-            'Opportunities/' . $opportunityId . '/Links',
+            $this->path . $opportunityId . '/Links',
             [],
             Json::encode((new LinkSerializer())->contactToLink($contactId, $contactType))
         );
@@ -103,7 +103,7 @@ final class InsightlyOpportunityResource implements OpportunityResource
     {
         $getLinksRequest = new Request(
             'GET',
-            'Opportunities/' . $opportunityId . '/Links',
+            $this->path . $opportunityId . '/Links',
         );
         $getLinksResponse = $this->insightlyClient->sendRequest($getLinksRequest);
 
@@ -134,7 +134,7 @@ final class InsightlyOpportunityResource implements OpportunityResource
 
         $request = new Request(
             'DELETE',
-            'Opportunities/' . $opportunityId . '/Links/' . $linkId,
+            $this->path . $opportunityId . '/Links/' . $linkId,
         );
 
         $this->insightlyClient->sendRequest($request);
@@ -144,7 +144,7 @@ final class InsightlyOpportunityResource implements OpportunityResource
     {
         $request = new Request(
             'GET',
-            'Opportunities/' . $id
+            $this->path . $id
         );
 
         $response = $this->insightlyClient->sendRequest($request);
