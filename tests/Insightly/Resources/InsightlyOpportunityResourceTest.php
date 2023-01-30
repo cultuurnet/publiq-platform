@@ -11,6 +11,7 @@ use App\Domain\Integrations\IntegrationType;
 use App\Insightly\Exceptions\ContactCannotBeUnlinked;
 use App\Insightly\Objects\OpportunityStage;
 use App\Insightly\Objects\OpportunityState;
+use App\Insightly\Objects\Role;
 use App\Insightly\Pipelines;
 use App\Insightly\Resources\InsightlyOpportunityResource;
 use App\Json;
@@ -233,7 +234,7 @@ final class InsightlyOpportunityResourceTest extends TestCase
     /**
      * @dataProvider provideContactTypes
      */
-    public function test_it_links_a_contact_to_an_opportunity(ContactType $contactType, string $expectedRole): void
+    public function test_it_links_a_contact_to_an_opportunity(ContactType $contactType, Role $expectedRole): void
     {
         $expectedRequest = new Request(
             'POST',
@@ -242,7 +243,7 @@ final class InsightlyOpportunityResourceTest extends TestCase
             Json::encode([
                 'LINK_OBJECT_ID' => 3,
                 'LINK_OBJECT_NAME' => 'Contact',
-                'ROLE' => $expectedRole,
+                'ROLE' => $expectedRole->value,
             ])
         );
 
@@ -257,12 +258,12 @@ final class InsightlyOpportunityResourceTest extends TestCase
     {
         yield 'Technical' => [
             'contactType' => ContactType::Technical,
-            'expectedRole' => 'Technisch',
+            'expectedRole' => Role::Technical,
         ];
 
         yield 'Functional' => [
             'contactType' => ContactType::Functional,
-            'expectedRole' => 'Aanvrager',
+            'expectedRole' => Role::Applicant,
         ];
     }
 
@@ -285,7 +286,7 @@ final class InsightlyOpportunityResourceTest extends TestCase
         $opportunityLinks = [
             [
                 'DETAILS' => null,
-                'ROLE' => 'Aanvrager',
+                'ROLE' => Role::Applicant,
                 'LINK_ID' => $linkId,
                 'OBJECT_NAME' => 'Opportunity',
                 'OBJECT_ID' => $opportunityId,
@@ -294,7 +295,7 @@ final class InsightlyOpportunityResourceTest extends TestCase
             ],
             [
                 'DETAILS' => null,
-                'ROLE' => 'Aanvrager',
+                'ROLE' => Role::Applicant,
                 'LINK_ID' => mt_rand(100, 1000),
                 'OBJECT_NAME' => 'Opportunity',
                 'OBJECT_ID' => $opportunityId,
@@ -303,7 +304,7 @@ final class InsightlyOpportunityResourceTest extends TestCase
             ],
             [
                 'DETAILS' => null,
-                'ROLE' => 'Technisch',
+                'ROLE' => Role::Technical,
                 'LINK_ID' => mt_rand(100, 1000),
                 'OBJECT_NAME' => 'Opportunity',
                 'OBJECT_ID' => $opportunityId,
@@ -342,7 +343,7 @@ final class InsightlyOpportunityResourceTest extends TestCase
         $opportunityLinks = [
             [
                 'DETAILS' => null,
-                'ROLE' => 'Aanvrager',
+                'ROLE' => Role::Applicant,
                 'LINK_ID' => mt_rand(100, 1000),
                 'OBJECT_NAME' => 'Opportunity',
                 'OBJECT_ID' => $opportunityId,
