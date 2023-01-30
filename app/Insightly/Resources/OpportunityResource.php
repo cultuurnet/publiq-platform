@@ -14,6 +14,8 @@ interface OpportunityResource
 {
     public function create(Integration $integration): int;
 
+    public function get(int $id): array;
+
     public function delete(int $id): void;
 
     public function updateStage(int $id, OpportunityStage $stage): void;
