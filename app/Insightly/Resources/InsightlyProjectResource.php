@@ -43,6 +43,18 @@ final class InsightlyProjectResource implements ProjectResource
         return (int) $projectAsArray['PROJECT_ID'];
     }
 
+    public function get(int $id): array
+    {
+        $request = new Request(
+            'GET',
+            $this->path . $id
+        );
+
+        $response = $this->insightlyClient->sendRequest($request);
+
+        return Json::decodeAssociatively($response->getBody()->getContents());
+    }
+
     public function updateWithCoupon(int $id, string $couponCode): void
     {
         $projectAsArray = $this->get($id);
@@ -119,17 +131,5 @@ final class InsightlyProjectResource implements ProjectResource
         );
 
         $this->insightlyClient->sendRequest($request);
-    }
-
-    private function get(int $id): array
-    {
-        $request = new Request(
-            'GET',
-            $this->path . $id
-        );
-
-        $response = $this->insightlyClient->sendRequest($request);
-
-        return Json::decodeAssociatively($response->getBody()->getContents());
     }
 }
