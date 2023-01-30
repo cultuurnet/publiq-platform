@@ -10,6 +10,7 @@ use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Insightly\Objects\ProjectStage;
 use App\Insightly\Objects\ProjectState;
+use App\Insightly\Objects\Role;
 use App\Insightly\Pipelines;
 use App\Insightly\Resources\InsightlyProjectResource;
 use App\Json;
@@ -149,7 +150,7 @@ final class InsightlyProjectResourceTest extends TestCase
             Json::encode([
                 'LINK_OBJECT_ID' => 20,
                 'LINK_OBJECT_NAME' => 'Contact',
-                'ROLE' => 'Technisch',
+                'ROLE' => Role::Technical,
             ])
         );
 

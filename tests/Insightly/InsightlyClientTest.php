@@ -13,7 +13,9 @@ use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Organization;
 use App\Insightly\HttpInsightlyClient;
 use App\Insightly\Objects\ProjectStage;
+use App\Insightly\Objects\Role;
 use App\Insightly\Pipelines;
+use App\Insightly\Resources\ResourceType;
 use GuzzleHttp\Client;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
@@ -198,11 +200,12 @@ final class InsightlyClientTest extends TestCase
 
         $result = $this->insightlyClient->opportunities()->get($insightlyOpportunityId);
 
-        $this->assertEquals('Technisch', $result['LINKS'][0]['ROLE']);
-        $this->assertEquals('Opportunity', $result['LINKS'][0]['OBJECT_NAME']);
-        $this->assertEquals($insightlyOpportunityId, $result['LINKS'][0]['OBJECT_ID']);
-        $this->assertEquals('Contact', $result['LINKS'][0]['LINK_OBJECT_NAME']);
+        $this->assertEquals(Role::Technical->value, $result['LINKS'][0]['ROLE']);
+        $this->assertEquals(ResourceType::Contact->name, $result['LINKS'][0]['LINK_OBJECT_NAME']);
         $this->assertEquals($insightlyContactId, $result['LINKS'][0]['LINK_OBJECT_ID']);
+
+        $this->assertEquals(ResourceType::Opportunity->name, $result['LINKS'][0]['OBJECT_NAME']);
+        $this->assertEquals($insightlyOpportunityId, $result['LINKS'][0]['OBJECT_ID']);
 
         $this->insightlyClient->opportunities()->delete($insightlyOpportunityId);
         $this->insightlyClient->contacts()->delete($insightlyContactId);
