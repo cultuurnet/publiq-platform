@@ -197,6 +197,7 @@ final class InsightlyClientTest extends TestCase
             $insightlyContactId,
             ContactType::Technical
         );
+        sleep(1);
 
         $result = $this->insightlyClient->opportunities()->get($insightlyOpportunityId);
 
