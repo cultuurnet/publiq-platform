@@ -68,6 +68,26 @@ final class InsightlyClientTest extends TestCase
         $this->insightlyClient->contacts()->delete($insightlyId);
     }
 
+    public function test_it_can_find_a_contact_by_email(): void
+    {
+        $contact = new Contact(
+            Uuid::uuid4(),
+            Uuid::uuid4(),
+            'jane.doe@anonymous.com',
+            ContactType::Technical,
+            'Jane',
+            'Doe'
+        );
+
+        $insightlyId = $this->insightlyClient->contacts()->create($contact);
+        $this->assertNotNull($insightlyId);
+
+        $contactIds = $this->insightlyClient->contacts()->findIdsByEmail('jane.doe@anonymous.com');
+        $this->assertContains($insightlyId, $contactIds);
+
+        $this->insightlyClient->contacts()->delete($insightlyId);
+    }
+
     public function test_it_can_create_an_opportunity(): void
     {
         $integration = new Integration(
