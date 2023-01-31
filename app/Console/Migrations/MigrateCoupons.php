@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Console\Migrations;
 
 use App\Domain\Auth\Models\UserModel;
-use App\Domain\Coupons\Models\CouponModel;
+use App\Domain\Coupons\Coupon;
+use App\Domain\Coupons\Repositories\CouponRepository;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Model;
 use Ramsey\Uuid\Uuid;
 use Spatie\Activitylog\Facades\CauserResolver;
 
@@ -18,11 +20,12 @@ final class MigrateCoupons extends Command
 
     protected $description = 'Migrate the coupons provided in the coupons.csv CSV file';
 
-    public function handle(): int
+    public function handle(CouponRepository $couponRepository): int
     {
+        Model::unsetEventDispatcher();
+
         CauserResolver::setCauser(UserModel::createSystemUser());
 
-        // Read the coupons from CSV file
         $couponsAsArray = $this->readCsvFile('coupons.csv');
 
         $couponsCount = count($couponsAsArray);
@@ -49,13 +52,13 @@ final class MigrateCoupons extends Command
 
             $this->info('Importing code ' . $code);
 
-            $couponModel = new CouponModel([
-                'id' => Uuid::uuid4(),
-                'is_distributed' => $isDistributed,
-                'integration_id' => null,
-                'code' => $code,
-            ]);
-            $couponModel->save();
+            $coupon = new Coupon(
+                Uuid::uuid4(),
+                (bool) $isDistributed,
+                null,
+                $code
+            );
+            $couponRepository->save($coupon);
         }
 
         return 0;
