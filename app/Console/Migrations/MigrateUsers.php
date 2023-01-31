@@ -94,15 +94,15 @@ final class MigrateUsers extends Command
                 continue;
             }
 
-//            $this->info($uitId . ' - importing user with email ' . $email . ' and Insightly id ' . $insightlyId);
-//            $this->contactRepository->save($contact);
-//
-//            $insightlyMapping = new InsightlyMapping(
-//                Uuid::fromString($uitId),
-//                $insightlyId,
-//                ResourceType::Contact
-//            );
-//            $this->insightlyMappingRepository->save($insightlyMapping);
+            $this->info($uitId . ' - importing user with email ' . $email . ' and Insightly id ' . $insightlyId);
+            $this->contactRepository->save($contact);
+
+            $insightlyMapping = new InsightlyMapping(
+                Uuid::fromString($uitId),
+                $insightlyId,
+                ResourceType::Contact
+            );
+            $this->insightlyMappingRepository->save($insightlyMapping);
         }
 
         return 0;
