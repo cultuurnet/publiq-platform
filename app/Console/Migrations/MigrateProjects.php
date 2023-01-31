@@ -5,14 +5,19 @@ declare(strict_types=1);
 namespace App\Console\Migrations;
 
 use App\Domain\Auth\Models\UserModel;
-use App\Domain\Coupons\Models\CouponModel;
-use App\Domain\Integrations\Events\IntegrationCreated;
+use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
+use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
-use App\Domain\Integrations\Models\IntegrationModel;
-use App\Insightly\Models\InsightlyMappingModel;
+use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Insightly\InsightlyMapping;
+use App\Insightly\Listeners\ActivateIntegrationWithCoupon;
+use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Queue\EntityNotFoundException;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Testing\WithoutEvents;
 use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
 use Spatie\Activitylog\Facades\CauserResolver;
@@ -25,13 +30,15 @@ final class MigrateProjects extends Command
 
     protected $description = 'Migrate the projects provided in the projects.csv CSV file';
 
-    public function handle(): int
-    {
-        Event::forget(IntegrationCreated::class);
+    public function handle(
+        IntegrationRepository $integrationRepository,
+        InsightlyMappingRepository $insightlyMappingRepository
+    ): int {
+        Model::unsetEventDispatcher();
+        Event::forget(IntegrationActivatedWithCoupon::class);
 
         CauserResolver::setCauser(UserModel::createSystemUser());
 
-        // Read the projects from CSV file
         $projectsAsArray = $this->readCsvFile('projects.csv');
 
         $projectsCount = count($projectsAsArray);
@@ -73,45 +80,41 @@ final class MigrateProjects extends Command
 
             $integrationId = Uuid::uuid4();
 
-            $integrationModel = new IntegrationModel([
-                'id' => $integrationId->toString(),
-                'name' => $name,
-                'description' => $description,
-                'type' => IntegrationType::SearchApi,
-                'status' => $status,
-                'subscription_id' => 'b46745a1-feb5-45fd-8fa9-8e3ef25aac26',
-            ]);
-            $integrationModel->save();
+            $integration = new Integration(
+                $integrationId,
+                IntegrationType::SearchApi, // TODO: should be determined from data
+                $name,
+                $description,
+                Uuid::fromString('b46745a1-feb5-45fd-8fa9-8e3ef25aac26'), // TODO: should be correct subscription plan
+                $status,
+                []
+            );
+            $integrationRepository->save($integration);
 
             if ($couponCode !== 'NULL' && $couponCode !== 'import') {
-                $couponModel = CouponModel::query()->where('code', '=', $couponCode)->first();
-
-                if ($couponModel === null) {
-                    $this->warn('Coupon with code : ' . $couponCode . ' not found.');
-                } else {
-                    $couponModel->update([
-                        'is_distributed' => true,
-                        'integration_id' => $integrationId->toString(),
-                    ]);
+                try {
+                    $integrationRepository->activateWithCouponCode($integrationId, $couponCode);
+                } catch (EntityNotFoundException) {
+                    $this->warn('Coupon with code ' . $couponCode . ' not found.');
                 }
             }
 
             if ($opportunityId !== 'NULL') {
-                $opportunityMapping = new InsightlyMappingModel([
-                    'id' => $integrationId->toString(),
-                    'resource_type' => ResourceType::Opportunity,
-                    'insightly_id' => $opportunityId,
-                ]);
-                $opportunityMapping->save();
+                $opportunityMapping = new InsightlyMapping(
+                    $integrationId,
+                    (int) $opportunityId,
+                    ResourceType::Opportunity
+                );
+                $insightlyMappingRepository->save($opportunityMapping);
             }
 
             if ($projectId !== 'NULL') {
-                $projectMapping = new InsightlyMappingModel([
-                    'id' => $integrationId->toString(),
-                    'resource_type' => ResourceType::Project,
-                    'insightly_id' => $projectId,
-                ]);
-                $projectMapping->save();
+                $projectMapping = new InsightlyMapping(
+                    $integrationId,
+                    (int) $projectId,
+                    ResourceType::Project
+                );
+                $insightlyMappingRepository->save($projectMapping);
             }
         }
 
