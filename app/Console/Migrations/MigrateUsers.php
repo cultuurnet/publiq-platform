@@ -72,10 +72,13 @@ final class MigrateUsers extends Command
             [$uitId] = $userAsArray;
 
             $email = $this->findUserEmailInUiTiD($uitId);
-            $insightlyIds = $this->insightlyClient->contacts()->findIdsByEmail($email);
+            if ($email === null) {
+                continue;
+            }
 
+            $insightlyIds = $this->insightlyClient->contacts()->findIdsByEmail($email);
             if (count($insightlyIds) > 1) {
-                $this->warn($uitId . ' found multiple contacts with email ' . $email);
+                $this->warn($uitId . ' - found multiple contacts with email ' . $email);
             }
 
             if (count($insightlyIds)) {
@@ -91,15 +94,15 @@ final class MigrateUsers extends Command
                 continue;
             }
 
-            $this->info($uitId . ' - importing user with email ' .$email . ' and Insightly id ' . $insightlyId);
-            $this->contactRepository->save($contact);
-
-            $insightlyMapping = new InsightlyMapping(
-                Uuid::fromString($uitId),
-                $insightlyId,
-                ResourceType::Contact
-            );
-            $this->insightlyMappingRepository->save($insightlyMapping);
+//            $this->info($uitId . ' - importing user with email ' . $email . ' and Insightly id ' . $insightlyId);
+//            $this->contactRepository->save($contact);
+//
+//            $insightlyMapping = new InsightlyMapping(
+//                Uuid::fromString($uitId),
+//                $insightlyId,
+//                ResourceType::Contact
+//            );
+//            $this->insightlyMappingRepository->save($insightlyMapping);
         }
 
         return 0;
