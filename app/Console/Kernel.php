@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console;
 
+use App\Console\Migrations\MigrateUsers;
 use App\Console\Migrations\MigrateCoupons;
 use App\Console\Migrations\MigrateProjects;
 use Illuminate\Console\Scheduling\Schedule;
@@ -14,6 +15,7 @@ final class Kernel extends ConsoleKernel
     protected $commands = [
         MigrateCoupons::class,
         MigrateProjects::class,
+        MigrateUsers::class,
     ];
 
     protected function schedule(Schedule $schedule): void
