@@ -77,15 +77,14 @@ final class MigrateUsers extends Command
             }
 
             $insightlyIds = $this->insightlyClient->contacts()->findIdsByEmail($email);
-            if (count($insightlyIds) > 1) {
-                $this->warn($uitId . ' - found multiple contacts with email ' . $email);
+            if (count($insightlyIds) === 0) {
+                $this->warn($uitId . ' - user with email ' . $email . ' not found as contact inside Insightly');
+                continue;
             }
 
-            if (count($insightlyIds)) {
-                $insightlyId = Arr::sort($insightlyIds)[0];
-            } else {
-                $this->warn($uitId . ' - user with email ' . $email . ' not found as contact inside Insightly ');
-                continue;
+            $insightlyId = Arr::sort($insightlyIds)[0];
+            if (count($insightlyIds) > 1) {
+                $this->warn($uitId . ' - found multiple contacts with email ' . $email . ' used ' . $insightlyId);
             }
 
             $contact = $this->findUserInInsightly($uitId, (int) $insightlyId);
@@ -123,7 +122,20 @@ final class MigrateUsers extends Command
             return null;
         }
 
-        return Str::of($body)->between('<foaf:mbox>', '</foaf:mbox>')->toString();
+        $xmlString = Str::of($body);
+
+        $total = $xmlString->between('<total>', '</total>')->toInteger();
+        if ($total === 0) {
+            $this->warn($uitId . ' - did not find user with UiTiD ' . $uitId);
+            return null;
+        }
+
+        if (!$xmlString->contains('<foaf:mbox>')) {
+            $this->warn($uitId . ' - has no mbox inside UiTiD');
+            return null;
+        }
+
+        return $xmlString->between('<foaf:mbox>', '</foaf:mbox>')->toString();
     }
 
     private function findUserInInsightly(string $uitId, int $insightlyId): ?Contact
