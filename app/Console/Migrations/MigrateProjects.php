@@ -56,6 +56,10 @@ final class MigrateProjects extends Command
             return 0;
         }
 
+        if (!$this->confirm('Did you migrate the coupons first?')) {
+            return 0;
+        }
+
         if (!$this->confirm('Are you sure you want to import ' . $projectsCount . ' projects?')) {
             return 0;
         }
