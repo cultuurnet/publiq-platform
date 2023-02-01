@@ -55,9 +55,24 @@ final class SyncContactTest extends TestCase
         );
     }
 
-    public function test_it_does_not_sync_a_contributor(): void
+    public function test_it_does_not_create_a_contributor(): void
     {
-        $this->markTestSkipped();
+        $this->givenThereIsAContactForAnIntegration(ContactType::Contributor);
+
+        $this->insightlyClient->expects($this->never())
+            ->method('contacts');
+
+        $this->syncContact->handleContactCreated(new ContactCreated($this->contactId));
+    }
+
+    public function test_it_does_not_update_a_contributor(): void
+    {
+        $this->givenThereIsAContactForAnIntegration(ContactType::Contributor);
+
+        $this->insightlyClient->expects($this->never())
+            ->method('contacts');
+
+        $this->syncContact->handleContactUpdated(new ContactUpdated($this->contactId, true));
     }
 
     public function test_it_links_a_new_insightly_contact_when_platform_contact_was_created(): void
