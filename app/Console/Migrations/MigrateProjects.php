@@ -14,8 +14,8 @@ use App\Insightly\InsightlyMapping;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use Illuminate\Console\Command;
-use Illuminate\Contracts\Queue\EntityNotFoundException;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
 use Spatie\Activitylog\Facades\CauserResolver;
@@ -96,7 +96,7 @@ final class MigrateProjects extends Command
             if ($couponCode !== 'NULL' && $couponCode !== 'import') {
                 try {
                     $integrationRepository->activateWithCouponCode($integrationId, $couponCode);
-                } catch (EntityNotFoundException) {
+                } catch (ModelNotFoundException) {
                     $this->warn('Coupon with code ' . $couponCode . ' not found.');
                 }
             }
