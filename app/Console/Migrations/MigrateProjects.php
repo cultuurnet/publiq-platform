@@ -172,6 +172,14 @@ final class MigrateProjects extends Command
             return false;
         }
 
+        $this->call(
+            'migrate:user',
+            [
+                'uitId' => $contactId,
+                '--no-interaction' => true,
+            ]
+        );
+
         try {
             $contact = $this->contactRepository->getById(Uuid::fromString($contactId));
         } catch (ModelNotFoundException) {
