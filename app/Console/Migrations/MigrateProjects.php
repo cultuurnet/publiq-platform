@@ -89,6 +89,10 @@ final class MigrateProjects extends Command
             );
             $integrationRepository->save($integration);
 
+            if ($opportunityId === 'NULL' && $projectId === 'NULL') {
+                $this->warn('Project with name ' . $name . ' has no Insightly id');
+            }
+
             if ($couponCode !== 'NULL' && $couponCode !== 'import') {
                 try {
                     $integrationRepository->activateWithCouponCode($integrationId, $couponCode);
