@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Console\Migrations;
 
 use App\Domain\Auth\Models\UserModel;
+use App\Domain\Contacts\Contact;
+use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
@@ -30,6 +32,7 @@ final class MigrateProjects extends Command
 
     public function handle(
         IntegrationRepository $integrationRepository,
+        ContactRepository $contactRepository,
         InsightlyMappingRepository $insightlyMappingRepository
     ): int {
         Model::unsetEventDispatcher();
@@ -54,6 +57,7 @@ final class MigrateProjects extends Command
                 continue;
             }
 
+            $contactId = $projectAsArray[1];
             $name = $projectAsArray[3];
             $description = $projectAsArray[16];
             $couponCode = $projectAsArray[8];
@@ -118,6 +122,27 @@ final class MigrateProjects extends Command
                 );
                 $insightlyMappingRepository->save($projectMapping);
             }
+
+            if ($contactId === 'NULL') {
+                $this->warn('Project with id ' . $integrationId . ' has no linked user');
+                continue;
+            }
+
+            try {
+                $contact = $contactRepository->getById(Uuid::fromString($contactId));
+            } catch (ModelNotFoundException) {
+                $this->warn('Contact with id ' . $contactId . ' not found inside contacts table');
+                continue;
+            }
+
+            $contactRepository->save(new Contact(
+                $contact->id,
+                $integrationId,
+                $contact->email,
+                $contact->type,
+                $contact->firstName,
+                $contact->lastName
+            ));
         }
 
         return 0;
