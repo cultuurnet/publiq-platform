@@ -118,6 +118,53 @@ final class InsightlyProjectResourceTest extends TestCase
         $this->resource->updateStage(42, ProjectStage::LIVE);
     }
 
+    public function test_it_updates_the_the_project_with_a_coupon(): void
+    {
+        $insightlyId = 41;
+        $couponCode = 'coupon123';
+
+        $project = [
+            'PROJECT_ID' => $insightlyId,
+            'PROJECT_NAME' => 'my integration',
+            'STATUS' => ProjectState::NOT_STARTED->value,
+            'PROJECT_DETAILS' => 'description',
+            'PIPELINE_ID' => $this->pipelineId,
+            'STAGE_ID' => $this->testStageId,
+        ];
+
+        $projectWithCoupon = $project;
+        $projectWithCoupon['CUSTOMFIELDS'][] = [
+            'FIELD_NAME' => 'Coupon__c',
+            'CUSTOM_FIELD_ID' => 'Coupon__c',
+            'FIELD_VALUE' => $couponCode,
+        ];
+
+        $expectedGetRequest = new Request(
+            'GET',
+            'Projects/' . $insightlyId
+        );
+
+        $expectedPutRequest = new Request(
+            'PUT',
+            'Projects/' . $insightlyId,
+            [],
+            Json::encode($projectWithCoupon)
+        );
+
+        $this->insightlyClient->expects($this->exactly(2))
+            ->method('sendRequest')
+            ->withConsecutive(
+                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedGetRequest, $actualRequest))],
+                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedPutRequest, $actualRequest))]
+            )
+            ->willReturnOnConsecutiveCalls(
+                new Response(200, [], Json::encode($project)),
+                new Response()
+            );
+
+        $this->resource->updateWithCoupon(42, $couponCode);
+    }
+
     public function test_it_links_an_integration_to_a_project(): void
     {
         $insightlyProjectId = 42;
