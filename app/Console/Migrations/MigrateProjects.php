@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use Spatie\Activitylog\Facades\CauserResolver;
 
 final class MigrateProjects extends Command
@@ -32,11 +33,16 @@ final class MigrateProjects extends Command
 
     protected $description = 'Migrate the projects provided in the projects.csv CSV file';
 
-    public function handle(
-        IntegrationRepository $integrationRepository,
-        ContactRepository $contactRepository,
-        InsightlyMappingRepository $insightlyMappingRepository
-    ): int {
+    public function __construct(
+        private readonly IntegrationRepository $integrationRepository,
+        private readonly ContactRepository $contactRepository,
+        private readonly InsightlyMappingRepository $insightlyMappingRepository
+    ) {
+        parent::__construct();
+    }
+
+    public function handle(): int
+    {
         Model::unsetEventDispatcher();
         Event::forget(IntegrationActivatedWithCoupon::class);
 
@@ -59,96 +65,129 @@ final class MigrateProjects extends Command
                 continue;
             }
 
-            $contactId = $projectAsArray[1];
-            $name = $projectAsArray[3];
-            $description = $projectAsArray[16];
-            $couponCode = $projectAsArray[8];
-            $opportunityId = $projectAsArray[15];
-            $projectId = $projectAsArray[14];
+            $integrationId = $this->migrateIntegration($projectsAsArray);
 
-            $status = IntegrationStatus::Draft;
-            if ($projectAsArray[7] === 'active') {
-                $status = IntegrationStatus::Active;
-            }
-            if ($projectAsArray[7] === 'blocked') {
-                $status = IntegrationStatus::Blocked;
-            }
-            if ($projectAsArray[7] === 'application_sent') {
-                $status = IntegrationStatus::PendingApprovalIntegration;
-            }
-            if ($projectAsArray[7] === 'waiting_for_payment') {
-                $status = IntegrationStatus::PendingApprovalPayment;
-            }
+            $this->migrateCoupon($integrationId, $projectAsArray[8]);
 
-            $this->info('Importing project ' . $name);
+            $this->migrateMappings($integrationId, $projectAsArray[15], $projectAsArray[14]);
 
-            if ($opportunityId === 'NULL' && $projectId === 'NULL') {
-                $this->warn('Project with name ' . $name . ' has no Insightly id');
-            }
-
-            $integrationId = Uuid::uuid4();
-            $integration = new Integration(
-                $integrationId,
-                IntegrationType::SearchApi, // TODO: should be determined from data
-                $name,
-                $description,
-                Uuid::fromString('b46745a1-feb5-45fd-8fa9-8e3ef25aac26'), // TODO: should be correct subscription plan
-                $status,
-                []
-            );
-            $integrationRepository->save($integration);
-            IntegrationModel::query()->where('id', '=', $integrationId)->update([
-                'migrated_at' => Carbon::now(),
-            ]);
-
-            if ($couponCode !== 'NULL' && $couponCode !== 'import') {
-                try {
-                    $integrationRepository->activateWithCouponCode($integrationId, $couponCode);
-                } catch (ModelNotFoundException) {
-                    $this->warn('Coupon with code ' . $couponCode . ' not found.');
-                }
-            }
-
-            if ($opportunityId !== 'NULL') {
-                $opportunityMapping = new InsightlyMapping(
-                    $integrationId,
-                    (int) $opportunityId,
-                    ResourceType::Opportunity
-                );
-                $insightlyMappingRepository->save($opportunityMapping);
-            }
-
-            if ($projectId !== 'NULL') {
-                $projectMapping = new InsightlyMapping(
-                    $integrationId,
-                    (int)$projectId,
-                    ResourceType::Project
-                );
-                $insightlyMappingRepository->save($projectMapping);
-            }
-
-            if ($contactId === 'NULL') {
-                $this->warn('Project with id ' . $integrationId . ' has no linked user');
-                continue;
-            }
-
-            try {
-                $contact = $contactRepository->getById(Uuid::fromString($contactId));
-            } catch (ModelNotFoundException) {
-                $this->warn('Contact with id ' . $contactId . ' not found inside contacts table');
-                continue;
-            }
-
-            $contactRepository->save(new Contact(
-                $contact->id,
-                $integrationId,
-                $contact->email,
-                $contact->type,
-                $contact->firstName,
-                $contact->lastName
-            ));
+            $this->migrateContact($integrationId, $projectAsArray[1]);
         }
 
         return 0;
+    }
+
+    private function migrateIntegration(array $projectAsArray): UuidInterface
+    {
+        $name = $projectAsArray[3];
+
+        $status = IntegrationStatus::Draft;
+        if ($projectAsArray[7] === 'active') {
+            $status = IntegrationStatus::Active;
+        }
+        if ($projectAsArray[7] === 'blocked') {
+            $status = IntegrationStatus::Blocked;
+        }
+        if ($projectAsArray[7] === 'application_sent') {
+            $status = IntegrationStatus::PendingApprovalIntegration;
+        }
+        if ($projectAsArray[7] === 'waiting_for_payment') {
+            $status = IntegrationStatus::PendingApprovalPayment;
+        }
+
+        $this->info('Importing project ' . $name);
+
+        $integrationId = Uuid::uuid4();
+
+        $integration = new Integration(
+            $integrationId,
+            IntegrationType::SearchApi, // TODO: should be determined from data
+            $name,
+            $projectAsArray[16],
+            Uuid::fromString('b46745a1-feb5-45fd-8fa9-8e3ef25aac26'), // TODO: should be correct subscription plan
+            $status,
+            []
+        );
+        $this->integrationRepository->save($integration);
+
+        IntegrationModel::query()->where('id', '=', $integrationId)->update([
+            'migrated_at' => Carbon::now(),
+        ]);
+
+        return $integrationId;
+    }
+
+    private function migrateCoupon(UuidInterface $integrationId, string $couponCode): bool
+    {
+        if ($couponCode === 'NULL') {
+            return false;
+        }
+
+        if ($couponCode === 'import') {
+            return false;
+        }
+
+        try {
+            $this->integrationRepository->activateWithCouponCode($integrationId, $couponCode);
+        } catch (ModelNotFoundException) {
+            $this->warn('Coupon with code ' . $couponCode . ' not found.');
+            return false;
+        }
+
+        return true;
+    }
+
+    private function migrateMappings(UuidInterface $integrationId, string $opportunityId, string $projectId): bool
+    {
+        if ($opportunityId === 'NULL' && $projectId === 'NULL') {
+            $this->warn('Project with name has no Insightly ids');
+            return false;
+        }
+
+        if ($opportunityId !== 'NULL') {
+            $opportunityMapping = new InsightlyMapping(
+                $integrationId,
+                (int) $opportunityId,
+                ResourceType::Opportunity
+            );
+            $this->insightlyMappingRepository->save($opportunityMapping);
+        }
+
+        if ($projectId !== 'NULL') {
+            $projectMapping = new InsightlyMapping(
+                $integrationId,
+                (int) $projectId,
+                ResourceType::Project
+            );
+            $this->insightlyMappingRepository->save($projectMapping);
+        }
+
+        return true;
+    }
+
+    private function migrateContact(UuidInterface $integrationId, string $contactId): bool
+    {
+        if ($contactId === 'NULL') {
+            $this->warn('Project with id ' . $integrationId . ' has no linked user');
+            return false;
+        }
+
+        try {
+            $contact = $this->contactRepository->getById(Uuid::fromString($contactId));
+        } catch (ModelNotFoundException) {
+            $this->warn('Contact with id ' . $contactId . ' not found inside contacts table');
+            return false;
+        }
+
+        $this->contactRepository->save(new Contact(
+            $contact->id,
+            $integrationId,
+            $contact->email,
+            $contact->type,
+            $contact->firstName,
+            $contact->lastName
+        ));
+
+        return true;
     }
 }
