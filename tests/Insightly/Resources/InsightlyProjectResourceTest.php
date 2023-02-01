@@ -139,6 +139,38 @@ final class InsightlyProjectResourceTest extends TestCase
         $this->resource->linkOpportunity(42, 31);
     }
 
+    public function test_it_gets_a_project(): void
+    {
+        $insightlyProjectId = 42;
+        $project = [
+            'PROJECT_ID' => $insightlyProjectId,
+            'PROJECT_NAME' => 'my integration',
+            'STATUS' => ProjectState::NOT_STARTED->value,
+            'PROJECT_DETAILS' => 'description',
+            'PIPELINE_ID' => $this->pipelineId,
+            'STAGE_ID' => $this->testStageId,
+        ];
+
+        $expectedRequest = new Request(
+            'GET',
+            'Projects/' . $insightlyProjectId,
+        );
+
+        $expectedResponse = new Response(
+            200,
+            [],
+            Json::encode($project)
+        );
+
+        $this->insightlyClient->expects($this->once())
+            ->method('sendRequest')
+            ->with(self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedRequest, $actualRequest)))
+            ->willReturn($expectedResponse);
+
+        $actualProject = $this->resource->get($insightlyProjectId);
+        $this->assertEquals($project, $actualProject);
+    }
+
     public function test_it_links_a_contact_to_a_project(): void
     {
         $insightlyProjectId = 42;
