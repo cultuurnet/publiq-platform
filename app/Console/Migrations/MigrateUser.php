@@ -51,9 +51,10 @@ final class MigrateUser extends Command
 
         CauserResolver::setCauser(UserModel::createSystemUser());
 
+        /** @var string $uitId */
         $uitId = $this->argument('uitId');
 
-        if (!$this->option('no-interaction') && !$this->confirm('Are you sure you want to import user with UiTiD' . $uitId . '?')) {
+        if (!$this->option('no-interaction') && !$this->confirm('Are you sure you want to import user with UiTiD ' . $uitId . '?')) {
             return 0;
         }
 
