@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 return [
+    'enabled' => env('INSIGHTLY_ENABLED', true),
+
     'host' => env('INSIGHTLY_HOST', 'https://api.insight.ly/v3.1/'),
 
     'api_key' => env('INSIGHTLY_API_KEY'),
@@ -22,10 +24,10 @@ return [
             'id' => env('INSIGHTLY_PROJECTS_PIPELINE_ID', 949819),
             'stages' => [
                 'test' => env('INSIGHTLY_PROJECTS_PIPELINE_STAGE_TEST', 3894944),
-                'request' => env('INSIGHTLY_PROJECTS_PIPELINE_STAGE_START', 3894945),
-                'information' => env('INSIGHTLY_PROJECTS_PIPELINE_STAGE_EVALUATION', 3894946),
-                'offer' => env('INSIGHTLY_PROJECTS_PIPELINE_STAGE_LIVE', 3894947),
-                'closed' => env('INSIGHTLY_PROJECTS_PIPELINE_STAGE_ENDED', 3936051),
+                'start' => env('INSIGHTLY_PROJECTS_PIPELINE_STAGE_START', 3894945),
+                'evaluation' => env('INSIGHTLY_PROJECTS_PIPELINE_STAGE_EVALUATION', 3894946),
+                'live' => env('INSIGHTLY_PROJECTS_PIPELINE_STAGE_LIVE', 3894947),
+                'ended' => env('INSIGHTLY_PROJECTS_PIPELINE_STAGE_ENDED', 3936051),
             ],
         ],
     ],

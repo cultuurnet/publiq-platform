@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace App\Insightly\Resources;
 
+use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Objects\ProjectStage;
+use App\Insightly\Objects\ProjectState;
+use App\Insightly\Serializers\CustomFields\CouponSerializer;
+use App\Insightly\Serializers\LinkSerializer;
 use App\Insightly\Serializers\ProjectSerializer;
 use App\Insightly\Serializers\ProjectStageSerializer;
 use App\Json;
@@ -36,11 +40,34 @@ final class InsightlyProjectResource implements ProjectResource
 
         $projectAsArray = JSON::decodeAssociatively($response->getBody()->getContents());
 
-        $id = (int) $projectAsArray['PROJECT_ID'];
+        return (int) $projectAsArray['PROJECT_ID'];
+    }
 
-        $this->updateStage($id, ProjectStage::TEST);
+    public function get(int $id): array
+    {
+        $request = new Request(
+            'GET',
+            $this->path . $id
+        );
 
-        return $id;
+        $response = $this->insightlyClient->sendRequest($request);
+
+        return Json::decodeAssociatively($response->getBody()->getContents());
+    }
+
+    public function updateWithCoupon(int $id, string $couponCode): void
+    {
+        $projectAsArray = $this->get($id);
+        $projectAsArray['CUSTOMFIELDS'][] = (new CouponSerializer())->toInsightlyArray($couponCode);
+
+        $request = new Request(
+            'PUT',
+            $this->path,
+            [],
+            JSON::encode($projectAsArray)
+        );
+
+        $this->insightlyClient->sendRequest($request);
     }
 
     public function delete(int $id): void
@@ -66,5 +93,43 @@ final class InsightlyProjectResource implements ProjectResource
         );
 
         $this->insightlyClient->sendRequest($stageRequest);
+    }
+
+    public function updateState(int $id, ProjectState $state): void
+    {
+        $projectAsArray = $this->get($id);
+        $projectAsArray['STATUS'] = $state->value;
+        $stateRequest = new Request(
+            'PUT',
+            $this->path,
+            [],
+            Json::encode($projectAsArray)
+        );
+
+        $this->insightlyClient->sendRequest($stateRequest);
+    }
+
+    public function linkOpportunity(int $id, int $opportunityId): void
+    {
+        $request = new Request(
+            'POST',
+            $this->path . $id . '/Links',
+            [],
+            Json::encode((new LinkSerializer())->opportunityToLink($opportunityId))
+        );
+
+        $this->insightlyClient->sendRequest($request);
+    }
+
+    public function linkContact(int $id, int $contactId, ContactType $contactType): void
+    {
+        $request = new Request(
+            'POST',
+            $this->path . $id . '/Links',
+            [],
+            Json::encode((new LinkSerializer())->contactToLink($contactId, $contactType))
+        );
+
+        $this->insightlyClient->sendRequest($request);
     }
 }

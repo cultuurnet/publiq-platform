@@ -11,6 +11,7 @@ use App\Domain\Integrations\IntegrationType;
 use App\Insightly\Exceptions\ContactCannotBeUnlinked;
 use App\Insightly\Objects\OpportunityStage;
 use App\Insightly\Objects\OpportunityState;
+use App\Insightly\Objects\Role;
 use App\Insightly\Pipelines;
 use App\Insightly\Resources\InsightlyOpportunityResource;
 use App\Json;
@@ -176,10 +177,64 @@ final class InsightlyOpportunityResourceTest extends TestCase
         $this->resource->updateStage(42, OpportunityStage::OFFER);
     }
 
+    public function test_it_updates_the_state_of_an_opportunity(): void
+    {
+        $opportunityInsightlyId = 42;
+
+        $expectedGetRequest = new Request(
+            'GET',
+            'Opportunities/42'
+        );
+
+        $opportunity = [
+            'OPPORTUNITY_NAME' => 'My opportunity',
+            'OPPORTUNITY_STATE' => OpportunityState::OPEN->value,
+            'OPPORTUNITY_DETAILS' => 'Lorem ipsum',
+            'PIPELINE_ID' => $this->pipelineId,
+            'STAGE_ID' => $this->offerStageId,
+            'CUSTOMFIELDS' => [
+                'FIELD_NAME' => 'Product__c',
+                'CUSTOM_FIELD_ID' => 'Product__c',
+                'FIELD_VALUE' => 'Publicatie Widgets V3',
+            ],
+        ];
+
+        $expectedPutRequest = new Request(
+            'PUT',
+            'Opportunities/',
+            [],
+            Json::encode([
+                'OPPORTUNITY_NAME' => 'My opportunity',
+                'OPPORTUNITY_STATE' => OpportunityState::WON->value,
+                'OPPORTUNITY_DETAILS' => 'Lorem ipsum',
+                'PIPELINE_ID' => $this->pipelineId,
+                'STAGE_ID' => $this->offerStageId,
+                'CUSTOMFIELDS' => [
+                    'FIELD_NAME' => 'Product__c',
+                    'CUSTOM_FIELD_ID' => 'Product__c',
+                    'FIELD_VALUE' => 'Publicatie Widgets V3',
+                ],
+            ])
+        );
+
+        $this->insightlyClient->expects($this->exactly(2))
+            ->method('sendRequest')
+            ->withConsecutive(
+                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedGetRequest, $actualRequest))],
+                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedPutRequest, $actualRequest))],
+            )
+            ->willReturnOnConsecutiveCalls(
+                new Response(200, [], Json::encode($opportunity)),
+                new Response(202)
+            );
+
+        $this->resource->updateState($opportunityInsightlyId, OpportunityState::WON);
+    }
+
     /**
      * @dataProvider provideContactTypes
      */
-    public function test_it_links_a_contact_to_an_opportunity(ContactType $contactType, string $expectedRole): void
+    public function test_it_links_a_contact_to_an_opportunity(ContactType $contactType, Role $expectedRole): void
     {
         $expectedRequest = new Request(
             'POST',
@@ -188,7 +243,7 @@ final class InsightlyOpportunityResourceTest extends TestCase
             Json::encode([
                 'LINK_OBJECT_ID' => 3,
                 'LINK_OBJECT_NAME' => 'Contact',
-                'ROLE' => $expectedRole,
+                'ROLE' => $expectedRole->value,
             ])
         );
 
@@ -203,12 +258,12 @@ final class InsightlyOpportunityResourceTest extends TestCase
     {
         yield 'Technical' => [
             'contactType' => ContactType::Technical,
-            'expectedRole' => 'Technisch',
+            'expectedRole' => Role::Technical,
         ];
 
         yield 'Functional' => [
             'contactType' => ContactType::Functional,
-            'expectedRole' => 'Aanvrager',
+            'expectedRole' => Role::Applicant,
         ];
     }
 
@@ -231,7 +286,7 @@ final class InsightlyOpportunityResourceTest extends TestCase
         $opportunityLinks = [
             [
                 'DETAILS' => null,
-                'ROLE' => 'Aanvrager',
+                'ROLE' => Role::Applicant,
                 'LINK_ID' => $linkId,
                 'OBJECT_NAME' => 'Opportunity',
                 'OBJECT_ID' => $opportunityId,
@@ -240,7 +295,7 @@ final class InsightlyOpportunityResourceTest extends TestCase
             ],
             [
                 'DETAILS' => null,
-                'ROLE' => 'Aanvrager',
+                'ROLE' => Role::Applicant,
                 'LINK_ID' => mt_rand(100, 1000),
                 'OBJECT_NAME' => 'Opportunity',
                 'OBJECT_ID' => $opportunityId,
@@ -249,7 +304,7 @@ final class InsightlyOpportunityResourceTest extends TestCase
             ],
             [
                 'DETAILS' => null,
-                'ROLE' => 'Technisch',
+                'ROLE' => Role::Technical,
                 'LINK_ID' => mt_rand(100, 1000),
                 'OBJECT_NAME' => 'Opportunity',
                 'OBJECT_ID' => $opportunityId,
@@ -288,7 +343,7 @@ final class InsightlyOpportunityResourceTest extends TestCase
         $opportunityLinks = [
             [
                 'DETAILS' => null,
-                'ROLE' => 'Aanvrager',
+                'ROLE' => Role::Applicant,
                 'LINK_ID' => mt_rand(100, 1000),
                 'OBJECT_NAME' => 'Opportunity',
                 'OBJECT_ID' => $opportunityId,
