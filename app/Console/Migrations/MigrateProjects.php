@@ -113,7 +113,7 @@ final class MigrateProjects extends Command
             if ($projectId !== 'NULL') {
                 $projectMapping = new InsightlyMapping(
                     $integrationId,
-                    (int) $projectId,
+                    (int)$projectId,
                     ResourceType::Project
                 );
                 $insightlyMappingRepository->save($projectMapping);
