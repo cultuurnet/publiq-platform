@@ -80,8 +80,11 @@ final class MigrateProjects extends Command
 
             $this->info('Importing project ' . $name);
 
-            $integrationId = Uuid::uuid4();
+            if ($opportunityId === 'NULL' && $projectId === 'NULL') {
+                $this->warn('Project with name ' . $name . ' has no Insightly id');
+            }
 
+            $integrationId = Uuid::uuid4();
             $integration = new Integration(
                 $integrationId,
                 IntegrationType::SearchApi, // TODO: should be determined from data
@@ -92,10 +95,6 @@ final class MigrateProjects extends Command
                 []
             );
             $integrationRepository->save($integration);
-
-            if ($opportunityId === 'NULL' && $projectId === 'NULL') {
-                $this->warn('Project with name ' . $name . ' has no Insightly id');
-            }
 
             if ($couponCode !== 'NULL' && $couponCode !== 'import') {
                 try {
