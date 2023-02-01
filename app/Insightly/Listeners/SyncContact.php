@@ -58,6 +58,8 @@ final class SyncContact implements ShouldQueue
         } else {
             $contactIds = array_values(Arr::sort($contactIds));
             $contactInsightlyId = $contactIds[0];
+
+            $this->insightlyClient->contacts()->update($contact, $contactInsightlyId);
         }
 
         $this->insightlyMappingRepository->save(new InsightlyMapping(
