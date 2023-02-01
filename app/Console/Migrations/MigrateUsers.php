@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Console\Migrations;
 
 use App\Domain\Auth\Models\UserModel;
-use GuzzleHttp\ClientInterface;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Facades\CauserResolver;
@@ -17,8 +16,6 @@ final class MigrateUsers extends Command
     protected $signature = 'migrate:users';
 
     protected $description = 'Migrate the users provided in the users.csv CSV file';
-
-    private ClientInterface $oauthClient;
 
     public function handle(): int
     {
