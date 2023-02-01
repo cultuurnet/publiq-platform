@@ -11,6 +11,7 @@ use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Repositories\InsightlyMappingRepository;
@@ -18,6 +19,7 @@ use App\Insightly\Resources\ResourceType;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
 use Spatie\Activitylog\Facades\CauserResolver;
@@ -95,6 +97,9 @@ final class MigrateProjects extends Command
                 []
             );
             $integrationRepository->save($integration);
+            IntegrationModel::query()->where('id', '=', $integrationId)->update([
+                'migrated_at' => Carbon::now(),
+            ]);
 
             if ($couponCode !== 'NULL' && $couponCode !== 'import') {
                 try {
