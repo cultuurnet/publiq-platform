@@ -146,6 +146,38 @@ final class InsightlyOpportunityResourceTest extends TestCase
         ];
     }
 
+    public function test_it_gets_an_opportunity(): void
+    {
+        $insightlyId = 42;
+        $opportunity = [
+            'OPPORTUNITY_ID' => $insightlyId,
+            'OPPORTUNITY_NAME' => 'my integration',
+            'OPPORTUNITY_STATE' => OpportunityState::OPEN->value,
+            'OPPORTUNITY_DETAILS' => 'description',
+            'PIPELINE_ID' => $this->pipelineId,
+            'STAGE_ID' => $this->testStageId,
+        ];
+
+        $expectedRequest = new Request(
+            'GET',
+            'Opportunities/' . $insightlyId,
+        );
+
+        $expectedResponse = new Response(
+            200,
+            [],
+            Json::encode($opportunity)
+        );
+
+        $this->insightlyClient->expects($this->once())
+            ->method('sendRequest')
+            ->with(self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedRequest, $actualRequest)))
+            ->willReturn($expectedResponse);
+
+        $actualOpportunity = $this->resource->get($insightlyId);
+        $this->assertEquals($opportunity, $actualOpportunity);
+    }
+
     public function test_it_deletes_an_opportunity(): void
     {
         $expectedRequest = new Request('DELETE', 'Opportunities/42');
