@@ -65,7 +65,7 @@ final class MigrateProjects extends Command
                 continue;
             }
 
-            $integrationId = $this->migrateIntegration($projectsAsArray);
+            $integrationId = $this->migrateIntegration($projectAsArray);
 
             $this->migrateCoupon($integrationId, $projectAsArray[8]);
 
