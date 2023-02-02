@@ -148,22 +148,34 @@ final class MigrateProjects extends Command
             return false;
         }
 
-        if ($opportunityId !== 'NULL') {
-            $opportunityMapping = new InsightlyMapping(
-                $integrationId,
-                (int) $opportunityId,
-                ResourceType::Opportunity
-            );
-            $this->insightlyMappingRepository->save($opportunityMapping);
+        if ($opportunityId !== 0) {
+            try {
+                $this->insightlyClient->opportunities()->get($opportunityId);
+
+                $opportunityMapping = new InsightlyMapping(
+                    $integrationId,
+                    $opportunityId,
+                    ResourceType::Opportunity
+                );
+                $this->insightlyMappingRepository->save($opportunityMapping);
+            } catch (Exception) {
+                $this->warn($integrationId . ' - Did not find opportunity with id ' . $opportunityId);
+            }
         }
 
-        if ($projectId !== 'NULL') {
-            $projectMapping = new InsightlyMapping(
-                $integrationId,
-                (int) $projectId,
-                ResourceType::Project
-            );
-            $this->insightlyMappingRepository->save($projectMapping);
+        if ($projectId !==  0) {
+            try {
+                $this->insightlyClient->projects()->get($projectId);
+
+                $projectMapping = new InsightlyMapping(
+                    $integrationId,
+                    $projectId,
+                    ResourceType::Project
+                );
+                $this->insightlyMappingRepository->save($projectMapping);
+            } catch (Exception) {
+                $this->warn($integrationId . ' - Did not find project with id ' . $projectId);
+            }
         }
 
         return true;
