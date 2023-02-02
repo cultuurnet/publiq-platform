@@ -23,7 +23,7 @@ final class EloquentContactRepositoryTest extends TestCase
         $this->contactRepository = new EloquentContactRepository();
     }
 
-    public function test_it_can_create_a_contact(): void
+    public function test_it_can_create_and_update_a_contact(): void
     {
         $contact = new Contact(
             Uuid::uuid4(),
