@@ -185,7 +185,7 @@ final class MigrateProjects extends Command
     private function migrateContact(UuidInterface $integrationId, string $contactId): bool
     {
         if ($contactId === 'NULL') {
-            $this->warn($integrationId . - 'Project has no linked user');
+            $this->warn($integrationId . ' - Project has no linked user');
             return false;
         }
 
