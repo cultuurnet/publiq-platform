@@ -13,9 +13,11 @@ use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -36,7 +38,8 @@ final class MigrateProjects extends Command
     public function __construct(
         private readonly IntegrationRepository $integrationRepository,
         private readonly ContactRepository $contactRepository,
-        private readonly InsightlyMappingRepository $insightlyMappingRepository
+        private readonly InsightlyMappingRepository $insightlyMappingRepository,
+        private readonly InsightlyClient $insightlyClient
     ) {
         parent::__construct();
     }
@@ -69,22 +72,26 @@ final class MigrateProjects extends Command
                 continue;
             }
 
-            $integrationId = $this->migrateIntegration($projectAsArray);
+            $integrationId = Uuid::uuid4();
+
+            $this->info($integrationId . ' - Started importing project ' . $projectAsArray[3]);
+
+            $this->migrateIntegration($integrationId, $projectAsArray);
 
             $this->migrateCoupon($integrationId, $projectAsArray[8]);
 
-            $this->migrateMappings($integrationId, $projectAsArray[15], $projectAsArray[14]);
+            $this->migrateMappings($integrationId, (int) $projectAsArray[15], (int) $projectAsArray[14]);
 
             $this->migrateContact($integrationId, $projectAsArray[1]);
+
+            $this->info($integrationId . ' - Ended importing project ' . $projectAsArray[3]);
         }
 
         return 0;
     }
 
-    private function migrateIntegration(array $projectAsArray): UuidInterface
+    private function migrateIntegration(UuidInterface $integrationId, array $projectAsArray): void
     {
-        $name = $projectAsArray[3];
-
         $status = IntegrationStatus::Draft;
         if ($projectAsArray[7] === 'active') {
             $status = IntegrationStatus::Active;
@@ -99,15 +106,11 @@ final class MigrateProjects extends Command
             $status = IntegrationStatus::PendingApprovalPayment;
         }
 
-        $this->info('Importing project ' . $name);
-
-        $integrationId = Uuid::uuid4();
-
         $integration = new Integration(
             $integrationId,
             IntegrationType::SearchApi, // TODO: should be determined from data
-            $name,
-            $projectAsArray[16],
+            $projectAsArray[3],
+            $projectAsArray[16] !== 'NULL' ? $projectAsArray[16] : null,
             Uuid::fromString('b46745a1-feb5-45fd-8fa9-8e3ef25aac26'), // TODO: should be correct subscription plan
             $status,
             []
@@ -117,8 +120,6 @@ final class MigrateProjects extends Command
         IntegrationModel::query()->where('id', '=', $integrationId)->update([
             'migrated_at' => Carbon::now(),
         ]);
-
-        return $integrationId;
     }
 
     private function migrateCoupon(UuidInterface $integrationId, string $couponCode): bool
@@ -134,17 +135,17 @@ final class MigrateProjects extends Command
         try {
             $this->integrationRepository->activateWithCouponCode($integrationId, $couponCode);
         } catch (ModelNotFoundException) {
-            $this->warn('Coupon with code ' . $couponCode . ' not found.');
+            $this->warn($integrationId . ' - Coupon with code ' . $couponCode . ' not found.');
             return false;
         }
 
         return true;
     }
 
-    private function migrateMappings(UuidInterface $integrationId, string $opportunityId, string $projectId): bool
+    private function migrateMappings(UuidInterface $integrationId, int $opportunityId, int $projectId): bool
     {
-        if ($opportunityId === 'NULL' && $projectId === 'NULL') {
-            $this->warn('Project with name has no Insightly ids');
+        if ($opportunityId === 0 && $projectId === 0) {
+            $this->warn($integrationId . ' - Project has no Insightly ids');
             return false;
         }
 
@@ -184,7 +185,7 @@ final class MigrateProjects extends Command
     private function migrateContact(UuidInterface $integrationId, string $contactId): bool
     {
         if ($contactId === 'NULL') {
-            $this->warn('Project with id ' . $integrationId . ' has no linked user');
+            $this->warn($integrationId . - 'Project has no linked user');
             return false;
         }
 
@@ -199,7 +200,7 @@ final class MigrateProjects extends Command
         try {
             $contact = $this->contactRepository->getById(Uuid::fromString($contactId));
         } catch (ModelNotFoundException) {
-            $this->warn('Contact with id ' . $contactId . ' not found inside contacts table');
+            $this->warn($integrationId . ' - Contact with id ' . $contactId . ' not found inside contacts table');
             return false;
         }
 
