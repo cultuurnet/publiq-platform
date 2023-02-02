@@ -23,7 +23,7 @@ final class EloquentContactRepositoryTest extends TestCase
         $this->contactRepository = new EloquentContactRepository();
     }
 
-    public function test_it_can_save_a_contact(): void
+    public function test_it_can_create_and_update_a_contact(): void
     {
         $contact = new Contact(
             Uuid::uuid4(),
@@ -33,7 +33,6 @@ final class EloquentContactRepositoryTest extends TestCase
             'Jane',
             'Doe'
         );
-
         $this->contactRepository->save($contact);
 
         $this->assertDatabaseHas('contacts', [
@@ -43,6 +42,25 @@ final class EloquentContactRepositoryTest extends TestCase
             'first_name' => $contact->firstName,
             'last_name' => $contact->lastName,
             'email' => $contact->email,
+        ]);
+
+        $updatedContact = new Contact(
+            $contact->id,
+            Uuid::uuid4(),
+            'john.doedoe@anonymous.com',
+            ContactType::Functional,
+            'John',
+            'DoeDoe'
+        );
+        $this->contactRepository->save($updatedContact);
+
+        $this->assertDatabaseHas('contacts', [
+            'id' => $updatedContact->id->toString(),
+            'integration_id' => $updatedContact->integrationId->toString(),
+            'type' => $updatedContact->type,
+            'first_name' => $updatedContact->firstName,
+            'last_name' => $updatedContact->lastName,
+            'email' => $updatedContact->email,
         ]);
     }
 

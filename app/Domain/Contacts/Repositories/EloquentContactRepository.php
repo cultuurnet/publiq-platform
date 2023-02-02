@@ -13,14 +13,19 @@ final class EloquentContactRepository implements ContactRepository
 {
     public function save(Contact $contact): void
     {
-        ContactModel::query()->create([
-            'id' => $contact->id->toString(),
-            'integration_id' => $contact->integrationId->toString(),
-            'type' => $contact->type->value,
-            'first_name' => $contact->firstName,
-            'last_name' => $contact->lastName,
-            'email' => $contact->email,
-        ]);
+        ContactModel::query()->updateOrCreate(
+            [
+                'id' => $contact->id->toString(),
+            ],
+            [
+                'id' => $contact->id->toString(),
+                'integration_id' => $contact->integrationId->toString(),
+                'type' => $contact->type->value,
+                'first_name' => $contact->firstName,
+                'last_name' => $contact->lastName,
+                'email' => $contact->email,
+            ]
+        );
     }
 
     public function getById(UuidInterface $id): Contact
