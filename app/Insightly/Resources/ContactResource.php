@@ -10,6 +10,8 @@ interface ContactResource
 {
     public function create(Contact $contact): int;
 
+    public function get(int $id): array;
+
     public function update(Contact $contact, int $id): void;
 
     public function delete(int $id): void;
