@@ -36,6 +36,18 @@ final class InsightlyContactResource implements ContactResource
         return $contactAsArray['CONTACT_ID'];
     }
 
+    public function get(int $id): array
+    {
+        $request = new Request(
+            'GET',
+            $this->path . $id
+        );
+
+        $response = $this->insightlyClient->sendRequest($request);
+
+        return Json::decodeAssociatively($response->getBody()->getContents());
+    }
+
     public function update(Contact $contact, int $id): void
     {
         $request = new Request(

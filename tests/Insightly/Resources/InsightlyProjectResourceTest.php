@@ -118,6 +118,53 @@ final class InsightlyProjectResourceTest extends TestCase
         $this->resource->updateStage(42, ProjectStage::LIVE);
     }
 
+    public function test_it_updates_the_the_project_with_a_coupon(): void
+    {
+        $insightlyId = 41;
+        $couponCode = 'coupon123';
+
+        $project = [
+            'PROJECT_ID' => $insightlyId,
+            'PROJECT_NAME' => 'my integration',
+            'STATUS' => ProjectState::NOT_STARTED->value,
+            'PROJECT_DETAILS' => 'description',
+            'PIPELINE_ID' => $this->pipelineId,
+            'STAGE_ID' => $this->testStageId,
+        ];
+
+        $projectWithCoupon = $project;
+        $projectWithCoupon['CUSTOMFIELDS'][] = [
+            'FIELD_NAME' => 'Coupon__c',
+            'CUSTOM_FIELD_ID' => 'Coupon__c',
+            'FIELD_VALUE' => $couponCode,
+        ];
+
+        $expectedGetRequest = new Request(
+            'GET',
+            'Projects/' . $insightlyId
+        );
+
+        $expectedPutRequest = new Request(
+            'PUT',
+            'Projects/' . $insightlyId,
+            [],
+            Json::encode($projectWithCoupon)
+        );
+
+        $this->insightlyClient->expects($this->exactly(2))
+            ->method('sendRequest')
+            ->withConsecutive(
+                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedGetRequest, $actualRequest))],
+                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedPutRequest, $actualRequest))]
+            )
+            ->willReturnOnConsecutiveCalls(
+                new Response(200, [], Json::encode($project)),
+                new Response()
+            );
+
+        $this->resource->updateWithCoupon(42, $couponCode);
+    }
+
     public function test_it_links_an_integration_to_a_project(): void
     {
         $insightlyProjectId = 42;
@@ -137,6 +184,38 @@ final class InsightlyProjectResourceTest extends TestCase
             ->with(self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedRequest, $actualRequest)));
 
         $this->resource->linkOpportunity(42, 31);
+    }
+
+    public function test_it_gets_a_project(): void
+    {
+        $insightlyProjectId = 42;
+        $project = [
+            'PROJECT_ID' => $insightlyProjectId,
+            'PROJECT_NAME' => 'my integration',
+            'STATUS' => ProjectState::NOT_STARTED->value,
+            'PROJECT_DETAILS' => 'description',
+            'PIPELINE_ID' => $this->pipelineId,
+            'STAGE_ID' => $this->testStageId,
+        ];
+
+        $expectedRequest = new Request(
+            'GET',
+            'Projects/' . $insightlyProjectId,
+        );
+
+        $expectedResponse = new Response(
+            200,
+            [],
+            Json::encode($project)
+        );
+
+        $this->insightlyClient->expects($this->once())
+            ->method('sendRequest')
+            ->with(self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedRequest, $actualRequest)))
+            ->willReturn($expectedResponse);
+
+        $actualProject = $this->resource->get($insightlyProjectId);
+        $this->assertEquals($project, $actualProject);
     }
 
     public function test_it_links_a_contact_to_a_project(): void
