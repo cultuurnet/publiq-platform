@@ -11,6 +11,7 @@ use App\Domain\Contacts\Events\ContactUpdated;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Listeners\SyncContact;
+use App\Insightly\Models\InsightlyContact;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use Iterator;
@@ -98,12 +99,12 @@ final class SyncContactTest extends TestCase
      * @dataProvider provideExistingEmailCases
      */
     public function test_it_guards_unique_email_in_insightly_when_contact_was_created(
-        array $insightlyContactIds,
+        array $insightlyContacts,
         int $expectedMappedInsightlyContactId
     ): void {
         $contact = $this->givenThereIsAContactForAnIntegration(ContactType::Functional);
         $this->givenOnlyTheIntegrationIsMappedToInsightly();
-        $this->givenTheInsightlyContactsFoundByEmailAre($insightlyContactIds);
+        $this->givenTheInsightlyContactsFoundByEmailAre($insightlyContacts);
 
         $this->thenItDoesNotStoreAContactAtInsightly();
         $this->thenItUpdatesTheContactAtInsightly($contact, $expectedMappedInsightlyContactId);
@@ -121,13 +122,32 @@ final class SyncContactTest extends TestCase
     public function provideExistingEmailCases(): Iterator
     {
         yield 'one contact found' => [
-            'insightlyContactIds' => [42],
+            'insightlyContacts' => [
+                new InsightlyContact(42, 0),
+            ],
             'expectedMappedInsightlyContactId' => 42,
         ];
 
-        yield 'multiple contacts found' => [
-            'insightlyContactIds' => [52, 136, 68, 42, 124, 88, 99],
-            'expectedMappedInsightlyContactId' => 42, // The lowest id is chosen
+        yield 'multiple contacts found, single one with most links' => [
+            'insightlyContacts' => [
+                new InsightlyContact(13, 0),
+                new InsightlyContact(42, 1),
+                new InsightlyContact(14, 0),
+                new InsightlyContact(57, 0),
+                new InsightlyContact(63, 0),
+            ],
+            'expectedMappedInsightlyContacts' => 42, // The one with the most links is chosen
+        ];
+
+        yield 'multiple contacts found, multiple with most links' => [
+            'insightlyContacts' => [
+                new InsightlyContact(13, 0),
+                new InsightlyContact(42, 1),
+                new InsightlyContact(14, 1),
+                new InsightlyContact(57, 0),
+                new InsightlyContact(63, 0),
+            ],
+            'expectedMappedInsightlyContactId' => 14, // The one with the lowest id is chosen when links are equal
         ];
     }
 
@@ -172,12 +192,12 @@ final class SyncContactTest extends TestCase
      * @dataProvider provideExistingEmailCases
      */
     public function test_it_guards_unique_email_in_insightly_when_contact_email_changed(
-        array $insightlyContactIds,
+        array $insightlyContacts,
         int $expectedMappedInsightlyContactId
     ): void {
         $contact = $this->givenThereIsAContactForAnIntegration(ContactType::Functional);
         $this->givenTheContactAndIntegrationAreMappedToInsightly();
-        $this->givenTheInsightlyContactsFoundByEmailAre($insightlyContactIds);
+        $this->givenTheInsightlyContactsFoundByEmailAre($insightlyContacts);
 
         $this->thenItDoesNotStoreAContactAtInsightly();
 
@@ -256,12 +276,12 @@ final class SyncContactTest extends TestCase
             );
     }
 
-    private function givenTheInsightlyContactsFoundByEmailAre(array $contactIds): void
+    private function givenTheInsightlyContactsFoundByEmailAre(array $contacts): void
     {
         $this->contactResource->expects($this->any())
-            ->method('findIdsByEmail')
+            ->method('findByEmail')
             ->with($this->contactEmail)
-            ->willReturn($contactIds);
+            ->willReturn($contacts);
     }
 
     private function thenItStoresTheContactAtInsightly(Contact $contact, int $insightlyContactId): void

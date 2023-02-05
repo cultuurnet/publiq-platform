@@ -11,12 +11,12 @@ use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Insightly\Exceptions\ContactCannotBeUnlinked;
 use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
+use App\Insightly\Models\InsightlyContact;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use App\Insightly\SyncIsAllowed;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Arr;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -52,13 +52,20 @@ final class SyncContact implements ShouldQueue
 
     private function storeAndLinkContactAtInsightly(Contact $contact): void
     {
-        $contactIds = $this->insightlyClient->contacts()->findIdsByEmail($contact->email);
+        $contacts = $this->insightlyClient->contacts()->findByEmail($contact->email);
 
-        if (empty($contactIds)) {
+        if (empty($contacts)) {
             $contactInsightlyId = $this->insightlyClient->contacts()->create($contact);
         } else {
-            $contactIds = array_values(Arr::sort($contactIds));
-            $contactInsightlyId = $contactIds[0];
+            usort($contacts, function (InsightlyContact $a, InsightlyContact $b): int {
+                if ($a->numberOfLinks === $b->numberOfLinks) {
+                    return $a->insightlyId <=> $b->insightlyId;
+                }
+
+                return $b->numberOfLinks <=> $a->numberOfLinks;
+            });
+
+            $contactInsightlyId = $contacts[0]->insightlyId;
 
             $this->insightlyClient->contacts()->update($contact, $contactInsightlyId);
         }
