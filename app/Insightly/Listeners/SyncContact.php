@@ -18,6 +18,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Arr;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 final class SyncContact implements ShouldQueue
 {
@@ -123,5 +124,22 @@ final class SyncContact implements ShouldQueue
         }
 
         $this->storeAndLinkContactAtInsightly($contact);
+    }
+
+    public function failed(ContactUpdated|ContactCreated $event, Throwable $exception): void
+    {
+        $logMessage = 'Failed to create contact';
+        if ($event instanceof ContactUpdated) {
+            $logMessage = 'Failed to update contact';
+        }
+
+        $this->logger->error(
+            $logMessage,
+            [
+                'domain' => 'insightly',
+                'contact_id' => $event->id->toString(),
+                'exception' => $exception,
+            ]
+        );
     }
 }
