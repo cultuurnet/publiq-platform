@@ -75,7 +75,7 @@ final class SyncContactTest extends TestCase
         $this->syncContact->handleContactUpdated(new ContactUpdated($this->contactId, true));
     }
 
-    public function test_it_links_a_new_insightly_contact_when_platform_contact_was_created(): void
+    public function test_it_links_a_new_insightly_contact_when_contact_was_created(): void
     {
         $contact = $this->givenThereIsAContactForAnIntegration(ContactType::Functional);
         $this->givenOnlyTheIntegrationIsMappedToInsightly();
@@ -97,7 +97,7 @@ final class SyncContactTest extends TestCase
     /**
      * @dataProvider provideExistingEmailCases
      */
-    public function test_it_guards_unique_email_in_insightly_when_platform_contact_was_created(
+    public function test_it_guards_unique_email_in_insightly_when_contact_was_created(
         array $insightlyContactIds,
         int $expectedMappedInsightlyContactId
     ): void {
@@ -131,7 +131,7 @@ final class SyncContactTest extends TestCase
         ];
     }
 
-    public function test_it_updates_the_insightly_contact_when_platform_contact_was_updated_with_same_email(): void
+    public function test_it_updates_the_insightly_contact_when_contact_was_updated_with_same_email(): void
     {
         $contact = $this->givenThereIsAContactForAnIntegration(ContactType::Functional);
         $this->givenTheContactAndIntegrationAreMappedToInsightly();
@@ -144,7 +144,7 @@ final class SyncContactTest extends TestCase
         $this->syncContact->handleContactUpdated(new ContactUpdated($this->contactId, false));
     }
 
-    public function test_it_creates_a_new_insightly_contact_when_platform_contact_email_changed(): void
+    public function test_it_creates_a_new_insightly_contact_when_contact_email_changed(): void
     {
         $updatedInsightlyContactId = 333;
 
@@ -171,7 +171,7 @@ final class SyncContactTest extends TestCase
     /**
      * @dataProvider provideExistingEmailCases
      */
-    public function test_it_guards_unique_email_in_insightly_when_platform_contact_email_changed(
+    public function test_it_guards_unique_email_in_insightly_when_contact_email_changed(
         array $insightlyContactIds,
         int $expectedMappedInsightlyContactId
     ): void {
