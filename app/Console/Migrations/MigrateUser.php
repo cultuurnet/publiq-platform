@@ -7,10 +7,12 @@ namespace App\Console\Migrations;
 use App\Domain\Auth\Models\UserModel;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
+use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Insightly\Exceptions\RecordNotFound;
 use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
+use App\Insightly\Models\InsightlyContact;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use App\UiTiDv1\UiTiDv1EnvironmentSDK;
@@ -18,6 +20,7 @@ use GuzzleHttp\ClientInterface;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
 use Spatie\Activitylog\Facades\CauserResolver;
@@ -54,7 +57,7 @@ final class MigrateUser extends Command
         /** @var string $uitId */
         $uitId = $this->argument('uitId');
 
-        if (!$this->confirm('Are you sure you want to import user with UiTiD ' . $uitId . '?')) {
+        if (!$this->option('no-interaction') && !$this->confirm('Are you sure you want to import user with UiTiD ' . $uitId . '?')) {
             return 0;
         }
 
@@ -67,38 +70,25 @@ final class MigrateUser extends Command
 
         $insightlyContacts = $this->insightlyClient->contacts()->findByEmail($email);
         if (count($insightlyContacts) === 0) {
-            $this->migrateContact($uitIdContact, 0);
+            $this->warn($uitId . ' - user with email ' . $email . ' not found inside Insightly');
+            $this->migrateContact($uitIdContact);
             return 0;
         }
 
-        $insightlyId = Arr::sort($insightlyContacts)[0];
+        /** @var InsightlyContact $insightlyContact */
+        $insightlyContact = Arr::sort($insightlyContacts)[0];
         if (count($insightlyContacts) > 1) {
-            $this->warn($uitId . ' - found multiple contacts with email ' . $email . ' used ' . $insightlyId);
+            $this->warn($uitId . ' - found multiple contacts with email ' . $email . ' used ' . $insightlyContact->insightlyId);
         }
 
-        $contact = $this->getContactFromInInsightly($uitId, (int) $insightlyId);
+        $contact = $this->getContactFromInInsightly($uitId, $insightlyContact->insightlyId);
         if ($contact === null) {
             return 1;
         }
 
-        $this->migrateContact($contact, $insightlyId);
+        $this->migrateContact($contact);
 
         return 0;
-    }
-
-    private function migrateContact(Contact $contact, ?int $insightlyId): void
-    {
-        $this->info($contact->id . ' - importing user with email ' . $contact->email . ' and Insightly id ' . $insightlyId);
-        $this->contactRepository->save($contact);
-
-        if ($insightlyId !== null) {
-            $insightlyMapping = new InsightlyMapping(
-                $contact->id,
-                $insightlyId,
-                ResourceType::Contact
-            );
-            $this->insightlyMappingRepository->save($insightlyMapping);
-        }
     }
 
     private function getContactFromUiTiD(string $uitId): ?Contact
@@ -129,15 +119,21 @@ final class MigrateUser extends Command
             return null;
         }
 
+        if (!$xmlString->contains('<foaf:nick>')) {
+            $this->warn($uitId . ' - has no nick inside UiTiD');
+            return null;
+        }
+
         $email = $xmlString->between('<foaf:mbox>', '</foaf:mbox>')->toString();
+        $nick = $xmlString->between('<foaf:nick>', '</foaf:nick>')->toString();
 
         return new Contact(
             Uuid::fromString($uitId),
             Uuid::fromString('00000000-0000-0000-0000-000000000000'),
             $email,
             ContactType::Contributor,
-            'first',
-            'Last'
+            $nick,
+            ''
         );
     }
 
@@ -158,5 +154,15 @@ final class MigrateUser extends Command
             $contactAsArray['FIRST_NAME'],
             $contactAsArray['LAST_NAME'] ?? ''
         );
+    }
+
+    private function migrateContact(Contact $contact): void
+    {
+        $this->info($contact->id . ' - importing user with email ' . $contact->email);
+        $this->contactRepository->save($contact);
+
+        ContactModel::query()->where('id', '=', $contact->id->toString())->update([
+            'migrated_at' => Carbon::now(),
+        ]);
     }
 }
