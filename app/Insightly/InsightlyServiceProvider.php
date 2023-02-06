@@ -13,11 +13,10 @@ use App\Domain\Organizations\Events\OrganizationCreated;
 use App\Domain\Organizations\Events\OrganizationDeleted;
 use App\Domain\Organizations\Events\OrganizationUpdated;
 use App\Insightly\Listeners\ActivateIntegrationWithCoupon;
-use App\Insightly\Listeners\CreateContact;
 use App\Insightly\Listeners\CreateOpportunity;
 use App\Insightly\Listeners\CreateOrganization;
+use App\Insightly\Listeners\SyncContact;
 use App\Insightly\Listeners\UnlinkContact;
-use App\Insightly\Listeners\UpdateContact;
 use App\Insightly\Listeners\DeleteOrganization;
 use App\Insightly\Listeners\UpdateOrganization;
 use App\Insightly\Repositories\EloquentInsightlyMappingRepository;
@@ -48,11 +47,11 @@ final class InsightlyServiceProvider extends ServiceProvider
         if (config('insightly.enabled')) {
             Event::listen(IntegrationCreated::class, [CreateOpportunity::class, 'handle']);
             Event::listen(IntegrationActivatedWithCoupon::class, [ActivateIntegrationWithCoupon::class, 'handle']);
-            Event::listen(ContactCreated::class, [CreateContact::class, 'handle']);
+            Event::listen(ContactCreated::class, [SyncContact::class, 'handleContactCreated']);
             Event::listen(ContactDeleted::class, [UnlinkContact::class, 'handle']);
             Event::listen(OrganizationCreated::class, [CreateOrganization::class, 'handle']);
             Event::listen(OrganizationUpdated::class, [UpdateOrganization::class, 'handle']);
-            Event::listen(ContactUpdated::class, [UpdateContact::class, 'handle']);
+            Event::listen(ContactUpdated::class, [SyncContact::class, 'handleContactUpdated']);
             Event::listen(OrganizationDeleted::class, [DeleteOrganization::class, 'handle']);
         }
     }
