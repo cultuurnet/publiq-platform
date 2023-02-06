@@ -15,7 +15,7 @@ use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Insightly\InsightlyMapping;
-use App\Insightly\Listeners\ActivateIntegrationWithCoupon;
+use App\Insightly\Listeners\CreateProjectWithCoupon;
 use App\Insightly\Objects\OpportunityStage;
 use App\Insightly\Objects\OpportunityState;
 use App\Insightly\Objects\ProjectStage;
@@ -30,11 +30,11 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Tests\MockInsightlyClient;
 
-final class ActivateIntegrationWithCouponTest extends TestCase
+final class CreateProjectWithCouponTest extends TestCase
 {
     use MockInsightlyClient;
 
-    private ActivateIntegrationWithCoupon $listener;
+    private CreateProjectWithCoupon $listener;
 
     private IntegrationRepository&MockObject $integrationRepository;
 
@@ -68,7 +68,7 @@ final class ActivateIntegrationWithCouponTest extends TestCase
 
         $this->mockCrmClient();
 
-        $this->listener = new ActivateIntegrationWithCoupon(
+        $this->listener = new CreateProjectWithCoupon(
             $this->insightlyClient,
             $this->integrationRepository,
             $this->contactRepository,
