@@ -31,6 +31,7 @@ final class SyncContactTest extends TestCase
     private int $insightlyIntegrationId;
     private UuidInterface $contactId;
     private int $insightlyContactId;
+    private int $insightlyProjectId;
     private string $contactEmail;
     private ContactRepository&MockObject $contactRepository;
     private InsightlyMappingRepository&MockObject $insightlyMappingRepository;
@@ -43,6 +44,7 @@ final class SyncContactTest extends TestCase
         $this->contactId = Uuid::uuid4();
         $this->insightlyContactId = 222;
         $this->contactEmail = 'info@publiq.be';
+        $this->insightlyProjectId = 333;
 
         $this->mockCrmClient();
         $this->contactRepository = $this->createMock(ContactRepository::class);
@@ -92,6 +94,12 @@ final class SyncContactTest extends TestCase
             ContactType::Functional
         );
 
+        $this->thenItLinksTheContactToTheProjectInInsightly(
+            $this->insightlyProjectId,
+            $this->insightlyContactId,
+            ContactType::Functional,
+        );
+
         $this->syncContact->handleContactCreated(new ContactCreated($this->contactId));
     }
 
@@ -112,6 +120,12 @@ final class SyncContactTest extends TestCase
         $this->thenItStoresTheContactMapping($this->contactId, $expectedMappedInsightlyContactId);
         $this->thenItLinksTheContactToTheIntegrationAtInsightly(
             $this->insightlyIntegrationId,
+            $expectedMappedInsightlyContactId,
+            ContactType::Functional,
+        );
+
+        $this->thenItLinksTheContactToTheProjectInInsightly(
+            $this->insightlyProjectId,
             $expectedMappedInsightlyContactId,
             ContactType::Functional,
         );
@@ -185,6 +199,12 @@ final class SyncContactTest extends TestCase
             ContactType::Functional
         );
 
+        $this->thenItLinksTheContactToTheProjectInInsightly(
+            $this->insightlyProjectId,
+            $updatedInsightlyContactId,
+            ContactType::Functional,
+        );
+
         $this->syncContact->handleContactUpdated(new ContactUpdated($this->contactId, true));
     }
 
@@ -212,6 +232,12 @@ final class SyncContactTest extends TestCase
             ContactType::Functional
         );
 
+        $this->thenItLinksTheContactToTheProjectInInsightly(
+            $this->insightlyProjectId,
+            $expectedMappedInsightlyContactId,
+            ContactType::Functional,
+        );
+
         $this->syncContact->handleContactUpdated(new ContactUpdated($this->contactId, true));
     }
 
@@ -236,16 +262,28 @@ final class SyncContactTest extends TestCase
 
     private function givenOnlyTheIntegrationIsMappedToInsightly(): void
     {
-        $insightlyIntegrationMapping = new InsightlyMapping(
+        $insightlyOpportunityMapping = new InsightlyMapping(
             $this->integrationId,
             $this->insightlyIntegrationId,
             ResourceType::Opportunity,
         );
 
-        $this->insightlyMappingRepository->expects($this->once())
+        $insightlyProjectMapping = new InsightlyMapping(
+            $this->integrationId,
+            $this->insightlyProjectId,
+            ResourceType::Project,
+        );
+
+        $this->insightlyMappingRepository->expects($this->any())
             ->method('getByIdAndType')
-            ->with($this->integrationId, ResourceType::Opportunity)
-            ->willReturnOnConsecutiveCalls($insightlyIntegrationMapping);
+            ->withConsecutive(
+                [$this->integrationId, ResourceType::Opportunity],
+                [$this->integrationId, ResourceType::Project],
+            )
+            ->willReturnOnConsecutiveCalls(
+                $insightlyOpportunityMapping,
+                $insightlyProjectMapping,
+            );
     }
 
     private function givenTheContactAndIntegrationAreMappedToInsightly(): void
@@ -256,11 +294,18 @@ final class SyncContactTest extends TestCase
             ResourceType::Opportunity,
         );
 
-        $insightlyIntegrationMapping = new InsightlyMapping(
+        $insightlyOpportunityMapping = new InsightlyMapping(
             $this->integrationId,
             $this->insightlyIntegrationId,
             ResourceType::Opportunity,
         );
+
+        $insightlyProjectMapping = new InsightlyMapping(
+            $this->integrationId,
+            $this->insightlyProjectId,
+            ResourceType::Project,
+        );
+
 
         $this->insightlyMappingRepository->expects($this->any())
             ->method('getByIdAndType')
@@ -268,11 +313,13 @@ final class SyncContactTest extends TestCase
                 [$this->contactId, ResourceType::Contact],
                 [$this->integrationId, ResourceType::Opportunity],
                 [$this->integrationId, ResourceType::Opportunity],
+                [$this->integrationId, ResourceType::Project],
             )
             ->willReturnOnConsecutiveCalls(
                 $insightlyContactMapping,
-                $insightlyIntegrationMapping,
-                $insightlyIntegrationMapping,
+                $insightlyOpportunityMapping,
+                $insightlyOpportunityMapping,
+                $insightlyProjectMapping,
             );
     }
 
@@ -348,5 +395,15 @@ final class SyncContactTest extends TestCase
         $this->opportunityResource->expects($this->once())
             ->method('unlinkContact')
             ->with($insightlyIntegrationId, $insightlyContactId);
+    }
+
+    private function thenItLinksTheContactToTheProjectInInsightly(
+        int $insightlyProjectId,
+        int $insightlyContactId,
+        ContactType $contactType
+    ): void {
+        $this->projectResource->expects($this->once())
+            ->method('linkContact')
+            ->with($insightlyProjectId, $insightlyContactId, $contactType);
     }
 }

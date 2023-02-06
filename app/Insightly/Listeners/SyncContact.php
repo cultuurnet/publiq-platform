@@ -76,9 +76,16 @@ final class SyncContact implements ShouldQueue
             ResourceType::Contact
         ));
 
-        $integrationMapping = $this->insightlyMappingRepository->getByIdAndType($contact->integrationId, ResourceType::Opportunity);
+        $opportunityMapping = $this->insightlyMappingRepository->getByIdAndType($contact->integrationId, ResourceType::Opportunity);
         $this->insightlyClient->opportunities()->linkContact(
-            $integrationMapping->insightlyId,
+            $opportunityMapping->insightlyId,
+            $contactInsightlyId,
+            $contact->type
+        );
+
+        $projectMapping = $this->insightlyMappingRepository->getByIdAndType($contact->integrationId, ResourceType::Project);
+        $this->insightlyClient->projects()->linkContact(
+            $projectMapping->insightlyId,
             $contactInsightlyId,
             $contact->type
         );
