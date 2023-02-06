@@ -106,9 +106,17 @@ final class MigrateProjects extends Command
             $status = IntegrationStatus::PendingApprovalPayment;
         }
 
+        $integrationType = IntegrationType::EntryApi;
+        if ($projectAsArray[6] === '24743') {
+            $integrationType = IntegrationType::Widgets;
+        }
+        if ($projectAsArray[6] === '28808') {
+            $integrationType = IntegrationType::SearchApi;
+        }
+
         $integration = new Integration(
             $integrationId,
-            IntegrationType::SearchApi, // TODO: should be determined from data
+            $integrationType,
             $projectAsArray[3],
             $projectAsArray[16] !== 'NULL' ? $projectAsArray[16] : null,
             Uuid::fromString('b46745a1-feb5-45fd-8fa9-8e3ef25aac26'), // TODO: should be correct subscription plan
