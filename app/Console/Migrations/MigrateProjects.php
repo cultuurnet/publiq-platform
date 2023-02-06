@@ -100,6 +100,7 @@ final class MigrateProjects extends Command
             $this->migrateContact($integrationId, $projectAsArray[1]);
 
             $this->info($integrationId . ' - Ended importing project ' . $projectAsArray[3]);
+            $this->info('---');
         }
 
         return 0;
@@ -133,7 +134,7 @@ final class MigrateProjects extends Command
             $integrationId,
             $integrationType,
             $projectAsArray[3],
-            $projectAsArray[16] !== 'NULL' ? $projectAsArray[16] : null,
+            $projectAsArray[16] !== 'NULL' ? $projectAsArray[16] : '',
             Uuid::fromString('b46745a1-feb5-45fd-8fa9-8e3ef25aac26'), // TODO: should be correct subscription plan
             $status,
             []
@@ -212,7 +213,7 @@ final class MigrateProjects extends Command
             return false;
         }
 
-        $uitIdContact = $this->getContactFromUiTiD($contactId);
+        $uitIdContact = $this->getContactFromUiTiD($integrationId, $contactId);
         $email = $uitIdContact?->email;
         if ($uitIdContact === null || $email === null) {
             $this->warn($contactId . ' - user not found inside UiTiD');
@@ -233,7 +234,7 @@ final class MigrateProjects extends Command
             $this->warn($contactId . ' - found multiple contacts with email ' . $email . ' used ' . $insightlyContact->insightlyId);
         }
 
-        $contact = $this->getContactFromInInsightly($contactId, $insightlyContact->insightlyId);
+        $contact = $this->getContactFromInInsightly($integrationId, $contactId, $insightlyContact->insightlyId);
         $this->saveContact($contact);
 
         return true;
@@ -249,7 +250,7 @@ final class MigrateProjects extends Command
         ]);
     }
 
-    private function getContactFromUiTiD(string $uitId): ?Contact
+    private function getContactFromUiTiD(UuidInterface $integrationId, string $uitId): ?Contact
     {
         $response = $this->oauthClient->request(
             'GET',
@@ -287,7 +288,7 @@ final class MigrateProjects extends Command
 
         return new Contact(
             Uuid::fromString($uitId),
-            Uuid::fromString('00000000-0000-0000-0000-000000000000'),
+            $integrationId,
             $email,
             ContactType::Contributor,
             $nick,
@@ -295,13 +296,13 @@ final class MigrateProjects extends Command
         );
     }
 
-    private function getContactFromInInsightly(string $uitId, int $insightlyId): Contact
+    private function getContactFromInInsightly(UuidInterface $integrationId, string $uitId, int $insightlyId): Contact
     {
         $contactAsArray = $this->insightlyClient->contacts()->get($insightlyId);
 
         return new Contact(
             Uuid::fromString($uitId),
-            Uuid::fromString('00000000-0000-0000-0000-000000000000'),
+            $integrationId,
             $contactAsArray['EMAIL_ADDRESS'],
             ContactType::Contributor,
             $contactAsArray['FIRST_NAME'],
