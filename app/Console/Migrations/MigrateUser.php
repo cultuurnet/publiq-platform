@@ -131,7 +131,7 @@ final class MigrateUser extends Command
 
         $email = $xmlString->between('<foaf:mbox>', '</foaf:mbox>')->toString();
 
-        new Contact(
+        return new Contact(
             Uuid::fromString($uitId),
             Uuid::fromString('00000000-0000-0000-0000-000000000000'),
             $email,
