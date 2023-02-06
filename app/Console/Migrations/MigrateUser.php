@@ -54,46 +54,54 @@ final class MigrateUser extends Command
         /** @var string $uitId */
         $uitId = $this->argument('uitId');
 
-        if (!$this->option('no-interaction') && !$this->confirm('Are you sure you want to import user with UiTiD ' . $uitId . '?')) {
+        if (!$this->confirm('Are you sure you want to import user with UiTiD ' . $uitId . '?')) {
             return 0;
         }
 
-        $email = $this->findUserEmailInUiTiD($uitId);
-        if ($email === null) {
+        $uitIdContact = $this->getContactFromUiTiD($uitId);
+        $email = $uitIdContact?->email;
+        if ($uitIdContact === null || $email === null) {
+            $this->warn($uitId . ' - user not found inside UiTiD');
             return 1;
         }
 
-        $insightlyIds = $this->insightlyClient->contacts()->findIdsByEmail($email);
-        if (count($insightlyIds) === 0) {
-            $this->warn($uitId . ' - user with email ' . $email . ' not found as contact inside Insightly');
-            return 1;
+        $insightlyContacts = $this->insightlyClient->contacts()->findByEmail($email);
+        if (count($insightlyContacts) === 0) {
+            $this->migrateContact($uitIdContact, 0);
+            return 0;
         }
 
-        $insightlyId = Arr::sort($insightlyIds)[0];
-        if (count($insightlyIds) > 1) {
+        $insightlyId = Arr::sort($insightlyContacts)[0];
+        if (count($insightlyContacts) > 1) {
             $this->warn($uitId . ' - found multiple contacts with email ' . $email . ' used ' . $insightlyId);
         }
 
-        $contact = $this->findUserInInsightly($uitId, (int) $insightlyId);
-
+        $contact = $this->getContactFromInInsightly($uitId, (int) $insightlyId);
         if ($contact === null) {
             return 1;
         }
 
-        $this->info($uitId . ' - importing user with email ' . $email . ' and Insightly id ' . $insightlyId);
-        $this->contactRepository->save($contact);
-
-        $insightlyMapping = new InsightlyMapping(
-            Uuid::fromString($uitId),
-            $insightlyId,
-            ResourceType::Contact
-        );
-        $this->insightlyMappingRepository->save($insightlyMapping);
+        $this->migrateContact($contact, $insightlyId);
 
         return 0;
     }
 
-    private function findUserEmailInUiTiD(string $uitId): ?string
+    private function migrateContact(Contact $contact, ?int $insightlyId): void
+    {
+        $this->info($contact->id . ' - importing user with email ' . $contact->email . ' and Insightly id ' . $insightlyId);
+        $this->contactRepository->save($contact);
+
+        if ($insightlyId !== null) {
+            $insightlyMapping = new InsightlyMapping(
+                $contact->id,
+                $insightlyId,
+                ResourceType::Contact
+            );
+            $this->insightlyMappingRepository->save($insightlyMapping);
+        }
+    }
+
+    private function getContactFromUiTiD(string $uitId): ?Contact
     {
         $response = $this->oauthClient->request(
             'GET',
@@ -121,10 +129,19 @@ final class MigrateUser extends Command
             return null;
         }
 
-        return $xmlString->between('<foaf:mbox>', '</foaf:mbox>')->toString();
+        $email = $xmlString->between('<foaf:mbox>', '</foaf:mbox>')->toString();
+
+        new Contact(
+            Uuid::fromString($uitId),
+            Uuid::fromString('00000000-0000-0000-0000-000000000000'),
+            $email,
+            ContactType::Contributor,
+            'first',
+            'Last'
+        );
     }
 
-    private function findUserInInsightly(string $uitId, int $insightlyId): ?Contact
+    private function getContactFromInInsightly(string $uitId, int $insightlyId): ?Contact
     {
         try {
             $contactAsArray = $this->insightlyClient->contacts()->get($insightlyId);
