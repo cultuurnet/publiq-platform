@@ -28,7 +28,7 @@ final class SyncContactTest extends TestCase
 
     private SyncContact $syncContact;
     private UuidInterface $integrationId;
-    private int $insightlyIntegrationId;
+    private int $insightlyOpportunityId;
     private UuidInterface $contactId;
     private int $insightlyContactId;
     private int $insightlyProjectId;
@@ -39,7 +39,7 @@ final class SyncContactTest extends TestCase
     protected function setUp(): void
     {
         $this->integrationId = Uuid::uuid4();
-        $this->insightlyIntegrationId = 111;
+        $this->insightlyOpportunityId = 111;
 
         $this->contactId = Uuid::uuid4();
         $this->insightlyContactId = 222;
@@ -89,7 +89,7 @@ final class SyncContactTest extends TestCase
         $this->thenItStoresTheContactMapping($this->contactId, $this->insightlyContactId);
 
         $this->thenItLinksTheContactToTheIntegrationAtInsightly(
-            $this->insightlyIntegrationId,
+            $this->insightlyOpportunityId,
             $this->insightlyContactId,
             ContactType::Functional
         );
@@ -119,7 +119,7 @@ final class SyncContactTest extends TestCase
 
         $this->thenItStoresTheContactMapping($this->contactId, $expectedMappedInsightlyContactId);
         $this->thenItLinksTheContactToTheIntegrationAtInsightly(
-            $this->insightlyIntegrationId,
+            $this->insightlyOpportunityId,
             $expectedMappedInsightlyContactId,
             ContactType::Functional,
         );
@@ -189,12 +189,12 @@ final class SyncContactTest extends TestCase
         $this->thenItDoesNotUpdateTheOriginalContactAtInsightly($contact, $this->insightlyContactId);
 
         $this->thenItRemovesTheContactMapping($this->contactId);
-        $this->thenItRemovesTheContactFromTheOpportunityInInsightly($this->insightlyIntegrationId, $this->insightlyContactId);
+        $this->thenItRemovesTheContactFromTheOpportunityInInsightly($this->insightlyOpportunityId, $this->insightlyContactId);
 
         $this->thenItStoresTheContactAtInsightly($contact, $updatedInsightlyContactId);
         $this->thenItStoresTheContactMapping($this->contactId, $updatedInsightlyContactId);
         $this->thenItLinksTheContactToTheIntegrationAtInsightly(
-            $this->insightlyIntegrationId,
+            $this->insightlyOpportunityId,
             $updatedInsightlyContactId,
             ContactType::Functional
         );
@@ -222,12 +222,12 @@ final class SyncContactTest extends TestCase
         $this->thenItDoesNotStoreAContactAtInsightly();
 
         $this->thenItRemovesTheContactMapping($this->contactId);
-        $this->thenItRemovesTheContactFromTheOpportunityInInsightly($this->insightlyIntegrationId, $this->insightlyContactId);
+        $this->thenItRemovesTheContactFromTheOpportunityInInsightly($this->insightlyOpportunityId, $this->insightlyContactId);
 
         $this->thenItStoresTheContactMapping($this->contactId, $expectedMappedInsightlyContactId);
         $this->thenItUpdatesTheContactAtInsightly($contact, $expectedMappedInsightlyContactId);
         $this->thenItLinksTheContactToTheIntegrationAtInsightly(
-            $this->insightlyIntegrationId,
+            $this->insightlyOpportunityId,
             $expectedMappedInsightlyContactId,
             ContactType::Functional
         );
@@ -264,7 +264,7 @@ final class SyncContactTest extends TestCase
     {
         $insightlyOpportunityMapping = new InsightlyMapping(
             $this->integrationId,
-            $this->insightlyIntegrationId,
+            $this->insightlyOpportunityId,
             ResourceType::Opportunity,
         );
 
@@ -296,7 +296,7 @@ final class SyncContactTest extends TestCase
 
         $insightlyOpportunityMapping = new InsightlyMapping(
             $this->integrationId,
-            $this->insightlyIntegrationId,
+            $this->insightlyOpportunityId,
             ResourceType::Opportunity,
         );
 
