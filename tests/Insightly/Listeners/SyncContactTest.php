@@ -14,6 +14,7 @@ use App\Insightly\Listeners\SyncContact;
 use App\Insightly\Models\InsightlyContact;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Iterator;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -78,27 +79,36 @@ final class SyncContactTest extends TestCase
         $this->syncContact->handleContactUpdated(new ContactUpdated($this->contactId, true));
     }
 
-    public function test_it_links_a_new_insightly_contact_when_contact_was_created(): void
-    {
+    /**
+     * @dataProvider provideIntegrationMappingCases
+     */
+    public function test_it_links_a_new_insightly_contact_when_contact_was_created(
+        bool $mappedToOpportunity,
+        bool $mappedToProject,
+    ): void {
         $contact = $this->givenThereIsAContactForAnIntegration(ContactType::Functional);
-        $this->givenOnlyTheIntegrationIsMappedToInsightly();
+        $this->givenOnlyTheIntegrationIsMappedToInsightly($mappedToOpportunity, $mappedToProject);
         $this->givenTheInsightlyContactsFoundByEmailAre([]);
 
         $this->thenItStoresTheContactAtInsightly($contact, $this->insightlyContactId);
 
         $this->thenItStoresTheContactMapping($this->contactId, $this->insightlyContactId);
 
-        $this->thenItLinksTheContactToTheIntegrationAtInsightly(
-            $this->insightlyOpportunityId,
-            $this->insightlyContactId,
-            ContactType::Functional
-        );
+        if ($mappedToOpportunity) {
+            $this->thenItLinksTheContactToTheIntegrationAtInsightly(
+                $this->insightlyOpportunityId,
+                $this->insightlyContactId,
+                ContactType::Functional
+            );
+        }
 
-        $this->thenItLinksTheContactToTheProjectInInsightly(
-            $this->insightlyProjectId,
-            $this->insightlyContactId,
-            ContactType::Functional,
-        );
+        if ($mappedToProject) {
+            $this->thenItLinksTheContactToTheProjectInInsightly(
+                $this->insightlyProjectId,
+                $this->insightlyContactId,
+                ContactType::Functional,
+            );
+        }
 
         $this->syncContact->handleContactCreated(new ContactCreated($this->contactId));
     }
@@ -111,7 +121,7 @@ final class SyncContactTest extends TestCase
         int $expectedMappedInsightlyContactId
     ): void {
         $contact = $this->givenThereIsAContactForAnIntegration(ContactType::Functional);
-        $this->givenOnlyTheIntegrationIsMappedToInsightly();
+        $this->givenOnlyTheIntegrationIsMappedToInsightly(true, true);
         $this->givenTheInsightlyContactsFoundByEmailAre($insightlyContacts);
 
         $this->thenItDoesNotStoreAContactAtInsightly();
@@ -168,7 +178,7 @@ final class SyncContactTest extends TestCase
     public function test_it_updates_the_insightly_contact_when_contact_was_updated_with_same_email(): void
     {
         $contact = $this->givenThereIsAContactForAnIntegration(ContactType::Functional);
-        $this->givenTheContactAndIntegrationAreMappedToInsightly();
+        $this->givenTheContactAndIntegrationAreMappedToInsightly(true, true);
         $this->givenTheInsightlyContactsFoundByEmailAre([]);
 
         $this->thenItDoesNotStoreAContactAtInsightly();
@@ -178,35 +188,71 @@ final class SyncContactTest extends TestCase
         $this->syncContact->handleContactUpdated(new ContactUpdated($this->contactId, false));
     }
 
-    public function test_it_creates_a_new_insightly_contact_when_contact_email_changed(): void
-    {
+    /**
+     * @dataProvider provideIntegrationMappingCases
+     */
+    public function test_it_creates_a_new_insightly_contact_when_contact_email_changed(
+        bool $mappedToOpportunity,
+        bool $mappedToProject,
+    ): void {
         $updatedInsightlyContactId = 333;
 
         $contact = $this->givenThereIsAContactForAnIntegration(ContactType::Functional);
-        $this->givenTheContactAndIntegrationAreMappedToInsightly();
+        $this->givenTheContactAndIntegrationAreMappedToInsightly($mappedToOpportunity, $mappedToProject);
         $this->givenTheInsightlyContactsFoundByEmailAre([]);
 
         $this->thenItDoesNotUpdateTheOriginalContactAtInsightly($contact, $this->insightlyContactId);
 
         $this->thenItRemovesTheContactMapping($this->contactId);
-        $this->thenItRemovesTheContactFromTheOpportunityInInsightly($this->insightlyOpportunityId, $this->insightlyContactId);
-        $this->thenItRemovesTheContactFromTheProjectInInsightly($this->insightlyProjectId, $this->insightlyContactId);
 
         $this->thenItStoresTheContactAtInsightly($contact, $updatedInsightlyContactId);
         $this->thenItStoresTheContactMapping($this->contactId, $updatedInsightlyContactId);
-        $this->thenItLinksTheContactToTheIntegrationAtInsightly(
-            $this->insightlyOpportunityId,
-            $updatedInsightlyContactId,
-            ContactType::Functional
-        );
 
-        $this->thenItLinksTheContactToTheProjectInInsightly(
-            $this->insightlyProjectId,
-            $updatedInsightlyContactId,
-            ContactType::Functional,
-        );
+        if ($mappedToOpportunity) {
+            $this->thenItRemovesTheContactFromTheOpportunityInInsightly(
+                $this->insightlyOpportunityId,
+                $this->insightlyContactId
+            );
+            $this->thenItLinksTheContactToTheIntegrationAtInsightly(
+                $this->insightlyOpportunityId,
+                $updatedInsightlyContactId,
+                ContactType::Functional
+            );
+        }
+
+        if ($mappedToProject) {
+            $this->thenItRemovesTheContactFromTheProjectInInsightly($this->insightlyProjectId, $this->insightlyContactId);
+            $this->thenItLinksTheContactToTheProjectInInsightly(
+                $this->insightlyProjectId,
+                $updatedInsightlyContactId,
+                ContactType::Functional,
+            );
+        }
 
         $this->syncContact->handleContactUpdated(new ContactUpdated($this->contactId, true));
+    }
+
+    public function provideIntegrationMappingCases(): Iterator
+    {
+        yield 'nothing is mapped' => [
+            'mappedToOpportunity' => false,
+            'mappedToProject' => false,
+        ];
+
+        yield 'project is mapped' => [
+            'mappedToOpportunity' => false,
+            'mappedToProject' => true,
+        ];
+
+        yield 'opportunity is mapped' => [
+            'mappedToOpportunity' => true,
+            'mappedToProject' => false,
+        ];
+
+        yield 'everything is mapped' => [
+            'mappedToOpportunity' => true,
+            'mappedToProject' => true,
+        ];
     }
 
     /**
@@ -217,7 +263,7 @@ final class SyncContactTest extends TestCase
         int $expectedMappedInsightlyContactId
     ): void {
         $contact = $this->givenThereIsAContactForAnIntegration(ContactType::Functional);
-        $this->givenTheContactAndIntegrationAreMappedToInsightly();
+        $this->givenTheContactAndIntegrationAreMappedToInsightly(true, true);
         $this->givenTheInsightlyContactsFoundByEmailAre($insightlyContacts);
 
         $this->thenItDoesNotStoreAContactAtInsightly();
@@ -262,8 +308,10 @@ final class SyncContactTest extends TestCase
         return $contact;
     }
 
-    private function givenOnlyTheIntegrationIsMappedToInsightly(): void
-    {
+    private function givenOnlyTheIntegrationIsMappedToInsightly(
+        bool $mappedToOpportunity,
+        bool $mappedToProject,
+    ): void {
         $insightlyOpportunityMapping = new InsightlyMapping(
             $this->integrationId,
             $this->insightlyOpportunityId,
@@ -283,13 +331,15 @@ final class SyncContactTest extends TestCase
                 [$this->integrationId, ResourceType::Project],
             )
             ->willReturnOnConsecutiveCalls(
-                $insightlyOpportunityMapping,
-                $insightlyProjectMapping,
+                $mappedToOpportunity ? $insightlyOpportunityMapping : $this->throwException(new ModelNotFoundException()),
+                $mappedToProject ? $insightlyProjectMapping : $this->throwException(new ModelNotFoundException()),
             );
     }
 
-    private function givenTheContactAndIntegrationAreMappedToInsightly(): void
-    {
+    private function givenTheContactAndIntegrationAreMappedToInsightly(
+        bool $mappedToOpportunity,
+        bool $mappedToProject,
+    ): void {
         $insightlyContactMapping = new InsightlyMapping(
             $this->contactId,
             $this->insightlyContactId,
@@ -320,10 +370,10 @@ final class SyncContactTest extends TestCase
             )
             ->willReturnOnConsecutiveCalls(
                 $insightlyContactMapping,
-                $insightlyOpportunityMapping,
-                $insightlyProjectMapping,
-                $insightlyOpportunityMapping,
-                $insightlyProjectMapping,
+                $mappedToOpportunity ? $insightlyOpportunityMapping : $this->throwException(new ModelNotFoundException()),
+                $mappedToProject ? $insightlyProjectMapping : $this->throwException(new ModelNotFoundException()),
+                $mappedToOpportunity ? $insightlyOpportunityMapping : $this->throwException(new ModelNotFoundException()),
+                $mappedToProject ? $insightlyProjectMapping : $this->throwException(new ModelNotFoundException()),
             );
     }
 
