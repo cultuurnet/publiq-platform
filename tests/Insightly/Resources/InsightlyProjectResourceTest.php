@@ -8,6 +8,7 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
+use App\Insightly\Exceptions\ContactCannotBeUnlinked;
 use App\Insightly\Objects\ProjectStage;
 use App\Insightly\Objects\ProjectState;
 use App\Insightly\Objects\Role;
@@ -16,6 +17,7 @@ use App\Insightly\Resources\InsightlyProjectResource;
 use App\Json;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Support\Arr;
 use Iterator;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
@@ -248,6 +250,101 @@ final class InsightlyProjectResourceTest extends TestCase
             ->with($expectedRequest);
 
         $this->resource->delete(42);
+    }
+
+    public function test_it_unlinks_a_contact_from_a_project(): void
+    {
+        $projectId = 42;
+        $contactId = 53;
+        $linkId = 64;
+
+        $expectedLinksGetRequest = new Request(
+            'GET',
+            'Projects/42/Links'
+        );
+
+        $expectedDeleteLinkRequest = new Request(
+            'DELETE',
+            'Projects/42/Links/64'
+        );
+
+        $projectLinks = [
+            [
+                'DETAILS' => null,
+                'ROLE' => Role::Applicant,
+                'LINK_ID' => $linkId,
+                'OBJECT_NAME' => 'Project',
+                'OBJECT_ID' => $projectId,
+                'LINK_OBJECT_NAME' => 'Contact',
+                'LINK_OBJECT_ID' => $contactId,
+            ],
+            [
+                'DETAILS' => null,
+                'ROLE' => Role::Applicant,
+                'LINK_ID' => mt_rand(100, 1000),
+                'OBJECT_NAME' => 'Project',
+                'OBJECT_ID' => $projectId,
+                'LINK_OBJECT_NAME' => 'Contact',
+                'LINK_OBJECT_ID' => mt_rand(100, 1000),
+            ],
+            [
+                'DETAILS' => null,
+                'ROLE' => Role::Technical,
+                'LINK_ID' => mt_rand(100, 1000),
+                'OBJECT_NAME' => 'Project',
+                'OBJECT_ID' => $projectId,
+                'LINK_OBJECT_NAME' => 'Contact',
+                'LINK_OBJECT_ID' => mt_rand(100, 1000),
+            ],
+        ];
+
+        $projectLinks = Arr::shuffle($projectLinks);
+
+        $this->insightlyClient->expects($this->exactly(2))
+            ->method('sendRequest')
+            ->withConsecutive(
+                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedLinksGetRequest, $actualRequest))],
+                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedDeleteLinkRequest, $actualRequest))],
+            )
+            ->willReturnOnConsecutiveCalls(
+                new Response(200, [], Json::encode($projectLinks)),
+                new Response(202)
+            );
+
+        $this->resource->unlinkContact($projectId, $contactId);
+    }
+
+    public function test_it_throws_when_contact_cannot_be_found_in_the_project_links(): void
+    {
+        $projectId = 42;
+        $contactId = 53;
+
+        $expectedLinksGetRequest = new Request(
+            'GET',
+            'Projects/42/Links'
+        );
+
+        $projectLinks = [
+            [
+                'DETAILS' => null,
+                'ROLE' => Role::Applicant,
+                'LINK_ID' => mt_rand(100, 1000),
+                'OBJECT_NAME' => 'Project',
+                'OBJECT_ID' => $projectId,
+                'LINK_OBJECT_NAME' => 'Contact',
+                'LINK_OBJECT_ID' => mt_rand(100, 1000),
+            ],
+        ];
+
+        $projectLinks = Arr::shuffle($projectLinks);
+
+        $this->insightlyClient->expects($this->once())
+            ->method('sendRequest')
+            ->with(self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedLinksGetRequest, $actualRequest)))
+            ->willReturn(new Response(200, [], Json::encode($projectLinks)), );
+
+        $this->expectException(ContactCannotBeUnlinked::class);
+        $this->resource->unlinkContact($projectId, $contactId);
     }
 
     public function provideIntegrationTypes(): Iterator

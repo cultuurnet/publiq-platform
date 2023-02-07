@@ -6,6 +6,7 @@ namespace App\Insightly\Resources;
 
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
+use App\Insightly\Exceptions\ContactCannotBeUnlinked;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Objects\ProjectStage;
 use App\Insightly\Objects\ProjectState;
@@ -131,5 +132,46 @@ final class InsightlyProjectResource implements ProjectResource
         );
 
         $this->insightlyClient->sendRequest($request);
+    }
+
+    /**
+     * @throws ContactCannotBeUnlinked
+     */
+    public function unlinkContact(int $id, int $contactId): void
+    {
+        $projectLinksAsArray = $this->getLinks($id);
+
+        $linkId = null;
+        foreach ($projectLinksAsArray as $projectLink) {
+            $objectId = $projectLink['OBJECT_ID'];
+            $linkName = $projectLink['LINK_OBJECT_NAME'];
+            $linkObjectId = $projectLink['LINK_OBJECT_ID'];
+
+            if ($objectId === $id && $linkName === 'Contact' && $linkObjectId === $contactId) {
+                $linkId = $projectLink['LINK_ID'];
+            }
+        }
+
+        if ($linkId === null) {
+            throw new ContactCannotBeUnlinked('Contact is not linked to the project.');
+        }
+
+        $request = new Request(
+            'DELETE',
+            $this->path . $id . '/Links/' . $linkId,
+        );
+
+        $this->insightlyClient->sendRequest($request);
+    }
+
+    private function getLinks(int $id): array
+    {
+        $getLinksRequest = new Request(
+            'GET',
+            $this->path . $id . '/Links',
+        );
+        $getLinksResponse = $this->insightlyClient->sendRequest($getLinksRequest);
+
+        return Json::decodeAssociatively($getLinksResponse->getBody()->getContents());
     }
 }
