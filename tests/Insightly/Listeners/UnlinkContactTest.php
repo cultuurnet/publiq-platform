@@ -26,17 +26,27 @@ final class UnlinkContactTest extends TestCase
     use MockInsightlyClient;
 
     private UnlinkContact $deleteContact;
-
     private ContactRepository&MockObject $contactRepository;
-
     private InsightlyMappingRepository&MockObject $insightlyMappingRepository;
+    private UuidInterface $integrationId;
+    private int $insightlyOpportunityId;
+    private UuidInterface $contactId;
+    private int $insightlyContactId;
 
     protected function setUp(): void
     {
         $this->mockCrmClient();
 
+        $this->integrationId = Uuid::uuid4();
+        $this->insightlyOpportunityId = 111;
+
+        $this->contactId = Uuid::uuid4();
+        $this->insightlyContactId = 222;
+
         $this->contactRepository = $this->createMock(ContactRepository::class);
         $this->insightlyMappingRepository = $this->createMock(InsightlyMappingRepository::class);
+
+        $this->contactId = Uuid::uuid4();
 
         $this->deleteContact = new UnlinkContact(
             $this->insightlyClient,
@@ -51,62 +61,39 @@ final class UnlinkContactTest extends TestCase
      */
     public function test_it_unlinks_a_contact_person(ContactType $contactType): void
     {
-        $contactId = Uuid::uuid4();
-        $contactInsightlyId = 42;
-        $integrationId = Uuid::uuid4();
-        $integrationInsightlyId = 53;
-
-        $this->givenThereIsADeletedContact($contactId, $contactType, $integrationId);
-        $this->givenTheContactAndIntegrationAreMappedToInsightly(
-            $contactId,
-            $contactInsightlyId,
-            $integrationId,
-            $integrationInsightlyId,
-        );
+        $this->givenThereIsADeletedContact($contactType);
+        $this->givenTheContactAndIntegrationAreMappedToInsightly();
 
         $this->opportunityResource->expects($this->once())
             ->method('unlinkContact')
-            ->with($integrationInsightlyId, $contactInsightlyId);
+            ->with($this->insightlyOpportunityId, $this->insightlyContactId);
 
-        $event = new ContactDeleted($contactId);
+        $event = new ContactDeleted($this->contactId);
         $this->deleteContact->handle($event);
     }
 
     public function test_it_does_not_try_to_unlink_a_contributor(): void
     {
-        $contactId = Uuid::uuid4();
-        $integrationId = Uuid::uuid4();
-
-        $this->givenThereIsADeletedContact($contactId, ContactType::Contributor, $integrationId);
+        $this->givenThereIsADeletedContact(ContactType::Contributor);
 
         $this->opportunityResource->expects($this->never())
             ->method('unlinkContact');
 
-        $event = new ContactDeleted($contactId);
+        $event = new ContactDeleted($this->contactId);
         $this->deleteContact->handle($event);
     }
 
     public function test_it_does_not_throw_exception_when_ContactCannotBeUnlinked_is_thrown(): void
     {
-        $contactId = Uuid::uuid4();
-        $contactInsightlyId = 42;
-        $integrationId = Uuid::uuid4();
-        $integrationInsightlyId = 53;
-
-        $this->givenThereIsADeletedContact($contactId, ContactType::Functional, $integrationId);
-        $this->givenTheContactAndIntegrationAreMappedToInsightly(
-            $contactId,
-            $contactInsightlyId,
-            $integrationId,
-            $integrationInsightlyId,
-        );
+        $this->givenThereIsADeletedContact(ContactType::Functional);
+        $this->givenTheContactAndIntegrationAreMappedToInsightly();
 
         $this->opportunityResource->expects($this->once())
             ->method('unlinkContact')
-            ->with($integrationInsightlyId, $contactInsightlyId)
+            ->with($this->insightlyOpportunityId, $this->insightlyContactId)
             ->willThrowException(new ContactCannotBeUnlinked());
 
-        $event = new ContactDeleted($contactId);
+        $event = new ContactDeleted($this->contactId);
         $this->deleteContact->handle($event);
     }
 
@@ -121,14 +108,11 @@ final class UnlinkContactTest extends TestCase
         ];
     }
 
-    private function givenThereIsADeletedContact(
-        UuidInterface $contactId,
-        ContactType $contactType,
-        UuidInterface $integrationId
-    ): Contact {
+    private function givenThereIsADeletedContact(ContactType $contactType): Contact
+    {
         $contact = new Contact(
-            $contactId,
-            $integrationId,
+            $this->contactId,
+            $this->integrationId,
             'jane.doe@anonymous.com',
             $contactType,
             'Jane',
@@ -143,27 +127,26 @@ final class UnlinkContactTest extends TestCase
         return $contact;
     }
 
-    private function givenTheContactAndIntegrationAreMappedToInsightly(
-        UuidInterface $contactId,
-        int $contactInsightlyId,
-        UuidInterface $integrationId,
-        int $integrationInsightlyId
-    ): void {
+    private function givenTheContactAndIntegrationAreMappedToInsightly(): void
+    {
         $insightlyContactMapping = new InsightlyMapping(
-            $contactId,
-            $contactInsightlyId,
+            $this->contactId,
+            $this->insightlyContactId,
             ResourceType::Contact,
         );
 
-        $insightlyIntegrationMapping = new InsightlyMapping(
-            $integrationId,
-            $integrationInsightlyId,
+        $insightlyOpportunityMapping = new InsightlyMapping(
+            $this->integrationId,
+            $this->insightlyOpportunityId,
             ResourceType::Opportunity,
         );
 
         $this->insightlyMappingRepository->expects(self::exactly(2))
             ->method('getByIdAndType')
-            ->withConsecutive([$contactId, ResourceType::Contact], [$integrationId, ResourceType::Opportunity])
-            ->willReturn($insightlyContactMapping, $insightlyIntegrationMapping);
+            ->withConsecutive(
+                [$this->contactId, ResourceType::Contact],
+                [$this->integrationId, ResourceType::Opportunity]
+            )
+            ->willReturn($insightlyContactMapping, $insightlyOpportunityMapping);
     }
 }
