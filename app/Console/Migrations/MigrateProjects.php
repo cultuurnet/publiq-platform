@@ -123,10 +123,10 @@ final class MigrateProjects extends Command
         }
 
         $integrationType = IntegrationType::EntryApi;
-        if ($projectAsArray[6] === '24743') {
+        if ($projectAsArray[6] === (string) config('insightly.integration_types.widgets')) {
             $integrationType = IntegrationType::Widgets;
         }
-        if ($projectAsArray[6] === '28808') {
+        if ($projectAsArray[6] === (string) config('insightly.integration_types.search_api')) {
             $integrationType = IntegrationType::SearchApi;
         }
 
