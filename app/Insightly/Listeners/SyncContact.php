@@ -129,10 +129,15 @@ final class SyncContact implements ShouldQueue
             $contact->integrationId,
             ResourceType::Opportunity
         )->insightlyId;
+        $insightlyProjectId = $this->insightlyMappingRepository->getByIdAndType(
+            $contact->integrationId,
+            ResourceType::Project
+        )->insightlyId;
 
         $this->insightlyMappingRepository->deleteById($contact->id);
         try {
             $this->insightlyClient->opportunities()->unlinkContact($insightlyOpportunityId, $oldInsightlyContactId);
+            $this->insightlyClient->projects()->unlinkContact($insightlyProjectId, $oldInsightlyContactId);
         } catch (ContactCannotBeUnlinked $exception) {
             // Contact was not linked to the opportunity, nothing else to do then.
         }

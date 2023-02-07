@@ -190,6 +190,7 @@ final class SyncContactTest extends TestCase
 
         $this->thenItRemovesTheContactMapping($this->contactId);
         $this->thenItRemovesTheContactFromTheOpportunityInInsightly($this->insightlyOpportunityId, $this->insightlyContactId);
+        $this->thenItRemovesTheContactFromTheProjectInInsightly($this->insightlyProjectId, $this->insightlyContactId);
 
         $this->thenItStoresTheContactAtInsightly($contact, $updatedInsightlyContactId);
         $this->thenItStoresTheContactMapping($this->contactId, $updatedInsightlyContactId);
@@ -223,6 +224,7 @@ final class SyncContactTest extends TestCase
 
         $this->thenItRemovesTheContactMapping($this->contactId);
         $this->thenItRemovesTheContactFromTheOpportunityInInsightly($this->insightlyOpportunityId, $this->insightlyContactId);
+        $this->thenItRemovesTheContactFromTheProjectInInsightly($this->insightlyProjectId, $this->insightlyContactId);
 
         $this->thenItStoresTheContactMapping($this->contactId, $expectedMappedInsightlyContactId);
         $this->thenItUpdatesTheContactAtInsightly($contact, $expectedMappedInsightlyContactId);
@@ -312,12 +314,14 @@ final class SyncContactTest extends TestCase
             ->withConsecutive(
                 [$this->contactId, ResourceType::Contact],
                 [$this->integrationId, ResourceType::Opportunity],
+                [$this->integrationId, ResourceType::Project],
                 [$this->integrationId, ResourceType::Opportunity],
                 [$this->integrationId, ResourceType::Project],
             )
             ->willReturnOnConsecutiveCalls(
                 $insightlyContactMapping,
                 $insightlyOpportunityMapping,
+                $insightlyProjectMapping,
                 $insightlyOpportunityMapping,
                 $insightlyProjectMapping,
             );
@@ -395,6 +399,15 @@ final class SyncContactTest extends TestCase
         $this->opportunityResource->expects($this->once())
             ->method('unlinkContact')
             ->with($insightlyIntegrationId, $insightlyContactId);
+    }
+
+    private function thenItRemovesTheContactFromTheProjectInInsightly(
+        int $insightlyProjectId,
+        int $insightlyContactId
+    ): void {
+        $this->projectResource->expects($this->once())
+            ->method('unlinkContact')
+            ->with($insightlyProjectId, $insightlyContactId);
     }
 
     private function thenItLinksTheContactToTheProjectInInsightly(
