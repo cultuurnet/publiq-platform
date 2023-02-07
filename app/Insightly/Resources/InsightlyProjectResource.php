@@ -19,6 +19,8 @@ use GuzzleHttp\Psr7\Request;
 
 final class InsightlyProjectResource implements ProjectResource
 {
+    use InsightlyLinks;
+
     private string $path = 'Projects/';
 
     public function __construct(
@@ -139,18 +141,8 @@ final class InsightlyProjectResource implements ProjectResource
      */
     public function unlinkContact(int $id, int $contactId): void
     {
-        $projectLinksAsArray = $this->getLinks($id);
-
-        $linkId = null;
-        foreach ($projectLinksAsArray as $projectLink) {
-            $objectId = $projectLink['OBJECT_ID'];
-            $linkName = $projectLink['LINK_OBJECT_NAME'];
-            $linkObjectId = $projectLink['LINK_OBJECT_ID'];
-
-            if ($objectId === $id && $linkName === 'Contact' && $linkObjectId === $contactId) {
-                $linkId = $projectLink['LINK_ID'];
-            }
-        }
+        $projectLinks = $this->getLinksForResource($this->path, $id);
+        $linkId = $this->getLinkIdForContact($projectLinks, $id, $contactId);
 
         if ($linkId === null) {
             throw new ContactCannotBeUnlinked('Contact is not linked to the project.');
@@ -162,16 +154,5 @@ final class InsightlyProjectResource implements ProjectResource
         );
 
         $this->insightlyClient->sendRequest($request);
-    }
-
-    private function getLinks(int $id): array
-    {
-        $getLinksRequest = new Request(
-            'GET',
-            $this->path . $id . '/Links',
-        );
-        $getLinksResponse = $this->insightlyClient->sendRequest($getLinksRequest);
-
-        return Json::decodeAssociatively($getLinksResponse->getBody()->getContents());
     }
 }
