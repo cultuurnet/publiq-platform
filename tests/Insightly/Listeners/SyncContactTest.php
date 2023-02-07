@@ -95,7 +95,7 @@ final class SyncContactTest extends TestCase
         $this->thenItStoresTheContactMapping($this->contactId, $this->insightlyContactId);
 
         if ($mappedToOpportunity) {
-            $this->thenItLinksTheContactToTheIntegrationAtInsightly(
+            $this->thenItLinksTheContactToTheOpportunityAtInsightly(
                 $this->insightlyOpportunityId,
                 $this->insightlyContactId,
                 ContactType::Functional
@@ -128,7 +128,7 @@ final class SyncContactTest extends TestCase
         $this->thenItUpdatesTheContactAtInsightly($contact, $expectedMappedInsightlyContactId);
 
         $this->thenItStoresTheContactMapping($this->contactId, $expectedMappedInsightlyContactId);
-        $this->thenItLinksTheContactToTheIntegrationAtInsightly(
+        $this->thenItLinksTheContactToTheOpportunityAtInsightly(
             $this->insightlyOpportunityId,
             $expectedMappedInsightlyContactId,
             ContactType::Functional,
@@ -213,7 +213,7 @@ final class SyncContactTest extends TestCase
                 $this->insightlyOpportunityId,
                 $this->insightlyContactId
             );
-            $this->thenItLinksTheContactToTheIntegrationAtInsightly(
+            $this->thenItLinksTheContactToTheOpportunityAtInsightly(
                 $this->insightlyOpportunityId,
                 $updatedInsightlyContactId,
                 ContactType::Functional
@@ -274,7 +274,7 @@ final class SyncContactTest extends TestCase
 
         $this->thenItStoresTheContactMapping($this->contactId, $expectedMappedInsightlyContactId);
         $this->thenItUpdatesTheContactAtInsightly($contact, $expectedMappedInsightlyContactId);
-        $this->thenItLinksTheContactToTheIntegrationAtInsightly(
+        $this->thenItLinksTheContactToTheOpportunityAtInsightly(
             $this->insightlyOpportunityId,
             $expectedMappedInsightlyContactId,
             ContactType::Functional
@@ -405,7 +405,7 @@ final class SyncContactTest extends TestCase
             ->with($expectedContactMapping);
     }
 
-    private function thenItLinksTheContactToTheIntegrationAtInsightly(
+    private function thenItLinksTheContactToTheOpportunityAtInsightly(
         int $insightlyIntegrationId,
         int $insightlyContactId,
         ContactType $contactType
