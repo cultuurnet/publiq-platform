@@ -11,7 +11,7 @@ final class ContactUpdated
 {
     use Dispatchable;
 
-    public function __construct(public readonly UuidInterface $id)
+    public function __construct(public readonly UuidInterface $id, public readonly bool $emailWasUpdated)
     {
     }
 }

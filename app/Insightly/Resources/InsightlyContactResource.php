@@ -6,6 +6,8 @@ namespace App\Insightly\Resources;
 
 use App\Domain\Contacts\Contact;
 use App\Insightly\InsightlyClient;
+use App\Insightly\Objects\InsightlyContact;
+use App\Insightly\Objects\InsightlyContacts;
 use App\Insightly\Serializers\ContactSerializer;
 use App\Json;
 use GuzzleHttp\Psr7\Request;
@@ -69,20 +71,22 @@ final class InsightlyContactResource implements ContactResource
         $this->insightlyClient->sendRequest($request);
     }
 
-    /**
-     * @return int[]
-     */
-    public function findIdsByEmail(string $email): array
+    public function findByEmail(string $email): InsightlyContacts
     {
         $request = new Request(
             'GET',
-            $this->path . "Search/?field_name=EMAIL_ADDRESS&field_value=$email&brief=true"
+            $this->path . "Search/?field_name=EMAIL_ADDRESS&field_value=$email"
         );
 
         $response = $this->insightlyClient->sendRequest($request);
 
         $foundContacts = Json::decodeAssociatively($response->getBody()->getContents());
 
-        return Arr::pluck($foundContacts, 'CONTACT_ID');
+        return new InsightlyContacts(
+            Arr::map(
+                $foundContacts,
+                static fn (array $contact) => new InsightlyContact((int) $contact['CONTACT_ID'], count($contact['LINKS']))
+            )
+        );
     }
 }

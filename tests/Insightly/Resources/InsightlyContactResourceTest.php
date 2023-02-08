@@ -6,6 +6,8 @@ namespace Tests\Insightly\Resources;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
+use App\Insightly\Objects\InsightlyContact;
+use App\Insightly\Objects\InsightlyContacts;
 use App\Insightly\Resources\InsightlyContactResource;
 use App\Json;
 use GuzzleHttp\Psr7\Request;
@@ -144,10 +146,21 @@ final class InsightlyContactResourceTest extends TestCase
             [
                 'CONTACT_ID' => 42,
                 'EMAIL_ADDRESS' => 'info@publiq.be',
+                'LINKS' => [],
             ],
             [
                 'CONTACT_ID' => 53,
                 'EMAIL_ADDRESS' => 'info@publiq.be',
+                'LINKS' => [
+                    [
+                        'OBJECT_ID' => 1,
+                        'OBJECT_NAME' => 'Contact',
+                    ],
+                    [
+                        'OBJECT_ID' => 2,
+                        'OBJECT_NAME' => 'Opportunity',
+                    ],
+                ],
             ],
         ];
 
@@ -158,9 +171,12 @@ final class InsightlyContactResourceTest extends TestCase
             ->with(self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedRequest, $actualRequest)))
             ->willReturn($response);
 
-        $foundContactIds = $this->resource->findIdsByEmail('info@publiq.be');
+        $foundContactIds = $this->resource->findByEmail('info@publiq.be');
 
-        $expectedContactIds = [42, 53];
-        $this->assertEquals($expectedContactIds, $foundContactIds);
+        $expectedFoundContacts = new InsightlyContacts([
+            new InsightlyContact(42, 0),
+            new InsightlyContact(53, 2),
+        ]);
+        $this->assertEquals($expectedFoundContacts, $foundContactIds);
     }
 }
