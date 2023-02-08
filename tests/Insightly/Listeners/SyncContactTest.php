@@ -11,7 +11,8 @@ use App\Domain\Contacts\Events\ContactUpdated;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Listeners\SyncContact;
-use App\Insightly\Models\InsightlyContact;
+use App\Insightly\Objects\InsightlyContact;
+use App\Insightly\Objects\InsightlyContacts;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -324,7 +325,7 @@ final class SyncContactTest extends TestCase
             ResourceType::Project,
         );
 
-        $this->insightlyMappingRepository->expects($this->any())
+        $this->insightlyMappingRepository
             ->method('getByIdAndType')
             ->withConsecutive(
                 [$this->integrationId, ResourceType::Opportunity],
@@ -359,7 +360,7 @@ final class SyncContactTest extends TestCase
         );
 
 
-        $this->insightlyMappingRepository->expects($this->any())
+        $this->insightlyMappingRepository
             ->method('getByIdAndType')
             ->withConsecutive(
                 [$this->contactId, ResourceType::Contact],
@@ -379,10 +380,10 @@ final class SyncContactTest extends TestCase
 
     private function givenTheInsightlyContactsFoundByEmailAre(array $contacts): void
     {
-        $this->contactResource->expects($this->any())
+        $this->contactResource
             ->method('findByEmail')
             ->with($this->contactEmail)
-            ->willReturn($contacts);
+            ->willReturn(new InsightlyContacts($contacts));
     }
 
     private function thenItStoresTheContactAtInsightly(Contact $contact, int $insightlyContactId): void

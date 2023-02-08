@@ -6,7 +6,8 @@ namespace Tests\Insightly\Resources;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
-use App\Insightly\Models\InsightlyContact;
+use App\Insightly\Objects\InsightlyContact;
+use App\Insightly\Objects\InsightlyContacts;
 use App\Insightly\Resources\InsightlyContactResource;
 use App\Json;
 use GuzzleHttp\Psr7\Request;
@@ -172,10 +173,10 @@ final class InsightlyContactResourceTest extends TestCase
 
         $foundContactIds = $this->resource->findByEmail('info@publiq.be');
 
-        $expectedFoundContacts = [
+        $expectedFoundContacts = new InsightlyContacts([
             new InsightlyContact(42, 0),
             new InsightlyContact(53, 2),
-        ];
+        ]);
         $this->assertEquals($expectedFoundContacts, $foundContactIds);
     }
 }

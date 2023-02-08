@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Insightly\Models;
+namespace App\Insightly\Objects;
 
 final class InsightlyContact
 {
