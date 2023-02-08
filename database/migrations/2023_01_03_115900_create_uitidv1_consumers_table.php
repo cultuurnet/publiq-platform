@@ -16,10 +16,8 @@ return new class () extends Migration {
             $table->string('consumer_secret');
             $table->string('api_key');
             $table->string('environment')->index();
-            $table->unique(['integration_id', 'consumer_id']);
-            $table->unique(['integration_id', 'consumer_key']);
-            $table->unique(['environment', 'consumer_id']);
-            $table->unique(['environment', 'consumer_key']);
+            $table->unique(['integration_id', 'consumer_id', 'environment']);
+            $table->unique(['integration_id', 'consumer_key', 'environment']);
             $table->softDeletes();
             $table->timestamps();
         });
