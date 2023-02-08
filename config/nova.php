@@ -93,7 +93,7 @@ return [
         'dev@publiq.be',
         'simon.debruijn@publiq.be',
         'lucwollants@gmail.com',
-        'corneel@publiq.be',
+        'corneel.wille@publiq.be',
     ],
 
     /*

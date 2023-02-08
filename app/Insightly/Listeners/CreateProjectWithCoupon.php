@@ -21,7 +21,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
 
-final class ActivateIntegrationWithCoupon implements ShouldQueue
+final class CreateProjectWithCoupon implements ShouldQueue
 {
     use Queueable;
 

@@ -104,6 +104,9 @@ final class Integration extends Resource
                 ->type(InsightlyType::Opportunity),
 
             Text::make('Coupon', function () {
+                if ($this->couponId() === null) {
+                    return null;
+                }
                 $couponUrl = config('nova.path') . '/resources/coupons/' . $this->couponId();
                 return '<a href="' . $couponUrl . '" class="link-default">' . $this->couponCode() . '</a>';
             })
