@@ -41,6 +41,23 @@ final class EloquentInsightlyMappingRepositoryTest extends TestCase
         ]);
     }
 
+    public function test_it_can_delete_a_mapping(): void
+    {
+        InsightlyMappingModel::query()->insert([
+            'id' => $this->opportunityMapping->id,
+            'insightly_id' => $this->opportunityMapping->insightlyId,
+            'resource_type' => $this->opportunityMapping->resourceType,
+        ]);
+
+        $this->insightlyMappingRepository->deleteById($this->opportunityMapping->id);
+
+        $this->assertSoftDeleted(InsightlyMappingModel::class, [
+            'id' => $this->opportunityMapping->id,
+            'insightly_id' => $this->opportunityMapping->insightlyId,
+            'resource_type' => $this->opportunityMapping->resourceType,
+        ]);
+    }
+
     public function test_it_can_get_a_mapping_by_id_and_type(): void
     {
         InsightlyMappingModel::query()->insert([
