@@ -281,20 +281,20 @@ final class InsightlyProjectResourceTest extends TestCase
             [
                 'DETAILS' => null,
                 'ROLE' => Role::Applicant,
-                'LINK_ID' => mt_rand(100, 1000),
+                'LINK_ID' => random_int(100, 1000),
                 'OBJECT_NAME' => 'Project',
                 'OBJECT_ID' => $projectId,
                 'LINK_OBJECT_NAME' => 'Contact',
-                'LINK_OBJECT_ID' => mt_rand(100, 1000),
+                'LINK_OBJECT_ID' => random_int(100, 1000),
             ],
             [
                 'DETAILS' => null,
                 'ROLE' => Role::Technical,
-                'LINK_ID' => mt_rand(100, 1000),
+                'LINK_ID' => random_int(100, 1000),
                 'OBJECT_NAME' => 'Project',
                 'OBJECT_ID' => $projectId,
                 'LINK_OBJECT_NAME' => 'Contact',
-                'LINK_OBJECT_ID' => mt_rand(100, 1000),
+                'LINK_OBJECT_ID' => random_int(100, 1000),
             ],
         ];
 
@@ -328,11 +328,11 @@ final class InsightlyProjectResourceTest extends TestCase
             [
                 'DETAILS' => null,
                 'ROLE' => Role::Applicant,
-                'LINK_ID' => mt_rand(100, 1000),
+                'LINK_ID' => random_int(100, 1000),
                 'OBJECT_NAME' => 'Project',
                 'OBJECT_ID' => $projectId,
                 'LINK_OBJECT_NAME' => 'Contact',
-                'LINK_OBJECT_ID' => mt_rand(100, 1000),
+                'LINK_OBJECT_ID' => random_int(100, 1000),
             ],
         ];
 
