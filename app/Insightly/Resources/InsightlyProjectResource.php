@@ -141,8 +141,7 @@ final class InsightlyProjectResource implements ProjectResource
      */
     public function unlinkContact(int $id, int $contactId): void
     {
-        $projectLinks = $this->getLinks($id);
-        $linkId = $this->getLinkIdForContact($projectLinks, $id, $contactId);
+        $linkId = $this->getLink($id, $contactId, ResourceType::Contact);
 
         if ($linkId === null) {
             throw new ContactCannotBeUnlinked('Contact is not linked to the project.');

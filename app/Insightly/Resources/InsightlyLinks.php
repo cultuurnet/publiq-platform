@@ -20,14 +20,16 @@ trait InsightlyLinks
         return Json::decodeAssociatively($getLinksResponse->getBody()->getContents());
     }
 
-    private function getLinkIdForContact(array $links, int $resourceId, int $contactId): ?int
+    private function getLink(int $id, int $linkedId, ResourceType $resourceType): ?int
     {
+        $links = $this->getLinks($id);
+
         foreach ($links as $link) {
             $objectId = $link['OBJECT_ID'];
             $linkName = $link['LINK_OBJECT_NAME'];
             $linkObjectId = $link['LINK_OBJECT_ID'];
 
-            if ($objectId === $resourceId && $linkName === 'Contact' && $linkObjectId === $contactId) {
+            if ($objectId === $id && $linkName === $resourceType->name && $linkObjectId === $linkedId) {
                 return (int) $link['LINK_ID'];
             }
         }
