@@ -9,11 +9,11 @@ use GuzzleHttp\Psr7\Request;
 
 trait InsightlyLinks
 {
-    private function getLinksForResource(string $path, int $resourceId): array
+    private function getLinks(int $id): array
     {
         $getLinksRequest = new Request(
             'GET',
-            $path . $resourceId . '/Links',
+            $this->path . $id . '/Links',
         );
         $getLinksResponse = $this->insightlyClient->sendRequest($getLinksRequest);
 

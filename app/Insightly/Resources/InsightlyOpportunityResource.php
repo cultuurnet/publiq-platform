@@ -118,7 +118,7 @@ final class InsightlyOpportunityResource implements OpportunityResource
      */
     public function unlinkContact(int $id, int $contactId): void
     {
-        $opportunityLinks = $this->getLinksForResource($this->path, $id);
+        $opportunityLinks = $this->getLinks($id);
         $linkId = $this->getLinkIdForContact($opportunityLinks, $id, $contactId);
 
         if ($linkId === null) {
