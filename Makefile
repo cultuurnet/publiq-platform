@@ -38,6 +38,9 @@ stan:
 test:
 	vendor/bin/sail composer test
 
+test-insightly:
+	vendor/bin/sail composer test tests/Insightly/InsightlyClientTest.php
+
 ci: lint stan test
 
 npm-install:
