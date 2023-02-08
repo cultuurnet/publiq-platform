@@ -307,12 +307,12 @@ final class InsightlyOpportunityResourceTest extends TestCase
 
         $expectedLinksGetRequest = new Request(
             'GET',
-            'Opportunities/42/Links'
+            'Projects/' . $opportunityId . '/Links'
         );
 
         $expectedDeleteLinkRequest = new Request(
             'DELETE',
-            'Opportunities/42/Links/64'
+            'Projects/' . $opportunityId . '/Links/' . $linkId
         );
 
         $opportunityLinks = [
@@ -365,7 +365,6 @@ final class InsightlyOpportunityResourceTest extends TestCase
     {
         $opportunityId = 42;
         $contactId = 53;
-        $linkId = 64;
 
         $expectedLinksGetRequest = new Request(
             'GET',

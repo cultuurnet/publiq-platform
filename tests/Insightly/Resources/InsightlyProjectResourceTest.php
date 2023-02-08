@@ -260,12 +260,12 @@ final class InsightlyProjectResourceTest extends TestCase
 
         $expectedLinksGetRequest = new Request(
             'GET',
-            'Projects/42/Links'
+            'Projects/' . $projectId . '/Links'
         );
 
         $expectedDeleteLinkRequest = new Request(
             'DELETE',
-            'Projects/42/Links/64'
+            'Projects/' . $projectId . '/Links/' . $linkId
         );
 
         $projectLinks = [
