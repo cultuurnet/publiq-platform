@@ -18,7 +18,7 @@ final class MigrateCoupons extends Command
 
     protected $signature = 'migrate:coupons';
 
-    protected $description = 'Migrate the coupons provided in the coupons.csv CSV file';
+    protected $description = 'Migrate the coupons provided in the coupons.csv CSV file (database/project-aanvraag/coupons.csv)';
 
     public function handle(CouponRepository $couponRepository): int
     {
@@ -26,7 +26,7 @@ final class MigrateCoupons extends Command
 
         CauserResolver::setCauser(UserModel::createSystemUser());
 
-        $couponsAsArray = $this->readCsvFile('coupons.csv');
+        $couponsAsArray = $this->readCsvFile('database/project-aanvraag/coupons.csv');
 
         $couponsCount = count($couponsAsArray);
         if ($couponsCount <= 0) {

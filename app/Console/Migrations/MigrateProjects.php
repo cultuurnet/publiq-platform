@@ -7,7 +7,6 @@ namespace App\Console\Migrations;
 use App\Domain\Auth\Models\UserModel;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
-use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
 use App\Domain\Integrations\Integration;
@@ -17,21 +16,23 @@ use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
-use App\Insightly\Models\InsightlyContact;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
+use App\Json;
+use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
+use App\UiTiDv1\UiTiDv1Consumer;
+use App\UiTiDv1\UiTiDv1Environment;
 use App\UiTiDv1\UiTiDv1EnvironmentSDK;
 use Exception;
 use GuzzleHttp\ClientInterface;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
+use SimpleXMLElement;
 use Spatie\Activitylog\Facades\CauserResolver;
 
 final class MigrateProjects extends Command
@@ -40,19 +41,26 @@ final class MigrateProjects extends Command
 
     protected $signature = 'migrate:projects';
 
-    protected $description = 'Migrate the projects provided in the projects.csv CSV file';
+    protected $description = 'Migrate the projects provided in the projects.csv CSV file (database/project-aanvraag/projects.csv)';
 
-    private ClientInterface $oauthClient;
+    private ClientInterface $oauthClientTest;
+    private ClientInterface $oauthClientProduction;
 
     public function __construct(
         private readonly IntegrationRepository $integrationRepository,
         private readonly ContactRepository $contactRepository,
         private readonly InsightlyMappingRepository $insightlyMappingRepository,
+        private readonly UiTiDv1ConsumerRepository $uiTiDv1ConsumerRepository,
         private readonly InsightlyClient $insightlyClient
     ) {
         parent::__construct();
 
-        $this->oauthClient = UiTiDv1EnvironmentSDK::createOAuth1HttpClient(
+        $this->oauthClientTest = UiTiDv1EnvironmentSDK::createOAuth1HttpClient(
+            config('uitidv1.environments.test.baseUrl'),
+            config('uitidv1.environments.test.consumerKey'),
+            config('uitidv1.environments.test.consumerSecret')
+        );
+        $this->oauthClientProduction = UiTiDv1EnvironmentSDK::createOAuth1HttpClient(
             config('uitidv1.environments.prod.baseUrl'),
             config('uitidv1.environments.prod.consumerKey'),
             config('uitidv1.environments.prod.consumerSecret')
@@ -66,7 +74,7 @@ final class MigrateProjects extends Command
 
         CauserResolver::setCauser(UserModel::createSystemUser());
 
-        $projectsAsArray = $this->readCsvFile('projects.csv');
+        $projectsAsArray = $this->readCsvFile('database/project-aanvraag/projects.csv');
 
         $projectsCount = count($projectsAsArray);
         if ($projectsCount <= 0) {
@@ -98,6 +106,8 @@ final class MigrateProjects extends Command
             $this->migrateMappings($integrationId, (int) $projectAsArray[15], (int) $projectAsArray[14]);
 
             $this->migrateContact($integrationId, $projectAsArray[1]);
+
+            $this->migrateKeys($integrationId, $projectAsArray);
 
             $this->info($integrationId . ' - Ended importing project ' . $projectAsArray[3]);
             $this->info('---');
@@ -221,70 +231,85 @@ final class MigrateProjects extends Command
         }
 
         $insightlyContacts = $this->insightlyClient->contacts()->findByEmail($email);
-        if (count($insightlyContacts) === 0) {
+        if ($insightlyContacts->isEmpty()) {
             $this->warn($contactId . ' - user with email ' . $email . ' not found inside Insightly');
-            $this->saveContact($uitIdContact);
+            $this->contactRepository->save($uitIdContact);
             return true;
         }
 
-        // TODO: Sort on contacts with most links
-        /** @var InsightlyContact $insightlyContact */
-        $insightlyContact = Arr::sort($insightlyContacts)[0];
+        $insightlyContact = $insightlyContacts->mostLinks();
         if (count($insightlyContacts) > 1) {
             $this->warn($contactId . ' - found multiple contacts with email ' . $email . ' used ' . $insightlyContact->insightlyId);
         }
 
         $contact = $this->getContactFromInInsightly($integrationId, $contactId, $insightlyContact->insightlyId);
-        $this->saveContact($contact);
+        $this->contactRepository->save($contact);
 
         return true;
     }
 
-    private function saveContact(Contact $contact): void
+    private function migrateKeys(UuidInterface $integrationId, array $projectAsArray): bool
     {
-        $this->info($contact->id . ' - importing user with email ' . $contact->email);
-        $this->contactRepository->save($contact);
+        // Creating missing UiTiD consumers and missing Auth0 clients will be handled by other scripts.
+        $consumerProduction = $this->getConsumerFromUitId(
+            $integrationId,
+            $projectAsArray[12],
+            UiTiDv1Environment::Production
+        );
+        if ($consumerProduction !== null) {
+            $this->uiTiDv1ConsumerRepository->save($consumerProduction);
+        }
 
-        ContactModel::query()->where('id', '=', $contact->id->toString())->update([
-            'migrated_at' => Carbon::now(),
-        ]);
+        $consumerTest = $this->getConsumerFromUitId(
+            $integrationId,
+            $projectAsArray[13],
+            UiTiDv1Environment::Testing
+        );
+        if ($consumerTest !== null) {
+            $this->uiTiDv1ConsumerRepository->save($consumerTest);
+        }
+
+        return true;
     }
 
     private function getContactFromUiTiD(UuidInterface $integrationId, string $uitId): ?Contact
     {
-        $response = $this->oauthClient->request(
+        $response = $this->oauthClientProduction->request(
             'GET',
             'user/search?userId=' . $uitId,
             ['http_errors' => false]
         );
         $status = $response->getStatusCode();
-        $body = $response->getBody()->getContents();
 
         if ($status !== 200) {
             $this->warn($uitId . ' - did not find user with UiTiD ' . $uitId);
             return null;
         }
 
-        $xmlString = Str::of($body);
-
-        $total = $xmlString->between('<total>', '</total>')->toInteger();
+        $xml = new SimpleXMLElement($response->getBody()->getContents());
+        $totalAsArray = $xml->xpath('total');
+        $total = (int) $totalAsArray[0] ?: 0;
         if ($total === 0) {
             $this->warn($uitId . ' - did not find user with UiTiD ' . $uitId);
             return null;
         }
 
-        if (!$xmlString->contains('<foaf:mbox>')) {
+        /** @var array $emailArray */
+        $emailArray = $xml->xpath('//foaf:mbox');
+        $email = (string) $emailArray[0] ?: null;
+        /** @var array $nickArray */
+        $nickArray = $xml->xpath('//foaf:nick');
+        $nick = (string) $nickArray[0] ?: null;
+
+        if ($email === null) {
             $this->warn($uitId . ' - has no mbox inside UiTiD');
             return null;
         }
 
-        if (!$xmlString->contains('<foaf:nick>')) {
+        if ($nick === null) {
             $this->warn($uitId . ' - has no nick inside UiTiD');
             return null;
         }
-
-        $email = $xmlString->between('<foaf:mbox>', '</foaf:mbox>')->toString();
-        $nick = $xmlString->between('<foaf:nick>', '</foaf:nick>')->toString();
 
         return new Contact(
             Uuid::fromString($uitId),
@@ -307,6 +332,49 @@ final class MigrateProjects extends Command
             ContactType::Contributor,
             $contactAsArray['FIRST_NAME'],
             $contactAsArray['LAST_NAME'] ?? ''
+        );
+    }
+
+    private function getConsumerFromUitId(
+        UuidInterface $integrationId,
+        string $apiKey,
+        UiTiDv1Environment $environment
+    ): ?UiTiDv1Consumer {
+        if ($apiKey === 'NULL') {
+            return null;
+        }
+
+        $oauthClient = $this->oauthClientTest;
+        if ($environment === UiTiDv1Environment::Production) {
+            $oauthClient = $this->oauthClientProduction;
+        }
+
+        $response = $oauthClient->request(
+            'GET',
+            'serviceconsumer/apikey/' . $apiKey,
+            ['http_errors' => false]
+        );
+
+        $status = $response->getStatusCode();
+        if ($status !== 200) {
+            $this->warn($integrationId . ' - did not find UiTiD consumer with API key ' . $apiKey);
+            return null;
+        }
+
+        $xml = new SimpleXMLElement($response->getBody()->getContents());
+        $data = Json::decodeAssociatively(Json::encode($xml));
+
+        $consumerId = (string) $data['id'];
+        $consumerKey = $data['consumerKey'];
+        $consumerSecret = $data['consumerSecret'];
+
+        return new UiTiDv1Consumer(
+            $integrationId,
+            $consumerId,
+            $consumerKey,
+            $consumerSecret,
+            $apiKey,
+            $environment
         );
     }
 }
