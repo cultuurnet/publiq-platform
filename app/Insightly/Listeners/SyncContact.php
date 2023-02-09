@@ -11,13 +11,14 @@ use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Insightly\Exceptions\ContactCannotBeUnlinked;
 use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
-use App\Insightly\Models\InsightlyContact;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use App\Insightly\SyncIsAllowed;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\UuidInterface;
 use Throwable;
 
 final class SyncContact implements ShouldQueue
@@ -52,20 +53,12 @@ final class SyncContact implements ShouldQueue
 
     private function storeAndLinkContactAtInsightly(Contact $contact): void
     {
-        $contacts = $this->insightlyClient->contacts()->findByEmail($contact->email);
+        $insightlyContacts = $this->insightlyClient->contacts()->findByEmail($contact->email);
 
-        if (empty($contacts)) {
+        if ($insightlyContacts->isEmpty()) {
             $contactInsightlyId = $this->insightlyClient->contacts()->create($contact);
         } else {
-            usort($contacts, function (InsightlyContact $a, InsightlyContact $b): int {
-                if ($a->numberOfLinks === $b->numberOfLinks) {
-                    return $a->insightlyId <=> $b->insightlyId;
-                }
-
-                return $b->numberOfLinks <=> $a->numberOfLinks;
-            });
-
-            $contactInsightlyId = $contacts[0]->insightlyId;
+            $contactInsightlyId = $insightlyContacts->mostLinks()->insightlyId;
 
             $this->insightlyClient->contacts()->update($contact, $contactInsightlyId);
         }
@@ -76,12 +69,27 @@ final class SyncContact implements ShouldQueue
             ResourceType::Contact
         ));
 
-        $integrationMapping = $this->insightlyMappingRepository->getByIdAndType($contact->integrationId, ResourceType::Opportunity);
-        $this->insightlyClient->opportunities()->linkContact(
-            $integrationMapping->insightlyId,
-            $contactInsightlyId,
-            $contact->type
-        );
+        try {
+            $opportunityMapping = $this->insightlyMappingRepository->getByIdAndType($contact->integrationId, ResourceType::Opportunity);
+            $this->insightlyClient->opportunities()->linkContact(
+                $opportunityMapping->insightlyId,
+                $contactInsightlyId,
+                $contact->type
+            );
+        } catch (ModelNotFoundException $exception) {
+            // No mapping exists so it can't be linked.
+        }
+
+        try {
+            $projectMapping = $this->insightlyMappingRepository->getByIdAndType($contact->integrationId, ResourceType::Project);
+            $this->insightlyClient->projects()->linkContact(
+                $projectMapping->insightlyId,
+                $contactInsightlyId,
+                $contact->type
+            );
+        } catch (ModelNotFoundException) {
+            // No mapping exists so it can't be linked.
+        }
     }
 
     public function handleContactUpdated(ContactUpdated $contactUpdated): void
@@ -118,19 +126,38 @@ final class SyncContact implements ShouldQueue
             $contact->id,
             ResourceType::Contact
         )->insightlyId;
-        $insightlyIntegrationId = $this->insightlyMappingRepository->getByIdAndType(
-            $contact->integrationId,
-            ResourceType::Opportunity
-        )->insightlyId;
 
         $this->insightlyMappingRepository->deleteById($contact->id);
-        try {
-            $this->insightlyClient->opportunities()->unlinkContact($insightlyIntegrationId, $oldInsightlyContactId);
-        } catch (ContactCannotBeUnlinked $exception) {
-            // Contact was not linked to the opportunity, nothing else to do then.
-        }
+        $this->unlinkContactFromOpportunity($contact->integrationId, $oldInsightlyContactId);
+        $this->unlinkContactFromProject($contact->integrationId, $oldInsightlyContactId);
 
         $this->storeAndLinkContactAtInsightly($contact);
+    }
+
+    private function unlinkContactFromOpportunity(UuidInterface $integrationId, int $insightlyContactId): void
+    {
+        try {
+            $insightlyOpportunityId = $this->insightlyMappingRepository->getByIdAndType(
+                $integrationId,
+                ResourceType::Opportunity
+            )->insightlyId;
+            $this->insightlyClient->opportunities()->unlinkContact($insightlyOpportunityId, $insightlyContactId);
+        } catch (ModelNotFoundException|ContactCannotBeUnlinked $exception) {
+            // Contact was not linked to the opportunity, nothing else to do then.
+        }
+    }
+
+    private function unlinkContactFromProject(UuidInterface $integrationId, int $insightlyContactId): void
+    {
+        try {
+            $insightlyProjectId = $this->insightlyMappingRepository->getByIdAndType(
+                $integrationId,
+                ResourceType::Project
+            )->insightlyId;
+            $this->insightlyClient->projects()->unlinkContact($insightlyProjectId, $insightlyContactId);
+        } catch (ModelNotFoundException|ContactCannotBeUnlinked $exception) {
+            // Contact was not linked to the opportunity, nothing else to do then.
+        }
     }
 
     public function failed(ContactUpdated|ContactCreated $event, Throwable $exception): void

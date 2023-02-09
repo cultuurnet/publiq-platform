@@ -18,6 +18,8 @@ use GuzzleHttp\Psr7\Request;
 
 final class InsightlyOpportunityResource implements OpportunityResource
 {
+    use InsightlyLinks;
+
     private string $path = 'Opportunities/';
 
     public function __construct(
@@ -111,34 +113,12 @@ final class InsightlyOpportunityResource implements OpportunityResource
         $this->insightlyClient->sendRequest($request);
     }
 
-    private function getLinks(int $id): array
-    {
-        $getLinksRequest = new Request(
-            'GET',
-            $this->path . $id . '/Links',
-        );
-        $getLinksResponse = $this->insightlyClient->sendRequest($getLinksRequest);
-
-        return Json::decodeAssociatively($getLinksResponse->getBody()->getContents());
-    }
-
     /**
      * @throws ContactCannotBeUnlinked
      */
     public function unlinkContact(int $id, int $contactId): void
     {
-        $opportunityLinksAsArray = $this->getLinks($id);
-
-        $linkId = null;
-        foreach ($opportunityLinksAsArray as $opportunityLink) {
-            $objectId = $opportunityLink['OBJECT_ID'];
-            $linkName = $opportunityLink['LINK_OBJECT_NAME'];
-            $linkObjectId = $opportunityLink['LINK_OBJECT_ID'];
-
-            if ($objectId === $id && $linkName === 'Contact' && $linkObjectId === $contactId) {
-                $linkId = $opportunityLink['LINK_ID'];
-            }
-        }
+        $linkId = $this->getLink($id, $contactId, ResourceType::Contact);
 
         if ($linkId === null) {
             throw new ContactCannotBeUnlinked('Contact is not linked to the opportunity.');

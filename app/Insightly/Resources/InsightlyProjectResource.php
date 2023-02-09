@@ -6,6 +6,7 @@ namespace App\Insightly\Resources;
 
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
+use App\Insightly\Exceptions\ContactCannotBeUnlinked;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Objects\ProjectStage;
 use App\Insightly\Objects\ProjectState;
@@ -18,6 +19,8 @@ use GuzzleHttp\Psr7\Request;
 
 final class InsightlyProjectResource implements ProjectResource
 {
+    use InsightlyLinks;
+
     private string $path = 'Projects/';
 
     public function __construct(
@@ -128,6 +131,25 @@ final class InsightlyProjectResource implements ProjectResource
             $this->path . $id . '/Links',
             [],
             Json::encode((new LinkSerializer())->contactToLink($contactId, $contactType))
+        );
+
+        $this->insightlyClient->sendRequest($request);
+    }
+
+    /**
+     * @throws ContactCannotBeUnlinked
+     */
+    public function unlinkContact(int $id, int $contactId): void
+    {
+        $linkId = $this->getLink($id, $contactId, ResourceType::Contact);
+
+        if ($linkId === null) {
+            throw new ContactCannotBeUnlinked('Contact is not linked to the project.');
+        }
+
+        $request = new Request(
+            'DELETE',
+            $this->path . $id . '/Links/' . $linkId,
         );
 
         $this->insightlyClient->sendRequest($request);
