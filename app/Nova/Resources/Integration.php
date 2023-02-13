@@ -67,7 +67,8 @@ final class Integration extends Resource
 
         return [
             ID::make()
-                ->readonly(),
+                ->readonly()
+                ->onlyOnDetail(),
 
             Select::make('Type')
                 ->options([
@@ -83,7 +84,8 @@ final class Integration extends Resource
 
             Text::make('Description')
                 ->sortable()
-                ->rules('required', 'max:255'),
+                ->rules('required', 'max:255')
+                ->onlyOnDetail(),
 
             BelongsTo::make('Subscription')
                 ->withoutTrashed()
