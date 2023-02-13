@@ -10,8 +10,6 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
 use App\Domain\Integrations\Integration;
-use App\Domain\Integrations\IntegrationStatus;
-use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Insightly\InsightlyClient;
@@ -75,9 +73,10 @@ final class MigrateProjects extends Command
 
         CauserResolver::setCauser(UserModel::createSystemUser());
 
-        $projectsAsArray = $this->readCsvFile('database/project-aanvraag/projects.csv');
+        $rows = $this->readCsvFile('database/project-aanvraag/projects.csv');
+        $migrationProjects = array_map(fn (array $row) => new MigrationProject($row), $rows);
 
-        $projectsCount = count($projectsAsArray);
+        $projectsCount = count($migrationProjects);
         if ($projectsCount <= 0) {
             $this->warn('No projects to import');
             return 0;
@@ -91,63 +90,45 @@ final class MigrateProjects extends Command
             return 0;
         }
 
-        foreach ($projectsAsArray as $projectAsArray) {
-            if (!is_array($projectAsArray)) {
-                continue;
-            }
-
+        foreach ($migrationProjects as $migrationProject) {
             $integrationId = Uuid::uuid4();
 
-            $this->info($integrationId . ' - Started importing project ' . $projectAsArray[3]);
+            $this->info($integrationId . ' - Started importing project ' . $migrationProject->name());
 
-            $this->migrateIntegration($integrationId, $projectAsArray);
+            $this->migrateIntegration($integrationId, $migrationProject);
 
-            $this->migrateCoupon($integrationId, $projectAsArray[8]);
+            if ($migrationProject->coupon() !== null) {
+                $this->migrateCoupon($integrationId, $migrationProject->coupon());
+            }
 
-            $this->migrateMappings($integrationId, (int) $projectAsArray[15], (int) $projectAsArray[14]);
+            $this->migrateMappings(
+                $integrationId,
+                $migrationProject->insightlyOpportunityId(),
+                $migrationProject->insightlyProjectId()
+            );
 
-            $this->migrateContact($integrationId, $projectAsArray[1]);
+            if ($migrationProject->userUiTiD() !== null) {
+                $this->migrateContact($integrationId, $migrationProject->userUiTiD());
+            }
 
-            $this->migrateKeys($integrationId, $projectAsArray);
+            $this->migrateKeys($integrationId, $migrationProject);
 
-            $this->info($integrationId . ' - Ended importing project ' . $projectAsArray[3]);
+            $this->info($integrationId . ' - Ended importing project ' . $migrationProject->name());
             $this->info('---');
         }
 
         return 0;
     }
 
-    private function migrateIntegration(UuidInterface $integrationId, array $projectAsArray): void
+    private function migrateIntegration(UuidInterface $integrationId, MigrationProject $migrationProject): void
     {
-        $status = IntegrationStatus::Draft;
-        if ($projectAsArray[7] === 'active') {
-            $status = IntegrationStatus::Active;
-        }
-        if ($projectAsArray[7] === 'blocked') {
-            $status = IntegrationStatus::Blocked;
-        }
-        if ($projectAsArray[7] === 'application_sent') {
-            $status = IntegrationStatus::PendingApprovalIntegration;
-        }
-        if ($projectAsArray[7] === 'waiting_for_payment') {
-            $status = IntegrationStatus::PendingApprovalPayment;
-        }
-
-        $integrationType = IntegrationType::EntryApi;
-        if ($projectAsArray[6] === (string) config('insightly.integration_types.widgets')) {
-            $integrationType = IntegrationType::Widgets;
-        }
-        if ($projectAsArray[6] === (string) config('insightly.integration_types.search_api')) {
-            $integrationType = IntegrationType::SearchApi;
-        }
-
         $integration = new Integration(
             $integrationId,
-            $integrationType,
-            $projectAsArray[3],
-            $projectAsArray[16] !== 'NULL' ? $projectAsArray[16] : '',
+            $migrationProject->type(),
+            $migrationProject->name(),
+            $migrationProject->description() !== null ? $migrationProject->description() : '',
             Uuid::fromString(SubscriptionsSeeder::BASIC_PLAN),
-            $status,
+            $migrationProject->status(),
             []
         );
         $this->integrationRepository->save($integration);
@@ -159,30 +140,22 @@ final class MigrateProjects extends Command
 
     private function migrateCoupon(UuidInterface $integrationId, string $couponCode): void
     {
-        if ($couponCode === 'NULL') {
-            return;
-        }
-
-        if ($couponCode === 'import') {
-            return;
-        }
-
         try {
             $this->integrationRepository->activateWithCouponCode($integrationId, $couponCode);
         } catch (ModelNotFoundException) {
             $this->warn($integrationId . ' - Coupon with code ' . $couponCode . ' not found.');
             return;
         }
-     }
+    }
 
-    private function migrateMappings(UuidInterface $integrationId, int $opportunityId, int $projectId): void
+    private function migrateMappings(UuidInterface $integrationId, ?int $opportunityId, ?int $projectId): void
     {
-        if ($opportunityId === 0 && $projectId === 0) {
+        if ($opportunityId === null && $projectId === null) {
             $this->warn($integrationId . ' - Project has no Insightly ids');
             return;
         }
 
-        if ($opportunityId !== 0) {
+        if ($opportunityId !== null) {
             try {
                 $this->insightlyClient->opportunities()->get($opportunityId);
 
@@ -197,7 +170,7 @@ final class MigrateProjects extends Command
             }
         }
 
-        if ($projectId !==  0) {
+        if ($projectId !== null) {
             try {
                 $this->insightlyClient->projects()->get($projectId);
 
@@ -215,11 +188,6 @@ final class MigrateProjects extends Command
 
     private function migrateContact(UuidInterface $integrationId, string $contactId): void
     {
-        if ($contactId === 'NULL') {
-            $this->warn($integrationId . ' - Project has no linked user');
-            return;
-        }
-
         $uitIdContact = $this->getContactFromUiTiD($integrationId, $contactId);
         $email = $uitIdContact?->email;
         if ($uitIdContact === null || $email === null) {
@@ -243,25 +211,28 @@ final class MigrateProjects extends Command
         $this->contactRepository->save($contact);
     }
 
-    private function migrateKeys(UuidInterface $integrationId, array $projectAsArray): void
+    private function migrateKeys(UuidInterface $integrationId, MigrationProject $migrationProject): void
     {
-        // Creating missing UiTiD consumers and missing Auth0 clients will be handled by other scripts.
-        $consumerProduction = $this->getConsumerFromUitId(
-            $integrationId,
-            $projectAsArray[12],
-            UiTiDv1Environment::Production
-        );
-        if ($consumerProduction !== null) {
-            $this->uiTiDv1ConsumerRepository->save($consumerProduction);
+        if ($migrationProject->apiKeyProduction()) {
+            $consumerProduction = $this->getConsumerFromUitId(
+                $integrationId,
+                $migrationProject->apiKeyProduction(),
+                UiTiDv1Environment::Production
+            );
+            if ($consumerProduction !== null) {
+                $this->uiTiDv1ConsumerRepository->save($consumerProduction);
+            }
         }
 
-        $consumerTest = $this->getConsumerFromUitId(
-            $integrationId,
-            $projectAsArray[13],
-            UiTiDv1Environment::Testing
-        );
-        if ($consumerTest !== null) {
-            $this->uiTiDv1ConsumerRepository->save($consumerTest);
+        if ($migrationProject->apiKeyTest()) {
+            $consumerTest = $this->getConsumerFromUitId(
+                $integrationId,
+                $migrationProject->apiKeyTest(),
+                UiTiDv1Environment::Testing
+            );
+            if ($consumerTest !== null) {
+                $this->uiTiDv1ConsumerRepository->save($consumerTest);
+            }
         }
     }
 
@@ -333,10 +304,6 @@ final class MigrateProjects extends Command
         string $apiKey,
         UiTiDv1Environment $environment
     ): ?UiTiDv1Consumer {
-        if ($apiKey === 'NULL') {
-            return null;
-        }
-
         $oauthClient = $this->oauthClientTest;
         if ($environment === UiTiDv1Environment::Production) {
             $oauthClient = $this->oauthClientProduction;
