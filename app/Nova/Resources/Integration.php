@@ -87,7 +87,7 @@ final class Integration extends Resource
 
             Text::make('Description')
                 ->rules('required', 'max:255')
-                ->onlyOnDetail(),
+                ->hideFromIndex(),
 
             Select::make('Status')
                 ->filterable()
