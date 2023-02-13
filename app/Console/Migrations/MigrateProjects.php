@@ -156,31 +156,29 @@ final class MigrateProjects extends Command
         ]);
     }
 
-    private function migrateCoupon(UuidInterface $integrationId, string $couponCode): bool
+    private function migrateCoupon(UuidInterface $integrationId, string $couponCode): void
     {
         if ($couponCode === 'NULL') {
-            return false;
+            return;
         }
 
         if ($couponCode === 'import') {
-            return false;
+            return;
         }
 
         try {
             $this->integrationRepository->activateWithCouponCode($integrationId, $couponCode);
         } catch (ModelNotFoundException) {
             $this->warn($integrationId . ' - Coupon with code ' . $couponCode . ' not found.');
-            return false;
+            return;
         }
+     }
 
-        return true;
-    }
-
-    private function migrateMappings(UuidInterface $integrationId, int $opportunityId, int $projectId): bool
+    private function migrateMappings(UuidInterface $integrationId, int $opportunityId, int $projectId): void
     {
         if ($opportunityId === 0 && $projectId === 0) {
             $this->warn($integrationId . ' - Project has no Insightly ids');
-            return false;
+            return;
         }
 
         if ($opportunityId !== 0) {
@@ -212,29 +210,27 @@ final class MigrateProjects extends Command
                 $this->warn($integrationId . ' - Did not find project with id ' . $projectId);
             }
         }
-
-        return true;
     }
 
-    private function migrateContact(UuidInterface $integrationId, string $contactId): bool
+    private function migrateContact(UuidInterface $integrationId, string $contactId): void
     {
         if ($contactId === 'NULL') {
             $this->warn($integrationId . ' - Project has no linked user');
-            return false;
+            return;
         }
 
         $uitIdContact = $this->getContactFromUiTiD($integrationId, $contactId);
         $email = $uitIdContact?->email;
         if ($uitIdContact === null || $email === null) {
             $this->warn($contactId . ' - user not found inside UiTiD');
-            return false;
+            return;
         }
 
         $insightlyContacts = $this->insightlyClient->contacts()->findByEmail($email);
         if ($insightlyContacts->isEmpty()) {
             $this->warn($contactId . ' - user with email ' . $email . ' not found inside Insightly');
             $this->contactRepository->save($uitIdContact);
-            return true;
+            return;
         }
 
         $insightlyContact = $insightlyContacts->mostLinks();
@@ -244,11 +240,9 @@ final class MigrateProjects extends Command
 
         $contact = $this->getContactFromInInsightly($integrationId, $contactId, $insightlyContact->insightlyId);
         $this->contactRepository->save($contact);
-
-        return true;
     }
 
-    private function migrateKeys(UuidInterface $integrationId, array $projectAsArray): bool
+    private function migrateKeys(UuidInterface $integrationId, array $projectAsArray): void
     {
         // Creating missing UiTiD consumers and missing Auth0 clients will be handled by other scripts.
         $consumerProduction = $this->getConsumerFromUitId(
@@ -268,8 +262,6 @@ final class MigrateProjects extends Command
         if ($consumerTest !== null) {
             $this->uiTiDv1ConsumerRepository->save($consumerTest);
         }
-
-        return true;
     }
 
     private function getContactFromUiTiD(UuidInterface $integrationId, string $uitId): ?Contact
