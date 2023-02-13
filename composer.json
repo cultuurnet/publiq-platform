@@ -24,7 +24,7 @@
         "fakerphp/faker": "^1.9.1",
         "laravel/sail": "^1.16",
         "mockery/mockery": "^1.4.4",
-        "nunomaduro/collision": "^6.1",
+        "nunomaduro/collision": "^7.0",
         "nunomaduro/larastan": "^2.0",
         "phpunit/phpunit": "^9.5.10",
         "publiq/php-cs-fixer-config": "^2.0",
