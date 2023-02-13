@@ -70,6 +70,10 @@ final class Integration extends Resource
                 ->readonly()
                 ->onlyOnDetail(),
 
+            Text::make('Name')
+                ->sortable()
+                ->rules('required', 'max:255'),
+
             Select::make('Type')
                 ->options([
                     IntegrationType::EntryApi->value => IntegrationType::EntryApi->name,
@@ -78,18 +82,10 @@ final class Integration extends Resource
                 ])
                 ->rules('required'),
 
-            Text::make('Name')
-                ->sortable()
-                ->rules('required', 'max:255'),
-
             Text::make('Description')
                 ->sortable()
                 ->rules('required', 'max:255')
                 ->onlyOnDetail(),
-
-            BelongsTo::make('Subscription')
-                ->withoutTrashed()
-                ->rules('required'),
 
             Select::make('Status')
                 ->options([
@@ -101,6 +97,10 @@ final class Integration extends Resource
                     IntegrationStatus::PendingApprovalPayment->value => IntegrationStatus::PendingApprovalPayment->name,
                 ])
                 ->default(IntegrationStatus::Draft->value),
+
+            BelongsTo::make('Subscription')
+                ->withoutTrashed()
+                ->rules('required'),
 
             InsightlyLink::make('Insightly ID', fn () => $this->insightlyId())
                 ->type(InsightlyType::Opportunity),
