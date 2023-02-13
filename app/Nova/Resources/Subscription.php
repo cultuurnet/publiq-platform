@@ -54,7 +54,7 @@ final class Subscription extends Resource
                 ])
                 ->rules('required'),
 
-            CurrencyField::make('Subscription fee (billed annually)', 'price')
+            CurrencyField::make('Subscription price (billed annually)', 'price')
                 ->currency(Currency::EUR->value)
                 ->min(0)
                 ->step(0.01)
