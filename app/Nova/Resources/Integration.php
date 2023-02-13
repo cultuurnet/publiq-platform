@@ -75,6 +75,7 @@ final class Integration extends Resource
                 ->rules('required', 'max:255'),
 
             Select::make('Type')
+                ->sortable()
                 ->options([
                     IntegrationType::EntryApi->value => IntegrationType::EntryApi->name,
                     IntegrationType::SearchApi->value => IntegrationType::SearchApi->name,
@@ -83,11 +84,11 @@ final class Integration extends Resource
                 ->rules('required'),
 
             Text::make('Description')
-                ->sortable()
                 ->rules('required', 'max:255')
                 ->onlyOnDetail(),
 
             Select::make('Status')
+                ->sortable()
                 ->options([
                     IntegrationStatus::Draft->value => IntegrationStatus::Draft->name,
                     IntegrationStatus::Active->value => IntegrationStatus::Active->name,
@@ -99,6 +100,7 @@ final class Integration extends Resource
                 ->default(IntegrationStatus::Draft->value),
 
             BelongsTo::make('Subscription')
+                ->sortable()
                 ->withoutTrashed()
                 ->rules('required'),
 
