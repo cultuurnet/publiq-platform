@@ -108,7 +108,7 @@ final class Integration extends Resource
                 ->withoutTrashed()
                 ->rules('required'),
 
-            DateTime::make('Date created', 'created_at')
+            DateTime::make('Created', 'created_at')
                 ->readonly()
                 ->exceptOnForms()
                 ->filterable()
