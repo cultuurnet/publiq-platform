@@ -23,6 +23,7 @@ use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use App\UiTiDv1\UiTiDv1Consumer;
 use App\UiTiDv1\UiTiDv1Environment;
 use App\UiTiDv1\UiTiDv1EnvironmentSDK;
+use Database\Seeders\SubscriptionsSeeder;
 use Exception;
 use GuzzleHttp\ClientInterface;
 use Illuminate\Console\Command;
@@ -145,7 +146,7 @@ final class MigrateProjects extends Command
             $integrationType,
             $projectAsArray[3],
             $projectAsArray[16] !== 'NULL' ? $projectAsArray[16] : '',
-            Uuid::fromString('b46745a1-feb5-45fd-8fa9-8e3ef25aac26'), // TODO: should be correct subscription plan
+            Uuid::fromString(SubscriptionsSeeder::BASIC_PLAN),
             $status,
             []
         );
