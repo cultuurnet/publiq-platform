@@ -71,13 +71,6 @@ final class Integration extends Resource
                 ->readonly()
                 ->onlyOnDetail(),
 
-            DateTime::make('Date created', 'created_at')
-                ->readonly()
-                ->exceptOnForms()
-                ->filterable()
-                ->sortable()
-                ->displayUsing(fn ($date) => $date->format('d/m/Y')),
-
             Text::make('Name')
                 ->sortable()
                 ->rules('required', 'max:255'),
@@ -114,6 +107,13 @@ final class Integration extends Resource
                 ->sortable()
                 ->withoutTrashed()
                 ->rules('required'),
+
+            DateTime::make('Date created', 'created_at')
+                ->readonly()
+                ->exceptOnForms()
+                ->filterable()
+                ->sortable()
+                ->displayUsing(fn ($date) => $date->format('d/m/Y')),
 
             InsightlyLink::make('Insightly ID', fn () => $this->insightlyId())
                 ->type(InsightlyType::Opportunity),
