@@ -110,7 +110,7 @@ final class Integration extends Resource
 
             DateTime::make('Created', 'created_at')
                 ->readonly()
-                ->exceptOnForms()
+                ->onlyOnIndex()
                 ->filterable()
                 ->sortable()
                 ->displayUsing(fn ($date) => $date->format('d/m/Y')),
