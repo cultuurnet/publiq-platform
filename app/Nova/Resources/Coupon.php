@@ -34,10 +34,10 @@ final class Coupon extends Resource
     ];
 
     public static array $defaultSort = [
-        'is_distributed' => 'asc'
+        'is_distributed' => 'asc',
     ];
 
-    public static function indexQuery(NovaRequest $request, $query):Builder
+    public static function indexQuery(NovaRequest $request, $query): Builder
     {
         if (Coupon::$defaultSort && empty($request->get('orderBy'))) {
             $query->getQuery()->orders = [];
