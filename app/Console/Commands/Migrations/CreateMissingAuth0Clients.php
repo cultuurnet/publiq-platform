@@ -29,24 +29,24 @@ final class CreateMissingAuth0Clients extends Command
 
     public function handle(): int
     {
-        $migratedIntegrations = $this->getIntegrationsWithMissingAuth0Clients();
+        $integrations = $this->getIntegrationsWithMissingAuth0Clients();
 
-        $migratedIntegrationsCount = count($migratedIntegrations);
-        if ($migratedIntegrationsCount <= 0) {
-            $this->warn('No migrated integrations found');
+        $integrationsCount = count($integrations);
+        if ($integrationsCount <= 0) {
+            $this->warn('No integrations found with missing Auth0 clients');
             return 0;
         }
 
-        if (!$this->confirm('Are you sure you want to create Auth0 clients for ' . $migratedIntegrationsCount . ' integrations?')) {
+        if (!$this->confirm('Are you sure you want to create Auth0 clients for ' . $integrationsCount . ' integrations?')) {
             return 0;
         }
 
-        foreach ($migratedIntegrations as $migratedIntegration) {
-            $this->info($migratedIntegration->id . ' - Started creating Auth0 Clients');
+        foreach ($integrations as $integration) {
+            $this->info($integration->id . ' - Started creating Auth0 Clients');
 
-            $this->createMissingAuth0ClientsForIntegration($migratedIntegration);
+            $this->createMissingAuth0ClientsForIntegration($integration);
 
-            $this->info($migratedIntegration->id . ' - Finished creating Auth0 Clients');
+            $this->info($integration->id . ' - Finished creating Auth0 Clients');
             $this->info('---');
         }
 
@@ -74,7 +74,7 @@ final class CreateMissingAuth0Clients extends Command
 
         foreach ($missingTenants as $missingTenant) {
             try {
-                $auth0Client = $this->auth0ClusterSDK->createClientsForIntegrationOnAuth0Tenant($integration, $missingTenant);
+                $auth0Client = $this->auth0ClusterSDK->createClientForIntegrationOnAuth0Tenant($integration, $missingTenant);
                 $this->auth0ClientRepository->save($auth0Client);
 
                 $this->info($integration->id . ' - created Auth0 client on ' . $missingTenant->value);
@@ -89,18 +89,18 @@ final class CreateMissingAuth0Clients extends Command
      */
     private function getIntegrationsWithMissingAuth0Clients(): Collection
     {
-        $migratedIntegrationModels = IntegrationModel::query()->has(
+        $integrationModels = IntegrationModel::query()->has(
             'auth0Clients',
             '<',
             count(Auth0Tenant::cases())
         )->get();
 
-        $migratedIntegrations = new Collection();
+        $integrations = new Collection();
 
-        foreach ($migratedIntegrationModels as $migratedIntegrationModel) {
-            $migratedIntegrations->add($migratedIntegrationModel->toDomain());
+        foreach ($integrationModels as $integrationModel) {
+            $integrations->add($integrationModel->toDomain());
         }
 
-        return $migratedIntegrations;
+        return $integrations;
     }
 }
