@@ -36,7 +36,8 @@ final class Subscription extends Resource
     {
         return [
             ID::make()
-                ->readonly(),
+                ->readonly()
+                ->hideFromIndex(),
 
             Text::make('Name')
                 ->sortable()
@@ -47,6 +48,7 @@ final class Subscription extends Resource
                 ->onlyOnForms(),
 
             Select::make('Integration Type', 'integration_type')
+                ->sortable()
                 ->options([
                     IntegrationType::EntryApi->value => IntegrationType::EntryApi->name,
                     IntegrationType::SearchApi->value => IntegrationType::SearchApi->name,
@@ -55,12 +57,14 @@ final class Subscription extends Resource
                 ->rules('required'),
 
             CurrencyField::make('Subscription price (billed annually)', 'price')
+                ->sortable()
                 ->currency(Currency::EUR->value)
                 ->min(0)
                 ->step(0.01)
                 ->rules('required'),
 
             CurrencyField::make('Setup fee (billed once)', 'fee')
+                ->sortable()
                 ->currency(Currency::EUR->value)
                 ->min(0)
                 ->step(0.01),
@@ -69,7 +73,8 @@ final class Subscription extends Resource
                 ->fillUsing(
                     fn ($request, $model, $attribute) => $model->{$attribute} = Currency::EUR->value
                 )
-                ->hide(),
+                ->hide()
+                ->hideFromIndex(),
 
             HasMany::make('Activity Log'),
         ];
