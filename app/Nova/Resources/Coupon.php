@@ -41,13 +41,16 @@ final class Coupon extends Resource
             ID::make()
                 ->hideFromIndex(),
 
-            Text::make('Coupon code', 'code'),
+            Text::make('Coupon code', 'code')
+                ->sortable(),
 
             Boolean::make('Distributed', 'is_distributed')
-                ->filterable(),
+                ->filterable()
+                ->sortable(),
 
             BelongsTo::make('Integration')
-                ->withoutTrashed(),
+                ->withoutTrashed()
+                ->sortable(),
 
             HasMany::make('Activity Log'),
         ];
