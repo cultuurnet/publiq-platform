@@ -32,4 +32,11 @@ final class Auth0ClusterSDK
             )
         );
     }
+
+    public function createClientsForIntegrationOnAuth0Tenant(
+        Integration $integration,
+        Auth0Tenant $auth0Tenant
+    ): Auth0Client {
+        return $this->auth0TenantSDKs[$auth0Tenant->value]->createClientForIntegration($integration);
+    }
 }
