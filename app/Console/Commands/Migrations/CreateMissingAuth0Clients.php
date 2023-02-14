@@ -11,11 +11,11 @@ use App\Domain\Integrations\Models\IntegrationModel;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 
-final class CreateAuth0Clients extends Command
+final class CreateMissingAuth0Clients extends Command
 {
-    protected $signature = 'auth0:create-auth0-clients';
+    protected $signature = 'auth0:create-missing-auth0-clients';
 
-    protected $description = 'Create Auth0 clients for migrated integrations';
+    protected $description = 'Create Auth0 client(s) for integrations that are missing one or more';
 
     public function __construct(
         private readonly Auth0ClusterSDK $auth0ClusterSDK,
