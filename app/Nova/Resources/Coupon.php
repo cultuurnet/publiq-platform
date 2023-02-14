@@ -43,7 +43,8 @@ final class Coupon extends Resource
 
             Text::make('Coupon code', 'code'),
 
-            Boolean::make('Distributed', 'is_distributed'),
+            Boolean::make('Distributed', 'is_distributed')
+                ->filterable(),
 
             BelongsTo::make('Integration')
                 ->withoutTrashed(),
