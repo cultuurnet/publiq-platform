@@ -36,7 +36,7 @@ final class Auth0ClusterSDK
     /**
      * @throws Auth0TenantNotConfigured
      */
-    public function createClientsForIntegrationOnAuth0Tenant(
+    public function createClientForIntegrationOnAuth0Tenant(
         Integration $integration,
         Auth0Tenant $auth0Tenant
     ): Auth0Client {
