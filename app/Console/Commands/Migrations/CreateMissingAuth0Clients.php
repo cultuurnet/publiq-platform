@@ -89,7 +89,12 @@ final class CreateMissingAuth0Clients extends Command
      */
     private function getIntegrationsWithMissingAuth0Clients(): Collection
     {
-        $migratedIntegrationModels = IntegrationModel::query()->has('auth0Clients', '<', 3)->get();
+        $migratedIntegrationModels = IntegrationModel::query()->has(
+            'auth0Clients',
+            '<',
+            count(Auth0Tenant::cases())
+        )->get();
+
         $migratedIntegrations = new Collection();
 
         foreach ($migratedIntegrationModels as $migratedIntegrationModel) {
