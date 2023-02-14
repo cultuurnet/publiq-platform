@@ -42,7 +42,8 @@ final class Contact extends Resource
     {
         return [
             ID::make()
-                ->readonly(),
+                ->readonly()
+                ->hideFromIndex(),
 
             Select::make('Type')
                 ->options([
@@ -55,11 +56,13 @@ final class Contact extends Resource
 
             Text::make('First Name', 'first_name')
                 ->sortable()
-                ->rules('required', 'max:255'),
+                ->rules('required', 'max:255')
+                ->hideFromIndex(),
 
             Text::make('Last Name', 'last_name')
                 ->sortable()
-                ->rules('required', 'max:255'),
+                ->rules('required', 'max:255')
+                ->hideFromIndex(),
 
             Text::make('Email')
                 ->sortable()
