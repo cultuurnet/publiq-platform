@@ -42,9 +42,16 @@ final class Contact extends Resource
     {
         return [
             ID::make()
-                ->readonly(),
+                ->readonly()
+                ->hideFromIndex(),
+
+            Text::make('Email')
+                ->sortable()
+                ->rules('required', 'email', 'max:255'),
 
             Select::make('Type')
+                ->filterable()
+                ->sortable()
                 ->options([
                     ContactType::Functional->value => ContactType::Functional->name,
                     ContactType::Technical->value => ContactType::Technical->name,
@@ -54,18 +61,15 @@ final class Contact extends Resource
                 ->rules('required'),
 
             Text::make('First Name', 'first_name')
-                ->sortable()
-                ->rules('required', 'max:255'),
+                ->rules('required', 'max:255')
+                ->hideFromIndex(),
 
             Text::make('Last Name', 'last_name')
-                ->sortable()
-                ->rules('required', 'max:255'),
-
-            Text::make('Email')
-                ->sortable()
-                ->rules('required', 'email', 'max:255'),
+                ->rules('required', 'max:255')
+                ->hideFromIndex(),
 
             BelongsTo::make('Integration')
+                ->sortable()
                 ->withoutTrashed()
                 ->readonly(fn (NovaRequest $request) => $request->isUpdateOrUpdateAttachedRequest())
                 ->rules('required'),
