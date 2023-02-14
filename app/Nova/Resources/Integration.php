@@ -13,6 +13,7 @@ use App\Nova\Actions\ActivateIntegration;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use Illuminate\Support\Facades\App;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
@@ -67,9 +68,16 @@ final class Integration extends Resource
 
         return [
             ID::make()
-                ->readonly(),
+                ->readonly()
+                ->onlyOnDetail(),
+
+            Text::make('Name')
+                ->sortable()
+                ->rules('required', 'max:255'),
 
             Select::make('Type')
+                ->filterable()
+                ->sortable()
                 ->options([
                     IntegrationType::EntryApi->value => IntegrationType::EntryApi->name,
                     IntegrationType::SearchApi->value => IntegrationType::SearchApi->name,
@@ -77,19 +85,13 @@ final class Integration extends Resource
                 ])
                 ->rules('required'),
 
-            Text::make('Name')
-                ->sortable()
-                ->rules('required', 'max:255'),
-
             Text::make('Description')
-                ->sortable()
-                ->rules('required', 'max:255'),
-
-            BelongsTo::make('Subscription')
-                ->withoutTrashed()
-                ->rules('required'),
+                ->rules('required', 'max:255')
+                ->hideFromIndex(),
 
             Select::make('Status')
+                ->filterable()
+                ->sortable()
                 ->options([
                     IntegrationStatus::Draft->value => IntegrationStatus::Draft->name,
                     IntegrationStatus::Active->value => IntegrationStatus::Active->name,
@@ -99,6 +101,19 @@ final class Integration extends Resource
                     IntegrationStatus::PendingApprovalPayment->value => IntegrationStatus::PendingApprovalPayment->name,
                 ])
                 ->default(IntegrationStatus::Draft->value),
+
+            BelongsTo::make('Subscription')
+                ->filterable()
+                ->sortable()
+                ->withoutTrashed()
+                ->rules('required'),
+
+            DateTime::make('Created', 'created_at')
+                ->readonly()
+                ->onlyOnIndex()
+                ->filterable()
+                ->sortable()
+                ->displayUsing(fn ($date) => $date->format('d/m/Y')),
 
             InsightlyLink::make('Insightly ID', fn () => $this->insightlyId())
                 ->type(InsightlyType::Opportunity),
