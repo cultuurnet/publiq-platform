@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Auth0;
 
 use Exception;
 
-class Auth0TenantNotConfigured extends Exception
+final class Auth0TenantNotConfigured extends Exception
 {
     public function __construct(Auth0Tenant $auth0Tenant)
     {
