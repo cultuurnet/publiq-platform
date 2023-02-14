@@ -50,6 +50,7 @@ final class Contact extends Resource
                 ->rules('required', 'email', 'max:255'),
 
             Select::make('Type')
+                ->filterable()
                 ->sortable()
                 ->options([
                     ContactType::Functional->value => ContactType::Functional->name,
