@@ -6,7 +6,7 @@ namespace App\UiTiDv1;
 
 use Exception;
 
-class UiTiDv1EnvironmentNotConfigured extends Exception
+final class UiTiDv1EnvironmentNotConfigured extends Exception
 {
     public function __construct(UiTiDv1Environment $uiTiDv1Environment)
     {
