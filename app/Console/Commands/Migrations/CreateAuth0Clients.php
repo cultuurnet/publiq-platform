@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Console\Migrations;
+namespace App\Console\Commands\Migrations;
 
 use App\Auth0\Auth0ClusterSDK;
 use App\Auth0\Repositories\Auth0ClientRepository;
