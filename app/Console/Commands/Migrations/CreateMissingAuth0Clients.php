@@ -7,6 +7,7 @@ namespace App\Console\Commands\Migrations;
 use App\Auth0\Auth0Client;
 use App\Auth0\Auth0ClusterSDK;
 use App\Auth0\Auth0Tenant;
+use App\Auth0\Auth0TenantNotConfigured;
 use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Models\IntegrationModel;
@@ -28,7 +29,7 @@ final class CreateMissingAuth0Clients extends Command
 
     public function handle(): int
     {
-        $migratedIntegrations = $this->getMigratedIntegrations();
+        $migratedIntegrations = $this->getIntegrationsWithMissingAuth0Clients();
 
         $migratedIntegrationsCount = count($migratedIntegrations);
         if ($migratedIntegrationsCount <= 0) {
@@ -72,17 +73,21 @@ final class CreateMissingAuth0Clients extends Command
         );
 
         foreach ($missingTenants as $missingTenant) {
-            $auth0Client = $this->auth0ClusterSDK->createClientsForIntegrationOnAuth0Tenant($integration, $missingTenant);
-            $this->auth0ClientRepository->save($auth0Client);
+            try {
+                $auth0Client = $this->auth0ClusterSDK->createClientsForIntegrationOnAuth0Tenant($integration, $missingTenant);
+                $this->auth0ClientRepository->save($auth0Client);
 
-            $this->warn($integration->id . ' - created Auth0 client on ' . $missingTenant->value);
+                $this->info($integration->id . ' - created Auth0 client on ' . $missingTenant->value);
+            } catch (Auth0TenantNotConfigured) {
+                $this->warn($integration->id . ' - missing config for Auth0 tenant ' . $missingTenant->value);
+            }
         }
     }
 
     /**
      * @return Collection<Integration>
      */
-    private function getMigratedIntegrations(): Collection
+    private function getIntegrationsWithMissingAuth0Clients(): Collection
     {
         $migratedIntegrationModels = IntegrationModel::query()->get();
         $migratedIntegrations = new Collection();

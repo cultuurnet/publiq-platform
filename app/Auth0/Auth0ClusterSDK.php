@@ -33,10 +33,17 @@ final class Auth0ClusterSDK
         );
     }
 
+    /**
+     * @throws Auth0TenantNotConfigured
+     */
     public function createClientsForIntegrationOnAuth0Tenant(
         Integration $integration,
         Auth0Tenant $auth0Tenant
     ): Auth0Client {
+        if (!key_exists($auth0Tenant->value, $this->auth0TenantSDKs)) {
+            throw new Auth0TenantNotConfigured($auth0Tenant);
+        }
+
         return $this->auth0TenantSDKs[$auth0Tenant->value]->createClientForIntegration($integration);
     }
 }
