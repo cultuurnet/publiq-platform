@@ -6,7 +6,7 @@ namespace App\Nova\Resources;
 
 use App\Domain\Coupons\Models\CouponModel;
 use App\Nova\Actions\DistributeCoupon;
-use Illuminate\Database\Eloquent\Builder;
+use App\Nova\Resource;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\Field;
@@ -14,7 +14,6 @@ use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Laravel\Nova\Resource;
 
 /**
  * @mixin CouponModel
