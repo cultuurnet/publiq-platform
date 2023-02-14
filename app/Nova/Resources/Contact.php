@@ -45,6 +45,10 @@ final class Contact extends Resource
                 ->readonly()
                 ->hideFromIndex(),
 
+            Text::make('Email')
+                ->sortable()
+                ->rules('required', 'email', 'max:255'),
+
             Select::make('Type')
                 ->options([
                     ContactType::Functional->value => ContactType::Functional->name,
@@ -63,10 +67,6 @@ final class Contact extends Resource
                 ->sortable()
                 ->rules('required', 'max:255')
                 ->hideFromIndex(),
-
-            Text::make('Email')
-                ->sortable()
-                ->rules('required', 'email', 'max:255'),
 
             BelongsTo::make('Integration')
                 ->withoutTrashed()
