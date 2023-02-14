@@ -31,4 +31,10 @@ return [
             ],
         ],
     ],
+
+    'integration_types' => [
+        'entry_api' => env('INSIGHTLY_INTEGRATION_TYPE_ENTRY_API', 6),
+        'search_api' => env('INSIGHTLY_INTEGRATION_TYPE_SEARCH_API', 28808),
+        'widgets' => env('INSIGHTLY_INTEGRATION_TYPE_WIDGETS', 24743),
+    ],
 ];
