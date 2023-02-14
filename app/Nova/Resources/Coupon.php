@@ -6,7 +6,7 @@ namespace App\Nova\Resources;
 
 use App\Domain\Coupons\Models\CouponModel;
 use App\Nova\Actions\DistributeCoupon;
-use Illuminate\Database\Eloquent\Builder;
+use App\Nova\Resource;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\Field;
@@ -14,7 +14,6 @@ use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Laravel\Nova\Resource;
 
 /**
  * @mixin CouponModel
@@ -33,21 +32,9 @@ final class Coupon extends Resource
         'is_distributed',
     ];
 
-    public static array $defaultSort = [
+    protected static ?array $defaultSort = [
         'is_distributed' => 'asc',
     ];
-
-    public static function indexQuery(NovaRequest $request, $query): Builder
-    {
-        if (Coupon::$defaultSort && empty($request->get('orderBy'))) {
-            $query->getQuery()->orders = [];
-            foreach (Coupon::$defaultSort as $field => $order) {
-                $query->orderBy($field, $order);
-            }
-        }
-
-        return $query;
-    }
 
     /**
      * @return array<Field>

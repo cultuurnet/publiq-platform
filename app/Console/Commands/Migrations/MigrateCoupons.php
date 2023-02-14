@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Console\Migrations;
+namespace App\Console\Commands\Migrations;
 
 use App\Domain\Auth\Models\UserModel;
 use App\Domain\Coupons\Coupon;

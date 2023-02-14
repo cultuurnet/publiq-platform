@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Models;
 
+use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
@@ -14,6 +15,7 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Insightly\Models\InsightlyMappingModel;
 use App\Models\UuidModel;
+use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -102,6 +104,22 @@ final class IntegrationModel extends UuidModel
     public function couponId(): ?string
     {
         return $this->coupon->id ?? null;
+    }
+
+    /**
+     * @return HasMany<Auth0ClientModel>
+     */
+    public function auth0Clients(): HasMany
+    {
+        return $this->hasMany(Auth0ClientModel::class, 'integration_id');
+    }
+
+    /**
+     * @return HasMany<UiTiDv1ConsumerModel>
+     */
+    public function uiTiDv1Consumers(): HasMany
+    {
+        return $this->hasMany(UiTiDv1ConsumerModel::class, 'integration_id');
     }
 
     public function toDomain(): Integration

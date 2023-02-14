@@ -32,4 +32,18 @@ final class UiTiDv1ClusterSDK
             )
         );
     }
+
+    /**
+     * @throws UiTiDv1EnvironmentNotConfigured
+     */
+    public function createConsumerForIntegrationOnEnvironment(
+        Integration $integration,
+        UiTiDv1Environment $environment
+    ): UiTiDv1Consumer {
+        if (!key_exists($environment->value, $this->uitidv1EnvironmentSDKs)) {
+            throw new UiTiDv1EnvironmentNotConfigured($environment);
+        }
+
+        return $this->uitidv1EnvironmentSDKs[$environment->value]->createConsumerForIntegration($integration);
+    }
 }
