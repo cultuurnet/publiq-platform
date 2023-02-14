@@ -32,7 +32,7 @@ final class Coupon extends Resource
         'is_distributed',
     ];
 
-    public static ?array $defaultSort = [
+    protected static ?array $defaultSort = [
         'is_distributed' => 'asc',
     ];
 

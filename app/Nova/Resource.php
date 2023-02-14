@@ -10,7 +10,7 @@ use Laravel\Nova\Resource as NovaResource;
 
 abstract class Resource extends NovaResource
 {
-    public static ?array $defaultSort = null;
+    protected static ?array $defaultSort = null;
 
     public static function indexQuery(NovaRequest $request, $query): Builder
     {
