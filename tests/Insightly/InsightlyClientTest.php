@@ -12,6 +12,7 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Organization;
 use App\Insightly\HttpInsightlyClient;
+use App\Insightly\Objects\InsightlyContact;
 use App\Insightly\Objects\ProjectStage;
 use App\Insightly\Objects\Role;
 use App\Insightly\Pipelines;
@@ -64,6 +65,30 @@ final class InsightlyClientTest extends TestCase
         );
 
         $this->insightlyClient->contacts()->update($updatedContact, $insightlyId);
+
+        $this->insightlyClient->contacts()->delete($insightlyId);
+    }
+
+    public function test_it_can_find_a_contact_by_email(): void
+    {
+        $contact = new Contact(
+            Uuid::uuid4(),
+            Uuid::uuid4(),
+            'jane.doe@anonymous.com',
+            ContactType::Technical,
+            'Jane',
+            'Doe'
+        );
+
+        $insightlyId = $this->insightlyClient->contacts()->create($contact);
+        $this->assertNotNull($insightlyId);
+
+        $insightlyContacts = $this->insightlyClient->contacts()->findByEmail('jane.doe@anonymous.com');
+        $contactIds = array_map(
+            static fn (InsightlyContact $contact) => $contact->insightlyId,
+            $insightlyContacts->toArray()
+        );
+        $this->assertContains($insightlyId, $contactIds);
 
         $this->insightlyClient->contacts()->delete($insightlyId);
     }

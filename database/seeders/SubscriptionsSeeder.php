@@ -14,9 +14,11 @@ use Ramsey\Uuid\Uuid;
 
 final class SubscriptionsSeeder extends Seeder
 {
+    public const BASIC_PLAN = 'b46745a1-feb5-45fd-8fa9-8e3ef25aac26';
+
     public function run(SubscriptionRepository $subscriptionRepository): void
     {
-        $subscriptionId = Uuid::fromString('b46745a1-feb5-45fd-8fa9-8e3ef25aac26');
+        $subscriptionId = Uuid::fromString(SubscriptionsSeeder::BASIC_PLAN);
 
         try {
             $subscriptionRepository->getById($subscriptionId);
