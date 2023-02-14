@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Console\Commands\Migrations;
 
+use App\Auth0\Auth0Client;
 use App\Auth0\Auth0ClusterSDK;
+use App\Auth0\Auth0Tenant;
 use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Models\IntegrationModel;
@@ -41,7 +43,7 @@ final class CreateMissingAuth0Clients extends Command
         foreach ($migratedIntegrations as $migratedIntegration) {
             $this->info($migratedIntegration->id . ' - Started creating Auth0 Clients');
 
-            $this->createAuth0ClientsForIntegration($migratedIntegration);
+            $this->createMissingAuth0ClientsForIntegration($migratedIntegration);
 
             $this->info($migratedIntegration->id . ' - Finished creating Auth0 Clients');
             $this->info('---');
@@ -50,17 +52,31 @@ final class CreateMissingAuth0Clients extends Command
         return 1;
     }
 
-    private function createAuth0ClientsForIntegration(Integration $integration): void
+    private function createMissingAuth0ClientsForIntegration(Integration $integration): void
     {
         $auth0Clients = $this->auth0ClientRepository->getByIntegrationId($integration->id);
 
-        if (count($auth0Clients) > 0) {
-            $this->warn($integration->id . ' - already has Auth0 clients');
+        if (count($auth0Clients) === count(Auth0Tenant::cases())) {
+            $this->warn($integration->id . ' - already has all Auth0 clients');
             return;
         }
 
-        $auth0Clients = $this->auth0ClusterSDK->createClientsForIntegration($integration);
-        $this->auth0ClientRepository->save(...$auth0Clients);
+        $existingTenants = array_map(
+            static fn (Auth0Client $auth0Client) => $auth0Client->tenant,
+            $auth0Clients
+        );
+        $missingTenants = array_udiff(
+            Auth0Tenant::cases(),
+            $existingTenants,
+            fn (Auth0Tenant $t1, Auth0Tenant $t2) => strcmp($t1->value, $t2->value)
+        );
+
+        foreach ($missingTenants as $missingTenant) {
+            $auth0Client = $this->auth0ClusterSDK->createClientsForIntegrationOnAuth0Tenant($integration, $missingTenant);
+            $this->auth0ClientRepository->save($auth0Client);
+
+            $this->warn($integration->id . ' - created Auth0 client on ' . $missingTenant->value);
+        }
     }
 
     /**
