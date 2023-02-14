@@ -41,12 +41,12 @@ final class Coupon extends Resource
             ID::make()
                 ->hideFromIndex(),
 
+            Text::make('Coupon code', 'code'),
+
             Boolean::make('Distributed', 'is_distributed'),
 
             BelongsTo::make('Integration')
                 ->withoutTrashed(),
-
-            Text::make('Coupon code', 'code'),
 
             HasMany::make('Activity Log'),
         ];
