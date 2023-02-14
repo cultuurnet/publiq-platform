@@ -6,6 +6,7 @@ namespace App\Nova\Resources;
 
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Models\ContactModel;
+use App\Nova\Resource;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
@@ -13,7 +14,6 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Laravel\Nova\Resource;
 use Publiq\InsightlyLink\InsightlyLink;
 use Publiq\InsightlyLink\InsightlyType;
 

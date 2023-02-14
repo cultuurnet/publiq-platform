@@ -6,6 +6,7 @@ namespace App\Nova\Resources;
 
 use App\Domain\Coupons\Models\CouponModel;
 use App\Nova\Actions\DistributeCoupon;
+use App\Nova\Resource;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\Field;
@@ -13,7 +14,6 @@ use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Laravel\Nova\Resource;
 
 /**
  * @mixin CouponModel
@@ -32,20 +32,29 @@ final class Coupon extends Resource
         'is_distributed',
     ];
 
+    protected static ?array $defaultSort = [
+        'is_distributed' => 'asc',
+    ];
+
     /**
      * @return array<Field>
      */
     public function fields(NovaRequest $request): array
     {
         return [
-            ID::make(),
+            ID::make()
+                ->hideFromIndex(),
 
-            Boolean::make('Distributed', 'is_distributed'),
+            Text::make('Coupon code', 'code')
+                ->sortable(),
+
+            Boolean::make('Distributed', 'is_distributed')
+                ->filterable()
+                ->sortable(),
 
             BelongsTo::make('Integration')
-                ->withoutTrashed(),
-
-            Text::make('Coupon code', 'code'),
+                ->withoutTrashed()
+                ->sortable(),
 
             HasMany::make('Activity Log'),
         ];

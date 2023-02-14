@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Nova\Resources;
 
 use App\Domain\Organizations\Models\OrganizationModel;
+use App\Nova\Resource;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Laravel\Nova\Resource;
 use Publiq\InsightlyLink\InsightlyLink;
 use Publiq\InsightlyLink\InsightlyType;
 
