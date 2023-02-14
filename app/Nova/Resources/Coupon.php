@@ -38,7 +38,8 @@ final class Coupon extends Resource
     public function fields(NovaRequest $request): array
     {
         return [
-            ID::make(),
+            ID::make()
+                ->hideFromIndex(),
 
             Boolean::make('Distributed', 'is_distributed'),
 
