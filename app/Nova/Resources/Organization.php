@@ -64,6 +64,7 @@ final class Organization extends Resource
                 ->rules('required', 'max:255'),
 
             Text::make('Zip')
+                ->filterable()
                 ->sortable()
                 ->rules('required', 'max:255'),
 
