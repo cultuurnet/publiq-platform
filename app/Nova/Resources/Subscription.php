@@ -48,6 +48,7 @@ final class Subscription extends Resource
                 ->onlyOnForms(),
 
             Select::make('Integration Type', 'integration_type')
+                ->sortable()
                 ->options([
                     IntegrationType::EntryApi->value => IntegrationType::EntryApi->name,
                     IntegrationType::SearchApi->value => IntegrationType::SearchApi->name,
@@ -56,12 +57,14 @@ final class Subscription extends Resource
                 ->rules('required'),
 
             CurrencyField::make('Subscription price (billed annually)', 'price')
+                ->sortable()
                 ->currency(Currency::EUR->value)
                 ->min(0)
                 ->step(0.01)
                 ->rules('required'),
 
             CurrencyField::make('Setup fee (billed once)', 'fee')
+                ->sortable()
                 ->currency(Currency::EUR->value)
                 ->min(0)
                 ->step(0.01),
