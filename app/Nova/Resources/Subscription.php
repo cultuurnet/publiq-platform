@@ -36,7 +36,8 @@ final class Subscription extends Resource
     {
         return [
             ID::make()
-                ->readonly(),
+                ->readonly()
+                ->hideFromIndex(),
 
             Text::make('Name')
                 ->sortable()
@@ -69,7 +70,8 @@ final class Subscription extends Resource
                 ->fillUsing(
                     fn ($request, $model, $attribute) => $model->{$attribute} = Currency::EUR->value
                 )
-                ->hide(),
+                ->hide()
+                ->hideFromIndex(),
 
             HasMany::make('Activity Log'),
         ];
