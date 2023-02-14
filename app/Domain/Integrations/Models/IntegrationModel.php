@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Models;
 
+use App\Auth0\Auth0Client;
+use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
@@ -102,6 +104,14 @@ final class IntegrationModel extends UuidModel
     public function couponId(): ?string
     {
         return $this->coupon->id ?? null;
+    }
+
+    /**
+     * @return HasMany<Auth0ClientModel>
+     */
+    public function auth0Clients(): HasMany
+    {
+        return $this->hasMany(Auth0ClientModel::class, 'integration_id');
     }
 
     public function toDomain(): Integration
