@@ -15,6 +15,7 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Insightly\Models\InsightlyMappingModel;
 use App\Models\UuidModel;
+use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -111,6 +112,14 @@ final class IntegrationModel extends UuidModel
     public function auth0Clients(): HasMany
     {
         return $this->hasMany(Auth0ClientModel::class, 'integration_id');
+    }
+
+    /**
+     * @return HasMany<UiTiDv1ConsumerModel>
+     */
+    public function uiTiDv1Consumers(): HasMany
+    {
+        return $this->hasMany(UiTiDv1ConsumerModel::class, 'integration_id');
     }
 
     public function toDomain(): Integration
