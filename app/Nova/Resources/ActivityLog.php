@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Nova\Resources;
 
+use App\Nova\Resource;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Laravel\Nova\Resource;
 use Spatie\Activitylog\Models\Activity;
 
 /**
