@@ -30,6 +30,7 @@ final class Contact extends Resource
      * @var array<string>
      */
     public static $search = [
+        'id',
         'first_name',
         'last_name',
         'email',

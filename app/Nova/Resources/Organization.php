@@ -27,6 +27,7 @@ final class Organization extends Resource
      * @var array<string>
      */
     public static $search = [
+        'id',
         'name',
         'vat',
         'street',
