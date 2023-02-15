@@ -37,6 +37,7 @@ final class IntegrationModel extends UuidModel
         'name',
         'description',
         'subscription_id',
+        'organization_id',
         'status',
     ];
 

@@ -327,4 +327,34 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         $this->expectException(ModelNotFoundException::class);
         $this->integrationRepository->activateWithCouponCode($integrationId, $couponCode);
     }
+
+    public function test_it_can_active_with_an_organization(): void
+    {
+        $integrationId = Uuid::uuid4();
+        $organizationId = Uuid::uuid4();
+
+        $searchIntegration = new Integration(
+            $integrationId,
+            IntegrationType::SearchApi,
+            'Search Integration',
+            'Search Integration description',
+            Uuid::uuid4(),
+            IntegrationStatus::Draft,
+            [],
+        );
+
+        $this->integrationRepository->save($searchIntegration);
+
+        $this->integrationRepository->activateWithOrganization($integrationId, $organizationId);
+
+        $this->assertDatabaseHas('integrations', [
+            'id' => $searchIntegration->id->toString(),
+            'type' => $searchIntegration->type,
+            'name' => $searchIntegration->name,
+            'description' => $searchIntegration->description,
+            'subscription_id' => $searchIntegration->subscriptionId,
+            'organization_id' => $organizationId,
+            'status' => IntegrationStatus::Active,
+        ]);
+    }
 }
