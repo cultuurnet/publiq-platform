@@ -43,7 +43,8 @@ final class Organization extends Resource
     {
         return [
             ID::make()
-                ->readonly(),
+                ->readonly()
+                ->hideFromIndex(),
 
             Text::make('Name')
                 ->sortable()
@@ -54,14 +55,12 @@ final class Organization extends Resource
                 ->rules('required', 'email', 'max:255'),
 
             Text::make('Vat')
+                ->hideFromIndex()
                 ->sortable()
                 ->rules('required', 'max:255'),
 
             Text::make('Street')
-                ->sortable()
-                ->rules('required', 'max:255'),
-
-            Text::make('Zip')
+                ->hideFromIndex()
                 ->sortable()
                 ->rules('required', 'max:255'),
 
@@ -69,7 +68,13 @@ final class Organization extends Resource
                 ->sortable()
                 ->rules('required', 'max:255'),
 
+            Text::make('Zip')
+                ->filterable()
+                ->sortable()
+                ->rules('required', 'max:255'),
+
             Text::make('Country')
+                ->hideFromIndex()
                 ->sortable()
                 ->rules('required', 'max:255'),
 
