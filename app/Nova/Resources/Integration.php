@@ -9,7 +9,9 @@ use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Nova\Actions\ActivateIntegration;
+use App\Domain\Organizations\Repositories\OrganizationRepository;
+use App\Nova\Actions\ActivateIntegrationWithOrganization;
+use App\Nova\Actions\ActivateIntegrationWithCoupon;
 use App\Nova\Resource;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use Illuminate\Support\Facades\App;
@@ -188,10 +190,25 @@ final class Integration extends Resource
         /** @var IntegrationModel $integrationModel */
         $integrationModel = $this->model();
 
+        if ($integrationModel->status !== IntegrationStatus::Draft->value) {
+            return [];
+        }
+
         return [
             (new ActivateIntegrationWithCoupon(App::make(IntegrationRepository::class)))
-                ->onlyOnTableRow($integrationModel->status === IntegrationStatus::Draft->value)
+                ->showOnDetail()
+                ->showInline()
                 ->confirmText('Are you sure you want to activate this integration with a coupon?')
+                ->confirmButtonText('Activate')
+                ->cancelButtonText("Don't activate"),
+
+            (new ActivateIntegrationWithOrganization(
+                App::make(IntegrationRepository::class),
+                App::make(OrganizationRepository::class)
+            ))
+                ->showOnDetail()
+                ->showInline()
+                ->confirmText('Are you sure you want to activate this integration with an organization?')
                 ->confirmButtonText('Activate')
                 ->cancelButtonText("Don't activate"),
         ];
