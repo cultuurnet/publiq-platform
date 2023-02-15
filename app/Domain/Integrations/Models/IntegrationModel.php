@@ -75,6 +75,14 @@ final class IntegrationModel extends UuidModel
     }
 
     /**
+     * @return BelongsTo<OrganizationModel, IntegrationModel>
+     */
+    public function organization(): BelongsTo
+    {
+        return $this->belongsTo(OrganizationModel::class, 'organization_id');
+    }
+
+    /**
      * @return HasMany<InsightlyMappingModel>
      */
     public function insightlyMappings(): HasMany
