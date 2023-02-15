@@ -7,11 +7,13 @@ namespace App\Domain\Integrations\Models;
 use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
+use App\Domain\Integrations\Events\IntegrationActivatedWithOrganization;
 use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Insightly\Models\InsightlyMappingModel;
 use App\Models\UuidModel;
@@ -21,6 +23,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 final class IntegrationModel extends UuidModel
 {
@@ -56,6 +59,15 @@ final class IntegrationModel extends UuidModel
             'status' => IntegrationStatus::Active,
         ]);
         IntegrationActivatedWithCoupon::dispatch(Uuid::fromString($this->id));
+    }
+
+    public function activeWithOrganization(UuidInterface $organizationId): void
+    {
+        $this->update([
+            'organization_id' => $organizationId->toString(),
+            'status' => IntegrationStatus::Active,
+        ]);
+        IntegrationActivatedWithOrganization::dispatch(Uuid::fromString($this->id));
     }
 
     /**
