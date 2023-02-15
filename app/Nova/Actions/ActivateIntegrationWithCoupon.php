@@ -35,7 +35,7 @@ final class ActivateIntegrationWithCoupon extends Action
             $integration = $integrations->first();
             $this->repository->activateWithCouponCode(Uuid::fromString($integration->id), $couponCode);
 
-            return Action::message('Integration ' . $integration->name . ' activated with coupon ' . $fields->get('coupon'));
+            return Action::message('Integration ' . $integration->name . ' activated with coupon ' . $couponCode);
         } catch (ModelNotFoundException $exception) {
             return Action::danger($couponCode . ' is not an valid coupon.');
         }
