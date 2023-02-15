@@ -184,9 +184,9 @@ final class Integration extends Resource
         $integrationModel = $this->model();
 
         return [
-            (new ActivateIntegration(App::make(IntegrationRepository::class)))
+            (new ActivateIntegrationWithCoupon(App::make(IntegrationRepository::class)))
                 ->onlyOnTableRow($integrationModel->status === IntegrationStatus::Draft->value)
-                ->confirmText('Are you sure you want to activate this integration?')
+                ->confirmText('Are you sure you want to activate this integration with a coupon?')
                 ->confirmButtonText('Activate')
                 ->cancelButtonText("Don't activate"),
         ];

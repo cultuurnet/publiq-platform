@@ -16,7 +16,7 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Ramsey\Uuid\Uuid;
 
-final class ActivateIntegration extends Action
+final class ActivateIntegrationWithCoupon extends Action
 {
     use InteractsWithQueue;
     use Queueable;
