@@ -20,6 +20,7 @@ use App\Insightly\SyncIsAllowed;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 final class CreateProjectWithCoupon implements ShouldQueue
 {
@@ -99,7 +100,7 @@ final class CreateProjectWithCoupon implements ShouldQueue
         }
 
         $this->logger->info(
-            'Project created for integration activated with coupon',
+            'Project created for integration with coupon',
             [
                 'domain' => 'insightly',
                 'integration_id' => $integrationActivatedWithCoupon->id->toString(),
@@ -107,10 +108,12 @@ final class CreateProjectWithCoupon implements ShouldQueue
         );
     }
 
-    public function failed(IntegrationActivatedWithCoupon $integrationActivatedWithCoupon, \Throwable $exception): void
-    {
+    public function failed(
+        IntegrationActivatedWithCoupon $integrationActivatedWithCoupon,
+        Throwable $exception
+    ): void {
         $this->logger->error(
-            'Failed to activate integration',
+            'Failed create project for integration with coupon',
             [
                 'domain' => 'insightly',
                 'contact_id' => $integrationActivatedWithCoupon->id->toString(),
