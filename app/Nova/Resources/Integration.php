@@ -109,6 +109,11 @@ final class Integration extends Resource
                 ->withoutTrashed()
                 ->rules('required'),
 
+            BelongsTo::make('Organization')
+                ->withoutTrashed()
+                ->hideFromIndex()
+                ->nullable(),
+
             DateTime::make('Created', 'created_at')
                 ->readonly()
                 ->onlyOnIndex()
