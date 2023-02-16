@@ -88,7 +88,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
 
             /** @var IntegrationModel $integrationModel */
             $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
-            $integrationModel->activeWithCoupon();
+            $integrationModel->activateWithCoupon();
         });
     }
 
@@ -96,6 +96,6 @@ final class EloquentIntegrationRepository implements IntegrationRepository
     {
         /** @var IntegrationModel $integrationModel */
         $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
-        $integrationModel->activeWithOrganization($organizationId);
+        $integrationModel->activateWithOrganization($organizationId);
     }
 }

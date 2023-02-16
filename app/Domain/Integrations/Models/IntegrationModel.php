@@ -54,7 +54,7 @@ final class IntegrationModel extends UuidModel
         return parent::delete();
     }
 
-    public function activeWithCoupon(): void
+    public function activateWithCoupon(): void
     {
         $this->update([
             'status' => IntegrationStatus::Active,
@@ -62,7 +62,7 @@ final class IntegrationModel extends UuidModel
         IntegrationActivatedWithCoupon::dispatch(Uuid::fromString($this->id));
     }
 
-    public function activeWithOrganization(UuidInterface $organizationId): void
+    public function activateWithOrganization(UuidInterface $organizationId): void
     {
         $this->update([
             'organization_id' => $organizationId->toString(),
