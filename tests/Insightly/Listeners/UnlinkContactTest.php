@@ -141,12 +141,11 @@ final class UnlinkContactTest extends TestCase
             ResourceType::Opportunity,
         );
 
-        $this->insightlyMappingRepository->expects(self::exactly(2))
+        $this->insightlyMappingRepository
             ->method('getByIdAndType')
-            ->withConsecutive(
-                [$this->contactId, ResourceType::Contact],
-                [$this->integrationId, ResourceType::Opportunity]
-            )
-            ->willReturn($insightlyContactMapping, $insightlyOpportunityMapping);
+            ->will($this->returnValueMap([
+                [$this->contactId, ResourceType::Contact, $insightlyContactMapping],
+                [$this->integrationId, ResourceType::Opportunity, $insightlyOpportunityMapping],
+            ]));
     }
 }
