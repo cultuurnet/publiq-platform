@@ -145,6 +145,7 @@ final class InsightlyProjectResourceTest extends TestCase
             'GET',
             'Projects/' . $insightlyId
         );
+        $expectedGetResponse = new Response(200, [], Json::encode($project));
 
         $expectedPutRequest = new Request(
             'PUT',
@@ -152,17 +153,16 @@ final class InsightlyProjectResourceTest extends TestCase
             [],
             Json::encode($projectWithCoupon)
         );
+        $expectedPutResponse = new Response();
 
         $this->insightlyClient->expects($this->exactly(2))
             ->method('sendRequest')
-            ->willReturnCallback(
-                fn (Request $actualRequest) =>
-                    match ([$actualRequest->getHeaders(), $actualRequest->getMethod(), $actualRequest->getBody()->getContents()]) {
-                        [$expectedGetRequest->getHeaders(), $expectedGetRequest->getMethod(), $expectedGetRequest->getBody()->getContents()] => new Response(200, [], Json::encode($project)),
-                        [$expectedPutRequest->getHeaders(), $expectedPutRequest->getMethod(), $expectedPutRequest->getBody()->getContents()] => new Response(),
-                        default => throw new \LogicException('Invalid arguments received'),
-                    }
-            );
+            ->willReturnCallback(self::assertRequestResponseWithCallback(
+                $expectedGetRequest,
+                $expectedGetResponse,
+                $expectedPutRequest,
+                $expectedPutResponse,
+            ));
 
         $this->resource->updateWithCoupon(42, $couponCode);
     }
@@ -258,16 +258,6 @@ final class InsightlyProjectResourceTest extends TestCase
         $contactId = 53;
         $linkId = 64;
 
-        $expectedLinksGetRequest = new Request(
-            'GET',
-            'Projects/' . $projectId . '/Links'
-        );
-
-        $expectedDeleteLinkRequest = new Request(
-            'DELETE',
-            'Projects/' . $projectId . '/Links/' . $linkId
-        );
-
         $projectLinks = [
             [
                 'DETAILS' => null,
@@ -300,16 +290,26 @@ final class InsightlyProjectResourceTest extends TestCase
 
         $projectLinks = Arr::shuffle($projectLinks);
 
+        $expectedLinksGetRequest = new Request(
+            'GET',
+            'Projects/' . $projectId . '/Links'
+        );
+        $expectedLinksGetResponse = new Response(200, [], Json::encode($projectLinks));
+
+        $expectedDeleteLinkRequest = new Request(
+            'DELETE',
+            'Projects/' . $projectId . '/Links/' . $linkId
+        );
+        $expectedDeleteLinksResponse = new Response(202);
+
         $this->insightlyClient->expects($this->exactly(2))
             ->method('sendRequest')
-            ->willReturnCallback(
-                fn (Request $actualRequest) =>
-                    match ([$actualRequest->getHeaders(), $actualRequest->getMethod(), $actualRequest->getBody()->getContents()]) {
-                        [$expectedLinksGetRequest->getHeaders(), $expectedLinksGetRequest->getMethod(), $expectedLinksGetRequest->getBody()->getContents()] => new Response(200, [], Json::encode($projectLinks)),
-                        [$expectedDeleteLinkRequest->getHeaders(), $expectedDeleteLinkRequest->getMethod(), $expectedDeleteLinkRequest->getBody()->getContents()] => new Response(202),
-                        default => throw new \LogicException('Invalid arguments received'),
-                    }
-            );
+            ->willReturnCallback(self::assertRequestResponseWithCallback(
+                $expectedLinksGetRequest,
+                $expectedLinksGetResponse,
+                $expectedDeleteLinkRequest,
+                $expectedDeleteLinksResponse,
+            ));
 
         $this->resource->unlinkContact($projectId, $contactId);
     }

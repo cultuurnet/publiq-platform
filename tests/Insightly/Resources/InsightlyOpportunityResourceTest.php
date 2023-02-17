@@ -100,14 +100,12 @@ final class InsightlyOpportunityResourceTest extends TestCase
         $expectedResponse = new Response(200, [], Json::encode(['OPPORTUNITY_ID' => $insightlyId]));
         $this->insightlyClient->expects($this->exactly(2))
             ->method('sendRequest')
-            ->willReturnCallback(
-                fn (Request $actualRequest) =>
-                    match ([$actualRequest->getHeaders(), $actualRequest->getMethod(), $actualRequest->getBody()->getContents()]) {
-                        [$expectedCreateRequest->getHeaders(), $expectedCreateRequest->getMethod(), $expectedCreateRequest->getBody()->getContents()],
-                        [$expectedUpdateStageRequest->getHeaders(), $expectedUpdateStageRequest->getMethod(), $expectedUpdateStageRequest->getBody()->getContents()] => $expectedResponse,
-                        default => throw new \LogicException('Invalid arguments received'),
-                    }
-            );
+            ->willReturnCallback(self::assertRequestResponseWithCallback(
+                $expectedCreateRequest,
+                $expectedResponse,
+                $expectedUpdateStageRequest,
+                $expectedResponse,
+            ));
 
         $returnedId = $this->resource->create($integration);
         $this->assertEquals($insightlyId, $returnedId);
@@ -216,11 +214,6 @@ final class InsightlyOpportunityResourceTest extends TestCase
     {
         $opportunityInsightlyId = 42;
 
-        $expectedGetRequest = new Request(
-            'GET',
-            'Opportunities/42'
-        );
-
         $opportunity = [
             'OPPORTUNITY_NAME' => 'My opportunity',
             'OPPORTUNITY_STATE' => OpportunityState::OPEN->value,
@@ -233,6 +226,12 @@ final class InsightlyOpportunityResourceTest extends TestCase
                 'FIELD_VALUE' => 'Publicatie Widgets V3',
             ],
         ];
+
+        $expectedGetRequest = new Request(
+            'GET',
+            'Opportunities/42'
+        );
+        $expectedGetResponse = new Response(200, [], Json::encode($opportunity));
 
         $expectedPutRequest = new Request(
             'PUT',
@@ -251,17 +250,16 @@ final class InsightlyOpportunityResourceTest extends TestCase
                 ],
             ])
         );
+        $expectedPutResponse = new Response(202);
 
         $this->insightlyClient->expects($this->exactly(2))
             ->method('sendRequest')
-            ->willReturnCallback(
-                fn (Request $actualRequest) =>
-                    match ([$actualRequest->getHeaders(), $actualRequest->getMethod(), $actualRequest->getBody()->getContents()]) {
-                        [$expectedGetRequest->getHeaders(), $expectedGetRequest->getMethod(), $expectedGetRequest->getBody()->getContents()] => new Response(200, [], Json::encode($opportunity)),
-                        [$expectedPutRequest->getHeaders(), $expectedPutRequest->getMethod(), $expectedPutRequest->getBody()->getContents()] => new Response(202),
-                        default => throw new \LogicException('Invalid arguments received'),
-                    }
-            );
+            ->willReturnCallback(self::assertRequestResponseWithCallback(
+                $expectedGetRequest,
+                $expectedGetResponse,
+                $expectedPutRequest,
+                $expectedPutResponse,
+            ));
 
         $this->resource->updateState($opportunityInsightlyId, OpportunityState::WON);
     }
@@ -308,16 +306,6 @@ final class InsightlyOpportunityResourceTest extends TestCase
         $contactId = 53;
         $linkId = 64;
 
-        $expectedLinksGetRequest = new Request(
-            'GET',
-            'Projects/' . $opportunityId . '/Links'
-        );
-
-        $expectedDeleteLinkRequest = new Request(
-            'DELETE',
-            'Projects/' . $opportunityId . '/Links/' . $linkId
-        );
-
         $opportunityLinks = [
             [
                 'DETAILS' => null,
@@ -347,19 +335,28 @@ final class InsightlyOpportunityResourceTest extends TestCase
                 'LINK_OBJECT_ID' => random_int(100, 1000),
             ],
         ];
-
         $opportunityLinks = Arr::shuffle($opportunityLinks);
+
+        $expectedLinksGetRequest = new Request(
+            'GET',
+            'Projects/' . $opportunityId . '/Links'
+        );
+        $expectedLinksGetResponse = new Response(200, [], Json::encode($opportunityLinks));
+
+        $expectedDeleteLinkRequest = new Request(
+            'DELETE',
+            'Projects/' . $opportunityId . '/Links/' . $linkId
+        );
+        $expectedDeleteLinkResponse = new Response(202);
 
         $this->insightlyClient->expects($this->exactly(2))
             ->method('sendRequest')
-            ->willReturnCallback(
-                fn (Request $actualRequest) =>
-                    match ([$actualRequest->getHeaders(), $actualRequest->getMethod(), $actualRequest->getBody()->getContents()]) {
-                        [$expectedLinksGetRequest->getHeaders(), $expectedLinksGetRequest->getMethod(), $expectedLinksGetRequest->getBody()->getContents()] => new Response(200, [], Json::encode($opportunityLinks)),
-                        [$expectedDeleteLinkRequest->getHeaders(), $expectedDeleteLinkRequest->getMethod(), $expectedDeleteLinkRequest->getBody()->getContents()] => new Response(202),
-                        default => throw new \LogicException('Invalid arguments received'),
-                    }
-            );
+            ->willReturnCallback(self::assertRequestResponseWithCallback(
+                $expectedLinksGetRequest,
+                $expectedLinksGetResponse,
+                $expectedDeleteLinkRequest,
+                $expectedDeleteLinkResponse,
+            ));
 
         $this->resource->unlinkContact($opportunityId, $contactId);
     }
