@@ -98,7 +98,8 @@ final class CreateConsumersTest extends TestCase
                                 'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
                                 'body' => 'name=Mock%20Integration%20%28id%3A%20' . $integrationId . '%29&description=Mock%20description&group=13&group=14',
                             ],
-                        ] => new Response(200, [], (string) file_get_contents(__DIR__ . '/consumer3.xml'))
+                        ] => new Response(200, [], (string) file_get_contents(__DIR__ . '/consumer3.xml')),
+                        default => throw new \LogicException('Invalid arguments received'),
                     }
             );
 

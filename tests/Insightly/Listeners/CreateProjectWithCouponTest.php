@@ -150,6 +150,7 @@ final class CreateProjectWithCouponTest extends TestCase
                     match ([$actualInsightlyProjectId, $actualInsightlyContactId, $actualContactType]) {
                         [$insightlyProjectId, $insightlyTechnicalId, ContactType::Technical],
                         [$insightlyProjectId, $insightlyFunctionalId, ContactType::Functional] => null,
+                        default => throw new \LogicException('Invalid arguments received'),
                     }
             );
 
@@ -209,6 +210,7 @@ final class CreateProjectWithCouponTest extends TestCase
                         [$this->integrationId, ResourceType::Opportunity] => $insightlyIntegrationMapping,
                         [$this->technicalContactId, ResourceType::Contact] => $insightlyTechnicalContactMapping,
                         [$this->functionalContactId, ResourceType::Contact] => $insightlyFunctionalContactMapping,
+                        default => throw new \LogicException('Invalid arguments received'),
                     }
             );
     }

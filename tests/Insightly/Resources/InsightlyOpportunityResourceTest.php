@@ -100,11 +100,14 @@ final class InsightlyOpportunityResourceTest extends TestCase
         $expectedResponse = new Response(200, [], Json::encode(['OPPORTUNITY_ID' => $insightlyId]));
         $this->insightlyClient->expects($this->exactly(2))
             ->method('sendRequest')
-            ->withConsecutive(
-                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedCreateRequest, $actualRequest))],
-                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedUpdateStageRequest, $actualRequest))],
-            )
-            ->willReturnOnConsecutiveCalls($expectedResponse, $expectedResponse);
+            ->willReturnCallback(
+                fn (Request $actualRequest) =>
+                    match ([$actualRequest->getHeaders(), $actualRequest->getMethod(), $actualRequest->getBody()->getContents()]) {
+                        [$expectedCreateRequest->getHeaders(), $expectedCreateRequest->getMethod(), $expectedCreateRequest->getBody()->getContents()],
+                        [$expectedUpdateStageRequest->getHeaders(), $expectedUpdateStageRequest->getMethod(), $expectedUpdateStageRequest->getBody()->getContents()] => $expectedResponse,
+                        default => throw new \LogicException('Invalid arguments received'),
+                    }
+            );
 
         $returnedId = $this->resource->create($integration);
         $this->assertEquals($insightlyId, $returnedId);
@@ -251,13 +254,13 @@ final class InsightlyOpportunityResourceTest extends TestCase
 
         $this->insightlyClient->expects($this->exactly(2))
             ->method('sendRequest')
-            ->withConsecutive(
-                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedGetRequest, $actualRequest))],
-                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedPutRequest, $actualRequest))],
-            )
-            ->willReturnOnConsecutiveCalls(
-                new Response(200, [], Json::encode($opportunity)),
-                new Response(202)
+            ->willReturnCallback(
+                fn (Request $actualRequest) =>
+                    match ([$actualRequest->getHeaders(), $actualRequest->getMethod(), $actualRequest->getBody()->getContents()]) {
+                        [$expectedGetRequest->getHeaders(), $expectedGetRequest->getMethod(), $expectedGetRequest->getBody()->getContents()] => new Response(200, [], Json::encode($opportunity)),
+                        [$expectedPutRequest->getHeaders(), $expectedPutRequest->getMethod(), $expectedPutRequest->getBody()->getContents()] => new Response(202),
+                        default => throw new \LogicException('Invalid arguments received'),
+                    }
             );
 
         $this->resource->updateState($opportunityInsightlyId, OpportunityState::WON);
@@ -349,13 +352,13 @@ final class InsightlyOpportunityResourceTest extends TestCase
 
         $this->insightlyClient->expects($this->exactly(2))
             ->method('sendRequest')
-            ->withConsecutive(
-                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedLinksGetRequest, $actualRequest))],
-                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedDeleteLinkRequest, $actualRequest))],
-            )
-            ->willReturnOnConsecutiveCalls(
-                new Response(200, [], Json::encode($opportunityLinks)),
-                new Response(202)
+            ->willReturnCallback(
+                fn (Request $actualRequest) =>
+                    match ([$actualRequest->getHeaders(), $actualRequest->getMethod(), $actualRequest->getBody()->getContents()]) {
+                        [$expectedLinksGetRequest->getHeaders(), $expectedLinksGetRequest->getMethod(), $expectedLinksGetRequest->getBody()->getContents()] => new Response(200, [], Json::encode($opportunityLinks)),
+                        [$expectedDeleteLinkRequest->getHeaders(), $expectedDeleteLinkRequest->getMethod(), $expectedDeleteLinkRequest->getBody()->getContents()] => new Response(202),
+                        default => throw new \LogicException('Invalid arguments received'),
+                    }
             );
 
         $this->resource->unlinkContact($opportunityId, $contactId);
