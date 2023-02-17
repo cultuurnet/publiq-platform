@@ -155,13 +155,13 @@ final class InsightlyProjectResourceTest extends TestCase
 
         $this->insightlyClient->expects($this->exactly(2))
             ->method('sendRequest')
-            ->withConsecutive(
-                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedGetRequest, $actualRequest))],
-                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedPutRequest, $actualRequest))]
-            )
-            ->willReturnOnConsecutiveCalls(
-                new Response(200, [], Json::encode($project)),
-                new Response()
+            ->willReturnCallback(
+                fn (Request $actualRequest) =>
+                    match ([$actualRequest->getHeaders(), $actualRequest->getMethod(), $actualRequest->getBody()->getContents()]) {
+                        [$expectedGetRequest->getHeaders(), $expectedGetRequest->getMethod(), $expectedGetRequest->getBody()->getContents()] => new Response(200, [], Json::encode($project)),
+                        [$expectedPutRequest->getHeaders(), $expectedPutRequest->getMethod(), $expectedPutRequest->getBody()->getContents()] => new Response(),
+                        default => throw new \LogicException('Invalid arguments received'),
+                    }
             );
 
         $this->resource->updateWithCoupon(42, $couponCode);
@@ -302,13 +302,13 @@ final class InsightlyProjectResourceTest extends TestCase
 
         $this->insightlyClient->expects($this->exactly(2))
             ->method('sendRequest')
-            ->withConsecutive(
-                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedLinksGetRequest, $actualRequest))],
-                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedDeleteLinkRequest, $actualRequest))],
-            )
-            ->willReturnOnConsecutiveCalls(
-                new Response(200, [], Json::encode($projectLinks)),
-                new Response(202)
+            ->willReturnCallback(
+                fn (Request $actualRequest) =>
+                    match ([$actualRequest->getHeaders(), $actualRequest->getMethod(), $actualRequest->getBody()->getContents()]) {
+                        [$expectedLinksGetRequest->getHeaders(), $expectedLinksGetRequest->getMethod(), $expectedLinksGetRequest->getBody()->getContents()] => new Response(200, [], Json::encode($projectLinks)),
+                        [$expectedDeleteLinkRequest->getHeaders(), $expectedDeleteLinkRequest->getMethod(), $expectedDeleteLinkRequest->getBody()->getContents()] => new Response(202),
+                        default => throw new \LogicException('Invalid arguments received'),
+                    }
             );
 
         $this->resource->unlinkContact($projectId, $contactId);
