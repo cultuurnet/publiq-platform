@@ -145,6 +145,7 @@ final class InsightlyProjectResourceTest extends TestCase
             'GET',
             'Projects/' . $insightlyId
         );
+        $expectedGetResponse = new Response(200, [], Json::encode($project));
 
         $expectedPutRequest = new Request(
             'PUT',
@@ -152,17 +153,16 @@ final class InsightlyProjectResourceTest extends TestCase
             [],
             Json::encode($projectWithCoupon)
         );
+        $expectedPutResponse = new Response();
 
         $this->insightlyClient->expects($this->exactly(2))
             ->method('sendRequest')
-            ->withConsecutive(
-                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedGetRequest, $actualRequest))],
-                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedPutRequest, $actualRequest))]
-            )
-            ->willReturnOnConsecutiveCalls(
-                new Response(200, [], Json::encode($project)),
-                new Response()
-            );
+            ->willReturnCallback(self::assertRequestResponseWithCallback(
+                $expectedGetRequest,
+                $expectedGetResponse,
+                $expectedPutRequest,
+                $expectedPutResponse,
+            ));
 
         $this->resource->updateWithCoupon(42, $couponCode);
     }
@@ -258,16 +258,6 @@ final class InsightlyProjectResourceTest extends TestCase
         $contactId = 53;
         $linkId = 64;
 
-        $expectedLinksGetRequest = new Request(
-            'GET',
-            'Projects/' . $projectId . '/Links'
-        );
-
-        $expectedDeleteLinkRequest = new Request(
-            'DELETE',
-            'Projects/' . $projectId . '/Links/' . $linkId
-        );
-
         $projectLinks = [
             [
                 'DETAILS' => null,
@@ -300,16 +290,26 @@ final class InsightlyProjectResourceTest extends TestCase
 
         $projectLinks = Arr::shuffle($projectLinks);
 
+        $expectedLinksGetRequest = new Request(
+            'GET',
+            'Projects/' . $projectId . '/Links'
+        );
+        $expectedLinksGetResponse = new Response(200, [], Json::encode($projectLinks));
+
+        $expectedDeleteLinkRequest = new Request(
+            'DELETE',
+            'Projects/' . $projectId . '/Links/' . $linkId
+        );
+        $expectedDeleteLinksResponse = new Response(202);
+
         $this->insightlyClient->expects($this->exactly(2))
             ->method('sendRequest')
-            ->withConsecutive(
-                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedLinksGetRequest, $actualRequest))],
-                [self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedDeleteLinkRequest, $actualRequest))],
-            )
-            ->willReturnOnConsecutiveCalls(
-                new Response(200, [], Json::encode($projectLinks)),
-                new Response(202)
-            );
+            ->willReturnCallback(self::assertRequestResponseWithCallback(
+                $expectedLinksGetRequest,
+                $expectedLinksGetResponse,
+                $expectedDeleteLinkRequest,
+                $expectedDeleteLinksResponse,
+            ));
 
         $this->resource->unlinkContact($projectId, $contactId);
     }
