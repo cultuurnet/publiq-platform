@@ -15,4 +15,5 @@ interface IntegrationRepository
     public function deleteById(UuidInterface $id): ?bool;
     public function getByContactEmail(string $email): Collection;
     public function activateWithCouponCode(UuidInterface $id, string $couponCode): void;
+    public function activateWithOrganization(UuidInterface $id, UuidInterface $organizationId): void;
 }

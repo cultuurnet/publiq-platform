@@ -16,7 +16,7 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Ramsey\Uuid\Uuid;
 
-final class ActivateIntegration extends Action
+final class ActivateIntegrationWithCoupon extends Action
 {
     use InteractsWithQueue;
     use Queueable;
@@ -35,7 +35,7 @@ final class ActivateIntegration extends Action
             $integration = $integrations->first();
             $this->repository->activateWithCouponCode(Uuid::fromString($integration->id), $couponCode);
 
-            return Action::message('Integration ' . $integration->name . ' activated with coupon ' . $fields->get('coupon'));
+            return Action::message('Integration ' . $integration->name . ' activated with coupon ' . $couponCode);
         } catch (ModelNotFoundException $exception) {
             return Action::danger($couponCode . ' is not an valid coupon.');
         }

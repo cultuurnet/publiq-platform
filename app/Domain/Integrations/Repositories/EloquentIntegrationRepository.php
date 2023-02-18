@@ -78,21 +78,24 @@ final class EloquentIntegrationRepository implements IntegrationRepository
 
     public function activateWithCouponCode(UuidInterface $id, string $couponCode): void
     {
-        $integration = $this->getById($id);
-
-        DB::transaction(static function () use ($couponCode, $integration): void {
+        DB::transaction(static function () use ($couponCode, $id): void {
             /** @var CouponModel $couponModel */
             $couponModel = CouponModel::query()
                 ->where('code', '=', $couponCode)
                 ->whereNull('integration_id')
                 ->firstOrFail();
-            $couponModel->useOnIntegration($integration->id);
+            $couponModel->useOnIntegration($id);
 
             /** @var IntegrationModel $integrationModel */
-            $integrationModel = IntegrationModel::query()
-                ->where('id', '=', $integration->id)
-                ->firstOrFail();
-            $integrationModel->activeWithCoupon();
+            $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
+            $integrationModel->activateWithCoupon();
         });
+    }
+
+    public function activateWithOrganization(UuidInterface $id, UuidInterface $organizationId): void
+    {
+        /** @var IntegrationModel $integrationModel */
+        $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
+        $integrationModel->activateWithOrganization($organizationId);
     }
 }
