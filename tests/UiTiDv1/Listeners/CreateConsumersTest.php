@@ -69,39 +69,38 @@ final class CreateConsumersTest extends TestCase
 
         $this->httpClient->expects($this->exactly(3))
             ->method('request')
-            ->withConsecutive(
-                [
-                    'POST',
-                    'serviceconsumer',
-                    [
-                        'http_errors' => false,
-                        'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
-                        'body' => 'name=Mock%20Integration%20%28id%3A%20' . $integrationId . '%29&description=Mock%20description&group=1&group=2',
-                    ],
-                ],
-                [
-                    'POST',
-                    'serviceconsumer',
-                    [
-                        'http_errors' => false,
-                        'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
-                        'body' => 'name=Mock%20Integration%20%28id%3A%20' . $integrationId . '%29&description=Mock%20description&group=7&group=8',
-                    ],
-                ],
-                [
-                    'POST',
-                    'serviceconsumer',
-                    [
-                        'http_errors' => false,
-                        'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
-                        'body' => 'name=Mock%20Integration%20%28id%3A%20' . $integrationId . '%29&description=Mock%20description&group=13&group=14',
-                    ],
-                ]
-            )
-            ->willReturnOnConsecutiveCalls(
-                new Response(200, [], (string) file_get_contents(__DIR__ . '/consumer1.xml')),
-                new Response(200, [], (string) file_get_contents(__DIR__ . '/consumer2.xml')),
-                new Response(200, [], (string) file_get_contents(__DIR__ . '/consumer3.xml')),
+            ->willReturnCallback(
+                fn (string $actualMethod, string $actualUri, array $actualOptions) =>
+                    match ([$actualMethod, $actualUri, $actualOptions]) {
+                        [
+                            'POST',
+                            'serviceconsumer',
+                            [
+                                'http_errors' => false,
+                                'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
+                                'body' => 'name=Mock%20Integration%20%28id%3A%20' . $integrationId . '%29&description=Mock%20description&group=1&group=2',
+                            ],
+                        ] => new Response(200, [], (string) file_get_contents(__DIR__ . '/consumer1.xml')),
+                        [
+                            'POST',
+                            'serviceconsumer',
+                            [
+                                'http_errors' => false,
+                                'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
+                                'body' => 'name=Mock%20Integration%20%28id%3A%20' . $integrationId . '%29&description=Mock%20description&group=7&group=8',
+                            ],
+                        ] => new Response(200, [], (string) file_get_contents(__DIR__ . '/consumer2.xml')),
+                        [
+                            'POST',
+                            'serviceconsumer',
+                            [
+                                'http_errors' => false,
+                                'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
+                                'body' => 'name=Mock%20Integration%20%28id%3A%20' . $integrationId . '%29&description=Mock%20description&group=13&group=14',
+                            ],
+                        ] => new Response(200, [], (string) file_get_contents(__DIR__ . '/consumer3.xml')),
+                        default => throw new \LogicException('Invalid arguments received'),
+                    }
             );
 
         $expectedConsumers = [

@@ -145,9 +145,13 @@ final class CreateProjectWithCouponTest extends TestCase
         // It links the contacts
         $this->projectResource->expects($this->exactly(2))
             ->method('linkContact')
-            ->withConsecutive(
-                [$insightlyProjectId, $insightlyTechnicalId],
-                [$insightlyProjectId, $insightlyFunctionalId],
+            ->willReturnCallback(
+                fn (int $actualInsightlyProjectId, int $actualInsightlyContactId, ContactType $actualContactType) =>
+                    match ([$actualInsightlyProjectId, $actualInsightlyContactId, $actualContactType]) {
+                        [$insightlyProjectId, $insightlyTechnicalId, ContactType::Technical],
+                        [$insightlyProjectId, $insightlyFunctionalId, ContactType::Functional] => null,
+                        default => throw new \LogicException('Invalid arguments received'),
+                    }
             );
 
         // When
@@ -200,15 +204,14 @@ final class CreateProjectWithCouponTest extends TestCase
 
         $this->insightlyMappingRepository->expects($this->exactly(3))
             ->method('getByIdAndType')
-            ->withConsecutive(
-                [$this->integrationId, ResourceType::Opportunity],
-                [$this->technicalContactId, ResourceType::Contact],
-                [$this->functionalContactId, ResourceType::Contact],
-            )
-            ->willReturnOnConsecutiveCalls(
-                $insightlyIntegrationMapping,
-                $insightlyTechnicalContactMapping,
-                $insightlyFunctionalContactMapping,
+            ->willReturnCallback(
+                fn (UuidInterface $actualIntegrationId, ResourceType $actualResourceType) =>
+                    match ([$actualIntegrationId, $actualResourceType]) {
+                        [$this->integrationId, ResourceType::Opportunity] => $insightlyIntegrationMapping,
+                        [$this->technicalContactId, ResourceType::Contact] => $insightlyTechnicalContactMapping,
+                        [$this->functionalContactId, ResourceType::Contact] => $insightlyFunctionalContactMapping,
+                        default => throw new \LogicException('Invalid arguments received'),
+                    }
             );
     }
 
