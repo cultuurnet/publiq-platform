@@ -40,7 +40,7 @@ final class InsightlyOrganizationResource implements OrganizationResource
             'PUT',
             $this->path,
             [],
-            Json::encode((new OrganizationSerializer())->toInsighltyArrayForUpdate($organization, $id))
+            Json::encode((new OrganizationSerializer())->toInsightlyArrayForUpdate($organization, $id))
         );
 
         $this->insightlyClient->sendRequest($request);
