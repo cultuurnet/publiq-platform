@@ -29,9 +29,9 @@ final class InsightlyOrganizationResource implements OrganizationResource
 
         $response = $this->insightlyClient->sendRequest($request);
 
-        $contactAsArray = Json::decodeAssociatively($response->getBody()->getContents());
+        $organizationAsArray = Json::decodeAssociatively($response->getBody()->getContents());
 
-        return $contactAsArray['ORGANISATION_ID'];
+        return $organizationAsArray['ORGANISATION_ID'];
     }
 
     public function update(Organization $organization, int $id): void
