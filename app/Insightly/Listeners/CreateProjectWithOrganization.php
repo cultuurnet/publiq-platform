@@ -20,6 +20,7 @@ use App\Insightly\Resources\ResourceType;
 use App\Insightly\SyncIsAllowed;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -95,11 +96,18 @@ final class CreateProjectWithOrganization implements ShouldQueue
             }
         }
 
-        // Check if the organization already exists based on the VAT number or invoice email
-        //  Yes => use the found organization
-        //  No => create a new organization with a contact
+
         $organization = $this->organizationRepository->getByIntegrationId($integrationId);
-        $organizationInsightlyId = $this->findInsightlyOrganization($organization);
+        try {
+            $organizationMapping = $this->insightlyMappingRepository->getByIdAndType(
+                $organization->id,
+                ResourceType::Organization
+            );
+
+            $organizationInsightlyId = $organizationMapping->insightlyId;
+        } catch (ModelNotFoundException) {
+            $organizationInsightlyId = $this->findInsightlyOrganization($organization);
+        }
 
         if ($organizationInsightlyId === null) {
             $organizationInsightlyId = $this->insightlyClient->organizations()->create($organization);
