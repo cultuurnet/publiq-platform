@@ -98,7 +98,7 @@ final class CreateProjectWithOrganization implements ShouldQueue
         // Check if the organization already exists based on the VAT number or invoice email
         //  Yes => use the found organization
         //  No => create a new organization with a contact
-        $organization = $this->organizationRepository->getById($integrationId);
+        $organization = $this->organizationRepository->getByIntegrationId($integrationId);
         $organizationInsightlyId = $this->findInsightlyOrganization($organization);
 
         if ($organizationInsightlyId === null) {
