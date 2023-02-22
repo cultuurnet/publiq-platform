@@ -11,13 +11,8 @@ use App\Domain\Organizations\Organization;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
 use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
-use App\Insightly\Objects\OpportunityStage;
-use App\Insightly\Objects\OpportunityState;
-use App\Insightly\Objects\ProjectStage;
-use App\Insightly\Objects\ProjectState;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
-use App\Insightly\SyncIsAllowed;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -27,6 +22,7 @@ use Throwable;
 final class CreateProjectWithOrganization implements ShouldQueue
 {
     use Queueable;
+    use CreatesProject;
 
     public function __construct(
         private readonly InsightlyClient $insightlyClient,
@@ -42,60 +38,7 @@ final class CreateProjectWithOrganization implements ShouldQueue
     {
         $integrationId = $integrationActivatedWithOrganization->id;
 
-        // Update the state ("open") and stage ("request") of the existing opportunity
-        $opportunityMapping = $this->insightlyMappingRepository->getByIdAndType(
-            $integrationId,
-            ResourceType::Opportunity
-        );
-
-        $this->insightlyClient->opportunities()->updateState(
-            $opportunityMapping->insightlyId,
-            OpportunityState::OPEN
-        );
-        $this->insightlyClient->opportunities()->updateStage(
-            $opportunityMapping->insightlyId,
-            OpportunityStage::REQUEST
-        );
-
-        // Create a new project with stage ("live") and state ("completed")
-        $integration = $this->integrationRepository->getById($integrationId);
-
-        $insightlyProjectId = $this->insightlyClient->projects()->create($integration);
-        $this->insightlyMappingRepository->save(
-            new InsightlyMapping($integrationId, $insightlyProjectId, ResourceType::Project)
-        );
-
-        $this->insightlyClient->projects()->updateState(
-            $insightlyProjectId,
-            ProjectState::COMPLETED
-        );
-        $this->insightlyClient->projects()->updateStage(
-            $insightlyProjectId,
-            ProjectStage::LIVE
-        );
-
-        // Link the opportunity to the new project
-        $this->insightlyClient->projects()->linkOpportunity(
-            $insightlyProjectId,
-            $opportunityMapping->insightlyId
-        );
-
-        // Link the contacts to the new project
-        $linkedContacts = $this->contactRepository->getByIntegrationId($integrationId);
-        foreach ($linkedContacts as $linkedContact) {
-            if (SyncIsAllowed::forContact($linkedContact)) {
-                $insightlyContactMapping = $this->insightlyMappingRepository->getByIdAndType(
-                    $linkedContact->id,
-                    ResourceType::Contact
-                );
-                $this->insightlyClient->projects()->linkContact(
-                    $insightlyProjectId,
-                    $insightlyContactMapping->insightlyId,
-                    $linkedContact->type
-                );
-            }
-        }
-
+        $insightlyProjectId = $this->createProject($integrationId, false);
 
         $organization = $this->organizationRepository->getByIntegrationId($integrationId);
         try {

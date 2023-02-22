@@ -9,14 +9,7 @@ use App\Domain\Coupons\Repositories\CouponRepository;
 use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Insightly\InsightlyClient;
-use App\Insightly\InsightlyMapping;
-use App\Insightly\Objects\OpportunityStage;
-use App\Insightly\Objects\OpportunityState;
-use App\Insightly\Objects\ProjectStage;
-use App\Insightly\Objects\ProjectState;
 use App\Insightly\Repositories\InsightlyMappingRepository;
-use App\Insightly\Resources\ResourceType;
-use App\Insightly\SyncIsAllowed;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
@@ -25,6 +18,7 @@ use Throwable;
 final class CreateProjectWithCoupon implements ShouldQueue
 {
     use Queueable;
+    use CreatesProject;
 
     public function __construct(
         private readonly InsightlyClient $insightlyClient,
@@ -38,72 +32,20 @@ final class CreateProjectWithCoupon implements ShouldQueue
 
     public function handle(IntegrationActivatedWithCoupon $integrationActivatedWithCoupon): void
     {
-        $insightlyOpportunityMapping = $this->insightlyMappingRepository->getByIdAndType(
-            $integrationActivatedWithCoupon->id,
-            ResourceType::Opportunity
-        );
+        $integrationId = $integrationActivatedWithCoupon->id;
 
-        $this->insightlyClient->opportunities()->updateStage(
-            $insightlyOpportunityMapping->insightlyId,
-            OpportunityStage::CLOSED
-        );
-
-        $this->insightlyClient->opportunities()->updateState(
-            $insightlyOpportunityMapping->insightlyId,
-            OpportunityState::WON
-        );
-
-        $insightlyProjectId = $this->insightlyClient->projects()->create(
-            $this->integrationRepository->getById($integrationActivatedWithCoupon->id)
-        );
+        $insightlyProjectId = $this->createProject($integrationId, true);
 
         $this->insightlyClient->projects()->updateWithCoupon(
             $insightlyProjectId,
-            $this->couponRepository->getByIntegrationId($integrationActivatedWithCoupon->id)->code
+            $this->couponRepository->getByIntegrationId($integrationId)->code
         );
-
-        $this->insightlyMappingRepository->save(new InsightlyMapping(
-            $integrationActivatedWithCoupon->id,
-            $insightlyProjectId,
-            ResourceType::Project
-        ));
-
-        $this->insightlyClient->projects()->updateStage(
-            $insightlyProjectId,
-            ProjectStage::LIVE
-        );
-
-        $this->insightlyClient->projects()->updateState(
-            $insightlyProjectId,
-            ProjectState::COMPLETED
-        );
-
-        $this->insightlyClient->projects()->linkOpportunity(
-            $insightlyProjectId,
-            $insightlyOpportunityMapping->insightlyId
-        );
-
-        $contacts = $this->contactRepository->getByIntegrationId($integrationActivatedWithCoupon->id);
-
-        foreach ($contacts as $contact) {
-            if (SyncIsAllowed::forContact($contact)) {
-                $insightlyContactMapping = $this->insightlyMappingRepository->getByIdAndType(
-                    $contact->id,
-                    ResourceType::Contact
-                );
-                $this->insightlyClient->projects()->linkContact(
-                    $insightlyProjectId,
-                    $insightlyContactMapping->insightlyId,
-                    $contact->type
-                );
-            }
-        }
 
         $this->logger->info(
             'Project created for integration with coupon',
             [
                 'domain' => 'insightly',
-                'integration_id' => $integrationActivatedWithCoupon->id->toString(),
+                'integration_id' => $integrationId->toString(),
             ]
         );
     }
