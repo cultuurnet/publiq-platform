@@ -39,8 +39,13 @@ final class ContactPolicy
         return false;
     }
 
+    public function replicate(UserModel $userModel, ContactModel $contactModel): bool
+    {
+        return false;
+    }
+
     public function forceDelete(UserModel $userModel, ContactModel $contactModel): bool
     {
-        return true;
+        return false;
     }
 }
