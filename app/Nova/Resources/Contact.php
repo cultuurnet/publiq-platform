@@ -7,6 +7,7 @@ namespace App\Nova\Resources;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Nova\Resource;
+use Illuminate\Database\Eloquent\Builder;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
@@ -35,6 +36,12 @@ final class Contact extends Resource
         'last_name',
         'email',
     ];
+
+    public static function indexQuery(NovaRequest $request, $query): Builder
+    {
+        return parent::indexQuery($request, $query)
+            ->join('integrations', 'integration_id', '=', 'integrations.id');
+    }
 
     /**
      * @return array<Field>
@@ -71,6 +78,7 @@ final class Contact extends Resource
 
             BelongsTo::make('Integration')
                 ->sortable()
+                ->withMeta(['sortableUriKey' => 'integrations.name'])
                 ->withoutTrashed()
                 ->readonly(fn (NovaRequest $request) => $request->isUpdateOrUpdateAttachedRequest())
                 ->rules('required'),
