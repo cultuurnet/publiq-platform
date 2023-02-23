@@ -6,12 +6,9 @@ namespace App\Domain\Contacts\Policies;
 
 use App\Domain\Auth\Models\UserModel;
 use App\Domain\Contacts\Models\ContactModel;
-use Illuminate\Auth\Access\HandlesAuthorization;
 
 final class ContactPolicy
 {
-    use HandlesAuthorization;
-
     public function viewAny(UserModel $userModel): bool
     {
         return true;

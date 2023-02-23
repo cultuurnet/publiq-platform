@@ -5,13 +5,10 @@ declare(strict_types=1);
 namespace App\Domain\Activity\Policies;
 
 use App\Domain\Auth\Models\UserModel;
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Spatie\Activitylog\Models\Activity;
 
 final class ActivityPolicy
 {
-    use HandlesAuthorization;
-
     public function viewAny(UserModel $userModel): bool
     {
         return true;
