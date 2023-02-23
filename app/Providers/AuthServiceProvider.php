@@ -10,6 +10,12 @@ use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Contacts\Policies\ContactPolicy;
 use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Coupons\Policies\CouponPolicy;
+use App\Domain\Integrations\Models\IntegrationModel;
+use App\Domain\Integrations\Policies\IntegrationPolicy;
+use App\Domain\Organizations\Models\OrganizationModel;
+use App\Domain\Organizations\Policies\OrganizationPolicy;
+use App\Domain\Subscriptions\Models\SubscriptionModel;
+use App\Domain\Subscriptions\Policies\SubscriptionPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Spatie\Activitylog\Models\Activity;
 
@@ -19,6 +25,9 @@ final class AuthServiceProvider extends ServiceProvider
         Activity::class => ActivityPolicy::class,
         ContactModel::class => ContactPolicy::class,
         CouponModel::class => CouponPolicy::class,
+        IntegrationModel::class => IntegrationPolicy::class,
+        OrganizationModel::class => OrganizationPolicy::class,
+        SubscriptionModel::class => SubscriptionPolicy::class,
     ];
 
     public function boot(): void
