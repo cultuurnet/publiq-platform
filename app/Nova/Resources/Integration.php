@@ -121,8 +121,7 @@ final class Integration extends Resource
                 ->readonly()
                 ->onlyOnIndex()
                 ->filterable()
-                ->sortable()
-                ->displayUsing(fn ($date) => $date->format('d/m/Y')),
+                ->sortable(),
 
             InsightlyLink::make('Insightly ID', fn () => $this->insightlyId())
                 ->type(InsightlyType::Opportunity),
