@@ -6,7 +6,7 @@ namespace App\Insightly\Serializers\CustomFields;
 
 final class InvoiceEmailSerializer
 {
-    private const CUSTOM_FIELD_INVOICE_EMAIL = 'Email_boekhouding__c';
+    public const CUSTOM_FIELD_INVOICE_EMAIL = 'Email_boekhouding__c';
 
     public function toInsightlyArray(string $invoiceEmail): array
     {
