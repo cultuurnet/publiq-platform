@@ -6,12 +6,9 @@ namespace App\Domain\Coupons\Policies;
 
 use App\Domain\Auth\Models\UserModel;
 use App\Domain\Coupons\Models\CouponModel;
-use Illuminate\Auth\Access\HandlesAuthorization;
 
 final class CouponPolicy
 {
-    use HandlesAuthorization;
-
     public function viewAny(UserModel $userModel): bool
     {
         return true;

@@ -6,12 +6,9 @@ namespace App\Domain\Contacts\Policies;
 
 use App\Domain\Auth\Models\UserModel;
 use App\Domain\Contacts\Models\ContactModel;
-use Illuminate\Auth\Access\HandlesAuthorization;
 
 final class ContactPolicy
 {
-    use HandlesAuthorization;
-
     public function viewAny(UserModel $userModel): bool
     {
         return true;
@@ -42,8 +39,13 @@ final class ContactPolicy
         return false;
     }
 
+    public function replicate(UserModel $userModel, ContactModel $contactModel): bool
+    {
+        return false;
+    }
+
     public function forceDelete(UserModel $userModel, ContactModel $contactModel): bool
     {
-        return true;
+        return false;
     }
 }
