@@ -16,6 +16,7 @@ use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Organization;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
 use App\Insightly\InsightlyMapping;
+use App\Insightly\Listeners\CreateProject;
 use App\Insightly\Listeners\CreateProjectWithOrganization;
 use App\Insightly\Objects\OpportunityStage;
 use App\Insightly\Objects\OpportunityState;
@@ -55,12 +56,16 @@ final class CreateProjectWithOrganizationTest extends TestCase
         $this->insightlyMappingRepository = $this->createMock(InsightlyMappingRepository::class);
 
         $this->createProjectWithOrganization = new CreateProjectWithOrganization(
+            new CreateProject(
+                $this->insightlyClient,
+                $this->integrationRepository,
+                $this->contactRepository,
+                $this->insightlyMappingRepository
+            ),
             $this->insightlyClient,
-            $this->integrationRepository,
-            $this->contactRepository,
             $this->organizationRepository,
             $this->insightlyMappingRepository,
-            $this->createMock(LoggerInterface::class),
+            $this->createMock(LoggerInterface::class)
         );
 
         parent::setUp();

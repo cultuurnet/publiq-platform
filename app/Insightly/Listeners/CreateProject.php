@@ -4,20 +4,32 @@ declare(strict_types=1);
 
 namespace App\Insightly\Listeners;
 
+use App\Domain\Contacts\Repositories\ContactRepository;
+use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Objects\OpportunityStage;
 use App\Insightly\Objects\OpportunityState;
 use App\Insightly\Objects\ProjectStage;
 use App\Insightly\Objects\ProjectState;
+use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use App\Insightly\SyncIsAllowed;
 use Ramsey\Uuid\UuidInterface;
 
-trait CreatesProject
+final class CreateProject
 {
-    private function createProject(UuidInterface $integrationId, bool $withCoupon): int
+    public function __construct(
+        private readonly InsightlyClient $insightlyClient,
+        private readonly IntegrationRepository $integrationRepository,
+        private readonly ContactRepository $contactRepository,
+        private readonly InsightlyMappingRepository $insightlyMappingRepository,
+    ) {
+    }
+
+    public function forIntegration(UuidInterface $integrationId, bool $withCoupon): int
     {
-        // Update the state ("open") and stage ("request") of the existing opportunity
+        // Update the state and stage of the existing opportunity
         $opportunityMapping = $this->insightlyMappingRepository->getByIdAndType(
             $integrationId,
             ResourceType::Opportunity

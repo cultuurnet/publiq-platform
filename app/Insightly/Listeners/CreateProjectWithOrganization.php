@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Insightly\Listeners;
 
-use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Integrations\Events\IntegrationActivatedWithOrganization;
-use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Organizations\Organization;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
 use App\Insightly\InsightlyClient;
@@ -22,12 +20,10 @@ use Throwable;
 final class CreateProjectWithOrganization implements ShouldQueue
 {
     use Queueable;
-    use CreatesProject;
 
     public function __construct(
+        private readonly CreateProject $createProject,
         private readonly InsightlyClient $insightlyClient,
-        private readonly IntegrationRepository $integrationRepository,
-        private readonly ContactRepository $contactRepository,
         private readonly OrganizationRepository $organizationRepository,
         private readonly InsightlyMappingRepository $insightlyMappingRepository,
         private readonly LoggerInterface $logger
@@ -38,7 +34,7 @@ final class CreateProjectWithOrganization implements ShouldQueue
     {
         $integrationId = $integrationActivatedWithOrganization->id;
 
-        $insightlyProjectId = $this->createProject($integrationId, false);
+        $insightlyProjectId = $this->createProject->forIntegration($integrationId, false);
 
         $organization = $this->organizationRepository->getByIntegrationId($integrationId);
         try {

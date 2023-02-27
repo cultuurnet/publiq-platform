@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace App\Insightly\Listeners;
 
-use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Coupons\Repositories\CouponRepository;
 use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
-use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Insightly\InsightlyClient;
-use App\Insightly\Repositories\InsightlyMappingRepository;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
@@ -18,15 +15,12 @@ use Throwable;
 final class CreateProjectWithCoupon implements ShouldQueue
 {
     use Queueable;
-    use CreatesProject;
 
     public function __construct(
+        private readonly CreateProject $createProject,
         private readonly InsightlyClient $insightlyClient,
-        private readonly IntegrationRepository $integrationRepository,
-        private readonly ContactRepository $contactRepository,
-        private readonly InsightlyMappingRepository $insightlyMappingRepository,
         private readonly CouponRepository $couponRepository,
-        private readonly LoggerInterface $logger,
+        private readonly LoggerInterface $logger
     ) {
     }
 
@@ -34,7 +28,7 @@ final class CreateProjectWithCoupon implements ShouldQueue
     {
         $integrationId = $integrationActivatedWithCoupon->id;
 
-        $insightlyProjectId = $this->createProject($integrationId, true);
+        $insightlyProjectId = $this->createProject->forIntegration($integrationId, true);
 
         $this->insightlyClient->projects()->updateWithCoupon(
             $insightlyProjectId,

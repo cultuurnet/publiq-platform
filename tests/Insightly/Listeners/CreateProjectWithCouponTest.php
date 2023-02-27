@@ -15,6 +15,7 @@ use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Insightly\InsightlyMapping;
+use App\Insightly\Listeners\CreateProject;
 use App\Insightly\Listeners\CreateProjectWithCoupon;
 use App\Insightly\Objects\OpportunityStage;
 use App\Insightly\Objects\OpportunityState;
@@ -61,6 +62,7 @@ final class CreateProjectWithCouponTest extends TestCase
         $this->technicalContactId = Uuid::uuid4();
         $this->functionalContactId = Uuid::uuid4();
         $this->couponCode = 'test123';
+
         $this->integrationRepository = $this->createMock(IntegrationRepository::class);
         $this->contactRepository = $this->createMock(ContactRepository::class);
         $this->insightlyMappingRepository = $this->createMock(InsightlyMappingRepository::class);
@@ -69,10 +71,13 @@ final class CreateProjectWithCouponTest extends TestCase
         $this->mockCrmClient();
 
         $this->listener = new CreateProjectWithCoupon(
+            new CreateProject(
+                $this->insightlyClient,
+                $this->integrationRepository,
+                $this->contactRepository,
+                $this->insightlyMappingRepository
+            ),
             $this->insightlyClient,
-            $this->integrationRepository,
-            $this->contactRepository,
-            $this->insightlyMappingRepository,
             $this->couponRepository,
             $this->createMock(LoggerInterface::class),
         );
