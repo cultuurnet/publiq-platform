@@ -154,4 +154,16 @@ final class InsightlyProjectResource implements ProjectResource
 
         $this->insightlyClient->sendRequest($request);
     }
+
+    public function linkOrganization(int $id, int $organizationId): void
+    {
+        $request = new Request(
+            'POST',
+            $this->path . $id . '/Links',
+            [],
+            Json::encode((new LinkSerializer())->organizationToLink($organizationId))
+        );
+
+        $this->insightlyClient->sendRequest($request);
+    }
 }

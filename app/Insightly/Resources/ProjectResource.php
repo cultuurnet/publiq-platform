@@ -28,6 +28,8 @@ interface ProjectResource
 
     public function linkContact(int $id, int $contactId, ContactType $contactType): void;
 
+    public function linkOrganization(int $id, int $organizationId): void;
+
     /**
      * @throws ContactCannotBeUnlinked
      */
