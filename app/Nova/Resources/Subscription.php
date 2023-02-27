@@ -48,6 +48,7 @@ final class Subscription extends Resource
                 ->onlyOnForms(),
 
             Select::make('Integration Type', 'integration_type')
+                ->filterable()
                 ->sortable()
                 ->options([
                     IntegrationType::EntryApi->value => IntegrationType::EntryApi->name,

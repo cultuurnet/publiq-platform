@@ -6,7 +6,7 @@ namespace App\Insightly\Serializers\CustomFields;
 
 final class VatSerializer
 {
-    private const CUSTOM_FIELD_VAT = 'BTW_nummer__c';
+    public const CUSTOM_FIELD_VAT = 'BTW_nummer__c';
 
     public function toInsightlyArray(string $vat): array
     {

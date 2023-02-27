@@ -31,4 +31,12 @@ final class LinkSerializer
             'LINK_OBJECT_NAME' => ResourceType::Opportunity->name,
         ];
     }
+
+    public function organizationToLink(int $organizationId): array
+    {
+        return [
+            'LINK_OBJECT_ID' => $organizationId,
+            'LINK_OBJECT_NAME' => ResourceType::Organization->name,
+        ];
+    }
 }
