@@ -13,4 +13,8 @@ interface OrganizationResource
     public function update(Organization $organization, int $id): void;
 
     public function delete(int $id): void;
+
+    public function findIdByEmail(string $email): ?int;
+
+    public function findIdByVat(string $vat): ?int;
 }

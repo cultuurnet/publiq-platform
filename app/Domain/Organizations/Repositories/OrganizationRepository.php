@@ -12,4 +12,6 @@ interface OrganizationRepository
     public function save(Organization $organization): void;
 
     public function getById(UuidInterface $id): Organization;
+
+    public function getByIntegrationId(UuidInterface $integrationId): Organization;
 }

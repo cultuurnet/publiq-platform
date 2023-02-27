@@ -22,6 +22,7 @@ use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Http\Requests\ActionRequest;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\ResourceTool;
 use Publiq\ClientCredentials\ClientCredentials;
@@ -186,20 +187,20 @@ final class Integration extends Resource
 
     public function actions(NovaRequest $request): array
     {
-        /** @var IntegrationModel $integrationModel */
-        $integrationModel = $this->model();
-
-        if ($integrationModel->status !== IntegrationStatus::Draft->value) {
-            return [];
-        }
-
         return [
             (new ActivateIntegrationWithCoupon(App::make(IntegrationRepository::class)))
                 ->showOnDetail()
                 ->showInline()
                 ->confirmText('Are you sure you want to activate this integration with a coupon?')
                 ->confirmButtonText('Activate')
-                ->cancelButtonText("Don't activate"),
+                ->cancelButtonText("Don't activate")
+                ->canRun(function ($request, $model) {
+                    if ($request instanceof ActionRequest) {
+                        return true;
+                    }
+
+                    return $model->status === IntegrationStatus::Draft->value;
+                }),
 
             (new ActivateIntegrationWithOrganization(
                 App::make(IntegrationRepository::class),
@@ -209,7 +210,14 @@ final class Integration extends Resource
                 ->showInline()
                 ->confirmText('Are you sure you want to activate this integration with an organization?')
                 ->confirmButtonText('Activate')
-                ->cancelButtonText("Don't activate"),
+                ->cancelButtonText("Don't activate")
+                ->canRun(function ($request, $model) {
+                    if ($request instanceof ActionRequest) {
+                        return true;
+                    }
+
+                    return $model->status === IntegrationStatus::Draft->value;
+                }),
         ];
     }
 }

@@ -40,7 +40,8 @@ final class Contact extends Resource
     public static function indexQuery(NovaRequest $request, $query): Builder
     {
         return parent::indexQuery($request, $query)
-            ->join('integrations', 'integration_id', '=', 'integrations.id');
+            ->select('contacts.*')
+            ->leftJoin('integrations', 'integration_id', '=', 'integrations.id');
     }
 
     /**
