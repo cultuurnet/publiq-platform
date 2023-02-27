@@ -31,7 +31,7 @@ final class OrganizationSerializer
     }
 
     /** @return array<string, array|string|int> */
-    public function toInsighltyArrayForUpdate(Organization $organization, int $insightlyId): array
+    public function toInsightlyArrayForUpdate(Organization $organization, int $insightlyId): array
     {
         $organizationsArray = $this->toInsightlyArray($organization);
         $organizationsArray['ORGANISATION_ID'] = $insightlyId;
