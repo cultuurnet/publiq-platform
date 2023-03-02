@@ -9,10 +9,11 @@ use App\Insightly\InsightlyClient;
 use App\Insightly\Objects\OpportunityState;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
-final class BlockOpportunity
+final class BlockOpportunity implements ShouldQueue
 {
     public function __construct(
         private readonly InsightlyClient $insightlyClient,
