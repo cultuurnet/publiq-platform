@@ -10,6 +10,7 @@ use App\Insightly\Objects\ProjectState;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -24,22 +25,25 @@ final class BlockProject implements ShouldQueue
 
     public function handle(IntegrationBlocked $integrationBlocked): void
     {
-        $integrationId = $integrationBlocked->id;
+        try {
+            $integrationId = $integrationBlocked->id;
 
-        $insightlyMapping = $this->insightlyMappingRepository->getByIdAndType(
-            $integrationId,
-            ResourceType::Project
-        );
+            $insightlyMapping = $this->insightlyMappingRepository->getByIdAndType(
+                $integrationId,
+                ResourceType::Project
+            );
 
-        $this->insightlyClient->projects()->updateState($insightlyMapping->insightlyId, ProjectState::CANCELLED);
+            $this->insightlyClient->projects()->updateState($insightlyMapping->insightlyId, ProjectState::CANCELLED);
 
-        $this->logger->info(
-            'Project blocked',
-            [
-                'domain' => 'insightly',
-                'integration_id' => $integrationId,
-            ]
-        );
+            $this->logger->info(
+                'Project blocked',
+                [
+                    'domain' => 'insightly',
+                    'integration_id' => $integrationId,
+                ]
+            );
+        } catch (ModelNotFoundException) {
+        }
     }
 
     public function failed(
