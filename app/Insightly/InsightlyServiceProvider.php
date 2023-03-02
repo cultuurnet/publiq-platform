@@ -9,10 +9,13 @@ use App\Domain\Contacts\Events\ContactDeleted;
 use App\Domain\Contacts\Events\ContactUpdated;
 use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
 use App\Domain\Integrations\Events\IntegrationActivatedWithOrganization;
+use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Organizations\Events\OrganizationCreated;
 use App\Domain\Organizations\Events\OrganizationDeleted;
 use App\Domain\Organizations\Events\OrganizationUpdated;
+use App\Insightly\Listeners\BlockOpportunity;
+use App\Insightly\Listeners\BlockProject;
 use App\Insightly\Listeners\CreateProjectWithCoupon;
 use App\Insightly\Listeners\CreateOpportunity;
 use App\Insightly\Listeners\CreateOrganization;
@@ -50,6 +53,8 @@ final class InsightlyServiceProvider extends ServiceProvider
             Event::listen(IntegrationCreated::class, [CreateOpportunity::class, 'handle']);
             Event::listen(IntegrationActivatedWithCoupon::class, [CreateProjectWithCoupon::class, 'handle']);
             Event::listen(IntegrationActivatedWithOrganization::class, [CreateProjectWithOrganization::class, 'handle']);
+            Event::listen(IntegrationBlocked::class, [BlockProject::class, 'handle']);
+            Event::listen(IntegrationBlocked::class, [BlockOpportunity::class, 'handle']);
 
             Event::listen(ContactCreated::class, [SyncContact::class, 'handleContactCreated']);
             Event::listen(ContactUpdated::class, [SyncContact::class, 'handleContactUpdated']);
