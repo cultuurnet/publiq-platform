@@ -124,8 +124,11 @@ final class Integration extends Resource
                 ->filterable()
                 ->sortable(),
 
-            InsightlyLink::make('Insightly ID', fn () => $this->insightlyId())
+            InsightlyLink::make('Insightly Opportunity Id', fn () => $this->insightlyOpportunityId())
                 ->type(InsightlyType::Opportunity),
+
+            InsightlyLink::make('Insightly Project Id', fn () => $this->insightlyProjectId())
+                ->type(InsightlyType::Project),
 
             Text::make('Coupon', function () {
                 if ($this->couponId() === null) {

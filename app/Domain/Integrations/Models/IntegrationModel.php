@@ -17,6 +17,7 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Insightly\Models\InsightlyMappingModel;
+use App\Insightly\Resources\ResourceType;
 use App\Models\UuidModel;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -112,10 +113,20 @@ final class IntegrationModel extends UuidModel
         return $this->hasMany(InsightlyMappingModel::class, 'id');
     }
 
-    public function insightlyId(): ?string
+    public function insightlyOpportunityId(): ?string
     {
-        // This will also need the type once integrations can be linked to opportunity and project
-        return $this->insightlyMappings()->first()->insightly_id ?? null;
+        return $this->insightlyMappings()
+            ->where('resource_type', ResourceType::Opportunity->value)
+            ->first()
+            ->insightly_id ?? null;
+    }
+
+    public function insightlyProjectId(): ?string
+    {
+        return $this->insightlyMappings()
+            ->where('resource_type', ResourceType::Project->value)
+            ->first()
+            ->insightly_id ?? null;
     }
 
     /**
