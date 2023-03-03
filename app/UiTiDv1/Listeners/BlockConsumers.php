@@ -25,14 +25,14 @@ final class BlockConsumers implements ShouldQueue
 
     public function handle(IntegrationBlocked $integrationBlocked): void
     {
-        $uiTiDv1Consumers = $this->consumerRepository->getByIntegrationId($integrationBlocked->id);
+        $consumers = $this->consumerRepository->getByIntegrationId($integrationBlocked->id);
 
-        $this->clusterSDK->blockConsumers(...$uiTiDv1Consumers);
+        $this->clusterSDK->blockConsumers(...$consumers);
 
         $this->logger->info(
             'UiTiD v1 consumer(s) blocked',
             [
-                'domain' => 'insightly',
+                'domain' => 'uitid',
                 'integration_id' => $integrationBlocked->id->toString(),
             ]
         );
