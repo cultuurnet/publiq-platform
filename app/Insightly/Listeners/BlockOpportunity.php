@@ -42,7 +42,7 @@ final class BlockOpportunity implements ShouldQueue
                 'Opportunity blocked',
                 [
                     'domain' => 'insightly',
-                    'integration_id' => $integrationId,
+                    'integration_id' => $integrationId->toString(),
                 ]
             );
         } catch (ModelNotFoundException) {

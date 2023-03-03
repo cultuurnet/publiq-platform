@@ -39,7 +39,7 @@ final class BlockProject implements ShouldQueue
                 'Project blocked',
                 [
                     'domain' => 'insightly',
-                    'integration_id' => $integrationId,
+                    'integration_id' => $integrationId->toString(),
                 ]
             );
         } catch (ModelNotFoundException) {
