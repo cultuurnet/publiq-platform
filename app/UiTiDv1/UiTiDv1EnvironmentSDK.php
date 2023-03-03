@@ -53,6 +53,15 @@ final class UiTiDv1EnvironmentSDK
         );
     }
 
+    public function blockConsumer(UiTiDv1Consumer $consumer): void
+    {
+        $formData = [
+            'status' => 'BLOCKED',
+        ];
+
+        $this->sendPostRequest('serviceconsumer/' . $consumer->consumerKey, $formData);
+    }
+
     public static function createOAuth1HttpClient(
         string $baseUrl,
         string $consumerKey,
