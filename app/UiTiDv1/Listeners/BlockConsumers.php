@@ -32,7 +32,7 @@ final class BlockConsumers implements ShouldQueue
         $this->logger->info(
             'UiTiD v1 consumer(s) blocked',
             [
-                'domain' => 'insightly',
+                'domain' => 'uitid',
                 'integration_id' => $integrationBlocked->id->toString(),
             ]
         );
