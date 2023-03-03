@@ -28,6 +28,7 @@ final class Coupon extends Resource
      * @var array<string>
      */
     public static $search = [
+        'id',
         'code',
         'is_distributed',
     ];
