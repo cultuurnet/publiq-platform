@@ -32,7 +32,7 @@ final class BlockClients implements ShouldQueue
         $this->logger->info(
             'Auth0 client(s) blocked',
             [
-                'domain' => 'insightly',
+                'domain' => 'auth0',
                 'integration_id' => $integrationBlocked->id->toString(),
             ]
         );
