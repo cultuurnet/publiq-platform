@@ -86,6 +86,16 @@ final class Auth0TenantSDK
         return new Auth0Client($integration->id, $clientId, $clientSecret, $this->auth0Tenant);
     }
 
+    public function blockClient(Auth0Client $auth0Client): void
+    {
+        $clientResponse = $this->management->clients()->update(
+            $auth0Client->clientId,
+            ['grant_types' => []]
+        );
+
+        $this->guardResponseStatus(200, $clientResponse);
+    }
+
     private function guardResponseStatus(int $expectedStatusCode, ResponseInterface $response): void
     {
         if ($response->getStatusCode() !== $expectedStatusCode) {
