@@ -26,7 +26,9 @@ final class Subscription extends Resource
      * @var array<string>
      */
     public static $search = [
+        'id',
         'name',
+        'description',
     ];
 
     /**
