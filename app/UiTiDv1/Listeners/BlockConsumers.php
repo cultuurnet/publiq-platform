@@ -27,7 +27,7 @@ final class BlockConsumers implements ShouldQueue
     {
         $consumers = $this->consumerRepository->getByIntegrationId($integrationBlocked->id);
 
-        $this->clusterSDK->blockConsumers(...$uiTiDv1Consumers);
+        $this->clusterSDK->blockConsumers(...$consumers);
 
         $this->logger->info(
             'UiTiD v1 consumer(s) blocked',
