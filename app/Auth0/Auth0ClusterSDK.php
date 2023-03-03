@@ -46,4 +46,11 @@ final class Auth0ClusterSDK
 
         return $this->auth0TenantSDKs[$auth0Tenant->value]->createClientForIntegration($integration);
     }
+
+    public function blockClients(Auth0Client ...$auth0Clients): void
+    {
+        foreach ($auth0Clients as $auth0Client) {
+            $this->auth0TenantSDKs[$auth0Client->tenant->value]->blockClient($auth0Client);
+        }
+    }
 }

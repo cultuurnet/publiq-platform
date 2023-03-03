@@ -46,4 +46,11 @@ final class UiTiDv1ClusterSDK
 
         return $this->uitidv1EnvironmentSDKs[$environment->value]->createConsumerForIntegration($integration);
     }
+
+    public function blockConsumers(UiTiDv1Consumer ...$uiTiDv1Consumers): void
+    {
+        foreach ($uiTiDv1Consumers as $uiTiDv1Consumer) {
+            $this->uitidv1EnvironmentSDKs[$uiTiDv1Consumer->environment->value]->blockConsumer($uiTiDv1Consumer);
+        }
+    }
 }
