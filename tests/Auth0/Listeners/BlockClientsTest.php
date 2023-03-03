@@ -78,7 +78,7 @@ final class BlockClientsTest extends TestCase
                         'PATCH',
                         '/api/v2/clients/client-id-3',
                         Json::encode(['grant_types' => []]),
-                    ] => new Response(201, [], ''),
+                    ] => new Response(200, [], ''),
                     default => throw new \LogicException('Invalid arguments received'),
                 }
             );
