@@ -115,6 +115,8 @@ final class Integration extends Resource
             BelongsTo::make('Organization')
                 ->withoutTrashed()
                 ->hideFromIndex()
+                ->hideWhenCreating()
+                ->hideWhenUpdating()
                 ->nullable(),
 
             DateTime::make('Created', 'created_at')
