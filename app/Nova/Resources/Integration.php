@@ -12,6 +12,7 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
 use App\Nova\Actions\ActivateIntegrationWithOrganization;
 use App\Nova\Actions\ActivateIntegrationWithCoupon;
+use App\Nova\Actions\BlockIntegration;
 use App\Nova\Resource;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use Illuminate\Support\Facades\App;
@@ -222,6 +223,20 @@ final class Integration extends Resource
                     }
 
                     return $model->status === IntegrationStatus::Draft->value;
+                }),
+
+            (new BlockIntegration())
+                ->showOnDetail()
+                ->showInline()
+                ->confirmText('Are you sure you want to block this integration?')
+                ->confirmButtonText('Block')
+                ->cancelButtonText("Don't block")
+                ->canRun(function ($request, $model) {
+                    if ($request instanceof ActionRequest) {
+                        return true;
+                    }
+
+                    return $model->status !== IntegrationStatus::Blocked->value;
                 }),
         ];
     }

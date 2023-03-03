@@ -10,6 +10,7 @@ use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Events\IntegrationActivatedWithOrganization;
 use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
 use App\Domain\Integrations\Events\IntegrationCreated;
+use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
@@ -70,6 +71,14 @@ final class IntegrationModel extends UuidModel
             'status' => IntegrationStatus::Active,
         ]);
         IntegrationActivatedWithOrganization::dispatch(Uuid::fromString($this->id));
+    }
+
+    public function block(): void
+    {
+        $this->update([
+            'status' => IntegrationStatus::Blocked,
+        ]);
+        IntegrationBlocked::dispatch(Uuid::fromString($this->id));
     }
 
     /**
