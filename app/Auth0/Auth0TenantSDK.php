@@ -16,20 +16,24 @@ final class Auth0TenantSDK
 {
     private ManagementInterface $management;
 
-    public function __construct(public readonly Auth0Tenant $auth0Tenant, SdkConfiguration $sdkConfiguration)
-    {
-        $auth0 = new Auth0($sdkConfiguration);
-
-        if (!$auth0->configuration()->hasManagementToken()) {
-            $response = $auth0->authentication()->clientCredentials($sdkConfiguration->getAudience());
-            $response = Json::decodeAssociatively((string) $response->getBody());
-            $auth0->configuration()->setManagementToken($response['access_token']);
-        }
-
-        $this->management = $auth0->management();
+    public function __construct(
+        public readonly Auth0Tenant $auth0Tenant,
+        private readonly SdkConfiguration $sdkConfiguration
+    ) {
+        $this->init($sdkConfiguration);
     }
 
     public function createClientForIntegration(Integration $integration): Auth0Client
+    {
+        try {
+            return $this->createClientForIntegrationGuarded($integration);
+        } catch (Auth0Unauthorized) {
+            $this->initToken($this->sdkConfiguration);
+            return $this->createClientForIntegrationGuarded($integration);
+        }
+    }
+
+    private function createClientForIntegrationGuarded(Integration $integration): Auth0Client
     {
         $name = sprintf('%s (id: %s)', $integration->name, $integration->id->toString());
 
@@ -88,6 +92,16 @@ final class Auth0TenantSDK
 
     public function blockClient(Auth0Client $auth0Client): void
     {
+        try {
+            $this->blockClientGuarded($auth0Client);
+        } catch (Auth0Unauthorized) {
+            $this->initToken($this->sdkConfiguration);
+            $this->blockClientGuarded($auth0Client);
+        }
+    }
+
+    private function blockClientGuarded(Auth0Client $auth0Client): void
+    {
         $clientResponse = $this->management->clients()->update(
             $auth0Client->clientId,
             ['grant_types' => []]
@@ -98,8 +112,32 @@ final class Auth0TenantSDK
 
     private function guardResponseStatus(int $expectedStatusCode, ResponseInterface $response): void
     {
+        if ($response->getStatusCode() === 401) {
+            throw new Auth0Unauthorized();
+        }
+
         if ($response->getStatusCode() !== $expectedStatusCode) {
             throw Auth0SDKException::forResponse($response);
         }
+    }
+
+    private function init(SdkConfiguration $sdkConfiguration): void
+    {
+        $auth0 = new Auth0($sdkConfiguration);
+
+        if (!$auth0->configuration()->hasManagementToken()) {
+            $this->initToken($sdkConfiguration);
+        }
+
+        $this->management = $auth0->management();
+    }
+
+    private function initToken(SdkConfiguration $sdkConfiguration): void
+    {
+        $auth0 = new Auth0($sdkConfiguration);
+
+        $response = $auth0->authentication()->clientCredentials($sdkConfiguration->getAudience());
+        $response = Json::decodeAssociatively((string) $response->getBody());
+        $auth0->configuration()->setManagementToken($response['access_token']);
     }
 }
