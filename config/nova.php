@@ -90,7 +90,7 @@ return [
     'passwords' => env('NOVA_PASSWORDS', null),
 
     'users' => [
-        'dev@publiq.be',
+        'dev+e2etest@publiq.be',
         'simon.debruijn@publiq.be',
         'lucwollants@gmail.com',
         'corneel.wille@publiq.be',
