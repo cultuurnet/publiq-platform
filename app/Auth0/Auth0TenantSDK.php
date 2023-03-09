@@ -137,7 +137,7 @@ final class Auth0TenantSDK
         $auth0 = new Auth0($sdkConfiguration);
 
         $response = $auth0->authentication()->clientCredentials($sdkConfiguration->getAudience());
-        $response = Json::decodeAssociatively((string) $response->getBody());
-        $auth0->configuration()->setManagementToken($response['access_token']);
+        $data = Json::decodeAssociatively((string) $response->getBody());
+        $auth0->configuration()->setManagementToken($data['access_token']);
     }
 }
