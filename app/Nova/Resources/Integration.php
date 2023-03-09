@@ -97,6 +97,7 @@ final class Integration extends Resource
             Select::make('Status')
                 ->filterable()
                 ->sortable()
+                ->exceptOnForms()
                 ->options([
                     IntegrationStatus::Draft->value => IntegrationStatus::Draft->name,
                     IntegrationStatus::Active->value => IntegrationStatus::Active->name,
