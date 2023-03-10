@@ -189,6 +189,13 @@ final class InsightlyClientTest extends TestCase
 
         $this->insightlyClient->projects()->linkOpportunity($insightlyProjectId, $insightlyOpportunityId);
 
+        $data = $this->insightlyClient->projects()->get($insightlyProjectId);
+
+        $this->assertEquals($insightlyProjectId, $data['LINKS'][0]['OBJECT_ID']);
+        $this->assertEquals('Project', $data['LINKS'][0]['OBJECT_NAME']);
+        $this->assertEquals($insightlyOpportunityId, $data['LINKS'][0]['LINK_OBJECT_ID']);
+        $this->assertEquals('Opportunity', $data['LINKS'][0]['LINK_OBJECT_NAME']);
+
         $this->insightlyClient->opportunities()->delete($insightlyOpportunityId);
         $this->insightlyClient->projects()->delete($insightlyProjectId);
     }
