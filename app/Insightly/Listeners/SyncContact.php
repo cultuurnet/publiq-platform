@@ -133,7 +133,9 @@ final class SyncContact implements ShouldQueue
         $this->unlinkContactFromOpportunity($contact->integrationId, $oldInsightlyContactId);
         $this->unlinkContactFromProject($contact->integrationId, $oldInsightlyContactId);
 
-        $this->storeAndLinkContactAtInsightly($contact);
+        $newInsightlyContactId = $this->storeAndLinkContactAtInsightly($contact);
+
+        $this->insightlyClient->contacts()->linkContact($newInsightlyContactId, $oldInsightlyContactId);
     }
 
     private function unlinkContactFromOpportunity(UuidInterface $integrationId, int $insightlyContactId): void
