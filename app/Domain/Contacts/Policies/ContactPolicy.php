@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Contacts\Policies;
 
 use App\Domain\Auth\Models\UserModel;
+use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Models\ContactModel;
 
 final class ContactPolicy
@@ -31,7 +32,7 @@ final class ContactPolicy
 
     public function delete(UserModel $userModel, ContactModel $contactModel): bool
     {
-        return true;
+        return $contactModel->type === ContactType::Contributor->value;
     }
 
     public function restore(UserModel $userModel, ContactModel $contactModel): bool
