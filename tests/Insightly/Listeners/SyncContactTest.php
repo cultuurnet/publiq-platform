@@ -420,8 +420,10 @@ final class SyncContactTest extends TestCase
             ->with($insightlyIntegrationId, $insightlyContactId, $contactType);
     }
 
-    private function thenItLinksTheNewContactToTheExistingContact($updatedInsightlyContactId, $oldContactId): void
-    {
+    private function thenItLinksTheNewContactToTheExistingContact(
+        int $updatedInsightlyContactId,
+        int $oldContactId
+    ): void {
         $this->contactResource->expects($this->once())
             ->method('linkContact')
             ->with($updatedInsightlyContactId, $oldContactId);
