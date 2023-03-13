@@ -43,6 +43,10 @@ final class IntegrationModel extends UuidModel
         'status',
     ];
 
+    protected $attributes = [
+        'status' => IntegrationStatus::Draft,
+    ];
+
     protected static function booted(): void
     {
         self::created(
