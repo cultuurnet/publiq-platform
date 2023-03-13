@@ -230,6 +230,8 @@ final class SyncContactTest extends TestCase
             );
         }
 
+        $this->thenItLinksTheNewContactToTheExistingContact($updatedInsightlyContactId, $this->insightlyContactId);
+
         $this->syncContact->handleContactUpdated(new ContactUpdated($this->contactId, true));
     }
 
@@ -286,6 +288,8 @@ final class SyncContactTest extends TestCase
             $expectedMappedInsightlyContactId,
             ContactType::Functional,
         );
+
+        $this->thenItLinksTheNewContactToTheExistingContact($expectedMappedInsightlyContactId, $this->insightlyContactId);
 
         $this->syncContact->handleContactUpdated(new ContactUpdated($this->contactId, true));
     }
@@ -414,6 +418,13 @@ final class SyncContactTest extends TestCase
         $this->opportunityResource->expects($this->once())
             ->method('linkContact')
             ->with($insightlyIntegrationId, $insightlyContactId, $contactType);
+    }
+
+    private function thenItLinksTheNewContactToTheExistingContact($updatedInsightlyContactId, $oldContactId): void
+    {
+        $this->contactResource->expects($this->once())
+            ->method('linkContact')
+            ->with($updatedInsightlyContactId, $oldContactId);
     }
 
     private function thenItDoesNotStoreAContactAtInsightly(): void
