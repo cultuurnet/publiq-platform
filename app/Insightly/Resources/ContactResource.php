@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Insightly\Resources;
 
 use App\Domain\Contacts\Contact;
-use App\Domain\Contacts\ContactType;
 use App\Insightly\Objects\InsightlyContacts;
 
 interface ContactResource
