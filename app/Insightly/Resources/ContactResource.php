@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Insightly\Resources;
 
 use App\Domain\Contacts\Contact;
+use App\Domain\Contacts\ContactType;
 use App\Insightly\Objects\InsightlyContacts;
 
 interface ContactResource
@@ -18,4 +19,6 @@ interface ContactResource
     public function delete(int $id): void;
 
     public function findByEmail(string $email): InsightlyContacts;
+
+    public function linkContact(int $id, int $contactId): void;
 }

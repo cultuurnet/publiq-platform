@@ -9,6 +9,7 @@ use App\Insightly\InsightlyClient;
 use App\Insightly\Objects\InsightlyContact;
 use App\Insightly\Objects\InsightlyContacts;
 use App\Insightly\Serializers\ContactSerializer;
+use App\Insightly\Serializers\LinkSerializer;
 use App\Json;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Arr;
@@ -88,5 +89,17 @@ final class InsightlyContactResource implements ContactResource
                 static fn (array $contact) => new InsightlyContact((int) $contact['CONTACT_ID'], count($contact['LINKS']))
             )
         );
+    }
+
+    public function linkContact(int $id, int $contactId): void
+    {
+        $request = new Request(
+            'POST',
+            $this->path . $id . '/Links',
+            [],
+            Json::encode((new LinkSerializer())->contactToContactLink($contactId))
+        );
+
+        $this->insightlyClient->sendRequest($request);
     }
 }
