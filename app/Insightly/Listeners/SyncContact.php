@@ -51,7 +51,7 @@ final class SyncContact implements ShouldQueue
         );
     }
 
-    private function storeAndLinkContactAtInsightly(Contact $contact): void
+    private function storeAndLinkContactAtInsightly(Contact $contact): int
     {
         $insightlyContacts = $this->insightlyClient->contacts()->findByEmail($contact->email);
 
@@ -90,6 +90,8 @@ final class SyncContact implements ShouldQueue
         } catch (ModelNotFoundException) {
             // No mapping exists so it can't be linked.
         }
+
+        return $contactInsightlyId;
     }
 
     public function handleContactUpdated(ContactUpdated $contactUpdated): void
