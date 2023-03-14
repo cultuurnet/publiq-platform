@@ -51,6 +51,9 @@ final class SyncContact implements ShouldQueue
         );
     }
 
+    /**
+     * @return int The Insightly id of the newly created contact
+     */
     private function storeAndLinkContactAtInsightly(Contact $contact): int
     {
         $insightlyContacts = $this->insightlyClient->contacts()->findByEmail($contact->email);
