@@ -91,13 +91,13 @@ final class InsightlyContactResource implements ContactResource
         );
     }
 
-    public function linkContact(int $id, int $contactId): void
+    public function linkContact(int $id, int $relatedId): void
     {
         $request = new Request(
             'POST',
             $this->path . $id . '/Links',
             [],
-            Json::encode((new LinkSerializer())->contactToContactLink($contactId))
+            Json::encode((new LinkSerializer())->contactToContactLink($relatedId))
         );
 
         $this->insightlyClient->sendRequest($request);

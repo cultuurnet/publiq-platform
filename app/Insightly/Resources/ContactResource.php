@@ -19,5 +19,5 @@ interface ContactResource
 
     public function findByEmail(string $email): InsightlyContacts;
 
-    public function linkContact(int $id, int $contactId): void;
+    public function linkContact(int $id, int $relatedId): void;
 }
