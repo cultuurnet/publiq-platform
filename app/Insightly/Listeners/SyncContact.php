@@ -51,7 +51,10 @@ final class SyncContact implements ShouldQueue
         );
     }
 
-    private function storeAndLinkContactAtInsightly(Contact $contact): void
+    /**
+     * @return int The Insightly id of the newly created contact
+     */
+    private function storeAndLinkContactAtInsightly(Contact $contact): int
     {
         $insightlyContacts = $this->insightlyClient->contacts()->findByEmail($contact->email);
 
@@ -90,6 +93,8 @@ final class SyncContact implements ShouldQueue
         } catch (ModelNotFoundException) {
             // No mapping exists so it can't be linked.
         }
+
+        return $contactInsightlyId;
     }
 
     public function handleContactUpdated(ContactUpdated $contactUpdated): void
@@ -131,7 +136,9 @@ final class SyncContact implements ShouldQueue
         $this->unlinkContactFromOpportunity($contact->integrationId, $oldInsightlyContactId);
         $this->unlinkContactFromProject($contact->integrationId, $oldInsightlyContactId);
 
-        $this->storeAndLinkContactAtInsightly($contact);
+        $newInsightlyContactId = $this->storeAndLinkContactAtInsightly($contact);
+
+        $this->insightlyClient->contacts()->linkContact($newInsightlyContactId, $oldInsightlyContactId);
     }
 
     private function unlinkContactFromOpportunity(UuidInterface $integrationId, int $insightlyContactId): void
