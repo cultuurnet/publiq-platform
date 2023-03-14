@@ -19,6 +19,15 @@ final class LinkSerializer
         ];
     }
 
+    public function contactToContactLink(int $contactId): array
+    {
+        return [
+            'LINK_OBJECT_ID' => $contactId,
+            'LINK_OBJECT_NAME' => ResourceType::Contact->name,
+            'RELATIONSHIP_ID' => 1,
+        ];
+    }
+
     public function contactTypeToRole(ContactType $contactType): string
     {
         return $contactType === ContactType::Technical ? Role::Technical->value : Role::Applicant->value;
