@@ -189,6 +189,13 @@ final class InsightlyClientTest extends TestCase
 
         $this->insightlyClient->projects()->linkOpportunity($insightlyProjectId, $insightlyOpportunityId);
 
+        $projectAsArray = $this->insightlyClient->projects()->get($insightlyProjectId);
+
+        $this->assertEquals($insightlyProjectId, $projectAsArray['LINKS'][0]['OBJECT_ID']);
+        $this->assertEquals('Project', $projectAsArray['LINKS'][0]['OBJECT_NAME']);
+        $this->assertEquals($insightlyOpportunityId, $projectAsArray['LINKS'][0]['LINK_OBJECT_ID']);
+        $this->assertEquals('Opportunity', $projectAsArray['LINKS'][0]['LINK_OBJECT_NAME']);
+
         $this->insightlyClient->opportunities()->delete($insightlyOpportunityId);
         $this->insightlyClient->projects()->delete($insightlyProjectId);
     }
@@ -215,23 +222,26 @@ final class InsightlyClientTest extends TestCase
         );
 
         $insightlyOpportunityId = $this->insightlyClient->opportunities()->create($integration);
+        $result = $this->insightlyClient->opportunities()->get($insightlyOpportunityId);
+        $this->assertEquals($insightlyOpportunityId, $result['OPPORTUNITY_ID']);
+
         $insightlyContactId = $this->insightlyClient->contacts()->create($contact);
+        $result = $this->insightlyClient->contacts()->get($insightlyContactId);
+        $this->assertEquals($insightlyContactId, $result['CONTACT_ID']);
 
         $this->insightlyClient->opportunities()->linkContact(
             $insightlyOpportunityId,
             $insightlyContactId,
             ContactType::Technical
         );
-        sleep(1);
 
-        $result = $this->insightlyClient->opportunities()->get($insightlyOpportunityId);
+        $opportunityAsArray = $this->insightlyClient->opportunities()->get($insightlyOpportunityId);
 
-        $this->assertEquals(Role::Technical->value, $result['LINKS'][0]['ROLE']);
-        $this->assertEquals(ResourceType::Contact->name, $result['LINKS'][0]['LINK_OBJECT_NAME']);
-        $this->assertEquals($insightlyContactId, $result['LINKS'][0]['LINK_OBJECT_ID']);
-
-        $this->assertEquals(ResourceType::Opportunity->name, $result['LINKS'][0]['OBJECT_NAME']);
-        $this->assertEquals($insightlyOpportunityId, $result['LINKS'][0]['OBJECT_ID']);
+        $this->assertEquals(Role::Technical->value, $opportunityAsArray['LINKS'][0]['ROLE']);
+        $this->assertEquals(ResourceType::Contact->name, $opportunityAsArray['LINKS'][0]['LINK_OBJECT_NAME']);
+        $this->assertEquals($insightlyContactId, $opportunityAsArray['LINKS'][0]['LINK_OBJECT_ID']);
+        $this->assertEquals(ResourceType::Opportunity->name, $opportunityAsArray['LINKS'][0]['OBJECT_NAME']);
+        $this->assertEquals($insightlyOpportunityId, $opportunityAsArray['LINKS'][0]['OBJECT_ID']);
 
         $this->insightlyClient->opportunities()->delete($insightlyOpportunityId);
         $this->insightlyClient->contacts()->delete($insightlyContactId);
