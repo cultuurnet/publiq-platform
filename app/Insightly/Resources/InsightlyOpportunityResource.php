@@ -101,6 +101,21 @@ final class InsightlyOpportunityResource implements OpportunityResource
         $this->insightlyClient->sendRequest($stateRequest);
     }
 
+    public function update(int $id, Integration $integration): void
+    {
+        $stageRequest = new Request(
+            'PUT',
+            $this->path . $id,
+            [],
+            Json::encode(
+                (new OpportunitySerializer($this->insightlyClient->getPipelines()))
+                    ->toInsightlyArrayForUpdate($integration, $id)
+            )
+        );
+
+        $this->insightlyClient->sendRequest($stageRequest);
+    }
+
     public function linkContact(int $id, int $contactId, ContactType $contactType): void
     {
         $request = new Request(
