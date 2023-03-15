@@ -29,4 +29,12 @@ final class ProjectSerializer
             ],
         ];
     }
+
+    public function toInsightlyArrayForUpdate(Integration $integration, int $insightlyId): array
+    {
+        $projectArray = $this->toInsightlyArray($integration);
+        $projectArray['PROJECT_ID'] = $insightlyId;
+
+        return $projectArray;
+    }
 }
