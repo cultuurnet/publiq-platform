@@ -20,6 +20,8 @@ interface ProjectResource
 
     public function delete(int $id): void;
 
+    public function update(int $id, Integration $integration): void;
+
     public function updateStage(int $id, ProjectStage $stage): void;
 
     public function updateState(int $id, ProjectState $state): void;

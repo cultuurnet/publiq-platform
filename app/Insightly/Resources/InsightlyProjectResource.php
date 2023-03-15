@@ -83,6 +83,21 @@ final class InsightlyProjectResource implements ProjectResource
         $this->insightlyClient->sendRequest($request);
     }
 
+    public function update(int $id, Integration $integration): void
+    {
+        $stageRequest = new Request(
+            'PUT',
+            $this->path . $id,
+            [],
+            Json::encode(
+                (new ProjectSerializer($this->insightlyClient->getPipelines()))
+                    ->toInsightlyArrayForUpdate($integration, $id)
+            )
+        );
+
+        $this->insightlyClient->sendRequest($stageRequest);
+    }
+
     public function updateStage(int $id, ProjectStage $stage): void
     {
         $stageRequest = new Request(
