@@ -21,7 +21,7 @@ use GuzzleHttp\Client;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
-final class InsightlyClientTest extends TestCase
+final class HttpInsightlyClientTest extends TestCase
 {
     private HttpInsightlyClient $insightlyClient;
 
