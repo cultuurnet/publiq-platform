@@ -29,4 +29,12 @@ final class OpportunitySerializer
             ],
         ];
     }
+
+    public function toInsightlyArrayForUpdate(Integration $integration, int $insightlyId): array
+    {
+        $opportunityArray = $this->toInsightlyArray($integration);
+        $opportunityArray['OPPORTUNITY_ID'] = $insightlyId;
+
+        return $opportunityArray;
+    }
 }

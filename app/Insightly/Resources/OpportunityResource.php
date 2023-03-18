@@ -18,6 +18,8 @@ interface OpportunityResource
 
     public function delete(int $id): void;
 
+    public function update(int $id, Integration $integration): void;
+
     public function updateStage(int $id, OpportunityStage $stage): void;
 
     public function updateState(int $id, OpportunityState $state): void;

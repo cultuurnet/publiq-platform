@@ -7,7 +7,7 @@
     <testsuites>
         <testsuite name="Tests">
             <directory>./tests</directory>
-            <exclude>./tests/Insightly/InsightlyClientTest.php</exclude>
+            <exclude>./tests/Insightly/HttpInsightlyClientTest.php</exclude>
         </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true">
