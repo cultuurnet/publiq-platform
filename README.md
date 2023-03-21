@@ -224,3 +224,13 @@ $ make stan
 ```
 $ make test
 ```
+
+- Run a test with filtered on file
+```
+$ make test-filter filter=UpdateClientsTest
+```
+
+- Run a test with a filtered on test method name
+```
+$ make test-filter filter=test_it_can_get_an_organization_with_vat
+```
