@@ -51,6 +51,16 @@ final class UiTiDv1EnvironmentSDK
         );
     }
 
+    public function updateConsumerForIntegration(Integration $integration, UiTiDv1Consumer $consumer): void
+    {
+        $formData = [
+            'name' => $this->consumerName($integration),
+            'description' => $integration->description,
+        ];
+
+        $this->sendPostRequest('serviceconsumer/' . $consumer->consumerKey, $formData);
+    }
+
     public function blockConsumer(UiTiDv1Consumer $consumer): void
     {
         $formData = [
