@@ -6,8 +6,10 @@ namespace App\UiTiDv1;
 
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
+use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\UiTiDv1\Listeners\BlockConsumers;
 use App\UiTiDv1\Listeners\CreateConsumers;
+use App\UiTiDv1\Listeners\UpdateConsumers;
 use App\UiTiDv1\Repositories\EloquentUiTiDv1ConsumerRepository;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use Illuminate\Support\Facades\Event;
@@ -58,6 +60,7 @@ final class UiTiDv1ServiceProvider extends ServiceProvider
             // May always be registered even if there are no configured environments, because in that case the cluster SDK
             // will just not have any environment SDKs to loop over and so it simply won't do anything. But it won't crash either.
             Event::listen(IntegrationCreated::class, [CreateConsumers::class, 'handle']);
+            Event::listen(IntegrationUpdated::class, [UpdateConsumers::class, 'handle']);
             Event::listen(IntegrationBlocked::class, [BlockConsumers::class, 'handle']);
         }
     }
