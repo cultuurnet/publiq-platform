@@ -90,42 +90,32 @@ final class Auth0TenantSDK
 
     public function updateClient(Integration $integration, Auth0Client $auth0Client): void
     {
-        try {
-            $this->updateClientGuarded($integration, $auth0Client);
-        } catch (Auth0Unauthorized) {
-            $this->initToken($this->sdkConfiguration);
-            $this->updateClientGuarded($integration, $auth0Client);
-        }
-    }
-
-    private function updateClientGuarded(Integration $integration, Auth0Client $auth0Client): void
-    {
-        $clientResponse = $this->management->clients()->update(
-            $auth0Client->clientId,
-            ['name' => $this->clientName($integration)]
+        $this->callApiWithTokenRefresh(
+            fn () => $this->management->clients()->update(
+                $auth0Client->clientId,
+                ['name' => $this->clientName($integration)]
+            )
         );
-
-        $this->guardResponseStatus(200, $clientResponse);
     }
 
     public function blockClient(Auth0Client $auth0Client): void
     {
-        try {
-            $this->blockClientGuarded($auth0Client);
-        } catch (Auth0Unauthorized) {
-            $this->initToken($this->sdkConfiguration);
-            $this->blockClientGuarded($auth0Client);
-        }
+        $this->callApiWithTokenRefresh(
+            fn () => $this->management->clients()->update(
+                $auth0Client->clientId,
+                ['grant_types' => []]
+            )
+        );
     }
 
-    private function blockClientGuarded(Auth0Client $auth0Client): void
+    private function callApiWithTokenRefresh(callable $callApi): void
     {
-        $clientResponse = $this->management->clients()->update(
-            $auth0Client->clientId,
-            ['grant_types' => []]
-        );
-
-        $this->guardResponseStatus(200, $clientResponse);
+        try {
+            $this->guardResponseStatus(200, $callApi());
+        } catch (Auth0Unauthorized) {
+            $this->initToken($this->sdkConfiguration);
+            $callApi();
+        }
     }
 
     private function guardResponseStatus(int $expectedStatusCode, ResponseInterface $response): void
