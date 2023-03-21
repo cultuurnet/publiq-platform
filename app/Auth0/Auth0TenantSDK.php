@@ -35,15 +35,13 @@ final class Auth0TenantSDK
 
     private function createClientForIntegrationGuarded(Integration $integration): Auth0Client
     {
-        $name = sprintf('%s (id: %s)', $integration->name, $integration->id->toString());
-
         $apis = match ($integration->type) {
             IntegrationType::SearchApi, IntegrationType::Widgets => 'sapi',
             IntegrationType::EntryApi => 'entry sapi',
         };
 
         $clientResponse = $this->management->clients()->create(
-            $name,
+            $this->clientName($integration),
             [
                 'app_type' => 'regular_web', // The app type has no real meaning/implications, but regular_web is the most logical for generic clients for integrators
                 'client_metadata' => [
@@ -139,5 +137,10 @@ final class Auth0TenantSDK
         $response = $auth0->authentication()->clientCredentials($sdkConfiguration->getAudience());
         $data = Json::decodeAssociatively((string) $response->getBody());
         $auth0->configuration()->setManagementToken($data['access_token']);
+    }
+
+    private function clientName(Integration $integration): string
+    {
+        return sprintf('%s (id: %s)', $integration->name, $integration->id->toString());
     }
 }
