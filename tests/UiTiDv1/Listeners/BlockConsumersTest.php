@@ -111,7 +111,6 @@ final class BlockConsumersTest extends TestCase
                 }
             );
 
-
         $this->blockConsumers->handle(new IntegrationBlocked($integrationId));
     }
 }
