@@ -88,6 +88,26 @@ final class Auth0TenantSDK
         return new Auth0Client($integration->id, $clientId, $clientSecret, $this->auth0Tenant);
     }
 
+    public function updateClient(Integration $integration, Auth0Client $auth0Client): void
+    {
+        try {
+            $this->updateClientGuarded($integration, $auth0Client);
+        } catch (Auth0Unauthorized) {
+            $this->initToken($this->sdkConfiguration);
+            $this->updateClientGuarded($integration, $auth0Client);
+        }
+    }
+
+    private function updateClientGuarded(Integration $integration, Auth0Client $auth0Client): void
+    {
+        $clientResponse = $this->management->clients()->update(
+            $auth0Client->clientId,
+            ['name' => $this->clientName($integration)]
+        );
+
+        $this->guardResponseStatus(200, $clientResponse);
+    }
+
     public function blockClient(Auth0Client $auth0Client): void
     {
         try {
