@@ -26,7 +26,6 @@ final class UiTiDv1EnvironmentSDK
     {
         $formData = [
             'name' => $this->consumerName($integration),
-            'description' => $integration->description,
             'group' => $this->permissionGroupsPerIntegrationType[$integration->type->value] ?? [],
         ];
 
@@ -55,7 +54,6 @@ final class UiTiDv1EnvironmentSDK
     {
         $formData = [
             'name' => $this->consumerName($integration),
-            'description' => $integration->description,
         ];
 
         $this->sendPostRequest('serviceconsumer/' . $consumer->consumerKey, $formData);
