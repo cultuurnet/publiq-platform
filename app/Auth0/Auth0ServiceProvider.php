@@ -6,10 +6,12 @@ namespace App\Auth0;
 
 use App\Auth0\Listeners\BlockClients;
 use App\Auth0\Listeners\CreateClients;
+use App\Auth0\Listeners\UpdateClients;
 use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Auth0\Repositories\EloquentAuth0ClientRepository;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
+use App\Domain\Integrations\Events\IntegrationUpdated;
 use Auth0\SDK\Configuration\SdkConfiguration;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
@@ -63,6 +65,7 @@ final class Auth0ServiceProvider extends ServiceProvider
             // May always be registered even if there are no configured tenants, because in that case the cluster SDK will
             // just not have any tenant SDKs to loop over and so it simply won't do anything. But it won't crash either.
             Event::listen(IntegrationCreated::class, [CreateClients::class, 'handle']);
+            Event::listen(IntegrationUpdated::class, [UpdateClients::class, 'handle']);
             Event::listen(IntegrationBlocked::class, [BlockClients::class, 'handle']);
         }
     }

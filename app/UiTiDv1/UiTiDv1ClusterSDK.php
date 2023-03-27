@@ -33,6 +33,16 @@ final class UiTiDv1ClusterSDK
         );
     }
 
+    public function updateConsumersForIntegration(Integration $integration, UiTiDv1Consumer ...$uiTiDv1Consumers): void
+    {
+        foreach ($uiTiDv1Consumers as $uiTiDv1Consumer) {
+            $this->uitidv1EnvironmentSDKs[$uiTiDv1Consumer->environment->value]->updateConsumerForIntegration(
+                $integration,
+                $uiTiDv1Consumer
+            );
+        }
+    }
+
     /**
      * @throws UiTiDv1EnvironmentNotConfigured
      */

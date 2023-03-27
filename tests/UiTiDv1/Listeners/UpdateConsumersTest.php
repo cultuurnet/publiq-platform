@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\UiTiDv1\Listeners;
 
-use App\Domain\Integrations\Events\IntegrationBlocked;
-use App\UiTiDv1\Listeners\BlockConsumers;
+use App\Domain\Integrations\Events\IntegrationUpdated;
+use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationStatus;
+use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\UiTiDv1\Listeners\UpdateConsumers;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use App\UiTiDv1\UiTiDv1Consumer;
 use App\UiTiDv1\UiTiDv1Environment;
@@ -17,7 +21,7 @@ use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Tests\UiTiDv1\CreatesMockUiTiDv1ClusterSDK;
 
-final class BlockConsumersTest extends TestCase
+final class UpdateConsumersTest extends TestCase
 {
     use CreatesMockUiTiDv1ClusterSDK;
 
@@ -25,23 +29,37 @@ final class BlockConsumersTest extends TestCase
 
     private UiTiDv1ConsumerRepository&MockObject $consumerRepository;
 
-    private BlockConsumers $blockConsumers;
+    private IntegrationRepository&MockObject $integrationRepository;
+
+    private UpdateConsumers $updateConsumers;
 
     protected function setUp(): void
     {
         $this->httpClient = $this->createMock(ClientInterface::class);
         $this->consumerRepository = $this->createMock(UiTiDv1ConsumerRepository::class);
+        $this->integrationRepository = $this->createMock(IntegrationRepository::class);
 
-        $this->blockConsumers = new BlockConsumers(
+        $this->updateConsumers = new UpdateConsumers(
             $this->createMockUiTiDv1ClusterSDK($this->httpClient),
             $this->consumerRepository,
+            $this->integrationRepository,
             $this->createMock(LoggerInterface::class)
         );
     }
 
-    public function test_it_blocks_consumers(): void
+    public function test_it_updates_consumers(): void
     {
         $integrationId = Uuid::uuid4();
+
+        $integration = new Integration(
+            $integrationId,
+            IntegrationType::EntryApi,
+            'Mock Integration',
+            'Mock description',
+            Uuid::uuid4(),
+            IntegrationStatus::Draft,
+            []
+        );
 
         $consumers = [
             new UiTiDv1Consumer(
@@ -70,6 +88,11 @@ final class BlockConsumersTest extends TestCase
             ),
         ];
 
+        $this->integrationRepository->expects($this->once())
+            ->method('getById')
+            ->with($integrationId)
+            ->willReturn($integration);
+
         $this->consumerRepository->expects($this->once())
             ->method('getByIntegrationId')
             ->with($integrationId)
@@ -86,7 +109,7 @@ final class BlockConsumersTest extends TestCase
                         [
                             'http_errors' => false,
                             'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
-                            'body' => 'status=BLOCKED',
+                            'body' => 'name=Mock%20Integration%20%28id%3A%20' . $integrationId . '%29&description=Mock%20description',
                         ],
                     ],
                     [
@@ -95,7 +118,7 @@ final class BlockConsumersTest extends TestCase
                         [
                             'http_errors' => false,
                             'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
-                            'body' => 'status=BLOCKED',
+                            'body' => 'name=Mock%20Integration%20%28id%3A%20' . $integrationId . '%29&description=Mock%20description',
                         ],
                     ],
                     [
@@ -104,13 +127,13 @@ final class BlockConsumersTest extends TestCase
                         [
                             'http_errors' => false,
                             'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
-                            'body' => 'status=BLOCKED',
+                            'body' => 'name=Mock%20Integration%20%28id%3A%20' . $integrationId . '%29&description=Mock%20description',
                         ],
                     ] => new Response(200, [], ''),
                     default => throw new \LogicException('Invalid arguments received'),
                 }
             );
 
-        $this->blockConsumers->handle(new IntegrationBlocked($integrationId));
+        $this->updateConsumers->handle(new IntegrationUpdated($integrationId));
     }
 }

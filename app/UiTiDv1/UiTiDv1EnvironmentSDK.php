@@ -24,10 +24,8 @@ final class UiTiDv1EnvironmentSDK
 
     public function createConsumerForIntegration(Integration $integration): UiTiDv1Consumer
     {
-        $name = sprintf('%s (id: %s)', $integration->name, $integration->id->toString());
-
         $formData = [
-            'name' => $name,
+            'name' => $this->consumerName($integration),
             'description' => $integration->description,
             'group' => $this->permissionGroupsPerIntegrationType[$integration->type->value] ?? [],
         ];
@@ -51,6 +49,16 @@ final class UiTiDv1EnvironmentSDK
             $apiKey,
             $this->environment
         );
+    }
+
+    public function updateConsumerForIntegration(Integration $integration, UiTiDv1Consumer $consumer): void
+    {
+        $formData = [
+            'name' => $this->consumerName($integration),
+            'description' => $integration->description,
+        ];
+
+        $this->sendPostRequest('serviceconsumer/' . $consumer->consumerKey, $formData);
     }
 
     public function blockConsumer(UiTiDv1Consumer $consumer): void
@@ -106,5 +114,10 @@ final class UiTiDv1EnvironmentSDK
         }
 
         return $response;
+    }
+
+    private function consumerName(Integration $integration): string
+    {
+        return sprintf('%s (id: %s)', $integration->name, $integration->id->toString());
     }
 }

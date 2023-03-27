@@ -33,6 +33,13 @@ final class Auth0ClusterSDK
         );
     }
 
+    public function updateClientsForIntegration(Integration $integration, Auth0Client ...$auth0Clients): void
+    {
+        foreach ($auth0Clients as $auth0Client) {
+            $this->auth0TenantSDKs[$auth0Client->tenant->value]->updateClient($integration, $auth0Client);
+        }
+    }
+
     /**
      * @throws Auth0TenantNotConfigured
      */
