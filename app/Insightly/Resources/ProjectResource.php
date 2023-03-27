@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Insightly\Resources;
 
 use App\Domain\Contacts\ContactType;
+use App\Domain\Coupons\Coupon;
 use App\Domain\Integrations\Integration;
+use App\Domain\Subscriptions\Subscription;
 use App\Insightly\Exceptions\ContactCannotBeUnlinked;
 use App\Insightly\Objects\ProjectStage;
 use App\Insightly\Objects\ProjectState;
@@ -25,6 +27,8 @@ interface ProjectResource
     public function updateStage(int $id, ProjectStage $stage): void;
 
     public function updateState(int $id, ProjectState $state): void;
+
+    public function updateSubscription(int $id, Subscription $subscription, ?Coupon $coupon): void;
 
     public function linkOpportunity(int $id, int $opportunityId): void;
 
