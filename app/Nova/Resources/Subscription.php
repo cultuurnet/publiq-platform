@@ -7,6 +7,7 @@ namespace App\Nova\Resources;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Subscriptions\Currency;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
+use App\Domain\Subscriptions\SubscriptionCategory;
 use App\Nova\Resource;
 use Laravel\Nova\Fields\Currency as CurrencyField;
 use Laravel\Nova\Fields\Field;
@@ -48,6 +49,17 @@ final class Subscription extends Resource
             Text::make('Description')
                 ->rules('required', 'max:255')
                 ->onlyOnForms(),
+
+            Select::make('Category', 'category')
+                ->filterable()
+                ->sortable()
+                ->options([
+                    SubscriptionCategory::Free->value => SubscriptionCategory::Free->name,
+                    SubscriptionCategory::Basic->value => SubscriptionCategory::Basic->name,
+                    SubscriptionCategory::Plus->value => SubscriptionCategory::Plus->name,
+                    SubscriptionCategory::Custom->value => SubscriptionCategory::Custom->name,
+                ])
+                ->rules('required'),
 
             Select::make('Integration Type', 'integration_type')
                 ->filterable()
