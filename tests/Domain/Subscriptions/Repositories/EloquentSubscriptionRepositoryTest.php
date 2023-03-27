@@ -8,6 +8,7 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Subscriptions\Currency;
 use App\Domain\Subscriptions\Repositories\EloquentSubscriptionRepository;
 use App\Domain\Subscriptions\Subscription;
+use App\Domain\Subscriptions\SubscriptionCategory;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
@@ -28,6 +29,7 @@ final class EloquentSubscriptionRepositoryTest extends TestCase
             Uuid::uuid4(),
             'Basic Plan',
             'Basic Plan description',
+            SubscriptionCategory::Basic,
             IntegrationType::SearchApi,
             Currency::EUR,
             14.99,
@@ -40,6 +42,7 @@ final class EloquentSubscriptionRepositoryTest extends TestCase
             'id' => $subscription->id->toString(),
             'name' => $subscription->name,
             'description' => $subscription->description,
+            'category' => $subscription->category,
             'integration_type' => $subscription->integrationType,
             'currency' => $subscription->currency,
             'price' => 1499,
@@ -53,6 +56,7 @@ final class EloquentSubscriptionRepositoryTest extends TestCase
             Uuid::uuid4(),
             'Basic Plan',
             'Basic Plan description',
+            SubscriptionCategory::Basic,
             IntegrationType::SearchApi,
             Currency::EUR,
             14.99,

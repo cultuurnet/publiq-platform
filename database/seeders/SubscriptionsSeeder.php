@@ -8,6 +8,7 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Subscriptions\Currency;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Domain\Subscriptions\Subscription;
+use App\Domain\Subscriptions\SubscriptionCategory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Seeder;
 use Ramsey\Uuid\Uuid;
@@ -31,6 +32,7 @@ final class SubscriptionsSeeder extends Seeder
             $subscriptionId,
             'Basic Plan - Search API - Monthly',
             'Basic Plan for integrating with Search API, billed monthly and with a onetime fee.',
+            SubscriptionCategory::Basic,
             IntegrationType::SearchApi,
             Currency::EUR,
             999,
