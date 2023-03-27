@@ -1,0 +1,112 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Auth0\Listeners;
+
+use App\Auth0\Auth0Client;
+use App\Auth0\Auth0Tenant;
+use App\Auth0\Listeners\UpdateClients;
+use App\Auth0\Repositories\Auth0ClientRepository;
+use App\Domain\Integrations\Events\IntegrationUpdated;
+use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationStatus;
+use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Json;
+use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Log\NullLogger;
+use Ramsey\Uuid\Uuid;
+use Tests\Auth0\CreatesMockAuth0ClusterSDK;
+
+final class UpdateClientsTest extends TestCase
+{
+    use CreatesMockAuth0ClusterSDK;
+
+    private ClientInterface&MockObject $httpClient;
+
+    private Auth0ClientRepository&MockObject $clientRepository;
+
+    private IntegrationRepository&MockObject $integrationRepository;
+
+    private UpdateClients $updateClients;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->httpClient = $this->createMock(ClientInterface::class);
+
+        $this->clientRepository = $this->createMock(Auth0ClientRepository::class);
+
+        $this->integrationRepository = $this->createMock(IntegrationRepository::class);
+
+        $this->updateClients = new UpdateClients(
+            $this->createMockAuth0ClusterSDK($this->httpClient),
+            $this->clientRepository,
+            $this->integrationRepository,
+            new NullLogger()
+        );
+    }
+
+    public function test_it_updates_clients(): void
+    {
+        $integrationId = Uuid::uuid4();
+
+        $integration = new Integration(
+            $integrationId,
+            IntegrationType::SearchApi,
+            'Mock Integration',
+            'Mock description',
+            Uuid::uuid4(),
+            IntegrationStatus::Draft,
+            []
+        );
+
+        $clients = [
+            new Auth0Client($integrationId, 'client-id-1', 'client-secret-1', Auth0Tenant::Acceptance),
+            new Auth0Client($integrationId, 'client-id-2', 'client-secret-2', Auth0Tenant::Testing),
+            new Auth0Client($integrationId, 'client-id-3', 'client-secret-3', Auth0Tenant::Production),
+        ];
+
+        $this->integrationRepository->expects($this->once())
+            ->method('getById')
+            ->with($integrationId)
+            ->willReturn($integration);
+
+        $this->clientRepository->expects($this->once())
+            ->method('getByIntegrationId')
+            ->with($integrationId)
+            ->willReturn($clients);
+
+        $this->httpClient->expects($this->exactly(3))
+            ->method('sendRequest')
+            ->willReturnCallback(
+                fn (RequestInterface $request) =>
+                match ([$request->getMethod(), $request->getUri()->getPath(), (string) $request->getBody()]) {
+                    [
+                        'PATCH',
+                        '/api/v2/clients/client-id-1',
+                        Json::encode(['name' => 'Mock Integration (id: ' . $integrationId->toString() . ')']),
+                    ],
+                    [
+                        'PATCH',
+                        '/api/v2/clients/client-id-2',
+                        Json::encode(['name' => 'Mock Integration (id: ' . $integrationId->toString() . ')']),
+                    ],
+                    [
+                        'PATCH',
+                        '/api/v2/clients/client-id-3',
+                        Json::encode(['name' => 'Mock Integration (id: ' . $integrationId->toString() . ')']),
+                    ] => new Response(200, [], ''),
+                    default => throw new \LogicException('Invalid arguments received'),
+                }
+            );
+
+        $this->updateClients->handle(new IntegrationUpdated($integrationId));
+    }
+}
