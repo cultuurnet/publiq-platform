@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace App\Insightly\Resources;
 
 use App\Domain\Contacts\ContactType;
+use App\Domain\Coupons\Coupon;
 use App\Domain\Integrations\Integration;
+use App\Domain\Subscriptions\Subscription;
 use App\Insightly\Exceptions\ContactCannotBeUnlinked;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Objects\OpportunityStage;
 use App\Insightly\Objects\OpportunityState;
+use App\Insightly\Serializers\CustomFields\SubscriptionSerializer;
 use App\Insightly\Serializers\LinkSerializer;
 use App\Insightly\Serializers\OpportunitySerializer;
 use App\Insightly\Serializers\OpportunityStageSerializer;
@@ -94,6 +97,25 @@ final class InsightlyOpportunityResource implements OpportunityResource
         $stateRequest = new Request(
             'PUT',
             $this->path,
+            [],
+            Json::encode($opportunityAsArray)
+        );
+
+        $this->insightlyClient->sendRequest($stateRequest);
+    }
+
+    public function updateSubscription(int $id, Subscription $subscription, ?Coupon $coupon): void
+    {
+        $opportunityAsArray = $this->get($id);
+
+        $opportunityAsArray['CUSTOMFIELDS'] = array_merge(
+            $opportunityAsArray['CUSTOMFIELDS'] ?? [],
+            (new SubscriptionSerializer())->toInsightlyArray($subscription, $coupon)
+        );
+
+        $stateRequest = new Request(
+            'PUT',
+            $this->path . $id,
             [],
             Json::encode($opportunityAsArray)
         );
