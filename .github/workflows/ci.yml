@@ -18,7 +18,7 @@ jobs:
       - name: 🐘 Setup PHP
         uses: shivammathur/setup-php@master
         with:
-          php-version: "8.1"
+          php-version: "8.2"
         env:
           update: true
 
@@ -53,7 +53,7 @@ jobs:
       - name: 🐘 Setup PHP
         uses: shivammathur/setup-php@master
         with:
-          php-version: "8.1"
+          php-version: "8.2"
         env:
           update: true
 
@@ -100,7 +100,7 @@ jobs:
       - name: 🐘 Setup PHP
         uses: shivammathur/setup-php@master
         with:
-          php-version: "8.1"
+          php-version: "8.2"
         env:
           update: true
 
