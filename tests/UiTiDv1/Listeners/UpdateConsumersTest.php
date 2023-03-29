@@ -109,7 +109,7 @@ final class UpdateConsumersTest extends TestCase
                         [
                             'http_errors' => false,
                             'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
-                            'body' => 'name=Mock%20Integration%20%28id%3A%20' . $integrationId . '%29&description=Mock%20description',
+                            'body' => 'name=Mock%20Integration%20%28id%3A%20' . $integrationId . '%29',
                         ],
                     ],
                     [
@@ -118,7 +118,7 @@ final class UpdateConsumersTest extends TestCase
                         [
                             'http_errors' => false,
                             'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
-                            'body' => 'name=Mock%20Integration%20%28id%3A%20' . $integrationId . '%29&description=Mock%20description',
+                            'body' => 'name=Mock%20Integration%20%28id%3A%20' . $integrationId . '%29',
                         ],
                     ],
                     [
@@ -127,7 +127,7 @@ final class UpdateConsumersTest extends TestCase
                         [
                             'http_errors' => false,
                             'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
-                            'body' => 'name=Mock%20Integration%20%28id%3A%20' . $integrationId . '%29&description=Mock%20description',
+                            'body' => 'name=Mock%20Integration%20%28id%3A%20' . $integrationId . '%29',
                         ],
                     ] => new Response(200, [], ''),
                     default => throw new \LogicException('Invalid arguments received'),
