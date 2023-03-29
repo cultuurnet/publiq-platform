@@ -17,6 +17,7 @@ use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
@@ -80,9 +81,7 @@ final class SyncContactTest extends TestCase
         $this->syncContact->handleContactUpdated(new ContactUpdated($this->contactId, true));
     }
 
-    /**
-     * @dataProvider provideIntegrationMappingCases
-     */
+    #[DataProvider('provideIntegrationMappingCases')]
     public function test_it_links_a_new_insightly_contact_when_contact_was_created(
         bool $mappedToOpportunity,
         bool $mappedToProject,
@@ -114,9 +113,7 @@ final class SyncContactTest extends TestCase
         $this->syncContact->handleContactCreated(new ContactCreated($this->contactId));
     }
 
-    /**
-     * @dataProvider provideExistingEmailCases
-     */
+    #[DataProvider('provideExistingEmailCases')]
     public function test_it_guards_unique_email_in_insightly_when_contact_was_created(
         array $insightlyContacts,
         int $expectedMappedInsightlyContactId
@@ -189,9 +186,7 @@ final class SyncContactTest extends TestCase
         $this->syncContact->handleContactUpdated(new ContactUpdated($this->contactId, false));
     }
 
-    /**
-     * @dataProvider provideIntegrationMappingCases
-     */
+    #[DataProvider('provideIntegrationMappingCases')]
     public function test_it_creates_a_new_insightly_contact_when_contact_email_changed(
         bool $mappedToOpportunity,
         bool $mappedToProject,
@@ -258,9 +253,7 @@ final class SyncContactTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provideExistingEmailCases
-     */
+    #[DataProvider('provideExistingEmailCases')]
     public function test_it_guards_unique_email_in_insightly_when_contact_email_changed(
         array $insightlyContacts,
         int $expectedMappedInsightlyContactId

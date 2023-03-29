@@ -19,6 +19,7 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Arr;
 use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use Tests\AssertRequest;
@@ -53,9 +54,7 @@ final class InsightlyOpportunityResourceTest extends TestCase
         $this->resource = new InsightlyOpportunityResource($this->insightlyClient);
     }
 
-    /**
-     * @dataProvider provideIntegrationTypes
-     */
+    #[DataProvider('provideIntegrationTypes')]
     public function test_it_creates_an_opportunity(IntegrationType $integrationType, array $expectedCustomFields): void
     {
         $name = 'my integration';
@@ -264,9 +263,7 @@ final class InsightlyOpportunityResourceTest extends TestCase
         $this->resource->updateState($opportunityInsightlyId, OpportunityState::WON);
     }
 
-    /**
-     * @dataProvider provideContactTypes
-     */
+    #[DataProvider('provideContactTypes')]
     public function test_it_links_a_contact_to_an_opportunity(ContactType $contactType, Role $expectedRole): void
     {
         $expectedRequest = new Request(
