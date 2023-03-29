@@ -4,7 +4,7 @@
     "description": "Publiq platform",
     "license": "MIT",
     "require": {
-        "php": "^8.1.0",
+        "php": "^8.2.0",
         "ext-simplexml": "*",
         "auth0/login": "^7.2",
         "guzzlehttp/guzzle": "^7.2",
