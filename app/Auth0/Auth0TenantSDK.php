@@ -35,15 +35,13 @@ final class Auth0TenantSDK
 
     private function createClientForIntegrationGuarded(Integration $integration): Auth0Client
     {
-        $name = sprintf('%s (id: %s)', $integration->name, $integration->id->toString());
-
         $apis = match ($integration->type) {
             IntegrationType::SearchApi, IntegrationType::Widgets => 'sapi',
             IntegrationType::EntryApi => 'entry sapi',
         };
 
         $clientResponse = $this->management->clients()->create(
-            $name,
+            $this->clientName($integration),
             [
                 'app_type' => 'regular_web', // The app type has no real meaning/implications, but regular_web is the most logical for generic clients for integrators
                 'client_metadata' => [
@@ -90,24 +88,34 @@ final class Auth0TenantSDK
         return new Auth0Client($integration->id, $clientId, $clientSecret, $this->auth0Tenant);
     }
 
-    public function blockClient(Auth0Client $auth0Client): void
+    public function updateClient(Integration $integration, Auth0Client $auth0Client): void
     {
-        try {
-            $this->blockClientGuarded($auth0Client);
-        } catch (Auth0Unauthorized) {
-            $this->initToken($this->sdkConfiguration);
-            $this->blockClientGuarded($auth0Client);
-        }
+        $this->callApiWithTokenRefresh(
+            fn () => $this->management->clients()->update(
+                $auth0Client->clientId,
+                ['name' => $this->clientName($integration)]
+            )
+        );
     }
 
-    private function blockClientGuarded(Auth0Client $auth0Client): void
+    public function blockClient(Auth0Client $auth0Client): void
     {
-        $clientResponse = $this->management->clients()->update(
-            $auth0Client->clientId,
-            ['grant_types' => []]
+        $this->callApiWithTokenRefresh(
+            fn () => $this->management->clients()->update(
+                $auth0Client->clientId,
+                ['grant_types' => []]
+            )
         );
+    }
 
-        $this->guardResponseStatus(200, $clientResponse);
+    private function callApiWithTokenRefresh(callable $callApi): void
+    {
+        try {
+            $this->guardResponseStatus(200, $callApi());
+        } catch (Auth0Unauthorized) {
+            $this->initToken($this->sdkConfiguration);
+            $callApi();
+        }
     }
 
     private function guardResponseStatus(int $expectedStatusCode, ResponseInterface $response): void
@@ -139,5 +147,10 @@ final class Auth0TenantSDK
         $response = $auth0->authentication()->clientCredentials($sdkConfiguration->getAudience());
         $data = Json::decodeAssociatively((string) $response->getBody());
         $auth0->configuration()->setManagementToken($data['access_token']);
+    }
+
+    private function clientName(Integration $integration): string
+    {
+        return sprintf('%s (id: %s)', $integration->name, $integration->id->toString());
     }
 }

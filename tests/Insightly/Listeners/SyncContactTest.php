@@ -366,19 +366,14 @@ final class SyncContactTest extends TestCase
 
         $this->insightlyMappingRepository
             ->method('getByIdAndType')
-            ->withConsecutive(
-                [$this->contactId, ResourceType::Contact],
-                [$this->integrationId, ResourceType::Opportunity],
-                [$this->integrationId, ResourceType::Project],
-                [$this->integrationId, ResourceType::Opportunity],
-                [$this->integrationId, ResourceType::Project],
-            )
-            ->willReturnOnConsecutiveCalls(
-                $insightlyContactMapping,
-                $mappedToOpportunity ? $insightlyOpportunityMapping : $this->throwException(new ModelNotFoundException()),
-                $mappedToProject ? $insightlyProjectMapping : $this->throwException(new ModelNotFoundException()),
-                $mappedToOpportunity ? $insightlyOpportunityMapping : $this->throwException(new ModelNotFoundException()),
-                $mappedToProject ? $insightlyProjectMapping : $this->throwException(new ModelNotFoundException()),
+            ->willReturnCallback(
+                fn (UuidInterface $actualIntegrationId, ResourceType $actualResourceType) =>
+                    match ([$actualIntegrationId, $actualResourceType]) {
+                        [$this->contactId, ResourceType::Contact] => $insightlyContactMapping,
+                        [$this->integrationId, ResourceType::Opportunity] => $mappedToOpportunity ? $insightlyOpportunityMapping : throw new ModelNotFoundException(),
+                        [$this->integrationId, ResourceType::Project] => $mappedToProject ? $insightlyProjectMapping : throw new ModelNotFoundException(),
+                        default => throw new \LogicException('Invalid arguments received'),
+                    }
             );
     }
 
