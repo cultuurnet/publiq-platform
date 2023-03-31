@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace App\Insightly\Resources;
 
 use App\Domain\Contacts\ContactType;
+use App\Domain\Coupons\Coupon;
 use App\Domain\Integrations\Integration;
+use App\Domain\Subscriptions\Subscription;
 use App\Insightly\Exceptions\ContactCannotBeUnlinked;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Objects\ProjectStage;
 use App\Insightly\Objects\ProjectState;
 use App\Insightly\Serializers\CustomFields\CouponSerializer;
+use App\Insightly\Serializers\CustomFields\SubscriptionSerializer;
 use App\Insightly\Serializers\LinkSerializer;
 use App\Insightly\Serializers\ProjectSerializer;
 use App\Insightly\Serializers\ProjectStageSerializer;
@@ -120,6 +123,25 @@ final class InsightlyProjectResource implements ProjectResource
         $stateRequest = new Request(
             'PUT',
             $this->path,
+            [],
+            Json::encode($projectAsArray)
+        );
+
+        $this->insightlyClient->sendRequest($stateRequest);
+    }
+
+    public function updateSubscription(int $id, Subscription $subscription, ?Coupon $coupon): void
+    {
+        $projectAsArray = $this->get($id);
+
+        $projectAsArray['CUSTOMFIELDS'] = array_merge(
+            $projectAsArray['CUSTOMFIELDS'] ?? [],
+            (new SubscriptionSerializer())->toInsightlyArray($subscription, $coupon)
+        );
+
+        $stateRequest = new Request(
+            'PUT',
+            $this->path . $id,
             [],
             Json::encode($projectAsArray)
         );

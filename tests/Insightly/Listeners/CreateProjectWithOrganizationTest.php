@@ -7,6 +7,7 @@ namespace Tests\Insightly\Listeners;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\ContactRepository;
+use App\Domain\Coupons\Repositories\CouponRepository;
 use App\Domain\Integrations\Events\IntegrationActivatedWithOrganization;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
@@ -15,6 +16,10 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Organization;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
+use App\Domain\Subscriptions\Currency;
+use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
+use App\Domain\Subscriptions\Subscription;
+use App\Domain\Subscriptions\SubscriptionCategory;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Listeners\CreateProject;
 use App\Insightly\Listeners\CreateProjectWithOrganization;
@@ -24,6 +29,7 @@ use App\Insightly\Objects\ProjectStage;
 use App\Insightly\Objects\ProjectState;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
@@ -44,6 +50,10 @@ final class CreateProjectWithOrganizationTest extends TestCase
 
     private OrganizationRepository&MockObject $organizationRepository;
 
+    private SubscriptionRepository&MockObject $subscriptionRepository;
+
+    private CouponRepository&MockObject $couponRepository;
+
     private InsightlyMappingRepository&MockObject $insightlyMappingRepository;
 
     protected function setUp(): void
@@ -53,6 +63,8 @@ final class CreateProjectWithOrganizationTest extends TestCase
         $this->integrationRepository = $this->createMock(IntegrationRepository::class);
         $this->contactRepository = $this->createMock(ContactRepository::class);
         $this->organizationRepository = $this->createMock(OrganizationRepository::class);
+        $this->subscriptionRepository = $this->createMock(SubscriptionRepository::class);
+        $this->couponRepository = $this->createMock(CouponRepository::class);
         $this->insightlyMappingRepository = $this->createMock(InsightlyMappingRepository::class);
 
         $this->createProjectWithOrganization = new CreateProjectWithOrganization(
@@ -60,6 +72,8 @@ final class CreateProjectWithOrganizationTest extends TestCase
                 $this->insightlyClient,
                 $this->integrationRepository,
                 $this->contactRepository,
+                $this->subscriptionRepository,
+                $this->couponRepository,
                 $this->insightlyMappingRepository
             ),
             $this->insightlyClient,
@@ -73,7 +87,8 @@ final class CreateProjectWithOrganizationTest extends TestCase
 
     public function test_it_creates_a_project_when_activating_with_an_organization(): void
     {
-        $integration = $this->givenThereIsAnIntegration();
+        $subscription = $this->givenThereIsASubscription();
+        $integration = $this->givenThereIsAnIntegration($subscription->id);
         $organization = $this->givenThereIsAnOrganization($integration->id);
         $contacts = $this->givenThereAreContacts($integration->id);
 
@@ -121,6 +136,14 @@ final class CreateProjectWithOrganizationTest extends TestCase
             ->method('updateStage')
             ->with($insightlyProjectId, ProjectStage::LIVE);
 
+        $this->couponRepository->expects($this->once())
+            ->method('getByIntegrationId')
+            ->willThrowException(new ModelNotFoundException());
+
+        $this->projectResource->expects($this->once())
+            ->method('updateSubscription')
+            ->with($insightlyProjectId, $subscription, null);
+
         $this->projectResource->expects($this->once())
             ->method('linkOpportunity')
             ->with($insightlyProjectId, $opportunityMapping->insightlyId);
@@ -155,14 +178,14 @@ final class CreateProjectWithOrganizationTest extends TestCase
         );
     }
 
-    private function givenThereIsAnIntegration(): Integration
+    private function givenThereIsAnIntegration(UuidInterface $subscriptionId): Integration
     {
         $integration = new Integration(
             Uuid::uuid4(),
             IntegrationType::SearchApi,
             'My integration',
             'This is my integration',
-            Uuid::uuid4(),
+            $subscriptionId,
             IntegrationStatus::Draft,
             []
         );
@@ -285,5 +308,26 @@ final class CreateProjectWithOrganizationTest extends TestCase
             $insightlyTechnicalContactMapping,
             $insightlyFunctionalContactMapping,
         ]);
+    }
+
+    private function givenThereIsASubscription(): Subscription
+    {
+        $subscription = new Subscription(
+            Uuid::uuid4(),
+            'Basic Plan',
+            'Basic Plan description',
+            SubscriptionCategory::Basic,
+            IntegrationType::SearchApi,
+            Currency::EUR,
+            14.99,
+            99.99
+        );
+
+        $this->subscriptionRepository->expects($this->once())
+            ->method('getById')
+            ->with($subscription->id)
+            ->willReturn($subscription);
+
+        return $subscription;
     }
 }

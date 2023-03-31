@@ -14,6 +14,10 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Domain\Subscriptions\Currency;
+use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
+use App\Domain\Subscriptions\Subscription;
+use App\Domain\Subscriptions\SubscriptionCategory;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Listeners\CreateProject;
 use App\Insightly\Listeners\CreateProjectWithCoupon;
@@ -41,6 +45,8 @@ final class CreateProjectWithCouponTest extends TestCase
 
     private ContactRepository&MockObject $contactRepository;
 
+    private SubscriptionRepository&MockObject $subscriptionRepository;
+
     private InsightlyMappingRepository&MockObject $insightlyMappingRepository;
 
     private CouponRepository&MockObject $couponRepository;
@@ -65,6 +71,7 @@ final class CreateProjectWithCouponTest extends TestCase
 
         $this->integrationRepository = $this->createMock(IntegrationRepository::class);
         $this->contactRepository = $this->createMock(ContactRepository::class);
+        $this->subscriptionRepository = $this->createMock(SubscriptionRepository::class);
         $this->insightlyMappingRepository = $this->createMock(InsightlyMappingRepository::class);
         $this->couponRepository = $this->createMock(CouponRepository::class);
 
@@ -75,6 +82,8 @@ final class CreateProjectWithCouponTest extends TestCase
                 $this->insightlyClient,
                 $this->integrationRepository,
                 $this->contactRepository,
+                $this->subscriptionRepository,
+                $this->couponRepository,
                 $this->insightlyMappingRepository
             ),
             $this->insightlyClient,
@@ -90,7 +99,8 @@ final class CreateProjectWithCouponTest extends TestCase
         $insightlyTechnicalId = 24;
         $insightlyFunctionalId = 15;
         $insightlyProjectId = 51;
-        $integration = $this->givenThereIsAnIntegrationWithId($this->integrationId);
+        $subscription = $this->givenThereIsASubscription();
+        $integration = $this->givenThereIsAnIntegrationWithId($this->integrationId, $subscription->id);
         $this->givenThereAreContacts($this->integrationId);
         $this->givenThereAreInsightlyMappings(
             $insightlyOpportunityId,
@@ -142,6 +152,11 @@ final class CreateProjectWithCouponTest extends TestCase
             ->method('updateState')
             ->with($insightlyProjectId, ProjectState::COMPLETED);
 
+        // Then it updates the subscription inside Insightly
+        $this->projectResource->expects($this->once())
+            ->method('updateSubscription')
+            ->with($insightlyProjectId, $subscription, $coupon);
+
         // It links the opportunity to the project
         $this->projectResource->expects($this->once())
             ->method('linkOpportunity')
@@ -164,14 +179,16 @@ final class CreateProjectWithCouponTest extends TestCase
         $this->listener->handle($event);
     }
 
-    private function givenThereIsAnIntegrationWithId(UuidInterface $integrationId): Integration
-    {
+    private function givenThereIsAnIntegrationWithId(
+        UuidInterface $integrationId,
+        UuidInterface $subscriptionId
+    ): Integration {
         $integration = new Integration(
             $this->integrationId,
             IntegrationType::SearchApi,
             'My integration',
             'This is my integration',
-            Uuid::uuid4(),
+            $subscriptionId,
             IntegrationStatus::Draft,
             []
         );
@@ -220,6 +237,27 @@ final class CreateProjectWithCouponTest extends TestCase
             );
     }
 
+    private function givenThereIsASubscription(): Subscription
+    {
+        $subscription = new Subscription(
+            Uuid::uuid4(),
+            'Basic Plan',
+            'Basic Plan description',
+            SubscriptionCategory::Basic,
+            IntegrationType::SearchApi,
+            Currency::EUR,
+            14.99,
+            99.99
+        );
+
+        $this->subscriptionRepository->expects($this->once())
+            ->method('getById')
+            ->with($subscription->id)
+            ->willReturn($subscription);
+
+        return $subscription;
+    }
+
     private function givenThereIsACoupon(UuidInterface $integrationId): Coupon
     {
         $coupon = new Coupon(
@@ -229,7 +267,7 @@ final class CreateProjectWithCouponTest extends TestCase
             $this->couponCode,
         );
 
-        $this->couponRepository->expects($this->once())
+        $this->couponRepository->expects($this->exactly(2))
             ->method('getByIntegrationId')
             ->with($integrationId)
             ->willReturn($coupon);

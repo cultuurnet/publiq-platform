@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Insightly\Listeners;
 
 use App\Domain\Contacts\Repositories\ContactRepository;
+use App\Domain\Coupons\Repositories\CouponRepository;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Objects\OpportunityStage;
@@ -15,6 +17,7 @@ use App\Insightly\Objects\ProjectState;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use App\Insightly\SyncIsAllowed;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Ramsey\Uuid\UuidInterface;
 
 final class CreateProject
@@ -23,6 +26,8 @@ final class CreateProject
         private readonly InsightlyClient $insightlyClient,
         private readonly IntegrationRepository $integrationRepository,
         private readonly ContactRepository $contactRepository,
+        private readonly SubscriptionRepository $subscriptionRepository,
+        private readonly CouponRepository $couponRepository,
         private readonly InsightlyMappingRepository $insightlyMappingRepository,
     ) {
     }
@@ -58,6 +63,18 @@ final class CreateProject
         $this->insightlyClient->projects()->updateStage(
             $insightlyProjectId,
             ProjectStage::LIVE
+        );
+
+        try {
+            $coupon = $this->couponRepository->getByIntegrationId($integration->id);
+        } catch (ModelNotFoundException) {
+            $coupon = null;
+        }
+
+        $this->insightlyClient->projects()->updateSubscription(
+            $insightlyProjectId,
+            $this->subscriptionRepository->getById($integration->subscriptionId),
+            $coupon
         );
 
         // Link the opportunity to the new project
