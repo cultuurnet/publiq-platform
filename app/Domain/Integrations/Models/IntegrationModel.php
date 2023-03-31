@@ -121,6 +121,14 @@ final class IntegrationModel extends UuidModel
         return $this->hasMany(InsightlyMappingModel::class, 'id');
     }
 
+    /**
+     * @return HasMany<IntegrationUrlModel>
+     */
+    public function urls(): HasMany
+    {
+        return $this->hasMany(IntegrationUrlModel::class, 'integration_id');
+    }
+
     public function insightlyOpportunityId(): ?string
     {
         return $this->insightlyMappings()
