@@ -7,6 +7,7 @@ namespace App\Domain\Subscriptions\Models;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Subscriptions\Currency;
 use App\Domain\Subscriptions\Subscription;
+use App\Domain\Subscriptions\SubscriptionCategory;
 use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -16,8 +17,9 @@ use Ramsey\Uuid\Uuid;
  * @property string $id
  * @property string $name
  * @property string $description
- * @property string $currency
+ * @property string $category
  * @property string $integration_type
+ * @property string $currency
  * @property int $price
  * @property int $fee
  */
@@ -31,6 +33,7 @@ final class SubscriptionModel extends UuidModel
         'id',
         'name',
         'description',
+        'category',
         'currency',
         'integration_type',
         'price',
@@ -59,6 +62,7 @@ final class SubscriptionModel extends UuidModel
             Uuid::fromString($this->id),
             $this->name,
             $this->description,
+            SubscriptionCategory::from($this->category),
             IntegrationType::from($this->integration_type),
             Currency::from($this->currency),
             $this->price,
