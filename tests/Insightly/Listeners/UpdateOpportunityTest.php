@@ -52,8 +52,7 @@ final class UpdateOpportunityTest extends TestCase
             'Test Integration',
             'Test Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft,
-            []
+            IntegrationStatus::Draft
         );
 
         $insightlyMapping = new InsightlyMapping(
