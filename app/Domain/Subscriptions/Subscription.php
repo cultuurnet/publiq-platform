@@ -13,6 +13,7 @@ final class Subscription
         public readonly UuidInterface $id,
         public readonly string $name,
         public readonly string $description,
+        public readonly SubscriptionCategory $category,
         public readonly IntegrationType $integrationType,
         public readonly Currency $currency,
         public readonly float $price,

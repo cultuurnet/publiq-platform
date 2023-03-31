@@ -15,4 +15,9 @@ final class Coupon
         public readonly string $code,
     ) {
     }
+
+    public function reduction(): float
+    {
+        return 125.0;
+    }
 }

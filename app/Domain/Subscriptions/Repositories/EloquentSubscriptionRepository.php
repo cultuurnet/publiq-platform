@@ -18,6 +18,7 @@ final class EloquentSubscriptionRepository implements SubscriptionRepository
             'id' => $subscription->id->toString(),
             'name' => $subscription->name,
             'description' => $subscription->description,
+            'category' => $subscription->category,
             'integration_type' => $subscription->integrationType,
             'currency' => $subscription->currency,
             'price' => $subscription->price,
