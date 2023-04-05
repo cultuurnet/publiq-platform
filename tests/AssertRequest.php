@@ -23,8 +23,7 @@ trait AssertRequest
         Response $firstResponse,
         Request $secondRequest,
         Response $secondResponse,
-    ): callable
-    {
+    ): callable {
         return fn (Request $actualRequest) =>
             match ([$actualRequest->getHeaders(), $actualRequest->getMethod(), $actualRequest->getBody()->getContents()]) {
                 [$firstRequest->getHeaders(), $firstRequest->getMethod(), $firstRequest->getBody()->getContents()] => $firstResponse,
