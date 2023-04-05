@@ -11,7 +11,9 @@ use App\Domain\Contacts\Policies\ContactPolicy;
 use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Coupons\Policies\CouponPolicy;
 use App\Domain\Integrations\Models\IntegrationModel;
+use App\Domain\Integrations\Models\IntegrationUrlModel;
 use App\Domain\Integrations\Policies\IntegrationPolicy;
+use App\Domain\Integrations\Policies\IntegrationUrlPolicy;
 use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\Organizations\Policies\OrganizationPolicy;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
@@ -26,6 +28,7 @@ final class AuthServiceProvider extends ServiceProvider
         ContactModel::class => ContactPolicy::class,
         CouponModel::class => CouponPolicy::class,
         IntegrationModel::class => IntegrationPolicy::class,
+        IntegrationUrlModel::class => IntegrationUrlPolicy::class,
         OrganizationModel::class => OrganizationPolicy::class,
         SubscriptionModel::class => SubscriptionPolicy::class,
     ];
