@@ -203,9 +203,11 @@ final class Auth0TenantSDK
             return [];
         }
 
-        return array_map(
-            fn (IntegrationUrl $integrationUrl) => $integrationUrl->url,
-            $integrationUrls
+        return array_values(
+            array_map(
+                fn (IntegrationUrl $integrationUrl) => $integrationUrl->url,
+                $integrationUrls
+            )
         );
     }
 }
