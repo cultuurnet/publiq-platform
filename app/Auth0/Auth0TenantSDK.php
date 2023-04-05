@@ -153,4 +153,48 @@ final class Auth0TenantSDK
     {
         return sprintf('%s (id: %s)', $integration->name, $integration->id->toString());
     }
+
+    private function getLoginUrl(Integration $integration): string
+    {
+        $loginUrls = $integration->urlsForTypeAndEnvironment(
+            IntegrationUrlType::Login,
+            Environment::from($this->auth0Tenant->value)
+        );
+
+        if (count($loginUrls) === 0) {
+            return '';
+        }
+
+        return $loginUrls[0]->url;
+    }
+
+    private function getCallbackUrls(Integration $integration): array
+    {
+        return array_merge(
+            $this->getUrls(IntegrationUrlType::Callback, $integration),
+            ['https://oauth.pstmn.io/v1/callback'] // Allow logins via Postman for easy debugging/testing/experimentation
+        );
+    }
+
+    private function getLogoutUrls(Integration $integration): array
+    {
+        return $this->getUrls(IntegrationUrlType::Logout, $integration);
+    }
+
+    private function getUrls(IntegrationUrlType $integrationUrlType, Integration $integration): array
+    {
+        $integrationUrls = $integration->urlsForTypeAndEnvironment(
+            $integrationUrlType,
+            Environment::from($this->auth0Tenant->value)
+        );
+
+        if (count($integrationUrls) === 0) {
+            return [];
+        }
+
+        return array_map(
+            fn (IntegrationUrl $integrationUrl) => $integrationUrl->url,
+            $integrationUrls
+        );
+    }
 }
