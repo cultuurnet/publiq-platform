@@ -62,7 +62,7 @@ final class Auth0TenantSDK
                 ],
                 'callbacks' => $this->getCallbackUrls($integration),
                 'allowed_logout_urls' => $this->getLogoutUrls($integration),
-                'initiate_login_uri' => '', //$this->getLoginUrl($integration),
+                'initiate_login_uri' => $this->getLoginUrl($integration),
                 'web_origins' => [
                     'https://docs.publiq.be', // Always add this origin to enable CORS requests from the "Try it out!" functionality in Stoplight
                     'https://publiq.stoplight.io', // Always add this origin to enable CORS requests from the "Try it out!" functionality in Stoplight
@@ -91,15 +91,20 @@ final class Auth0TenantSDK
 
     public function updateClient(Integration $integration, Auth0Client $auth0Client): void
     {
+        $body = [
+            'name' => $this->clientName($integration),
+            'callbacks' => $this->getCallbackUrls($integration),
+            'allowed_logout_urls' => $this->getLogoutUrls($integration),
+        ];
+
+        if ($this->getLoginUrl($integration) !== '') {
+            $body['initiate_login_uri'] = $this->getLoginUrl($integration);
+        }
+
         $this->callApiWithTokenRefresh(
             fn () => $this->management->clients()->update(
                 $auth0Client->clientId,
-                [
-                    'name' => $this->clientName($integration),
-                    'callbacks' => $this->getCallbackUrls($integration),
-                    'allowed_logout_urls' => $this->getLogoutUrls($integration),
-                    'initiate_login_uri' => $this->getLoginUrl($integration),
-                ]
+                $body
             )
         );
     }
