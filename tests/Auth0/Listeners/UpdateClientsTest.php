@@ -8,10 +8,13 @@ use App\Auth0\Auth0Client;
 use App\Auth0\Auth0Tenant;
 use App\Auth0\Listeners\UpdateClients;
 use App\Auth0\Repositories\Auth0ClientRepository;
+use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\IntegrationUrl;
+use App\Domain\Integrations\IntegrationUrlType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Json;
 use GuzzleHttp\Psr7\Response;
@@ -57,13 +60,16 @@ final class UpdateClientsTest extends TestCase
     {
         $integrationId = Uuid::uuid4();
 
-        $integration = new Integration(
+        $integration = (new Integration(
             $integrationId,
             IntegrationType::SearchApi,
             'Mock Integration',
             'Mock description',
             Uuid::uuid4(),
             IntegrationStatus::Draft
+        ))->withUrls(
+            new IntegrationUrl(Uuid::uuid4(), $integrationId, Environment::Acceptance, IntegrationUrlType::Logout, 'https://www.publiq.be/logout'),
+            new IntegrationUrl(Uuid::uuid4(), $integrationId, Environment::Acceptance, IntegrationUrlType::Logout, 'https://www.madewithlove.be/logout'),
         );
 
         $clients = [
@@ -93,8 +99,10 @@ final class UpdateClientsTest extends TestCase
                         Json::encode([
                             'name' => 'Mock Integration (id: ' . $integrationId->toString() . ')',
                             'callbacks' => ['https://oauth.pstmn.io/v1/callback'],
-                            'allowed_logout_urls' => [],
-                            'initiate_login_uri' => null,
+                            'allowed_logout_urls' => [
+                                'https://www.publiq.be/logout',
+                                'https://www.madewithlove.be/logout',
+                            ],
                         ]),
                     ],
                     [
@@ -104,7 +112,6 @@ final class UpdateClientsTest extends TestCase
                             'name' => 'Mock Integration (id: ' . $integrationId->toString() . ')',
                             'callbacks' => ['https://oauth.pstmn.io/v1/callback'],
                             'allowed_logout_urls' => [],
-                            'initiate_login_uri' => null,
                         ]),
                     ],
                     [
@@ -114,7 +121,6 @@ final class UpdateClientsTest extends TestCase
                             'name' => 'Mock Integration (id: ' . $integrationId->toString() . ')',
                             'callbacks' => ['https://oauth.pstmn.io/v1/callback'],
                             'allowed_logout_urls' => [],
-                            'initiate_login_uri' => null,
                         ]),
                     ] => new Response(200, [], ''),
                     default => throw new \LogicException('Invalid arguments received'),
