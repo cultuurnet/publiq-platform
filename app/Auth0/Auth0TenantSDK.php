@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Auth0;
 
+use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\IntegrationUrl;
+use App\Domain\Integrations\IntegrationUrlType;
 use App\Json;
 use Auth0\SDK\Auth0;
 use Auth0\SDK\Configuration\SdkConfiguration;
@@ -57,11 +60,9 @@ final class Auth0TenantSDK
                     'refresh_token', // Makes it possible to request and use refresh tokens when using the authorization_code grant type
                     'client_credentials', // Enables the client credentials flow (m2m tokens)
                 ],
-                'callbacks' => [
-                    'https://oauth.pstmn.io/v1/callback', // Allow logins via Postman for easy debugging/testing/experimentation
-                ],
-                'allowed_logout_urls' => [],
-                'initiate_login_uri' => '',
+                'callbacks' => $this->getCallbackUrls($integration),
+                'allowed_logout_urls' => $this->getLogoutUrls($integration),
+                'initiate_login_uri' => '', //$this->getLoginUrl($integration),
                 'web_origins' => [
                     'https://docs.publiq.be', // Always add this origin to enable CORS requests from the "Try it out!" functionality in Stoplight
                     'https://publiq.stoplight.io', // Always add this origin to enable CORS requests from the "Try it out!" functionality in Stoplight
@@ -93,7 +94,12 @@ final class Auth0TenantSDK
         $this->callApiWithTokenRefresh(
             fn () => $this->management->clients()->update(
                 $auth0Client->clientId,
-                ['name' => $this->clientName($integration)]
+                [
+                    'name' => $this->clientName($integration),
+                    'callbacks' => $this->getCallbackUrls($integration),
+                    'allowed_logout_urls' => $this->getLogoutUrls($integration),
+                    'initiate_login_uri' => $this->getLoginUrl($integration),
+                ]
             )
         );
     }
