@@ -193,6 +193,11 @@ final class IntegrationModel extends UuidModel
                 ->get()
                 ->map(fn (ContactModel $contactModel) => $contactModel->toDomain())
                 ->toArray()
+        )->withUrls(
+            $this->urls()
+                ->get()
+                ->map(fn (IntegrationUrlModel $integrationUrlModel) => $integrationUrlModel->toDomain())
+                ->toArray()
         );
     }
 }
