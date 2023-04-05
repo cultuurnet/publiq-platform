@@ -176,7 +176,7 @@ final class Auth0TenantSDK
             return '';
         }
 
-        return $loginUrls[0]->url;
+        return reset($loginUrls)->url;
     }
 
     private function getCallbackUrls(Integration $integration): array
