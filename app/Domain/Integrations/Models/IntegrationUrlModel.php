@@ -33,6 +33,7 @@ final class IntegrationUrlModel extends UuidModel
     public function toDomain(): IntegrationUrl
     {
         return new IntegrationUrl(
+            Uuid::fromString($this->id),
             Uuid::fromString($this->integration_id),
             Environment::from($this->environment),
             IntegrationUrlType::from($this->type),
