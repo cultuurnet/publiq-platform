@@ -83,7 +83,7 @@ final class IntegrationController extends Controller
             $storeIntegration->input('description'),
             Uuid::fromString($storeIntegration->input('subscriptionId')),
             IntegrationStatus::Draft
-        ))->withContacts([$contactOrganization, $contactPartner, $contributor]);
+        ))->withContacts($contactOrganization, $contactPartner, $contributor);
 
         $this->integrationRepository->save($integration);
 

@@ -189,12 +189,12 @@ final class IntegrationModel extends UuidModel
             Uuid::fromString($this->subscription_id),
             IntegrationStatus::from($this->status),
         ))->withContacts(
-            $this->contacts()
+            ...$this->contacts()
                 ->get()
                 ->map(fn (ContactModel $contactModel) => $contactModel->toDomain())
                 ->toArray()
         )->withUrls(
-            $this->urls()
+            ...$this->urls()
                 ->get()
                 ->map(fn (IntegrationUrlModel $integrationUrlModel) => $integrationUrlModel->toDomain())
                 ->toArray()
