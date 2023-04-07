@@ -78,7 +78,7 @@ final class CreateConsumersTest extends TestCase
                             [
                                 'http_errors' => false,
                                 'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
-                                'body' => 'name=Mock%20Integration%20%28id%3A%20' . $integrationId . '%29&group=1&group=2',
+                                'body' => 'name=Mock%20Integration%20%28via%20publiq%20platform%29&group=1&group=2',
                             ],
                         ] => new Response(200, [], (string) file_get_contents(__DIR__ . '/consumer1.xml')),
                         [
@@ -87,7 +87,7 @@ final class CreateConsumersTest extends TestCase
                             [
                                 'http_errors' => false,
                                 'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
-                                'body' => 'name=Mock%20Integration%20%28id%3A%20' . $integrationId . '%29&group=7&group=8',
+                                'body' => 'name=Mock%20Integration%20%28via%20publiq%20platform%29&group=7&group=8',
                             ],
                         ] => new Response(200, [], (string) file_get_contents(__DIR__ . '/consumer2.xml')),
                         [
@@ -96,7 +96,7 @@ final class CreateConsumersTest extends TestCase
                             [
                                 'http_errors' => false,
                                 'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
-                                'body' => 'name=Mock%20Integration%20%28id%3A%20' . $integrationId . '%29&group=13&group=14',
+                                'body' => 'name=Mock%20Integration%20%28via%20publiq%20platform%29&group=13&group=14',
                             ],
                         ] => new Response(200, [], (string) file_get_contents(__DIR__ . '/consumer3.xml')),
                         default => throw new \LogicException('Invalid arguments received'),
