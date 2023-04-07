@@ -91,17 +91,17 @@ final class UpdateClientsTest extends TestCase
                     [
                         'PATCH',
                         '/api/v2/clients/client-id-1',
-                        Json::encode(['name' => 'Mock Integration (id: ' . $integrationId->toString() . ')']),
+                        Json::encode(['name' => 'Mock Integration (via publiq platform)']),
                     ],
                     [
                         'PATCH',
                         '/api/v2/clients/client-id-2',
-                        Json::encode(['name' => 'Mock Integration (id: ' . $integrationId->toString() . ')']),
+                        Json::encode(['name' => 'Mock Integration (via publiq platform)']),
                     ],
                     [
                         'PATCH',
                         '/api/v2/clients/client-id-3',
-                        Json::encode(['name' => 'Mock Integration (id: ' . $integrationId->toString() . ')']),
+                        Json::encode(['name' => 'Mock Integration (via publiq platform)']),
                     ] => new Response(200, [], ''),
                     default => throw new \LogicException('Invalid arguments received'),
                 }
