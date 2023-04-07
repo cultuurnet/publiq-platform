@@ -70,6 +70,11 @@ final class UpdateClientsTest extends TestCase
         ))->withUrls(
             new IntegrationUrl(Uuid::uuid4(), $integrationId, Environment::Acceptance, IntegrationUrlType::Logout, 'https://www.publiq.be/logout'),
             new IntegrationUrl(Uuid::uuid4(), $integrationId, Environment::Acceptance, IntegrationUrlType::Logout, 'https://www.madewithlove.be/logout'),
+            new IntegrationUrl(Uuid::uuid4(), $integrationId, Environment::Acceptance, IntegrationUrlType::Login, 'https://www.publiq.be/login'),
+            new IntegrationUrl(Uuid::uuid4(), $integrationId, Environment::Acceptance, IntegrationUrlType::Callback, 'https://www.publiq.be/callback'),
+            new IntegrationUrl(Uuid::uuid4(), $integrationId, Environment::Acceptance, IntegrationUrlType::Callback, 'https://www.madewithlove.be/callback'),
+            new IntegrationUrl(Uuid::uuid4(), $integrationId, Environment::Testing, IntegrationUrlType::Logout, 'https://www.madewithlove.be/logout'),
+            new IntegrationUrl(Uuid::uuid4(), $integrationId, Environment::Production, IntegrationUrlType::Callback, 'https://www.publiq.be/callback'),
         );
 
         $clients = [
@@ -98,11 +103,16 @@ final class UpdateClientsTest extends TestCase
                         '/api/v2/clients/client-id-1',
                         Json::encode([
                             'name' => 'Mock Integration (id: ' . $integrationId->toString() . ')',
-                            'callbacks' => ['https://oauth.pstmn.io/v1/callback'],
+                            'callbacks' => [
+                                'https://www.publiq.be/callback',
+                                'https://www.madewithlove.be/callback',
+                                'https://oauth.pstmn.io/v1/callback',
+                            ],
                             'allowed_logout_urls' => [
                                 'https://www.publiq.be/logout',
                                 'https://www.madewithlove.be/logout',
                             ],
+                            'initiate_login_uri' => 'https://www.publiq.be/login',
                         ]),
                     ],
                     [
@@ -111,7 +121,9 @@ final class UpdateClientsTest extends TestCase
                         Json::encode([
                             'name' => 'Mock Integration (id: ' . $integrationId->toString() . ')',
                             'callbacks' => ['https://oauth.pstmn.io/v1/callback'],
-                            'allowed_logout_urls' => [],
+                            'allowed_logout_urls' => [
+                                'https://www.madewithlove.be/logout',
+                            ],
                         ]),
                     ],
                     [
@@ -119,7 +131,10 @@ final class UpdateClientsTest extends TestCase
                         '/api/v2/clients/client-id-3',
                         Json::encode([
                             'name' => 'Mock Integration (id: ' . $integrationId->toString() . ')',
-                            'callbacks' => ['https://oauth.pstmn.io/v1/callback'],
+                            'callbacks' => [
+                                'https://www.publiq.be/callback',
+                                'https://oauth.pstmn.io/v1/callback',
+                            ],
                             'allowed_logout_urls' => [],
                         ]),
                     ] => new Response(200, [], ''),
