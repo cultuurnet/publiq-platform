@@ -142,51 +142,46 @@
         },
         {
             "name": "auth0/login",
-            "version": "7.4.0",
+            "version": "7.5.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:auth0/laravel-auth0.git",
-                "reference": "7020d5ff05a6aa6039dfa5481e1b47947e701e2d"
+                "url": "https://github.com/auth0/laravel-auth0.git",
+                "reference": "cdb04edcb43ad7cba6374932429ae38791f21378"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/auth0/laravel-auth0/zipball/7020d5ff05a6aa6039dfa5481e1b47947e701e2d",
-                "reference": "7020d5ff05a6aa6039dfa5481e1b47947e701e2d",
+                "url": "https://api.github.com/repos/auth0/laravel-auth0/zipball/cdb04edcb43ad7cba6374932429ae38791f21378",
+                "reference": "cdb04edcb43ad7cba6374932429ae38791f21378",
                 "shasum": ""
             },
             "require": {
-                "auth0/auth0-php": "^8.3.4",
+                "auth0/auth0-php": "^8.5",
                 "ext-json": "*",
                 "ext-mbstring": "*",
-                "illuminate/contracts": "^8.0 || ^9.0",
-                "illuminate/http": "^8.0 || ^9.0",
-                "illuminate/support": "^8.0 || ^9.0",
+                "illuminate/contracts": "^9.0 || ^10.0",
+                "illuminate/http": "^9.0 || ^10.0",
+                "illuminate/support": "^9.0 || ^10.0",
                 "php": "^8.0",
-                "psr/cache": "^3.0"
+                "psr/cache": "^2.0 || ^3.0"
             },
             "require-dev": {
-                "ergebnis/composer-normalize": "dev-main",
-                "laravel/laravel": "^8.4.4 || ^9.0",
-                "laravel/pint": "^1.2",
-                "nunomaduro/larastan": "^1.0",
-                "nyholm/psr7": "^1.4",
-                "orchestra/testbench": "6.25.1",
-                "pestphp/pest": "^1.21",
-                "pestphp/pest-plugin-laravel": "^1.2",
-                "phpstan/phpstan": "^1.7",
-                "phpstan/phpstan-strict-rules": "1.4.3",
-                "phpunit/phpunit": "^9.5",
-                "psalm/plugin-laravel": "^2.0",
-                "rector/rector": "^0.13.6",
-                "vimeo/psalm": "^4.28",
+                "friendsofphp/php-cs-fixer": "^3.14",
+                "infection/infection": "^0.26",
+                "mockery/mockery": "^1.5",
+                "nunomaduro/larastan": "^2.5",
+                "orchestra/testbench": "^7.19 || ^8.0",
+                "pestphp/pest": "^2.0",
+                "pestphp/pest-plugin-laravel": "^2.0",
+                "phpstan/phpstan": "^1.10",
+                "phpstan/phpstan-strict-rules": "^1.5",
+                "psalm/plugin-laravel": "^2.8",
+                "psr-mock/http": "^1.0",
+                "rector/rector": "^0.15",
+                "vimeo/psalm": "^5.8",
                 "wikimedia/composer-merge-plugin": "^2.0"
             },
             "type": "library",
             "extra": {
-                "composer-normalize": {
-                    "indent-size": 4,
-                    "indent-style": "space"
-                },
                 "laravel": {
                     "aliases": {
                         "Auth0": "Auth0\\Laravel\\Facade\\Auth0"
@@ -249,7 +244,7 @@
                 "issues": "https://github.com/auth0/laravel-auth0/issues",
                 "source": "https://github.com/auth0/laravel-auth0"
             },
-            "time": "2022-12-13T01:10:51+00:00"
+            "time": "2023-04-04T20:58:39+00:00"
         },
         {
             "name": "brick/math",
@@ -4983,25 +4978,25 @@
         },
         {
             "name": "psr/http-message",
-            "version": "1.0.1",
+            "version": "1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/http-message.git",
-                "reference": "f6561bf28d520154e4b0ec72be95418abe6d9363"
+                "reference": "cb6ce4845ce34a8ad9e68117c10ee90a29919eba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/http-message/zipball/f6561bf28d520154e4b0ec72be95418abe6d9363",
-                "reference": "f6561bf28d520154e4b0ec72be95418abe6d9363",
+                "url": "https://api.github.com/repos/php-fig/http-message/zipball/cb6ce4845ce34a8ad9e68117c10ee90a29919eba",
+                "reference": "cb6ce4845ce34a8ad9e68117c10ee90a29919eba",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0"
+                "php": "^7.2 || ^8.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0.x-dev"
+                    "dev-master": "1.1.x-dev"
                 }
             },
             "autoload": {
@@ -5030,9 +5025,9 @@
                 "response"
             ],
             "support": {
-                "source": "https://github.com/php-fig/http-message/tree/master"
+                "source": "https://github.com/php-fig/http-message/tree/1.1"
             },
-            "time": "2016-08-06T14:39:51+00:00"
+            "time": "2023-04-04T09:50:52+00:00"
         },
         {
             "name": "psr/log",
