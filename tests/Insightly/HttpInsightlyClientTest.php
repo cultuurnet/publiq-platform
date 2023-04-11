@@ -101,8 +101,7 @@ final class HttpInsightlyClientTest extends TestCase
             'Test Integration',
             'Test Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft,
-            []
+            IntegrationStatus::Draft
         );
 
         $insightlyId = $this->insightlyClient->opportunities()->create($integration);
@@ -119,8 +118,7 @@ final class HttpInsightlyClientTest extends TestCase
             'Test Integration',
             'Test Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft,
-            []
+            IntegrationStatus::Draft
         );
 
         $insightlyId = $this->insightlyClient->projects()->create($integration);
@@ -137,8 +135,7 @@ final class HttpInsightlyClientTest extends TestCase
             'Test Integration',
             'Test Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft,
-            []
+            IntegrationStatus::Draft
         );
 
         $insightlyId = $this->insightlyClient->projects()->create($integration);
@@ -157,8 +154,7 @@ final class HttpInsightlyClientTest extends TestCase
             'Test Integration',
             'Test Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft,
-            []
+            IntegrationStatus::Draft
         );
 
         $insightlyId = $this->insightlyClient->projects()->create($integration);
@@ -177,8 +173,7 @@ final class HttpInsightlyClientTest extends TestCase
             'Test Integration',
             'Test Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft,
-            []
+            IntegrationStatus::Draft
         );
 
         $insightlyOpportunityId = $this->insightlyClient->opportunities()->create($integration);
@@ -208,8 +203,7 @@ final class HttpInsightlyClientTest extends TestCase
             'Test Integration',
             'Test Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft,
-            []
+            IntegrationStatus::Draft
         );
 
         $contact = new Contact(

@@ -29,10 +29,10 @@ final class UpdateProject implements ShouldQueue
     public function handle(IntegrationUpdated $integrationUpdated): void
     {
         try {
-            $integration = $this->integrationRepository->getById($integrationUpdated->id);
+            $integration = $this->integrationRepository->getById($integrationUpdated->integrationId);
 
             $projectMapping = $this->insightlyMappingRepository->getByIdAndType(
-                $integrationUpdated->id,
+                $integrationUpdated->integrationId,
                 ResourceType::Project
             );
 
@@ -42,7 +42,7 @@ final class UpdateProject implements ShouldQueue
                 'Project updated',
                 [
                     'domain' => 'insightly',
-                    'integration_id' => $integrationUpdated->id->toString(),
+                    'integration_id' => $integrationUpdated->integrationId->toString(),
                 ]
             );
         } catch (ModelNotFoundException) {
@@ -55,7 +55,7 @@ final class UpdateProject implements ShouldQueue
             'Failed to update project',
             [
                 'domain' => 'insightly',
-                'integration_id' => $integrationUpdated->id->toString(),
+                'integration_id' => $integrationUpdated->integrationId->toString(),
                 'exception' => $exception,
             ]
         );

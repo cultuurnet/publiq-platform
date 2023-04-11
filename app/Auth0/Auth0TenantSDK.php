@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Auth0;
 
+use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\IntegrationUrl;
+use App\Domain\Integrations\IntegrationUrlType;
 use App\Json;
 use Auth0\SDK\Auth0;
 use Auth0\SDK\Configuration\SdkConfiguration;
@@ -57,11 +60,9 @@ final class Auth0TenantSDK
                     'refresh_token', // Makes it possible to request and use refresh tokens when using the authorization_code grant type
                     'client_credentials', // Enables the client credentials flow (m2m tokens)
                 ],
-                'callbacks' => [
-                    'https://oauth.pstmn.io/v1/callback', // Allow logins via Postman for easy debugging/testing/experimentation
-                ],
-                'allowed_logout_urls' => [],
-                'initiate_login_uri' => '',
+                'callbacks' => $this->getCallbackUrls($integration),
+                'allowed_logout_urls' => $this->getLogoutUrls($integration),
+                'initiate_login_uri' => $this->getLoginUrl($integration),
                 'web_origins' => [
                     'https://docs.publiq.be', // Always add this origin to enable CORS requests from the "Try it out!" functionality in Stoplight
                     'https://publiq.stoplight.io', // Always add this origin to enable CORS requests from the "Try it out!" functionality in Stoplight
@@ -90,10 +91,20 @@ final class Auth0TenantSDK
 
     public function updateClient(Integration $integration, Auth0Client $auth0Client): void
     {
+        $body = [
+            'name' => $this->clientName($integration),
+            'callbacks' => $this->getCallbackUrls($integration),
+            'allowed_logout_urls' => $this->getLogoutUrls($integration),
+        ];
+
+        if ($this->getLoginUrl($integration) !== '') {
+            $body['initiate_login_uri'] = $this->getLoginUrl($integration);
+        }
+
         $this->callApiWithTokenRefresh(
             fn () => $this->management->clients()->update(
                 $auth0Client->clientId,
-                ['name' => $this->clientName($integration)]
+                $body
             )
         );
     }
@@ -151,6 +162,51 @@ final class Auth0TenantSDK
 
     private function clientName(Integration $integration): string
     {
-        return sprintf('%s (id: %s)', $integration->name, $integration->id->toString());
+        return $integration->name . ' (via publiq platform)';
+    }
+
+    private function getLoginUrl(Integration $integration): string
+    {
+        $loginUrls = $integration->urlsForTypeAndEnvironment(
+            IntegrationUrlType::Login,
+            Environment::from($this->auth0Tenant->value)
+        );
+
+        if (count($loginUrls) === 0) {
+            return '';
+        }
+
+        return reset($loginUrls)->url;
+    }
+
+    private function getCallbackUrls(Integration $integration): array
+    {
+        $urls = $this->getUrls(IntegrationUrlType::Callback, $integration);
+        $urls[] = 'https://oauth.pstmn.io/v1/callback'; // Allow logins via Postman for easy debugging/testing/experimentation
+        return $urls;
+    }
+
+    private function getLogoutUrls(Integration $integration): array
+    {
+        return $this->getUrls(IntegrationUrlType::Logout, $integration);
+    }
+
+    private function getUrls(IntegrationUrlType $integrationUrlType, Integration $integration): array
+    {
+        $integrationUrls = $integration->urlsForTypeAndEnvironment(
+            $integrationUrlType,
+            Environment::from($this->auth0Tenant->value)
+        );
+
+        if (count($integrationUrls) === 0) {
+            return [];
+        }
+
+        return array_values(
+            array_map(
+                fn (IntegrationUrl $integrationUrl) => $integrationUrl->url,
+                $integrationUrls
+            )
+        );
     }
 }

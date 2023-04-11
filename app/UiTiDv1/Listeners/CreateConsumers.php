@@ -27,13 +27,13 @@ final class CreateConsumers implements ShouldQueue
 
     public function handle(IntegrationCreated $integrationCreated): void
     {
-        $integration = $this->integrationRepository->getById($integrationCreated->id);
+        $integration = $this->integrationRepository->getById($integrationCreated->integrationId);
         $consumers = $this->clusterSDK->createConsumersForIntegration($integration);
         $this->consumerRepository->save(...$consumers);
 
         foreach ($consumers as $consumer) {
             $this->logger->info('UiTiD v1 consumer created', [
-                'integration_id' => $integrationCreated->id->toString(),
+                'integration_id' => $integrationCreated->integrationId->toString(),
                 'tenant' => $consumer->environment->value,
                 'consumer_id' => $consumer->consumerId,
                 'consumer_key' => $consumer->consumerKey,
@@ -44,7 +44,7 @@ final class CreateConsumers implements ShouldQueue
     public function failed(IntegrationCreated $integrationCreated, Throwable $throwable): void
     {
         $this->logger->error('Failed to create UiTiD v1 consumer(s)', [
-            'integration_id' => $integrationCreated->id->toString(),
+            'integration_id' => $integrationCreated->integrationId->toString(),
             'exception' => $throwable,
         ]);
     }
