@@ -116,6 +116,6 @@ final class UiTiDv1EnvironmentSDK
 
     private function consumerName(Integration $integration): string
     {
-        return sprintf('%s (via publiq platform)', $integration->name);
+        return $integration->name . ' (via publiq platform)';
     }
 }
