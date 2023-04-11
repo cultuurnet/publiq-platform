@@ -162,7 +162,7 @@ final class Auth0TenantSDK
 
     private function clientName(Integration $integration): string
     {
-        return sprintf('%s (id: %s)', $integration->name, $integration->id->toString());
+        return $integration->name . ' (via publiq platform)';
     }
 
     private function getLoginUrl(Integration $integration): string
