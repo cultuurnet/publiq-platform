@@ -71,7 +71,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Test Integration description',
             $subscriptionId,
             IntegrationStatus::Draft
-        ))->withContacts($contacts);
+        ))->withContacts(...$contacts);
 
         $this->integrationRepository->save($integration);
 
@@ -150,7 +150,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Search Integration description',
             Uuid::uuid4(),
             IntegrationStatus::Draft
-        ))->withContacts([$technicalContact, $organizationContact]);
+        ))->withContacts($technicalContact, $organizationContact);
 
         $this->integrationRepository->save($searchIntegration);
 
@@ -181,7 +181,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Widgets Integration description',
             Uuid::uuid4(),
             IntegrationStatus::Draft
-        ))->withContacts([$contributor, $otherTechnicalContact]);
+        ))->withContacts($contributor, $otherTechnicalContact);
 
         $this->integrationRepository->save($widgetsIntegration);
 
