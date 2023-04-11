@@ -128,8 +128,7 @@ final class MigrateProjects extends Command
             $migrationProject->name(),
             $migrationProject->description() !== null ? $migrationProject->description() : '',
             Uuid::fromString(SubscriptionsSeeder::BASIC_PLAN),
-            $migrationProject->status(),
-            []
+            $migrationProject->status()
         );
         $this->integrationRepository->save($integration);
 

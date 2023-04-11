@@ -64,15 +64,14 @@ final class EloquentIntegrationRepositoryTest extends TestCase
 
         $contacts = [$technicalContact, $organizationContact, $contributor];
 
-        $integration = new Integration(
+        $integration = (new Integration(
             $integrationId,
             IntegrationType::SearchApi,
             'Test Integration',
             'Test Integration description',
             $subscriptionId,
-            IntegrationStatus::Draft,
-            $contacts
-        );
+            IntegrationStatus::Draft
+        ))->withContacts($contacts);
 
         $this->integrationRepository->save($integration);
 
@@ -85,7 +84,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'status' => $integration->status,
         ]);
 
-        foreach ($integration->contacts as $contact) {
+        foreach ($integration->contacts() as $contact) {
             $this->assertDatabaseHas('contacts', [
                 'id' => $contact->id->toString(),
                 'integration_id' => $contact->integrationId->toString(),
@@ -105,8 +104,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Test Integration',
             'Test Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft,
-            []
+            IntegrationStatus::Draft
         );
 
         IntegrationModel::query()->insert([
@@ -145,15 +143,14 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Doe'
         );
 
-        $searchIntegration = new Integration(
+        $searchIntegration = (new Integration(
             $searchIntegrationId,
             IntegrationType::SearchApi,
             'Search Integration',
             'Search Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft,
-            [$technicalContact, $organizationContact],
-        );
+            IntegrationStatus::Draft
+        ))->withContacts([$technicalContact, $organizationContact]);
 
         $this->integrationRepository->save($searchIntegration);
 
@@ -177,15 +174,14 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Doe',
         );
 
-        $widgetsIntegration = new Integration(
+        $widgetsIntegration = (new Integration(
             $widgetsIntegrationId,
             IntegrationType::Widgets,
             'Widgets Integration',
             'Widgets Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft,
-            [$contributor, $otherTechnicalContact]
-        );
+            IntegrationStatus::Draft
+        ))->withContacts([$contributor, $otherTechnicalContact]);
 
         $this->integrationRepository->save($widgetsIntegration);
 
@@ -204,8 +200,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Test Integration',
             'Test Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft,
-            []
+            IntegrationStatus::Draft
         );
 
         $this->integrationRepository->save($integration);
@@ -242,8 +237,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Search Integration',
             'Search Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft,
-            [],
+            IntegrationStatus::Draft
         );
 
         $this->integrationRepository->save($searchIntegration);
@@ -288,8 +282,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Search Integration',
             'Search Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft,
-            [],
+            IntegrationStatus::Draft
         );
 
         $this->integrationRepository->save($searchIntegration);
@@ -318,8 +311,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Search Integration',
             'Search Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft,
-            [],
+            IntegrationStatus::Draft
         );
 
         $this->integrationRepository->save($searchIntegration);
@@ -339,8 +331,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Search Integration',
             'Search Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft,
-            [],
+            IntegrationStatus::Draft
         );
 
         $this->integrationRepository->save($searchIntegration);

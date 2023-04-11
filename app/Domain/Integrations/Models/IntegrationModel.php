@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Integrations\Models;
 
 use App\Auth0\Models\Auth0ClientModel;
+use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Events\IntegrationActivatedWithOrganization;
@@ -98,6 +99,22 @@ final class IntegrationModel extends UuidModel
     }
 
     /**
+     * @return HasOne<ContactModel>
+     */
+    public function technical(): HasOne
+    {
+        return $this->hasOne(ContactModel::class, 'integration_id')->where('type', ContactType::Technical);
+    }
+
+    /**
+     * @return HasOne<ContactModel>
+     */
+    public function functional(): HasOne
+    {
+        return $this->hasOne(ContactModel::class, 'integration_id')->where('type', ContactType::Functional);
+    }
+
+    /**
      * @return BelongsTo<SubscriptionModel, IntegrationModel>
      */
     public function subscription(): BelongsTo
@@ -181,13 +198,14 @@ final class IntegrationModel extends UuidModel
 
     public function toDomain(): Integration
     {
-        return new Integration(
+        return (new Integration(
             Uuid::fromString($this->id),
             IntegrationType::from($this->type),
             $this->name,
             $this->description,
             Uuid::fromString($this->subscription_id),
             IntegrationStatus::from($this->status),
+        ))->withContacts(
             $this->contacts()
                 ->get()
                 ->map(fn (ContactModel $contactModel) => $contactModel->toDomain())

@@ -57,8 +57,7 @@ final class UpdateConsumersTest extends TestCase
             'Mock Integration',
             'Mock description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft,
-            []
+            IntegrationStatus::Draft
         );
 
         $consumers = [
