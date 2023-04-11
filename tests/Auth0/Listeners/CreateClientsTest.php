@@ -59,8 +59,7 @@ final class CreateClientsTest extends TestCase
             'Mock Integration',
             'Mock description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft,
-            []
+            IntegrationStatus::Draft
         );
 
         $this->integrationRepository->expects($this->once())

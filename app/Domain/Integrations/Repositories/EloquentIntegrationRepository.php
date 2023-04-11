@@ -26,7 +26,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
                 'status' => $integration->status,
             ]);
 
-            foreach ($integration->contacts as $contact) {
+            foreach ($integration->contacts() as $contact) {
                 ContactModel::query()->create([
                     'id' => $contact->id->toString(),
                     'integration_id' => $integration->id->toString(),

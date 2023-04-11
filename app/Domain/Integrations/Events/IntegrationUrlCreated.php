@@ -7,11 +7,13 @@ namespace App\Domain\Integrations\Events;
 use Illuminate\Foundation\Events\Dispatchable;
 use Ramsey\Uuid\UuidInterface;
 
-final class IntegrationBlocked
+final class IntegrationUrlCreated
 {
     use Dispatchable;
 
-    public function __construct(public readonly UuidInterface $integrationId)
-    {
+    public function __construct(
+        public readonly UuidInterface $id,
+        public readonly UuidInterface $integrationId
+    ) {
     }
 }

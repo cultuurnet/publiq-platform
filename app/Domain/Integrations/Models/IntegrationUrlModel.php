@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App\Domain\Integrations\Models;
 
 use App\Domain\Integrations\Environment;
+use App\Domain\Integrations\Events\IntegrationUrlCreated;
+use App\Domain\Integrations\Events\IntegrationUrlDeleted;
+use App\Domain\Integrations\Events\IntegrationUrlUpdated;
 use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\IntegrationUrlType;
 use App\Models\UuidModel;
@@ -22,6 +25,28 @@ final class IntegrationUrlModel extends UuidModel
         'url',
     ];
 
+    protected static function booted(): void
+    {
+        self::created(
+            static fn (IntegrationUrlModel $integrationUrlModel) => IntegrationUrlCreated::dispatch(
+                Uuid::fromString($integrationUrlModel->id),
+                Uuid::fromString($integrationUrlModel->integration_id)
+            )
+        );
+        self::updated(
+            static fn (IntegrationUrlModel $integrationUrlModel) => IntegrationUrlUpdated::dispatch(
+                Uuid::fromString($integrationUrlModel->id),
+                Uuid::fromString($integrationUrlModel->integration_id)
+            )
+        );
+        self::deleted(
+            static fn (IntegrationUrlModel $integrationUrlModel) => IntegrationUrlDeleted::dispatch(
+                Uuid::fromString($integrationUrlModel->id),
+                Uuid::fromString($integrationUrlModel->integration_id)
+            )
+        );
+    }
+
     /**
      * @return BelongsTo<IntegrationModel, IntegrationUrlModel>
      */
@@ -33,6 +58,7 @@ final class IntegrationUrlModel extends UuidModel
     public function toDomain(): IntegrationUrl
     {
         return new IntegrationUrl(
+            Uuid::fromString($this->id),
             Uuid::fromString($this->integration_id),
             Environment::from($this->environment),
             IntegrationUrlType::from($this->type),

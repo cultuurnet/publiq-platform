@@ -163,8 +163,7 @@ final class CreateOpportunityTest extends TestCase
             'my little integration',
             'a little integration',
             $subscriptionId,
-            IntegrationStatus::Draft,
-            [],
+            IntegrationStatus::Draft
         );
 
         $this->integrationRepository->expects($this->once())
