@@ -181,10 +181,9 @@ final class Auth0TenantSDK
 
     private function getCallbackUrls(Integration $integration): array
     {
-        return array_merge(
-            $this->getUrls(IntegrationUrlType::Callback, $integration),
-            ['https://oauth.pstmn.io/v1/callback'] // Allow logins via Postman for easy debugging/testing/experimentation
-        );
+        $urls = $this->getUrls(IntegrationUrlType::Callback, $integration);
+        $urls[] = 'https://oauth.pstmn.io/v1/callback'; // Allow logins via Postman for easy debugging/testing/experimentation
+        return $urls;
     }
 
     private function getLogoutUrls(Integration $integration): array
