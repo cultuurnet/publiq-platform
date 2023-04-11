@@ -20,6 +20,7 @@ use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
+use Laravel\Nova\Fields\HasOne;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
@@ -186,6 +187,14 @@ final class Integration extends Resource
             ),
 
             HasMany::make('Contacts'),
+
+            HasOne::make('Technical Contact', 'technical', Contact::class)
+                ->required()
+                ->onlyOnForms(),
+
+            HasOne::make('Functional Contact', 'functional', Contact::class)
+                ->required()
+                ->onlyOnForms(),
 
             HasMany::make('Urls', 'urls', IntegrationUrl::class),
 
