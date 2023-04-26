@@ -50,7 +50,7 @@ final class IntegrationUrl extends Resource
                         return $query->where('integration_id', $request->integration)
                             ->where('environment', $request->environment)
                             ->where('type', IntegrationUrlType::Login);
-                    })->ignore($request->id)
+                    })->ignore($request->id),
                 ]),
 
             Text::make('Url')
