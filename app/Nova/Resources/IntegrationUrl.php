@@ -8,6 +8,7 @@ use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\IntegrationUrlType;
 use App\Domain\Integrations\Models\IntegrationUrlModel;
 use App\Nova\Resource;
+use Illuminate\Validation\Rule;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
@@ -42,7 +43,15 @@ final class IntegrationUrl extends Resource
                     IntegrationUrlType::Callback->value => IntegrationUrlType::Callback->name,
                     IntegrationUrlType::Logout->value => IntegrationUrlType::Logout->name,
                 ])
-                ->rules('required'),
+                ->readonly(fn (NovaRequest $request) => $request->isUpdateOrUpdateAttachedRequest())
+                ->rules([
+                    'required',
+                    Rule::unique('integrations_urls')->where(function ($query) use ($request) {
+                        return $query->where('integration_id', $request->integration)
+                            ->where('environment', $request->environment)
+                            ->where('type', IntegrationUrlType::Login);
+                    })->ignore($request->id)
+                ]),
 
             Text::make('Url')
                 ->sortable()
