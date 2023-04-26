@@ -188,14 +188,6 @@ final class Integration extends Resource
 
             HasMany::make('Contacts'),
 
-            HasOne::make('Technical Contact', 'technical', Contact::class)
-                ->required()
-                ->onlyOnForms(),
-
-            HasOne::make('Functional Contact', 'functional', Contact::class)
-                ->required()
-                ->onlyOnForms(),
-
             HasMany::make('Urls', 'urls', IntegrationUrl::class),
 
             HasMany::make('Activity Log'),

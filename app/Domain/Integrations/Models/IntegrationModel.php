@@ -99,22 +99,6 @@ final class IntegrationModel extends UuidModel
     }
 
     /**
-     * @return HasOne<ContactModel>
-     */
-    public function technical(): HasOne
-    {
-        return $this->hasOne(ContactModel::class, 'integration_id')->where('type', ContactType::Technical);
-    }
-
-    /**
-     * @return HasOne<ContactModel>
-     */
-    public function functional(): HasOne
-    {
-        return $this->hasOne(ContactModel::class, 'integration_id')->where('type', ContactType::Functional);
-    }
-
-    /**
      * @return BelongsTo<SubscriptionModel, IntegrationModel>
      */
     public function subscription(): BelongsTo
