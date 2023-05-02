@@ -12,7 +12,7 @@ final class SubscriptionSerializer
 {
     private const CUSTOM_FIELD_SUBSCRIPTION_PLAN = 'Subscription_plan__c';
     private const CUSTOM_FIELD_SUBSCRIPTION_PRICE = 'Subscription_price__c';
-    private const CUSTOM_FIELD_SUBSCRIPTION_FEE = 'Subscription_fee__c';
+    private const CUSTOM_FIELD_SETUP_FEE = 'Setup_fee__c';
 
     public function toInsightlyArray(Subscription $subscription, ?Coupon $coupon): array
     {
@@ -26,8 +26,8 @@ final class SubscriptionSerializer
 
         if ($subscription->category !== SubscriptionCategory::Custom) {
             $insightlyArray[] = [
-                'FIELD_NAME' => self::CUSTOM_FIELD_SUBSCRIPTION_FEE,
-                'CUSTOM_FIELD_ID' => self::CUSTOM_FIELD_SUBSCRIPTION_FEE,
+                'FIELD_NAME' => self::CUSTOM_FIELD_SETUP_FEE,
+                'CUSTOM_FIELD_ID' => self::CUSTOM_FIELD_SETUP_FEE,
                 'FIELD_VALUE' => $subscription->fee,
             ];
 
