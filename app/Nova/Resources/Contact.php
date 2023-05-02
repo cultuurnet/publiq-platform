@@ -66,7 +66,6 @@ final class Contact extends Resource
                     ContactType::Technical->value => ContactType::Technical->name,
                     ContactType::Contributor->value => ContactType::Contributor->name,
                 ])
-                ->default($request->viaRelationship ?: null)
                 ->readonly(fn (NovaRequest $request) => $request->isUpdateOrUpdateAttachedRequest())
                 ->rules('required'),
 
