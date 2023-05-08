@@ -12,6 +12,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Actions\Action;
+use Laravel\Nova\Actions\ActionResponse;
 use Laravel\Nova\Fields\ActionFields;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -28,7 +29,7 @@ final class ActivateIntegrationWithOrganization extends Action
     ) {
     }
 
-    public function handle(ActionFields $fields, Collection $integrations): array
+    public function handle(ActionFields $fields, Collection $integrations): ActionResponse
     {
         /** @var string $organizationIdAsString */
         $organizationIdAsString = $fields->get('organization');
