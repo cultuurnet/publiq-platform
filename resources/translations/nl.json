@@ -4,5 +4,12 @@
         "integrations": "Mijn integraties",
         "opportunities": "Mogelijkheden",
         "support": "Ondersteuning"
+    },
+    "home": {
+        "hero": {
+            "title": "Bereik een groter publiek",
+            "intro": "publiq biedt een waaier van toepassingen om eigen activiteiten te promoten en agenda-informatie in je website of app te integreren.",
+            "start_here": "Start hier"
+        }
     }
 }
