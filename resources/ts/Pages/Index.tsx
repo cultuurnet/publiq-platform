@@ -1,12 +1,14 @@
 import React, { ReactNode } from "react";
-import { Heading } from "../Shared/Heading";
 import Layout from "../Shared/Layout";
-import { useTranslation } from "react-i18next";
+import { Hero } from "../Shared/Hero";
+import { IntegrationTypes } from "../Shared/IntegrationTypes";
 
 const Index = () => {
   return (
     <>
       <Hero />
+      <IntegrationTypes />
+    </>
   );
 };
 
