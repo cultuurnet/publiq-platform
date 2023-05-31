@@ -42,7 +42,7 @@ export type IntegrationType = (typeof integrationTypes)[number];
 export const IntegrationTypes = () => {
   return (
     <div>
-      <ul className="flex gap-4">
+      <ul className="flex justify-center gap-4 flex-wrap">
         {integrationTypes.map((integration) => (
           <IntegrationTypeCard key={integration.title} {...integration} />
         ))}

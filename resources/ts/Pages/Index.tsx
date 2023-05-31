@@ -6,8 +6,11 @@ import { IntegrationTypes } from "../Shared/IntegrationTypes";
 const Index = () => {
   return (
     <>
-      <Hero />
-      <IntegrationTypes />
+      <div className="w-full bg-red-100 h-44"></div>
+      <div className="px-6">
+        <Hero />
+        <IntegrationTypes />
+      </div>
     </>
   );
 };

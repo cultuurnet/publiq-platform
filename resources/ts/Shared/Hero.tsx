@@ -6,8 +6,7 @@ export const Hero = () => {
   const { t } = useTranslation();
 
   return (
-    <section className="flex flex-col items-center">
-      <div className="w-full bg-red-100 h-44"></div>
+    <section className="w-full flex flex-col items-center">
       <div className="flex flex-col items-center py-8 px-12">
         <button className="flex flex-col items-center py-8 px-12"></button>
         <Heading level={2}>{t("home.hero.title")}</Heading>
