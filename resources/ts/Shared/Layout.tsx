@@ -6,7 +6,7 @@ export default function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="flex flex-col items-center">
       <Header />
-      <section className="pb-8 max-w-2xl px-3 lg:px-6">{children}</section>
+      <section className="pb-8">{children}</section>
       <Footer />
     </div>
   );

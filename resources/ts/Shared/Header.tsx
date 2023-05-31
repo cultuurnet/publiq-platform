@@ -6,7 +6,7 @@ export default function Header() {
   const { t, i18n } = useTranslation();
 
   return (
-    <header className="flex items-center justify-around w-full mb-4 bg-[theme(colors.blue)]">
+    <header className="flex items-center justify-around w-full pb-4 bg-[theme(colors.blue)]">
       <Heading level={1}>{t("title")}</Heading>
       <div className="flex gap-8 min-w-[50%]">
         <a>{t("nav.integrations")}</a>
