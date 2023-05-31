@@ -1,3 +1,8 @@
 {
-    "title": "Publiq platform"
+    "title": "Publiq platform",
+    "nav": {
+        "integrations": "Mijn integraties",
+        "opportunities": "Mogelijkheden",
+        "support": "Ondersteuning"
+    }
 }
