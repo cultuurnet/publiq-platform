@@ -11,16 +11,9 @@ export default function Header() {
   const path = new URL(url, "http://localhost").pathname;
 
   return (
-    <header className="flex items-center justify-around w-full mb-4 py-4 bg-white">
+    <header className="flex items-center justify-around w-full mb-4 bg-white shadow-lg mt-1">
       <Link href="/">
-        <Heading
-          className={classNames(
-            "text-base",
-            "py-1",
-            path === "/" && "border-b-2 border-b-blue"
-          )}
-          level={1}
-        >
+        <Heading className="text-base py-3 border-transparent border-b-4" level={1}>
           {t("title")}
         </Heading>
       </Link>
@@ -30,15 +23,15 @@ export default function Header() {
             key={pageTitle}
             href={`/${pageTitle}`}
             className={classNames(
-              "py-1",
-              path.startsWith(`/${pageTitle}`) && "border-b-2 border-b-blue"
+              "py-3 border-transparent border-b-4",
+              path.startsWith(`/${pageTitle}`) && "border-b-4 border-b-blue"
             )}
           >
             {t(`nav.${pageTitle}`)}
           </Link>
         ))}
       </div>
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 border-transparent border-b-4">
         <div className="flex gap-2">
           <button onClick={() => i18n.changeLanguage("nl")}>NL</button>
           <button onClick={() => i18n.changeLanguage("en")}>EN</button>
