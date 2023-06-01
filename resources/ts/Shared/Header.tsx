@@ -1,12 +1,11 @@
 import React from "react";
 import { Heading } from "./Heading";
 import { useTranslation } from "react-i18next";
-import { Link, usePage } from "@inertiajs/react";
+import { Link } from "@inertiajs/react";
 import { classNames } from "../utils/classNames";
 
 export default function Header() {
   const { t, i18n } = useTranslation();
-  const { url } = usePage();
 
   const path = new URL(document.location.href).pathname;
 
