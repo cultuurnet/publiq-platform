@@ -8,7 +8,7 @@ export default function Header() {
   const { t, i18n } = useTranslation();
   const { url } = usePage();
 
-  const path = new URL(url, "http://localhost").pathname;
+  const path = new URL(document.location.href).pathname;
 
   return (
     <header className="flex items-center justify-around w-full mb-4 bg-white shadow-lg mt-1">
