@@ -3,6 +3,7 @@
     "nav": {
         "integrations": "Mijn integraties",
         "opportunities": "Mogelijkheden",
-        "support": "Ondersteuning"
+        "support": "Ondersteuning",
+        "hello": "Hallo"
     }
 }

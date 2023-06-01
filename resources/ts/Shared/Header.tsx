@@ -13,7 +13,10 @@ export default function Header() {
   return (
     <header className="flex items-center justify-around w-full mb-4 bg-white shadow-lg mt-1">
       <Link href="/">
-        <Heading className="text-base py-3 border-transparent border-b-4" level={1}>
+        <Heading
+          className="text-base py-3 border-transparent border-b-4"
+          level={1}
+        >
           {t("title")}
         </Heading>
       </Link>
@@ -39,7 +42,7 @@ export default function Header() {
 
         <div className="border-l pl-3">
           <span>🧙‍♂️</span>
-          <span>Hallo, Corneel</span>
+          <span>{t("nav.hello")}, Corneel</span>
         </div>
       </div>
     </header>
