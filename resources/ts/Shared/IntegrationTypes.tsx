@@ -1,49 +1,52 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { IntegrationTypeCard } from "./IntegrationTypeCard";
+import { useTranslation } from "react-i18next";
+import { TFunction } from "i18next";
 
-const integrationTypes = [
+const getIntegrationTypes = (t: TFunction) => [
   {
-    title: "Entry API",
-    description:
-      "Haal evenementinformatie op uit de UiTdatabank via onze nieuwste zoekengine.",
+    title: t("home.integration_types.entry_api.title"),
+    description: t("home.integration_types.entry_api.description"),
     features: [
-      "JSON-standaard",
-      "Award-winning API",
-      "Activatie op live-omgeving op aanvraag",
+      t("home.integration_types.entry_api.features.0"),
+      t("home.integration_types.entry_api.features.1"),
+      t("home.integration_types.entry_api.features.2"),
     ],
-    actionUrl: "#",
+    actionUrl: t("home.integration_types.entry_api.action_url"),
   },
   {
-    title: "Search API",
-    description:
-      "Haal evenementinformatie op uit de UiTdatabank via onze nieuwste zoekengine.",
+    title: t("home.integration_types.search_api.title"),
+    description: t("home.integration_types.search_api.description"),
     features: [
-      "JSON-standaard",
-      "Award-winning API",
-      "Activatie op live-omgeving op aanvraag",
+      t("home.integration_types.search_api.features.0"),
+      t("home.integration_types.search_api.features.1"),
+      t("home.integration_types.search_api.features.2"),
     ],
-    actionUrl: "#",
+    actionUrl: t("home.integration_types.search_api.action_url"),
   },
   {
-    title: "Widgets",
-    description:
-      "Haal evenementinformatie op uit de UiTdatabank via onze nieuwste zoekengine.",
+    title: t("home.integration_types.widgets.title"),
+    description: t("home.integration_types.widgets.description"),
     features: [
-      "JSON-standaard",
-      "Award-winning API",
-      "Activatie op live-omgeving op aanvraag",
+      t("home.integration_types.widgets.features.0"),
+      t("home.integration_types.widgets.features.1"),
+      t("home.integration_types.widgets.features.2"),
     ],
-    actionUrl: "#",
+    actionUrl: t("home.integration_types.widgets.action_url"),
   },
 ];
 
-export type IntegrationType = (typeof integrationTypes)[number];
+export type IntegrationType = ReturnType<typeof getIntegrationTypes>[number];
 
 export const IntegrationTypes = () => {
+  const { t } = useTranslation();
+
+  const translatedIntegrationTypes = useMemo(() => getIntegrationTypes(t), [t]);
+
   return (
     <div>
       <ul className="flex justify-center gap-4 flex-wrap">
-        {integrationTypes.map((integration) => (
+        {translatedIntegrationTypes.map((integration) => (
           <IntegrationTypeCard key={integration.title} {...integration} />
         ))}
       </ul>

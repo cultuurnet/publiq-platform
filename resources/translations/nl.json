@@ -21,6 +21,36 @@
       "start_here": "Start hier"
     },
     "integration_types": {
+      "entry_api": {
+        "title": "Entry API",
+        "description": "Via Entry API kan je items in de UiTdatabank aanmaken, aanpassen en verwijderen.",
+        "features": [
+          "JSON-standaard",
+          "Award-winning API",
+          "Activatie op live-omgeving op aanvraag"
+        ],
+        "action_url": "#"
+      },
+      "search_api": {
+        "title": "Search API",
+        "description": "Haal evenementinformatie op uit de UiTdatabank via onze nieuwste zoekengine.",
+        "features": [
+          "JSON-standaard",
+          "Robuuste performantie",
+          "Uitgebreide filtermogelijkheden"
+        ],
+        "action_url": "#"
+      },
+      "widgets": {
+        "title": "Widgets",
+        "description": "Kant en klare HTML-modules die je in je website kan inpassen om een doorzoekbare lijst van evenementen weer te geven.",
+        "features": [
+          "Zelf of door publiq in te stellen",
+          "Plug & play oplossing",
+          "Uitgebreide configuratiemogelijkheden"
+        ],
+        "action_url": "#"
+      },
       "more_info": "Meer info"
     }
   }
