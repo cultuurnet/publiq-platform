@@ -1,9 +1,55 @@
 {
-    "title": "publiq platform",
-    "nav": {
-        "integrations": "Mijn integraties",
-        "opportunities": "Mogelijkheden",
-        "support": "Ondersteuning",
-        "hello": "Hallo"
+  "pages": {
+    "/integrations": "/integraties",
+    "/integrations/create": "/integraties/nieuw",
+    "/support": "/ondersteuning",
+    "/subscriptions": "/abonnementen"
+  },
+  "title": "publiq platform",
+  "nav": {
+    "integrations": "Mijn integraties",
+    "opportunities": "Mogelijkheden",
+    "support": "Ondersteuning",
+    "hello": "Hallo"
+  },
+  "home": {
+    "hero": {
+      "title": "Bereik een groter publiek",
+      "intro": "publiq biedt een waaier van toepassingen om eigen activiteiten te promoten en agenda-informatie in je website of app te integreren.",
+      "start_here": "Start hier"
+    },
+    "integration_types": {
+      "entry_api": {
+        "title": "Entry API",
+        "description": "Via Entry API kan je items in de UiTdatabank aanmaken, aanpassen en verwijderen.",
+        "features": [
+          "JSON-standaard",
+          "Award-winning API",
+          "Activatie op live-omgeving op aanvraag"
+        ],
+        "action_url": "#"
+      },
+      "search_api": {
+        "title": "Search API",
+        "description": "Haal evenementinformatie op uit de UiTdatabank via onze nieuwste zoekengine.",
+        "features": [
+          "JSON-standaard",
+          "Robuuste performantie",
+          "Uitgebreide filtermogelijkheden"
+        ],
+        "action_url": "#"
+      },
+      "widgets": {
+        "title": "Widgets",
+        "description": "Kant en klare HTML-modules die je in je website kan inpassen om een doorzoekbare lijst van evenementen weer te geven.",
+        "features": [
+          "Zelf of door publiq in te stellen",
+          "Plug & play oplossing",
+          "Uitgebreide configuratiemogelijkheden"
+        ],
+        "action_url": "#"
+      },
+      "more_info": "Meer info"
     }
+  }
 }

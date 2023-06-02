@@ -10,7 +10,7 @@ export default function Header() {
   const path = new URL(document.location.href).pathname;
 
   return (
-    <header className="flex items-center justify-around w-full mb-4 bg-white shadow-lg mt-1">
+    <header className="flex items-center justify-around w-full bg-white shadow-lg mt-1 z-40">
       <Link href="/">
         <Heading
           className="text-base py-3 border-transparent border-b-4"
@@ -20,10 +20,10 @@ export default function Header() {
         </Heading>
       </Link>
       <div className="flex gap-8 min-w-[50%]">
-        {["integrations", "opportunities", "support"].map((pageTitle) => (
+        {["integrations", "support"].map((pageTitle) => (
           <Link
             key={pageTitle}
-            href={`/${pageTitle}`}
+            href={t(`pages./${pageTitle}`)}
             className={classNames(
               "py-3 border-transparent border-b-4",
               path.startsWith(`/${pageTitle}`) && "border-b-4 border-b-blue"

@@ -1,12 +1,17 @@
 import React, { ReactNode } from "react";
-import { Heading } from "../Shared/Heading";
 import Layout from "../Shared/Layout";
+import { Hero } from "../Shared/Hero";
+import { IntegrationTypes } from "../Shared/IntegrationTypes";
 
 const Index = () => {
   return (
-    <div>
-      <Heading level={2}>Index Page</Heading>
-    </div>
+    <>
+      <div className="w-full bg-red-100 h-44"></div>
+      <div className="px-6">
+        <Hero />
+        <IntegrationTypes />
+      </div>
+    </>
   );
 };
 
