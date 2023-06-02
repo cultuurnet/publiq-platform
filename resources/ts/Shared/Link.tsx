@@ -7,7 +7,7 @@ type Props = InertiaLinkProps;
 
 export const Link = ({ children, href, className, ...props }: Props) => {
   const isExternal = !href.startsWith("/") && !href.startsWith("#");
-  
+
   return (
     <InertiaLink
       className={classNames(

@@ -19,11 +19,14 @@ export const IntegrationTypeCard = ({
         <ul className="flex flex-col gap-3">
           {features.map((feature) => (
             <li key={feature}>
-              <FontAwesomeIcon icon={faCheck} className="text-green-500" /> {feature}
+              <FontAwesomeIcon icon={faCheck} className="text-green-500" />{" "}
+              {feature}
             </li>
           ))}
         </ul>
-        <Link className="self-center" href={actionUrl}>Meer info</Link>
+        <Link className="self-center" href={actionUrl}>
+          Meer info
+        </Link>
       </div>
     </Card>
   );
