@@ -9,6 +9,7 @@ use App\Domain\Subscriptions\Controllers\SubscriptionController;
 use Auth0\Laravel\Http\Controller\Stateful\Callback;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Router\TranslatedRoute;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,18 +24,19 @@ use Inertia\Inertia;
 
 Route::get('/', static fn () => Inertia::render('Index'));
 
-Route::get('/login', Login::class)->name('login');
-Route::get('/admin/login', static fn () => redirect('/login'));
+TranslatedRoute::get(['/login', '/aanmelden'], Login::class, 'login');
+TranslatedRoute::get(['/admin/login', '/admin/aanmelden'], static fn () => redirect('/login'));
 
-Route::get('/logout', Logout::class);
+TranslatedRoute::get(['/logout', '/afmelden'], Logout::class);
 Route::post('/admin/logout', Logout::class);
 
 Route::get('/auth/callback', Callback::class);
 
-Route::get('/subscriptions', [SubscriptionController::class, 'index']);
+TranslatedRoute::get(['/subscriptions', '/abonnementen'], [SubscriptionController::class, 'index']);
 
 Route::group(['middleware' => 'auth'], static function () {
-    Route::get('/integrations', [IntegrationController::class, 'index'])->name('integrations.index');
-    Route::get('/integrations/create', [IntegrationController::class, 'create']);
+    TranslatedRoute::get(['/integrations', '/integraties'], [IntegrationController::class, 'index'], 'integrations.index');
+    TranslatedRoute::get(['/integrations/create', '/integraties/nieuw'], [IntegrationController::class, 'create']);
+
     Route::post('/integrations', [IntegrationController::class, 'store']);
 });
