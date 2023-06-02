@@ -24,10 +24,10 @@ use App\Router\TranslatedRoute;
 
 Route::get('/', static fn () => Inertia::render('Index'));
 
-TranslatedRoute::get(['/login', '/aanmelden'], Login::class, 'login');
-TranslatedRoute::get(['/admin/login', '/admin/aanmelden'], static fn () => redirect('/login'));
+Route::get('/login', Login::class)->name('login');
+Route::get('/admin/login', static fn () => redirect('/login'));
 
-TranslatedRoute::get(['/logout', '/afmelden'], Logout::class);
+Route::get('/logout', Logout::class);
 Route::post('/admin/logout', Logout::class);
 
 Route::get('/auth/callback', Callback::class);

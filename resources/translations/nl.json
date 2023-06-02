@@ -3,9 +3,7 @@
     "/integrations": "/integraties",
     "/integrations/create": "/integraties/nieuw",
     "/support": "/ondersteuning",
-    "/subscriptions": "/abonnementen",
-    "/login": "/aanmelden",
-    "/logout": "/afmelden"
+    "/subscriptions": "/abonnementen"
   },
   "title": "publiq platform",
   "nav": {
