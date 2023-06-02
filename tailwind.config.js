@@ -4,13 +4,33 @@ module.exports = {
   content: ["./resources/ts/**/*.{jsx,tsx}"],
   theme: {
     extend: {
-      colors: {
-        blue: "#009fdf",
-        textColor: "#3b3b3b",
+      animation: {
+        pulse: "pulse 0.4s",
       },
-      textColor: ({ theme }) => theme("colors.textColor"),
+      keyframes: {
+        pulse: {
+          "0%": {
+            transform: "scale(1)",
+            opacity: "0.7",
+            borderRadius: "50%",
+          },
+
+          "100%": {
+            transform: "scale(2)",
+            opacity: "0.3",
+            borderRadius: "0",
+          },
+        },
+      },
+      colors: {
+        "publiq-blue": "#009fdf",
+        "publiq-blue-dark": "#0076a5",
+        "publiq-blue-light": "#1ebeff",
+        "publiq-gray": "#3b3b3b",
+        "publiq-gray-light": "#f5f5f5",
+      },
+      textColor: ({ theme }) => theme("colors.publiq-gray"),
     },
-  
   },
   plugins: [require("@tailwindcss/forms")],
 };
