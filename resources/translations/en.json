@@ -1,9 +1,24 @@
 {
-    "title": "publiq platform",
-    "nav": {
-        "integrations": "Mijn integraties",
-        "opportunities": "Mogelijkheden",
-        "support": "Ondersteuning",
-        "hello": "Hallo"
+  "pages": {
+    "/integrations": "/integraties",
+    "/integrations/create": "/integraties/nieuw",
+    "/support": "/ondersteuning",
+    "/subscriptions": "/abonnementen",
+    "/login": "/aanmelden",
+    "/logout": "/afmelden"
+  },
+  "title": "publiq platform",
+  "nav": {
+    "integrations": "Mijn integraties",
+    "opportunities": "Mogelijkheden",
+    "support": "Ondersteuning",
+    "hello": "Hallo"
+  },
+  "home": {
+    "hero": {
+      "title": "Bereik een groter publiek",
+      "intro": "publiq biedt een waaier van toepassingen om eigen activiteiten te promoten en agenda-informatie in je website of app te integreren.",
+      "start_here": "Start hier"
     }
+  }
 }
