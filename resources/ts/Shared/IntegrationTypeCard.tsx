@@ -4,6 +4,7 @@ import { IntegrationType } from "./IntegrationTypes";
 import { Link } from "./Link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { useTranslation } from "react-i18next";
 
 type Props = IntegrationType;
 
@@ -13,6 +14,7 @@ export const IntegrationTypeCard = ({
   features,
   actionUrl,
 }: Props) => {
+  const { t } = useTranslation();
   return (
     <Card key={title} title={title} description={description}>
       <div className="flex flex-col gap-6">
@@ -25,7 +27,7 @@ export const IntegrationTypeCard = ({
           ))}
         </ul>
         <Link className="self-center" href={actionUrl}>
-          Meer info
+          {t("home.integration_types.more_info")}
         </Link>
       </div>
     </Card>
