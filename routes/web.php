@@ -32,11 +32,11 @@ Route::post('/admin/logout', Logout::class);
 
 Route::get('/auth/callback', Callback::class);
 
-TranslatedRoute::get(['en' => '/subscriptions', 'nl' => '/abonnementen'], [SubscriptionController::class, 'index']);
+TranslatedRoute::get(['/en/subscriptions', '/nl/abonnementen'], [SubscriptionController::class, 'index']);
 
 Route::group(['middleware' => 'auth'], static function () {
-    TranslatedRoute::get(['en' => '/integrations', 'nl' => '/integraties'], [IntegrationController::class, 'index'], 'integrations.index');
-    TranslatedRoute::get(['en' => '/integrations/new', 'nl' => '/integraties/nieuw'], [IntegrationController::class, 'create']);
+    TranslatedRoute::get(['/en/integrations', '/nl/integraties'], [IntegrationController::class, 'index'], 'integrations.index');
+    TranslatedRoute::get(['/en/integrations/new', '/nl/integraties/nieuw'], [IntegrationController::class, 'create']);
 
     Route::post('/integrations', [IntegrationController::class, 'store']);
 });
