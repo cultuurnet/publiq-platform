@@ -13,6 +13,7 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Http\Controllers\Controller;
+use App\Router\TranslatedRoute;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -23,7 +24,7 @@ final class IntegrationController extends Controller
 {
     public function __construct(
         private readonly SubscriptionRepository $subscriptionRepository,
-        private readonly IntegrationRepository  $integrationRepository,
+        private readonly IntegrationRepository $integrationRepository,
         private readonly CurrentUser $currentUser
     ) {
     }
@@ -87,6 +88,8 @@ final class IntegrationController extends Controller
 
         $this->integrationRepository->save($integration);
 
-        return Redirect::route('integrations.index');
+        return Redirect::route(
+            TranslatedRoute::getTranslatedRouteName(request: $storeIntegration, routeName: 'integrations.index')
+        );
     }
 }

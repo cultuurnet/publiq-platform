@@ -28,7 +28,11 @@ const Index = ({ integrationTypes, subscriptions }: Props) => {
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    post("/integrations");
+    post("/integrations", {
+      headers: {
+        "Accept-Language": "nl",
+      },
+    });
   }
 
   return (
