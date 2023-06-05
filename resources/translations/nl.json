@@ -1,7 +1,7 @@
 {
   "pages": {
     "/integrations": "/integraties",
-    "/integrations/create": "/integraties/nieuw",
+    "/integrations/new": "/integraties/nieuw",
     "/support": "/ondersteuning",
     "/subscriptions": "/abonnementen"
   },
