@@ -17,7 +17,7 @@ export const IntegrationTypeCard = ({
   const { t } = useTranslation();
   return (
     <Card key={title} title={title} description={description}>
-      <div className="flex flex-col flex-1x justify-between min-h-[10rem]">
+      <div className="flex flex-col flex-1 justify-between min-h-[10rem]">
         <ul className="flex flex-col gap-3">
           {features.map((feature) => (
             <li key={feature}>
