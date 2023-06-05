@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/integrations": "/integraties",
-    "/integrations/new": "/integraties/nieuw",
-    "/support": "/ondersteuning",
-    "/subscriptions": "/abonnementen"
+    "/integrations": "/nl/integraties",
+    "/integrations/new": "/nl/integraties/nieuw",
+    "/support": "/nl/ondersteuning",
+    "/subscriptions": "/nl/abonnementen"
   },
   "title": "publiq platform",
   "nav": {

@@ -23,13 +23,14 @@ final class TranslatedRoute
         return self::createTranslatedRouteName($routeName, $language);
     }
 
-    public static function get(array $languageToUri, \Closure|array|string|null $action = null, ?string $routeName = null): void
+    public static function get(array $uris, \Closure|array|string|null $action = null, ?string $routeName = null): void
     {
-        foreach ($languageToUri as $language => $uri) {
+        foreach ($uris as $uri) {
             $route = Route::get($uri, $action);
 
             if ($routeName !== null) {
-                $route->name(self::createTranslatedRouteName($routeName, $language));
+                $languageFromUri = explode('/', $uri)[0];
+                $route->name(self::createTranslatedRouteName($routeName, $languageFromUri));
             }
         }
     }
