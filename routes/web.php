@@ -36,7 +36,7 @@ TranslatedRoute::get(['en' => '/subscriptions', 'nl' => '/abonnementen'], [Subsc
 
 Route::group(['middleware' => 'auth'], static function () {
     TranslatedRoute::get(['en' => '/integrations', 'nl' => '/integraties'], [IntegrationController::class, 'index'], 'integrations.index');
-    TranslatedRoute::get(['en' => '/integrations/create', 'nl' => '/integraties/nieuw'], [IntegrationController::class, 'create']);
+    TranslatedRoute::get(['en' => '/integrations/new', 'nl' => '/integraties/nieuw'], [IntegrationController::class, 'create']);
 
     Route::post('/integrations', [IntegrationController::class, 'store']);
 });
