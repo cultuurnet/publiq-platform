@@ -13,6 +13,7 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Http\Controllers\Controller;
+use App\Router\TranslatedRoute;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -24,7 +25,7 @@ final class IntegrationController extends Controller
     public function __construct(
         private readonly SubscriptionRepository $subscriptionRepository,
         private readonly IntegrationRepository  $integrationRepository,
-        private readonly CurrentUser $currentUser
+        private readonly CurrentUser            $currentUser
     ) {
     }
 
@@ -87,6 +88,10 @@ final class IntegrationController extends Controller
 
         $this->integrationRepository->save($integration);
 
-        return Redirect::route('integrations.index');
+        $language = $storeIntegration->headers->get('Accept-Language');
+
+        return Redirect::route(
+            TranslatedRoute::getTranslatedRouteName('integrations.index', $language)
+        );
     }
 }
