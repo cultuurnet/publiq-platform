@@ -88,10 +88,8 @@ final class IntegrationController extends Controller
 
         $this->integrationRepository->save($integration);
 
-        $language = $storeIntegration->headers->get('Accept-Language') ?? 'en';
-
         return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName('integrations.index', $language)
+            TranslatedRoute::getTranslatedRouteName(request: $storeIntegration, routeName: 'integrations.index')
         );
     }
 }
