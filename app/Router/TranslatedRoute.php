@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 final class TranslatedRoute
 {
-    public const DEFAULT_LANGUAGE = 'en';
+    public const DEFAULT_LANGUAGE = 'nl';
 
     private static function createTranslatedRouteName(string $routeName, string $language): string
     {
