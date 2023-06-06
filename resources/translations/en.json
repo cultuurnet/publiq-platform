@@ -19,7 +19,76 @@
       "start_here": "Start hier"
     },
     "integration_types": {
+      "entry_api": {
+        "title": "Entry API",
+        "description": "Via Entry API kan je items in de UiTdatabank aanmaken, aanpassen en verwijderen.",
+        "features": [
+          "JSON-standaard",
+          "Award-winning API",
+          "Activatie op live-omgeving op aanvraag"
+        ],
+        "action_url": "#"
+      },
+      "search_api": {
+        "title": "Search API",
+        "description": "Haal evenementinformatie op uit de UiTdatabank via onze nieuwste zoekengine.",
+        "features": [
+          "JSON-standaard",
+          "Robuuste performantie",
+          "Uitgebreide filtermogelijkheden"
+        ],
+        "action_url": "#"
+      },
+      "widgets": {
+        "title": "Widgets",
+        "description": "Kant en klare HTML-modules die je in je website kan inpassen om een doorzoekbare lijst van evenementen weer te geven.",
+        "features": [
+          "Zelf of door publiq in te stellen",
+          "Plug & play oplossing",
+          "Uitgebreide configuratiemogelijkheden"
+        ],
+        "action_url": "#"
+      },
       "more_info": "Meer info"
+    }
+  },
+  "support": {
+    "title": "Ondersteuning",
+    "description": "We ondersteunen je op verschillende manieren, zodat jij vlot een integratie met het publiq ecosysteem kan opzetten.",
+    "documentation": {
+      "title": "Documentatie",
+      "description": "Met onze uitgebreide documentatie zetten we je op weg bij elke integratie.",
+      "img_url": "#",
+      "action_title": "Naar de documentatie",
+      "action_url": "#"
+    },
+    "styleguide": {
+      "title": "Stijlgids",
+      "description": "Alle iconen, logo's en kleuren voor jou op een rijtje gezet. Een must wanneer je een UiT-agenda bouwt.",
+      "img_url": "#",
+      "action_title": "Naar de stijlgids",
+      "action_url": "#"
+    },
+    "statuspage": {
+      "title": "Statuspagina",
+      "description": "We bieden een overzicht van de status van de applicaties & services binnen het publiq platform. Je kan je inschrijven om op de hoogte te blijven van belangrijke updates.",
+      "img_url": "#",
+      "action_title": "Naar de statuspagina",
+      "action_url": "#"
+    },
+    "support_via_slack": {
+      "title": "Support via slack",
+      "description": "Heb je na het lezen van onze documentatie toch nog vragen? We horen ze graag. Via ons support kanaal op slack spelen we kort op de bal.",
+      "img_url": "#",
+      "action_title": "Naar het slack kanaal",
+      "action_url": "#"
+    },
+    "customized_support": {
+      "title": "Ondersteuning op maat",
+      "description": "Een organisatie met een hart voor cultuur en vrije tijd? Dan werken we graag een voorstel op maat uit!",
+      "img_url": "#",
+      "action_title": "Contacteer ons",
+      "action_url": "#"
     }
   }
 }
