@@ -6,6 +6,7 @@ import { LinkButton } from "../../Shared/LinkButton";
 import { useTranslation } from "react-i18next";
 import { Input } from "../../Shared/Input";
 import { debounce } from "lodash";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
   integrations: { id: string; name: string }[];
@@ -43,6 +44,7 @@ const Index = ({ integrations }: Props) => {
           name="search"
           placeholder="Zoeken ..."
           className="max-w-[30rem]"
+          iconBack={faSearch}
           defaultValue={searchFromUrl ?? ""}
           onChange={handleChangeSearchInput}
         />
