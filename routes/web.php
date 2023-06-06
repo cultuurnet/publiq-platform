@@ -22,12 +22,12 @@ use App\Router\TranslatedRoute;
 |
 */
 
-Route::get('/', static fn() => Inertia::render('Index'));
+Route::get('/', static fn () => Inertia::render('Index'));
 
-TranslatedRoute::get(['/en/support', '/nl/ondersteuning'], static fn() => Inertia::render('Support/Index'));
+TranslatedRoute::get(['/en/support', '/nl/ondersteuning'], static fn () => Inertia::render('Support/Index'));
 
 Route::get('/login', Login::class)->name('login');
-Route::get('/admin/login', static fn() => redirect('/login'));
+Route::get('/admin/login', static fn () => redirect('/login'));
 
 Route::get('/logout', Logout::class);
 Route::post('/admin/logout', Logout::class);
