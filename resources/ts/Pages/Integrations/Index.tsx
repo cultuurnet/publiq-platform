@@ -1,14 +1,14 @@
-import React, { ReactNode, useCallback, useEffect, useState } from "react";
-import { router, usePage } from "@inertiajs/react";
+import React, { ReactNode, useCallback } from "react";
+import { router } from "@inertiajs/react";
 import { Heading } from "../../Shared/Heading";
 import Layout from "../../Shared/Layout";
 import { LinkButton } from "../../Shared/LinkButton";
-import { useTranslation } from "react-i18next";
 import { Input } from "../../Shared/Input";
 import { debounce } from "lodash";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { Card } from "../../Shared/Card";
 import { useTranslateRoute } from "../../hooks/useTranslateRoute";
+import { Link } from "../../Shared/Link";
 
 type Integration = {
   id: string;
@@ -24,7 +24,6 @@ type Props = {
 };
 
 const Index = ({ integrations }: Props) => {
-  const { t } = useTranslation();
   const translateRoute = useTranslateRoute();
 
   const searchParams = new URLSearchParams(document.location.search);
@@ -36,7 +35,8 @@ const Index = ({ integrations }: Props) => {
         router.get(
           translateRoute("/integrations"),
           {
-            search: e.target.value,
+            // Don't append search query param to url if empty
+            search: e.target.value || undefined,
           },
           {
             preserveState: true,
@@ -44,11 +44,11 @@ const Index = ({ integrations }: Props) => {
         );
       }, 250)();
     },
-    [t]
+    [translateRoute]
   );
 
   return (
-    <section className="flex flex-col w-full pt-6 px-4 :max-sm:px-2 gap-5 min-w-[40rem] max-w-7xl">
+    <section className="flex flex-col w-full pt-6 px-4 :max-sm:px-2 gap-7 min-w-[40rem] max-w-7xl">
       <div className="inline-flex justify-between items-center">
         <Heading level={2}>My integrations</Heading>
         <Input
@@ -64,33 +64,42 @@ const Index = ({ integrations }: Props) => {
           Integratie toevoegen
         </LinkButton>
       </div>
-      <ul>
-        {integrations.map((integration) => (
-          <li key={integration.id}>
-            <Card
-              title={
-                <div className="inline-flex gap-3 items-center">
-                  <Heading level={2}>{integration.name}</Heading>
-                  <span>{integration.type}</span>
+      {integrations.length > 0 && (
+        <ul className="flex flex-col w-full gap-5">
+          {integrations.map((integration) => (
+            <li className="flex w-full" key={integration.id}>
+              <Card
+                title={
+                  <div className="inline-flex gap-3 items-center">
+                    <Heading level={2}>{integration.name}</Heading>
+                    <span>{integration.type}</span>
+                  </div>
+                }
+                description={integration.description}
+                className="w-full"
+              >
+                <div className="flex flex-col">
+                  <section className="inline-flex gap-3 items-center">
+                    <Heading level={3}>Test</Heading>
+                    <span>{integration.id}</span>
+                  </section>
+                  <section className="inline-flex gap-3 items-center">
+                    <Heading level={3}>Live</Heading>
+                    <span>Niet actief</span>
+                  </section>
+                  <section className="inline-flex gap-3 items-center">
+                    <Heading level={3}>Documentatie</Heading>
+                    <Link href="#">Kijk hier</Link>
+                  </section>
                 </div>
-              }
-              description={integration.description}
-              className="w-full"
-            >
-              <section className="inline-flex gap-3">
-                <Heading level={3}>Test</Heading>
-                <span>{integration.id}</span>
-              </section>
-              <section>
-                <Heading level={3}>Live</Heading>
-              </section>
-              <section>
-                <Heading level={3}>Documentatie</Heading>
-              </section>
-            </Card>
-          </li>
-        ))}
-      </ul>
+              </Card>
+            </li>
+          ))}
+        </ul>
+      )}
+      {integrations.length === 0 && (
+        <div className="flex flex-col w-full gap-5">No integrations found</div>
+      )}
     </section>
   );
 };
