@@ -1,9 +1,10 @@
-import React, { ComponentProps } from "react";
+import React, { ComponentProps, ReactElement } from "react";
+import { classNames } from "../utils/classNames";
 
 type Props = {
-  title: string;
+  title: ReactElement | string;
   description: string;
-} & ComponentProps<"div">;
+} & Omit<ComponentProps<"div">, "title">;
 
 export const Card = ({ title, description, children }: Props) => {
   return (

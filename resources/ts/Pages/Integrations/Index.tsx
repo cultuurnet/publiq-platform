@@ -7,10 +7,20 @@ import { useTranslation } from "react-i18next";
 import { Input } from "../../Shared/Input";
 import { debounce } from "lodash";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { Card } from "../../Shared/Card";
 import { useTranslateRoute } from "../../hooks/useTranslateRoute";
 
+type Integration = {
+  id: string;
+  type: string;
+  name: string;
+  description: string;
+  subscriptionId: string;
+  status: string;
+};
+
 type Props = {
-  integrations: { id: string; name: string }[];
+  integrations: Integration[];
 };
 
 const Index = ({ integrations }: Props) => {
@@ -56,7 +66,29 @@ const Index = ({ integrations }: Props) => {
       </div>
       <ul>
         {integrations.map((integration) => (
-          <li key={integration.id}>{integration.name}</li>
+          <li key={integration.id}>
+            <Card
+              title={
+                <div className="inline-flex gap-3 items-center">
+                  <Heading level={2}>{integration.name}</Heading>
+                  <span>{integration.type}</span>
+                </div>
+              }
+              description={integration.description}
+              className="w-full"
+            >
+              <section className="inline-flex gap-3">
+                <Heading level={3}>Test</Heading>
+                <span>{integration.id}</span>
+              </section>
+              <section>
+                <Heading level={3}>Live</Heading>
+              </section>
+              <section>
+                <Heading level={3}>Documentatie</Heading>
+              </section>
+            </Card>
+          </li>
         ))}
       </ul>
     </section>
