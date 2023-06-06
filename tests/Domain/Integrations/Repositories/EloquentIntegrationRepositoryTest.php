@@ -185,7 +185,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
 
         $this->integrationRepository->save($widgetsIntegration);
 
-        $foundIntegrations = $this->integrationRepository->getByContactEmail('jane.doe@anonymous.com');
+        $foundIntegrations = $this->integrationRepository->getByContactEmail('jane.doe@anonymous.com')->collection;
 
         $this->assertCount(2, $foundIntegrations);
         $this->assertTrue($foundIntegrations->contains($searchIntegration));

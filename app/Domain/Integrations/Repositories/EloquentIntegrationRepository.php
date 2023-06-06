@@ -56,7 +56,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         return $integrationModel->delete();
     }
 
-    public function getByContactEmail(string $email, string $query): PaginatedCollection
+    public function getByContactEmail(string $email, ?string $query = ''): PaginatedCollection
     {
         $integrationModels = IntegrationModel::query()
             ->select('integrations.*')
