@@ -26,7 +26,8 @@ export default function Header() {
             href={t(`pages./${pageTitle}`)}
             className={classNames(
               "py-3 border-transparent border-b-4",
-              path.startsWith(`/${pageTitle}`) && "border-b-4 border-b-blue"
+              path.startsWith(t(`pages./${pageTitle}`)) &&
+                "border-b-4 border-b-publiq-blue"
             )}
           >
             {t(`nav.${pageTitle}`)}
