@@ -3,9 +3,11 @@ import { Heading } from "./Heading";
 import { useTranslation } from "react-i18next";
 import { Link } from "@inertiajs/react";
 import { classNames } from "../utils/classNames";
+import { useTranslateRoute } from "../hooks/useTranslateRoute";
 
 export default function Header() {
   const { t, i18n } = useTranslation();
+  const translateRoute = useTranslateRoute();
 
   const path = new URL(document.location.href).pathname;
 
@@ -23,10 +25,10 @@ export default function Header() {
         {["integrations", "support"].map((pageTitle) => (
           <Link
             key={pageTitle}
-            href={t(`pages./${pageTitle}`)}
+            href={translateRoute(`/${pageTitle}`)}
             className={classNames(
               "py-3 border-transparent border-b-4",
-              path.startsWith(t(`pages./${pageTitle}`)) &&
+              path.startsWith(translateRoute(`/${pageTitle}`)) &&
                 "border-b-4 border-b-publiq-blue"
             )}
           >

@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { Input } from "../../Shared/Input";
 import { debounce } from "lodash";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { useTranslateRoute } from "../../hooks/useTranslateRoute";
 
 type Props = {
   integrations: { id: string; name: string }[];
@@ -14,6 +15,7 @@ type Props = {
 
 const Index = ({ integrations }: Props) => {
   const { t } = useTranslation();
+  const translateRoute = useTranslateRoute();
 
   const searchParams = new URLSearchParams(document.location.search);
   const searchFromUrl = searchParams.get("search");
@@ -22,7 +24,7 @@ const Index = ({ integrations }: Props) => {
     (e: React.ChangeEvent<HTMLInputElement>): void => {
       debounce(() => {
         router.get(
-          t("pages./integrations") as string,
+          translateRoute("/integrations"),
           {
             search: e.target.value,
           },
@@ -48,7 +50,7 @@ const Index = ({ integrations }: Props) => {
           defaultValue={searchFromUrl ?? ""}
           onChange={handleChangeSearchInput}
         />
-        <LinkButton href={t("pages./integrations/new")}>
+        <LinkButton href={translateRoute("/integrations/new")}>
           Integratie toevoegen
         </LinkButton>
       </div>
