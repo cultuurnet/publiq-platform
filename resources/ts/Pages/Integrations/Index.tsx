@@ -5,10 +5,12 @@ import Layout from "../../Shared/Layout";
 import { LinkButton } from "../../Shared/LinkButton";
 import { Input } from "../../Shared/Input";
 import { debounce } from "lodash";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faPencil, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Card } from "../../Shared/Card";
 import { useTranslateRoute } from "../../hooks/useTranslateRoute";
 import { Link } from "../../Shared/Link";
+import { IconButton } from "../../Shared/IconButton";
+import { Pagination } from "../../Shared/Pagination";
 
 type Integration = {
   id: string;
@@ -21,9 +23,10 @@ type Integration = {
 
 type Props = {
   integrations: Integration[];
+  links: string[];
 };
 
-const Index = ({ integrations }: Props) => {
+const Index = ({ integrations, links }: Props) => {
   const translateRoute = useTranslateRoute();
 
   const searchParams = new URLSearchParams(document.location.search);
@@ -48,8 +51,8 @@ const Index = ({ integrations }: Props) => {
   );
 
   return (
-    <section className="flex flex-col w-full pt-6 px-4 :max-sm:px-2 gap-7 min-w-[40rem] max-w-7xl">
-      <div className="inline-flex justify-between items-center">
+    <section className="flex flex-col items-center w-full pt-6 px-4 :max-sm:px-2 gap-7 min-w-[40rem] max-w-7xl">
+      <div className="inline-flex w-full justify-between items-center">
         <Heading level={2}>My integrations</Heading>
         <Input
           type="text"
@@ -70,18 +73,24 @@ const Index = ({ integrations }: Props) => {
             <li className="flex w-full" key={integration.id}>
               <Card
                 title={
-                  <div className="inline-flex gap-3 items-center">
-                    <Heading level={2}>{integration.name}</Heading>
-                    <span>{integration.type}</span>
+                  <div className="inline-flex w-full justify-between">
+                    <div className="inline-flex gap-3 items-center">
+                      <Heading level={2}>{integration.name}</Heading>
+                      <span>{integration.type}</span>
+                    </div>
+                    <div className="inline-flex gap-3">
+                      <IconButton icon={faPencil} />
+                      <IconButton icon={faTrash} color="red" />
+                    </div>
                   </div>
                 }
                 description={integration.description}
                 className="w-full"
               >
-                <div className="flex flex-col">
+                <div className="flex flex-col gap-2">
                   <section className="inline-flex gap-3 items-center">
                     <Heading level={3}>Test</Heading>
-                    <span>{integration.id}</span>
+                    <span className="bg-gray-200 p-1">{integration.id}</span>
                   </section>
                   <section className="inline-flex gap-3 items-center">
                     <Heading level={3}>Live</Heading>
@@ -100,6 +109,7 @@ const Index = ({ integrations }: Props) => {
       {integrations.length === 0 && (
         <div className="flex flex-col w-full gap-5">No integrations found</div>
       )}
+      <Pagination links={links} />
     </section>
   );
 };
