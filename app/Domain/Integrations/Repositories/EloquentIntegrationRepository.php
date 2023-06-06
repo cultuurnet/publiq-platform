@@ -8,6 +8,8 @@ use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Models\IntegrationModel;
+use App\Pagination\PaginatedCollection;
+use App\Pagination\PaginationData;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\UuidInterface;
@@ -54,10 +56,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         return $integrationModel->delete();
     }
 
-    /**
-     * @return Collection<int, Integration>
-     */
-    public function getByContactEmail(string $email, string $query): Collection
+    public function getByContactEmail(string $email, string $query): PaginatedCollection
     {
         $integrationModels = IntegrationModel::query()
             ->select('integrations.*')
@@ -66,15 +65,15 @@ final class EloquentIntegrationRepository implements IntegrationRepository
             ->where('integrations.name', 'like', '%' . $query . '%')
             ->distinct('integrations.id')
             ->orderBy('integrations.created_at')
-            ->get();
+            ->paginate(1);
 
-        $integrations = new Collection();
+        $integrations = Collection::make($integrationModels->items());
+        $links = array_values($integrationModels->getUrlRange(1, $integrationModels->lastPage()));
 
-        foreach ($integrationModels as $integrationModel) {
-            $integrations->add($integrationModel->toDomain());
-        }
-
-        return $integrations;
+        return new PaginatedCollection(
+            $integrations,
+            new PaginationData($links)
+        );
     }
 
     public function activateWithCouponCode(UuidInterface $id, string $couponCode): void

@@ -34,13 +34,14 @@ final class IntegrationController extends Controller
     {
         $search = $request->query('search') ?? '';
 
-        $integrations = $this->integrationRepository->getByContactEmail(
+        $integrationsData = $this->integrationRepository->getByContactEmail(
             $this->currentUser->email(),
             $search
         );
 
         return Inertia::render('Integrations/Index', [
-            'integrations' => $integrations,
+            'integrations' => $integrationsData->collection,
+            'links' => $integrationsData->paginationData->links,
         ]);
     }
 
