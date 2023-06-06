@@ -57,12 +57,13 @@ final class EloquentIntegrationRepository implements IntegrationRepository
     /**
      * @return Collection<int, Integration>
      */
-    public function getByContactEmail(string $email): Collection
+    public function getByContactEmail(string $email, string $query): Collection
     {
         $integrationModels = IntegrationModel::query()
             ->select('integrations.*')
             ->join('contacts', 'integrations.id', '=', 'contacts.integration_id')
             ->where('contacts.email', $email)
+            ->where('integrations.name', 'like', '%' . $query . '%')
             ->distinct('integrations.id')
             ->orderBy('integrations.created_at')
             ->get();

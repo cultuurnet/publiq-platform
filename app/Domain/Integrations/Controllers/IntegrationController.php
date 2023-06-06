@@ -15,6 +15,7 @@ use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Http\Controllers\Controller;
 use App\Router\TranslatedRoute;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -29,12 +30,17 @@ final class IntegrationController extends Controller
     ) {
     }
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        $search = $request->query('search') ?? '';
+
+        $integrations = $this->integrationRepository->getByContactEmail(
+            $this->currentUser->email(),
+            $search
+        );
+
         return Inertia::render('Integrations/Index', [
-            'integrations' => $this->integrationRepository->getByContactEmail(
-                $this->currentUser->email()
-            ),
+            'integrations' => $integrations,
         ]);
     }
 
