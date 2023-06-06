@@ -11,7 +11,7 @@ export const SecondaryButton = ({ children, ...props }: Props) => {
     "
       {...props}
     >
-      <div className="absolute w-[50%] h-[50%] opacity-0 group-focus:animate-pulse bg-publiq-blue"></div>
+      <div className="absolute w-[50%] h-[50%] opacity-0 group-focus:animate-pulse bg-publiq-gray-light"></div>
       <div className="relative z-10">{children}</div>
     </Link>
   );
