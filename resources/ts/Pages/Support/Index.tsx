@@ -10,8 +10,8 @@ const Index = () => {
     <>
       <div className="flex flex-col max-xl:px-14 xl:px-60">
         <div className="flex flex-col gap-5 py-8">
-        <Heading level={1}>{t("support.title")}</Heading>
-        <p>{t("support.description")}</p>
+          <Heading level={1}>{t("support.title")}</Heading>
+          <p>{t("support.description")}</p>
         </div>
         <SupportTypes />
       </div>
