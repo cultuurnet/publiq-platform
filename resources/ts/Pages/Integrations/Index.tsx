@@ -17,6 +17,23 @@ const Index = ({ integrations }: Props) => {
   const searchParams = new URLSearchParams(document.location.search);
   const searchFromUrl = searchParams.get("search");
 
+  const handleChangeSearchInput = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>): void => {
+      debounce(() => {
+        router.get(
+          t("pages./integrations") as string,
+          {
+            search: e.target.value,
+          },
+          {
+            preserveState: true,
+          }
+        );
+      }, 250)();
+    },
+    [t]
+  );
+
   return (
     <section className="flex flex-col w-full pt-6 px-4 :max-sm:px-2 gap-5 min-w-[40rem] max-w-7xl">
       <div className="inline-flex justify-between items-center">
@@ -27,19 +44,7 @@ const Index = ({ integrations }: Props) => {
           placeholder="Zoeken ..."
           className="max-w-[30rem]"
           defaultValue={searchFromUrl ?? ""}
-          onChange={(e) => {
-            debounce(() => {
-              router.get(
-                t("pages./integrations") as string,
-                {
-                  search: e.target.value,
-                },
-                {
-                  preserveState: true,
-                }
-              );
-            }, 250)();
-          }}
+          onChange={handleChangeSearchInput}
         />
         <LinkButton href={t("pages./integrations/new")}>
           Integratie toevoegen
