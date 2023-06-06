@@ -13,7 +13,7 @@ export const LinkButton = ({ children, className, ...props }: Props) => {
       )}
       {...props}
     >
-      <div className="absolute z-0 w-[50%] h-[50%] opacity-0 group-focus:animate-pulse bg-publiq-blue text-white"></div>
+      <div className="absolute w-[50%] h-[50%] opacity-0 group-focus:animate-pulse bg-publiq-blue text-white"></div>
       <div className="relative z-10">{children}</div>
     </Link>
   );
