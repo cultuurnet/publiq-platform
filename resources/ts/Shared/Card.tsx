@@ -16,9 +16,9 @@ export const Card = ({ title, description, children, className }: Props) => {
     >
       <div>
         <div className="font-bold text-xl mb-2">{title}</div>
-        <p className="text-gray-700 text-base">{description}</p>
+        <p className="text-gray-700 text-base min-h-[5rem]">{description}</p>
       </div>
-      {children && <div>{children}</div>}
+      {children && <div className="flex flex-1">{children}</div>}
     </div>
   );
 };
