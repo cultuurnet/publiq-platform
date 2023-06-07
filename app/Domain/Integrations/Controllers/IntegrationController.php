@@ -41,7 +41,7 @@ final class IntegrationController extends Controller
 
         return Inertia::render('Integrations/Index', [
             'integrations' => $integrationsData->collection,
-            'links' => $integrationsData->paginationData->links,
+            'paginationInfo' => $integrationsData->paginationInfo,
         ]);
     }
 

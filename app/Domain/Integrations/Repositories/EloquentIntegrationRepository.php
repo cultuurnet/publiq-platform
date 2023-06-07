@@ -9,7 +9,7 @@ use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Pagination\PaginatedCollection;
-use App\Pagination\PaginationData;
+use App\Pagination\PaginationInfo;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\UuidInterface;
@@ -76,7 +76,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
 
         return new PaginatedCollection(
             $integrations,
-            new PaginationData($links)
+            new PaginationInfo($links, $integrationModels->total())
         );
     }
 

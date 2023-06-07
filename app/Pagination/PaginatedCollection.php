@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
 
 final readonly class PaginatedCollection
 {
-    public function __construct(public Collection $collection, public PaginationData $paginationData)
+    public function __construct(public Collection $collection, public PaginationInfo $paginationInfo)
     {
 
     }
