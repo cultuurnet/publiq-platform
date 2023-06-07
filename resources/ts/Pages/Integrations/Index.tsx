@@ -5,15 +5,13 @@ import Layout from "../../Shared/Layout";
 import { LinkButton } from "../../Shared/LinkButton";
 import { Input } from "../../Shared/Input";
 import { debounce } from "lodash";
-import { faPencil, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { Card } from "../../Shared/Card";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useTranslateRoute } from "../../hooks/useTranslateRoute";
-import { Link } from "../../Shared/Link";
-import { IconButton } from "../../Shared/IconButton";
 import { Pagination } from "../../Shared/Pagination";
 import { useTranslation } from "react-i18next";
+import { IntegrationCard } from "../../Shared/IntegrationCard";
 
-type Integration = {
+export type Integration = {
   id: string;
   type: string;
   name: string;
@@ -88,43 +86,7 @@ const Index = ({ integrations, paginationInfo }: Props) => {
         <ul className="flex flex-col w-full gap-5">
           {integrations.map((integration) => (
             <li className="flex w-full" key={integration.id}>
-              <Card
-                title={
-                  <div className="inline-flex w-full justify-between">
-                    <div className="inline-flex gap-3 items-center">
-                      <Heading level={2}>{integration.name}</Heading>
-                      <span>{integration.type}</span>
-                    </div>
-                    <div className="inline-flex gap-3">
-                      <IconButton icon={faPencil} />
-                      <IconButton icon={faTrash} className="text-red-500" />
-                    </div>
-                  </div>
-                }
-                description={integration.description}
-                className="w-full"
-              >
-                <div className="flex flex-col gap-2">
-                  <section className="inline-flex gap-3 items-center">
-                    <Heading level={3}>{t("integrations.test")}</Heading>
-                    <span className="bg-gray-200 p-1">{integration.id}</span>
-                  </section>
-                  <section className="inline-flex gap-3 items-center">
-                    <Heading level={3}>{t("integrations.live")}</Heading>
-                    <span>{t("integrations.status.not_active")}</span>
-                  </section>
-                  <section className="inline-flex gap-3 items-center">
-                    <Heading level={3}>
-                      {t("integrations.documentation.title")}
-                    </Heading>
-                    <Link href="#">
-                      {t("integrations.documentation.action_title", {
-                        product: "Entry API",
-                      })}
-                    </Link>
-                  </section>
-                </div>
-              </Card>
+              <IntegrationCard {...integration} />
             </li>
           ))}
         </ul>
