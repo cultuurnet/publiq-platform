@@ -1,34 +1,35 @@
 import React, { memo, useMemo } from "react";
 import type { ComponentProps } from "react";
+import { classNames } from "../utils/classNames";
 
 const levelToHeadingComponent = {
-  1: ({ children, ...rest }: ComponentProps<"h1">) => (
-    <h1 className="text-4xl" {...rest}>
+  1: ({ children, className, ...rest }: ComponentProps<"h1">) => (
+    <h1 className={classNames("text-4xl", className)} {...rest}>
       {children}
     </h1>
   ),
-  2: ({ children, ...rest }: ComponentProps<"h2">) => (
-    <h2 className="text-2xl" {...rest}>
+  2: ({ children, className, ...rest }: ComponentProps<"h2">) => (
+    <h2 className={classNames("text-2xl", className)} {...rest}>
       {children}
     </h2>
   ),
-  3: ({ children, ...rest }: ComponentProps<"h3">) => (
-    <h3 className="text-xl" {...rest}>
+  3: ({ children, className, ...rest }: ComponentProps<"h3">) => (
+    <h3 className={classNames("text-xl", className)} {...rest}>
       {children}
     </h3>
   ),
-  4: ({ children, ...rest }: ComponentProps<"h4">) => (
-    <h4 className="text-lg" {...rest}>
+  4: ({ children, className, ...rest }: ComponentProps<"h4">) => (
+    <h4 className={classNames("text-lg", className)} {...rest}>
       {children}
     </h4>
   ),
-  5: ({ children, ...rest }: ComponentProps<"h5">) => (
-    <h5 className="text-base" {...rest}>
+  5: ({ children, className, ...rest }: ComponentProps<"h5">) => (
+    <h5 className={classNames("text-base", className)} {...rest}>
       {children}
     </h5>
   ),
-  6: ({ children, ...rest }: ComponentProps<"h6">) => (
-    <h6 className="text-sm" {...rest}>
+  6: ({ children, className, ...rest }: ComponentProps<"h6">) => (
+    <h6 className={classNames("text-sm", className)} {...rest}>
       {children}
     </h6>
   ),
