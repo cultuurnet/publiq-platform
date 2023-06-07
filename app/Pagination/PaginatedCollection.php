@@ -6,7 +6,7 @@ namespace App\Pagination;
 
 use Illuminate\Support\Collection;
 
-readonly class PaginatedCollection
+final readonly class PaginatedCollection
 {
     public function __construct(public Collection $collection, public PaginationInfo $paginationInfo)
     {
