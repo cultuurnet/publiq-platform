@@ -36,7 +36,7 @@ final class IntegrationController extends Controller
 
         $integrationsData = $this->integrationRepository->getByContactEmail(
             $this->currentUser->email(),
-            $search
+            is_array($search) ? $search[0] : $search
         );
 
         return Inertia::render('Integrations/Index', [
