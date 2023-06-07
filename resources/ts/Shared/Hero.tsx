@@ -13,7 +13,9 @@ export const Hero = () => {
         <Heading level={2}>{t("home.hero.title")}</Heading>
         <p className="text-center">{t("home.hero.intro")}</p>
         <LinkButton href="#">{t("home.hero.start_here")}</LinkButton>
-        <SecondaryLinkButton href="#">{t("home.hero.start_here")}</SecondaryLinkButton>
+        <SecondaryLinkButton href="#">
+          {t("home.hero.start_here")}
+        </SecondaryLinkButton>
       </div>
     </section>
   );
