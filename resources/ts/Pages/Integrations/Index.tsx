@@ -11,6 +11,7 @@ import { useTranslateRoute } from "../../hooks/useTranslateRoute";
 import { Link } from "../../Shared/Link";
 import { IconButton } from "../../Shared/IconButton";
 import { Pagination } from "../../Shared/Pagination";
+import { useTranslation } from "react-i18next";
 
 type Integration = {
   id: string;
@@ -30,6 +31,7 @@ type Props = {
 } & PaginationInfo;
 
 const Index = ({ integrations, paginationInfo }: Props) => {
+  const { t } = useTranslation();
   const translateRoute = useTranslateRoute();
 
   const searchParams = new URLSearchParams(document.location.search);
@@ -56,25 +58,31 @@ const Index = ({ integrations, paginationInfo }: Props) => {
   return (
     <section className="flex flex-col items-center w-full pt-6 px-4 :max-sm:px-2 gap-7 min-w-[40rem] max-w-7xl">
       <div className="inline-flex w-full justify-between items-center">
-        <Heading level={2}>My integrations</Heading>
+        <Heading level={2}>{t("integrations.title")}</Heading>
         <Input
           type="text"
           name="search"
-          placeholder="Zoeken ..."
+          placeholder={t("integrations.searching") as string}
           className="max-w-[30rem]"
           iconBack={faSearch}
           defaultValue={searchFromUrl ?? ""}
           onChange={handleChangeSearchInput}
         />
         <LinkButton href={translateRoute("/integrations/new")}>
-          Integratie toevoegen
+          {t("integrations.add")}
         </LinkButton>
       </div>
 
       {integrations.length === 0 ? (
-        <div className="flex flex-col gap-5">No integrations found</div>
+        <div className="flex flex-col gap-5">
+          {t("integrations.no_results_found")}
+        </div>
       ) : (
-        <div>Found {paginationInfo.totalItems} results:</div>
+        <div>
+          {t("integrations.results_found", {
+            count: paginationInfo.totalItems,
+          })}
+        </div>
       )}
       {integrations.length > 0 && (
         <ul className="flex flex-col w-full gap-5">
@@ -89,7 +97,7 @@ const Index = ({ integrations, paginationInfo }: Props) => {
                     </div>
                     <div className="inline-flex gap-3">
                       <IconButton icon={faPencil} />
-                      <IconButton icon={faTrash} color="red" />
+                      <IconButton icon={faTrash} className="text-red-500" />
                     </div>
                   </div>
                 }
@@ -98,16 +106,22 @@ const Index = ({ integrations, paginationInfo }: Props) => {
               >
                 <div className="flex flex-col gap-2">
                   <section className="inline-flex gap-3 items-center">
-                    <Heading level={3}>Test</Heading>
+                    <Heading level={3}>{t("integrations.test")}</Heading>
                     <span className="bg-gray-200 p-1">{integration.id}</span>
                   </section>
                   <section className="inline-flex gap-3 items-center">
-                    <Heading level={3}>Live</Heading>
-                    <span>Niet actief</span>
+                    <Heading level={3}>{t("integrations.live")}</Heading>
+                    <span>{t("integrations.status.not_active")}</span>
                   </section>
                   <section className="inline-flex gap-3 items-center">
-                    <Heading level={3}>Documentatie</Heading>
-                    <Link href="#">Kijk hier</Link>
+                    <Heading level={3}>
+                      {t("integrations.documentation.title")}
+                    </Heading>
+                    <Link href="#">
+                      {t("integrations.documentation.action_title", {
+                        product: "Entry API",
+                      })}
+                    </Link>
                   </section>
                 </div>
               </Card>
