@@ -21,12 +21,15 @@ type Integration = {
   status: string;
 };
 
-type Props = {
-  integrations: Integration[];
-  links: string[];
+type PaginationInfo = {
+  paginationInfo: { links: string[]; totalItems: number };
 };
 
-const Index = ({ integrations, links }: Props) => {
+type Props = {
+  integrations: Integration[];
+} & PaginationInfo;
+
+const Index = ({ integrations, paginationInfo }: Props) => {
   const translateRoute = useTranslateRoute();
 
   const searchParams = new URLSearchParams(document.location.search);
@@ -67,6 +70,12 @@ const Index = ({ integrations, links }: Props) => {
           Integratie toevoegen
         </LinkButton>
       </div>
+
+      {integrations.length === 0 ? (
+        <div className="flex flex-col gap-5">No integrations found</div>
+      ) : (
+        <div>Found {paginationInfo.totalItems} results:</div>
+      )}
       {integrations.length > 0 && (
         <ul className="flex flex-col w-full gap-5">
           {integrations.map((integration) => (
@@ -106,10 +115,8 @@ const Index = ({ integrations, links }: Props) => {
           ))}
         </ul>
       )}
-      {integrations.length === 0 && (
-        <div className="flex flex-col w-full gap-5">No integrations found</div>
-      )}
-      <Pagination links={links} />
+
+      <Pagination links={paginationInfo.links} />
     </section>
   );
 };

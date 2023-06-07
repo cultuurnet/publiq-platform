@@ -8,6 +8,10 @@ export const Pagination = ({ links }: { links: string[] }) => {
   const page = new URL(document.location.href).searchParams.get("page");
   const currentPage = page ? parseInt(page) : 1;
 
+  if (links.length < 2) {
+    return null;
+  }
+
   return (
     <div className="inline-flex">
       {links.map((link, index) => (
