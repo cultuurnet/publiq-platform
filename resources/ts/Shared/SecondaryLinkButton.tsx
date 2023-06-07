@@ -1,14 +1,16 @@
-import React, { ComponentProps } from "react";
-
+import React from "react";
+import { Link, InertiaLinkProps } from "@inertiajs/react";
 import { classNames } from "../utils/classNames";
 
-type Props = {
-  orientation?: string;
-} & ComponentProps<"button">;
+type Props = InertiaLinkProps;
 
-export const SecondaryButton = ({ children, className, ...props }: Props) => {
+export const SecondaryLinkButton = ({
+  children,
+  className,
+  ...props
+}: Props) => {
   return (
-    <button
+    <Link
       className={classNames(
         "relative inline-flex items-center justify-center px-10 py-3 font-medium outline outline-1 outline-publiq-blue text-publiq-blue group hover:bg-publiq-blue-dark hover:bg-opacity-10",
         className
@@ -17,8 +19,8 @@ export const SecondaryButton = ({ children, className, ...props }: Props) => {
     >
       <div className="absolute w-[50%] h-[50%] opacity-0 group-focus:animate-pulse bg-publiq-gray-light"></div>
       <div className="relative z-10">{children}</div>
-    </button>
+    </Link>
   );
 };
 
-export type { Props as SecondaryButtonProps };
+export type { Props as SecondaryLinkButtonProps };
