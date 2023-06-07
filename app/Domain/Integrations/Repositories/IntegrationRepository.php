@@ -13,7 +13,7 @@ interface IntegrationRepository
     public function save(Integration $integration): void;
     public function getById(UuidInterface $id): Integration;
     public function deleteById(UuidInterface $id): ?bool;
-    public function getByContactEmail(string $email, string $query): PaginatedCollection;
+    public function getByContactEmail(string $email, string $searchQuery): PaginatedCollection;
     public function activateWithCouponCode(UuidInterface $id, string $couponCode): void;
     public function activateWithOrganization(UuidInterface $id, UuidInterface $organizationId): void;
 }

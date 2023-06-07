@@ -10,6 +10,7 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Pagination\PaginatedCollection;
 use App\Pagination\PaginationInfo;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\UuidInterface;
@@ -56,18 +57,16 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         return $integrationModel->delete();
     }
 
-    public function getByContactEmail(string $email, ?string $query = null): PaginatedCollection
+    public function getByContactEmail(string $email, ?string $searchQuery = null): PaginatedCollection
     {
         $integrationModels = IntegrationModel::query()
             ->select('integrations.*')
             ->join('contacts', 'integrations.id', '=', 'contacts.integration_id')
-            ->where('contacts.email', $email);
-
-        if ($query !== null) {
-            $integrationModels = $integrationModels->where('integrations.name', 'like', '%' . $query . '%');
-        }
-
-        $integrationModels = $integrationModels->distinct('integrations.id')
+            ->where('contacts.email', $email)
+            ->when($searchQuery, function (Builder $query, string $searchQuery) {
+                $query->where('integrations.name', 'like', '%' . $searchQuery . '%');
+            })
+            ->distinct('integrations.id')
             ->orderBy('integrations.created_at')
             ->paginate(1);
 
