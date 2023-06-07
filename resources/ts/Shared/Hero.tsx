@@ -2,7 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { Heading } from "./Heading";
 import { LinkButton } from "./LinkButton";
-import { SecondaryButton } from "./SecondaryButton";
+import { SecondaryLinkButton } from "./SecondaryLinkButton";
 
 export const Hero = () => {
   const { t } = useTranslation();
@@ -13,7 +13,7 @@ export const Hero = () => {
         <Heading level={2}>{t("home.hero.title")}</Heading>
         <p className="text-center">{t("home.hero.intro")}</p>
         <LinkButton href="#">{t("home.hero.start_here")}</LinkButton>
-        <SecondaryButton href="#">{t("home.hero.start_here")}</SecondaryButton>
+        <SecondaryLinkButton href="#">{t("home.hero.start_here")}</SecondaryLinkButton>
       </div>
     </section>
   );
