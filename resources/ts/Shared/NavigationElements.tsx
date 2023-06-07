@@ -55,8 +55,6 @@ export default function NavigationElements({
     [component]
   );
 
-  console.log("currentPage", currentPage);
-
   const classes = classNames(
     "flex md:items-center md:justify-around max-md:p-12 max-md:gap-5",
     !visible && "hidden",
