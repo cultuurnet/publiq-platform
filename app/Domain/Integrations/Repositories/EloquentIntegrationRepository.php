@@ -63,7 +63,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
             ->select('integrations.*')
             ->join('contacts', 'integrations.id', '=', 'contacts.integration_id')
             ->where('contacts.email', $email)
-            ->when($searchQuery, function (Builder $query, string $searchQuery) {
+            ->when($searchQuery, function (Builder $query, null|string $searchQuery) {
                 $query->where('integrations.name', 'like', '%' . $searchQuery . '%');
             })
             ->distinct('integrations.id')
