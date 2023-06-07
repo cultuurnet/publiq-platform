@@ -36,7 +36,7 @@ const Index = ({ integrations, paginationInfo }: Props) => {
   const searchFromUrl = searchParams.get("search");
 
   const handleChangeSearchInput = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>): void => {
+    (e: React.ChangeEvent<HTMLInputElement>) => {
       debounce(() => {
         router.get(
           translateRoute("/integrations"),
