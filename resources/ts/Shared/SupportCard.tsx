@@ -1,5 +1,5 @@
 import React from "react";
-import { LinkButton } from "./LinkButton";
+import { ButtonLink } from "./ButtonLink";
 import { SupportType } from "./SupportTypes";
 import { Heading } from "./Heading";
 
@@ -28,12 +28,12 @@ export const SupportCard = ({
             <p className="max-md:text-sm">{description}</p>
           </div>
           <div className="flex max-sm:self-center">
-            <LinkButton
+            <ButtonLink
               className="min-w-[15rem] max-sm:min-w-[10rem] max-sm:px-3"
               href={actionUrl}
             >
               {actionTitle}
-            </LinkButton>
+            </ButtonLink>
           </div>
         </div>
       </div>

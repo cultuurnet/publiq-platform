@@ -4,7 +4,7 @@ import { classNames } from "../utils/classNames";
 
 type Props = InertiaLinkProps;
 
-export const LinkButton = ({ children, className, ...props }: Props) => {
+export const ButtonLink = ({ children, className, ...props }: Props) => {
   return (
     <Link
       className={classNames(
