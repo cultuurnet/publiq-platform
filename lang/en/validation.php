@@ -169,6 +169,15 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'integrationType' => 'integration type',
+        'subscriptionId' => 'subscription',
+        'firstNameOrganisation' => 'first name',
+        'lastNameOrganisation' => 'last name',
+        'emailOrganisation' => 'email',
+        'firstNamePartner' => 'first name',
+        'lastNamePartner' => 'last name',
+        'emailPartner' => 'email',
+    ],
 
 ];

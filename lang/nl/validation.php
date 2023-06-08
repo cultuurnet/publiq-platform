@@ -179,7 +179,18 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'integrationType' => 'integratie type',
+        'subscriptionId' => 'prijsplan',
+        'name' => 'naam',
+        'description' => 'beschrijving',
+        'firstNameOrganisation' => 'voornaam',
+        'lastNameOrganisation' => 'achternaam',
+        'emailOrganisation' => 'email',
+        'firstNamePartner' => 'voornaam',
+        'lastNamePartner' => 'achternaam',
+        'emailPartner' => 'email',
+    ],
 
 ];
 
