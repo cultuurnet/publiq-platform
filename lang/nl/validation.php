@@ -125,7 +125,7 @@ return [
     'prohibited_unless' => 'Het :attribute veld is niet toegestaan tenzij :other voorkomt in :values.',
     'prohibits' => 'Het :attribute veld staat niet toe dat :other aanwezig is.',
     'regex' => 'Het :attribute formaat is ongeldig.',
-    'required' => 'Het :attribute veld is verplicht.',
+    'required' => ':Attribute is verplicht.',
     'required_array_keys' => 'Het veld :attribute moet vermeldingen bevatten voor: :values.',
     'required_if' => 'Het :attribute veld is verplicht wanneer :other is :value.',
     'required_if_accepted' => 'Het veld :attribute is vereist wanneer :other is geaccepteerd.',
@@ -180,7 +180,7 @@ return [
     */
 
     'attributes' => [
-        'integrationType' => 'integratie type',
+        'integrationType' => 'type integratie',
         'subscriptionId' => 'prijsplan',
         'name' => 'naam',
         'description' => 'beschrijving',
