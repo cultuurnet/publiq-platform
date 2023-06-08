@@ -35,22 +35,20 @@ const Index = ({ integrations, paginationInfo }: Props) => {
   const searchParams = new URLSearchParams(document.location.search);
   const searchFromUrl = searchParams.get("search");
 
-  const handleChangeSearchInput = useCallback(
+  const handleChangeSearchInput = debounce(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      debounce(() => {
-        router.get(
-          translateRoute("/integrations"),
-          {
-            // Don't append search query param to url if empty
-            search: e.target.value || undefined,
-          },
-          {
-            preserveState: true,
-          }
-        );
-      }, 250)();
+      router.get(
+        translateRoute("/integrations"),
+        {
+          // Don't append search query param to url if empty
+          search: e.target.value || undefined,
+        },
+        {
+          preserveState: true,
+        }
+      );
     },
-    [translateRoute]
+    250
   );
 
   return (
