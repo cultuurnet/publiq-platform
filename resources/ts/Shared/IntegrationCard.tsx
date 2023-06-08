@@ -6,11 +6,16 @@ import { Heading } from "./Heading";
 import { Card } from "./Card";
 import { useTranslation } from "react-i18next";
 import { Link } from "./Link";
+import { router } from "@inertiajs/react";
 
 type Props = Integration;
 
 export const IntegrationCard = ({ id, name, type, description }: Props) => {
   const { t } = useTranslation();
+
+  const handleDeleteIntegration = () => {
+    router.delete(`/integrations/${id}`);
+  };
 
   return (
     <Card
@@ -22,7 +27,11 @@ export const IntegrationCard = ({ id, name, type, description }: Props) => {
           </div>
           <div className="inline-flex gap-3">
             <IconButton icon={faPencil} />
-            <IconButton icon={faTrash} className="text-red-500" />
+            <IconButton
+              icon={faTrash}
+              className="text-red-500"
+              onClick={handleDeleteIntegration}
+            />
           </div>
         </div>
       }

@@ -21,7 +21,6 @@ use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 use Ramsey\Uuid\Uuid;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 final class IntegrationController extends Controller
 {
@@ -109,7 +108,7 @@ final class IntegrationController extends Controller
         } catch (ModelNotFoundException) {
             // We can redirect back to integrations, even if not successful
         }
-        
+
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName(request: $request, routeName: 'integrations.index')
         );
