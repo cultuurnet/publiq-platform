@@ -4,7 +4,7 @@ import { classNames } from "../utils/classNames";
 
 type Props = InertiaLinkProps;
 
-export const SecondaryLinkButton = ({
+export const ButtonLinkSecondary = ({
   children,
   className,
   ...props
