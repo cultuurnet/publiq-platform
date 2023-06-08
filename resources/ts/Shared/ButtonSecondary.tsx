@@ -6,7 +6,7 @@ type Props = {
   orientation?: string;
 } & ComponentProps<"button">;
 
-export const SecondaryButton = ({ children, className, ...props }: Props) => {
+export const ButtonSecondary = ({ children, className, ...props }: Props) => {
   return (
     <button
       className={classNames(
@@ -21,4 +21,4 @@ export const SecondaryButton = ({ children, className, ...props }: Props) => {
   );
 };
 
-export type { Props as SecondaryButtonProps };
+export type { Props as ButtonSecondaryProps };

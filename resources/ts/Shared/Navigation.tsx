@@ -3,13 +3,13 @@ import { Heading } from "./Heading";
 import { useTranslation } from "react-i18next";
 import { Link } from "@inertiajs/react";
 import { classNames } from "../utils/classNames";
-import { SecondaryButton, SecondaryButtonProps } from "./SecondaryButton";
+import { ButtonSecondary, ButtonSecondaryProps } from "./ButtonSecondary";
 import { usePage } from "@inertiajs/react";
 import { router } from "@inertiajs/core";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-type LanguageButtonProps = SecondaryButtonProps;
+type LanguageButtonProps = ButtonSecondaryProps;
 
 const LanguageButton = ({
   orientation,
@@ -17,7 +17,7 @@ const LanguageButton = ({
   ...props
 }: LanguageButtonProps) => {
   if (orientation === "vertical") {
-    return <SecondaryButton {...props}>{children}</SecondaryButton>;
+    return <ButtonSecondary {...props}>{children}</ButtonSecondary>;
   }
 
   return <button {...props}>{children}</button>;
