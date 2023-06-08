@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 final class IntegrationController extends Controller
 {
@@ -98,5 +99,19 @@ final class IntegrationController extends Controller
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName(request: $storeIntegration, routeName: 'integrations.index')
         );
+    }
+
+    public function delete(Request $request, string $id): RedirectResponse
+    {
+        $success = $this->integrationRepository->deleteById(Uuid::fromString($id));
+
+        if (!$success) {
+            throw new NotFoundHttpException();
+        }
+
+        return Redirect::route(
+            TranslatedRoute::getTranslatedRouteName(request: $request, routeName: 'integrations.index')
+        );
+
     }
 }

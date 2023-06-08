@@ -18,7 +18,12 @@ final class TranslatedRoute
 
     public static function getTranslatedRouteName(Request $request, string $routeName): string
     {
-        $language = $request->headers->get('Accept-Language') ?? self::DEFAULT_LANGUAGE;
+        $supportedLanguages = ['en', 'nl'];
+        $language = $request->headers->get('Accept-Language');
+
+        if ($language === null || !in_array($language, $supportedLanguages)) {
+            $language = self::DEFAULT_LANGUAGE;
+        }
 
         return self::createTranslatedRouteName($routeName, $language);
     }
