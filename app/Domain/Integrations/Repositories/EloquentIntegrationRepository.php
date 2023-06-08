@@ -68,9 +68,14 @@ final class EloquentIntegrationRepository implements IntegrationRepository
             })
             ->distinct('integrations.id')
             ->orderBy('integrations.created_at')
-            ->paginate(1);
+            ->paginate();
 
-        $integrations = Collection::make($integrationModels->items());
+        $integrations = new Collection();
+
+        foreach ($integrationModels as $integrationModel) {
+            $integrations->add($integrationModel->toDomain());
+        }
+
         $links = array_values($integrationModels->getUrlRange(1, $integrationModels->lastPage()));
 
         return new PaginatedCollection(
