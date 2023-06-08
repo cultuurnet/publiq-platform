@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import NavigationElements from "./NavigationElements";
+import Navigation from "./Navigation";
 import { Heading } from "./Heading";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,7 +14,7 @@ export default function HeaderMobile() {
         {t("title")}
       </Heading>
       <div>
-        <NavigationElements
+        <Navigation
           visible={isVisible}
           orientation="vertical"
           className="fixed top-[1rem] right-[1rem] left-[1rem] bottom-[1rem] bg-publiq-gray-light shadow-lg"
@@ -27,7 +27,7 @@ export default function HeaderMobile() {
             onClick={() => setIsVisible((prev) => !prev)}
             className="text-publiq-blue-dark"
           />
-        </NavigationElements>
+        </Navigation>
       </div>
       <FontAwesomeIcon
         icon={faBars}

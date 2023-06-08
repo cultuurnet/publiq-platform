@@ -30,7 +30,7 @@ type Props = ComponentProps<"section"> & {
   setIsVisible?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export default function NavigationElements({
+export default function Navigation({
   className,
   children,
   visible = true,
@@ -42,6 +42,8 @@ export default function NavigationElements({
   const { t, i18n } = useTranslation();
 
   const path = new URL(document.location.href).pathname;
+
+  const pages = ["integrations", "support"];
 
   const { component } = usePage();
 
@@ -74,7 +76,7 @@ export default function NavigationElements({
         </Heading>
       </Link>
       <div className="flex max-md:flex-col md:gap-8 min-w-[50%]">
-        {["integrations", "support"].map((pageTitle) => (
+        {pages.map((pageTitle) => (
           <Link
             key={pageTitle}
             href={t(`pages./${pageTitle}`)}
