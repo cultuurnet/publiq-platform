@@ -3,6 +3,7 @@ import { useForm } from "@inertiajs/react";
 import Layout from "../../Shared/Layout";
 import { Heading } from "../../Shared/Heading";
 import { FormElement } from "../../Shared/FormElement";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   integrationTypes: string[];
@@ -25,12 +26,13 @@ const initialFormValues = {
 const Index = ({ integrationTypes, subscriptions }: Props) => {
   const { data, setData, errors, post, processing } =
     useForm(initialFormValues);
+  const { i18n } = useTranslation();
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     post("/integrations", {
       headers: {
-        "Accept-Language": "nl",
+        "Accept-Language": i18n.language,
       },
     });
   }
