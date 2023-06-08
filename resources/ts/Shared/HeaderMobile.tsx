@@ -9,7 +9,7 @@ export default function HeaderMobile() {
   const { t } = useTranslation();
   const [isVisible, setIsVisible] = useState(false);
   return (
-    <header className="w-full flex items-center justify-around bg-white shadow-lg z-40 md:hidden">
+    <header className="w-full flex items-center justify-around bg-white z-40 md:hidden">
       <Heading className="py-3 border-transparent border-b-4" level={3}>
         {t("title")}
       </Heading>
@@ -17,7 +17,7 @@ export default function HeaderMobile() {
         <Navigation
           visible={isVisible}
           orientation="vertical"
-          className="fixed top-[1rem] right-[1rem] left-[1rem] bottom-[1rem] bg-publiq-gray-light shadow-lg"
+          className="fixed top-[1rem] right-[1rem] left-[1rem] bottom-[1rem] bg-publiq-gray-light shadow-lg z-50"
           isVisible
           setIsVisible={setIsVisible}
         >
@@ -29,6 +29,11 @@ export default function HeaderMobile() {
           />
         </Navigation>
       </div>
+      {isVisible && (
+        <div
+          className={"fixed top-0 right-0 bg-black w-full h-full opacity-60"}
+        />
+      )}
       <FontAwesomeIcon
         icon={faBars}
         onClick={() => setIsVisible((prev) => !prev)}
