@@ -13,9 +13,7 @@ type Props = Integration;
 export const IntegrationCard = ({ id, name, type, description }: Props) => {
   const { t } = useTranslation();
 
-  const handleDeleteIntegration = () => {
-    router.delete(`/integrations/${id}`);
-  };
+  const handleDeleteIntegration = () => router.delete(`/integrations/${id}`);
 
   return (
     <Card
