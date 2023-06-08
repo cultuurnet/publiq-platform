@@ -23,4 +23,4 @@ export const ButtonLinkSecondary = ({
   );
 };
 
-export type { Props as SecondaryLinkButtonProps };
+export type { Props as ButtonLinkSecondaryProps };
