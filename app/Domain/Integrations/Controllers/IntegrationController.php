@@ -14,6 +14,7 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Http\Controllers\Controller;
 use App\Router\TranslatedRoute;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -103,12 +104,12 @@ final class IntegrationController extends Controller
 
     public function delete(Request $request, string $id): RedirectResponse
     {
-        $success = $this->integrationRepository->deleteById(Uuid::fromString($id));
-
-        if (!$success) {
-            throw new NotFoundHttpException();
+        try {
+            $this->integrationRepository->deleteById(Uuid::fromString($id));
+        } catch (ModelNotFoundException) {
+            // We can redirect back to integrations, even if not successful
         }
-
+        
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName(request: $request, routeName: 'integrations.index')
         );
