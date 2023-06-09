@@ -9,7 +9,9 @@ import { Link } from "./Link";
 import { router } from "@inertiajs/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-type Props = Integration;
+type Props = Integration & {
+  onDelete: (id: string) => void;
+};
 
 export const IntegrationCard = ({
   id,
@@ -17,10 +19,9 @@ export const IntegrationCard = ({
   type,
   description,
   status,
+  onDelete,
 }: Props) => {
   const { t } = useTranslation();
-
-  const handleDeleteIntegration = () => router.delete(`/integrations/${id}`);
 
   const handleCopyToClipboard = () => {
     console.log(`copy ${id} to clipboard`);
@@ -39,7 +40,7 @@ export const IntegrationCard = ({
             <IconButton
               icon={faTrash}
               className="text-red-500"
-              onClick={handleDeleteIntegration}
+              onClick={() => onDelete(id)}
             />
           </div>
         </div>

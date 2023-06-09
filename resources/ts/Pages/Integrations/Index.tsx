@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState } from "react";
 import { router } from "@inertiajs/react";
 import { Heading } from "../../Shared/Heading";
 import Layout from "../../Shared/Layout";
@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import { IntegrationCard } from "../../Shared/IntegrationCard";
 import { PaginationInfo } from "../../types/PaginationInfo";
 import { Page } from "../../Shared/Page";
+import { QuestionDialog } from "../../Shared/QuestionDialog";
 
 export type Integration = {
   id: string;
@@ -29,6 +30,9 @@ type Props = {
 const Index = ({ integrations, paginationInfo }: Props) => {
   const { t } = useTranslation();
   const translateRoute = useTranslateRoute();
+
+  const [isDeleteDialogVisible, setIsDeleteDialogVisible] = useState(true);
+  const [toBeDeletedId, setToBeDeletedId] = useState("");
 
   const searchParams = new URLSearchParams(document.location.search);
   const searchFromUrl = searchParams.get("search");
@@ -48,6 +52,12 @@ const Index = ({ integrations, paginationInfo }: Props) => {
     },
     250
   );
+
+  const handleDeleteIntegration = () => {
+    router.delete(`/integrations/${toBeDeletedId}`, {
+      onFinish: () => setIsDeleteDialogVisible(false),
+    });
+  };
 
   return (
     <Page>
@@ -75,13 +85,32 @@ const Index = ({ integrations, paginationInfo }: Props) => {
         <ul className="flex flex-col w-full gap-5">
           {integrations.map((integration) => (
             <li className="flex w-full" key={integration.id}>
-              <IntegrationCard {...integration} />
+              <IntegrationCard
+                {...integration}
+                onDelete={(id) => {
+                  setToBeDeletedId(id);
+                  setIsDeleteDialogVisible(true);
+                }}
+              />
             </li>
           ))}
         </ul>
       )}
 
       <Pagination links={paginationInfo.links} />
+
+      <QuestionDialog
+        isVisible={isDeleteDialogVisible}
+        onClose={() => {
+          setIsDeleteDialogVisible((prev) => !prev);
+        }}
+        question="Wil je deze integratie echt verwijderen?"
+        onConfirm={handleDeleteIntegration}
+        onCancel={() => {
+          setIsDeleteDialogVisible(false);
+          setToBeDeletedId("");
+        }}
+      ></QuestionDialog>
     </Page>
   );
 };
