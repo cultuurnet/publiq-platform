@@ -26,7 +26,7 @@ final class StoreIntegration extends FormRequest
             'firstNameTechnicalContact' => ['required', 'string', 'max:255'],
             'lastNameTechnicalContact' => ['required', 'string', 'max:255'],
             'emailTechnicalContact' => ['required', 'string', 'email', 'max:255'],
-            'agreement' => ['required', 'string']
+            'agreement' => ['required', 'string'],
         ];
     }
 }
