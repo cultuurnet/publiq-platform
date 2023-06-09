@@ -11,6 +11,7 @@ import { Pagination } from "../../Shared/Pagination";
 import { useTranslation } from "react-i18next";
 import { IntegrationCard } from "../../Shared/IntegrationCard";
 import { PaginationInfo } from "../../types/PaginationInfo";
+import { Page } from "../../Shared/Page";
 
 export type Integration = {
   id: string;
@@ -49,7 +50,7 @@ const Index = ({ integrations, paginationInfo }: Props) => {
   );
 
   return (
-    <section className="flex flex-col items-center w-full pt-6 px-4 :max-sm:px-2 gap-7 min-w-[40rem] max-w-7xl">
+    <Page>
       <div className="inline-flex w-full justify-between items-center">
         <Heading level={2}>{t("integrations.title")}</Heading>
         <Input
@@ -81,7 +82,7 @@ const Index = ({ integrations, paginationInfo }: Props) => {
       )}
 
       <Pagination links={paginationInfo.links} />
-    </section>
+    </Page>
   );
 };
 
