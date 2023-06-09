@@ -2,7 +2,7 @@ import React, { ReactNode } from "react";
 import { router } from "@inertiajs/react";
 import { Heading } from "../../Shared/Heading";
 import Layout from "../../Shared/Layout";
-import { LinkButton } from "../../Shared/LinkButton";
+import { ButtonLink } from "../../Shared/ButtonLink";
 import { Input } from "../../Shared/Input";
 import { debounce } from "lodash";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -61,9 +61,9 @@ const Index = ({ integrations, paginationInfo }: Props) => {
           defaultValue={searchFromUrl ?? ""}
           onChange={handleChangeSearchInput}
         />
-        <LinkButton href={translateRoute("/integrations/new")}>
+        <ButtonLink href={translateRoute("/integrations/new")}>
           {t("integrations.add")}
-        </LinkButton>
+        </ButtonLink>
       </div>
       <div className="inline-flex self-start">
         {t("integrations.results_found", {

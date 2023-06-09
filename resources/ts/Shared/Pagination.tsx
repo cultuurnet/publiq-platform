@@ -1,5 +1,5 @@
 import React from "react";
-import { SecondaryButton } from "./SecondaryButton";
+import { ButtonLinkSecondary } from "./ButtonLinkSecondary";
 import { classNames } from "../utils/classNames";
 
 const getPageFromLink = (url: string) => new URL(url).searchParams.get("page");
@@ -15,7 +15,7 @@ export const Pagination = ({ links }: { links: string[] }) => {
   return (
     <div className="inline-flex">
       {links.map((link, index) => (
-        <SecondaryButton
+        <ButtonLinkSecondary
           key={link}
           href={link}
           className={classNames(
@@ -24,7 +24,7 @@ export const Pagination = ({ links }: { links: string[] }) => {
           )}
         >
           {getPageFromLink(link)}
-        </SecondaryButton>
+        </ButtonLinkSecondary>
       ))}
     </div>
   );
