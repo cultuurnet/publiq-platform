@@ -17,16 +17,15 @@ export const Dialog = ({ isVisible = false, onClose, children }: Props) => {
     <>
       <div
         className={classNames(
-          "flex flex-col fixed bg-publiq-gray-light z-[60] min-h-[12rem] top-[30%]",
-          "left-[25%] right-[25%]", // Desktop
-          "md:left-[10%] md:right-[10%]", // Tablet
-          "max-md:left-[1rem] max-md:right-[1rem]" // Mobile
+          "flex flex-col fixed bg-publiq-gray-light z-[60] min-h-[14rem] max-md:w-[90%] md:min-w-[40rem] top-[30%]"
         )}
       >
         <div className="inline-flex w-full justify-end p-3">
           <IconButton icon={faXmark} onClick={onClose} />
         </div>
-        <div className="flex flex-col flex-1 w-full p-4">{children}</div>
+        <div className="flex flex-col flex-1 w-full p-4 text-xl">
+          {children}
+        </div>
       </div>
       <div
         className={"fixed top-0 right-0 bg-black w-full h-full opacity-60 z-50"}
