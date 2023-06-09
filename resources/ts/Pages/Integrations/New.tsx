@@ -37,6 +37,7 @@ const pricing = (t: TFunction, subscriptions: Subscription[]) => {
       (sub) => sub.category.toLowerCase() === type
     );
 
+    // TODO: Remove defaults once all subscriptions have been added in the backend
     return {
       price: data?.price ?? "Te bepalen",
       currency: data?.currency ?? "EUR",
