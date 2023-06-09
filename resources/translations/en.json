@@ -7,9 +7,10 @@
   },
   "title": "publiq platform",
   "nav": {
-    "integrations": "My integrations",
-    "support": "Support",
-    "hello": "Hello"
+    "integrations": "Mijn integraties",
+    "opportunities": "Mogelijkheden",
+    "support": "Ondersteuning",
+    "hello": "Hallo"
   },
   "home": {
     "hero": {
@@ -60,8 +61,18 @@
     "searching": "Zoeken ...",
     "test": "Test",
     "live": "Live",
+    "products": {
+      "search-api": "Search API",
+      "entry-api": "Entry API",
+      "widgets": "Widgets"
+    },
     "status": {
-      "not_active": "Niet actief"
+      "draft": "Voorlopige versie",
+      "blocked": "Geblokeerd",
+      "active": "Actief",
+      "deleted": "Verwijderd",
+      "pending_approval_integration": "Niet actief",
+      "pending_approval_payment": "Niet actief"
     },
     "documentation": {
       "title": "Documentatie",
@@ -106,5 +117,9 @@
       "action_title": "Contacteer ons",
       "action_url": "#"
     }
+  },
+  "dialog": {
+    "confirm": "Doorgaan",
+    "cancel": "Annuleer"
   }
 }
