@@ -5,7 +5,7 @@ import Layout from "../../Shared/Layout";
 import { ButtonLink } from "../../Shared/ButtonLink";
 import { Input } from "../../Shared/Input";
 import { debounce } from "lodash";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useTranslateRoute } from "../../hooks/useTranslateRoute";
 import { Pagination } from "../../Shared/Pagination";
 import { useTranslation } from "react-i18next";
@@ -13,6 +13,7 @@ import { IntegrationCard } from "../../Shared/IntegrationCard";
 import { PaginationInfo } from "../../types/PaginationInfo";
 import { Page } from "../../Shared/Page";
 import { QuestionDialog } from "../../Shared/QuestionDialog";
+import { IconLink } from "../../Shared/IconLink";
 
 export type Integration = {
   id: string;
@@ -61,8 +62,15 @@ const Index = ({ integrations, paginationInfo }: Props) => {
 
   return (
     <Page>
-      <div className="inline-flex w-full justify-between items-center">
-        <Heading level={2}>{t("integrations.title")}</Heading>
+      <div className="flex max-sm:flex-col w-full md:justify-between max-sm:gap-3 items-center">
+        <div className="inline-flex gap-3">
+          <Heading level={2}>{t("integrations.title")}</Heading>
+          <IconLink
+            href={translateRoute("/integrations/new")}
+            icon={faPlus}
+            className="md:hidden"
+          />
+        </div>
         <Input
           type="text"
           name="search"
@@ -72,7 +80,10 @@ const Index = ({ integrations, paginationInfo }: Props) => {
           defaultValue={searchFromUrl ?? ""}
           onChange={handleChangeSearchInput}
         />
-        <ButtonLink href={translateRoute("/integrations/new")}>
+        <ButtonLink
+          href={translateRoute("/integrations/new")}
+          className="max-sm:hidden"
+        >
           {t("integrations.add")}
         </ButtonLink>
       </div>
