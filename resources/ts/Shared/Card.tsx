@@ -20,7 +20,7 @@ export const Card = ({
   return (
     <div
       className={classNames(
-        "w-full flex flex-col md:max-w-sm overflow-hidden shadow-lg px-6 py-6",
+        "w-full flex flex-col overflow-hidden shadow-lg px-6 py-6",
         img && "px-0 py-0 gap-10 max-lg:gap-3 p-0",
         active ? "bg-publiq-blue-dark bg-opacity-10" : "bg-white",
         className
