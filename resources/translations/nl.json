@@ -62,7 +62,7 @@
     "aim": "Doel van de integratie",
     "description_aim": "Geef een duidelijke, gemotiveerde beschrijving van de integraite die je met het publiq platform wil opzetten (max. 200 karakters)",
     "contact_label_1": "Inhoudelijk contact ",
-    "contact_label_2":"Technical contact",
+    "contact_label_2": "Technical contact",
     "contact": {
       "organisation": "Naam organisatie",
       "first_name": "Voornaam contactpersoon",
