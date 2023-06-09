@@ -62,6 +62,11 @@
     "searching": "Zoeken ...",
     "test": "Test",
     "live": "Live",
+    "products": {
+      "search-api": "Search API",
+      "entry-api": "Entry API",
+      "widgets": "Widgets"
+    },
     "status": {
       "draft": "Voorlopige versie",
       "blocked": "Geblokeerd",
