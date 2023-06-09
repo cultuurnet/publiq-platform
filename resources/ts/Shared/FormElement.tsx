@@ -1,4 +1,10 @@
-import React, { cloneElement, memo, ReactElement, useId } from "react";
+import React, {
+  cloneElement,
+  ComponentProps,
+  memo,
+  ReactElement,
+  useId,
+} from "react";
 import { classNames } from "../utils/classNames";
 
 type LabelPosition = "top" | "left" | "right";
@@ -26,7 +32,7 @@ const getFlexDirection = (labelPosition: LabelPosition | undefined) => {
 };
 
 const getAlignItems = (labelPosition: LabelPosition | undefined) => {
-  if (labelPosition === "right") return "items-center";
+  if (labelPosition === "right") return "items-baseline";
   return;
 };
 
@@ -37,7 +43,13 @@ type LabelProps = {
 };
 
 const Label = memo(({ id, labelSize, label }: LabelProps) => (
-  <label htmlFor={id} className={labelSize ? `text-${labelSize}` : ""}>
+  <label
+    htmlFor={id}
+    className={classNames(
+      "font-semibold",
+      labelSize ? `text-${labelSize}` : ""
+    )}
+  >
     {label}
   </label>
 ));
@@ -49,8 +61,9 @@ type Props = {
   labelPosition?: LabelPosition;
   labelSize?: LabelSize;
   error?: string;
+  info?: string;
   component: ReactElement;
-};
+} & ComponentProps<"div">;
 
 export const FormElement = ({
   label,
@@ -58,26 +71,32 @@ export const FormElement = ({
   labelSize = "base",
   component,
   error,
+  info,
+  className,
 }: Props) => {
   const id = useId();
 
   const clonedComponent = cloneElement(component, { ...component.props, id });
 
   return (
-    <div className="flex flex-col">
+    <div className="inline-flex flex-col flex-grow">
       <Wrapper labelPosition={labelPosition}>
         <div
           className={classNames(
-            "flex gap-1",
+            "flex gap-2",
             getFlexDirection(labelPosition),
-            getAlignItems(labelPosition)
+            getAlignItems(labelPosition),
+            className
           )}
         >
           {label && <Label id={id} label={label} labelSize={labelSize} />}
+          <div className={labelPosition === 'right' ? "pt-1" : ''}>
           {clonedComponent}
+          </div>
         </div>
       </Wrapper>
       {error && <span className="text-red-500">{error}</span>}
+      {info && <span className="text-publiq-gray">{info}</span>}
     </div>
   );
 };
