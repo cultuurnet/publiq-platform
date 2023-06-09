@@ -5,10 +5,10 @@ import Footer from "./Footer";
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <div className="flex flex-col items-center text-publiq-gray bg-publiq-gray-light">
+    <div className="flex flex-col flex-1 items-center text-publiq-gray-dark bg-publiq-gray-light">
       <Header />
       <HeaderMobile />
-      <section className="pb-8 w-full">{children}</section>
+      <main className="flex flex-col items-center pb-8 w-full">{children}</main>
       <Footer />
     </div>
   );
