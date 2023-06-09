@@ -4,8 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "@inertiajs/react";
 import { classNames } from "../utils/classNames";
 import { ButtonSecondary, ButtonSecondaryProps } from "./ButtonSecondary";
-import { usePage } from "@inertiajs/react";
-import { router } from "@inertiajs/core";
+import { usePage, router } from "@inertiajs/react";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
