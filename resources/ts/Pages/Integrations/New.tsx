@@ -8,10 +8,10 @@ import { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
 import { Card } from "../../Shared/Card";
 import { Button } from "../../Shared/Button";
-import { ButtonSecondary } from "../../Shared/ButtonSecondary";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { Page } from "../../Shared/Page";
+import { ButtonLinkSecondary } from "../../Shared/ButtonLinkSecondary";
 
 const integrationTypes = (t: TFunction) => [
   {
@@ -33,41 +33,46 @@ const integrationTypes = (t: TFunction) => [
 
 const pricing = (t: TFunction, subscriptions: Subscription[]) => {
   const getInfoForType = (type: string) => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const data = subscriptions.find(
       (sub) => sub.category.toLowerCase() === type
-    )!;
+    );
 
     return {
-      price: data.price,
-      currency: data.currency,
+      price: data?.price ?? "Te bepalen",
+      currency: data?.currency ?? "EUR",
     };
   };
+
+  const basic = getInfoForType("basic");
+  const plus = getInfoForType("plus");
+  const custom = getInfoForType("custom");
+
+  console.log({ basic, plus, custom });
 
   return [
     {
       title: t("integration_form.pricing.basic.title"),
       description: t("integration_form.pricing.basic.description"),
-      // price: t("integration_form.pricing.basic.price", {
-      //   price: getInfoForType("basic").price,
-      //   currency: getInfoForType("basic").currency,
-      // }),
+      price: t("integration_form.pricing.basic.price", {
+        price: basic.price,
+        currency: basic.currency,
+      }),
     },
     {
       title: t("integration_form.pricing.plus.title"),
       description: t("integration_form.pricing.plus.description"),
-      // price: t("integration_form.pricing.plus.price", {
-      //   price: getInfoForType("plus").price,
-      //   currency: getInfoForType("plus").currency,
-      // }),
+      price: t("integration_form.pricing.plus.price", {
+        price: plus.price,
+        currency: plus.currency,
+      }),
     },
     {
       title: t("integration_form.pricing.custom.title"),
       description: t("integration_form.pricing.custom.description"),
-      // price: t("integration_form.pricing.custom.price", {
-      //   price: getInfoForType("custom").price,
-      //   currency: getInfoForType("custom").currency,
-      // }),
+      price: t("integration_form.pricing.custom.price", {
+        price: custom.price,
+        currency: custom.currency,
+      }),
     },
   ];
 };
@@ -129,13 +134,13 @@ const Index = ({ subscriptions }: Props) => {
 
   return (
     <Page>
-      <div className="inline-flex flex-col gap-5 p-10">
-        <ButtonSecondary className="w-fit">
+      <div className="inline-flex flex-col gap-5">
+        <ButtonLinkSecondary href={t("pages./integrations")} className="w-fit">
           <FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>
           <span>{t("integration_form.back")}</span>
-        </ButtonSecondary>
+        </ButtonLinkSecondary>
         <Heading level={2}>{t("integration_form.title")}</Heading>
-        <p>{t("integration_form.description")}</p>
+        <p className="mb-5">{t("integration_form.description")}</p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <FormElement
@@ -145,6 +150,7 @@ const Index = ({ subscriptions }: Props) => {
               <div className="flex gap-5 max-md:flex-col max-md:items-center md:flex-row pb-3">
                 {translatedIntegrations.map((integration) => (
                   <button
+                    type="button"
                     key={integration.title}
                     onClick={() => {
                       setData("integrationType", integration.title);
@@ -169,6 +175,7 @@ const Index = ({ subscriptions }: Props) => {
               <div className="flex gap-5 max-md:flex-col max-md:items-center md:flex-row pb-3">
                 {translatedPricing.map((pricing) => (
                   <button
+                    type="button"
                     className="w-full"
                     key={pricing.title}
                     onClick={() => {
@@ -180,7 +187,7 @@ const Index = ({ subscriptions }: Props) => {
                       active={data.subscriptionId === pricing.title}
                       className=" md:min-h-[12rem]"
                     >
-                      {/* {pricing.price} */}
+                      {pricing.price}
                     </Card>
                   </button>
                 ))}
@@ -209,6 +216,7 @@ const Index = ({ subscriptions }: Props) => {
             info={`${t("integration_form.description_aim")}`}
             component={
               <textarea
+                rows={5}
                 className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                 name="description"
                 value={data.description}
@@ -294,7 +302,7 @@ const Index = ({ subscriptions }: Props) => {
             </div>
           </div>
 
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-5 mb-5">
             <Heading className="font-semibold" level={3}>
               {t("integration_form.contact_label_2")}
             </Heading>
