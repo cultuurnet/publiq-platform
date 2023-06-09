@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback } from "react";
+import React, { ReactNode } from "react";
 import { router } from "@inertiajs/react";
 import { Heading } from "../../Shared/Heading";
 import Layout from "../../Shared/Layout";
