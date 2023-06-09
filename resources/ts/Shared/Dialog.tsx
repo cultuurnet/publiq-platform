@@ -21,7 +21,11 @@ export const Dialog = ({ isVisible = false, onClose, children }: Props) => {
         )}
       >
         <div className="inline-flex w-full justify-end p-3">
-          <IconButton icon={faXmark} onClick={onClose} />
+          <IconButton
+            icon={faXmark}
+            onClick={onClose}
+            className="text-publiq-blue-dark"
+          />
         </div>
         <div className="flex flex-col flex-1 w-full p-4 text-xl">
           {children}
