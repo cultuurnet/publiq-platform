@@ -25,18 +25,12 @@ const LanguageButton = ({
 
 type Props = ComponentProps<"section"> & {
   orientation?: "vertical" | "horizontal";
-  visible?: boolean;
-  isVisible?: boolean;
-  setIsVisible?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function Navigation({
   className,
   children,
-  visible = true,
-  isVisible,
   orientation = "horizontal",
-  setIsVisible,
   ...props
 }: Props) {
   const { t, i18n } = useTranslation();
@@ -58,8 +52,7 @@ export default function Navigation({
   );
 
   const classes = classNames(
-    "flex md:items-center md:justify-around max-md:p-12 max-md:gap-5",
-    !visible && "hidden",
+    "flex md:items-center md:justify-around max-md:p-4 max-md:gap-5",
     orientation === "vertical" && "flex-col",
     className
   );
@@ -85,12 +78,13 @@ export default function Navigation({
               path.startsWith(`${t(`pages./${pageTitle}`)}`) &&
                 "md:border-b-4 md:border-b-publiq-blue max-md:font-semibold"
             )}
-            onClick={() => setIsVisible && setIsVisible((prev) => !prev)}
           >
             <Heading level={5} className="max-md:text-xl">
               {t(`nav.${pageTitle}`)}
             </Heading>
-            {isVisible && <FontAwesomeIcon icon={faChevronRight} />}
+            {orientation === "vertical" && (
+              <FontAwesomeIcon icon={faChevronRight} />
+            )}
           </Link>
         ))}
       </div>
