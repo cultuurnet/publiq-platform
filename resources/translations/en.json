@@ -51,6 +51,45 @@
       "more_info": "Meer info"
     }
   },
+  "integration_form": {
+    "title": "Integratie toevoegen",
+    "description": "Je betaalt pas wanneer je gebruik wilt maken van echte data. Je probeert eerst alle mogelijkheden met testevenementen.",
+    "type": "Type integratie",
+    "pricing_plan": "Prijsplan",
+    "integration_name": "Naam integratie",
+    "description_name": "Geef een duidelijk titel aan je integratie en vermeld de naam van de organisatie of gemeente waarvoor de integratie gebouwd wordt",
+    "aim": "Doel van de integratie",
+    "description_aim": "Geef een duidelijke, gemotiveerde beschrijving van de integraite die je met het publiq platform wil opzetten (max. 200 karakters)",
+    "contact_label_1": "Inhoudelijk contact ",
+    "contact_label_2": "Technical contact",
+    "contact": {
+      "organisation": "Naam organisatie",
+      "first_name": "Voornaam contactpersoon",
+      "last_name": "Naam contactpersoon",
+      "email": "E-mailadres"
+    },
+    "agree": "Ik ga akkoord met de",
+    "terms_of_use": "gebruiksvoorwaarden",
+    "submit": "Integratie aanmaken",
+    "back": "Terug naar integratieoverzicht",
+    "pricing": {
+      "basic": {
+        "title": "Basic",
+        "description": "Je configureert de widget zelf met behulp van onze documentatie.",
+        "price": "{{currency}} {{price}} / jaar"
+      },
+      "plus": {
+        "title": "Plus",
+        "description": "Na een intakegesprek configureren we de widget van A tot Z voor jou.",
+        "price": "eerste jaar: € 600 nadien: € 280 / jaar"
+      },
+      "custom": {
+        "title": "Custom",
+        "description": "We helpen je waar jij ons nodig hebt.",
+        "price": "voorstel op maat"
+      }
+    }
+  },
   "support": {
     "title": "Support",
     "description": "We ondersteunen je op verschillende manieren, zodat jij vlot een integratie met het publiq ecosysteem kan opzetten.",

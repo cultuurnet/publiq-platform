@@ -182,14 +182,17 @@ return [
     'attributes' => [
         'integrationType' => 'type integratie',
         'subscriptionId' => 'prijsplan',
-        'name' => 'naam',
+        'integrationName' => 'naam',
         'description' => 'beschrijving',
-        'firstNameOrganisation' => 'voornaam',
-        'lastNameOrganisation' => 'achternaam',
-        'emailOrganisation' => 'email',
-        'firstNamePartner' => 'voornaam',
-        'lastNamePartner' => 'achternaam',
-        'emailPartner' => 'email',
+        'organisationFunctionalContact' => 'naam',
+        'firstNameFunctionalContact' => 'voornaam',
+        'lastNameFunctionalContact' => 'achternaam',
+        'emailFunctionalContact' => 'email',
+        'organisationTechnicalContact' => 'naam',
+        'firstNameTechnicalContact' => 'voornaam',
+        'lastNameTechnicalContact' => 'achternaam',
+        'emailTechnicalContact' => 'email',
+        'agreement' => 'gebruikersvoorwaarden'
     ],
 
 ];

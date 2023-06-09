@@ -1,13 +1,40 @@
 import React, { ComponentProps } from "react";
+import { classNames } from "../utils/classNames";
 
 type Props = {
   title: string;
   description: string;
+  img?: string;
+  active?: boolean;
 } & ComponentProps<"div">;
 
-export const Card = ({ title, description, children }: Props) => {
+export const Card = ({
+  title,
+  description,
+  img,
+  active,
+  children,
+  className,
+  ...props
+}: Props) => {
   return (
-    <div className="flex flex-col gap-10 max-w-sm rounded overflow-hidden shadow-lg bg-white px-6 py-8">
+    <div
+      className={classNames(
+        "w-full flex flex-col md:max-w-sm overflow-hidden shadow-lg px-6 py-6",
+        img && "px-0 py-0 gap-10 max-lg:gap-3 p-0",
+        active ? "bg-publiq-blue-dark bg-opacity-10" : "bg-white",
+        className
+      )}
+      {...props}
+    >
+      {img && (
+        <img
+          src={img}
+          className={classNames(
+            img && "h-full w-auto aspect-square max-h-[12rem] object-contain"
+          )}
+        ></img>
+      )}
       <div>
         <div className="font-bold text-xl mb-2">{title}</div>
         <p className="text-gray-700 text-base min-h-[5rem]">{description}</p>
