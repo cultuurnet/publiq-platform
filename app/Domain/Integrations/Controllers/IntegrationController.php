@@ -61,19 +61,19 @@ final class IntegrationController extends Controller
         $contactOrganization = new Contact(
             Uuid::uuid4(),
             $integrationId,
-            $storeIntegration->input('emailOrganisation'),
+            $storeIntegration->input('emailFunctionalContact'),
             ContactType::Functional,
-            $storeIntegration->input('firstNameOrganisation'),
-            $storeIntegration->input('lastNameOrganisation')
+            $storeIntegration->input('firstNameFunctionalContact'),
+            $storeIntegration->input('lastNameFunctionalContact')
         );
 
         $contactPartner = new Contact(
             Uuid::uuid4(),
             $integrationId,
-            $storeIntegration->input('emailPartner'),
+            $storeIntegration->input('emailTechnicalContact'),
             ContactType::Technical,
-            $storeIntegration->input('firstNamePartner'),
-            $storeIntegration->input('lastNamePartner')
+            $storeIntegration->input('firstNameTechnicalContact'),
+            $storeIntegration->input('lastNameTechnicalContact')
         );
 
         $contributor = new Contact(

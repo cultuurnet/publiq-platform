@@ -18,7 +18,7 @@ export const ButtonLinkSecondary = ({
       {...props}
     >
       <div className="absolute w-[50%] h-[50%] opacity-0 group-focus:animate-pulse bg-publiq-gray-light"></div>
-      <div className="relative z-10">{children}</div>
+      <div className="relative z-10 flex items-center gap-2">{children}</div>
     </Link>
   );
 };
