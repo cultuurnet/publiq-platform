@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import type { Integration } from "../Pages/Integrations/Index";
 import { IconButton } from "./IconButton";
 import { faCopy, faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -22,9 +22,11 @@ export const IntegrationCard = ({
 }: Props) => {
   const { t } = useTranslation();
 
-  const handleCopyToClipboard = () => {
-    console.log(`copy ${id} to clipboard`);
-  };
+  const codeFieldRef = useRef<HTMLSpanElement>(null);
+
+  function handleCopyToClipboard() {
+    navigator.clipboard.writeText(codeFieldRef.current?.innerText ?? "");
+  }
 
   return (
     <Card
@@ -51,7 +53,7 @@ export const IntegrationCard = ({
         <section className="inline-flex gap-3 items-center">
           <Heading level={3}>{t("integrations.test")}</Heading>
           <div className="inline-flex gap-2 items-center bg-gray-200 py-2 px-3">
-            <span>{id}</span>
+            <span ref={codeFieldRef}>{id}</span>
             <button onClick={handleCopyToClipboard}>
               <FontAwesomeIcon
                 icon={faCopy}
