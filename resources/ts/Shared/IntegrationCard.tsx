@@ -6,7 +6,6 @@ import { Heading } from "./Heading";
 import { Card } from "./Card";
 import { useTranslation } from "react-i18next";
 import { Link } from "./Link";
-import { router } from "@inertiajs/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type Props = Integration & {
