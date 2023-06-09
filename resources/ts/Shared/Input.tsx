@@ -28,4 +28,4 @@ export const Input = ({ children, className, iconBack, ...props }: Props) => {
       )}
     </div>
   );
-}; 
+};

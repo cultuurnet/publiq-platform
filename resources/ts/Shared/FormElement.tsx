@@ -90,8 +90,8 @@ export const FormElement = ({
           )}
         >
           {label && <Label id={id} label={label} labelSize={labelSize} />}
-          <div className={labelPosition === 'right' ? "pt-1" : ''}>
-          {clonedComponent}
+          <div className={labelPosition === "right" ? "pt-1" : ""}>
+            {clonedComponent}
           </div>
         </div>
       </Wrapper>
