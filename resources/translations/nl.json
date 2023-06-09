@@ -55,6 +55,7 @@
   "integrations": {
     "title": "Mijn integraties",
     "add": "Integratie toevoegen",
+    "results_found_zero": "Geen integraties gevonden",
     "results_found_one": "{{count}} integratie gevonden",
     "results_found_other": "{{count}} integraties gevonden",
     "no_results_found": "Geen integraties gevonden",

@@ -68,18 +68,11 @@ const Index = ({ integrations, paginationInfo }: Props) => {
           {t("integrations.add")}
         </LinkButton>
       </div>
-
-      {integrations.length === 0 ? (
-        <div className="flex flex-col gap-5">
-          {t("integrations.no_results_found")}
-        </div>
-      ) : (
-        <div>
-          {t("integrations.results_found", {
-            count: paginationInfo.totalItems,
-          })}
-        </div>
-      )}
+      <div className="inline-flex self-start">
+        {t("integrations.results_found", {
+          count: paginationInfo.totalItems,
+        })}
+      </div>
       {integrations.length > 0 && (
         <ul className="flex flex-col w-full gap-5">
           {integrations.map((integration) => (
