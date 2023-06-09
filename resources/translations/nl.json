@@ -118,5 +118,9 @@
       "action_title": "Contacteer ons",
       "action_url": "#"
     }
+  },
+  "dialog": {
+    "confirm": "Doorgaan",
+    "cancel": "Annuleer"
   }
 }
