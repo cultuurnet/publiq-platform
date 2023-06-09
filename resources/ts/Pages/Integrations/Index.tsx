@@ -10,6 +10,7 @@ import { useTranslateRoute } from "../../hooks/useTranslateRoute";
 import { Pagination } from "../../Shared/Pagination";
 import { useTranslation } from "react-i18next";
 import { IntegrationCard } from "../../Shared/IntegrationCard";
+import { PaginationInfo } from "../../types/PaginationInfo";
 
 export type Integration = {
   id: string;
@@ -18,10 +19,6 @@ export type Integration = {
   description: string;
   subscriptionId: string;
   status: string;
-};
-
-type PaginationInfo = {
-  paginationInfo: { links: string[]; totalItems: number };
 };
 
 type Props = {
