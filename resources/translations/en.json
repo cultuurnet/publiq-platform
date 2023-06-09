@@ -7,10 +7,9 @@
   },
   "title": "publiq platform",
   "nav": {
-    "integrations": "Mijn integraties",
-    "opportunities": "Mogelijkheden",
-    "support": "Ondersteuning",
-    "hello": "Hallo"
+    "integrations": "My integrations",
+    "support": "Support",
+    "hello": "Hello"
   },
   "home": {
     "hero": {
@@ -70,7 +69,7 @@
     }    
   },
   "support": {
-    "title": "Ondersteuning",
+    "title": "Support",
     "description": "We ondersteunen je op verschillende manieren, zodat jij vlot een integratie met het publiq ecosysteem kan opzetten.",
     "documentation": {
       "title": "Documentatie",

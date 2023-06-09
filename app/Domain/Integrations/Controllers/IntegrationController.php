@@ -48,7 +48,7 @@ final class IntegrationController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('Integrations/Create', [
+        return Inertia::render('Integrations/New', [
             'integrationTypes' => IntegrationType::cases(),
             'subscriptions' => $this->subscriptionRepository->all(),
         ]);
@@ -85,19 +85,24 @@ final class IntegrationController extends Controller
             $this->currentUser->lastName()
         );
 
-        $integration = (new Integration(
-            $integrationId,
-            IntegrationType::from($storeIntegration->input('integrationType')),
-            $storeIntegration->input('name'),
-            $storeIntegration->input('description'),
-            Uuid::fromString($storeIntegration->input('subscriptionId')),
-            IntegrationStatus::Draft
-        ))->withContacts($contactOrganization, $contactPartner, $contributor);
+        $integration = (
+            new Integration(
+                $integrationId,
+                IntegrationType::from($storeIntegration->input('integrationType')),
+                $storeIntegration->input('name'),
+                $storeIntegration->input('description'),
+                Uuid::fromString($storeIntegration->input('subscriptionId')),
+                IntegrationStatus::Draft
+            )
+        )->withContacts($contactOrganization, $contactPartner, $contributor);
 
         $this->integrationRepository->save($integration);
 
         return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName(request: $storeIntegration, routeName: 'integrations.index')
+            TranslatedRoute::getTranslatedRouteName(
+                request: $storeIntegration,
+                routeName: 'integrations.index'
+            )
         );
     }
 

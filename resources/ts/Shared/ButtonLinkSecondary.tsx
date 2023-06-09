@@ -4,7 +4,11 @@ import { classNames } from "../utils/classNames";
 
 type Props = InertiaLinkProps;
 
-export const SecondaryButton = ({ children, className, ...props }: Props) => {
+export const ButtonLinkSecondary = ({
+  children,
+  className,
+  ...props
+}: Props) => {
   return (
     <Link
       className={classNames(
@@ -18,3 +22,5 @@ export const SecondaryButton = ({ children, className, ...props }: Props) => {
     </Link>
   );
 };
+
+export type { Props as ButtonLinkSecondaryProps };
