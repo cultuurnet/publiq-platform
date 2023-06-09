@@ -215,7 +215,7 @@ const Index = ({ subscriptions }: Props) => {
             info={`${t("integration_form.description_aim")}`}
             component={
               <textarea
-                rows={5}
+                rows={3}
                 className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                 name="description"
                 value={data.description}
