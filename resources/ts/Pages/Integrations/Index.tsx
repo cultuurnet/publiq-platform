@@ -57,6 +57,7 @@ const Index = ({ integrations, paginationInfo }: Props) => {
   const handleDeleteIntegration = () => {
     router.delete(`/integrations/${toBeDeletedId}`, {
       onFinish: () => setIsDeleteDialogVisible(false),
+      preserveScroll: true,
     });
   };
 
