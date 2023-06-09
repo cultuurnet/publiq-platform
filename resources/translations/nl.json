@@ -63,7 +63,12 @@
     "test": "Test",
     "live": "Live",
     "status": {
-      "not_active": "Niet actief"
+      "draft": "Voorlopige versie",
+      "blocked": "Geblokeerd",
+      "active": "Actief",
+      "deleted": "Verwijderd",
+      "pending_approval_integration": "Niet actief",
+      "pending_approval_payment": "Niet actief"
     },
     "documentation": {
       "title": "Documentatie",
