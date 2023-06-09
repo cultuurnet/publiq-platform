@@ -32,7 +32,7 @@ const Index = ({ integrations, paginationInfo }: Props) => {
   const { t } = useTranslation();
   const translateRoute = useTranslateRoute();
 
-  const [isDeleteDialogVisible, setIsDeleteDialogVisible] = useState(true);
+  const [isDeleteDialogVisible, setIsDeleteDialogVisible] = useState(false);
   const [toBeDeletedId, setToBeDeletedId] = useState("");
 
   const searchParams = new URLSearchParams(document.location.search);
