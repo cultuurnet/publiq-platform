@@ -47,8 +47,6 @@ const pricing = (t: TFunction, subscriptions: Subscription[]) => {
   const plus = getInfoForType("plus");
   const custom = getInfoForType("custom");
 
-  console.log({ basic, plus, custom });
-
   return [
     {
       title: t("integration_form.pricing.basic.title"),
