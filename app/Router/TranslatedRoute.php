@@ -29,7 +29,7 @@ final class TranslatedRoute
             $route = Route::get($uri, $action);
 
             if ($routeName !== null) {
-                $languageFromUri = explode('/', $uri)[0];
+                $languageFromUri = explode('/', $uri)[1];
                 $route->name(self::createTranslatedRouteName($routeName, $languageFromUri));
             }
         }
