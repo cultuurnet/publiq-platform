@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Domain\Auth\Models\UserModel;
+
 return [
 
     /*
@@ -16,7 +18,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'auth0',
+        'guard' => 'web',
         'passwords' => 'users',
     ],
 
@@ -42,10 +44,6 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-        'auth0' => [
-            'driver' => 'auth0',
-            'provider' => 'auth0',
-        ],
     ],
 
     /*
@@ -66,15 +64,9 @@ return [
     */
 
     'providers' => [
-         'users' => [
-            'driver' => 'eloquent',
-            'model' => App\Domain\Auth\Models\UserModel::class,
-         ],
-
-        'auth0' => [
+        'users' => [
             'driver' => 'auth0',
-            'model' => App\Domain\Auth\Models\UserModel::class,
-            'repository' => App\Domain\Auth\Repositories\UserRepository::class,
+            'model' => UserModel::class,
         ],
     ],
 

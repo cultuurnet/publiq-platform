@@ -29,13 +29,13 @@ return [
     'clientSecret' => env('AUTH0_LOGIN_CLIENT_SECRET'),
 
     // One or more API identifiers, found in your Auth0 API settings. The SDK uses the first value for building links. If provided, at least one of these values must match the 'aud' claim to validate an ID Token successfully.
-    'audience' => \Auth0\Laravel\Configuration::stringToArrayOrNull(env('AUTH0_LOGIN_AUDIENCE')),
+    'audience' => env('AUTH0_LOGIN_AUDIENCE'),
 
     // One or more scopes to request for Tokens. See https://auth0.com/docs/scopes
-    'scope' => \Auth0\Laravel\Configuration::stringToArray(env('AUTH0_LOGIN_SCOPE')),
+    'scope' => env('AUTH0_LOGIN_SCOPE'),
 
     // One or more Organization IDs, found in your Auth0 Organization settings. The SDK uses the first value for building links. If provided, at least one of these values must match the 'org_id' claim to validate an ID Token successfully.
-    'organization' => \Auth0\Laravel\Configuration::stringToArrayOrNull(env('AUTH0_LOGIN_ORGANIZATION')),
+    'organization' => env('AUTH0_LOGIN_ORGANIZATION'),
 
     // The secret used to derive an encryption key for the user identity in a session cookie and to sign the transient cookies used by the login callback.
     'cookieSecret' => env('AUTH0_LOGIN_COOKIE_SECRET', env('APP_KEY')),
@@ -51,7 +51,7 @@ return [
     'cookiePath' => env('AUTH0_LOGIN_COOKIE_PATH', '/'),
 
     // Defaults to false. Specifies whether cookies should ONLY be sent over secure connections.
-    'cookieSecure' => \Auth0\Laravel\Configuration::stringToBoolOrNull(env('AUTH0_LOGIN_COOKIE_SECURE'), false),
+    'cookieSecure' => env('AUTH0_LOGIN_COOKIE_SECURE', false),
 
     // Named routes within your Laravel application that the SDK may call during stateful requests for redirections.
     'routes' => [
