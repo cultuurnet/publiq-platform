@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace App\Domain\Auth\Controllers;
 
-use Auth0\Laravel\Auth0;
-use Auth0\Laravel\Contract\Auth\Guard;
-use Auth0\SDK\Contract\Auth0Interface;
-use Illuminate\Contracts\Auth\Factory;
+use Auth0\SDK\Auth0;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-final class Login implements \Auth0\Laravel\Contract\Http\Controller\Stateful\Login
+final class Login
 {
     /** @var array<string> */
     private array $loginParams;
@@ -24,18 +22,14 @@ final class Login implements \Auth0\Laravel\Contract\Http\Controller\Stateful\Lo
 
     public function __invoke(Request $request): RedirectResponse
     {
-        /** @var Factory $auth */
-        $auth = auth();
+        /** @var Auth0 $auth0 */
+        $auth0 = app(Auth0::class);
+        $auth0->clear();
 
-        /** @var Guard $guard */
-        $guard = $auth->guard('auth0');
-
-        if ($guard->check()) {
+        if (Auth::check()) {
             return redirect()->intended(config('auth0.routes.home', '/'));
         }
 
-        /** @var Auth0Interface $sdk */
-        $sdk = app(Auth0::class)->getSdk();
-        return redirect()->away($sdk->login(null, $this->loginParams));
+        return redirect()->away($auth0->login(null, $this->loginParams));
     }
 }
