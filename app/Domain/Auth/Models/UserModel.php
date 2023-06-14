@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Domain\Auth\Models;
 
-use Auth0\Laravel\Contract\Model\Stateful\User as StatefulUser;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Model;
@@ -16,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $first_name
  * @property string $last_name
  */
-final class UserModel extends Model implements AuthenticatableContract, StatefulUser
+final class UserModel extends Model implements AuthenticatableContract
 {
     use Authenticatable;
 
@@ -36,6 +35,20 @@ final class UserModel extends Model implements AuthenticatableContract, Stateful
     public function getKeyType(): string
     {
         return 'string';
+    }
+
+    /**
+     * @param array<string> $user
+     */
+    public static function fromSession(array $user): UserModel
+    {
+        return new UserModel([
+            'id' => $user['sub'] ?? $user['user_id'] ?? null,
+            'name' => $user['name'],
+            'email' => $user['email'],
+            'first_name' => $user['https://publiq.be/first_name'] ?? '',
+            'last_name' => $user['family_name'] ?? '',
+        ]);
     }
 
     public static function createSystemUser(): UserModel
