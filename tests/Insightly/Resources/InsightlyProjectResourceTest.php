@@ -345,7 +345,7 @@ final class InsightlyProjectResourceTest extends TestCase
         $this->resource->unlinkContact($projectId, $contactId);
     }
 
-    public function provideIntegrationTypes(): Iterator
+    public static function provideIntegrationTypes(): Iterator
     {
         yield 'Entry api' => [
             'integrationType' => IntegrationType::EntryApi,

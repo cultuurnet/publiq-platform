@@ -47,7 +47,7 @@ final class InsightlyOrganizationResourceTest extends TestCase
         $this->assertEquals($insightlyId, $returnedId);
     }
 
-    public function provideCreateCases(): Iterator
+    public static function provideCreateCases(): Iterator
     {
         yield 'Organization without vat' => [
             'organization' => new Organization(
@@ -113,7 +113,7 @@ final class InsightlyOrganizationResourceTest extends TestCase
         $this->resource->update($organization, $insightlyId);
     }
 
-    public function provideUpdateCases(): Iterator
+    public static function provideUpdateCases(): Iterator
     {
         yield 'Organization without vat' => [
             'organization' => new Organization(

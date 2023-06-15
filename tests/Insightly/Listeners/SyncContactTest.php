@@ -141,7 +141,7 @@ final class SyncContactTest extends TestCase
         $this->syncContact->handleContactCreated(new ContactCreated($this->contactId));
     }
 
-    public function provideExistingEmailCases(): Iterator
+    public static function provideExistingEmailCases(): Iterator
     {
         yield 'one contact found' => [
             'insightlyContacts' => [
@@ -230,7 +230,7 @@ final class SyncContactTest extends TestCase
         $this->syncContact->handleContactUpdated(new ContactUpdated($this->contactId, true));
     }
 
-    public function provideIntegrationMappingCases(): Iterator
+    public static function provideIntegrationMappingCases(): Iterator
     {
         yield 'nothing is mapped' => [
             'mappedToOpportunity' => false,

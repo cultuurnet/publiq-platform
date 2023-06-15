@@ -109,7 +109,7 @@ final class InsightlyOpportunityResourceTest extends TestCase
         $this->assertEquals($insightlyId, $returnedId);
     }
 
-    public function provideIntegrationTypes(): Iterator
+    public static function provideIntegrationTypes(): Iterator
     {
         yield 'Entry api' => [
             'integrationType' => IntegrationType::EntryApi,
@@ -283,7 +283,7 @@ final class InsightlyOpportunityResourceTest extends TestCase
         $this->resource->linkContact(42, 3, $contactType);
     }
 
-    public function provideContactTypes(): Iterator
+    public static function provideContactTypes(): Iterator
     {
         yield 'Technical' => [
             'contactType' => ContactType::Technical,

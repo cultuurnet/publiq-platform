@@ -29,7 +29,7 @@ final class SyncIsAllowedTest extends TestCase
         $this->assertEquals($isAllowed, SyncIsAllowed::forContact($contact));
     }
 
-    public function provideCases(): Iterator
+    public static function provideCases(): Iterator
     {
         yield 'functional' => [
             'contactType' => ContactType::Functional,
