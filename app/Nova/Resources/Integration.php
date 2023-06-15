@@ -187,6 +187,8 @@ final class Integration extends Resource
 
             HasMany::make('Contacts'),
 
+            HasMany::make('Urls', 'urls', IntegrationUrl::class),
+
             HasMany::make('Activity Log'),
         ];
     }

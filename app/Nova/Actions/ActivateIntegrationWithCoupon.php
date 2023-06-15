@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Actions\Action;
+use Laravel\Nova\Actions\ActionResponse;
 use Laravel\Nova\Fields\ActionFields;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -25,7 +26,7 @@ final class ActivateIntegrationWithCoupon extends Action
     {
     }
 
-    public function handle(ActionFields $fields, Collection $integrations): array
+    public function handle(ActionFields $fields, Collection $integrations): Action|ActionResponse
     {
         /** @var string $couponCode */
         $couponCode = $fields->get('coupon');

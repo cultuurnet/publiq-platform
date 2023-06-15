@@ -67,8 +67,7 @@ final class InsightlyProjectResourceTest extends TestCase
             $name,
             $description,
             Uuid::uuid4(),
-            IntegrationStatus::Draft,
-            []
+            IntegrationStatus::Draft
         );
 
         $expectedCreateRequest = new Request(

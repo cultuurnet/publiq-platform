@@ -1,12 +1,14 @@
 import React, { ReactNode } from "react";
 import Header from "./Header";
+import HeaderMobile from "./HeaderMobile";
 import Footer from "./Footer";
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <div className="flex flex-col items-center px-3 lg:px-6">
+    <div className="flex flex-col flex-1 items-center text-publiq-gray-dark bg-publiq-gray-light">
       <Header />
-      <section className="pb-8 max-w-2xl">{children}</section>
+      <HeaderMobile />
+      <main className="flex flex-col items-center pb-8 w-full">{children}</main>
       <Footer />
     </div>
   );

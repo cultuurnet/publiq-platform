@@ -16,14 +16,17 @@ final class StoreIntegration extends FormRequest
         return [
             'integrationType' => ['required', 'string'],
             'subscriptionId' => ['required', 'string'],
-            'name' => ['required', 'string', 'max:255'],
+            'integrationName' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string', 'max:255'],
-            'firstNameOrganisation' => ['required', 'string', 'max:255'],
-            'lastNameOrganisation' => ['required', 'string', 'max:255'],
-            'emailOrganisation' => ['required', 'string', 'email', 'max:255'],
-            'firstNamePartner' => ['required', 'string', 'max:255'],
-            'lastNamePartner' => ['required', 'string', 'max:255'],
-            'emailPartner' => ['required', 'string', 'email', 'max:255'],
+            'organisationFunctionalContact' => ['required', 'string', 'max:255'],
+            'firstNameFunctionalContact' => ['required', 'string', 'max:255'],
+            'lastNameFunctionalContact' => ['required', 'string', 'max:255'],
+            'emailFunctionalContact' => ['required', 'string', 'email', 'max:255'],
+            'organisationTechnicalContact' => ['required', 'string', 'max:255'],
+            'firstNameTechnicalContact' => ['required', 'string', 'max:255'],
+            'lastNameTechnicalContact' => ['required', 'string', 'max:255'],
+            'emailTechnicalContact' => ['required', 'string', 'email', 'max:255'],
+            'agreement' => ['required', 'string'],
         ];
     }
 }

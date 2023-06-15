@@ -1,0 +1,132 @@
+{
+  "pages": {
+    "/integrations": "/en/integrations",
+    "/integrations/new": "/en/integrations/new",
+    "/support": "/en/support",
+    "/subscriptions": "/en/subscriptions"
+  },
+  "title": "publiq platform",
+  "nav": {
+    "integrations": "My integrations",
+    "support": "Support",
+    "hello": "Hello"
+  },
+  "home": {
+    "hero": {
+      "title": "Bereik een groter publiek",
+      "intro": "publiq biedt een waaier van toepassingen om eigen activiteiten te promoten en agenda-informatie in je website of app te integreren.",
+      "start_here": "Start hier"
+    },
+    "integration_types": {
+      "entry_api": {
+        "title": "Entry API",
+        "description": "Via Entry API kan je items in de UiTdatabank aanmaken, aanpassen en verwijderen.",
+        "features": [
+          "JSON-standaard",
+          "Award-winning API",
+          "Activatie op live-omgeving op aanvraag"
+        ],
+        "action_url": "#"
+      },
+      "search_api": {
+        "title": "Search API",
+        "description": "Haal evenementinformatie op uit de UiTdatabank via onze nieuwste zoekengine.",
+        "features": [
+          "JSON-standaard",
+          "Robuuste performantie",
+          "Uitgebreide filtermogelijkheden"
+        ],
+        "action_url": "#"
+      },
+      "widgets": {
+        "title": "Widgets",
+        "description": "Kant en klare HTML-modules die je in je website kan inpassen om een doorzoekbare lijst van evenementen weer te geven.",
+        "features": [
+          "Zelf of door publiq in te stellen",
+          "Plug & play oplossing",
+          "Uitgebreide configuratiemogelijkheden"
+        ],
+        "action_url": "#"
+      },
+      "more_info": "Meer info"
+    }
+  },
+  "integration_form": {
+    "title": "Integratie toevoegen",
+    "description": "Je betaalt pas wanneer je gebruik wilt maken van echte data. Je probeert eerst alle mogelijkheden met testevenementen.",
+    "type": "Type integratie",
+    "pricing_plan": "Prijsplan",
+    "integration_name": "Naam integratie",
+    "description_name": "Geef een duidelijk titel aan je integratie en vermeld de naam van de organisatie of gemeente waarvoor de integratie gebouwd wordt",
+    "aim": "Doel van de integratie",
+    "description_aim": "Geef een duidelijke, gemotiveerde beschrijving van de integraite die je met het publiq platform wil opzetten (max. 200 karakters)",
+    "contact_label_1": "Inhoudelijk contact ",
+    "contact_label_2": "Technical contact",
+    "contact": {
+      "organisation": "Naam organisatie",
+      "first_name": "Voornaam contactpersoon",
+      "last_name": "Naam contactpersoon",
+      "email": "E-mailadres"
+    },
+    "agree": "Ik ga akkoord met de",
+    "terms_of_use": "gebruiksvoorwaarden",
+    "submit": "Integratie aanmaken",
+    "back": "Terug naar integratieoverzicht",
+    "pricing": {
+      "basic": {
+        "title": "Basic",
+        "description": "Je configureert de widget zelf met behulp van onze documentatie.",
+        "price": "{{currency}} {{price}} / jaar"
+      },
+      "plus": {
+        "title": "Plus",
+        "description": "Na een intakegesprek configureren we de widget van A tot Z voor jou.",
+        "price": "eerste jaar: € 600 nadien: € 280 / jaar"
+      },
+      "custom": {
+        "title": "Custom",
+        "description": "We helpen je waar jij ons nodig hebt.",
+        "price": "voorstel op maat"
+      }
+    }
+  },
+  "support": {
+    "title": "Support",
+    "description": "We ondersteunen je op verschillende manieren, zodat jij vlot een integratie met het publiq ecosysteem kan opzetten.",
+    "documentation": {
+      "title": "Documentatie",
+      "description": "Met onze uitgebreide documentatie zetten we je op weg bij elke integratie.",
+      "img_url": "#",
+      "action_title": "Naar de documentatie",
+      "action_url": "#"
+    },
+    "styleguide": {
+      "title": "Stijlgids",
+      "description": "Alle iconen, logo's en kleuren voor jou op een rijtje gezet. Een must wanneer je een UiT-agenda bouwt.",
+      "img_url": "#",
+      "action_title": "Naar de stijlgids",
+      "action_url": "#"
+    },
+    "statuspage": {
+      "title": "Statuspagina",
+      "description": "We bieden een overzicht van de status van de applicaties & services binnen het publiq platform. Je kan je inschrijven om op de hoogte te blijven van belangrijke updates.",
+      "img_url": "#",
+      "action_title": "Naar de statuspagina",
+      "action_url": "#"
+    },
+    "support_via_slack": {
+      "title": "Support via slack",
+      "description": "Heb je na het lezen van onze documentatie toch nog vragen? We horen ze graag. Via ons support kanaal op slack spelen we kort op de bal.",
+      "img_url": "#",
+      "action_title": "Naar het slack kanaal",
+      "action_url": "#"
+    },
+    "customized_support": {
+      "title": "Ondersteuning op maat",
+      "description": "Een organisatie met een hart voor cultuur en vrije tijd? Dan werken we graag een voorstel op maat uit!",
+      "img_url": "#",
+      "action_title": "Contacteer ons",
+      "action_url": "#"
+    }
+  }
+}

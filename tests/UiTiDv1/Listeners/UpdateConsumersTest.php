@@ -57,8 +57,7 @@ final class UpdateConsumersTest extends TestCase
             'Mock Integration',
             'Mock description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft,
-            []
+            IntegrationStatus::Draft
         );
 
         $consumers = [
@@ -109,7 +108,7 @@ final class UpdateConsumersTest extends TestCase
                         [
                             'http_errors' => false,
                             'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
-                            'body' => 'name=Mock%20Integration%20%28id%3A%20' . $integrationId . '%29',
+                            'body' => 'name=Mock%20Integration%20%28via%20publiq%20platform%29',
                         ],
                     ],
                     [
@@ -118,7 +117,7 @@ final class UpdateConsumersTest extends TestCase
                         [
                             'http_errors' => false,
                             'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
-                            'body' => 'name=Mock%20Integration%20%28id%3A%20' . $integrationId . '%29',
+                            'body' => 'name=Mock%20Integration%20%28via%20publiq%20platform%29',
                         ],
                     ],
                     [
@@ -127,7 +126,7 @@ final class UpdateConsumersTest extends TestCase
                         [
                             'http_errors' => false,
                             'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
-                            'body' => 'name=Mock%20Integration%20%28id%3A%20' . $integrationId . '%29',
+                            'body' => 'name=Mock%20Integration%20%28via%20publiq%20platform%29',
                         ],
                     ] => new Response(200, [], ''),
                     default => throw new \LogicException('Invalid arguments received'),

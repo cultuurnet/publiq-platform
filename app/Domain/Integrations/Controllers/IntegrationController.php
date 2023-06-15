@@ -13,6 +13,7 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Http\Controllers\Controller;
+use App\Router\TranslatedRoute;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -23,7 +24,7 @@ final class IntegrationController extends Controller
 {
     public function __construct(
         private readonly SubscriptionRepository $subscriptionRepository,
-        private readonly IntegrationRepository  $integrationRepository,
+        private readonly IntegrationRepository $integrationRepository,
         private readonly CurrentUser $currentUser
     ) {
     }
@@ -39,7 +40,7 @@ final class IntegrationController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('Integrations/Create', [
+        return Inertia::render('Integrations/New', [
             'integrationTypes' => IntegrationType::cases(),
             'subscriptions' => $this->subscriptionRepository->all(),
         ]);
@@ -52,19 +53,19 @@ final class IntegrationController extends Controller
         $contactOrganization = new Contact(
             Uuid::uuid4(),
             $integrationId,
-            $storeIntegration->input('emailOrganisation'),
+            $storeIntegration->input('emailFunctionalContact'),
             ContactType::Functional,
-            $storeIntegration->input('firstNameOrganisation'),
-            $storeIntegration->input('lastNameOrganisation')
+            $storeIntegration->input('firstNameFunctionalContact'),
+            $storeIntegration->input('lastNameFunctionalContact')
         );
 
         $contactPartner = new Contact(
             Uuid::uuid4(),
             $integrationId,
-            $storeIntegration->input('emailPartner'),
+            $storeIntegration->input('emailTechnicalContact'),
             ContactType::Technical,
-            $storeIntegration->input('firstNamePartner'),
-            $storeIntegration->input('lastNamePartner')
+            $storeIntegration->input('firstNameTechnicalContact'),
+            $storeIntegration->input('lastNameTechnicalContact')
         );
 
         $contributor = new Contact(
@@ -76,20 +77,24 @@ final class IntegrationController extends Controller
             $this->currentUser->lastName()
         );
 
-        $integration = new Integration(
-            $integrationId,
-            IntegrationType::from($storeIntegration->input('integrationType')),
-            $storeIntegration->input('name'),
-            $storeIntegration->input('description'),
-            Uuid::fromString($storeIntegration->input('subscriptionId')),
-            IntegrationStatus::Draft,
-            [
-                $contactOrganization, $contactPartner, $contributor,
-            ]
-        );
+        $integration = (
+            new Integration(
+                $integrationId,
+                IntegrationType::from($storeIntegration->input('integrationType')),
+                $storeIntegration->input('name'),
+                $storeIntegration->input('description'),
+                Uuid::fromString($storeIntegration->input('subscriptionId')),
+                IntegrationStatus::Draft
+            )
+        )->withContacts($contactOrganization, $contactPartner, $contributor);
 
         $this->integrationRepository->save($integration);
 
-        return Redirect::route('integrations.index');
+        return Redirect::route(
+            TranslatedRoute::getTranslatedRouteName(
+                request: $storeIntegration,
+                routeName: 'integrations.index'
+            )
+        );
     }
 }

@@ -9,9 +9,12 @@ use Ramsey\Uuid\UuidInterface;
 
 final class Integration
 {
-    /**
-     * @param Contact[] $contacts
-     */
+    /** @var array<Contact> */
+    private array $contacts;
+
+    /** @var array<IntegrationUrl> */
+    private array $urls;
+
     public function __construct(
         public readonly UuidInterface $id,
         public readonly IntegrationType $type,
@@ -19,7 +22,49 @@ final class Integration
         public readonly string $description,
         public readonly UuidInterface $subscriptionId,
         public readonly IntegrationStatus $status,
-        public readonly array $contacts
     ) {
+        $this->contacts = [];
+        $this->urls = [];
+    }
+
+    public function withContacts(Contact ...$contacts): self
+    {
+        $clone = clone $this;
+        $clone->contacts = $contacts;
+        return $clone;
+    }
+
+    /**
+     * @return array<Contact>
+     */
+    public function contacts(): array
+    {
+        return $this->contacts;
+    }
+
+    public function withUrls(IntegrationUrl ...$urls): self
+    {
+        $clone = clone $this;
+        $clone->urls = $urls;
+        return $clone;
+    }
+
+    /**
+     * @return array<IntegrationUrl>
+     */
+    public function urls(): array
+    {
+        return $this->urls;
+    }
+
+    /**
+     * @return array<IntegrationUrl>
+     */
+    public function urlsForTypeAndEnvironment(IntegrationUrlType $type, Environment $environment): array
+    {
+        return array_filter(
+            $this->urls,
+            fn (IntegrationUrl $url) => $url->type->value === $type->value && $url->environment->value === $environment->value
+        );
     }
 }

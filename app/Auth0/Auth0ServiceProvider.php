@@ -12,6 +12,9 @@ use App\Auth0\Repositories\EloquentAuth0ClientRepository;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationUpdated;
+use App\Domain\Integrations\Events\IntegrationUrlCreated;
+use App\Domain\Integrations\Events\IntegrationUrlDeleted;
+use App\Domain\Integrations\Events\IntegrationUrlUpdated;
 use Auth0\SDK\Configuration\SdkConfiguration;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
@@ -67,6 +70,10 @@ final class Auth0ServiceProvider extends ServiceProvider
             Event::listen(IntegrationCreated::class, [CreateClients::class, 'handle']);
             Event::listen(IntegrationUpdated::class, [UpdateClients::class, 'handle']);
             Event::listen(IntegrationBlocked::class, [BlockClients::class, 'handle']);
+
+            Event::listen(IntegrationUrlCreated::class, [UpdateClients::class, 'handle']);
+            Event::listen(IntegrationUrlUpdated::class, [UpdateClients::class, 'handle']);
+            Event::listen(IntegrationUrlDeleted::class, [UpdateClients::class, 'handle']);
         }
     }
 }

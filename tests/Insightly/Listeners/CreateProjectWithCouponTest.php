@@ -189,8 +189,7 @@ final class CreateProjectWithCouponTest extends TestCase
             'My integration',
             'This is my integration',
             $subscriptionId,
-            IntegrationStatus::Draft,
-            []
+            IntegrationStatus::Draft
         );
 
         $this->integrationRepository->expects($this->once())

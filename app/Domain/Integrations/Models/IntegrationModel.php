@@ -121,6 +121,14 @@ final class IntegrationModel extends UuidModel
         return $this->hasMany(InsightlyMappingModel::class, 'id');
     }
 
+    /**
+     * @return HasMany<IntegrationUrlModel>
+     */
+    public function urls(): HasMany
+    {
+        return $this->hasMany(IntegrationUrlModel::class, 'integration_id');
+    }
+
     public function insightlyOpportunityId(): ?string
     {
         return $this->insightlyMappings()
@@ -173,16 +181,22 @@ final class IntegrationModel extends UuidModel
 
     public function toDomain(): Integration
     {
-        return new Integration(
+        return (new Integration(
             Uuid::fromString($this->id),
             IntegrationType::from($this->type),
             $this->name,
             $this->description,
             Uuid::fromString($this->subscription_id),
             IntegrationStatus::from($this->status),
-            $this->contacts()
+        ))->withContacts(
+            ...$this->contacts()
                 ->get()
                 ->map(fn (ContactModel $contactModel) => $contactModel->toDomain())
+                ->toArray()
+        )->withUrls(
+            ...$this->urls()
+                ->get()
+                ->map(fn (IntegrationUrlModel $integrationUrlModel) => $integrationUrlModel->toDomain())
                 ->toArray()
         );
     }
