@@ -16,3 +16,4 @@ yarn-error.log
 /.vscode
 .php-cs-fixer.cache
 database/project-aanvraag
+.phpunit.cache
