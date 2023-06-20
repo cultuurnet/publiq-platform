@@ -19,6 +19,7 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Arr;
 use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use Tests\AssertRequest;
@@ -53,9 +54,7 @@ final class InsightlyProjectResourceTest extends TestCase
         $this->resource = new InsightlyProjectResource($this->insightlyClient);
     }
 
-    /**
-     * @dataProvider provideIntegrationTypes
-     */
+    #[DataProvider('provideIntegrationTypes')]
     public function test_it_creates_a_project(IntegrationType $integrationType, array $expectedCustomFields): void
     {
         $name = 'my integration';
@@ -346,7 +345,7 @@ final class InsightlyProjectResourceTest extends TestCase
         $this->resource->unlinkContact($projectId, $contactId);
     }
 
-    public function provideIntegrationTypes(): Iterator
+    public static function provideIntegrationTypes(): Iterator
     {
         yield 'Entry api' => [
             'integrationType' => IntegrationType::EntryApi,

@@ -11,6 +11,7 @@ use App\Json;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use Tests\AssertRequest;
@@ -30,9 +31,7 @@ final class InsightlyOrganizationResourceTest extends TestCase
         $this->resource = new InsightlyOrganizationResource($this->insightlyClient);
     }
 
-    /**
-     * @dataProvider provideCreateCases
-     */
+    #[DataProvider('provideCreateCases')]
     public function test_it_creates_an_organization(Organization $organization, string $expectedRequest): void
     {
         $insightlyId = 42;
@@ -48,7 +47,7 @@ final class InsightlyOrganizationResourceTest extends TestCase
         $this->assertEquals($insightlyId, $returnedId);
     }
 
-    public function provideCreateCases(): Iterator
+    public static function provideCreateCases(): Iterator
     {
         yield 'Organization without vat' => [
             'organization' => new Organization(
@@ -102,9 +101,7 @@ final class InsightlyOrganizationResourceTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provideUpdateCases
-     */
+    #[DataProvider('provideUpdateCases')]
     public function test_it_updates_an_organization(Organization $organization, int $insightlyId, string $expectedRequest): void
     {
         $expectedRequest = new Request('PUT', 'Organizations/', [], $expectedRequest);
@@ -116,7 +113,7 @@ final class InsightlyOrganizationResourceTest extends TestCase
         $this->resource->update($organization, $insightlyId);
     }
 
-    public function provideUpdateCases(): Iterator
+    public static function provideUpdateCases(): Iterator
     {
         yield 'Organization without vat' => [
             'organization' => new Organization(

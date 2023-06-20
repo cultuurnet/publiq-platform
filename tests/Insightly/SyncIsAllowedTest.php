@@ -8,14 +8,13 @@ use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Insightly\SyncIsAllowed;
 use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
 final class SyncIsAllowedTest extends TestCase
 {
-    /**
-     * @dataProvider provideCases
-     */
+    #[DataProvider('provideCases')]
     public function test_it_checks_for_contact(ContactType $contactType, bool $isAllowed): void
     {
         $contact = new Contact(
@@ -30,7 +29,7 @@ final class SyncIsAllowedTest extends TestCase
         $this->assertEquals($isAllowed, SyncIsAllowed::forContact($contact));
     }
 
-    public function provideCases(): Iterator
+    public static function provideCases(): Iterator
     {
         yield 'functional' => [
             'contactType' => ContactType::Functional,

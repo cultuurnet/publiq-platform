@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
+use App\Domain\Auth\Controllers\Callback;
 use App\Domain\Auth\Controllers\Login;
 use App\Domain\Auth\Controllers\Logout;
 use App\Domain\Integrations\Controllers\IntegrationController;
 use App\Domain\Subscriptions\Controllers\SubscriptionController;
-use Auth0\Laravel\Http\Controller\Stateful\Callback;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Router\TranslatedRoute;
@@ -24,8 +24,6 @@ use App\Router\TranslatedRoute;
 
 Route::get('/', static fn () => Inertia::render('Index'));
 
-TranslatedRoute::get(['/en/support', '/nl/ondersteuning'], static fn () => Inertia::render('Support/Index'));
-
 Route::get('/login', Login::class)->name('login');
 Route::get('/admin/login', static fn () => redirect('/login'));
 
@@ -34,6 +32,7 @@ Route::post('/admin/logout', Logout::class);
 
 Route::get('/auth/callback', Callback::class);
 
+TranslatedRoute::get(['/en/support', '/nl/ondersteuning'], static fn () => Inertia::render('Support/Index'));
 TranslatedRoute::get(['/en/subscriptions', '/nl/abonnementen'], [SubscriptionController::class, 'index']);
 
 Route::group(['middleware' => 'auth'], static function () {
