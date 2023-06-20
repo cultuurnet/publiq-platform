@@ -7,6 +7,7 @@ import { Card } from "./Card";
 import { useTranslation } from "react-i18next";
 import { Link } from "./Link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { StatusLight } from "./StatusLight";
 
 type Props = Integration & {
   onDelete: (id: string) => void;
@@ -64,6 +65,7 @@ export const IntegrationCard = ({
         </section>
         <section className="inline-flex gap-3 items-center">
           <Heading level={3}>{t("integrations.live")}</Heading>
+          <StatusLight status={status} />
           <span>{t(`integrations.status.${status}`)}</span>
         </section>
         <section className="inline-flex gap-3 items-center">
