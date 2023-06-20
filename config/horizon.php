@@ -200,6 +200,7 @@ return [
     'users' => [
         'dev@publiq.be',
         'simon.debruijn@publiq.be',
+        'hande.vanhove@publiq.be',
         'lucwollants@gmail.com',
     ],
 ];

@@ -92,6 +92,7 @@ return [
     'users' => [
         'dev+e2etest@publiq.be',
         'simon.debruijn@publiq.be',
+        'hande.vanhove@publiq.be',
         'lucwollants@gmail.com',
         'corneel.wille@publiq.be',
         'jonas@cultuurnet.be',
