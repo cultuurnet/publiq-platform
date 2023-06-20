@@ -26,10 +26,11 @@ module.exports = {
         "publiq-blue": "#009fdf",
         "publiq-blue-dark": "#0076a5",
         "publiq-blue-light": "#1ebeff",
-        "publiq-gray": "#3b3b3b",
-        "publiq-gray-light": "#f5f5f5",
+        "publiq-gray-dark": "#3b3b3b",
+        "publiq-gray-medium": "#efefef",
+        "publiq-gray-light": "#fcfcfc",
       },
-      textColor: ({ theme }) => theme("colors.publiq-gray"),
+      textColor: ({ theme }) => theme("colors.publiq-gray-dark"),
       fontFamily: {
         sans: [
           "ui-sans-serif",

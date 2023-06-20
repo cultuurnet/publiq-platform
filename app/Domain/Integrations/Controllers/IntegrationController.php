@@ -14,7 +14,9 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Http\Controllers\Controller;
 use App\Router\TranslatedRoute;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -29,12 +31,18 @@ final class IntegrationController extends Controller
     ) {
     }
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        $search = $request->query('search') ?? '';
+
+        $integrationsData = $this->integrationRepository->getByContactEmail(
+            $this->currentUser->email(),
+            is_array($search) ? $search[0] : $search
+        );
+
         return Inertia::render('Integrations/Index', [
-            'integrations' => $this->integrationRepository->getByContactEmail(
-                $this->currentUser->email()
-            ),
+            'integrations' => $integrationsData->collection,
+            'paginationInfo' => $integrationsData->paginationInfo,
         ]);
     }
 
@@ -96,5 +104,19 @@ final class IntegrationController extends Controller
                 routeName: 'integrations.index'
             )
         );
+    }
+
+    public function delete(Request $request, string $id): RedirectResponse
+    {
+        try {
+            $this->integrationRepository->deleteById(Uuid::fromString($id));
+        } catch (ModelNotFoundException) {
+            // We can redirect back to integrations, even if not successful
+        }
+
+        return Redirect::route(
+            TranslatedRoute::getTranslatedRouteName(request: $request, routeName: 'integrations.index')
+        );
+
     }
 }

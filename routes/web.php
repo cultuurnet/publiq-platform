@@ -39,5 +39,7 @@ Route::group(['middleware' => 'auth'], static function () {
     TranslatedRoute::get(['/en/integrations', '/nl/integraties'], [IntegrationController::class, 'index'], 'integrations.index');
     TranslatedRoute::get(['/en/integrations/new', '/nl/integraties/nieuw'], [IntegrationController::class, 'create']);
 
+    Route::delete('/integrations/{id}', [IntegrationController::class, 'delete']);
+
     Route::post('/integrations', [IntegrationController::class, 'store']);
 });

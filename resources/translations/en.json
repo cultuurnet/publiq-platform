@@ -1,15 +1,16 @@
 {
   "pages": {
-    "/integrations": "/en/integrations",
-    "/integrations/new": "/en/integrations/new",
-    "/support": "/en/support",
-    "/subscriptions": "/en/subscriptions"
+    "/integrations": "/nl/integraties",
+    "/integrations/new": "/nl/integraties/nieuw",
+    "/support": "/nl/ondersteuning",
+    "/subscriptions": "/nl/abonnementen"
   },
   "title": "publiq platform",
   "nav": {
-    "integrations": "My integrations",
-    "support": "Support",
-    "hello": "Hello"
+    "integrations": "Mijn integraties",
+    "opportunities": "Mogelijkheden",
+    "support": "Ondersteuning",
+    "hello": "Hallo"
   },
   "home": {
     "hero": {
@@ -65,7 +66,7 @@
     "contact": {
       "organisation": "Naam organisatie",
       "first_name": "Voornaam contactpersoon",
-      "last_name": "Naam contactpersoon",
+      "last_name": "Achternaam contactpersoon",
       "email": "E-mailadres"
     },
     "agree": "Ik ga akkoord met de",
@@ -90,8 +91,36 @@
       }
     }
   },
+  "integrations": {
+    "title": "Mijn integraties",
+    "add": "Integratie toevoegen",
+    "results_found_zero": "Geen integraties gevonden",
+    "results_found_one": "{{count}} integratie gevonden",
+    "results_found_other": "{{count}} integraties gevonden",
+    "no_results_found": "Geen integraties gevonden",
+    "searching": "Zoeken ...",
+    "test": "Test",
+    "live": "Live",
+    "products": {
+      "search-api": "Search API",
+      "entry-api": "Entry API",
+      "widgets": "Widgets"
+    },
+    "status": {
+      "draft": "Voorlopige versie",
+      "blocked": "Geblokeerd",
+      "active": "Actief",
+      "deleted": "Verwijderd",
+      "pending_approval_integration": "Niet actief",
+      "pending_approval_payment": "Niet actief"
+    },
+    "documentation": {
+      "title": "Documentatie",
+      "action_title": "Aan de slag met {{product}}"
+    }    
+  },
   "support": {
-    "title": "Support",
+    "title": "Ondersteuning",
     "description": "We ondersteunen je op verschillende manieren, zodat jij vlot een integratie met het publiq ecosysteem kan opzetten.",
     "documentation": {
       "title": "Documentatie",
@@ -128,5 +157,9 @@
       "action_title": "Contacteer ons",
       "action_url": "#"
     }
+  },
+  "dialog": {
+    "confirm": "Doorgaan",
+    "cancel": "Annuleer"
   }
 }
