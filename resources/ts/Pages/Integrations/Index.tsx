@@ -14,6 +14,7 @@ import { PaginationInfo } from "../../types/PaginationInfo";
 import { Page } from "../../Shared/Page";
 import { QuestionDialog } from "../../Shared/QuestionDialog";
 import { IconLink } from "../../Shared/IconLink";
+import { IntegrationStatus } from "../../types/IntegrationStatus";
 
 export type Integration = {
   id: string;
@@ -21,7 +22,7 @@ export type Integration = {
   name: string;
   description: string;
   subscriptionId: string;
-  status: string;
+  status: IntegrationStatus;
 };
 
 type Props = {
