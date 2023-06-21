@@ -159,7 +159,7 @@ const Index = ({ subscriptions }: Props) => {
             label={`${t("integration_form.type")}`}
             labelSize="xl"
             component={
-              <div className="flex gap-5 max-md:flex-col max-md:items-center md:flex-row pb-3">
+              <div className="md:grid md:grid-cols-3 gap-5 max-md:flex max-md:flex-col max-md:items-center pb-3">
                 {translatedIntegrations.map((integration) => (
                   <button
                     type="button"
@@ -171,7 +171,7 @@ const Index = ({ subscriptions }: Props) => {
                     <Card
                       active={data.integrationType === integration.type}
                       {...integration}
-                      className="w-full md:min-h-[27rem]"
+                      className="w-full md:min-h-[22rem]"
                     ></Card>
                   </button>
                 ))}
@@ -184,7 +184,7 @@ const Index = ({ subscriptions }: Props) => {
             label={`${t("integration_form.pricing_plan")}`}
             labelSize="xl"
             component={
-              <div className="flex gap-5 max-md:flex-col max-md:items-center md:flex-row pb-3">
+              <div className="md:grid md:grid-cols-3 gap-5 max-md:flex max-md:flex-col max-md:items-center pb-3">
                 {translatedPricing.map((pricing) => (
                   <button
                     type="button"
@@ -196,8 +196,8 @@ const Index = ({ subscriptions }: Props) => {
                   >
                     <Card
                       {...pricing}
-                      active={data.subscriptionId === pricing.title}
-                      className=" md:min-h-[12rem]"
+                      active={data.subscriptionId === pricing.id}
+                      className="md:min-h-[12rem]"
                     >
                       {pricing.price}
                     </Card>
