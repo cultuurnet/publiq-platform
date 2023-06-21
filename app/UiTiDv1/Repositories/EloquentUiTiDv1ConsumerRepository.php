@@ -46,4 +46,22 @@ final class EloquentUiTiDv1ConsumerRepository implements UiTiDv1ConsumerReposito
             ->map(static fn (UiTiDv1ConsumerModel $model) => $model->toDomain())
             ->toArray();
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getByIntegrationIds(array $integrationIds): array
+    {
+        $ids = array_map(
+            fn ($integrationId) => $integrationId->toString(),
+            $integrationIds
+        );
+
+        return UiTiDv1ConsumerModel::query()
+            ->whereIn('integration_id', $ids)
+            ->orderBy('created_at')
+            ->get()
+            ->map(static fn (UiTiDv1ConsumerModel $model) => $model->toDomain())
+            ->toArray();
+    }
 }
