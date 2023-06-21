@@ -7,6 +7,7 @@ import { ButtonSecondary, ButtonSecondaryProps } from "./ButtonSecondary";
 import { usePage, router } from "@inertiajs/react";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useTranslateRoute } from "../hooks/useTranslateRoute";
 
 type LanguageButtonProps = ButtonSecondaryProps;
 
@@ -33,6 +34,7 @@ export default function Navigation({
   ...props
 }: Props) {
   const { t, i18n } = useTranslation();
+  const translateRoute = useTranslateRoute();
 
   const path = new URL(document.location.href).pathname;
 
@@ -71,10 +73,10 @@ export default function Navigation({
         {pages.map((pageTitle) => (
           <Link
             key={pageTitle}
-            href={t(`pages./${pageTitle}`)}
+            href={translateRoute(`/${pageTitle}`)}
             className={classNames(
               "max-md:inline-flex items-center justify-between py-3 border-transparent border-b-4",
-              path.startsWith(`${t(`pages./${pageTitle}`)}`) &&
+              path.startsWith(`${translateRoute(`/${pageTitle}`)}`) &&
                 "md:border-b-4 md:border-b-publiq-blue max-md:font-semibold"
             )}
           >
@@ -98,7 +100,7 @@ export default function Navigation({
             )}
             onClick={() => {
               i18n.changeLanguage("nl");
-              router.replace(`${t(`pages./${currentPage}`)}`);
+              router.replace(`${translateRoute(`/${currentPage}`)}`);
             }}
           >
             NL
@@ -112,7 +114,7 @@ export default function Navigation({
             )}
             onClick={() => {
               i18n.changeLanguage("en");
-              router.replace(`${t(`pages./${currentPage}`)}`, {});
+              router.replace(`${translateRoute(`/${currentPage}`)}`, {});
             }}
           >
             EN
