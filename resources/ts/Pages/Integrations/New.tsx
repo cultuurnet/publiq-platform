@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { Page } from "../../Shared/Page";
 import { ButtonLinkSecondary } from "../../Shared/ButtonLinkSecondary";
+import { useTranslateRoute } from "../../hooks/useTranslateRoute";
 
 const integrationTypes = (t: TFunction) => [
   {
@@ -115,6 +116,7 @@ const Index = ({ subscriptions }: Props) => {
   const { data, setData, errors, post, processing } =
     useForm(initialFormValues);
   const { i18n } = useTranslation();
+  const translateRoute = useTranslateRoute();
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -134,7 +136,10 @@ const Index = ({ subscriptions }: Props) => {
   return (
     <Page>
       <div className="inline-flex flex-col gap-5">
-        <ButtonLinkSecondary href={t("pages./integrations")} className="w-fit">
+        <ButtonLinkSecondary
+          href={translateRoute("/integrations")}
+          className="w-fit"
+        >
           <FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>
           <span>{t("integration_form.back")}</span>
         </ButtonLinkSecondary>
