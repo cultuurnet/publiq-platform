@@ -44,4 +44,22 @@ final class EloquentAuth0ClientRepository implements Auth0ClientRepository
             ->map(static fn (Auth0ClientModel $auth0ClientModel) => $auth0ClientModel->toDomain())
             ->toArray();
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getByIntegrationIds(array $integrationIds): array
+    {
+        $ids = array_map(
+            fn ($integrationId) => $integrationId->toString(),
+            $integrationIds
+        );
+
+        return Auth0ClientModel::query()
+            ->whereIn('integration_id', $ids)
+            ->orderBy('created_at')
+            ->get()
+            ->map(static fn (Auth0ClientModel $model) => $model->toDomain())
+            ->toArray();
+    }
 }
