@@ -12,20 +12,24 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { Page } from "../../Shared/Page";
 import { ButtonLinkSecondary } from "../../Shared/ButtonLinkSecondary";
+import { IntegrationType } from "../../types/IntegrationType";
 import { useTranslateRoute } from "../../hooks/useTranslateRoute";
 
 const integrationTypes = (t: TFunction) => [
   {
+    type: IntegrationType.EntryApi,
     title: t("home.integration_types.entry_api.title"),
     description: t("home.integration_types.entry_api.description"),
     img: "",
   },
   {
+    type: IntegrationType.SearchApi,
     title: t("home.integration_types.search_api.title"),
     description: t("home.integration_types.search_api.description"),
     img: "",
   },
   {
+    type: IntegrationType.Widgets,
     title: t("home.integration_types.widgets.title"),
     description: t("home.integration_types.widgets.description"),
     img: "",
@@ -40,6 +44,7 @@ const pricing = (t: TFunction, subscriptions: Subscription[]) => {
 
     // TODO: Remove defaults once all subscriptions have been added in the backend
     return {
+      id: data?.id,
       price: data?.price ?? "Te bepalen",
       currency: data?.currency ?? "EUR",
     };
@@ -51,6 +56,7 @@ const pricing = (t: TFunction, subscriptions: Subscription[]) => {
 
   return [
     {
+      id: basic.id,
       title: t("integration_form.pricing.basic.title"),
       description: t("integration_form.pricing.basic.description"),
       price: t("integration_form.pricing.basic.price", {
@@ -59,6 +65,7 @@ const pricing = (t: TFunction, subscriptions: Subscription[]) => {
       }),
     },
     {
+      id: plus.id,
       title: t("integration_form.pricing.plus.title"),
       description: t("integration_form.pricing.plus.description"),
       price: t("integration_form.pricing.plus.price", {
@@ -67,6 +74,7 @@ const pricing = (t: TFunction, subscriptions: Subscription[]) => {
       }),
     },
     {
+      id: custom.id,
       title: t("integration_form.pricing.custom.title"),
       description: t("integration_form.pricing.custom.description"),
       price: t("integration_form.pricing.custom.price", {
@@ -155,13 +163,13 @@ const Index = ({ subscriptions }: Props) => {
                 {translatedIntegrations.map((integration) => (
                   <button
                     type="button"
-                    key={integration.title}
+                    key={integration.type}
                     onClick={() => {
-                      setData("integrationType", integration.title);
+                      setData("integrationType", integration.type);
                     }}
                   >
                     <Card
-                      active={data.integrationType === integration.title}
+                      active={data.integrationType === integration.type}
                       {...integration}
                       className="w-full md:min-h-[27rem]"
                     ></Card>
@@ -183,7 +191,7 @@ const Index = ({ subscriptions }: Props) => {
                     className="w-full"
                     key={pricing.title}
                     onClick={() => {
-                      setData("subscriptionId", pricing.title);
+                      setData("subscriptionId", pricing.id);
                     }}
                   >
                     <Card
