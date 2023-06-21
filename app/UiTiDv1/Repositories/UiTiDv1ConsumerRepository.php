@@ -15,4 +15,10 @@ interface UiTiDv1ConsumerRepository
      * @return UiTiDv1Consumer[]
      */
     public function getByIntegrationId(UuidInterface $integrationId): array;
+
+    /**
+     * @param array<UuidInterface> $integrationIds
+     * @return UiTiDv1Consumer[]
+     */
+    public function getByIntegrationIds(array $integrationIds): array;
 }

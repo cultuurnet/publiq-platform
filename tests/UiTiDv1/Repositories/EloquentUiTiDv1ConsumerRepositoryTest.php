@@ -122,4 +122,89 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
 
         $this->assertEquals($expected, $actual);
     }
+
+    /**
+     * @test
+     */
+    public function it_can_get_all_consumers_for_multiple_integration_ids(): void
+    {
+        $firstIntegrationId = Uuid::uuid4();
+        $secondIntegrationId = Uuid::uuid4();
+        $integrationIds = [$firstIntegrationId, $secondIntegrationId];
+
+        $environments = [UiTiDv1Environment::Acceptance, UiTiDv1Environment::Testing, UiTiDv1Environment::Production];
+
+        $consumers = [];
+
+        foreach ($environments as $environment) {
+            foreach ($integrationIds as $integrationId) {
+                $count = count($consumers) + 1;
+
+                $consumers[] = new UiTiDv1Consumer(
+                    $integrationId,
+                    (string)$count,
+                    'consumer-key-' . $count,
+                    'consumer-secret-' . $count,
+                    'api-key-' . $count,
+                    $environment
+                );
+            }
+        }
+
+        $this->repository->save(...$consumers);
+
+        $expected = $consumers;
+
+        $actual = $this->repository->getByIntegrationIds($integrationIds);
+
+        sort($expected);
+        sort($actual);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function it_doesnt_get_consumers_for_unasked_integration_ids(): void
+    {
+        $firstIntegrationId = Uuid::uuid4();
+        $secondIntegrationId = Uuid::uuid4();
+        $integrationIds = [$firstIntegrationId, $secondIntegrationId];
+
+        $environments = [UiTiDv1Environment::Acceptance, UiTiDv1Environment::Testing, UiTiDv1Environment::Production];
+
+        $consumers = [];
+
+        foreach ($environments as $environment) {
+            foreach ($integrationIds as $integrationId) {
+                $count = count($consumers) + 1;
+
+                $consumers[] = new UiTiDv1Consumer(
+                    $integrationId,
+                    (string)$count,
+                    'consumer-key-' . $count,
+                    'consumer-secret-' . $count,
+                    'api-key-' . $count,
+                    $environment
+                );
+            }
+        }
+
+        $this->repository->save(...$consumers);
+
+        $noSecondIntegrationConsumers = array_filter(
+            $consumers,
+            fn (UiTiDv1Consumer $consumer) => !$consumer->integrationId->equals($secondIntegrationId)
+        );
+
+        $expected = $noSecondIntegrationConsumers;
+
+        $actual = $this->repository->getByIntegrationIds([$firstIntegrationId]);
+
+        sort($expected);
+        sort($actual);
+
+        $this->assertEquals($expected, $actual);
+    }
 }
