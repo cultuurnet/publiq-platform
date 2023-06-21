@@ -19,7 +19,7 @@ export const StatusLight = ({ status }: Props) => {
   return (
     <div
       className={classNames(
-        "w-[0.7rem] h-[0.7rem] rounded-full",
+        "w-[0.7rem] h-[0.7rem] rounded-full self-center",
         StatusToColor[status]
       )}
     ></div>
