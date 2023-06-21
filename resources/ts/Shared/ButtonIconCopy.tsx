@@ -1,0 +1,32 @@
+import React, { ComponentProps, useState } from "react";
+import { faCopy, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { classNames } from "../utils/classNames";
+import { ButtonIcon } from "./ButtonIcon";
+
+type Props = ComponentProps<"button">;
+
+export const ButtonIconCopy = ({ onClick }: Props) => {
+  const [isEnabled, setIsEnabled] = useState(false);
+
+  const handleClickEvent = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    setIsEnabled(true);
+    if (onClick) onClick(e);
+    const timoutId = setTimeout(() => {
+      setIsEnabled(false);
+      clearTimeout(timoutId);
+    }, 1000);
+  };
+
+  return (
+    <ButtonIcon
+      icon={isEnabled ? faCheck : faCopy}
+      onClick={handleClickEvent}
+      className={classNames(
+        "text-gray-600 transition-all ease-linear",
+        isEnabled ? "text-green-600" : ""
+      )}
+    ></ButtonIcon>
+  );
+};
