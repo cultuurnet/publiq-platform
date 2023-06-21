@@ -8,7 +8,7 @@ type Props = ComponentProps<"button">;
 export const ButtonIconCopy = ({ onClick }: Props) => {
   const [isEnabled, setIsEnabled] = useState(false);
 
-  const handleClickEvent = (
+  const handleClick = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     setIsEnabled(true);
@@ -22,7 +22,7 @@ export const ButtonIconCopy = ({ onClick }: Props) => {
   return (
     <ButtonIcon
       icon={isEnabled ? faCheck : faCopy}
-      onClick={handleClickEvent}
+      onClick={handleClick}
       className={classNames(
         "text-gray-600 transition-all ease-linear",
         isEnabled ? "text-green-600" : ""
