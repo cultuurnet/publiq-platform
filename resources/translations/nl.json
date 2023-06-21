@@ -117,6 +117,9 @@
     "documentation": {
       "title": "Documentatie",
       "action_title": "Aan de slag met {{product}}"
+    },
+    "dialog": {
+      "delete": "Wil je deze integratie echt verwijderen?"
     }
   },
   "support": {
@@ -160,9 +163,6 @@
   },
   "dialog": {
     "confirm": "Doorgaan",
-    "cancel": "Annuleer",
-    "questions": {
-      "delete": "Wil je deze integratie echt verwijderen?"
-    }
+    "cancel": "Annuleer"
   }
 }
