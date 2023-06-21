@@ -5,12 +5,10 @@ import { ButtonIcon } from "./ButtonIcon";
 
 type Props = ComponentProps<"button">;
 
-export const ButtonIconCopy = ({ onClick }: Props) => {
+export const ButtonIconCopy = ({ onClick, className, ...props }: Props) => {
   const [isEnabled, setIsEnabled] = useState(false);
 
-  const handleClick = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     setIsEnabled(true);
     if (onClick) onClick(e);
     const timoutId = setTimeout(() => {
@@ -25,8 +23,10 @@ export const ButtonIconCopy = ({ onClick }: Props) => {
       onClick={handleClick}
       className={classNames(
         "text-gray-600 transition-all ease-linear",
-        isEnabled ? "text-green-600" : ""
+        isEnabled ? "text-green-600" : "",
+        className
       )}
+      {...props}
     ></ButtonIcon>
   );
 };
