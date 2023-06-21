@@ -44,9 +44,9 @@ const pricing = (t: TFunction, subscriptions: Subscription[]) => {
 
     // TODO: Remove defaults once all subscriptions have been added in the backend
     return {
-      id: data?.id,
-      price: data?.price ?? "Te bepalen",
-      currency: data?.currency ?? "EUR",
+      id: data?.id ?? "TO FIX",
+      price: data?.price ?? "TO FIX",
+      currency: data?.currency ?? "TO FIX",
     };
   };
 
