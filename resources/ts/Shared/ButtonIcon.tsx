@@ -10,11 +10,17 @@ type Props = ComponentProps<"button"> & {
   size?: SizeProp;
 };
 
-export const ButtonIcon = ({ icon, color, size, className, ...props }: Props) => {
+export const ButtonIcon = ({
+  icon,
+  color,
+  size,
+  className,
+  ...props
+}: Props) => {
   return (
     <button
       className={classNames(
-       "hover:bg-icon-gray-light focus:bg-icon-gray-dark group-focus:animate-pulse p-3 rounded-full grow-0 shrink-0 w-[2.8rem] h-[2.8rem] inline-flex items-center justify-center",
+        "hover:bg-icon-gray-light focus:bg-icon-gray-dark group-focus:animate-pulse p-3 rounded-full grow-0 shrink-0 w-[2.8rem] h-[2.8rem] inline-flex items-center justify-center",
         className
       )}
       {...props}
