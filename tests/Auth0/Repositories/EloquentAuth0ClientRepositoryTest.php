@@ -142,4 +142,47 @@ final class EloquentAuth0ClientRepositoryTest extends TestCase
 
         $this->assertEquals($expected, $actual);
     }
+
+    /**
+     * @test
+     */
+    public function it_doesnt_get_clients_for_unasked_integration_ids(): void
+    {
+        $firstIntegrationId = Uuid::uuid4();
+        $secondIntegrationId = Uuid::uuid4();
+        $integrationIds = [$firstIntegrationId, $secondIntegrationId];
+
+        $tenants = [Auth0Tenant::Acceptance, Auth0Tenant::Testing, Auth0Tenant::Production];
+
+        $clients = [];
+
+        foreach ($tenants as $tenant) {
+            foreach ($integrationIds as $integrationId) {
+                $count = count($clients) + 1;
+
+                $clients[] = new Auth0Client(
+                    $integrationId,
+                    'client-id-' . $count,
+                    'client-secret-' . $count,
+                    $tenant
+                );
+            }
+        }
+
+        $this->repository->save(...$clients);
+
+        $noSecondIntegrationClients = array_filter(
+            $clients,
+            fn (Auth0Client $client) => !$client->integrationId->equals($secondIntegrationId)
+        );
+
+        $expected = $noSecondIntegrationClients;
+
+        $actual = $this->repository->getByIntegrationIds([$firstIntegrationId]);
+
+        sort($expected);
+        sort($actual);
+
+        $this->assertEquals($expected, $actual);
+    }
 }
