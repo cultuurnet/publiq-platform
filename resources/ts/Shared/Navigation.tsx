@@ -99,6 +99,8 @@ export default function Navigation({
                 "max-md:bg-publiq-blue-dark max-md:bg-opacity-10 md:font-semibold"
             )}
             onClick={() => {
+              if (i18n.language === "nl") return;
+
               i18n.changeLanguage("nl");
               router.replace(`${translateRoute(`/${currentPage}`)}`);
             }}
@@ -113,6 +115,8 @@ export default function Navigation({
                 "max-md:bg-publiq-blue-dark max-md:bg-opacity-10 md:font-semibold"
             )}
             onClick={() => {
+              if (i18n.language === "en") return;
+
               i18n.changeLanguage("en");
               router.replace(`${translateRoute(`/${currentPage}`)}`, {});
             }}
