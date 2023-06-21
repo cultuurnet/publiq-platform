@@ -64,7 +64,7 @@ const Index = ({ integrations, paginationInfo }: Props) => {
 
   return (
     <Page>
-      <div className="flex max-sm:flex-col w-full md:justify-between max-sm:gap-3 items-center">
+      <div className="flex max-md:flex-col w-full md:justify-between max-md:gap-3 items-center">
         <div className="inline-flex gap-3">
           <Heading level={2}>{t("integrations.title")}</Heading>
           <IconLink
@@ -77,14 +77,14 @@ const Index = ({ integrations, paginationInfo }: Props) => {
           type="text"
           name="search"
           placeholder={t("integrations.searching") as string}
-          className="max-w-[30rem]"
+          className="max-w-[30rem] max-lg:max-w-[20rem]"
           iconBack={faSearch}
           defaultValue={searchFromUrl ?? ""}
           onChange={handleChangeSearchInput}
         />
         <ButtonLink
           href={translateRoute("/integrations/new")}
-          className="max-sm:hidden"
+          className="max-md:hidden"
         >
           {t("integrations.add")}
         </ButtonLink>
@@ -117,7 +117,7 @@ const Index = ({ integrations, paginationInfo }: Props) => {
         onClose={() => {
           setIsDeleteDialogVisible((prev) => !prev);
         }}
-        question="Wil je deze integratie echt verwijderen?"
+        question={t("dialog.questions.delete")}
         onConfirm={handleDeleteIntegration}
         onCancel={() => {
           setIsDeleteDialogVisible(false);
