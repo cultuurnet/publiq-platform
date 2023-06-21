@@ -164,5 +164,8 @@
   "dialog": {
     "confirm": "Doorgaan",
     "cancel": "Annuleer"
+  },
+  "tooltip": {
+    "copy": "Gekopieerd!"
   }
 }

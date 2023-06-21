@@ -67,7 +67,7 @@ export const IntegrationCard = ({
             <span className=" overflow-hidden text-ellipsis" ref={codeFieldRef}>
               {id}
             </span>
-            <Tooltip visible={isVisible} text="Copied">
+            <Tooltip visible={isVisible} text={t("tooltip.copy")}>
               <ButtonIconCopy onClick={handleCopyToClipboard} />
             </Tooltip>
           </div>
