@@ -29,8 +29,8 @@ export const QuestionDialog = ({
 
   return (
     <Dialog {...props}>
-      <p className="flex flex-1">{question}</p>
-      <div className="flex flex-1">{children}</div>
+      <p className="flex">{question}</p>
+      <div className="flex p-5">{children}</div>
       <div className="self-end w-full inline-flex gap-3 justify-end border-t-publiq-gray-medium">
         <ButtonSecondary onClick={onCancel}>{cancel}</ButtonSecondary>
         <ButtonPrimary onClick={onConfirm}>{confirm}</ButtonPrimary>
