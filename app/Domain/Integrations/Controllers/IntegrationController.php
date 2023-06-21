@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Controllers;
 
+use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Domain\Auth\CurrentUser;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
@@ -14,6 +15,7 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Http\Controllers\Controller;
 use App\Router\TranslatedRoute;
+use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -27,6 +29,8 @@ final class IntegrationController extends Controller
     public function __construct(
         private readonly SubscriptionRepository $subscriptionRepository,
         private readonly IntegrationRepository $integrationRepository,
+        private readonly Auth0ClientRepository $auth0ClientRepository,
+        private readonly UiTiDv1ConsumerRepository $uitidV1ConsumerRepository,
         private readonly CurrentUser $currentUser
     ) {
     }
@@ -40,8 +44,17 @@ final class IntegrationController extends Controller
             is_array($search) ? $search[0] : $search
         );
 
+        $integrationIds = array_map(fn ($integration) => $integration->id, $integrationsData->collection->toArray());
+
+        $auth0Clients = $this->auth0ClientRepository->getByIntegrationIds($integrationIds);
+        $uitidV1Consumers = $this->uitidV1ConsumerRepository->getByIntegrationIds($integrationIds);
+
         return Inertia::render('Integrations/Index', [
             'integrations' => $integrationsData->collection,
+            'credentials' => [
+                'auth0' => $auth0Clients,
+                'uitidV1' => $uitidV1Consumers,
+            ],
             'paginationInfo' => $integrationsData->paginationInfo,
         ]);
     }
