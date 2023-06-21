@@ -29,6 +29,9 @@ module.exports = {
         "publiq-gray-dark": "#3b3b3b",
         "publiq-gray-medium": "#efefef",
         "publiq-gray-light": "#fcfcfc",
+        "icon-gray": "#5f6368",
+        "icon-gray-light": "#F2F2F2",
+        "icon-gray-dark": "#E3E3E3",
       },
       textColor: ({ theme }) => theme("colors.publiq-gray-dark"),
       fontFamily: {
