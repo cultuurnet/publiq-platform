@@ -3,7 +3,7 @@ import Navigation from "./Navigation";
 import { Heading } from "./Heading";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { Dialog } from "./Dialog";
 
 export default function HeaderMobile() {
