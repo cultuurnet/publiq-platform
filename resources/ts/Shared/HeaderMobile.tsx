@@ -15,7 +15,11 @@ export default function HeaderMobile() {
       <Heading className="py-3 border-transparent border-b-4" level={3}>
         {t("title")}
       </Heading>
-      <Dialog isVisible={isVisible} onClose={() => setIsVisible(false)}>
+      <Dialog
+        isVisible={isVisible}
+        isFullscreen
+        onClose={() => setIsVisible(false)}
+      >
         <Navigation orientation="vertical" />
       </Dialog>
       <FontAwesomeIcon
