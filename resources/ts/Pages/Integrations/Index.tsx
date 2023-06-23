@@ -1,19 +1,19 @@
 import React, { ReactNode, useState } from "react";
 import { router } from "@inertiajs/react";
-import { Heading } from "../../Shared/Heading";
-import Layout from "../../Shared/Layout";
-import { ButtonLink } from "../../Shared/ButtonLink";
-import { Input } from "../../Shared/Input";
+import { Heading } from "../../Components/Heading";
+import Layout from "../../Components/Layout";
+import { ButtonLink } from "../../Components/ButtonLink";
+import { Input } from "../../Components/Input";
 import { debounce } from "lodash";
 import { faPlus, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useTranslateRoute } from "../../hooks/useTranslateRoute";
-import { Pagination } from "../../Shared/Pagination";
+import { Pagination } from "../../Components/Pagination";
 import { useTranslation } from "react-i18next";
-import { IntegrationCard } from "../../Shared/IntegrationCard";
+import { IntegrationCard } from "../../Components/IntegrationCard";
 import { PaginationInfo } from "../../types/PaginationInfo";
-import { Page } from "../../Shared/Page";
-import { QuestionDialog } from "../../Shared/QuestionDialog";
-import { IconLink } from "../../Shared/IconLink";
+import { Page } from "../../Components/Page";
+import { QuestionDialog } from "../../Components/QuestionDialog";
+import { IconLink } from "../../Components/IconLink";
 import { IntegrationStatus } from "../../types/IntegrationStatus";
 
 export type Integration = {
