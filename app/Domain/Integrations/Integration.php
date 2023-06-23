@@ -27,7 +27,7 @@ final class Integration
         $this->urls = [];
     }
 
-    public function withContacts(Contact ...$contacts): self
+    public function withContacts(Contact...$contacts): self
     {
         $clone = clone $this;
         $clone->contacts = $contacts;
@@ -42,7 +42,7 @@ final class Integration
         return $this->contacts;
     }
 
-    public function withUrls(IntegrationUrl ...$urls): self
+    public function withUrls(IntegrationUrl...$urls): self
     {
         $clone = clone $this;
         $clone->urls = $urls;
@@ -66,5 +66,17 @@ final class Integration
             $this->urls,
             fn (IntegrationUrl $url) => $url->type->value === $type->value && $url->environment->value === $environment->value
         );
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'type' => $this->type,
+            'name' => $this->name,
+            'description' => $this->description,
+            'subscriptionId' => $this->subscriptionId,
+            'status' => $this->status,
+        ];
     }
 }

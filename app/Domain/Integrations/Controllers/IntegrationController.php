@@ -128,8 +128,29 @@ final class IntegrationController extends Controller
         }
 
         return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName(request: $request, routeName: 'integrations.index')
+            TranslatedRoute::getTranslatedRouteName(
+                request: $request,
+                routeName: 'integrations.index'
+            )
         );
 
     }
+
+    public function detail(string $id): Response
+    {
+        try {
+            $integration = $this->integrationRepository->getById(Uuid::fromString($id));
+        } catch (\Throwable $th) {
+            abort(404);
+        }
+
+        return Inertia::render('Integrations/Detail', [
+            'integration' => [
+                ...$integration->toArray(),
+                'contacts' => $integration->contacts(),
+                'urls' => $integration->urls(),
+            ],
+        ]);
+    }
+
 }
