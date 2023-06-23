@@ -33,6 +33,7 @@ const getFlexDirection = (labelPosition: LabelPosition | undefined) => {
 
 const getAlignItems = (labelPosition: LabelPosition | undefined) => {
   if (labelPosition === "right") return "items-baseline";
+  if (labelPosition === "left") return "items-baseline";
   return;
 };
 
