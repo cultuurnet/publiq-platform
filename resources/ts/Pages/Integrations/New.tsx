@@ -38,15 +38,16 @@ const integrationTypes = (t: TFunction) => [
 
 const pricing = (t: TFunction, subscriptions: Subscription[]) => {
   const getInfoForType = (type: string) => {
+    // All types should match with a category
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const data = subscriptions.find(
       (sub) => sub.category.toLowerCase() === type
-    );
+    )!;
 
-    // TODO: Remove defaults once all subscriptions have been added in the backend
     return {
-      id: data?.id ?? "TO FIX",
-      price: data?.price ?? "TO FIX",
-      currency: data?.currency ?? "TO FIX",
+      id: data.id,
+      price: data.price,
+      currency: data.currency,
     };
   };
 
