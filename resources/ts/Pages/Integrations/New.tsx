@@ -119,7 +119,7 @@ type Props = {
   subscriptions: Subscription[];
 };
 
-const Index = ({ subscriptions }: Props) => {
+const New = ({ subscriptions }: Props) => {
   const { t } = useTranslation();
   const { data, setData, errors, post, processing } =
     useForm(initialFormValues);
@@ -425,6 +425,6 @@ const Index = ({ subscriptions }: Props) => {
   );
 };
 
-Index.layout = (page: ReactNode) => <Layout>{page}</Layout>;
+New.layout = (page: ReactNode) => <Layout>{page}</Layout>;
 
-export default Index;
+export default New;
