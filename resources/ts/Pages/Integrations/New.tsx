@@ -171,7 +171,7 @@ const Index = ({ subscriptions }: Props) => {
                     <Card
                       active={data.integrationType === integration.type}
                       {...integration}
-                      className="w-full md:min-h-[22rem]"
+                      className="w-full md:min-h-[14rem]"
                     ></Card>
                   </button>
                 ))}
@@ -197,7 +197,7 @@ const Index = ({ subscriptions }: Props) => {
                     <Card
                       {...pricing}
                       active={data.subscriptionId === pricing.id}
-                      className="md:min-h-[12rem]"
+                      className="md:min-h-[14rem]"
                     >
                       {pricing.price}
                     </Card>
