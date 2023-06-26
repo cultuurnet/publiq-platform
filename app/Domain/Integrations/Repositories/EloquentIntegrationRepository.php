@@ -67,7 +67,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
                 $query->where('integrations.name', 'like', '%' . $searchQuery . '%');
             })
             ->distinct('integrations.id')
-            ->orderBy('integrations.created_at')
+            ->orderBy('integrations.created_at', 'desc')
             ->paginate();
 
         $integrations = new Collection();
