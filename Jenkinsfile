@@ -30,6 +30,7 @@ pipeline {
                     steps {
                         withCredentials([usernamePassword(credentialsId: 'nova.laravel.com', usernameVariable: 'USER', passwordVariable: 'PASSWORD')]) {
                             sh label: 'Build binaries', script: "bundle exec rake build NOVA_USER=${env.USER} NOVA_LICENSE_KEY=${env.PASSWORD}"
+                        }
                     }
                 }
                 stage('Build artifact') {
