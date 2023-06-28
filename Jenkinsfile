@@ -96,11 +96,9 @@ pipeline {
                 APPLICATION_ENVIRONMENT = 'testing'
             }
 
-            stage('Deploy to testing') {
-                steps {
-                    publishAptlySnapshot snapshotName: "${env.REPOSITORY_NAME}-${env.PIPELINE_VERSION}", publishTarget: "${env.JOB_NAME}-${env.APPLICATION_ENVIRONMENT}", distributions: 'focal'
-                    //triggerDeployment nodeName: 'platform-test01'
-                }
+            steps {
+                publishAptlySnapshot snapshotName: "${env.REPOSITORY_NAME}-${env.PIPELINE_VERSION}", publishTarget: "${env.JOB_NAME}-${env.APPLICATION_ENVIRONMENT}", distributions: 'focal'
+                //triggerDeployment nodeName: 'platform-test01'
             }
             post {
                 always {
@@ -117,11 +115,9 @@ pipeline {
                 APPLICATION_ENVIRONMENT = 'production'
             }
 
-            stage('Deploy to production') {
-                steps {
-                    publishAptlySnapshot snapshotName: "${env.REPOSITORY_NAME}-${env.PIPELINE_VERSION}", publishTarget: "${env.JOB_NAME}-${env.APPLICATION_ENVIRONMENT}", distributions: 'focal'
-                    //triggerDeployment nodeName: 'platform-prod01'
-                }
+            steps {
+                publishAptlySnapshot snapshotName: "${env.REPOSITORY_NAME}-${env.PIPELINE_VERSION}", publishTarget: "${env.JOB_NAME}-${env.APPLICATION_ENVIRONMENT}", distributions: 'focal'
+                //triggerDeployment nodeName: 'platform-prod01'
             }
             post {
                 always {
