@@ -11,5 +11,5 @@ task :build do |task|
   system('npm install') or exit 1
   system('npm run build') or exit 1
   FileUtils.rm_r('node_modules', :force => true)
-  system('npm install --production') or exit 1
+  system('npm install --omit=dev') or exit 1
 end
