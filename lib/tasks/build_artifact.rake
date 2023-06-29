@@ -17,7 +17,8 @@ task :build_artifact do |task|
 
   system("fpm -s dir -t deb -n #{artifact_name} -v #{version} -a all -p pkg \
     -x '.git*' -x pkg -x lib -x Rakefile -x Gemfile -x Gemfile.lock \
-    -x .bundle -x Jenkinsfile -x vendor/bundle \
+    -x .bundle -x Jenkinsfile -x vendor/bundle -x Makefile -x auth.json \
+    -x docker-compose.yml \
     --prefix /var/www/publiq-platform \
     --config-files /var/www/publiq-platform/.env \
     --deb-user www-data --deb-group www-data \
