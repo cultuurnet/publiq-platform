@@ -63,6 +63,7 @@
     "description_aim": "Geef een duidelijke, gemotiveerde beschrijving van de integraite die je met het publiq platform wil opzetten (max. 200 karakters)",
     "contact_label_1": "Inhoudelijk contact ",
     "contact_label_2": "Technical contact",
+    "contact_label_3": "Andere medewerkers",
     "contact": {
       "organisation": "Naam organisatie",
       "first_name": "Voornaam contactpersoon",
@@ -120,6 +121,51 @@
     },
     "dialog": {
       "delete": "Wil je deze integratie echt verwijderen?"
+    }
+  },
+  "details": {
+    "save": "Wijzigingen opslaan",
+    "delete": "Integratie verwijderen",
+    "basic_info": {
+      "title": "Basisgegevens",
+      "name": "Integratienaam",
+      "description": "Beschrijving"
+    },
+    "contact_info": {
+      "title": "Contactgegevens",
+      "employees": "Andere medewerkers",
+      "delete": "Verwijder medewerker"
+    },
+    "billing_info": {
+      "title": "Facturatiegegevens",
+      "subscription": "Prijsplan",
+      "name": "Naam bedrijf, organisatie of gemeente",
+      "address": {
+        "street": "Straat en nummer",
+        "postcode": "Postcode",
+        "city": "Gemeente"
+      },
+      "vat": "BTW of ondernemingsnummer"
+    },
+    "integration_info": {
+      "title": "Integratiegegevens",
+      "uitid_v1": "UITID v1",
+      "uitid_v2": "UITID v2",
+      "test": "Test",
+      "live": "Live",
+      "status_alert": "Voor de live-integratie van dit project is goedkeuring van publiq noodzakelijk. Alle informatie om vlot live te kunnen gaan vind je",
+      "link": "here",
+      "uitid_alert": "Voor deze integratie zijn nog geen UiTIDv2 credentials aangevraagd.",
+      "action_status": "Activatie aanvragen",
+      "action_uitid": "UiTIDv2 credentials aanvragen"
+    },
+    "integration_settings": {
+      "title": "Integratie-instellingen",
+      "test": "testomgeving",
+      "production": "productieomgeving",
+      "login": "Login URL",
+      "callback": "Callback URL",
+      "logout": "Logout URL"
     }
   },
   "support": {
