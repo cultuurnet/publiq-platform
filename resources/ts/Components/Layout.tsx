@@ -8,7 +8,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     <div className="flex flex-col flex-1 items-center text-publiq-gray-dark bg-publiq-gray-light">
       <Header />
       <HeaderMobile />
-      <main className="flex flex-col items-center pb-8 w-full">{children}</main>
+      <main className="flex flex-col items-center w-full">{children}</main>
       <Footer />
     </div>
   );
