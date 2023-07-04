@@ -16,7 +16,6 @@ import { useTranslation } from "react-i18next";
 type Props = { integration: Integration };
 
 const Detail = ({ integration }: Props) => {
-  console.log("integration", { integration });
   const { t } = useTranslation();
 
   const [isMobile, setIsMobile] = useState(false);
