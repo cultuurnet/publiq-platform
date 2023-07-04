@@ -18,7 +18,7 @@ export const BasicInfo = ({ integration, isMobile }: Props) => {
   const [isDisabled, setIsDisabled] = useState(true);
 
   return (
-    <div className="flex flex-col gap-4 shadow-md shadow-slate-200 px-10 py-5">
+    <div className="flex flex-col gap-4 shadow-md shadow-slate-200 max-md:px-5 px-10 py-5">
       <div className="flex gap-2 items-center">
         <Heading level={2} className="font-semibold">
           {t("details.basic_info.title")}

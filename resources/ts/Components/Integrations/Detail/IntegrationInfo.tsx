@@ -15,7 +15,7 @@ export const IntegrationInfo = ({ id, status }: Props) => {
   const v2 = true;
 
   return (
-    <div className="flex flex-col gap-4 shadow-md shadow-slate-200 px-10 py-5">
+    <div className="flex flex-col gap-4 shadow-md shadow-slate-200 max-md:px-5 px-10 py-5">
       <Heading className="font-semibold" level={2}>
         {t("details.integration_info.title")}
       </Heading>
