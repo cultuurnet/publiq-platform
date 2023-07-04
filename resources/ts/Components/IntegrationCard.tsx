@@ -76,7 +76,7 @@ export const IntegrationCard = ({
           <Heading className="font-semibold" level={3}>
             {t("integrations.live")}
           </Heading>
-          <div className="flex align-center gap-1 ">
+          <div className="flex align-center gap-1">
             <StatusLight status={status} />
             <span>{t(`integrations.status.${status}`)}</span>
           </div>
