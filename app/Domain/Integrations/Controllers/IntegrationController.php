@@ -102,7 +102,7 @@ final class IntegrationController extends Controller
             new Integration(
                 $integrationId,
                 IntegrationType::from($storeIntegration->input('integrationType')),
-                $storeIntegration->input('name'),
+                $storeIntegration->input('integrationName'),
                 $storeIntegration->input('description'),
                 Uuid::fromString($storeIntegration->input('subscriptionId')),
                 IntegrationStatus::Draft

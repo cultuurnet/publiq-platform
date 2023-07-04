@@ -12,6 +12,7 @@ use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Domain\Subscriptions\SubscriptionPlan;
 use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Repositories\InsightlyMappingRepository;
@@ -21,7 +22,6 @@ use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use App\UiTiDv1\UiTiDv1Consumer;
 use App\UiTiDv1\UiTiDv1Environment;
 use App\UiTiDv1\UiTiDv1EnvironmentSDK;
-use Database\Seeders\SubscriptionsSeeder;
 use Exception;
 use GuzzleHttp\ClientInterface;
 use Illuminate\Console\Command;
@@ -127,7 +127,7 @@ final class MigrateProjects extends Command
             $migrationProject->type(),
             $migrationProject->name(),
             $migrationProject->description() !== null ? $migrationProject->description() : '',
-            Uuid::fromString(SubscriptionsSeeder::BASIC_PLAN),
+            Uuid::fromString(SubscriptionPlan::BASIC_SEARCH_API_PLAN->value),
             $migrationProject->status()
         );
         $this->integrationRepository->save($integration);

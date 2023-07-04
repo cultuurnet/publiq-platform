@@ -12,20 +12,24 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { Page } from "../../Components/Page";
 import { ButtonLinkSecondary } from "../../Components/ButtonLinkSecondary";
+import { IntegrationType } from "../../types/IntegrationType";
 import { useTranslateRoute } from "../../hooks/useTranslateRoute";
 
 const integrationTypes = (t: TFunction) => [
   {
+    type: IntegrationType.EntryApi,
     title: t("home.integration_types.entry_api.title"),
     description: t("home.integration_types.entry_api.description"),
     img: "",
   },
   {
+    type: IntegrationType.SearchApi,
     title: t("home.integration_types.search_api.title"),
     description: t("home.integration_types.search_api.description"),
     img: "",
   },
   {
+    type: IntegrationType.Widgets,
     title: t("home.integration_types.widgets.title"),
     description: t("home.integration_types.widgets.description"),
     img: "",
@@ -34,14 +38,16 @@ const integrationTypes = (t: TFunction) => [
 
 const pricing = (t: TFunction, subscriptions: Subscription[]) => {
   const getInfoForType = (type: string) => {
+    // All types should match with a category
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const data = subscriptions.find(
       (sub) => sub.category.toLowerCase() === type
-    );
+    )!;
 
-    // TODO: Remove defaults once all subscriptions have been added in the backend
     return {
-      price: data?.price ?? "Te bepalen",
-      currency: data?.currency ?? "EUR",
+      id: data.id,
+      price: data.price,
+      currency: data.currency,
     };
   };
 
@@ -51,6 +57,7 @@ const pricing = (t: TFunction, subscriptions: Subscription[]) => {
 
   return [
     {
+      id: basic.id,
       title: t("integration_form.pricing.basic.title"),
       description: t("integration_form.pricing.basic.description"),
       price: t("integration_form.pricing.basic.price", {
@@ -59,6 +66,7 @@ const pricing = (t: TFunction, subscriptions: Subscription[]) => {
       }),
     },
     {
+      id: plus.id,
       title: t("integration_form.pricing.plus.title"),
       description: t("integration_form.pricing.plus.description"),
       price: t("integration_form.pricing.plus.price", {
@@ -67,6 +75,7 @@ const pricing = (t: TFunction, subscriptions: Subscription[]) => {
       }),
     },
     {
+      id: custom.id,
       title: t("integration_form.pricing.custom.title"),
       description: t("integration_form.pricing.custom.description"),
       price: t("integration_form.pricing.custom.price", {
@@ -111,7 +120,7 @@ type Props = {
   subscriptions: Subscription[];
 };
 
-const Index = ({ subscriptions }: Props) => {
+const New = ({ subscriptions }: Props) => {
   const { t } = useTranslation();
   const { data, setData, errors, post, processing } =
     useForm(initialFormValues);
@@ -151,19 +160,19 @@ const Index = ({ subscriptions }: Props) => {
             label={`${t("integration_form.type")}`}
             labelSize="xl"
             component={
-              <div className="flex gap-5 max-md:flex-col max-md:items-center md:flex-row pb-3">
+              <div className="md:grid md:grid-cols-3 gap-5 max-md:flex max-md:flex-col max-md:items-center pb-3">
                 {translatedIntegrations.map((integration) => (
                   <button
                     type="button"
-                    key={integration.title}
+                    key={integration.type}
                     onClick={() => {
-                      setData("integrationType", integration.title);
+                      setData("integrationType", integration.type);
                     }}
                   >
                     <Card
-                      active={data.integrationType === integration.title}
+                      active={data.integrationType === integration.type}
                       {...integration}
-                      className="w-full md:min-h-[27rem]"
+                      className="w-full md:min-h-[14rem]"
                     ></Card>
                   </button>
                 ))}
@@ -176,20 +185,20 @@ const Index = ({ subscriptions }: Props) => {
             label={`${t("integration_form.pricing_plan")}`}
             labelSize="xl"
             component={
-              <div className="flex gap-5 max-md:flex-col max-md:items-center md:flex-row pb-3">
+              <div className="md:grid md:grid-cols-3 gap-5 max-md:flex max-md:flex-col max-md:items-center pb-3">
                 {translatedPricing.map((pricing) => (
                   <button
                     type="button"
                     className="w-full"
                     key={pricing.title}
                     onClick={() => {
-                      setData("subscriptionId", pricing.title);
+                      setData("subscriptionId", pricing.id);
                     }}
                   >
                     <Card
                       {...pricing}
-                      active={data.subscriptionId === pricing.title}
-                      className=" md:min-h-[12rem]"
+                      active={data.subscriptionId === pricing.id}
+                      className="md:min-h-[14rem]"
                     >
                       {pricing.price}
                     </Card>
@@ -417,6 +426,6 @@ const Index = ({ subscriptions }: Props) => {
   );
 };
 
-Index.layout = (page: ReactNode) => <Layout>{page}</Layout>;
+New.layout = (page: ReactNode) => <Layout>{page}</Layout>;
 
-export default Index;
+export default New;
