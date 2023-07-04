@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { classNames } from "../utils/classNames";
 
-type LabelPosition = "top" | "left" | "right";
+export type LabelPosition = "top" | "left" | "right";
 
 type LabelSize = "base" | "lg" | "xl";
 
@@ -37,18 +37,19 @@ const getAlignItems = (labelPosition: LabelPosition | undefined) => {
   return;
 };
 
-type LabelProps = {
+type LabelProps = ComponentProps<"label"> & {
   id: string;
   label: string;
   labelSize: LabelSize;
 };
 
-const Label = memo(({ id, labelSize, label }: LabelProps) => (
+const Label = memo(({ id, labelSize, label, className }: LabelProps) => (
   <label
     htmlFor={id}
     className={classNames(
       "font-semibold",
-      labelSize ? `text-${labelSize}` : ""
+      labelSize ? `text-${labelSize}` : "",
+      className
     )}
   >
     {label}
@@ -56,6 +57,13 @@ const Label = memo(({ id, labelSize, label }: LabelProps) => (
 ));
 
 Label.displayName = "Label";
+
+const InputStyle = {
+  top: "",
+  bottom: "",
+  left: "w-[35%]",
+  right: "pt-1",
+};
 
 type Props = {
   label?: string;
@@ -90,10 +98,15 @@ export const FormElement = ({
             className
           )}
         >
-          {label && <Label id={id} label={label} labelSize={labelSize} />}
-          <div className={labelPosition === "right" ? "pt-1" : ""}>
-            {clonedComponent}
-          </div>
+          {label && (
+            <Label
+              id={id}
+              label={label}
+              labelSize={labelSize}
+              className={labelPosition === "left" ? "w-40" : ""}
+            />
+          )}
+          <div className={InputStyle[labelPosition]}>{clonedComponent}</div>
         </div>
       </Wrapper>
       {error && <span className="text-red-500 mt-1">{error}</span>}
