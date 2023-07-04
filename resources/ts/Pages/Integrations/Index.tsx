@@ -23,6 +23,7 @@ export type Integration = {
   description: string;
   subscriptionId: string;
   status: IntegrationStatus;
+  contacts: string[];
 };
 
 type Props = {
