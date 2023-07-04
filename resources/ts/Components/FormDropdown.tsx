@@ -16,7 +16,7 @@ export const FormDropdown = ({ title, children, setIsDisabled }: Props) => {
   const [isVisible, setIsVisible] = useState(false);
 
   return (
-    <div className="flex flex-col gap-4 py-6">
+    <div className="flex flex-col gap-4 shadow-md shadow-slate-200 px-10 py-5">
       <div className="flex gap-2 items-center">
         <Heading className="font-semibold" level={2}>
           {title}

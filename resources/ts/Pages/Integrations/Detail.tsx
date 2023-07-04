@@ -30,7 +30,7 @@ const Detail = ({ integration }: Props) => {
   });
 
   return (
-    <Page className="bg-white">
+    <Page>
       <div className="w-full flex flex-col gap-5">
         <div className="flex justify-between gap-5">
           <div className="flex gap-3 items-center align-middle">
