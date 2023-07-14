@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { Integration } from "../../../Pages/Integrations/Index";
 import { Button } from "../../Button";
 import { classNames } from "../../../utils/classNames";
+import { useForm } from "@inertiajs/react";
 
 type Props = {
   integration: Integration;
@@ -16,6 +17,13 @@ type Props = {
 export const BasicInfo = ({ integration, isMobile }: Props) => {
   const { t } = useTranslation();
   const [isDisabled, setIsDisabled] = useState(true);
+
+  const initialFormValues = {
+    integrationName: integration.name,
+    description: integration.description,
+  };
+
+  const { data, setData, patch } = useForm(initialFormValues);
 
   return (
     <div className="flex flex-col gap-4 shadow-md shadow-slate-200 max-md:px-5 px-10 py-5">
@@ -36,8 +44,9 @@ export const BasicInfo = ({ integration, isMobile }: Props) => {
           component={
             <Input
               type="text"
-              name="organisationFunctionalContact"
-              defaultValue={integration.name}
+              name="integrationName"
+              value={data.integrationName}
+              onChange={(e) => setData("integrationName", e.target.value)}
               className="md:min-w-[32rem]"
               disabled={isDisabled}
             />
@@ -54,13 +63,22 @@ export const BasicInfo = ({ integration, isMobile }: Props) => {
                 !isDisabled && "outline-none bg-white border-gray-500"
               )}
               name="description"
-              defaultValue={integration.description}
+              value={data.description}
+              onChange={(e) => setData("description", e.target.value)}
               disabled={isDisabled}
             />
           }
         />
         <div className="flex flex-col items-start md:pl-[10.5rem]">
-          <Button onClick={() => setIsDisabled(true)}>
+          <Button
+            onClick={() => {
+              setIsDisabled(true);
+
+              patch(`/integrations/${integration.id}`, {
+                preserveScroll: true,
+              });
+            }}
+          >
             {t("details.save")}
           </Button>
         </div>
