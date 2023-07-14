@@ -14,7 +14,12 @@ type Props = {
   onChangeDisabled: (newDisabled: boolean) => void;
 };
 
-export const FormDropdown = ({ title, children, disabled, onChangeDisabled }: Props) => {
+export const FormDropdown = ({
+  title,
+  children,
+  disabled,
+  onChangeDisabled,
+}: Props) => {
   const [isVisible, setIsVisible] = useState(false);
 
   return (
