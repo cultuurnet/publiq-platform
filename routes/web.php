@@ -38,9 +38,11 @@ TranslatedRoute::get(['/en/subscriptions', '/nl/abonnementen'], [SubscriptionCon
 Route::group(['middleware' => 'auth'], static function () {
     TranslatedRoute::get(['/en/integrations', '/nl/integraties'], [IntegrationController::class, 'index'], 'integrations.index');
     TranslatedRoute::get(['/en/integrations/new', '/nl/integraties/nieuw'], [IntegrationController::class, 'create']);
-    TranslatedRoute::get(['/en/integrations/{id}', '/nl/integraties/{id}'], [IntegrationController::class, 'detail']);
+    TranslatedRoute::get(['/en/integrations/{id}', '/nl/integraties/{id}'], [IntegrationController::class, 'detail'], 'integrations.detail');
 
     Route::delete('/integrations/{id}', [IntegrationController::class, 'delete']);
 
     Route::post('/integrations', [IntegrationController::class, 'store']);
+
+    Route::patch('/integrations/{id}', [IntegrationController::class, 'update']);
 });

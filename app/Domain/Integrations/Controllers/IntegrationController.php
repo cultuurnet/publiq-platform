@@ -61,6 +61,7 @@ final class IntegrationController extends Controller
 
     public function create(): Response
     {
+
         return Inertia::render('Integrations/New', [
             'integrationTypes' => IntegrationType::cases(),
             'subscriptions' => $this->subscriptionRepository->all(),
@@ -131,7 +132,34 @@ final class IntegrationController extends Controller
             TranslatedRoute::getTranslatedRouteName(
                 request: $request,
                 routeName: 'integrations.index'
-            )
+            ),
+            [],
+            303
+        );
+
+    }
+
+    public function update(Request $request, string $id, UpdateBasicInfo $updateBasicInfo): RedirectResponse
+    {
+
+        $updatedIntegration = $this->integrationRepository->update(Uuid::fromString($id), $updateBasicInfo);
+
+        // $this->integrationRepository->update()
+        // try {
+        //     $this->integrationRepository->(Uuid::fromString($id));
+        // } catch (ModelNotFoundException) {
+        //     // We can redirect back to integrations, even if not successful
+        // }
+
+        return Redirect::route(
+            TranslatedRoute::getTranslatedRouteName(
+                request: $request,
+                routeName: 'integrations.detail'
+            ),
+            [
+                'id' => $id,
+            ],
+            303
         );
 
     }
@@ -149,6 +177,7 @@ final class IntegrationController extends Controller
                 ...$integration->toArray(),
                 'contacts' => $integration->contacts(),
                 'urls' => $integration->urls(),
+                'organisation' => $integration->organization(),
             ],
         ]);
     }

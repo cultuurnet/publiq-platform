@@ -6,6 +6,7 @@ namespace App\Domain\Integrations\Repositories;
 
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
+use App\Domain\Integrations\Controllers\UpdateBasicInfo;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Pagination\PaginatedCollection;
@@ -40,6 +41,24 @@ final class EloquentIntegrationRepository implements IntegrationRepository
                 ]);
             }
         });
+    }
+
+    public function update(UuidInterface $id, UpdateBasicInfo $updateBasicInfo): Integration
+    {
+        /** @var IntegrationModel $integrationModel */
+        $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
+
+
+        // TODO: Make more generic
+        $name = $updateBasicInfo->input('integrationName');
+        $description = $updateBasicInfo->input('description');
+
+        $integrationModel->name = $name;
+        $integrationModel->description = $description;
+
+        $integrationModel->save();
+
+        return $integrationModel->toDomain();
     }
 
     public function getById(UuidInterface $id): Integration
