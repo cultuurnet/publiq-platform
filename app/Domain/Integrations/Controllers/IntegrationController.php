@@ -17,6 +17,7 @@ use App\Http\Controllers\Controller;
 use App\Router\TranslatedRoute;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -139,17 +140,10 @@ final class IntegrationController extends Controller
 
     }
 
-    public function update(Request $request, string $id, UpdateBasicInfo $updateBasicInfo): RedirectResponse
+    public function update(Request $request, string $id, FormRequest $updateInfo): RedirectResponse
     {
 
-        $updatedIntegration = $this->integrationRepository->update(Uuid::fromString($id), $updateBasicInfo);
-
-        // $this->integrationRepository->update()
-        // try {
-        //     $this->integrationRepository->(Uuid::fromString($id));
-        // } catch (ModelNotFoundException) {
-        //     // We can redirect back to integrations, even if not successful
-        // }
+        $this->integrationRepository->update(Uuid::fromString($id), $updateInfo);
 
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName(

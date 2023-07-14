@@ -6,12 +6,12 @@ namespace App\Domain\Integrations\Repositories;
 
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
-use App\Domain\Integrations\Controllers\UpdateBasicInfo;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Pagination\PaginatedCollection;
 use App\Pagination\PaginationInfo;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\UuidInterface;
@@ -43,18 +43,19 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         });
     }
 
-    public function update(UuidInterface $id, UpdateBasicInfo $updateBasicInfo): Integration
+    public function update(UuidInterface $id, FormRequest $updateInfo): Integration
     {
         /** @var IntegrationModel $integrationModel */
         $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
 
+        $nameMapping = [
+            'integrationName' => 'name',
+        ];
 
-        // TODO: Make more generic
-        $name = $updateBasicInfo->input('integrationName');
-        $description = $updateBasicInfo->input('description');
-
-        $integrationModel->name = $name;
-        $integrationModel->description = $description;
+        foreach ($updateInfo->keys() as $name) {
+            $modelName = $nameMapping[$name] ?? $name;
+            $integrationModel[$modelName] = $updateInfo->input($name);
+        }
 
         $integrationModel->save();
 
