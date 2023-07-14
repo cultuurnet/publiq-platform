@@ -15,7 +15,6 @@ export const ButtonIcon = ({
   color,
   size,
   className,
-  onClick,
   ...props
 }: Props) => {
   return (
@@ -25,7 +24,6 @@ export const ButtonIcon = ({
         className
       )}
       {...props}
-      onClick={onClick}
     >
       <FontAwesomeIcon icon={icon} color={color} size={size} />
     </button>
