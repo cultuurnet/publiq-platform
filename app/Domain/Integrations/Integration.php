@@ -27,7 +27,7 @@ final class Integration
         $this->urls = [];
     }
 
-    public function withContacts(Contact...$contacts): self
+    public function withContacts(Contact ...$contacts): self
     {
         $clone = clone $this;
         $clone->contacts = $contacts;
@@ -42,7 +42,7 @@ final class Integration
         return $this->contacts;
     }
 
-    public function withUrls(IntegrationUrl...$urls): self
+    public function withUrls(IntegrationUrl ...$urls): self
     {
         $clone = clone $this;
         $clone->urls = $urls;
