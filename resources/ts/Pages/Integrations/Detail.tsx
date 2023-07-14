@@ -47,7 +47,7 @@ const Detail = ({ integration }: Props) => {
         <IntegrationInfo {...integration} />
         <IntegrationSettings isMobile={isMobile} />
         <ContactInfo {...integration} />
-        <BillingInfo />
+        <BillingInfo {...integration} />
         <ButtonSecondary className="self-center">
           {t("details.delete")}
           <FontAwesomeIcon className="pl-1" icon={faTrash} />
