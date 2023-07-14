@@ -6,6 +6,7 @@ import {
   faChevronRight,
   faChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
+
 type Props = {
   children: React.ReactNode;
   title: "string";
