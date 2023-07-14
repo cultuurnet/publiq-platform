@@ -26,7 +26,8 @@ const Detail = ({ integration }: Props) => {
 
   useEffect(() => {
     window.addEventListener("resize", handleResize);
-  });
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <Page>
