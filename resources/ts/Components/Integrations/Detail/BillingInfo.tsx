@@ -13,7 +13,10 @@ export const BillingInfo = () => {
   return (
     <FormDropdown
       title={t("details.billing_info.title")}
-      setIsDisabled={setIsDisabled}
+      disabled={isDisabled}
+      onChangeDisabled={(newDisabled) => {
+        setIsDisabled(newDisabled);
+      }}
     >
       <div className="flex flex-col gap-5">
         <div className="flex max-sm:flex-col md:items-center gap-2">

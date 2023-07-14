@@ -10,10 +10,11 @@ import {
 type Props = {
   children: React.ReactNode;
   title: "string";
-  setIsDisabled: React.Dispatch<React.SetStateAction<boolean>>;
+  disabled: boolean;
+  onChangeDisabled: (newDisabled: boolean) => void;
 };
 
-export const FormDropdown = ({ title, children, setIsDisabled }: Props) => {
+export const FormDropdown = ({ title, children, disabled, onChangeDisabled }: Props) => {
   const [isVisible, setIsVisible] = useState(false);
 
   return (
@@ -32,7 +33,7 @@ export const FormDropdown = ({ title, children, setIsDisabled }: Props) => {
             <ButtonIcon
               icon={faPencil}
               className="text-icon-gray"
-              onClick={() => setIsDisabled((prev) => !prev)}
+              onClick={() => onChangeDisabled(!disabled)}
             />
           </>
         ) : (

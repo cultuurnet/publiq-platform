@@ -18,7 +18,10 @@ export const IntegrationSettings = ({ isMobile }: Props) => {
   return (
     <FormDropdown
       title={t("details.integration_settings.title")}
-      setIsDisabled={setIsDisabled}
+      disabled={isDisabled}
+      onChangeDisabled={(newDisabled) => {
+        setIsDisabled(newDisabled);
+      }}
     >
       <Heading className="font-semibold" level={3}>
         {t("details.integration_settings.login")}

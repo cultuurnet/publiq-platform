@@ -19,7 +19,10 @@ export const ContactInfo = ({ contacts }: Props) => {
   return (
     <FormDropdown
       title={t("details.contact_info.title")}
-      setIsDisabled={setIsDisabled}
+      disabled={isDisabled}
+      onChangeDisabled={(newDisabled) => {
+        setIsDisabled(newDisabled);
+      }}
     >
       <div className="flex flex-col gap-5">
         <Heading className="font-semibold" level={3}>
