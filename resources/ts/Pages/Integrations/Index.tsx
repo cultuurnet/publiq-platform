@@ -16,6 +16,19 @@ import { QuestionDialog } from "../../Components/QuestionDialog";
 import { IconLink } from "../../Components/IconLink";
 import { IntegrationStatus } from "../../types/IntegrationStatus";
 
+type Organisation = {
+  id: string;
+  name: string;
+  invoiceMail: string;
+  vat: string;
+  address: {
+    street: string;
+    zip: string;
+    city: string;
+    country: string;
+  };
+};
+
 export type Integration = {
   id: string;
   type: string;
@@ -24,6 +37,7 @@ export type Integration = {
   subscriptionId: string;
   status: IntegrationStatus;
   contacts: string[];
+  organisation?: Organisation;
 };
 
 type Props = {
