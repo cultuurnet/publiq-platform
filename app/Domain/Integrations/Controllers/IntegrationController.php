@@ -196,7 +196,6 @@ final class IntegrationController extends Controller
             $changedContributors = array_filter($contributors, fn ($contributor) => $contributor['changed']);
 
             if (!empty($changedContributors)) {
-
                 foreach ($changedContributors as $contributor) {
                     $contactId = $contributor['id'];
 
