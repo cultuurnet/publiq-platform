@@ -45,4 +45,6 @@ Route::group(['middleware' => 'auth'], static function () {
     Route::post('/integrations', [IntegrationController::class, 'store']);
 
     Route::patch('/integrations/{id}', [IntegrationController::class, 'update']);
+
+    Route::patch('/integrations/{id}/contacts', [IntegrationController::class, 'updateContacts']);
 });
