@@ -30,13 +30,13 @@ type Organisation = {
 };
 
 type Contact = {
-  id:string;
+  id: string;
   integrationId: string;
   email: string;
   type: string;
   firstName: string;
   lastName: string;
-}
+};
 
 export type Integration = {
   id: string;
