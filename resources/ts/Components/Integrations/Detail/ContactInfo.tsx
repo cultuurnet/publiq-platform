@@ -32,16 +32,13 @@ export const ContactInfo = ({ id, contacts }: Props) => {
     (contact) => contact.type === ContactType.Contributor
   );
 
-  console.log({ functionalContact, technicalContact, contributorContacts });
-
   const initialFormValues = {
-    functional: functionalContact,
-    technical: technicalContact,
-    contributors: contributorContacts,
-
-    functionalChanged: false,
-    technicalChanged: false,
-    contributorsChanged: false,
+    functional: { ...functionalContact, changed: false },
+    technical: { ...technicalContact, changed: false },
+    contributors: contributorContacts.map((contributor) => ({
+      ...contributor,
+      changed: false,
+    })),
   };
 
   const { data, setData, patch } = useForm(initialFormValues);
@@ -51,8 +48,7 @@ export const ContactInfo = ({ id, contacts }: Props) => {
 
     setData((prevData) => ({
       ...prevData,
-      [property]: newData,
-      [`${property}Changed`]: true,
+      [property]: { ...newData, changed: true },
     }));
   };
 
