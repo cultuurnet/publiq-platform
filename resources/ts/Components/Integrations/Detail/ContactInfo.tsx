@@ -41,7 +41,11 @@ export const ContactInfo = ({ id, contacts }: Props) => {
     })),
   };
 
-  const { data, setData, patch } = useForm(initialFormValues);
+  const { data, setData, patch, errors: errs } = useForm(initialFormValues);
+
+  const errors = errs as Record<string, string | undefined>;
+
+  console.log("errors", { errors });
 
   const changeContact = (type: ContactType, newData: Contact) => {
     const property = type === "contributor" ? "contributors" : type;
@@ -67,6 +71,7 @@ export const ContactInfo = ({ id, contacts }: Props) => {
         <div className="grid grid-cols-3 gap-3 max-md:grid-cols-1">
           <FormElement
             label={`${t("integration_form.contact.last_name")}`}
+            error={errors["functional.lastName"]}
             component={
               <Input
                 type="text"
@@ -84,6 +89,7 @@ export const ContactInfo = ({ id, contacts }: Props) => {
           />
           <FormElement
             label={`${t("integration_form.contact.first_name")}`}
+            error={errors["functional.firstName"]}
             component={
               <Input
                 type="text"
@@ -101,6 +107,7 @@ export const ContactInfo = ({ id, contacts }: Props) => {
           />
           <FormElement
             label={`${t("integration_form.contact.email")}`}
+            error={errors["functional.email"]}
             component={
               <Input
                 type="email"
@@ -123,6 +130,7 @@ export const ContactInfo = ({ id, contacts }: Props) => {
         <div className="grid grid-cols-3 gap-3 max-md:grid-cols-1 ">
           <FormElement
             label={`${t("integration_form.contact.last_name")}`}
+            error={errors["technical.lastName"]}
             component={
               <Input
                 type="text"
@@ -140,6 +148,7 @@ export const ContactInfo = ({ id, contacts }: Props) => {
           />
           <FormElement
             label={`${t("integration_form.contact.first_name")}`}
+            error={errors["technical.firstName"]}
             component={
               <Input
                 type="text"
@@ -157,6 +166,7 @@ export const ContactInfo = ({ id, contacts }: Props) => {
           />
           <FormElement
             label={`${t("integration_form.contact.email")}`}
+            error={errors["technical.email"]}
             component={
               <Input
                 type="email"
