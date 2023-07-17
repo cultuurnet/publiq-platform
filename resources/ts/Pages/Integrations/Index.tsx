@@ -15,6 +15,7 @@ import { Page } from "../../Components/Page";
 import { QuestionDialog } from "../../Components/QuestionDialog";
 import { IconLink } from "../../Components/IconLink";
 import { IntegrationStatus } from "../../types/IntegrationStatus";
+import { ContactType } from "../../types/ContactType";
 
 type Organisation = {
   id: string;
@@ -33,7 +34,7 @@ type Contact = {
   id: string;
   integrationId: string;
   email: string;
-  type: string;
+  type: ContactType;
   firstName: string;
   lastName: string;
 };
