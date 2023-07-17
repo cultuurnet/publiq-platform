@@ -10,6 +10,7 @@ import { Button } from "../../Button";
 import { Integration } from "../../../Pages/Integrations/Index";
 import { FormDropdown } from "../../FormDropdown";
 import { useForm } from "@inertiajs/react";
+import { ContactType } from "../../../types/ContactType";
 
 type Props = Integration;
 
@@ -17,10 +18,21 @@ export const ContactInfo = ({ id, contacts }: Props) => {
   const { t } = useTranslation();
   const [isDisabled, setIsDisabled] = useState(true);
 
-  const functionalContact = contacts[1];
-  const technicalContact = contacts[2];
+  // We know for sure there is a functional contact
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const functionalContact = contacts.find(
+    (contact) => contact.type === ContactType.Functional
+  )!;
+  // We know for sure there is a technical contact
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const technicalContact = contacts.find(
+    (contact) => contact.type === ContactType.Technical
+  )!;
+  const contributerContacts = contacts.filter(
+    (contact) => contact.type === ContactType.Contributor
+  );
 
-  console.log(contacts);
+  console.log({ functionalContact, technicalContact, contributerContacts });
 
   const initialFormValues = {
     lastNameFunctionalContact: functionalContact.lastName,
