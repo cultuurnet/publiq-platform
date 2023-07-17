@@ -6,7 +6,6 @@ namespace App\Domain\Contacts\Repositories;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\Models\ContactModel;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface;
 
@@ -27,27 +26,6 @@ final class EloquentContactRepository implements ContactRepository
                 'email' => $contact->email,
             ]
         );
-    }
-
-    public function update(UuidInterface $id, FormRequest $updateContact): Contact
-    {
-        /** @var ContactModel $integrationModel */
-        $contactModel = ContactModel::query()->findOrFail($id->toString());
-
-        $nameMapping = [
-            'lastNameFunctionalContact' => 'lastName',
-            'fistNameFunctionalContact' => 'firstName',
-            'emailFunctionalContact' => 'email',
-        ];
-
-        foreach ($updateContact->keys() as $name) {
-            $modelName = $nameMapping[$name] ?? $name;
-            $contactModel[$modelName] = $updateContact->input($name);
-        }
-
-        $contactModel->save();
-
-        return $contactModel->toDomain();
     }
 
     public function getById(UuidInterface $id): Contact

@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace App\Domain\Contacts\Repositories;
 
 use App\Domain\Contacts\Contact;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface;
 
 interface ContactRepository
 {
     public function save(Contact $contact): void;
-    public function update(UuidInterface $id, FormRequest $updatedInfo): Contact;
 
     public function getById(UuidInterface $id): Contact;
 
