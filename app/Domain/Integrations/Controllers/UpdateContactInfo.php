@@ -14,6 +14,8 @@ final class UpdateContactInfo extends FormRequest
      */
     public function rules(): array
     {
+        // TODO: Check how to fix empty string values failing
+
         return [
             'functional' => [
                 'id' => ['required', 'string'],
