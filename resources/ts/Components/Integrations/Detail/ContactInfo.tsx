@@ -9,12 +9,29 @@ import { useTranslation } from "react-i18next";
 import { Button } from "../../Button";
 import { Integration } from "../../../Pages/Integrations/Index";
 import { FormDropdown } from "../../FormDropdown";
+import { useForm } from "@inertiajs/react";
 
 type Props = Integration;
 
-export const ContactInfo = ({ contacts }: Props) => {
+export const ContactInfo = ({ id, contacts }: Props) => {
   const { t } = useTranslation();
   const [isDisabled, setIsDisabled] = useState(true);
+
+  const functionalContact = contacts[1];
+  const technicalContact = contacts[2];
+
+  console.log(contacts);
+
+  const initialFormValues = {
+    lastNameFunctionalContact: functionalContact.lastName,
+    firstNameFunctionalContact: functionalContact.firstName,
+    emailFunctionalContact: functionalContact.email,
+    lastNameTechnicalContact: technicalContact.lastName,
+    firstNameTechnicalContact: technicalContact.firstName,
+    emailTechnicalContact: technicalContact.email,
+  };
+
+  const { data, setData, patch } = useForm(initialFormValues);
 
   return (
     <FormDropdown
@@ -28,24 +45,17 @@ export const ContactInfo = ({ contacts }: Props) => {
         <Heading className="font-semibold" level={3}>
           {t("integration_form.contact_label_1")}
         </Heading>
-        <div className="grid grid-cols-2 gap-3 max-md:grid-cols-1">
-          <FormElement
-            label={`${t("integration_form.contact.organisation")}`}
-            component={
-              <Input
-                type="text"
-                name="organisationFunctionalContact"
-                defaultValue="organisation"
-                disabled={isDisabled}
-              />
-            }
-          />
+        <div className="grid grid-cols-3 gap-3 max-md:grid-cols-1">
           <FormElement
             label={`${t("integration_form.contact.last_name")}`}
             component={
               <Input
                 type="text"
                 name="lastNameFunctionalContact"
+                value={data.lastNameFunctionalContact}
+                onChange={(e) =>
+                  setData("lastNameFunctionalContact", e.target.value)
+                }
                 disabled={isDisabled}
               />
             }
@@ -56,7 +66,10 @@ export const ContactInfo = ({ contacts }: Props) => {
               <Input
                 type="text"
                 name="firstNameFunctionalContact"
-                defaultValue="FirstName"
+                value={data.firstNameFunctionalContact}
+                onChange={(e) =>
+                  setData("firstNameFunctionalContact", e.target.value)
+                }
                 disabled={isDisabled}
               />
             }
@@ -67,7 +80,10 @@ export const ContactInfo = ({ contacts }: Props) => {
               <Input
                 type="email"
                 name="emailFunctionalContact"
-                defaultValue="email@com"
+                value={data.emailFunctionalContact}
+                onChange={(e) =>
+                  setData("emailFunctionalContact", e.target.value)
+                }
                 disabled={isDisabled}
               />
             }
@@ -76,25 +92,17 @@ export const ContactInfo = ({ contacts }: Props) => {
         <Heading className="font-semibold" level={3}>
           {t("integration_form.contact_label_2")}
         </Heading>
-        <div className="grid grid-cols-2 gap-3 max-md:grid-cols-1 ">
-          <FormElement
-            label={`${t("integration_form.contact.organisation")}`}
-            component={
-              <Input
-                type="text"
-                name="organisationTechnicalContact"
-                defaultValue="organisation"
-                disabled={isDisabled}
-              />
-            }
-          />
+        <div className="grid grid-cols-3 gap-3 max-md:grid-cols-1 ">
           <FormElement
             label={`${t("integration_form.contact.last_name")}`}
             component={
               <Input
                 type="text"
                 name="lastNameTechnicalContact"
-                defaultValue="Lastname"
+                value={data.lastNameTechnicalContact}
+                onChange={(e) =>
+                  setData("lastNameTechnicalContact", e.target.value)
+                }
                 disabled={isDisabled}
               />
             }
@@ -105,7 +113,10 @@ export const ContactInfo = ({ contacts }: Props) => {
               <Input
                 type="text"
                 name="firstNameTechnicalContact"
-                defaultValue="FirstName"
+                value={data.firstNameTechnicalContact}
+                onChange={(e) =>
+                  setData("firstNameTechnicalContact", e.target.value)
+                }
                 disabled={isDisabled}
               />
             }
@@ -116,7 +127,10 @@ export const ContactInfo = ({ contacts }: Props) => {
               <Input
                 type="email"
                 name="emailTechnialContact"
-                defaultValue="email@com"
+                value={data.emailTechnicalContact}
+                onChange={(e) =>
+                  setData("emailTechnicalContact", e.target.value)
+                }
                 disabled={isDisabled}
               />
             }
@@ -132,24 +146,13 @@ export const ContactInfo = ({ contacts }: Props) => {
             icon={faPlus}
           ></ButtonIcon>
         </div>
-        <div className="grid grid-cols-2 gap-3 max-md:grid-cols-1">
-          <FormElement
-            label={`${t("integration_form.contact.organisation")}`}
-            component={
-              <Input
-                type="text"
-                name="organisationTechnicalContact"
-                defaultValue="organisation"
-                disabled={isDisabled}
-              />
-            }
-          />
+        <div className="grid grid-cols-3 gap-3 max-md:grid-cols-1">
           <FormElement
             label={`${t("integration_form.contact.last_name")}`}
             component={
               <Input
                 type="text"
-                name="lastNameTechnicalContact"
+                name="lastNameContact"
                 defaultValue="Lastname"
                 disabled={isDisabled}
               />
@@ -160,7 +163,7 @@ export const ContactInfo = ({ contacts }: Props) => {
             component={
               <Input
                 type="text"
-                name="firstNameTechnicalContact"
+                name="firstNameContact"
                 defaultValue="FirstName"
                 disabled={isDisabled}
               />
@@ -171,7 +174,7 @@ export const ContactInfo = ({ contacts }: Props) => {
             component={
               <Input
                 type="email"
-                name="emailTechnialContact"
+                name="emailContact"
                 defaultValue="email@com"
                 disabled={isDisabled}
               />
@@ -183,7 +186,17 @@ export const ContactInfo = ({ contacts }: Props) => {
         </ButtonSecondary>
       </div>
       <div className="flex flex-col gap-2 items-center">
-        <Button onClick={() => setIsDisabled(true)}>{t("details.save")}</Button>
+        <Button
+          onClick={() => {
+            setIsDisabled(true);
+
+            patch(`/integrations/${id}`, {
+              preserveScroll: true,
+            });
+          }}
+        >
+          {t("details.save")}
+        </Button>
       </div>
     </FormDropdown>
   );

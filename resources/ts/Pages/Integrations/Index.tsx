@@ -29,6 +29,15 @@ type Organisation = {
   };
 };
 
+type Contact = {
+  id:string;
+  integrationId: string;
+  email: string;
+  type: string;
+  firstName: string;
+  lastName: string;
+}
+
 export type Integration = {
   id: string;
   type: string;
@@ -36,7 +45,7 @@ export type Integration = {
   description: string;
   subscriptionId: string;
   status: IntegrationStatus;
-  contacts: string[];
+  contacts: Contact[];
   organisation?: Organisation;
 };
 
