@@ -30,7 +30,7 @@ type Organisation = {
   };
 };
 
-type Contact = {
+export type Contact = {
   id: string;
   integrationId: string;
   email: string;

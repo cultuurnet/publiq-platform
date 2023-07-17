@@ -7,7 +7,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { ButtonSecondary } from "../../ButtonSecondary";
 import { useTranslation } from "react-i18next";
 import { Button } from "../../Button";
-import { Integration } from "../../../Pages/Integrations/Index";
+import { Contact, Integration } from "../../../Pages/Integrations/Index";
 import { FormDropdown } from "../../FormDropdown";
 import { useForm } from "@inertiajs/react";
 import { ContactType } from "../../../types/ContactType";
@@ -28,22 +28,33 @@ export const ContactInfo = ({ id, contacts }: Props) => {
   const technicalContact = contacts.find(
     (contact) => contact.type === ContactType.Technical
   )!;
-  const contributerContacts = contacts.filter(
+  const contributorContacts = contacts.filter(
     (contact) => contact.type === ContactType.Contributor
   );
 
-  console.log({ functionalContact, technicalContact, contributerContacts });
+  console.log({ functionalContact, technicalContact, contributorContacts });
 
   const initialFormValues = {
-    lastNameFunctionalContact: functionalContact.lastName,
-    firstNameFunctionalContact: functionalContact.firstName,
-    emailFunctionalContact: functionalContact.email,
-    lastNameTechnicalContact: technicalContact.lastName,
-    firstNameTechnicalContact: technicalContact.firstName,
-    emailTechnicalContact: technicalContact.email,
+    functional: functionalContact,
+    technical: technicalContact,
+    contributors: contributorContacts,
+
+    functionalChanged: false,
+    technicalChanged: false,
+    contributorsChanged: false,
   };
 
   const { data, setData, patch } = useForm(initialFormValues);
+
+  const changeContact = (type: ContactType, newData: Contact) => {
+    const property = type === "contributor" ? "contributors" : type;
+
+    setData((prevData) => ({
+      ...prevData,
+      [property]: newData,
+      [`${property}Changed`]: true,
+    }));
+  };
 
   return (
     <FormDropdown
@@ -63,10 +74,13 @@ export const ContactInfo = ({ id, contacts }: Props) => {
             component={
               <Input
                 type="text"
-                name="lastNameFunctionalContact"
-                value={data.lastNameFunctionalContact}
+                name="functional.lastName"
+                value={data.functional.lastName}
                 onChange={(e) =>
-                  setData("lastNameFunctionalContact", e.target.value)
+                  changeContact("functional", {
+                    ...data.functional,
+                    lastName: e.target.value,
+                  })
                 }
                 disabled={isDisabled}
               />
@@ -77,10 +91,13 @@ export const ContactInfo = ({ id, contacts }: Props) => {
             component={
               <Input
                 type="text"
-                name="firstNameFunctionalContact"
-                value={data.firstNameFunctionalContact}
+                name="functional.firstName"
+                value={data.functional.firstName}
                 onChange={(e) =>
-                  setData("firstNameFunctionalContact", e.target.value)
+                  changeContact("functional", {
+                    ...data.functional,
+                    firstName: e.target.value,
+                  })
                 }
                 disabled={isDisabled}
               />
@@ -91,10 +108,13 @@ export const ContactInfo = ({ id, contacts }: Props) => {
             component={
               <Input
                 type="email"
-                name="emailFunctionalContact"
-                value={data.emailFunctionalContact}
+                name="functional.email"
+                value={data.functional.email}
                 onChange={(e) =>
-                  setData("emailFunctionalContact", e.target.value)
+                  changeContact("functional", {
+                    ...data.functional,
+                    email: e.target.value,
+                  })
                 }
                 disabled={isDisabled}
               />
@@ -110,10 +130,13 @@ export const ContactInfo = ({ id, contacts }: Props) => {
             component={
               <Input
                 type="text"
-                name="lastNameTechnicalContact"
-                value={data.lastNameTechnicalContact}
+                name="technical.lastName"
+                value={data.technical.lastName}
                 onChange={(e) =>
-                  setData("lastNameTechnicalContact", e.target.value)
+                  changeContact("technical", {
+                    ...data.technical,
+                    lastName: e.target.value,
+                  })
                 }
                 disabled={isDisabled}
               />
@@ -124,10 +147,13 @@ export const ContactInfo = ({ id, contacts }: Props) => {
             component={
               <Input
                 type="text"
-                name="firstNameTechnicalContact"
-                value={data.firstNameTechnicalContact}
+                name="technical.firstName"
+                value={data.technical.firstName}
                 onChange={(e) =>
-                  setData("firstNameTechnicalContact", e.target.value)
+                  changeContact("technical", {
+                    ...data.technical,
+                    firstName: e.target.value,
+                  })
                 }
                 disabled={isDisabled}
               />
@@ -138,10 +164,13 @@ export const ContactInfo = ({ id, contacts }: Props) => {
             component={
               <Input
                 type="email"
-                name="emailTechnialContact"
-                value={data.emailTechnicalContact}
+                name="technical.email"
+                value={data.technical.email}
                 onChange={(e) =>
-                  setData("emailTechnicalContact", e.target.value)
+                  changeContact("technical", {
+                    ...data.technical,
+                    email: e.target.value,
+                  })
                 }
                 disabled={isDisabled}
               />
@@ -149,7 +178,7 @@ export const ContactInfo = ({ id, contacts }: Props) => {
           />
         </div>
         <div className="flex items-start"></div>
-        <div className="flex gap-2 items-center">
+        {/* <div className="flex gap-2 items-center">
           <Heading className="font-semibold" level={3}>
             {t("integration_form.contact_label_3")}
           </Heading>
@@ -192,7 +221,7 @@ export const ContactInfo = ({ id, contacts }: Props) => {
               />
             }
           />
-        </div>
+        </div> */}
         <ButtonSecondary className="self-start">
           {t("details.contact_info.delete")}
         </ButtonSecondary>
@@ -202,7 +231,7 @@ export const ContactInfo = ({ id, contacts }: Props) => {
           onClick={() => {
             setIsDisabled(true);
 
-            patch(`/integrations/${id}`, {
+            patch(`/integrations/${id}/contacts`, {
               preserveScroll: true,
             });
           }}
