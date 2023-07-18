@@ -39,6 +39,17 @@ export type Contact = {
   lastName: string;
 };
 
+export type Subscription = {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  integrationType: string;
+  currency: string;
+  price: number;
+  fee: number;
+};
+
 export type Integration = {
   id: string;
   type: string;
@@ -48,6 +59,7 @@ export type Integration = {
   status: IntegrationStatus;
   contacts: Contact[];
   organisation?: Organisation;
+  subscription: Subscription;
 };
 
 type Props = {

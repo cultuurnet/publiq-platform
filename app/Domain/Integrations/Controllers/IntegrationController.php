@@ -262,6 +262,7 @@ final class IntegrationController extends Controller
     {
         try {
             $integration = $this->integrationRepository->getById(Uuid::fromString($id));
+            $subscription = $this->subscriptionRepository->getById($integration->subscriptionId);
         } catch (\Throwable $th) {
             abort(404);
         }
@@ -272,6 +273,7 @@ final class IntegrationController extends Controller
                 'contacts' => $integration->contacts(),
                 'urls' => $integration->urls(),
                 'organisation' => $integration->organization(),
+                'subscription' => $subscription
             ],
         ]);
     }
