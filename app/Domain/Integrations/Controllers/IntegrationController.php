@@ -13,6 +13,9 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Domain\Organizations\Address;
+use App\Domain\Organizations\Organization;
+use App\Domain\Organizations\Repositories\OrganizationRepository;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Http\Controllers\Controller;
 use App\Router\TranslatedRoute;
@@ -32,6 +35,7 @@ final class IntegrationController extends Controller
         private readonly SubscriptionRepository $subscriptionRepository,
         private readonly IntegrationRepository $integrationRepository,
         private readonly ContactRepository $contactRepository,
+        private readonly OrganizationRepository $organizationRepository,
         private readonly Auth0ClientRepository $auth0ClientRepository,
         private readonly UiTiDv1ConsumerRepository $uitidV1ConsumerRepository,
         private readonly CurrentUser $currentUser
@@ -223,6 +227,35 @@ final class IntegrationController extends Controller
             303
         );
 
+    }
+
+    public function updateBilling(string $id, UpdateBillingInfo $updateBillingInfo): RedirectResponse
+    {
+        $organisation = new Organization(
+            Uuid::fromString($updateBillingInfo->input('organisation.id')),
+            $updateBillingInfo->input('organisation.name'),
+            'test@test.be',
+            $updateBillingInfo->input('organisation.vat'),
+            new Address(
+                $updateBillingInfo->input('organisation.address.street'),
+                $updateBillingInfo->input('organisation.address.zip'),
+                $updateBillingInfo->input('organisation.address.city'),
+                $updateBillingInfo->input('organisation.address.country'),
+            )
+        );
+
+        $this->organizationRepository->save($organisation);
+
+        return Redirect::route(
+            TranslatedRoute::getTranslatedRouteName(
+                request: $updateBillingInfo,
+                routeName: 'integrations.detail'
+            ),
+            [
+                'id' => $id,
+            ],
+            303
+        );
     }
 
     public function detail(string $id): Response

@@ -47,4 +47,5 @@ Route::group(['middleware' => 'auth'], static function () {
     Route::patch('/integrations/{id}', [IntegrationController::class, 'update']);
 
     Route::patch('/integrations/{id}/contacts', [IntegrationController::class, 'updateContacts']);
+    Route::patch('/integrations/{id}/billing', [IntegrationController::class, 'updateBilling']);
 });
