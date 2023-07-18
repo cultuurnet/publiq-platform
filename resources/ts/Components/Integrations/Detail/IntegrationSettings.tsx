@@ -5,6 +5,8 @@ import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
 import { Button } from "../../Button";
 import { FormDropdown } from "../../FormDropdown";
+import { ButtonIcon } from "../../ButtonIcon";
+import { faPencil } from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
   isMobile?: boolean;
@@ -18,10 +20,13 @@ export const IntegrationSettings = ({ isMobile }: Props) => {
   return (
     <FormDropdown
       title={t("details.integration_settings.title")}
-      disabled={isDisabled}
-      onChangeDisabled={(newDisabled) => {
-        setIsDisabled(newDisabled);
-      }}
+      actions={
+        <ButtonIcon
+          icon={faPencil}
+          className="text-icon-gray"
+          onClick={() => setIsDisabled((prev) => !prev)}
+        />
+      }
     >
       <Heading className="font-semibold" level={3}>
         {t("details.integration_settings.login")}

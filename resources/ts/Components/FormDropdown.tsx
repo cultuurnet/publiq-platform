@@ -1,25 +1,18 @@
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { Heading } from "./Heading";
 import { ButtonIcon } from "./ButtonIcon";
 import {
-  faPencil,
   faChevronRight,
   faChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
   children: React.ReactNode;
-  title: "string";
-  disabled: boolean;
-  onChangeDisabled: (newDisabled: boolean) => void;
+  title: string;
+  actions: ReactNode;
 };
 
-export const FormDropdown = ({
-  title,
-  children,
-  disabled,
-  onChangeDisabled,
-}: Props) => {
+export const FormDropdown = ({ title, children, actions }: Props) => {
   const [isVisible, setIsVisible] = useState(false);
 
   return (
@@ -35,11 +28,7 @@ export const FormDropdown = ({
               onClick={() => setIsVisible(false)}
               className="text-icon-gray"
             />
-            <ButtonIcon
-              icon={faPencil}
-              className="text-icon-gray"
-              onClick={() => onChangeDisabled(!disabled)}
-            />
+            {actions}
           </>
         ) : (
           <ButtonIcon

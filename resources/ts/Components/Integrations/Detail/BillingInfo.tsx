@@ -7,6 +7,8 @@ import { FormDropdown } from "../../FormDropdown";
 import { Integration } from "../../../Pages/Integrations/Index";
 import { useTranslation } from "react-i18next";
 import { useForm } from "@inertiajs/react";
+import { ButtonIcon } from "../../ButtonIcon";
+import { faPencil } from "@fortawesome/free-solid-svg-icons";
 
 type Props = Integration;
 
@@ -25,10 +27,15 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
   return (
     <FormDropdown
       title={t("details.billing_info.title")}
-      disabled={isDisabled}
-      onChangeDisabled={(newDisabled) => {
-        setIsDisabled(newDisabled);
-      }}
+      actions={
+        data.organisation ? (
+          <ButtonIcon
+            icon={faPencil}
+            className="text-icon-gray"
+            onClick={() => setIsDisabled((prev) => !prev)}
+          />
+        ) : null
+      }
     >
       <div className="flex flex-col gap-5">
         <div className="flex max-sm:flex-col md:items-center gap-2">
@@ -36,9 +43,10 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
             {t("details.billing_info.subscription")}
           </Heading>
           <p>
-            {subscription.category}{" "}
+            {subscription.category} {"("}
             {subscription.currency === "EUR" ? "€" : subscription.currency}{" "}
             {subscription.fee / 100}
+            {")"}
           </p>
         </div>
 
