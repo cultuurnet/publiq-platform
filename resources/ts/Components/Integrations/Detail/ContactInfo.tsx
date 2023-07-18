@@ -52,7 +52,19 @@ export const ContactInfo = ({ id, contacts }: Props) => {
 
     setData((prevData) => ({
       ...prevData,
-      [property]: { ...newData, changed: true },
+      [property]:
+        property === "contributors"
+          ? prevData.contributors.map((contributor) => {
+              if (contributor.id === newData.id) {
+                return {
+                  ...newData,
+                  changed: true,
+                };
+              }
+
+              return contributor;
+            })
+          : { ...newData, changed: true },
     }));
   };
 
