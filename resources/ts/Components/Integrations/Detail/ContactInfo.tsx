@@ -41,7 +41,22 @@ export const ContactInfo = ({ id, contacts }: Props) => {
     })),
   };
 
-  const { data, setData, patch, errors: errs } = useForm(initialFormValues);
+  const {
+    data,
+    setData,
+    patch,
+    transform,
+    errors: errs,
+  } = useForm(initialFormValues);
+
+  transform(
+    (data) =>
+      ({
+        functional: data.functional.changed ? data.functional : undefined,
+        technical: data.technical.changed ? data.technical : undefined,
+        contributors: data.contributors.filter((c) => c.changed),
+      } as any)
+  );
 
   const errors = errs as Record<string, string | undefined>;
 

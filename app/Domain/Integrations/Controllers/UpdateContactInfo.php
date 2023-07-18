@@ -14,23 +14,20 @@ final class UpdateContactInfo extends FormRequest
      */
     public function rules(): array
     {
-        // TODO: Check how to fix empty string values failing
         return [
-                'functional.id' => ['required', 'string'],
-                'functional.integrationId' => ['required', 'string'],
-                'functional.email' => ['required', 'string', 'email', 'min:2', 'max:255'],
-                'functional.type' => ['required', 'string', 'min:2', 'max:255'],
-                'functional.firstName' => ['required', 'string', 'min:2', 'max:255'],
-                'functional.lastName' => ['required', 'string', 'min:2', 'max:255'],
-                'functional.changed' => ['required', 'boolean'],
-                'technical.id' => ['required', 'string'],
-                'technical.integrationId' => ['required', 'string'],
-                'technical.email' => ['required', 'string', 'email', 'min:2', 'max:255'],
-                'technical.type' => ['required', 'string', 'min:2', 'max:255'],
-                'technical.firstName' => ['required', 'string', 'min:2', 'max:255'],
-                'technical.lastName' => ['required', 'string', 'min:2', 'max:255'],
-                'technical.changed' => ['required', 'boolean'],
-                'contributors' => ['required', 'array'],
+                'functional.id' => ['string'],
+                'functional.integrationId' => ['string'],
+                'functional.email' => ['string', 'email', 'min:2', 'max:255'],
+                'functional.type' => ['string', 'min:2', 'max:255'],
+                'functional.firstName' => ['string', 'min:2', 'max:255'],
+                'functional.lastName' => ['string', 'min:2', 'max:255'],
+                'technical.id' => ['string'],
+                'technical.integrationId' => ['string'],
+                'technical.email' => ['string', 'email', 'min:2', 'max:255'],
+                'technical.type' => ['string', 'min:2', 'max:255'],
+                'technical.firstName' => ['string', 'min:2', 'max:255'],
+                'technical.lastName' => ['string', 'min:2', 'max:255'],
+                // 'contributors' => ['required', 'array'],
                 'contributors.*' => Rule::forEach(function () {
                     return [
                         'id' => ['required', 'string'],
@@ -39,7 +36,6 @@ final class UpdateContactInfo extends FormRequest
                         'type' => ['required', 'string', 'min:2', 'max:255'],
                         'firstName' => ['required', 'string', 'min:2', 'max:255'],
                         'lastName' => ['required', 'string', 'min:2', 'max:255'],
-                        'changed' => ['required', 'boolean'],
                     ];
                 }),
     ];

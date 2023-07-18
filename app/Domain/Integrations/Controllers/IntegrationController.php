@@ -163,7 +163,7 @@ final class IntegrationController extends Controller
     public function updateContacts(Request $request, string $id, UpdateContactInfo $updateContactInfo): RedirectResponse
     {
         DB::transaction(function () use ($id, $updateContactInfo) {
-            if ($updateContactInfo->input('functional.changed')) {
+            if ($updateContactInfo->input('functional.id') !== null) {
                 $contactId = $updateContactInfo->input('functional.id');
 
                 $contact = new Contact(
@@ -177,7 +177,7 @@ final class IntegrationController extends Controller
 
                 $this->contactRepository->save($contact);
             }
-            if ($updateContactInfo->input('technical.changed')) {
+            if ($updateContactInfo->input('technical.id') !== null) {
                 $contactId = $updateContactInfo->input('technical.id');
 
                 $contact = new Contact(
@@ -193,24 +193,23 @@ final class IntegrationController extends Controller
             }
 
             $contributors = $updateContactInfo->input('contributors');
-            $changedContributors = array_filter($contributors, fn ($contributor) => $contributor['changed']);
 
-            if (!empty($changedContributors)) {
-                foreach ($changedContributors as $contributor) {
-                    $contactId = $contributor['id'];
+            foreach ($contributors as $contributor) {
+                $contactId = $contributor['id'];
 
-                    $contact = new Contact(
-                        Uuid::fromString($contactId),
-                        Uuid::fromString($id),
-                        $contributor['email'],
-                        ContactType::from($contributor['type']),
-                        $contributor['firstName'],
-                        $contributor['lastName']
-                    );
+                $contact = new Contact(
+                    Uuid::fromString($contactId),
+                    Uuid::fromString($id),
+                    $contributor['email'],
+                    ContactType::from($contributor['type']),
+                    $contributor['firstName'],
+                    $contributor['lastName']
+                );
 
-                    $this->contactRepository->save($contact);
-                }
+                $this->contactRepository->save($contact);
             }
+
+
         });
 
         return Redirect::route(
