@@ -3,8 +3,7 @@ import { Heading } from "../../Heading";
 import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
 import { ButtonIcon } from "../../ButtonIcon";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { ButtonSecondary } from "../../ButtonSecondary";
+import { faPencil, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
 import { Button } from "../../Button";
 import { Contact, Integration } from "../../../Pages/Integrations/Index";
@@ -55,7 +54,7 @@ export const ContactInfo = ({ id, contacts }: Props) => {
         functional: data.functional.changed ? data.functional : undefined,
         technical: data.technical.changed ? data.technical : undefined,
         contributors: data.contributors.filter((c) => c.changed),
-      } as any)
+      } as typeof data)
   );
 
   const errors = errs as Record<string, string | undefined>;
@@ -86,10 +85,13 @@ export const ContactInfo = ({ id, contacts }: Props) => {
   return (
     <FormDropdown
       title={t("details.contact_info.title")}
-      disabled={isDisabled}
-      onChangeDisabled={(newDisabled) => {
-        setIsDisabled(newDisabled);
-      }}
+      actions={
+        <ButtonIcon
+          icon={faPencil}
+          className="text-icon-gray"
+          onClick={() => setIsDisabled((prev) => !prev)}
+        />
+      }
     >
       <div className="flex flex-col gap-5">
         <Heading className="font-semibold" level={3}>
