@@ -160,7 +160,7 @@ final class IntegrationController extends Controller
 
     }
 
-    public function updateContacts(Request $request, string $id, UpdateContactInfo $updateContactInfo): RedirectResponse
+    public function updateContacts(string $id, UpdateContactInfo $updateContactInfo): RedirectResponse
     {
         DB::transaction(function () use ($id, $updateContactInfo) {
             if ($updateContactInfo->input('functional.id') !== null) {
@@ -214,7 +214,7 @@ final class IntegrationController extends Controller
 
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName(
-                request: $request,
+                request: $updateContactInfo,
                 routeName: 'integrations.detail'
             ),
             [
