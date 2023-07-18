@@ -196,7 +196,7 @@ export const ContactInfo = ({ id, contacts }: Props) => {
           />
         </div>
         <div className="flex items-start"></div>
-        {/* <div className="flex gap-2 items-center">
+        <div className="flex gap-2 items-center">
           <Heading className="font-semibold" level={3}>
             {t("integration_form.contact_label_3")}
           </Heading>
@@ -205,44 +205,70 @@ export const ContactInfo = ({ id, contacts }: Props) => {
             icon={faPlus}
           ></ButtonIcon>
         </div>
-        <div className="grid grid-cols-3 gap-3 max-md:grid-cols-1">
-          <FormElement
-            label={`${t("integration_form.contact.last_name")}`}
-            component={
-              <Input
-                type="text"
-                name="lastNameContact"
-                defaultValue="Lastname"
-                disabled={isDisabled}
-              />
-            }
-          />
-          <FormElement
-            label={`${t("integration_form.contact.first_name")}`}
-            component={
-              <Input
-                type="text"
-                name="firstNameContact"
-                defaultValue="FirstName"
-                disabled={isDisabled}
-              />
-            }
-          />
-          <FormElement
-            label={`${t("integration_form.contact.email")}`}
-            component={
-              <Input
-                type="email"
-                name="emailContact"
-                defaultValue="email@com"
-                disabled={isDisabled}
-              />
-            }
-          />
-        </div> */}
-        <ButtonSecondary className="self-start">
+        {data.contributors.map((contributor, index) => (
+          <div
+            key={contributor.id}
+            className="grid grid-cols-3 gap-3 max-md:grid-cols-1"
+          >
+            <FormElement
+              label={`${t("integration_form.contact.last_name")}`}
+              error={errors[`contributors.${index}.lastName`]}
+              component={
+                <Input
+                  type="text"
+                  name={`contributors.${index}.lastName`}
+                  value={contributor.lastName}
+                  onChange={(e) =>
+                    changeContact("contributor", {
+                      ...contributor,
+                      lastName: e.target.value,
+                    })
+                  }
+                  disabled={isDisabled}
+                />
+              }
+            />
+            <FormElement
+              label={`${t("integration_form.contact.first_name")}`}
+              error={errors[`contributors.${index}.firstName`]}
+              component={
+                <Input
+                  type="text"
+                  name={`contributors.${index}.firstName`}
+                  value={contributor.firstName}
+                  onChange={(e) =>
+                    changeContact("contributor", {
+                      ...contributor,
+                      firstName: e.target.value,
+                    })
+                  }
+                  disabled={isDisabled}
+                />
+              }
+            />
+            <FormElement
+              label={`${t("integration_form.contact.email")}`}
+              error={errors[`contributors.${index}.email`]}
+              component={
+                <Input
+                  type="email"
+                  name={`contributors.${index}.email`}
+                  value={contributor.email}
+                  onChange={(e) =>
+                    changeContact("contributor", {
+                      ...contributor,
+                      email: e.target.value,
+                    })
+                  }
+                  disabled={isDisabled}
+                />
+              }
+            />
+          </div>
+        ))}
+        {/* <ButtonSecondary className="self-start">
           {t("details.contact_info.delete")}
-        </ButtonSecondary>
+        </ButtonSecondary> */}
       </div>
       <div className="flex flex-col gap-2 items-center">
         <Button
