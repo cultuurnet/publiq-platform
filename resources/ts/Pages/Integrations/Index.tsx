@@ -129,6 +129,9 @@ const Index = ({ integrations, paginationInfo }: Props) => {
                   setToBeDeletedId(id);
                   setIsDeleteDialogVisible(true);
                 }}
+                onEdit={(id) =>
+                  router.get(`${translateRoute("/integrations")}/${id}`)
+                }
               />
             </li>
           ))}

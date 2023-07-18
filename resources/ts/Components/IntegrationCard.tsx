@@ -11,6 +11,7 @@ import { ButtonIconCopy } from "./ButtonIconCopy";
 import { Tooltip } from "./Tooltip";
 type Props = Integration & {
   onDelete: (id: string) => void;
+  onEdit: (id: string) => void;
 };
 
 export const IntegrationCard = ({
@@ -20,6 +21,7 @@ export const IntegrationCard = ({
   description,
   status,
   onDelete,
+  onEdit,
 }: Props) => {
   const { t } = useTranslation();
 
@@ -47,7 +49,11 @@ export const IntegrationCard = ({
             </span>
           </div>
           <div className="inline-flex gap-2 max-md:self-start">
-            <ButtonIcon icon={faPencil} className="text-icon-gray" />
+            <ButtonIcon
+              icon={faPencil}
+              className="text-icon-gray"
+              onClick={() => onEdit(id)}
+            />
             <ButtonIcon
               icon={faTrash}
               className="text-icon-gray"
