@@ -273,7 +273,7 @@ final class IntegrationController extends Controller
                 'contacts' => $integration->contacts(),
                 'urls' => $integration->urls(),
                 'organisation' => $integration->organization(),
-                'subscription' => $subscription
+                'subscription' => $subscription,
             ],
         ]);
     }
