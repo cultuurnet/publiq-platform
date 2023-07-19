@@ -213,6 +213,26 @@ final class IntegrationController extends Controller
                 $this->contactRepository->save($contact);
             }
 
+            $newLastName = $updateContactInfo->input('newContributorLastName');
+            $newFirstName = $updateContactInfo->input('newContributorFirstName');
+            $newEmail = $updateContactInfo->input('newContributorEmail');
+
+
+
+            if ($newLastName !== null && $newFirstName !== null && $newEmail !== null) {
+                $contact = new Contact(
+                    Uuid::uuid4(),
+                    Uuid::fromString($id),
+                    $newEmail,
+                    ContactType::Contributor,
+                    $newFirstName,
+                    $newLastName
+                );
+
+                $this->contactRepository->save($contact);
+
+
+            }
 
         });
 
@@ -282,6 +302,7 @@ final class IntegrationController extends Controller
         try {
             $integration = $this->integrationRepository->getById(Uuid::fromString($id));
             $subscription = $this->subscriptionRepository->getById($integration->subscriptionId);
+            $contacts = $this->contactRepository->getByIntegrationId(UUid::fromString($id));
         } catch (\Throwable $th) {
             abort(404);
         }
@@ -289,7 +310,7 @@ final class IntegrationController extends Controller
         return Inertia::render('Integrations/Detail', [
             'integration' => [
                 ...$integration->toArray(),
-                'contacts' => $integration->contacts(),
+                'contacts' => $contacts->toArray(),
                 'urls' => $integration->urls(),
                 'organisation' => $integration->organization(),
                 'subscription' => $subscription,

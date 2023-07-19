@@ -134,7 +134,10 @@
     "contact_info": {
       "title": "Contactgegevens",
       "employees": "Andere medewerkers",
-      "delete": "Verwijder medewerker"
+      "delete": "Verwijder medewerker",
+      "new": "Nieuwe medewerker",
+      "save":"Opslaan",
+      "cancel": "Annuleren"
     },
     "billing_info": {
       "title": "Facturatiegegevens",

@@ -27,6 +27,9 @@ final class UpdateContactInfo extends FormRequest
                 'technical.type' => ['string', 'min:2', 'max:255'],
                 'technical.firstName' => ['string', 'min:2', 'max:255'],
                 'technical.lastName' => ['string', 'min:2', 'max:255'],
+                'firstname' => ['nullable', 'string', 'min:2', 'max:255'],
+                'lastname' => ['nullable', 'string', 'min:2', 'max:255'],
+                'email' => ['nullable', 'string', 'email', 'min:2', 'max:255'],
                 // 'contributors' => ['required', 'array'],
                 'contributors.*' => Rule::forEach(function () {
                     return [
