@@ -12,6 +12,8 @@ interface ContactRepository
 {
     public function save(Contact $contact): void;
 
+    public function delete(UuidInterface $id): void;
+
     public function getById(UuidInterface $id): Contact;
 
     public function getDeletedById(UuidInterface $id): Contact;

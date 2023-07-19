@@ -229,6 +229,25 @@ final class IntegrationController extends Controller
 
     }
 
+    public function deleteContact(Request $request, string $id, string $contactId): RedirectResponse
+    {
+        try {
+            $this->contactRepository->delete(Uuid::fromString($contactId));
+        } catch (ModelNotFoundException) {
+            // We can redirect back to integrations, even if not successful
+        }
+
+        return Redirect::route(
+            TranslatedRoute::getTranslatedRouteName(
+                request: $request,
+                routeName: 'integrations.detail'
+            ),
+            ['id' => $id],
+            303
+        );
+
+    }
+
     public function updateBilling(string $id, UpdateBillingInfo $updateBillingInfo): RedirectResponse
     {
         $organisation = new Organization(
