@@ -69,19 +69,21 @@ export const BasicInfo = ({ integration, isMobile }: Props) => {
             />
           }
         />
-        <div className="flex flex-col items-start md:pl-[10.5rem]">
-          <Button
-            onClick={() => {
-              setIsDisabled(true);
+        {!isDisabled && (
+          <div className="flex flex-col items-start md:pl-[10.5rem]">
+            <Button
+              onClick={() => {
+                setIsDisabled(true);
 
-              patch(`/integrations/${integration.id}`, {
-                preserveScroll: true,
-              });
-            }}
-          >
-            {t("details.save")}
-          </Button>
-        </div>
+                patch(`/integrations/${integration.id}`, {
+                  preserveScroll: true,
+                });
+              }}
+            >
+              {t("details.save")}
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -115,9 +115,13 @@ export const IntegrationSettings = ({ isMobile }: Props) => {
           />
         }
       />
-      <div className="flex flex-col items-start md:pl-[10.5rem]">
-        <Button onClick={() => setIsDisabled(true)}>{t("details.save")}</Button>
-      </div>
+      {!isDisabled && (
+        <div className="flex flex-col items-start md:pl-[10.5rem]">
+          <Button onClick={() => setIsDisabled(true)}>
+            {t("details.save")}
+          </Button>
+        </div>
+      )}
     </FormDropdown>
   );
 };

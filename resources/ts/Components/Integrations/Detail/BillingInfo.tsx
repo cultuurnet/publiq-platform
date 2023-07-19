@@ -172,19 +172,21 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
                 }
               />
             </div>
-            <div className="flex flex-col gap-2 items-center">
-              <Button
-                onClick={() => {
-                  setIsDisabled(true);
+            {!isDisabled && (
+              <div className="flex flex-col gap-2 items-center">
+                <Button
+                  onClick={() => {
+                    setIsDisabled(true);
 
-                  patch(`/integrations/${id}/billing`, {
-                    preserveScroll: true,
-                  });
-                }}
-              >
-                {t("details.save")}
-              </Button>
-            </div>
+                    patch(`/integrations/${id}/billing`, {
+                      preserveScroll: true,
+                    });
+                  }}
+                >
+                  {t("details.save")}
+                </Button>
+              </div>
+            )}
           </>
         )}
       </div>
