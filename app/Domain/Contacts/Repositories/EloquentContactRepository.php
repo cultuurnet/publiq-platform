@@ -45,7 +45,7 @@ final class EloquentContactRepository implements ContactRepository
      */
     public function getByIntegrationId(UuidInterface $integrationId): Collection
     {
-        $contactModels = ContactModel::query()->where('integration_id', $integrationId->toString())->get();
+        $contactModels = ContactModel::query()->where('integration_id', $integrationId->toString())->orderBy('created_at')->get();
 
         $contacts = new Collection();
 
