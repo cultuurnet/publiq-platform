@@ -12,6 +12,7 @@ import { IntegrationSettings } from "../../Components/Integrations/Detail/Integr
 import { ButtonSecondary } from "../../Components/ButtonSecondary";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTranslation } from "react-i18next";
+import { router } from "@inertiajs/react";
 
 type Props = { integration: Integration };
 
@@ -28,6 +29,12 @@ const Detail = ({ integration }: Props) => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const handleDeleteIntegration = () => {
+    router.delete(`/integrations/${integration.id}`, {
+      preserveScroll: true,
+    });
+  };
 
   return (
     <Page>
@@ -48,7 +55,10 @@ const Detail = ({ integration }: Props) => {
         <IntegrationSettings isMobile={isMobile} />
         <ContactInfo {...integration} />
         <BillingInfo {...integration} />
-        <ButtonSecondary className="self-center">
+        <ButtonSecondary
+          className="self-center"
+          onClick={handleDeleteIntegration}
+        >
           {t("details.delete")}
           <FontAwesomeIcon className="pl-1" icon={faTrash} />
         </ButtonSecondary>
