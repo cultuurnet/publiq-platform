@@ -101,6 +101,13 @@ export const ContactInfo = ({ id, contacts }: Props) => {
     });
   };
 
+  const handleSaveChanges = () => {
+    setIsDisabled(true);
+    patch(`/integrations/${id}/contacts`, {
+      preserveScroll: true,
+    });
+  };
+
   return (
     <>
       <FormDropdown
@@ -116,12 +123,7 @@ export const ContactInfo = ({ id, contacts }: Props) => {
             <ButtonIcon
               icon={faFloppyDisk}
               className="text-icon-gray"
-              onClick={() => {
-                setIsDisabled(true);
-                patch(`/integrations/${id}/contacts`, {
-                  preserveScroll: true,
-                });
-              }}
+              onClick={handleSaveChanges}
             />
           )
         }
@@ -314,14 +316,7 @@ export const ContactInfo = ({ id, contacts }: Props) => {
                   />
                 </div>
                 <div className="flex justify-center gap-2">
-                  <Button
-                    onClick={() => {
-                      patch(`/integrations/${id}/contacts`, {
-                        preserveScroll: true,
-                      });
-                    }}
-                    className="p-0"
-                  >
+                  <Button onClick={handleSaveChanges} className="p-0">
                     {t("details.contact_info.save")}
                   </Button>
                   <ButtonSecondary onClick={() => setIsAddFormVisible(false)}>
