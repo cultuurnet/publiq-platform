@@ -3,7 +3,7 @@ import { Heading } from "../../Heading";
 import { useTranslation } from "react-i18next";
 import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
-import { Button } from "../../Button";
+import { ButtonPrimary } from "../../ButtonPrimary";
 import { FormDropdown } from "../../FormDropdown";
 import { ButtonIcon } from "../../ButtonIcon";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
@@ -124,9 +124,9 @@ export const IntegrationSettings = ({ isMobile }: Props) => {
       />
       {!isDisabled && (
         <div className="flex flex-col items-start md:pl-[10.5rem]">
-          <Button onClick={() => setIsDisabled(true)}>
+          <ButtonPrimary onClick={() => setIsDisabled(true)}>
             {t("details.save")}
-          </Button>
+          </ButtonPrimary>
         </div>
       )}
     </FormDropdown>

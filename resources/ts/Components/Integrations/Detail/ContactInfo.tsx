@@ -10,7 +10,7 @@ import {
   faFloppyDisk,
 } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
-import { Button } from "../../Button";
+import { ButtonPrimary } from "../../ButtonPrimary";
 import { Contact, Integration } from "../../../Pages/Integrations/Index";
 import { FormDropdown } from "../../FormDropdown";
 import { useForm } from "@inertiajs/react";
@@ -324,9 +324,9 @@ export const ContactInfo = ({ id, contacts }: Props) => {
                   />
                 </div>
                 <div className="flex justify-center gap-2">
-                  <Button onClick={handleSaveChanges} className="p-0">
+                  <ButtonPrimary onClick={handleSaveChanges} className="p-0">
                     {t("details.contact_info.save")}
-                  </Button>
+                  </ButtonPrimary>
                   <ButtonSecondary onClick={() => setIsAddFormVisible(false)}>
                     {t("details.contact_info.cancel")}
                   </ButtonSecondary>
@@ -417,7 +417,7 @@ export const ContactInfo = ({ id, contacts }: Props) => {
         </div>
         {!isDisabled && (
           <div className="flex flex-col gap-2 items-center">
-            <Button
+            <ButtonPrimary
               onClick={() => {
                 setIsDisabled(true);
 
@@ -427,7 +427,7 @@ export const ContactInfo = ({ id, contacts }: Props) => {
               }}
             >
               {t("details.save")}
-            </Button>
+            </ButtonPrimary>
           </div>
         )}
       </FormDropdown>

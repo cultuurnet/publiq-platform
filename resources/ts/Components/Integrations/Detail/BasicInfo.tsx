@@ -6,7 +6,7 @@ import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
 import { useTranslation } from "react-i18next";
 import { Integration } from "../../../Pages/Integrations/Index";
-import { Button } from "../../Button";
+import { ButtonPrimary } from "../../ButtonPrimary";
 import { classNames } from "../../../utils/classNames";
 import { useForm } from "@inertiajs/react";
 
@@ -71,7 +71,7 @@ export const BasicInfo = ({ integration, isMobile }: Props) => {
         />
         {!isDisabled && (
           <div className="flex flex-col items-start md:pl-[10.5rem]">
-            <Button
+            <ButtonPrimary
               onClick={() => {
                 setIsDisabled(true);
 
@@ -81,7 +81,7 @@ export const BasicInfo = ({ integration, isMobile }: Props) => {
               }}
             >
               {t("details.save")}
-            </Button>
+            </ButtonPrimary>
           </div>
         )}
       </div>
