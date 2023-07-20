@@ -14,7 +14,7 @@ return new class () extends Migration {
     {
         Schema::table('contacts', static function (Blueprint $table) {
             $table->dropUnique(['integration_id', 'email', 'type']);
-            $table->boolean('deleted')->virtualAs("IF(`deleted_at` IS NULL, false, true)");
+            $table->boolean('deleted')->virtualAs('IF(`deleted_at` IS NULL, false, true)');
             $table->unique(['integration_id', 'email', 'type', 'deleted']);
         });
     }
