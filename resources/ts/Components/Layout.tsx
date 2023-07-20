@@ -10,9 +10,11 @@ const Main = ({ children }: { children: ReactNode }) => {
   const classes = "flex flex-col items-center w-full";
 
   if (page.component === "Integrations/Detail") {
-    <SectionCollapsedProvider>
-      <main className={classes}>{children}</main>
-    </SectionCollapsedProvider>;
+    return (
+      <SectionCollapsedProvider>
+        <main className={classes}>{children}</main>
+      </SectionCollapsedProvider>
+    );
   }
 
   return <main className={classes}>{children}</main>;
