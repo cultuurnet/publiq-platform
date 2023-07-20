@@ -108,7 +108,7 @@ export const ContactInfo = ({ id, contacts }: Props) => {
     setIsDisabled(true);
     patch(`/integrations/${id}/contacts`, {
       preserveScroll: true,
-      preserveState: false,
+      // preserveState: false,
     });
   };
 

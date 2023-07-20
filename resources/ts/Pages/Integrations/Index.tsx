@@ -85,7 +85,7 @@ const Index = ({ integrations, paginationInfo }: Props) => {
           search: e.target.value || undefined,
         },
         {
-          preserveState: true,
+          // preserveState: true,
         }
       );
     },

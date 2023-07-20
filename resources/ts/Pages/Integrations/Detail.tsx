@@ -33,7 +33,7 @@ const Detail = ({ integration }: Props) => {
   const handleDeleteIntegration = () => {
     router.delete(`/integrations/${integration.id}`, {
       preserveScroll: true,
-      preserveState: false,
+      // preserveState: false,
     });
   };
 
