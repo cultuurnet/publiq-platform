@@ -72,7 +72,7 @@ export const ContactInfo = ({ id, contacts }: Props) => {
         functional: data.functional.changed ? data.functional : undefined,
         technical: data.technical.changed ? data.technical : undefined,
         contributors: data.contributors.filter((c) => c.changed),
-      }) as typeof data
+      } as typeof data)
   );
 
   const errors = errs as Record<string, string | undefined>;
