@@ -1,17 +1,17 @@
 import React, { FormEvent, ReactNode, useMemo } from "react";
 import { useForm } from "@inertiajs/react";
-import Layout from "../../Shared/Layout";
-import { Heading } from "../../Shared/Heading";
-import { FormElement } from "../../Shared/FormElement";
-import { Input } from "../../Shared/Input";
+import Layout from "../../Components/Layout";
+import { Heading } from "../../Components/Heading";
+import { FormElement } from "../../Components/FormElement";
+import { Input } from "../../Components/Input";
 import { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
-import { Card } from "../../Shared/Card";
-import { Button } from "../../Shared/Button";
+import { Card } from "../../Components/Card";
+import { Button } from "../../Components/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
-import { Page } from "../../Shared/Page";
-import { ButtonLinkSecondary } from "../../Shared/ButtonLinkSecondary";
+import { Page } from "../../Components/Page";
+import { ButtonLinkSecondary } from "../../Components/ButtonLinkSecondary";
 import { IntegrationType } from "../../types/IntegrationType";
 import { useTranslateRoute } from "../../hooks/useTranslateRoute";
 

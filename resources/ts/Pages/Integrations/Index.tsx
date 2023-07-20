@@ -1,20 +1,54 @@
 import React, { ReactNode, useState } from "react";
 import { router } from "@inertiajs/react";
-import { Heading } from "../../Shared/Heading";
-import Layout from "../../Shared/Layout";
-import { ButtonLink } from "../../Shared/ButtonLink";
-import { Input } from "../../Shared/Input";
+import { Heading } from "../../Components/Heading";
+import Layout from "../../Components/Layout";
+import { ButtonLink } from "../../Components/ButtonLink";
+import { Input } from "../../Components/Input";
 import { debounce } from "lodash";
 import { faPlus, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useTranslateRoute } from "../../hooks/useTranslateRoute";
-import { Pagination } from "../../Shared/Pagination";
+import { Pagination } from "../../Components/Pagination";
 import { useTranslation } from "react-i18next";
-import { IntegrationCard } from "../../Shared/IntegrationCard";
+import { IntegrationCard } from "../../Components/IntegrationCard";
 import { PaginationInfo } from "../../types/PaginationInfo";
-import { Page } from "../../Shared/Page";
-import { QuestionDialog } from "../../Shared/QuestionDialog";
-import { IconLink } from "../../Shared/IconLink";
+import { Page } from "../../Components/Page";
+import { QuestionDialog } from "../../Components/QuestionDialog";
+import { IconLink } from "../../Components/IconLink";
 import { IntegrationStatus } from "../../types/IntegrationStatus";
+import { ContactType } from "../../types/ContactType";
+
+type Organisation = {
+  id: string;
+  name: string;
+  invoiceMail: string;
+  vat: string;
+  address: {
+    street: string;
+    zip: string;
+    city: string;
+    country: string;
+  };
+};
+
+export type Contact = {
+  id: string;
+  integrationId: string;
+  email: string;
+  type: ContactType;
+  firstName: string;
+  lastName: string;
+};
+
+export type Subscription = {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  integrationType: string;
+  currency: string;
+  price: number;
+  fee: number;
+};
 
 export type Integration = {
   id: string;
@@ -23,6 +57,9 @@ export type Integration = {
   description: string;
   subscriptionId: string;
   status: IntegrationStatus;
+  contacts: Contact[];
+  organisation?: Organisation;
+  subscription: Subscription;
 };
 
 type Props = {
@@ -104,6 +141,9 @@ const Index = ({ integrations, paginationInfo }: Props) => {
                   setToBeDeletedId(id);
                   setIsDeleteDialogVisible(true);
                 }}
+                onEdit={(id) =>
+                  router.get(`${translateRoute("/integrations")}/${id}`)
+                }
               />
             </li>
           ))}

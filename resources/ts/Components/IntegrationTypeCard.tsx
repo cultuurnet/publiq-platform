@@ -16,7 +16,12 @@ export const IntegrationTypeCard = ({
 }: Props) => {
   const { t } = useTranslation();
   return (
-    <Card key={title} title={title} description={description}>
+    <Card
+      key={title}
+      title={title}
+      description={description}
+      className="md:max-w-sm"
+    >
       <div className="flex flex-col flex-1 justify-between min-h-[10rem]">
         <ul className="flex flex-col gap-3">
           {features.map((feature) => (

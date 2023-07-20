@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
-import Layout from "../Shared/Layout";
-import { Hero } from "../Shared/Hero";
-import { IntegrationTypes } from "../Shared/IntegrationTypes";
+import Layout from "../Components/Layout";
+import { Hero } from "../Components/Hero";
+import { IntegrationTypes } from "../Components/IntegrationTypes";
 
 const Index = () => {
   return (
