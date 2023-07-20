@@ -7,7 +7,7 @@ export const Page = ({ children, className, ...props }: Props) => {
   return (
     <section
       className={classNames(
-        "flex flex-col items-center w-full pt-6 px-4 :max-sm:px-2 gap-7 md:min-w-[40rem] max-w-7xl",
+        "flex flex-col items-center w-full pt-6 px-4 max-md:px-2 gap-7 md:min-w-[40rem] max-w-7xl min-h-screen pb-8",
         className
       )}
       {...props}

@@ -15,7 +15,11 @@ final class EloquentOrganizationRepository implements OrganizationRepository
 {
     public function save(Organization $organization): void
     {
-        OrganizationModel::query()->create([
+        OrganizationModel::query()->updateOrCreate(
+            [
+                'id' => $organization->id->toString(),
+            ],
+            [
             'id' => $organization->id->toString(),
             'name' => $organization->name,
             'invoice_email' => $organization->invoiceEmail,
@@ -24,7 +28,8 @@ final class EloquentOrganizationRepository implements OrganizationRepository
             'zip' => $organization->address->zip,
             'city' => $organization->address->city,
             'country' => $organization->address->country,
-        ]);
+        ]
+        );
     }
 
     public function getById(UuidInterface $id): Organization

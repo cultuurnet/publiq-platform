@@ -1,14 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navigation from "./Navigation";
 import { Heading } from "./Heading";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { Dialog } from "./Dialog";
+import { router } from "@inertiajs/react";
 
 export default function HeaderMobile() {
   const { t } = useTranslation();
   const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const removeListener = router.on("navigate", () => setIsVisible(false));
+
+    return () => removeListener();
+  }, []);
 
   return (
     <header className="w-full flex items-center justify-around bg-white shadow-lg  z-40 md:hidden">
