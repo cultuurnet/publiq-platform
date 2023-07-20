@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode } from "react";
 import { Heading } from "./Heading";
 import { ButtonIcon } from "./ButtonIcon";
 import {
@@ -10,22 +10,28 @@ type Props = {
   children: React.ReactNode;
   title: string;
   actions: ReactNode;
+  isCollapsed: boolean;
+  onChangeCollapsed: (newValue: boolean) => void;
 };
 
-export const FormDropdown = ({ title, children, actions }: Props) => {
-  const [isVisible, setIsVisible] = useState(false);
-
+export const FormDropdown = ({
+  title,
+  children,
+  actions,
+  isCollapsed,
+  onChangeCollapsed,
+}: Props) => {
   return (
     <div className="flex flex-col gap-4 shadow-md shadow-slate-200 max-md:px-5 px-10 py-5">
       <div className="flex gap-2 items-center">
         <Heading className="font-semibold" level={2}>
           {title}
         </Heading>
-        {isVisible ? (
+        {!isCollapsed ? (
           <>
             <ButtonIcon
               icon={faChevronDown}
-              onClick={() => setIsVisible(false)}
+              onClick={() => onChangeCollapsed(true)}
               className="text-icon-gray"
             />
             {actions}
@@ -34,11 +40,11 @@ export const FormDropdown = ({ title, children, actions }: Props) => {
           <ButtonIcon
             icon={faChevronRight}
             className="text-icon-gray"
-            onClick={() => setIsVisible(true)}
+            onClick={() => onChangeCollapsed(false)}
           />
         )}
       </div>
-      {isVisible && (
+      {!isCollapsed && (
         <>
           <div className="flex flex-col gap-6 border-t py-4">{children}</div>
         </>

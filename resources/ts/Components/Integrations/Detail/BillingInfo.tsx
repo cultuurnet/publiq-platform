@@ -9,12 +9,15 @@ import { useTranslation } from "react-i18next";
 import { useForm } from "@inertiajs/react";
 import { ButtonIcon } from "../../ButtonIcon";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
+import { useSectionCollapsedContext } from "../../../context/SectionCollapsedContext";
 
 type Props = Integration;
 
 export const BillingInfo = ({ id, organisation, subscription }: Props) => {
   const { t } = useTranslation();
   const [isDisabled, setIsDisabled] = useState(true);
+
+  const [collapsed, setCollapsed] = useSectionCollapsedContext();
 
   const initialFormValues = {
     organisation,
@@ -35,6 +38,10 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
             onClick={() => setIsDisabled((prev) => !prev)}
           />
         ) : null
+      }
+      isCollapsed={collapsed.billing}
+      onChangeCollapsed={(newValue) =>
+        setCollapsed((prev) => ({ ...prev, billing: newValue }))
       }
     >
       <div className="flex flex-col gap-5">

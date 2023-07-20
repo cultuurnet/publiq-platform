@@ -13,6 +13,7 @@ import { ButtonSecondary } from "../../Components/ButtonSecondary";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTranslation } from "react-i18next";
 import { router } from "@inertiajs/react";
+import { SectionCollapsedProvider } from "../../context/SectionCollapsedContext";
 
 type Props = { integration: Integration };
 
@@ -52,9 +53,11 @@ const Detail = ({ integration }: Props) => {
 
         <BasicInfo integration={integration} isMobile={isMobile} />
         <IntegrationInfo {...integration} />
-        <IntegrationSettings isMobile={isMobile} />
-        <ContactInfo {...integration} />
-        <BillingInfo {...integration} />
+        <SectionCollapsedProvider>
+          <IntegrationSettings isMobile={isMobile} />
+          <ContactInfo {...integration} />
+          <BillingInfo {...integration} />
+        </SectionCollapsedProvider>
         <ButtonSecondary
           className="self-center"
           onClick={handleDeleteIntegration}

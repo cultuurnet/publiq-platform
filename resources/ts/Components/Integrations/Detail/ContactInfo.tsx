@@ -18,6 +18,7 @@ import { ContactType } from "../../../types/ContactType";
 import { ButtonSecondary } from "../../ButtonSecondary";
 import { router } from "@inertiajs/react";
 import { QuestionDialog } from "../../QuestionDialog";
+import { useSectionCollapsedContext } from "../../../context/SectionCollapsedContext";
 
 type Props = Integration;
 
@@ -61,6 +62,8 @@ export const ContactInfo = ({ id, contacts }: Props) => {
     transform,
     errors: errs,
   } = useForm(initialFormValues);
+
+  const [collapsed, setCollapsed] = useSectionCollapsedContext();
 
   transform(
     (data) =>
@@ -127,6 +130,10 @@ export const ContactInfo = ({ id, contacts }: Props) => {
               onClick={handleSaveChanges}
             />
           )
+        }
+        isCollapsed={collapsed.contacts}
+        onChangeCollapsed={(newValue) =>
+          setCollapsed((prev) => ({ ...prev, contacts: newValue }))
         }
       >
         <div className="flex flex-col gap-5">

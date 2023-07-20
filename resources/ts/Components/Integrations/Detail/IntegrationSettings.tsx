@@ -7,6 +7,7 @@ import { Button } from "../../Button";
 import { FormDropdown } from "../../FormDropdown";
 import { ButtonIcon } from "../../ButtonIcon";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
+import { useSectionCollapsedContext } from "../../../context/SectionCollapsedContext";
 
 type Props = {
   isMobile?: boolean;
@@ -17,6 +18,8 @@ export const IntegrationSettings = ({ isMobile }: Props) => {
 
   const [isDisabled, setIsDisabled] = useState(true);
 
+  const [collapsed, setCollapsed] = useSectionCollapsedContext();
+
   return (
     <FormDropdown
       title={t("details.integration_settings.title")}
@@ -26,6 +29,10 @@ export const IntegrationSettings = ({ isMobile }: Props) => {
           className="text-icon-gray"
           onClick={() => setIsDisabled((prev) => !prev)}
         />
+      }
+      isCollapsed={collapsed.integrationsSettings}
+      onChangeCollapsed={(newValue) =>
+        setCollapsed((prev) => ({ ...prev, integrationsSettings: newValue }))
       }
     >
       <Heading className="font-semibold" level={3}>
