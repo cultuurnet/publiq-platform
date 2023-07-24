@@ -1,9 +1,9 @@
 import React, { ReactNode } from "react";
-import Layout from "../../Shared/Layout";
-import { SupportTypes } from "../../Shared/SupportTypes";
-import { Heading } from "../../Shared/Heading";
+import Layout from "../../Components/Layout";
+import { SupportTypes } from "../../Components/SupportTypes";
+import { Heading } from "../../Components/Heading";
 import { useTranslation } from "react-i18next";
-import { Page } from "../../Shared/Page";
+import { Page } from "../../Components/Page";
 
 const Index = () => {
   const { t } = useTranslation();

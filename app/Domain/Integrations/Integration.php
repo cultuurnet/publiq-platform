@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\Domain\Integrations;
 
 use App\Domain\Contacts\Contact;
+use App\Domain\Organizations\Organization;
 use Ramsey\Uuid\UuidInterface;
 
 final class Integration
 {
     /** @var array<Contact> */
     private array $contacts;
+    private ?Organization $organization;
 
     /** @var array<IntegrationUrl> */
     private array $urls;
@@ -25,12 +27,20 @@ final class Integration
     ) {
         $this->contacts = [];
         $this->urls = [];
+        $this->organization = null;
     }
 
     public function withContacts(Contact ...$contacts): self
     {
         $clone = clone $this;
         $clone->contacts = $contacts;
+        return $clone;
+    }
+
+    public function withOrganisation(Organization $organization): self
+    {
+        $clone = clone $this;
+        $clone->organization = $organization;
         return $clone;
     }
 
@@ -41,6 +51,12 @@ final class Integration
     {
         return $this->contacts;
     }
+
+    public function organization(): ?Organization
+    {
+        return $this->organization;
+    }
+
 
     public function withUrls(IntegrationUrl ...$urls): self
     {
@@ -66,5 +82,17 @@ final class Integration
             $this->urls,
             fn (IntegrationUrl $url) => $url->type->value === $type->value && $url->environment->value === $environment->value
         );
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'type' => $this->type,
+            'name' => $this->name,
+            'description' => $this->description,
+            'subscriptionId' => $this->subscriptionId,
+            'status' => $this->status,
+        ];
     }
 }
