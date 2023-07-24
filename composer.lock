@@ -44,41 +44,41 @@
         },
         {
             "name": "auth0/auth0-php",
-            "version": "8.6.0",
+            "version": "8.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/auth0/auth0-PHP.git",
-                "reference": "b776758d6ead42aac4ce2959c34c2aa2bd5af0d4"
+                "reference": "a3ebfb6f83486d24332895de76e053e672cfaa1f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/auth0/auth0-PHP/zipball/b776758d6ead42aac4ce2959c34c2aa2bd5af0d4",
-                "reference": "b776758d6ead42aac4ce2959c34c2aa2bd5af0d4",
+                "url": "https://api.github.com/repos/auth0/auth0-PHP/zipball/a3ebfb6f83486d24332895de76e053e672cfaa1f",
+                "reference": "a3ebfb6f83486d24332895de76e053e672cfaa1f",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "ext-mbstring": "*",
                 "ext-openssl": "*",
                 "php": "^8.0",
-                "php-http/multipart-stream-builder": "^1.2",
-                "psr-discovery/all": "^1.0",
-                "psr/http-client-implementation": "^1.0",
-                "psr/http-factory-implementation": "^1.0",
-                "psr/http-message-implementation": "^1.0"
+                "php-http/multipart-stream-builder": "^1",
+                "psr-discovery/all": "^1",
+                "psr/http-client-implementation": "^1",
+                "psr/http-factory-implementation": "^1",
+                "psr/http-message-implementation": "^1"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.14",
-                "mockery/mockery": "^1.5",
-                "pestphp/pest": "^2.0",
-                "phpstan/phpstan": "^1.10",
-                "phpstan/phpstan-strict-rules": "^1.5",
-                "psr-mock/http": "^1.0",
-                "rector/rector": "^0.15",
-                "symfony/cache": "^4.4 || ^5.0 || ^6.0",
-                "symfony/event-dispatcher": "^4.0 || ^5.0 || ^6.0",
-                "vimeo/psalm": "^5.8",
-                "wikimedia/composer-merge-plugin": "^2.0"
+                "friendsofphp/php-cs-fixer": "^3",
+                "mockery/mockery": "^1",
+                "pestphp/pest": "^2",
+                "phpstan/phpstan": "^1",
+                "phpstan/phpstan-strict-rules": "^1",
+                "psr-mock/http": "^1",
+                "rector/rector": "0.17.6",
+                "spatie/ray": "^1",
+                "symfony/cache": "^4 || ^5 || ^6",
+                "symfony/event-dispatcher": "^4 || ^5 || ^6",
+                "vimeo/psalm": "^5",
+                "wikimedia/composer-merge-plugin": "^2"
             },
             "suggest": {
                 "psr/cache-implementation": "(PSR-6 Cache) Improve performance by avoiding making redundant network requests.",
@@ -135,9 +135,9 @@
             ],
             "support": {
                 "issues": "https://github.com/auth0/auth0-PHP/issues",
-                "source": "https://github.com/auth0/auth0-PHP/tree/8.6.0"
+                "source": "https://github.com/auth0/auth0-PHP/tree/8.7.0"
             },
-            "time": "2023-05-02T17:21:37+00:00"
+            "time": "2023-07-21T04:37:42+00:00"
         },
         {
             "name": "brick/math",
