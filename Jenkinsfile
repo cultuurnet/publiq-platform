@@ -81,7 +81,7 @@ pipeline {
             }
             steps {
                 publishAptlySnapshot snapshotName: "${env.REPOSITORY_NAME}-${env.PIPELINE_VERSION}", publishTarget: "${env.REPOSITORY_NAME}-${env.APPLICATION_ENVIRONMENT}", distributions: 'focal'
-                //triggerDeployment nodeName: 'platform-acc01'
+                triggerDeployment nodeName: 'platform-web-acc01'
             }
             post {
                 always {
