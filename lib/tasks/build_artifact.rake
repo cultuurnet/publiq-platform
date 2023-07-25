@@ -19,8 +19,8 @@ task :build_artifact do |task|
     -x '.git*' -x pkg -x lib -x Rakefile -x Gemfile -x Gemfile.lock \
     -x .bundle -x Jenkinsfile -x vendor/bundle -x Makefile -x auth.json \
     -x docker-compose.yml \
-    --prefix /var/www/publiq-platform \
-    --config-files /var/www/publiq-platform/.env \
+    --prefix /var/www/platform-api \
+    --config-files /var/www/platform-api/.env \
     --deb-user www-data --deb-group www-data \
     --description '#{description}' --url '#{source}' --vendor '#{vendor}' \
     --license '#{license}' -m '#{maintainer}' \

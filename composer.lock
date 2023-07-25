@@ -44,41 +44,41 @@
         },
         {
             "name": "auth0/auth0-php",
-            "version": "8.6.0",
+            "version": "8.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/auth0/auth0-PHP.git",
-                "reference": "b776758d6ead42aac4ce2959c34c2aa2bd5af0d4"
+                "reference": "a3ebfb6f83486d24332895de76e053e672cfaa1f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/auth0/auth0-PHP/zipball/b776758d6ead42aac4ce2959c34c2aa2bd5af0d4",
-                "reference": "b776758d6ead42aac4ce2959c34c2aa2bd5af0d4",
+                "url": "https://api.github.com/repos/auth0/auth0-PHP/zipball/a3ebfb6f83486d24332895de76e053e672cfaa1f",
+                "reference": "a3ebfb6f83486d24332895de76e053e672cfaa1f",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "ext-mbstring": "*",
                 "ext-openssl": "*",
                 "php": "^8.0",
-                "php-http/multipart-stream-builder": "^1.2",
-                "psr-discovery/all": "^1.0",
-                "psr/http-client-implementation": "^1.0",
-                "psr/http-factory-implementation": "^1.0",
-                "psr/http-message-implementation": "^1.0"
+                "php-http/multipart-stream-builder": "^1",
+                "psr-discovery/all": "^1",
+                "psr/http-client-implementation": "^1",
+                "psr/http-factory-implementation": "^1",
+                "psr/http-message-implementation": "^1"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.14",
-                "mockery/mockery": "^1.5",
-                "pestphp/pest": "^2.0",
-                "phpstan/phpstan": "^1.10",
-                "phpstan/phpstan-strict-rules": "^1.5",
-                "psr-mock/http": "^1.0",
-                "rector/rector": "^0.15",
-                "symfony/cache": "^4.4 || ^5.0 || ^6.0",
-                "symfony/event-dispatcher": "^4.0 || ^5.0 || ^6.0",
-                "vimeo/psalm": "^5.8",
-                "wikimedia/composer-merge-plugin": "^2.0"
+                "friendsofphp/php-cs-fixer": "^3",
+                "mockery/mockery": "^1",
+                "pestphp/pest": "^2",
+                "phpstan/phpstan": "^1",
+                "phpstan/phpstan-strict-rules": "^1",
+                "psr-mock/http": "^1",
+                "rector/rector": "0.17.6",
+                "spatie/ray": "^1",
+                "symfony/cache": "^4 || ^5 || ^6",
+                "symfony/event-dispatcher": "^4 || ^5 || ^6",
+                "vimeo/psalm": "^5",
+                "wikimedia/composer-merge-plugin": "^2"
             },
             "suggest": {
                 "psr/cache-implementation": "(PSR-6 Cache) Improve performance by avoiding making redundant network requests.",
@@ -135,9 +135,9 @@
             ],
             "support": {
                 "issues": "https://github.com/auth0/auth0-PHP/issues",
-                "source": "https://github.com/auth0/auth0-PHP/tree/8.6.0"
+                "source": "https://github.com/auth0/auth0-PHP/tree/8.7.0"
             },
-            "time": "2023-05-02T17:21:37+00:00"
+            "time": "2023-07-21T04:37:42+00:00"
         },
         {
             "name": "brick/math",
@@ -2105,16 +2105,16 @@
         },
         {
             "name": "laravel/horizon",
-            "version": "v5.17.0",
+            "version": "v5.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/horizon.git",
-                "reference": "569c7154033679a1ca05b43bfa640cc60aa3b37b"
+                "reference": "b14498a09af826035e46ae8d6b013d0ec849bdb7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/horizon/zipball/569c7154033679a1ca05b43bfa640cc60aa3b37b",
-                "reference": "569c7154033679a1ca05b43bfa640cc60aa3b37b",
+                "url": "https://api.github.com/repos/laravel/horizon/zipball/b14498a09af826035e46ae8d6b013d0ec849bdb7",
+                "reference": "b14498a09af826035e46ae8d6b013d0ec849bdb7",
                 "shasum": ""
             },
             "require": {
@@ -2177,9 +2177,9 @@
             ],
             "support": {
                 "issues": "https://github.com/laravel/horizon/issues",
-                "source": "https://github.com/laravel/horizon/tree/v5.17.0"
+                "source": "https://github.com/laravel/horizon/tree/v5.18.0"
             },
-            "time": "2023-06-13T20:49:30+00:00"
+            "time": "2023-06-30T15:11:51+00:00"
         },
         {
             "name": "laravel/nova",
@@ -9582,37 +9582,33 @@
         },
         {
             "name": "mockery/mockery",
-            "version": "1.6.2",
+            "version": "1.6.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mockery/mockery.git",
-                "reference": "13a7fa2642c76c58fa2806ef7f565344c817a191"
+                "reference": "d1413755e26fe56a63455f7753221c86cbb88f66"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mockery/mockery/zipball/13a7fa2642c76c58fa2806ef7f565344c817a191",
-                "reference": "13a7fa2642c76c58fa2806ef7f565344c817a191",
+                "url": "https://api.github.com/repos/mockery/mockery/zipball/d1413755e26fe56a63455f7753221c86cbb88f66",
+                "reference": "d1413755e26fe56a63455f7753221c86cbb88f66",
                 "shasum": ""
             },
             "require": {
                 "hamcrest/hamcrest-php": "^2.0.1",
                 "lib-pcre": ">=7.0",
-                "php": "^7.4 || ^8.0"
+                "php": ">=7.4,<8.3"
             },
             "conflict": {
                 "phpunit/phpunit": "<8.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "^8.5 || ^9.3",
-                "psalm/plugin-phpunit": "^0.18",
-                "vimeo/psalm": "^5.9"
+                "psalm/plugin-phpunit": "^0.18.4",
+                "symplify/easy-coding-standard": "^11.5.0",
+                "vimeo/psalm": "^5.13.1"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-main": "1.6.x-dev"
-                }
-            },
             "autoload": {
                 "files": [
                     "library/helpers.php",
@@ -9630,12 +9626,20 @@
                 {
                     "name": "Pádraic Brady",
                     "email": "padraic.brady@gmail.com",
-                    "homepage": "http://blog.astrumfutura.com"
+                    "homepage": "https://github.com/padraic",
+                    "role": "Author"
                 },
                 {
                     "name": "Dave Marshall",
                     "email": "dave.marshall@atstsolutions.co.uk",
-                    "homepage": "http://davedevelopment.co.uk"
+                    "homepage": "https://davedevelopment.co.uk",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Nathanael Esayeas",
+                    "email": "nathanael.esayeas@protonmail.com",
+                    "homepage": "https://github.com/ghostwriter",
+                    "role": "Lead Developer"
                 }
             ],
             "description": "Mockery is a simple yet flexible PHP mock object framework",
@@ -9653,10 +9657,13 @@
                 "testing"
             ],
             "support": {
+                "docs": "https://docs.mockery.io/",
                 "issues": "https://github.com/mockery/mockery/issues",
-                "source": "https://github.com/mockery/mockery/tree/1.6.2"
+                "rss": "https://github.com/mockery/mockery/releases.atom",
+                "security": "https://github.com/mockery/mockery/security/advisories",
+                "source": "https://github.com/mockery/mockery"
             },
-            "time": "2023-06-07T09:07:52+00:00"
+            "time": "2023-07-19T15:51:02+00:00"
         },
         {
             "name": "myclabs/deep-copy",
