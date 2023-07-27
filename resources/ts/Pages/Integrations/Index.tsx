@@ -67,6 +67,7 @@ type Props = {
 } & PaginationInfo;
 
 const Index = ({ integrations, paginationInfo }: Props) => {
+  // Sven is an OG
   const { t } = useTranslation();
   const translateRoute = useTranslateRoute();
 
