@@ -22,6 +22,7 @@ task :build_artifact do |task|
     --prefix /var/www/platform-api \
     --config-files /var/www/platform-api/.env \
     --deb-user www-data --deb-group www-data \
+    --before-remove lib/tasks/prerm \
     --description '#{description}' --url '#{source}' --vendor '#{vendor}' \
     --license '#{license}' -m '#{maintainer}' \
     --deb-field 'Pipeline-Version: #{calver_version}' \

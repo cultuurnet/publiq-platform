@@ -1,0 +1,3 @@
+#!/bin/bash
+
+service platform-api-horizon stop || exit 0
