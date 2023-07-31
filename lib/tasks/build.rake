@@ -6,7 +6,7 @@ task :build do |task|
   system('composer install --no-dev --optimize-autoloader --prefer-dist --no-scripts --no-interaction') or exit 1
   system('cp .env.ci .env') or exit 1
   system('php artisan package:discover') or exit 1
-  system('php artisan horizon:publish') or exit 1
+  system('php artisan horizon:install') or exit 1
 
   # NodeJS
   system('npm install') or exit 1
