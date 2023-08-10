@@ -68,7 +68,6 @@ final class IntegrationController extends Controller
 
     public function create(): Response
     {
-
         return Inertia::render('Integrations/New', [
             'integrationTypes' => IntegrationType::cases(),
             'subscriptions' => $this->subscriptionRepository->all(),
@@ -143,12 +142,10 @@ final class IntegrationController extends Controller
             [],
             303
         );
-
     }
 
     public function update(Request $request, string $id, UpdateBasicInfo $updateInfo): RedirectResponse
     {
-
         $this->integrationRepository->update(Uuid::fromString($id), $updateInfo);
 
         return Redirect::route(
@@ -161,7 +158,6 @@ final class IntegrationController extends Controller
             ],
             303
         );
-
     }
 
     public function updateContacts(string $id, UpdateContactInfo $updateContactInfo): RedirectResponse
@@ -217,8 +213,6 @@ final class IntegrationController extends Controller
             $newFirstName = $updateContactInfo->input('newContributorFirstName');
             $newEmail = $updateContactInfo->input('newContributorEmail');
 
-
-
             if ($newLastName !== null && $newFirstName !== null && $newEmail !== null) {
                 $contact = new Contact(
                     Uuid::uuid4(),
@@ -246,7 +240,6 @@ final class IntegrationController extends Controller
             ],
             303
         );
-
     }
 
     public function deleteContact(Request $request, string $id, string $contactId): RedirectResponse
@@ -265,7 +258,6 @@ final class IntegrationController extends Controller
             ['id' => $id],
             303
         );
-
     }
 
     public function updateBilling(string $id, UpdateBillingInfo $updateBillingInfo): RedirectResponse
@@ -317,5 +309,4 @@ final class IntegrationController extends Controller
             ],
         ]);
     }
-
 }
