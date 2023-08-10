@@ -102,8 +102,7 @@ final class IntegrationController extends Controller
             TranslatedRoute::getTranslatedRouteName(
                 request: $request,
                 routeName: 'integrations.index'
-            ),
-            []
+            )
         );
     }
 
@@ -126,7 +125,7 @@ final class IntegrationController extends Controller
     {
         $contacts = UpdateContactInfoMapper::map($updateContactInfo, $id);
 
-        DB::transaction(function () use ($id, $contacts) {
+        DB::transaction(function () use ($contacts) {
             foreach ($contacts as $contact) {
                 $this->contactRepository->save($contact);
             }
