@@ -15,6 +15,7 @@ use App\Domain\Integrations\FormRequests\UpdateBillingInfo;
 use App\Domain\Integrations\FormRequests\UpdateContactInfo;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
+use App\Domain\Integrations\Mappers\UpdateContactInfoMapper;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Organization;
@@ -127,72 +128,12 @@ final class IntegrationController extends Controller
 
     public function updateContacts(string $id, UpdateContactInfo $updateContactInfo): RedirectResponse
     {
-        DB::transaction(function () use ($id, $updateContactInfo) {
-            if ($updateContactInfo->input('functional.id') !== null) {
-                $contactId = $updateContactInfo->input('functional.id');
+        $contacts = UpdateContactInfoMapper::map($updateContactInfo, $id);
 
-                $contact = new Contact(
-                    Uuid::fromString($contactId),
-                    Uuid::fromString($id),
-                    $updateContactInfo->input('functional.email'),
-                    ContactType::from($updateContactInfo->input('functional.type')),
-                    $updateContactInfo->input('functional.firstName'),
-                    $updateContactInfo->input('functional.lastName')
-                );
-
+        DB::transaction(function () use ($id, $contacts) {
+            foreach ($contacts as $contact) {
                 $this->contactRepository->save($contact);
             }
-            if ($updateContactInfo->input('technical.id') !== null) {
-                $contactId = $updateContactInfo->input('technical.id');
-
-                $contact = new Contact(
-                    Uuid::fromString($contactId),
-                    Uuid::fromString($id),
-                    $updateContactInfo->input('technical.email'),
-                    ContactType::from($updateContactInfo->input('technical.type')),
-                    $updateContactInfo->input('technical.firstName'),
-                    $updateContactInfo->input('technical.lastName')
-                );
-
-                $this->contactRepository->save($contact);
-            }
-
-            $contributors = $updateContactInfo->input('contributors');
-
-            foreach ($contributors as $contributor) {
-                $contactId = $contributor['id'];
-
-                $contact = new Contact(
-                    Uuid::fromString($contactId),
-                    Uuid::fromString($id),
-                    $contributor['email'],
-                    ContactType::from($contributor['type']),
-                    $contributor['firstName'],
-                    $contributor['lastName']
-                );
-
-                $this->contactRepository->save($contact);
-            }
-
-            $newLastName = $updateContactInfo->input('newContributorLastName');
-            $newFirstName = $updateContactInfo->input('newContributorFirstName');
-            $newEmail = $updateContactInfo->input('newContributorEmail');
-
-            if ($newLastName !== null && $newFirstName !== null && $newEmail !== null) {
-                $contact = new Contact(
-                    Uuid::uuid4(),
-                    Uuid::fromString($id),
-                    $newEmail,
-                    ContactType::Contributor,
-                    $newFirstName,
-                    $newLastName
-                );
-
-                $this->contactRepository->save($contact);
-
-
-            }
-
         });
 
         return Redirect::route(
