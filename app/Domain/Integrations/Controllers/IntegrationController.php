@@ -6,8 +6,6 @@ namespace App\Domain\Integrations\Controllers;
 
 use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Domain\Auth\CurrentUser;
-use App\Domain\Contacts\Contact;
-use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Integrations\FormRequests\StoreIntegration;
 use App\Domain\Integrations\FormRequests\UpdateBasicInfo;
