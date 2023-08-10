@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 use Ramsey\Uuid\Uuid;
+use Throwable;
 
 final class IntegrationController extends Controller
 {
@@ -295,7 +296,7 @@ final class IntegrationController extends Controller
             $integration = $this->integrationRepository->getById(Uuid::fromString($id));
             $subscription = $this->subscriptionRepository->getById($integration->subscriptionId);
             $contacts = $this->contactRepository->getByIntegrationId(UUid::fromString($id));
-        } catch (\Throwable $th) {
+        } catch (Throwable) {
             abort(404);
         }
 
