@@ -9,9 +9,8 @@ use App\Domain\Auth\CurrentUser;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\ContactRepository;
-use App\Domain\Integrations\Integration;
-use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Organization;
@@ -77,46 +76,7 @@ final class IntegrationController extends Controller
 
     public function store(StoreIntegration $storeIntegration): RedirectResponse
     {
-        $integrationId = Uuid::uuid4();
-
-        $contactOrganization = new Contact(
-            Uuid::uuid4(),
-            $integrationId,
-            $storeIntegration->input('emailFunctionalContact'),
-            ContactType::Functional,
-            $storeIntegration->input('firstNameFunctionalContact'),
-            $storeIntegration->input('lastNameFunctionalContact')
-        );
-
-        $contactPartner = new Contact(
-            Uuid::uuid4(),
-            $integrationId,
-            $storeIntegration->input('emailTechnicalContact'),
-            ContactType::Technical,
-            $storeIntegration->input('firstNameTechnicalContact'),
-            $storeIntegration->input('lastNameTechnicalContact')
-        );
-
-        $contributor = new Contact(
-            Uuid::uuid4(),
-            $integrationId,
-            $this->currentUser->email(),
-            ContactType::Contributor,
-            $this->currentUser->firstName(),
-            $this->currentUser->lastName()
-        );
-
-        $integration = (
-            new Integration(
-                $integrationId,
-                IntegrationType::from($storeIntegration->input('integrationType')),
-                $storeIntegration->input('integrationName'),
-                $storeIntegration->input('description'),
-                Uuid::fromString($storeIntegration->input('subscriptionId')),
-                IntegrationStatus::Draft
-            )
-        )->withContacts($contactOrganization, $contactPartner, $contributor);
-
+        $integration = StoreIntegrationMapper::map($storeIntegration, $this->currentUser);
         $this->integrationRepository->save($integration);
 
         return Redirect::route(
