@@ -7,7 +7,7 @@ namespace App\Domain\Integrations\Mappers;
 use App\Domain\Auth\CurrentUser;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
-use App\Domain\Integrations\Controllers\StoreIntegration;
+use App\Domain\Integrations\FormRequests\StoreIntegration;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
