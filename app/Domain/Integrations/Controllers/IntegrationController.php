@@ -103,8 +103,7 @@ final class IntegrationController extends Controller
                 request: $request,
                 routeName: 'integrations.index'
             ),
-            [],
-            303
+            []
         );
     }
 
@@ -119,8 +118,7 @@ final class IntegrationController extends Controller
             ),
             [
                 'id' => $id,
-            ],
-            303
+            ]
         );
     }
 
@@ -141,8 +139,7 @@ final class IntegrationController extends Controller
             ),
             [
                 'id' => $id,
-            ],
-            303
+            ]
         );
     }
 
@@ -159,8 +156,7 @@ final class IntegrationController extends Controller
                 request: $request,
                 routeName: 'integrations.detail'
             ),
-            ['id' => $id],
-            303
+            ['id' => $id]
         );
     }
 
@@ -188,8 +184,7 @@ final class IntegrationController extends Controller
             ),
             [
                 'id' => $id,
-            ],
-            303
+            ]
         );
     }
 
