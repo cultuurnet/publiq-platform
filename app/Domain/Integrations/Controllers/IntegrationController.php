@@ -107,13 +107,13 @@ final class IntegrationController extends Controller
         );
     }
 
-    public function update(Request $request, string $id, UpdateBasicInfo $updateInfo): RedirectResponse
+    public function update(UpdateBasicInfo $updateInfo, string $id): RedirectResponse
     {
         $this->integrationRepository->update(Uuid::fromString($id), $updateInfo);
 
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName(
-                request: $request,
+                request: $updateInfo,
                 routeName: 'integrations.detail'
             ),
             [
