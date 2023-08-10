@@ -14,7 +14,8 @@ final class UpdateContactInfoMapper
     /**
      * @return array<Contact>
      */
-    static function map(UpdateContactInfo $updateContactInfo, string $integrationId): array {
+    public static function map(UpdateContactInfo $updateContactInfo, string $integrationId): array
+    {
         /**
          * @var array<Contact> $contacts
          */

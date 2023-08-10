@@ -15,7 +15,8 @@ use Ramsey\Uuid\Uuid;
 
 final class StoreIntegrationMapper
 {
-    static function map(StoreIntegration $storeIntegration, CurrentUser $currentUser): Integration {
+    public static function map(StoreIntegration $storeIntegration, CurrentUser $currentUser): Integration
+    {
         $integrationId = Uuid::uuid4();
 
         $contactOrganization = new Contact(
