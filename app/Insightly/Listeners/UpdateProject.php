@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace App\Insightly\Listeners;
 
+use App\Domain\Coupons\Coupon;
+use App\Domain\Coupons\Repositories\CouponRepository;
 use App\Domain\Integrations\Events\IntegrationUpdated;
+use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
@@ -21,6 +25,8 @@ final class UpdateProject implements ShouldQueue
     public function __construct(
         private readonly InsightlyClient $insightlyClient,
         private readonly IntegrationRepository $integrationRepository,
+        private readonly SubscriptionRepository $subscriptionRepository,
+        private readonly CouponRepository $couponRepository,
         private readonly InsightlyMappingRepository $insightlyMappingRepository,
         private readonly LoggerInterface $logger
     ) {
@@ -37,6 +43,11 @@ final class UpdateProject implements ShouldQueue
             );
 
             $this->insightlyClient->projects()->update($projectMapping->insightlyId, $integration);
+            $this->insightlyClient->projects()->updateSubscription(
+                $projectMapping->insightlyId,
+                $this->subscriptionRepository->getById($integration->subscriptionId),
+                $this->fetchCoupon($integration)
+            );
 
             $this->logger->info(
                 'Project updated',
@@ -59,5 +70,14 @@ final class UpdateProject implements ShouldQueue
                 'exception' => $exception,
             ]
         );
+    }
+
+    private function fetchCoupon(Integration $integration): ?Coupon
+    {
+        try {
+            return $this->couponRepository->getByIntegrationId($integration->id);
+        } catch (ModelNotFoundException) {
+            return null;
+        }
     }
 }
