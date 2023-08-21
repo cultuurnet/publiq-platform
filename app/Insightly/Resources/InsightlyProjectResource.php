@@ -12,6 +12,7 @@ use App\Insightly\Exceptions\ContactCannotBeUnlinked;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Objects\ProjectStage;
 use App\Insightly\Objects\ProjectState;
+use App\Insightly\Resources\Trait\SyncCustomFields;
 use App\Insightly\Serializers\CustomFields\CouponSerializer;
 use App\Insightly\Serializers\CustomFields\SubscriptionSerializer;
 use App\Insightly\Serializers\LinkSerializer;
@@ -23,6 +24,7 @@ use GuzzleHttp\Psr7\Request;
 final class InsightlyProjectResource implements ProjectResource
 {
     use InsightlyLinks;
+    use SyncCustomFields;
 
     private string $path = 'Projects/';
 
@@ -134,7 +136,7 @@ final class InsightlyProjectResource implements ProjectResource
     {
         $projectAsArray = $this->get($id);
 
-        $projectAsArray['CUSTOMFIELDS'] = array_merge(
+        $projectAsArray['CUSTOMFIELDS'] = $this->syncCustomFields(
             $projectAsArray['CUSTOMFIELDS'] ?? [],
             (new SubscriptionSerializer())->toInsightlyArray($subscription, $coupon)
         );

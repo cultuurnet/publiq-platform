@@ -8,6 +8,9 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Subscriptions\Currency;
+use App\Domain\Subscriptions\Subscription;
+use App\Domain\Subscriptions\SubscriptionCategory;
 use App\Insightly\Exceptions\ContactCannotBeUnlinked;
 use App\Insightly\Objects\OpportunityStage;
 use App\Insightly\Objects\OpportunityState;
@@ -388,5 +391,81 @@ final class InsightlyOpportunityResourceTest extends TestCase
 
         $this->expectException(ContactCannotBeUnlinked::class);
         $this->resource->unlinkContact($opportunityId, $contactId);
+    }
+
+    public function test_it_updates_the_subscription_of_an_opportunity(): void
+    {
+        $subscription = new Subscription(
+            Uuid::uuid4(),
+            'free',
+            'free',
+            SubscriptionCategory::Free,
+            IntegrationType::SearchApi,
+            Currency::EUR,
+            3.0,
+            null
+        );
+
+        $opportunityId = 1;
+
+        $opportunity = [
+            'CUSTOMFIELDS' => [
+                [
+                    'FIELD_NAME' => 'Subscription_plan__c',
+                    'CUSTOM_FIELD_ID' => 'Subscription_plan__c',
+                    'FIELD_VALUE' => 'Paid',
+                ],
+                [
+                    'FIELD_NAME' => 'Setup_fee__c',
+                    'CUSTOM_FIELD_ID' => 'Setup_fee__c',
+                    'FIELD_VALUE' => 5.0,
+                ],
+                [
+                    'FIELD_NAME' => 'Subscription_price__c',
+                    'CUSTOM_FIELD_ID' => 'Subscription_price__c',
+                    'FIELD_VALUE' => 100.0,
+                ],
+            ],
+        ];
+
+        $expectedGetRequest = new Request(
+            'GET',
+            'Opportunities/' . $opportunityId
+        );
+        $expectedPutRequest = new Request(
+            'PUT',
+            'Opportunities/' . $opportunityId,
+            [],
+            Json::encode([
+                'CUSTOMFIELDS' => [
+                    [
+                        'FIELD_NAME' => 'Subscription_plan__c',
+                        'CUSTOM_FIELD_ID' => 'Subscription_plan__c',
+                        'FIELD_VALUE' => 'Free',
+                    ],
+                    [
+                        'FIELD_NAME' => 'Setup_fee__c',
+                        'CUSTOM_FIELD_ID' => 'Setup_fee__c',
+                        'FIELD_VALUE' => null,
+                    ],
+                    [
+                        'FIELD_NAME' => 'Subscription_price__c',
+                        'CUSTOM_FIELD_ID' => 'Subscription_price__c',
+                        'FIELD_VALUE' => 3.0,
+                    ],
+                ],
+            ])
+        );
+
+        $this->insightlyClient->expects($this->exactly(2))
+            ->method('sendRequest')
+            ->willReturnCallback(self::assertRequestResponseWithCallback(
+                $expectedGetRequest,
+                new Response(200, [], Json::encode($opportunity)),
+                $expectedPutRequest,
+                new Response(202),
+            ));
+
+        $this->resource->updateSubscription($opportunityId, $subscription, null);
     }
 }
