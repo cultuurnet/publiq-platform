@@ -87,6 +87,7 @@ final class Integration
     {
         return $this->uiTiDv1Consumers;
     }
+
     /** @return array<Auth0ClientModel> */
     public function auth0Clients(): array
     {
