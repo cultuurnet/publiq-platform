@@ -7,10 +7,10 @@ namespace App\Domain\Integrations\Models;
 use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
-use App\Domain\Integrations\Events\IntegrationActivatedWithOrganization;
 use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
-use App\Domain\Integrations\Events\IntegrationCreated;
+use App\Domain\Integrations\Events\IntegrationActivatedWithOrganization;
 use App\Domain\Integrations\Events\IntegrationBlocked;
+use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
@@ -193,14 +193,19 @@ final class IntegrationModel extends UuidModel
             IntegrationStatus::from($this->status),
         ))->withContacts(
             ...$this->contacts()
-                ->get()
-                ->map(fn (ContactModel $contactModel) => $contactModel->toDomain())
-                ->toArray()
+            ->get()
+            ->map(fn (ContactModel $contactModel) => $contactModel->toDomain())
+            ->toArray()
         )->withUrls(
             ...$this->urls()
-                ->get()
-                ->map(fn (IntegrationUrlModel $integrationUrlModel) => $integrationUrlModel->toDomain())
-                ->toArray()
+            ->get()
+            ->map(fn (IntegrationUrlModel $integrationUrlModel) => $integrationUrlModel->toDomain())
+            ->toArray()
+        )->withUiTiDv1Consumers(
+            ...$this->uiTiDv1Consumers()
+            ->get()
+            ->map(fn (UiTiDv1ConsumerModel $uiTiDv1ConsumerModel) => $uiTiDv1ConsumerModel->toDomain())
+            ->toArray()
         );
 
         if ($foundOrganisation !== null) {

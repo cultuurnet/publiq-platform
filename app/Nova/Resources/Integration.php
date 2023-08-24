@@ -13,7 +13,6 @@ use App\Nova\Actions\ActivateIntegrationWithOrganization;
 use App\Nova\Actions\ActivateIntegrationWithCoupon;
 use App\Nova\Actions\BlockIntegration;
 use App\Nova\Resource;
-use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use Illuminate\Support\Facades\App;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\DateTime;
@@ -25,7 +24,6 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\ActionRequest;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\ResourceTool;
-use Publiq\ClientCredentials\ClientCredentials;
 use Publiq\InsightlyLink\InsightlyLink;
 use Publiq\InsightlyLink\InsightlyType;
 
@@ -52,24 +50,6 @@ final class Integration extends Resource
      */
     public function fields(NovaRequest $request): array
     {
-        $uitidEnvironmentsConfig = config('uitidv1.environments');
-        $uitidEnvironments = array_keys($uitidEnvironmentsConfig);
-        $uitidActionUrlTemplates = array_filter(
-            array_map(
-                static fn (array $envConfig): ?string => $envConfig['consumerDetailUrlTemplate'] ?? null,
-                $uitidEnvironmentsConfig
-            )
-        );
-
-        $auth0TenantsConfig = config('auth0.tenants');
-        $auth0Tenants = array_keys($auth0TenantsConfig);
-        $auth0ActionUrlTemplates = array_filter(
-            array_map(
-                static fn (array $tenantConfig): ?string => $tenantConfig['clientDetailUrlTemplate'] ?? null,
-                $auth0TenantsConfig
-            )
-        );
-
         return [
             ID::make()
                 ->readonly()
@@ -141,7 +121,7 @@ final class Integration extends Resource
                 ->asHtml()
                 ->onlyOnDetail(),
 
-            HasMany::make('UiTiD v2 Client Credentials (Auth0)', 'auth0Clients', Auth0Client::class),
+            HasMany::make('UiTiD v1 Consumer Credentials', 'uiTiDv1Consumers', UiTiDv1::class),
 
             HasMany::make('Contacts'),
 

@@ -29,6 +29,7 @@ final class UiTiDv1 extends Resource
      * @var array<string>
      */
     public static $search = [
+        'id',
         'integration_id',
         'consumer_id',
         'consumer_key',

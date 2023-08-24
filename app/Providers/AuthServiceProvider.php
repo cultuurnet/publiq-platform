@@ -19,6 +19,8 @@ use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\Organizations\Policies\OrganizationPolicy;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Domain\Subscriptions\Policies\SubscriptionPolicy;
+use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
+use App\UiTiDv1\Policies\UiTiDv1ConsumerPolicy;
 use Auth0\SDK\Auth0;
 use Auth0\SDK\Configuration\SdkConfiguration;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -35,6 +37,7 @@ final class AuthServiceProvider extends ServiceProvider
         IntegrationUrlModel::class => IntegrationUrlPolicy::class,
         OrganizationModel::class => OrganizationPolicy::class,
         SubscriptionModel::class => SubscriptionPolicy::class,
+        UiTiDv1ConsumerModel::class => UiTiDv1ConsumerPolicy::class,
     ];
 
     public function boot(): void

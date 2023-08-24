@@ -69,41 +69,41 @@ final class CreateConsumersTest extends TestCase
         $this->httpClient->expects($this->exactly(3))
             ->method('request')
             ->willReturnCallback(
-                fn (string $actualMethod, string $actualUri, array $actualOptions) =>
-                    match ([$actualMethod, $actualUri, $actualOptions]) {
+                fn (string $actualMethod, string $actualUri, array $actualOptions) => match ([$actualMethod, $actualUri, $actualOptions]) {
+                    [
+                        'POST',
+                        'serviceconsumer',
                         [
-                            'POST',
-                            'serviceconsumer',
-                            [
-                                'http_errors' => false,
-                                'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
-                                'body' => 'name=Mock%20Integration%20%28via%20publiq%20platform%29&group=1&group=2',
-                            ],
-                        ] => new Response(200, [], (string) file_get_contents(__DIR__ . '/consumer1.xml')),
+                            'http_errors' => false,
+                            'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
+                            'body' => 'name=Mock%20Integration%20%28via%20publiq%20platform%29&group=1&group=2',
+                        ],
+                    ] => new Response(200, [], (string)file_get_contents(__DIR__ . '/consumer1.xml')),
+                    [
+                        'POST',
+                        'serviceconsumer',
                         [
-                            'POST',
-                            'serviceconsumer',
-                            [
-                                'http_errors' => false,
-                                'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
-                                'body' => 'name=Mock%20Integration%20%28via%20publiq%20platform%29&group=7&group=8',
-                            ],
-                        ] => new Response(200, [], (string) file_get_contents(__DIR__ . '/consumer2.xml')),
+                            'http_errors' => false,
+                            'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
+                            'body' => 'name=Mock%20Integration%20%28via%20publiq%20platform%29&group=7&group=8',
+                        ],
+                    ] => new Response(200, [], (string)file_get_contents(__DIR__ . '/consumer2.xml')),
+                    [
+                        'POST',
+                        'serviceconsumer',
                         [
-                            'POST',
-                            'serviceconsumer',
-                            [
-                                'http_errors' => false,
-                                'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
-                                'body' => 'name=Mock%20Integration%20%28via%20publiq%20platform%29&group=13&group=14',
-                            ],
-                        ] => new Response(200, [], (string) file_get_contents(__DIR__ . '/consumer3.xml')),
-                        default => throw new \LogicException('Invalid arguments received'),
-                    }
+                            'http_errors' => false,
+                            'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
+                            'body' => 'name=Mock%20Integration%20%28via%20publiq%20platform%29&group=13&group=14',
+                        ],
+                    ] => new Response(200, [], (string)file_get_contents(__DIR__ . '/consumer3.xml')),
+                    default => throw new \LogicException('Invalid arguments received'),
+                }
             );
 
         $expectedConsumers = [
             new UiTiDv1Consumer(
+                Uuid::uuid4(),
                 $integrationId,
                 '4135',
                 'mock-consumer-key-1',
@@ -112,6 +112,7 @@ final class CreateConsumersTest extends TestCase
                 UiTiDv1Environment::Acceptance
             ),
             new UiTiDv1Consumer(
+                Uuid::uuid4(),
                 $integrationId,
                 '4136',
                 'mock-consumer-key-2',
@@ -120,6 +121,7 @@ final class CreateConsumersTest extends TestCase
                 UiTiDv1Environment::Testing
             ),
             new UiTiDv1Consumer(
+                Uuid::uuid4(),
                 $integrationId,
                 '4137',
                 'mock-consumer-key-3',
@@ -131,8 +133,25 @@ final class CreateConsumersTest extends TestCase
 
         $this->consumerRepository->expects($this->once())
             ->method('save')
-            ->with(...$expectedConsumers);
+            ->with(
+                $this->callback(fn (UiTiDv1Consumer $client) => $this->compareAuth0Client($client, $expectedConsumers[0])),
+                $this->callback(fn (UiTiDv1Consumer $client) => $this->compareAuth0Client($client, $expectedConsumers[1])),
+                $this->callback(fn (UiTiDv1Consumer $client) => $this->compareAuth0Client($client, $expectedConsumers[2])),
+            );
 
         $this->createConsumers->handle(new IntegrationCreated($integrationId));
+    }
+
+
+    private function compareAuth0Client(UiTiDv1Consumer $consumer, UiTiDv1Consumer $expectedConsumer): true
+    {
+        $this->assertEquals($consumer->integrationId, $expectedConsumer->integrationId);
+        $this->assertEquals($consumer->consumerId, $expectedConsumer->consumerId);
+        $this->assertEquals($consumer->apiKey, $expectedConsumer->apiKey);
+        $this->assertEquals($consumer->consumerKey, $expectedConsumer->consumerKey);
+        $this->assertEquals($consumer->consumerSecret, $expectedConsumer->consumerSecret);
+        $this->assertEquals($consumer->environment, $expectedConsumer->environment);
+
+        return true;
     }
 }
