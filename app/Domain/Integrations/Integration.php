@@ -7,7 +7,6 @@ namespace App\Domain\Integrations;
 use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Contacts\Contact;
 use App\Domain\Organizations\Organization;
-use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use Ramsey\Uuid\UuidInterface;
 
 final class Integration
@@ -71,6 +70,10 @@ final class Integration
         return $this->organization;
     }
 
+    public function auth0Clients(): array
+    {
+        return $this->auth0Clients;
+    }
 
     public function withUrls(IntegrationUrl ...$urls): self
     {

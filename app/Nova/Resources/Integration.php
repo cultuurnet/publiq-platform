@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Nova\Resources;
 
-use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
@@ -14,7 +13,6 @@ use App\Nova\Actions\ActivateIntegrationWithOrganization;
 use App\Nova\Actions\ActivateIntegrationWithCoupon;
 use App\Nova\Actions\BlockIntegration;
 use App\Nova\Resource;
-use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use Illuminate\Support\Facades\App;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\DateTime;
@@ -26,7 +24,6 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\ActionRequest;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\ResourceTool;
-use Publiq\ClientCredentials\ClientCredentials;
 use Publiq\InsightlyLink\InsightlyLink;
 use Publiq\InsightlyLink\InsightlyType;
 

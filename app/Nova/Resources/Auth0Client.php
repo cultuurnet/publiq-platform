@@ -7,7 +7,6 @@ namespace App\Nova\Resources;
 use App\Auth0\Auth0Tenant;
 use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Contacts\Models\ContactModel;
-use App\Nova\Actions\Auth0\BlockClient;
 use App\Nova\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use Laravel\Nova\Fields\BelongsTo;

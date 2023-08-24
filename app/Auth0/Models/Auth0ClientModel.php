@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace App\Auth0\Models;
 
-use App\Auth0\Events;
+use App\Auth0\Auth0Client;
 use App\Auth0\Auth0Tenant;
-use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Models\UuidModel;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
@@ -40,16 +38,10 @@ final class Auth0ClientModel extends UuidModel
     }
 
     /**
-     * @return BelongsTo<IntegrationModel, ContactModel>
+     * @return BelongsTo<IntegrationModel, Auth0ClientModel>
      */
     public function integration(): BelongsTo
     {
         return $this->belongsTo(IntegrationModel::class, 'integration_id');
-    }
-
-    public function block()
-    {
-        $a = 1;
-        die('stop');
     }
 }
