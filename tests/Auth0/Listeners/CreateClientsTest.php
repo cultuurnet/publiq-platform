@@ -72,11 +72,11 @@ final class CreateClientsTest extends TestCase
         $this->httpClient->expects($this->exactly(6))
             ->method('sendRequest')
             ->willReturnOnConsecutiveCalls(
-                new Response(201, [], Json::encode(['id' => $clientIds[0], 'client_id' => 'client-id-1', 'client_secret' => 'client-secret-1'])),
+                new Response(201, [], Json::encode(['client_id' => 'client-id-1', 'client_secret' => 'client-secret-1'])),
                 new Response(201, [], Json::encode(['id' => 'grant-id-1'])),
-                new Response(201, [], Json::encode(['id' => $clientIds[1], 'client_id' => 'client-id-2', 'client_secret' => 'client-secret-2'])),
+                new Response(201, [], Json::encode(['client_id' => 'client-id-2', 'client_secret' => 'client-secret-2'])),
                 new Response(201, [], Json::encode(['id' => 'grant-id-2'])),
-                new Response(201, [], Json::encode(['id' => $clientIds[2], 'client_id' => 'client-id-3', 'client_secret' => 'client-secret-3'])),
+                new Response(201, [], Json::encode(['client_id' => 'client-id-3', 'client_secret' => 'client-secret-3'])),
                 new Response(201, [], Json::encode(['id' => 'grant-id-3'])),
             );
 
@@ -90,15 +90,15 @@ final class CreateClientsTest extends TestCase
         $this->clientRepository->expects($this->once())
             ->method('save')
             ->with(
-                $this->callback(fn (Auth0Client $client) => $this->compareAuth0Client($client, $expectedClients[0])),
-                $this->callback(fn (Auth0Client $client) => $this->compareAuth0Client($client, $expectedClients[1])),
-                $this->callback(fn (Auth0Client $client) => $this->compareAuth0Client($client, $expectedClients[2])),
+                $this->callback(fn (Auth0Client $client) => $this->assertAuth0Client($client, $expectedClients[0])),
+                $this->callback(fn (Auth0Client $client) => $this->assertAuth0Client($client, $expectedClients[1])),
+                $this->callback(fn (Auth0Client $client) => $this->assertAuth0Client($client, $expectedClients[2])),
             );
 
         $this->createClients->handle(new IntegrationCreated($integrationId));
     }
 
-    private function compareAuth0Client(Auth0Client $client, Auth0Client $expectedClient): true
+    private function assertAuth0Client(Auth0Client $client, Auth0Client $expectedClient): true
     {
         $this->assertEquals($client->clientId, $expectedClient->clientId);
         $this->assertEquals($client->integrationId, $expectedClient->integrationId);

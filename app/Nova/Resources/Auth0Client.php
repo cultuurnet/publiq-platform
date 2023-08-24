@@ -8,7 +8,6 @@ use App\Auth0\Auth0Tenant;
 use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Nova\Resource;
-use Illuminate\Database\Eloquent\Builder;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
