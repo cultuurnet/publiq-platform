@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Auth0\Models\Auth0ClientModel;
+use App\Auth0\Policies\Auth0ClientPolicy;
 use App\Domain\Activity\Policies\ActivityPolicy;
 use App\Domain\Auth\Controllers\Login;
 use App\Domain\Auth\UserProvider;
@@ -38,6 +40,7 @@ final class AuthServiceProvider extends ServiceProvider
         OrganizationModel::class => OrganizationPolicy::class,
         SubscriptionModel::class => SubscriptionPolicy::class,
         UiTiDv1ConsumerModel::class => UiTiDv1ConsumerPolicy::class,
+        Auth0ClientModel::class => Auth0ClientPolicy::class,
     ];
 
     public function boot(): void

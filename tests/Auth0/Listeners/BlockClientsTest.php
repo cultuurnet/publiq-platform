@@ -49,9 +49,9 @@ final class BlockClientsTest extends TestCase
         $integrationId = Uuid::uuid4();
 
         $clients = [
-            new Auth0Client($integrationId, 'client-id-1', 'client-secret-1', Auth0Tenant::Acceptance),
-            new Auth0Client($integrationId, 'client-id-2', 'client-secret-2', Auth0Tenant::Testing),
-            new Auth0Client($integrationId, 'client-id-3', 'client-secret-3', Auth0Tenant::Production),
+            new Auth0Client(Uuid::uuid4(), $integrationId, 'client-id-1', 'client-secret-1', Auth0Tenant::Acceptance),
+            new Auth0Client(Uuid::uuid4(), $integrationId, 'client-id-2', 'client-secret-2', Auth0Tenant::Testing),
+            new Auth0Client(Uuid::uuid4(), $integrationId, 'client-id-3', 'client-secret-3', Auth0Tenant::Production),
         ];
 
         $this->clientRepository->expects($this->once())

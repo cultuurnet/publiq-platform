@@ -26,6 +26,7 @@ final class EloquentAuth0ClientRepository implements Auth0ClientRepository
                             'auth0_tenant' => $auth0Client->tenant->value,
                         ],
                         [
+                            'id' => $auth0Client->id->toString(),
                             'integration_id' => $auth0Client->integrationId->toString(),
                             'auth0_client_id' => $auth0Client->clientId,
                             'auth0_client_secret' => $auth0Client->clientSecret,

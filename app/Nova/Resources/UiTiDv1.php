@@ -8,8 +8,6 @@ use App\Domain\Contacts\Models\ContactModel;
 use App\Nova\Resource;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use App\UiTiDv1\UiTiDv1Environment;
-use Illuminate\Database\Eloquent\Builder;
-use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
