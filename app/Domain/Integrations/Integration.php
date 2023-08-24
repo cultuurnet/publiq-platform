@@ -70,6 +70,7 @@ final class Integration
         return $this->organization;
     }
 
+    /** @return array<Auth0ClientModel> */
     public function auth0Clients(): array
     {
         return $this->auth0Clients;

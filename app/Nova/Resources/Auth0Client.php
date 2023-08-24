@@ -9,7 +9,6 @@ use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Nova\Resource;
 use Illuminate\Database\Eloquent\Builder;
-use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
@@ -25,23 +24,16 @@ final class Auth0Client extends Resource
 
     public static $title = 'auth0_tenant';
 
-
     /**
      * @var array<string>
      */
     public static $search = [
+        'id',
         'integration_id',
         'auth0_client_id',
         'auth0_client_secret',
         'auth0_tenant',
     ];
-
-    public static function indexQuery(NovaRequest $request, $query): Builder
-    {
-        return parent::indexQuery($request, $query)
-            ->select('auth0_clients.*')
-            ->leftJoin('integrations', 'integration_id', '=', 'integrations.id');
-    }
 
     /**
      * @return array<Field>
@@ -76,12 +68,6 @@ final class Auth0Client extends Resource
 
                 return null;
             })->asHtml(),
-            BelongsTo::make('Integration')
-                ->sortable()
-                ->withMeta(['sortableUriKey' => 'integrations.name'])
-                ->withoutTrashed()
-                ->readonly()
-                ->rules('required'),
         ];
     }
 
