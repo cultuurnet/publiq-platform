@@ -4,14 +4,20 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations;
 
+use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Contacts\Contact;
 use App\Domain\Organizations\Organization;
+use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use Ramsey\Uuid\UuidInterface;
 
 final class Integration
 {
     /** @var array<Contact> */
     private array $contacts;
+
+    /** @var array<Auth0ClientModel> */
+    private array $auth0Clients;
+
     private ?Organization $organization;
 
     /** @var array<IntegrationUrl> */
@@ -27,6 +33,7 @@ final class Integration
     ) {
         $this->contacts = [];
         $this->urls = [];
+        $this->auth0Clients = [];
         $this->organization = null;
     }
 
@@ -41,6 +48,13 @@ final class Integration
     {
         $clone = clone $this;
         $clone->organization = $organization;
+        return $clone;
+    }
+
+    public function withAuth0Clients(Auth0ClientModel ...$auth0Clients): self
+    {
+        $clone = clone $this;
+        $clone->auth0Clients = $auth0Clients;
         return $clone;
     }
 

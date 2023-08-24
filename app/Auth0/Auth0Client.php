@@ -9,6 +9,7 @@ use Ramsey\Uuid\UuidInterface;
 final class Auth0Client
 {
     public function __construct(
+        public readonly UuidInterface $id,
         public readonly UuidInterface $integrationId,
         public readonly string $clientId,
         public readonly string $clientSecret,
