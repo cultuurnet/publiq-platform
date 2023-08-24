@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace App\Nova\Resources;
 
-use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
-use App\Nova\Actions\ActivateIntegrationWithOrganization;
 use App\Nova\Actions\ActivateIntegrationWithCoupon;
+use App\Nova\Actions\ActivateIntegrationWithOrganization;
 use App\Nova\Actions\BlockIntegration;
 use App\Nova\Resource;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
@@ -59,15 +58,6 @@ final class Integration extends Resource
             array_map(
                 static fn (array $envConfig): ?string => $envConfig['consumerDetailUrlTemplate'] ?? null,
                 $uitidEnvironmentsConfig
-            )
-        );
-
-        $auth0TenantsConfig = config('auth0.tenants');
-        $auth0Tenants = array_keys($auth0TenantsConfig);
-        $auth0ActionUrlTemplates = array_filter(
-            array_map(
-                static fn (array $tenantConfig): ?string => $tenantConfig['clientDetailUrlTemplate'] ?? null,
-                $auth0TenantsConfig
             )
         );
 
@@ -164,26 +154,7 @@ final class Integration extends Resource
                 },
             ),
 
-            ClientCredentials::make(
-                title: 'UiTiD v2 Client Credentials (Auth0)',
-                modelClassName: Auth0ClientModel::class,
-                columns: [
-                    'auth0_tenant' => 'Environment',
-                    'auth0_client_id' => 'Client id',
-                    'auth0_client_secret' => 'Client secret',
-                ],
-                filterColumn: 'integration_id',
-                filterValue: $this->id,
-                sortColumn: 'auth0_tenant',
-                sortValues: $auth0Tenants,
-                actionLabel: 'Open in Auth0',
-                actionUrlCallback: static function (Auth0ClientModel $model) use ($auth0ActionUrlTemplates): ?string {
-                    if (isset($auth0ActionUrlTemplates[$model->auth0_tenant])) {
-                        return sprintf($auth0ActionUrlTemplates[$model->auth0_tenant], $model->auth0_client_id);
-                    }
-                    return null;
-                },
-            ),
+            HasMany::make('UiTiD v2 Client Credentials (Auth0)', 'auth0Clients', Auth0Client::class),
 
             HasMany::make('Contacts'),
 

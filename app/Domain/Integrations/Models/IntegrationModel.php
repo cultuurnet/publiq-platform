@@ -201,6 +201,11 @@ final class IntegrationModel extends UuidModel
                 ->get()
                 ->map(fn (IntegrationUrlModel $integrationUrlModel) => $integrationUrlModel->toDomain())
                 ->toArray()
+        )->withAuth0Clients(
+            ...$this->auth0Clients()
+            ->get()
+            ->map(fn (Auth0ClientModel $auth0ClientModel) => $auth0ClientModel->toDomain())
+            ->toArray()
         );
 
         if ($foundOrganisation !== null) {

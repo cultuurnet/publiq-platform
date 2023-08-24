@@ -14,6 +14,7 @@ use Auth0\SDK\Auth0;
 use Auth0\SDK\Configuration\SdkConfiguration;
 use Auth0\SDK\Contract\API\ManagementInterface;
 use Psr\Http\Message\ResponseInterface;
+use Ramsey\Uuid\Uuid;
 
 final class Auth0TenantSDK
 {
@@ -86,7 +87,7 @@ final class Auth0TenantSDK
         $grantResponse = $this->management->clientGrants()->create($clientId, 'https://api.publiq.be');
         $this->guardResponseStatus(201, $grantResponse);
 
-        return new Auth0Client($integration->id, $clientId, $clientSecret, $this->auth0Tenant);
+        return new Auth0Client(Uuid::uuid4(), $integration->id, $clientId, $clientSecret, $this->auth0Tenant);
     }
 
     public function updateClient(Integration $integration, Auth0Client $auth0Client): void
