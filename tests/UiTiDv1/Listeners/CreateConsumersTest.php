@@ -134,16 +134,16 @@ final class CreateConsumersTest extends TestCase
         $this->consumerRepository->expects($this->once())
             ->method('save')
             ->with(
-                $this->callback(fn (UiTiDv1Consumer $client) => $this->compareAuth0Client($client, $expectedConsumers[0])),
-                $this->callback(fn (UiTiDv1Consumer $client) => $this->compareAuth0Client($client, $expectedConsumers[1])),
-                $this->callback(fn (UiTiDv1Consumer $client) => $this->compareAuth0Client($client, $expectedConsumers[2])),
+                $this->callback(fn (UiTiDv1Consumer $client) => $this->assertUiTiDv1Consumer($client, $expectedConsumers[0])),
+                $this->callback(fn (UiTiDv1Consumer $client) => $this->assertUiTiDv1Consumer($client, $expectedConsumers[1])),
+                $this->callback(fn (UiTiDv1Consumer $client) => $this->assertUiTiDv1Consumer($client, $expectedConsumers[2])),
             );
 
         $this->createConsumers->handle(new IntegrationCreated($integrationId));
     }
 
 
-    private function compareAuth0Client(UiTiDv1Consumer $consumer, UiTiDv1Consumer $expectedConsumer): true
+    private function assertUiTiDv1Consumer(UiTiDv1Consumer $consumer, UiTiDv1Consumer $expectedConsumer): true
     {
         $this->assertEquals($consumer->integrationId, $expectedConsumer->integrationId);
         $this->assertEquals($consumer->consumerId, $expectedConsumer->consumerId);

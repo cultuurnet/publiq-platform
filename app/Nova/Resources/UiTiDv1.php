@@ -38,13 +38,6 @@ final class UiTiDv1 extends Resource
         'environment',
     ];
 
-    public static function indexQuery(NovaRequest $request, $query): Builder
-    {
-        return parent::indexQuery($request, $query)
-            ->select('uitidv1_consumers.*')
-            ->leftJoin('integrations', 'integration_id', '=', 'integrations.id');
-    }
-
     /**
      * @return array<Field>
      */
@@ -80,12 +73,6 @@ final class UiTiDv1 extends Resource
 
                 return null;
             })->asHtml(),
-            BelongsTo::make('Integration')
-                ->sortable()
-                ->withMeta(['sortableUriKey' => 'integrations.name'])
-                ->withoutTrashed()
-                ->readonly()
-                ->rules('required'),
         ];
     }
 

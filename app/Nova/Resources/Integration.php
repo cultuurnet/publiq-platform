@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Nova\Resources;
 
+use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
@@ -24,6 +25,7 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\ActionRequest;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\ResourceTool;
+use Publiq\ClientCredentials\ClientCredentials;
 use Publiq\InsightlyLink\InsightlyLink;
 use Publiq\InsightlyLink\InsightlyType;
 
@@ -50,6 +52,15 @@ final class Integration extends Resource
      */
     public function fields(NovaRequest $request): array
     {
+        $auth0TenantsConfig = config('auth0.tenants');
+        $auth0Tenants = array_keys($auth0TenantsConfig);
+        $auth0ActionUrlTemplates = array_filter(
+            array_map(
+                static fn (array $tenantConfig): ?string => $tenantConfig['clientDetailUrlTemplate'] ?? null,
+                $auth0TenantsConfig
+            )
+        );
+
         return [
             ID::make()
                 ->readonly()
@@ -122,7 +133,26 @@ final class Integration extends Resource
                 ->onlyOnDetail(),
 
             HasMany::make('UiTiD v1 Consumer Credentials', 'uiTiDv1Consumers', UiTiDv1::class),
-
+            ClientCredentials::make(
+                title: 'UiTiD v2 Client Credentials (Auth0)',
+                modelClassName: Auth0ClientModel::class,
+                columns: [
+                    'auth0_tenant' => 'Environment',
+                    'auth0_client_id' => 'Client id',
+                    'auth0_client_secret' => 'Client secret',
+                ],
+                filterColumn: 'integration_id',
+                filterValue: $this->id,
+                sortColumn: 'auth0_tenant',
+                sortValues: $auth0Tenants,
+                actionLabel: 'Open in Auth0',
+                actionUrlCallback: static function (Auth0ClientModel $model) use ($auth0ActionUrlTemplates): ?string {
+                    if (isset($auth0ActionUrlTemplates[$model->auth0_tenant])) {
+                        return sprintf($auth0ActionUrlTemplates[$model->auth0_tenant], $model->auth0_client_id);
+                    }
+                    return null;
+                },
+            ),
             HasMany::make('Contacts'),
 
             HasMany::make('Urls', 'urls', IntegrationUrl::class),
