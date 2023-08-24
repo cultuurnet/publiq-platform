@@ -89,8 +89,22 @@ final class CreateClientsTest extends TestCase
 
         $this->clientRepository->expects($this->once())
             ->method('save')
-            ->with(...$expectedClients);
+            ->with(
+                $this->callback(fn (Auth0Client $client) => $this->compareAuth0Client($client, $expectedClients[0])),
+                $this->callback(fn (Auth0Client $client) => $this->compareAuth0Client($client, $expectedClients[1])),
+                $this->callback(fn (Auth0Client $client) => $this->compareAuth0Client($client, $expectedClients[2])),
+            );
 
         $this->createClients->handle(new IntegrationCreated($integrationId));
+    }
+
+    private function compareAuth0Client(Auth0Client $client, Auth0Client $expectedClient): true
+    {
+        $this->assertEquals($client->clientId, $expectedClient->clientId);
+        $this->assertEquals($client->integrationId, $expectedClient->integrationId);
+        $this->assertEquals($client->tenant, $expectedClient->tenant);
+        $this->assertEquals($client->clientSecret, $expectedClient->clientSecret);
+
+        return true;
     }
 }
