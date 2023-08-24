@@ -28,6 +28,7 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
         $integrationId = Uuid::uuid4();
 
         $consumer1 = new UiTiDv1Consumer(
+            Uuid::uuid4(),
             $integrationId,
             '1',
             'consumer-key-1',
@@ -36,6 +37,7 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
             UiTiDv1Environment::Acceptance
         );
         $consumer2 = new UiTiDv1Consumer(
+            Uuid::uuid4(),
             $integrationId,
             '2',
             'consumer-key-2',
@@ -44,6 +46,7 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
             UiTiDv1Environment::Testing
         );
         $consumer3 = new UiTiDv1Consumer(
+            Uuid::uuid4(),
             $integrationId,
             '3',
             'consumer-key-3',
@@ -88,6 +91,7 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
         $integrationId = Uuid::uuid4();
 
         $consumer1 = new UiTiDv1Consumer(
+            Uuid::uuid4(),
             $integrationId,
             '1',
             'consumer-key-1',
@@ -96,6 +100,7 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
             UiTiDv1Environment::Acceptance
         );
         $consumer2 = new UiTiDv1Consumer(
+            Uuid::uuid4(),
             $integrationId,
             '2',
             'consumer-key-2',
@@ -104,6 +109,7 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
             UiTiDv1Environment::Testing
         );
         $consumer3 = new UiTiDv1Consumer(
+            Uuid::uuid4(),
             $integrationId,
             '3',
             'consumer-key-3',
@@ -141,6 +147,7 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
                 $count = count($consumers) + 1;
 
                 $consumers[] = new UiTiDv1Consumer(
+                    Uuid::uuid4(),
                     $integrationId,
                     (string)$count,
                     'consumer-key-' . $count,
@@ -181,6 +188,7 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
                 $count = count($consumers) + 1;
 
                 $consumers[] = new UiTiDv1Consumer(
+                    Uuid::uuid4(),
                     $integrationId,
                     (string)$count,
                     'consumer-key-' . $count,

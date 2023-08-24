@@ -45,6 +45,7 @@ final class BlockConsumersTest extends TestCase
 
         $consumers = [
             new UiTiDv1Consumer(
+                Uuid::uuid4(),
                 $integrationId,
                 '4135',
                 'mock-consumer-key-1',
@@ -53,6 +54,7 @@ final class BlockConsumersTest extends TestCase
                 UiTiDv1Environment::Acceptance
             ),
             new UiTiDv1Consumer(
+                Uuid::uuid4(),
                 $integrationId,
                 '4136',
                 'mock-consumer-key-2',
@@ -61,6 +63,7 @@ final class BlockConsumersTest extends TestCase
                 UiTiDv1Environment::Testing
             ),
             new UiTiDv1Consumer(
+                Uuid::uuid4(),
                 $integrationId,
                 '4137',
                 'mock-consumer-key-3',
