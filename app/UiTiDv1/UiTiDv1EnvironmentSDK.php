@@ -11,6 +11,7 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Query;
 use Psr\Http\Message\ResponseInterface;
+use Ramsey\Uuid\Uuid;
 use SimpleXMLElement;
 
 final class UiTiDv1EnvironmentSDK
@@ -41,6 +42,7 @@ final class UiTiDv1EnvironmentSDK
         $apiKey = $data['apiKeySapi3'];
 
         return new UiTiDv1Consumer(
+            Uuid::uuid4(),
             $integration->id,
             $consumerId,
             $consumerKey,

@@ -10,6 +10,7 @@ return new class () extends Migration {
     public function up(): void
     {
         Schema::create('uitidv1_consumers', static function (Blueprint $table) {
+            $table->uuid('id')->index();
             $table->uuid('integration_id')->index();
             $table->string('consumer_id')->index();
             $table->string('consumer_key')->index();
