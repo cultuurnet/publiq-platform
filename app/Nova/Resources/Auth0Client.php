@@ -91,13 +91,6 @@ final class Auth0Client extends Resource
         return 'Auth0 Clients';
     }
 
-    public function actions(NovaRequest $request): array
-    {
-        return [
-            (new BlockClient())->showInline(),
-        ];
-    }
-
     private function getActionUrlTemplates(): array
     {
         return array_filter(
