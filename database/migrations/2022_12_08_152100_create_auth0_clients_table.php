@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class () extends Migration {
@@ -21,9 +20,6 @@ return new class () extends Migration {
             $table->softDeletes();
             $table->timestamps();
         });
-
-        // Migrate old clients that don't have an id as a primary key
-        DB::statement('UPDATE auth0_clients SET id = UUID() WHERE id \'\'');
     }
 
     public function down(): void
