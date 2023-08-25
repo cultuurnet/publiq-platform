@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations;
 
-use App\Auth0\Models\Auth0ClientModel;
+use App\Auth0\Auth0Client;
 use App\Domain\Contacts\Contact;
 use App\Domain\Organizations\Organization;
-use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
+use App\UiTiDv1\UiTiDv1Consumer;
 use Ramsey\Uuid\UuidInterface;
 
 final class Integration
@@ -15,12 +15,12 @@ final class Integration
     /** @var array<Contact> */
     private array $contacts;
 
-    /** @var array<Auth0ClientModel> */
+    /** @var array<Auth0Client> */
     private array $auth0Clients;
 
     private ?Organization $organization;
 
-    /** @var array<UiTiDv1ConsumerModel> */
+    /** @var array<UiTiDv1Consumer> */
     private array $uiTiDv1Consumers;
 
     /** @var array<IntegrationUrl> */
@@ -55,14 +55,14 @@ final class Integration
         return $clone;
     }
 
-    public function withUiTiDv1Consumers(UiTiDv1ConsumerModel ...$uiTiDv1ConsumerModel): self
+    public function withUiTiDv1Consumers(UiTiDv1Consumer ...$uiTiDv1ConsumerModel): self
     {
         $clone = clone $this;
         $clone->uiTiDv1Consumers = $uiTiDv1ConsumerModel;
         return $clone;
     }
 
-    public function withAuth0Clients(Auth0ClientModel ...$auth0Clients): self
+    public function withAuth0Clients(Auth0Client ...$auth0Clients): self
     {
         $clone = clone $this;
         $clone->auth0Clients = $auth0Clients;
@@ -82,13 +82,13 @@ final class Integration
         return $this->organization;
     }
 
-    /** @return array<UiTiDv1ConsumerModel> */
+    /** @return array<UiTiDv1Consumer> */
     public function uiTiDv1Consumers(): array
     {
         return $this->uiTiDv1Consumers;
     }
 
-    /** @return array<Auth0ClientModel> */
+    /** @return array<Auth0Client> */
     public function auth0Clients(): array
     {
         return $this->auth0Clients;
