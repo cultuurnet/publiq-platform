@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "697f74988686d2fdc1e017b2966ada40",
+    "content-hash": "0c1193532ca1c6dbb26ab97551d5392f",
     "packages": [
         {
             "name": "Publiq/insightly-link",
