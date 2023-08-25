@@ -22,7 +22,7 @@ final class Auth0Client extends Resource
     public static string $model = Auth0ClientModel::class;
 
     public static $title = 'auth0_tenant';
-    
+
     public static $displayInNavigation = false;
 
     /**
