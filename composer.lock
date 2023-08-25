@@ -5246,42 +5246,6 @@
             "time": "2023-05-23T02:31:11+00:00"
         },
         {
-            "name": "publiq/client-credentials",
-            "version": "dev-main",
-            "dist": {
-                "type": "path",
-                "url": "./nova-components/ClientCredentials",
-                "reference": "f7ddfdffaa1dbd288de795db83d3a8d738833af1"
-            },
-            "require": {
-                "php": "^7.3|^8.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Publiq\\ClientCredentials\\ToolServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Publiq\\ClientCredentials\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "A Laravel Nova resource tool.",
-            "keywords": [
-                "laravel",
-                "nova"
-            ],
-            "transport-options": {
-                "relative": true
-            }
-        },
-        {
             "name": "ralouphie/getallheaders",
             "version": "3.0.3",
             "source": {
