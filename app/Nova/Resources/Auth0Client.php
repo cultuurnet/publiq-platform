@@ -23,6 +23,8 @@ final class Auth0Client extends Resource
 
     public static $title = 'auth0_tenant';
 
+    public static $displayInNavigation = false;
+
     /**
      * @var array<string>
      */
