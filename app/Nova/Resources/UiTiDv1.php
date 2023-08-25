@@ -23,6 +23,8 @@ final class UiTiDv1 extends Resource
 
     public static $title = 'consumer_id';
 
+    public static $displayInNavigation = false;
+
     /**
      * @var array<string>
      */
