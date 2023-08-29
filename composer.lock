@@ -8931,16 +8931,16 @@
     "packages-dev": [
         {
             "name": "barryvdh/laravel-debugbar",
-            "version": "v3.8.2",
+            "version": "v3.9.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/barryvdh/laravel-debugbar.git",
-                "reference": "56a2dc1da9d3219164074713983eef68996386cf"
+                "reference": "bfd0131c146973cab164e50f5cdd8a67cc60cab1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barryvdh/laravel-debugbar/zipball/56a2dc1da9d3219164074713983eef68996386cf",
-                "reference": "56a2dc1da9d3219164074713983eef68996386cf",
+                "url": "https://api.github.com/repos/barryvdh/laravel-debugbar/zipball/bfd0131c146973cab164e50f5cdd8a67cc60cab1",
+                "reference": "bfd0131c146973cab164e50f5cdd8a67cc60cab1",
                 "shasum": ""
             },
             "require": {
@@ -8999,7 +8999,7 @@
             ],
             "support": {
                 "issues": "https://github.com/barryvdh/laravel-debugbar/issues",
-                "source": "https://github.com/barryvdh/laravel-debugbar/tree/v3.8.2"
+                "source": "https://github.com/barryvdh/laravel-debugbar/tree/v3.9.2"
             },
             "funding": [
                 {
@@ -9011,7 +9011,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-07-26T04:57:49+00:00"
+            "time": "2023-08-25T18:43:57+00:00"
         },
         {
             "name": "composer/pcre",
@@ -9645,16 +9645,16 @@
         },
         {
             "name": "mockery/mockery",
-            "version": "1.6.5",
+            "version": "1.6.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mockery/mockery.git",
-                "reference": "68782e943f9ffcbc72bda08aedabe73fecb50041"
+                "reference": "b8e0bb7d8c604046539c1115994632c74dcb361e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mockery/mockery/zipball/68782e943f9ffcbc72bda08aedabe73fecb50041",
-                "reference": "68782e943f9ffcbc72bda08aedabe73fecb50041",
+                "url": "https://api.github.com/repos/mockery/mockery/zipball/b8e0bb7d8c604046539c1115994632c74dcb361e",
+                "reference": "b8e0bb7d8c604046539c1115994632c74dcb361e",
                 "shasum": ""
             },
             "require": {
@@ -9726,7 +9726,7 @@
                 "security": "https://github.com/mockery/mockery/security/advisories",
                 "source": "https://github.com/mockery/mockery"
             },
-            "time": "2023-08-06T00:30:34+00:00"
+            "time": "2023-08-09T00:03:52+00:00"
         },
         {
             "name": "myclabs/deep-copy",
