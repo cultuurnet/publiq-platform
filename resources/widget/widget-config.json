@@ -1,0 +1,14 @@
+{
+  "$schema": "https://assets.uit.be/uitid-widget/config-schema.json",
+  "applicationColor": "red",
+  "applicationName": "UiTinVlaanderen",
+  "uitidProfileUrl": "https://profile.uitid.be",
+  "uitidRegisterUrl": "https://account.uitid.be/login",
+  "defaultLanguage": "nl",
+  "auth0Domain": "https://account.uitid.be",
+  "loginUrl": "https://uitinvlaanderen.be/profiel",
+  "logoutUrl":
+    "https://account.uitid.be/logout-from-app?return_url=https://uitinvlaanderen.be/profiel",
+  "accessTokenCookieName": "apollo-token",
+  "idTokenCookieName": "auth.token.idToken"
+}
