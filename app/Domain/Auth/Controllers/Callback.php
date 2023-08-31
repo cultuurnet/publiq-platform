@@ -22,10 +22,12 @@ final class Callback
             $user = $auth0->getUser();
 
             if ($user !== null) {
-                Cookie::queue('auth.token.idToken', $auth0->getIdToken(), 3600 * 60 * 24);
+                // httpOnly = false
+                Cookie::queue('auth.token.idToken', $auth0->getIdToken(), 3600 * 60 * 24, null, null, null, false);
 
                 Auth::login(UserModel::fromSession($user));
             } else {
+                // Delete the cookie
                 Cookie::queue('auth.token.idToken', '', 0);
             }
         }
