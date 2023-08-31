@@ -120,6 +120,29 @@ final class Auth0TenantSDK
         );
     }
 
+    public function activateClient(Auth0Client $auth0Client): void
+    {
+        $this->callApiWithTokenRefresh(
+            fn () => $this->management->clients()->update(
+                $auth0Client->clientId,
+                ['grant_types' => self::GRANTS]
+            )
+        );
+    }
+
+    public function findGrantsOnClient(Auth0Client $auth0Client): array
+    {
+        $response = $this->management->clients()->get($auth0Client->clientId);
+
+        $json = json_decode($response->getBody()->getContents());
+
+        if(! is_object($json) || ! property_exists($json, 'grant_types')) {
+            return [];
+        }
+
+        return $json->grant_types;
+    }
+
     private function callApiWithTokenRefresh(callable $callApi): void
     {
         try {

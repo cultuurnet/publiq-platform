@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Auth0;
 
+use App\Auth0\Events\ClientActivated;
 use App\Auth0\Listeners\BlockClients;
+use App\Auth0\Listeners\Client\ClientActivatedListener;
 use App\Auth0\Listeners\CreateClients;
 use App\Auth0\Listeners\UpdateClients;
 use App\Auth0\Repositories\Auth0ClientRepository;
@@ -31,15 +33,14 @@ final class Auth0ServiceProvider extends ServiceProvider
             // Filter out tenants with missing config (consider them disabled)
             $tenantsConfig = array_filter(
                 config('auth0.tenants'),
-                static fn (array $tenantConfig) =>
-                    $tenantConfig['domain'] !== '' &&
+                static fn (array $tenantConfig) => $tenantConfig['domain'] !== '' &&
                     $tenantConfig['clientId'] !== '' &&
                     $tenantConfig['clientSecret'] !== ''
             );
 
             // Create Auth0Tenant objects based on the tenants config keys
             $tenants = array_map(
-                static fn (string|int $tenant) => Auth0Tenant::from((string) $tenant),
+                static fn (string|int $tenant) => Auth0Tenant::from((string)$tenant),
                 array_keys($tenantsConfig)
             );
 
@@ -74,6 +75,8 @@ final class Auth0ServiceProvider extends ServiceProvider
             Event::listen(IntegrationUrlCreated::class, [UpdateClients::class, 'handle']);
             Event::listen(IntegrationUrlUpdated::class, [UpdateClients::class, 'handle']);
             Event::listen(IntegrationUrlDeleted::class, [UpdateClients::class, 'handle']);
+
+            Event::listen(ClientActivated::class, [ClientActivatedListener::class, 'handle']);
         }
     }
 }

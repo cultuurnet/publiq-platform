@@ -7,7 +7,10 @@ namespace App\Nova\Resources;
 use App\Auth0\Auth0Tenant;
 use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Contacts\Models\ContactModel;
+use App\Nova\ActionGuards\Auth0\ActivateAuth0ClientGuard;
+use App\Nova\Actions\Auth0\ActivateAuth0Client;
 use App\Nova\Resource;
+use Illuminate\Support\Facades\App;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
@@ -85,5 +88,20 @@ final class Auth0Client extends Resource
                 config('auth0.tenants')
             )
         );
+    }
+
+    public function actions(NovaRequest $request): array
+    {
+        return [
+            (new ActivateAuth0Client())
+                ->showOnDetail()
+                ->showInline()
+                ->confirmButtonText('Activate')
+                ->canRun(function ($request, $model) {
+                    /** @var ActivateAuth0ClientGuard $guard */
+                    $guard = App::make(ActivateAuth0ClientGuard::class);
+                    return $guard->canDo($model->toDomain());
+                }),
+        ];
     }
 }
