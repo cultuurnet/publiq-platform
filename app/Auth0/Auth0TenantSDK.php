@@ -18,6 +18,11 @@ use Ramsey\Uuid\Uuid;
 
 final class Auth0TenantSDK
 {
+    private const GRANTS = [ // Determines in what ways the client can request access tokens
+        'authorization_code', // Enables the user login flow (but `callbacks` still required to make it work - see below)
+        'refresh_token', // Makes it possible to request and use refresh tokens when using the authorization_code grant type
+        'client_credentials', // Enables the client credentials flow (m2m tokens)
+    ];
     private ManagementInterface $management;
 
     public function __construct(

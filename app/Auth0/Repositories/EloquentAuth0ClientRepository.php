@@ -63,4 +63,17 @@ final class EloquentAuth0ClientRepository implements Auth0ClientRepository
             ->map(static fn (Auth0ClientModel $model) => $model->toDomain())
             ->toArray();
     }
+
+    public function getById(UuidInterface $id): ?Auth0Client
+    {
+        $auth0ClientModel = Auth0ClientModel::query()
+            ->where('id', $id->toString())
+            ->first();
+
+        if (!$auth0ClientModel instanceof Auth0ClientModel) {
+            return null;
+        }
+
+        return $auth0ClientModel->toDomain();
+    }
 }
