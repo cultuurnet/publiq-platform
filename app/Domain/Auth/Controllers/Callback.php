@@ -9,7 +9,6 @@ use Auth0\SDK\Auth0;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cookie;
 
 final class Callback
 {
@@ -22,13 +21,7 @@ final class Callback
             $user = $auth0->getUser();
 
             if ($user !== null) {
-                // httpOnly = false
-                Cookie::queue('auth.token.idToken', $auth0->getIdToken(), 3600 * 60 * 24, null, null, null, false);
-
                 Auth::login(UserModel::fromSession($user));
-            } else {
-                // Delete the cookie
-                Cookie::queue('auth.token.idToken', '', 0);
             }
         }
 
