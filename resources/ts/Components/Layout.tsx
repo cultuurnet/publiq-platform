@@ -27,7 +27,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       <Head>
         <script
           type="module"
-          src="http://localhost:4173/assets/index-75a2c1ae.js"
+          src="https://assets.uit.be/uitid-widget/index.js"
           async
         ></script>
       </Head>
