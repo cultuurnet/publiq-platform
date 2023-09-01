@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Nova\Actions\Auth0;
 
-use App\Auth0\Events\ClientBlocked;
+use App\Auth0\Events\BlockClient;
 use App\Auth0\Models\Auth0ClientModel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -25,7 +25,7 @@ final class BlockAuth0Client extends Action
                 continue;
             }
 
-            ClientBlocked::dispatch(Uuid::fromString($auth0ClientModel->id));
+            BlockClient::dispatch(Uuid::fromString($auth0ClientModel->id));
         }
     }
 }
