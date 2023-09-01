@@ -22,7 +22,7 @@ use Ramsey\Uuid\Uuid;
 use Tests\Auth0\CreatesMockAuth0ClusterSDK;
 use Tests\TestCase;
 
-class BlockClientListenerTest extends TestCase
+final class BlockClientListenerTest extends TestCase
 {
     use CreatesMockAuth0ClusterSDK;
 
