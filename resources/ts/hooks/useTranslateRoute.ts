@@ -5,10 +5,12 @@ export const useTranslateRoute = () => {
   const { t } = useTranslation();
 
   return useCallback(
-    (path: string) => {
+    (path: string, language?: string) => {
       if (path === "/") return path;
 
-      return t(`pages.${path}`);
+      return t(`pages.${path}`, {
+        lng: language,
+      });
     },
     [t]
   );
