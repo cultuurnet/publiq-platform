@@ -68,7 +68,7 @@ final class UiTiDv1 extends Resource
                 if (isset($uitidActionUrlTemplates[$model->environment])) {
                     $url = sprintf($uitidActionUrlTemplates[$model->environment], $model->consumer_id);
 
-                    return sprintf('<a href="%s" class="link-default">Open in UiTiD v1</a>', $url);
+                    return sprintf('<a href="%s" class="link-default" target="_blank">Open in UiTiD v1</a>', $url);
                 }
 
                 return null;
