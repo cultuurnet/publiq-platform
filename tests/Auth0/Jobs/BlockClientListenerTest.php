@@ -2,25 +2,27 @@
 
 declare(strict_types=1);
 
-namespace Tests\Auth0\Listeners\Client;
+namespace Tests\Auth0\Jobs;
 
 use App\Auth0\Auth0Client;
 use App\Auth0\Auth0Tenant;
+use App\Auth0\Events\BlockClient;
 use App\Auth0\Events\ClientBlocked;
-use App\Auth0\Listeners\Client\ClientBlockedListener;
+use App\Auth0\Jobs\BlockClientListener;
 use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Json;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Support\Facades\Event;
 use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
 use Tests\Auth0\CreatesMockAuth0ClusterSDK;
+use Tests\TestCase;
 
-final class ClientBlockedListenerTest extends TestCase
+class BlockClientListenerTest extends TestCase
 {
     use CreatesMockAuth0ClusterSDK;
 
@@ -28,17 +30,19 @@ final class ClientBlockedListenerTest extends TestCase
 
     private Auth0ClientRepository&MockObject $clientRepository;
 
-    private ClientBlockedListener $blockClients;
+    private BlockClientListener $blockClients;
 
     protected function setUp(): void
     {
         parent::setUp();
 
+        Event::fake();
+
         $this->httpClient = $this->createMock(ClientInterface::class);
 
         $this->clientRepository = $this->createMock(Auth0ClientRepository::class);
 
-        $this->blockClients = new ClientBlockedListener(
+        $this->blockClients = new BlockClientListener(
             $this->createMockAuth0ClusterSDK($this->httpClient),
             $this->clientRepository,
             new NullLogger()
@@ -69,7 +73,9 @@ final class ClientBlockedListenerTest extends TestCase
                 }
             );
 
-        $this->blockClients->handle(new ClientBlocked($id));
+        $this->blockClients->handle(new BlockClient($id));
+
+        Event::assertDispatched(ClientBlocked::class);
     }
 
     public function test_it_does_not_try_to_block_an_invalid_client(): void
@@ -84,6 +90,6 @@ final class ClientBlockedListenerTest extends TestCase
         $this->httpClient->expects($this->exactly(0))
             ->method('sendRequest');
 
-        $this->blockClients->handle(new ClientBlocked($id));
+        $this->blockClients->handle(new BlockClient($id));
     }
 }

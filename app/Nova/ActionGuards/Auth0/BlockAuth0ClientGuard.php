@@ -6,9 +6,9 @@ namespace App\Nova\ActionGuards\Auth0;
 
 use App\Auth0\Auth0Client;
 use App\Auth0\Auth0ClusterSDK;
-use App\Nova\ActionGuards\ActionGuardInterface;
+use App\Nova\ActionGuards\ActionGuard;
 
-final class BlockAuth0ClientGuard implements ActionGuardInterface
+final class BlockAuth0ClientGuard implements ActionGuard
 {
     public function __construct(
         private readonly Auth0ClusterSDK $clusterSDK,

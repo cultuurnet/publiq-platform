@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace App\Auth0;
 
 use App\Auth0\Events\BlockClient;
-use App\Auth0\Events\ClientBlocked;
 use App\Auth0\Jobs\BlockClientListener;
 use App\Auth0\Listeners\BlockClients;
-use App\Auth0\Listeners\Client\ClientBlockedListener;
 use App\Auth0\Listeners\CreateClients;
 use App\Auth0\Listeners\UpdateClients;
 use App\Auth0\Repositories\Auth0ClientRepository;
@@ -79,7 +77,6 @@ final class Auth0ServiceProvider extends ServiceProvider
             Event::listen(IntegrationUrlUpdated::class, [UpdateClients::class, 'handle']);
             Event::listen(IntegrationUrlDeleted::class, [UpdateClients::class, 'handle']);
 
-            Event::listen(ClientBlocked::class, [ClientBlockedListener::class, 'handle']);
             Event::listen(BlockClient::class, [BlockClientListener::class, 'handle']);
 
         }
