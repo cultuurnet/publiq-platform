@@ -67,7 +67,7 @@ final class Auth0Client extends Resource
                 if (isset($auth0ActionUrlTemplates[$model->auth0_tenant])) {
                     $url = sprintf($auth0ActionUrlTemplates[$model->auth0_tenant], $model->auth0_client_id);
 
-                    return sprintf('<a href="%s" class="link-default">Open in Auth0</a>', $url);
+                    return sprintf('<a href="%s" class="link-default" target="_blank">Open in Auth0</a>', $url);
                 }
 
                 return null;
