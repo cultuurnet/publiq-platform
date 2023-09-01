@@ -4,7 +4,7 @@ import HeaderMobile from "./HeaderMobile";
 import Footer from "./Footer";
 import { SectionCollapsedProvider } from "../context/SectionCollapsedContext";
 import { usePage, Head } from "@inertiajs/react";
-import widgetConfig from "../../widget/widget-config.json";
+import { UitIdWidget } from "./UitIdWidget";
 
 const Main = ({ children }: { children: ReactNode }) => {
   const page = usePage();
@@ -27,15 +27,13 @@ export default function Layout({ children }: { children: ReactNode }) {
       <Head>
         <script
           type="module"
-          src="https://assets.uit.be/uitid-widget/index.js"
+          src="http://localhost:4173/assets/index-75a2c1ae.js"
           async
         ></script>
       </Head>
 
-      <script id="uitid-widget-config" type="application/json">
-        {JSON.stringify(widgetConfig)}
-      </script>
-      <div id="uitid-widget"></div>
+      <UitIdWidget />
+
       <Header />
       <HeaderMobile />
       <Main>{children}</Main>

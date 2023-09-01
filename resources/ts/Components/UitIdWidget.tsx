@@ -1,0 +1,82 @@
+import React, { useMemo } from "react";
+import { classNames } from "../utils/classNames";
+import { useTranslation } from "react-i18next";
+import { usePage } from "@inertiajs/react";
+import { useTranslateRoute } from "../hooks/useTranslateRoute";
+
+const widgetConfig = {
+  $schema: "https://assets.uit.be/uitid-widget/config-schema.json",
+  applicationName: "Publiq platform",
+  uitidProfileUrl: "https://profile-acc.uitid.be",
+  uitidRegisterUrl: "https://account-acc.uitid.be/login",
+  defaultLanguage: "nl",
+  auth0Domain: "https://account-acc.uitid.be",
+  loginUrl: "http://localhost/login",
+  logoutUrl: "http://localhost/logout",
+  accessTokenCookieName: "test",
+  idTokenCookieName: "auth.token.idToken",
+  actions: {
+    nl: [
+      {
+        url: "/nl/ondersteuning",
+        label: "Ondersteuning",
+      },
+    ],
+    en: [
+      {
+        url: "/en/support",
+        label: "Support",
+      },
+    ],
+  },
+};
+
+export const UitIdWidget = () => {
+  const { i18n } = useTranslation();
+  const translateRoute = useTranslateRoute();
+  const { component } = usePage();
+
+  const currentPage = useMemo(
+    () =>
+      component
+        .split("/")
+        .filter((part) => part !== "Index")
+        .join("/")
+        .toLowerCase() ?? "/",
+    [component]
+  );
+
+  return (
+    <div className="w-full px-6 lg:px-64">
+      <script id="uitid-widget-config" type="application/json">
+        {JSON.stringify(widgetConfig)}
+      </script>
+
+      <div id="uitid-widget" data-language={i18n.language}></div>
+
+      <div id="uitid-widget-slot" hidden>
+        <div>
+          <div className="flex gap-2">
+            <a
+              className={classNames(i18n.language === "nl" && "active")}
+              href={`${translateRoute(`/${currentPage}`, "nl")}`}
+            >
+              NL
+            </a>
+            <div
+              style={{
+                border: "1px solid #e5e7eb",
+              }}
+            ></div>
+            <a
+              className={classNames(i18n.language === "en" && "active")}
+              href={`${translateRoute(`/${currentPage}`, "en")}`}
+            >
+              EN
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
