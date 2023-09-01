@@ -13,7 +13,7 @@ const widgetConfig = {
   auth0Domain: "https://account-acc.uitid.be",
   loginUrl: "http://localhost/login",
   logoutUrl: "http://localhost/logout",
-  accessTokenCookieName: "test",
+  accessTokenCookieName: "",
   idTokenCookieName: "auth.token.idToken",
   actions: {
     nl: [
