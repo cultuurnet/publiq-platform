@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
 use Auth0\SDK\Auth0;
@@ -8,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Symfony\Component\HttpFoundation\Response;
 
-class SetAuthIdTokenCookie
+final class SetAuthIdTokenCookie
 {
     public const COOKIE = 'auth.token.idToken';
 
@@ -22,7 +24,7 @@ class SetAuthIdTokenCookie
                 name: self::COOKIE,
                 value: $auth0->getIdToken(),
                 minutes: 3600 * 60 * 24,
-                httpOnly: false
+                httpOnly: false,
             ));
         } else {
             Cookie::expire(self::COOKIE);
