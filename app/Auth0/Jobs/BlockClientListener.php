@@ -35,13 +35,13 @@ final class BlockClientListener implements ShouldQueue
             $this->clusterSDK->blockClients($this->auth0ClientRepository->getById($event->id));
         } catch (ModelNotFoundException $e) {
             $this->logger->error(
-                'Failed to block Auth0 client',
+                'Failed to block Auth0 client: ' . $e->getMessage(),
                 [
                     'domain' => 'auth0',
-                    'message' => $e->getMessage(),
                     'id' => $event->id,
                 ]
             );
+            return;
         }
 
         $this->logger->info(

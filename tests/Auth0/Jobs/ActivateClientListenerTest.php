@@ -8,7 +8,7 @@ use App\Auth0\Auth0Client;
 use App\Auth0\Auth0Tenant;
 use App\Auth0\Events\ClientActivated;
 use App\Auth0\Jobs\ActivateClient;
-use App\Auth0\Jobs\ClientActivatedListener;
+use App\Auth0\Jobs\ActivateClientListener;
 use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Json;
 use GuzzleHttp\Psr7\Response;
@@ -23,7 +23,7 @@ use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
 use Tests\Auth0\CreatesMockAuth0ClusterSDK;
 
-final class ClientActivatedListenerTest extends TestCase
+final class ActivateClientListenerTest extends TestCase
 {
     use CreatesMockAuth0ClusterSDK;
 
@@ -31,7 +31,7 @@ final class ClientActivatedListenerTest extends TestCase
 
     private Auth0ClientRepository&MockObject $clientRepository;
 
-    private ClientActivatedListener $activateClient;
+    private ActivateClientListener $activateClient;
 
     protected function setUp(): void
     {
@@ -43,7 +43,7 @@ final class ClientActivatedListenerTest extends TestCase
 
         $this->clientRepository = $this->createMock(Auth0ClientRepository::class);
 
-        $this->activateClient = new ClientActivatedListener(
+        $this->activateClient = new ActivateClientListener(
             $this->createMockAuth0ClusterSDK($this->httpClient),
             $this->clientRepository,
             new NullLogger()

@@ -11,7 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Psr\Log\LoggerInterface;
 
-final class ClientActivatedListener implements ShouldQueue
+final class ActivateClientListener implements ShouldQueue
 {
     public function __construct(
         private readonly Auth0ClusterSDK $clusterSDK,
@@ -27,13 +27,13 @@ final class ClientActivatedListener implements ShouldQueue
             $this->clusterSDK->activateClients($this->auth0ClientRepository->getById($event->id));
         } catch (ModelNotFoundException $e) {
             $this->logger->error(
-                'Failed to block Auth0 client',
+                'Failed to activate Auth0 client: ' . $e->getMessage(),
                 [
                     'domain' => 'auth0',
-                    'message' => $e->getMessage(),
                     'id' => $event->id,
                 ]
             );
+            return;
         }
         $this->logger->info(
             'Auth0 client activated',
