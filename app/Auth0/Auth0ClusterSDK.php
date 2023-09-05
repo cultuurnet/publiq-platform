@@ -60,4 +60,10 @@ final class Auth0ClusterSDK
             $this->auth0TenantSDKs[$auth0Client->tenant->value]->blockClient($auth0Client);
         }
     }
+
+    /** @return string[] */
+    public function findGrantsOnClient(Auth0Client $auth0Client): array
+    {
+        return $this->auth0TenantSDKs[$auth0Client->tenant->value]->findGrantsOnClient($auth0Client);
+    }
 }
