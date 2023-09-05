@@ -5,9 +5,14 @@ declare(strict_types=1);
 namespace App\Nova\Resources;
 
 use App\Domain\Contacts\Models\ContactModel;
+use App\Nova\ActionGuards\UitIdv1\ActivateUitIdv1ClientGuard;
+use App\Nova\ActionGuards\UitIdv1\BlockUitIdv1ClientGuard;
+use App\Nova\Actions\UitIdv1\ActivateUitIdv1Client;
+use App\Nova\Actions\UitIdv1\BlockUitIdv1Client;
 use App\Nova\Resource;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use App\UiTiDv1\UiTiDv1Environment;
+use Illuminate\Support\Facades\App;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
@@ -89,5 +94,31 @@ final class UiTiDv1 extends Resource
                 config('uitidv1.environments')
             )
         );
+    }
+
+    public function actions(NovaRequest $request): array
+    {
+        return [
+            (new ActivateUitIdv1Client())
+                ->showOnDetail()
+                ->showInline()
+                ->confirmButtonText('Activate')
+                ->canRun(function ($request, $model) {
+                    /** @var ActivateUitIdv1ClientGuard $guard */
+                    $guard = App::make(ActivateUitIdv1ClientGuard::class);
+                    return $guard->canDo($model->toDomain());
+                }),
+            (new BlockUitIdv1Client())
+                ->showOnDetail()
+                ->showInline()
+                ->confirmText('Are you sure you want to block this client?')
+                ->confirmButtonText('Block')
+                ->cancelButtonText("Don't block")
+                ->canRun(function ($request, $model) {
+                    /** @var BlockUitIdv1ClientGuard $guard */
+                    $guard = App::make(BlockUitIdv1ClientGuard::class);
+                    return $guard->canDo($model->toDomain());
+                }),
+        ];
     }
 }
