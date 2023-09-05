@@ -6,9 +6,9 @@ namespace App\Nova\ActionGuards\Auth0;
 
 use App\Auth0\Auth0Client;
 use App\Auth0\Auth0ClusterSDK;
-use App\Nova\ActionGuards\ActionGuard;
+use App\Nova\ActionGuards\ActionGuardInterface;
 
-final class BlockAuth0ClientGuard implements ActionGuard
+final class ActivateAuth0ClientGuard implements ActionGuardInterface
 {
     public function __construct(
         private readonly Auth0ClusterSDK $clusterSDK,
@@ -22,6 +22,6 @@ final class BlockAuth0ClientGuard implements ActionGuard
         }
 
         $grants = $this->clusterSDK->findGrantsOnClient($auth0Client);
-        return ! empty($grants);
+        return empty($grants);
     }
 }

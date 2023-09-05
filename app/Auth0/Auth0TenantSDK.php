@@ -23,6 +23,7 @@ final class Auth0TenantSDK
         'refresh_token', // Makes it possible to request and use refresh tokens when using the authorization_code grant type
         'client_credentials', // Enables the client credentials flow (m2m tokens)
     ];
+
     private ManagementInterface $management;
 
     public function __construct(
@@ -117,6 +118,16 @@ final class Auth0TenantSDK
             fn () => $this->management->clients()->update(
                 $auth0Client->clientId,
                 ['grant_types' => []]
+            )
+        );
+    }
+
+    public function activateClient(Auth0Client $auth0Client): void
+    {
+        $this->callApiWithTokenRefresh(
+            fn () => $this->management->clients()->update(
+                $auth0Client->clientId,
+                ['grant_types' => self::GRANTS]
             )
         );
     }

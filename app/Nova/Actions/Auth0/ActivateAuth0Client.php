@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Nova\Actions\Auth0;
 
-use App\Auth0\Jobs\BlockClient;
+use App\Auth0\Jobs\ActivateClient;
 use App\Auth0\Models\Auth0ClientModel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -13,7 +13,7 @@ use Laravel\Nova\Actions\ActionModelCollection;
 use Laravel\Nova\Fields\ActionFields;
 use Ramsey\Uuid\Uuid;
 
-final class BlockAuth0Client extends Action
+final class ActivateAuth0Client extends Action
 {
     use InteractsWithQueue;
     use Queueable;
@@ -25,7 +25,7 @@ final class BlockAuth0Client extends Action
                 continue;
             }
 
-            BlockClient::dispatch(Uuid::fromString($auth0ClientModel->id));
+            ActivateClient::dispatch(Uuid::fromString($auth0ClientModel->id));
         }
     }
 }
