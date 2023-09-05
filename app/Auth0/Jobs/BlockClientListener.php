@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Auth0\Jobs;
 
 use App\Auth0\Auth0ClusterSDK;
-use App\Auth0\Events\BlockClient;
 use App\Auth0\Events\ClientBlocked;
 use App\Auth0\Repositories\Auth0ClientRepository;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -31,13 +31,18 @@ final class BlockClientListener implements ShouldQueue
 
     public function handle(BlockClient $event): void
     {
-        $oauth0Client = $this->auth0ClientRepository->getById($event->id);
-
-        if ($oauth0Client === null) {
-            return;
+        try {
+            $this->clusterSDK->blockClients($this->auth0ClientRepository->getById($event->id));
+        } catch (ModelNotFoundException $e) {
+            $this->logger->error(
+                'Failed to block Auth0 client',
+                [
+                    'domain' => 'auth0',
+                    'message' => $e->getMessage(),
+                    'id' => $event->id,
+                ]
+            );
         }
-
-        $this->clusterSDK->blockClients($oauth0Client);
 
         $this->logger->info(
             'Auth0 client blocked',

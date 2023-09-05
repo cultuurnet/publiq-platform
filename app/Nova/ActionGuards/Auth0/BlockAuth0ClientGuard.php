@@ -15,13 +15,13 @@ final class BlockAuth0ClientGuard implements ActionGuard
     ) {
     }
 
-    public function canDo(object $oAuth0Client): bool
+    public function canDo(object $auth0Client): bool
     {
-        if (!$oAuth0Client instanceof Auth0Client) {
+        if (!$auth0Client instanceof Auth0Client) {
             return false;
         }
 
-        $grants = $this->clusterSDK->findGrantsOnClient($oAuth0Client);
+        $grants = $this->clusterSDK->findGrantsOnClient($auth0Client);
         return ! empty($grants);
     }
 }

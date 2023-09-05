@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Auth0\Listeners\Client;
+namespace App\Auth0\Jobs;
 
 use App\Auth0\Auth0ClusterSDK;
 use App\Auth0\Events\ClientActivated;
 use App\Auth0\Repositories\Auth0ClientRepository;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Psr\Log\LoggerInterface;
 
 final class ClientActivatedListener implements ShouldQueue
@@ -20,16 +21,20 @@ final class ClientActivatedListener implements ShouldQueue
     }
 
     public function handle(
-        ClientActivated $event
+        ActivateClient $event
     ): void {
-        $oauth0Client = $this->auth0ClientRepository->getById($event->id);
-
-        if ($oauth0Client === null) {
-            return;
+        try {
+            $this->clusterSDK->activateClients($this->auth0ClientRepository->getById($event->id));
+        } catch (ModelNotFoundException $e) {
+            $this->logger->error(
+                'Failed to block Auth0 client',
+                [
+                    'domain' => 'auth0',
+                    'message' => $e->getMessage(),
+                    'id' => $event->id,
+                ]
+            );
         }
-
-        $this->clusterSDK->activateClients($oauth0Client);
-
         $this->logger->info(
             'Auth0 client activated',
             [
@@ -37,5 +42,7 @@ final class ClientActivatedListener implements ShouldQueue
                 'id' => $event->id,
             ]
         );
+
+        ClientActivated::dispatch($event->id);
     }
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Nova\Actions\Auth0;
 
-use App\Auth0\Events\ClientActivated;
+use App\Auth0\Jobs\ActivateClient;
 use App\Auth0\Models\Auth0ClientModel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -25,7 +25,7 @@ final class ActivateAuth0Client extends Action
                 continue;
             }
 
-            ClientActivated::dispatch(Uuid::fromString($auth0ClientModel->id));
+            ActivateClient::dispatch(Uuid::fromString($auth0ClientModel->id));
         }
     }
 }

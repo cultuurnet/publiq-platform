@@ -6,12 +6,13 @@ namespace Tests\Auth0\Jobs;
 
 use App\Auth0\Auth0Client;
 use App\Auth0\Auth0Tenant;
-use App\Auth0\Events\BlockClient;
 use App\Auth0\Events\ClientBlocked;
+use App\Auth0\Jobs\BlockClient;
 use App\Auth0\Jobs\BlockClientListener;
 use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Json;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Event;
 use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -85,7 +86,7 @@ final class BlockClientListenerTest extends TestCase
         $this->clientRepository->expects($this->once())
             ->method('getById')
             ->with($id)
-            ->willReturn(null);
+            ->willThrowException(new ModelNotFoundException());
 
         $this->httpClient->expects($this->exactly(0))
             ->method('sendRequest');

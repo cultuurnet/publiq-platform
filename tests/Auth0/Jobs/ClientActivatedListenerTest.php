@@ -2,15 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Tests\Auth0\Listeners\Client;
+namespace Tests\Auth0\Jobs;
 
 use App\Auth0\Auth0Client;
 use App\Auth0\Auth0Tenant;
+use App\Auth0\Events\ClientActivated;
+use App\Auth0\Events\ClientBlocked;
 use App\Auth0\Jobs\ActivateClient;
 use App\Auth0\Jobs\ClientActivatedListener;
 use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Json;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -19,6 +22,7 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
 use Tests\Auth0\CreatesMockAuth0ClusterSDK;
+use Illuminate\Support\Facades\Event;
 
 final class ClientActivatedListenerTest extends TestCase
 {
@@ -33,6 +37,8 @@ final class ClientActivatedListenerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        Event::fake();
 
         $this->httpClient = $this->createMock(ClientInterface::class);
 
@@ -76,6 +82,9 @@ final class ClientActivatedListenerTest extends TestCase
             );
 
         $this->activateClient->handle(new ActivateClient($id));
+
+        Event::assertDispatched(ClientActivated::class);
+
     }
 
     public function test_it_does_not_try_to_block_an_invalid_client(): void
@@ -85,7 +94,7 @@ final class ClientActivatedListenerTest extends TestCase
         $this->clientRepository->expects($this->once())
             ->method('getById')
             ->with($id)
-            ->willReturn(null);
+            ->willThrowException(new ModelNotFoundException());
 
         $this->httpClient->expects($this->exactly(0))
             ->method('sendRequest');
