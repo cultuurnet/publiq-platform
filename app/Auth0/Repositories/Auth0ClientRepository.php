@@ -16,6 +16,8 @@ interface Auth0ClientRepository
      */
     public function getByIntegrationId(UuidInterface $integrationId): array;
 
+    public function getById(UuidInterface $id): ?Auth0Client;
+
     /**
      * @param array<UuidInterface> $integrationIds
      * @return Auth0Client[]
