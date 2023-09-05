@@ -7,13 +7,13 @@ namespace Tests\Auth0\Jobs;
 use App\Auth0\Auth0Client;
 use App\Auth0\Auth0Tenant;
 use App\Auth0\Events\ClientActivated;
-use App\Auth0\Events\ClientBlocked;
 use App\Auth0\Jobs\ActivateClient;
 use App\Auth0\Jobs\ClientActivatedListener;
 use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Json;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Event;
 use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -22,7 +22,6 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
 use Tests\Auth0\CreatesMockAuth0ClusterSDK;
-use Illuminate\Support\Facades\Event;
 
 final class ClientActivatedListenerTest extends TestCase
 {
