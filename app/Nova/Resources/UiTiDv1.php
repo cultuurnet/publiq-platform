@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Nova\Resources;
 
 use App\Domain\Contacts\Models\ContactModel;
-use App\Nova\ActionGuards\UiTIDv1\ActivateUiTiDv1ConsumerGuard;
-use App\Nova\ActionGuards\UiTIDv1\BlockUiTiDv1ConsumerGuard;
-use App\Nova\Actions\UiTIDv1\ActivateUiTiDv1Consumer;
-use App\Nova\Actions\UiTIDv1\BlockUiTiDv1Consumer;
+use App\Nova\ActionGuards\UiTiDv1\ActivateUiTiDv1ConsumerGuard;
+use App\Nova\ActionGuards\UiTiDv1\BlockUiTiDv1ConsumerGuard;
+use App\Nova\Actions\UiTiDv1\ActivateUiTiDv1Consumer;
+use App\Nova\Actions\UiTiDv1\BlockUiTiDv1Consumer;
 use App\Nova\Resource;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use App\UiTiDv1\UiTiDv1Environment;

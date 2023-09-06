@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Nova\Actions\UiTIDv1;
+namespace App\Nova\Actions\UiTiDv1;
 
-use App\UiTiDv1\Jobs\ActivateConsumer;
+use App\UiTiDv1\Jobs\BlockConsumer;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -13,7 +13,7 @@ use Laravel\Nova\Actions\ActionModelCollection;
 use Laravel\Nova\Fields\ActionFields;
 use Ramsey\Uuid\Uuid;
 
-final class ActivateUiTiDv1Consumer extends Action
+final class BlockUiTiDv1Consumer extends Action
 {
     use InteractsWithQueue;
     use Queueable;
@@ -25,7 +25,7 @@ final class ActivateUiTiDv1Consumer extends Action
                 continue;
             }
 
-            ActivateConsumer::dispatch(Uuid::fromString($uiTiDv1ConsumerModel->id));
+            BlockConsumer::dispatch(Uuid::fromString($uiTiDv1ConsumerModel->id));
         }
     }
 }

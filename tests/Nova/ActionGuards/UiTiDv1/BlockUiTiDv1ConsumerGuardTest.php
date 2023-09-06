@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Nova\ActionGuards\UiTiDv1;
 
-use App\Nova\ActionGuards\UiTIDv1\BlockUiTiDv1ConsumerGuard;
+use App\Nova\ActionGuards\UiTiDv1\BlockUiTiDv1ConsumerGuard;
 use App\UiTiDv1\UiTiDv1Consumer;
 use App\UiTiDv1\UiTiDv1ConsumerStatus;
 use App\UiTiDv1\UiTiDv1Environment;
