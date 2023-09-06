@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Tests\Nova\ActionGuards\UitIdv1;
+namespace Tests\Nova\ActionGuards\UiTiDv1;
 
-use App\Nova\ActionGuards\UitIdv1\ActivateUitIdv1ConsumerGuard;
+use App\Nova\ActionGuards\UitIdv1\BlockUiTiDv1ConsumerGuard;
 use App\UiTiDv1\UiTiDv1Consumer;
 use App\UiTiDv1\UiTiDv1ConsumerStatus;
 use App\UiTiDv1\UiTiDv1Environment;
@@ -16,12 +16,12 @@ use Ramsey\Uuid\Uuid;
 use SimpleXMLElement;
 use Tests\UiTiDv1\CreatesMockUiTiDv1ClusterSDK;
 
-final class ActivateUitIdv1ConsumerGuardTest extends TestCase
+final class BlockUiTiDv1ConsumerGuardTest extends TestCase
 {
     use CreatesMockUiTiDv1ClusterSDK;
 
     private ClientInterface&MockObject $httpClient;
-    private ActivateUitIdv1ConsumerGuard $guard;
+    private BlockUiTiDv1ConsumerGuard $guard;
 
     public function setUp(): void
     {
@@ -29,7 +29,7 @@ final class ActivateUitIdv1ConsumerGuardTest extends TestCase
 
         $this->httpClient = $this->createMock(ClientInterface::class);
 
-        $this->guard = new ActivateUitIdv1ConsumerGuard(
+        $this->guard = new BlockUiTiDv1ConsumerGuard(
             $this->createMockUiTiDv1ClusterSDK($this->httpClient)
         );
     }
@@ -46,7 +46,6 @@ final class ActivateUitIdv1ConsumerGuardTest extends TestCase
             'api-key-1',
             UiTiDv1Environment::Acceptance
         );
-
         $this->httpClient->expects($this->exactly(1))
             ->method('request')
             ->willReturn($response);
@@ -65,8 +64,8 @@ final class ActivateUitIdv1ConsumerGuardTest extends TestCase
         $emptyResponse = new SimpleXMLElement('<root></root>');
 
         return [
-            [new Response(200, [], (string) $activeXmlResponse->asXML()), false, 'active response'],
-            [new Response(200, [], (string) $blockedXmlResponse->asXML()), true, 'blocked response'],
+            [new Response(200, [], (string) $activeXmlResponse->asXML()), true, 'active response'],
+            [new Response(200, [], (string) $blockedXmlResponse->asXML()), false, 'blocked response'],
             [new Response(200, [], (string) $emptyResponse->asXML()), false, 'empty body response'],
             [new Response(400), false, 'http request failed'],
         ];

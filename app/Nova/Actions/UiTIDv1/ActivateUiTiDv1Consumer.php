@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Nova\Actions\UitIdv1;
+namespace App\Nova\Actions\UiTIDv1;
 
 use App\UiTiDv1\Jobs\ActivateConsumer;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
@@ -13,7 +13,7 @@ use Laravel\Nova\Actions\ActionModelCollection;
 use Laravel\Nova\Fields\ActionFields;
 use Ramsey\Uuid\Uuid;
 
-final class ActivateUitIdv1Consumer extends Action
+final class ActivateUiTiDv1Consumer extends Action
 {
     use InteractsWithQueue;
     use Queueable;

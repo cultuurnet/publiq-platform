@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Nova\Resources;
 
 use App\Domain\Contacts\Models\ContactModel;
-use App\Nova\ActionGuards\UitIdv1\ActivateUitIdv1ConsumerGuard;
-use App\Nova\ActionGuards\UitIdv1\BlockUitIdv1ConsumerGuard;
-use App\Nova\Actions\UitIdv1\ActivateUitIdv1Consumer;
-use App\Nova\Actions\UitIdv1\BlockUitIdv1Consumer;
+use App\Nova\ActionGuards\UitIdv1\ActivateUiTiDv1ConsumerGuard;
+use App\Nova\ActionGuards\UitIdv1\BlockUiTiDv1ConsumerGuard;
+use App\Nova\Actions\UiTIDv1\ActivateUiTiDv1Consumer;
+use App\Nova\Actions\UiTIDv1\BlockUiTiDv1Consumer;
 use App\Nova\Resource;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use App\UiTiDv1\UiTiDv1Environment;
@@ -99,26 +99,26 @@ final class UiTiDv1 extends Resource
     public function actions(NovaRequest $request): array
     {
         return [
-            (new ActivateUitIdv1Consumer())
+            (new ActivateUiTiDv1Consumer())
                 ->showOnDetail()
                 ->showInline()
                 ->confirmText('Are you sure you want to activate this consumer?')
                 ->confirmButtonText('Activate')
                 ->cancelButtonText("Don't activate")
                 ->canRun(function ($request, $model) {
-                    /** @var ActivateUitIdv1ConsumerGuard $guard */
-                    $guard = App::make(ActivateUitIdv1ConsumerGuard::class);
+                    /** @var ActivateUiTiDv1ConsumerGuard $guard */
+                    $guard = App::make(ActivateUiTiDv1ConsumerGuard::class);
                     return $guard->canDo($model->toDomain());
                 }),
-            (new BlockUitIdv1Consumer())
+            (new BlockUiTiDv1Consumer())
                 ->showOnDetail()
                 ->showInline()
                 ->confirmText('Are you sure you want to block this consumer?')
                 ->confirmButtonText('Block')
                 ->cancelButtonText("Don't block")
                 ->canRun(function ($request, $model) {
-                    /** @var BlockUitIdv1ConsumerGuard $guard */
-                    $guard = App::make(BlockUitIdv1ConsumerGuard::class);
+                    /** @var BlockUiTiDv1ConsumerGuard $guard */
+                    $guard = App::make(BlockUiTiDv1ConsumerGuard::class);
                     return $guard->canDo($model->toDomain());
                 }),
         ];
