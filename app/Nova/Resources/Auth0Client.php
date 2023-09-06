@@ -98,7 +98,9 @@ final class Auth0Client extends Resource
             (new ActivateAuth0Client())
                 ->showOnDetail()
                 ->showInline()
+                ->confirmText('Are you sure you want to activate this client?')
                 ->confirmButtonText('Activate')
+                ->cancelButtonText("Don't activate")
                 ->canRun(function ($request, $model) {
                     /** @var ActivateAuth0ClientGuard $guard */
                     $guard = App::make(ActivateAuth0ClientGuard::class);

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\UiTiDv1\Jobs;
 
-use App\UiTiDv1\Events\ClientActivated;
+use App\UiTiDv1\Events\ConsumerActivated;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use App\UiTiDv1\UiTiDv1ClusterSDK;
 use App\UiTiDv1\UiTiDv1SDKException;
@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Event;
 use Psr\Log\LoggerInterface;
 
-final class ActivateClientListener implements ShouldQueue
+final class ActivateConsumerListener implements ShouldQueue
 {
     use Queueable;
 
@@ -25,7 +25,7 @@ final class ActivateClientListener implements ShouldQueue
     ) {
     }
 
-    public function handle(ActivateClient $event): void
+    public function handle(ActivateConsumer $event): void
     {
         try {
             $this->clusterSDK->activateConsumers($this->consumerRepository->getById($event->id));
@@ -48,6 +48,6 @@ final class ActivateClientListener implements ShouldQueue
             ]
         );
 
-        Event::dispatch(new ClientActivated($event->id));
+        Event::dispatch(new ConsumerActivated($event->id));
     }
 }

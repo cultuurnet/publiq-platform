@@ -90,8 +90,7 @@ final class UiTiDv1EnvironmentSDK
             return UiTiDv1ConsumerStatus::Unknown;
         }
 
-        return UiTiDv1ConsumerStatus::fromValue($xml->status->__toString());
-
+        return UiTiDv1ConsumerStatus::tryFrom($xml->status->__toString()) ?? UiTiDv1ConsumerStatus::Unknown;
     }
 
     public static function createOAuth1HttpClient(

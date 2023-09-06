@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\UiTiDv1\Jobs;
 
-use App\UiTiDv1\Events\ClientActivated;
-use App\UiTiDv1\Jobs\ActivateClient;
-use App\UiTiDv1\Jobs\ActivateClientListener;
+use App\UiTiDv1\Events\ConsumerBlocked;
+use App\UiTiDv1\Jobs\BlockConsumer;
+use App\UiTiDv1\Jobs\BlockConsumerListener;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
@@ -18,18 +18,19 @@ use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 use Tests\UiTiDv1\CreatesMockUiTiDv1ClusterSDK;
-use Tests\UiTiDv1\MockUitIdv1Consumer;
+use Tests\UiTiDv1\CreatesMockUiTiDv1Consumer;
 
-final class ActivateClientListenerTest extends TestCase
+final class BlockConsumerListenerTest extends TestCase
 {
     use CreatesMockUiTiDv1ClusterSDK;
-    use MockUitIdv1Consumer;
+    use CreatesMockUiTiDv1Consumer;
 
     private ClientInterface&MockObject $httpClient;
 
     private UiTiDv1ConsumerRepository&MockObject $clientRepository;
 
-    private ActivateClientListener $activateClient;
+    private BlockConsumerListener $blockClient;
+
 
     protected function setUp(): void
     {
@@ -41,7 +42,7 @@ final class ActivateClientListenerTest extends TestCase
 
         $this->clientRepository = $this->createMock(UiTiDv1ConsumerRepository::class);
 
-        $this->activateClient = new ActivateClientListener(
+        $this->blockClient = new BlockConsumerListener(
             $this->createMockUiTiDv1ClusterSDK($this->httpClient),
             $this->clientRepository,
             new NullLogger()
@@ -64,7 +65,7 @@ final class ActivateClientListenerTest extends TestCase
                         [
                             'POST',
                             'serviceconsumer/consumer-key-1',
-                            'status=ACTIVE',
+                            'status=BLOCKED',
                         ]
                         => new Response(200, [], ''),
                         default => throw new LogicException('Invalid arguments received'),
@@ -72,10 +73,9 @@ final class ActivateClientListenerTest extends TestCase
                 }
             );
 
-        $this->activateClient->handle(new ActivateClient($id));
+        $this->blockClient->handle(new BlockConsumer($id));
 
-        Event::assertDispatched(ClientActivated::class);
-
+        Event::assertDispatched(ConsumerBlocked::class);
     }
 
     public function test_it_does_not_try_to_block_an_invalid_client(): void
@@ -90,9 +90,9 @@ final class ActivateClientListenerTest extends TestCase
         $this->httpClient->expects($this->exactly(0))
             ->method('request');
 
-        $this->activateClient->handle(new ActivateClient($id));
+        $this->blockClient->handle(new BlockConsumer($id));
 
-        Event::assertNotDispatched(ClientActivated::class);
+        Event::assertNotDispatched(ConsumerBlocked::class);
     }
 
     public function test_it_stops_on_invalid_request(): void
@@ -109,8 +109,8 @@ final class ActivateClientListenerTest extends TestCase
                 new Response(400)
             );
 
-        $this->activateClient->handle(new ActivateClient($id));
+        $this->blockClient->handle(new BlockConsumer($id));
 
-        Event::assertNotDispatched(ClientActivated::class);
+        Event::assertNotDispatched(ConsumerBlocked::class);
     }
 }

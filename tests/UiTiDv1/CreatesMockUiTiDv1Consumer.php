@@ -9,7 +9,7 @@ use App\UiTiDv1\UiTiDv1Environment;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-trait MockUitIdv1Consumer
+trait CreatesMockUiTiDv1Consumer
 {
     private function createConsumer(UuidInterface $id): UiTiDv1Consumer
     {

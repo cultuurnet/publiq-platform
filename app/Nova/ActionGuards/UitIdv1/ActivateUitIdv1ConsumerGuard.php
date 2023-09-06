@@ -9,10 +9,10 @@ use App\UiTiDv1\UiTiDv1ClusterSDK;
 use App\UiTiDv1\UiTiDv1Consumer;
 use App\UiTiDv1\UiTiDv1ConsumerStatus;
 
-final class BlockUitIdv1ClientGuard implements ActionGuard
+final readonly class ActivateUitIdv1ConsumerGuard implements ActionGuard
 {
     public function __construct(
-        private readonly UiTiDv1ClusterSDK $sdk,
+        private UiTiDv1ClusterSDK $sdk,
     ) {
     }
 
@@ -22,7 +22,8 @@ final class BlockUitIdv1ClientGuard implements ActionGuard
             return false;
         }
 
-        return $this->sdk->fetchStatusOfConsumer($resource) === UiTiDv1ConsumerStatus::Active;
-    }
+        $status = $this->sdk->fetchStatusOfConsumer($resource);
 
+        return $status !== UiTiDv1ConsumerStatus::Active && $status !== UiTiDv1ConsumerStatus::Unknown;
+    }
 }

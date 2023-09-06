@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\UiTiDv1\Jobs;
 
-use App\UiTiDv1\Events\ClientBlocked;
+use App\UiTiDv1\Events\ConsumerBlocked;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use App\UiTiDv1\UiTiDv1ClusterSDK;
 use App\UiTiDv1\UiTiDv1SDKException;
@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Event;
 use Psr\Log\LoggerInterface;
 
-final class BlockClientListener implements ShouldQueue
+final class BlockConsumerListener implements ShouldQueue
 {
     use Queueable;
 
@@ -25,7 +25,7 @@ final class BlockClientListener implements ShouldQueue
     ) {
     }
 
-    public function handle(BlockClient $event): void
+    public function handle(BlockConsumer $event): void
     {
         try {
             $this->clusterSDK->blockConsumers($this->consumerRepository->getById($event->id));
@@ -48,6 +48,6 @@ final class BlockClientListener implements ShouldQueue
             ]
         );
 
-        Event::dispatch(new ClientBlocked($event->id));
+        Event::dispatch(new ConsumerBlocked($event->id));
     }
 }
