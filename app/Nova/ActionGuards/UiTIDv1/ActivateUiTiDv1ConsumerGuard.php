@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Nova\ActionGuards\UitIdv1;
+namespace App\Nova\ActionGuards\UiTIDv1;
 
 use App\Nova\ActionGuards\ActionGuard;
 use App\UiTiDv1\UiTiDv1ClusterSDK;

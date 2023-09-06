@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Nova\Resources;
 
 use App\Domain\Contacts\Models\ContactModel;
-use App\Nova\ActionGuards\UitIdv1\ActivateUiTiDv1ConsumerGuard;
-use App\Nova\ActionGuards\UitIdv1\BlockUiTiDv1ConsumerGuard;
+use App\Nova\ActionGuards\UiTIDv1\ActivateUiTiDv1ConsumerGuard;
+use App\Nova\ActionGuards\UiTIDv1\BlockUiTiDv1ConsumerGuard;
 use App\Nova\Actions\UiTIDv1\ActivateUiTiDv1Consumer;
 use App\Nova\Actions\UiTIDv1\BlockUiTiDv1Consumer;
 use App\Nova\Resource;
