@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Nova\ActionGuards\Auth0;
 
 use App\Auth0\Auth0Client;
-use App\Auth0\Auth0ClusterSDK;
+use App\Auth0\CachedAuth0ClientGrants;
 use App\Nova\ActionGuards\ActionGuard;
 
 final readonly class BlockAuth0ClientGuard implements ActionGuard
 {
     public function __construct(
-        private Auth0ClusterSDK $clusterSDK,
+        private CachedAuth0ClientGrants $cachedAuth0ClientGrants,
     ) {
     }
 
@@ -21,7 +21,7 @@ final readonly class BlockAuth0ClientGuard implements ActionGuard
             return false;
         }
 
-        $grants = $this->clusterSDK->findGrantsOnClient($auth0Client);
-        return ! empty($grants);
+        $grants = $this->cachedAuth0ClientGrants->findGrantsOnClient($auth0Client);
+        return !empty($grants);
     }
 }
