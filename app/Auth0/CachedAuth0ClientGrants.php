@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Auth0;
 
+use Illuminate\Support\Facades\Log;
+
 final class CachedAuth0ClientGrants
 {
     private array $grants = [];
@@ -16,6 +18,7 @@ final class CachedAuth0ClientGrants
     {
         if(! isset($this->grants[$auth0Client->clientId])) {
             $this->grants[$auth0Client->clientId] = $this->sdk->findGrantsOnClient($auth0Client);
+            Log::debug('CachedAuth0ClientGrants  - ' . $auth0Client->clientId . ': cache miss');
         }
 
         return $this->grants[$auth0Client->clientId];
