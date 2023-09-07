@@ -52,7 +52,11 @@ export const UitIdWidget = () => {
         {JSON.stringify(widgetConfig)}
       </script>
 
-      <div id="uitid-widget" data-language={i18n.language}></div>
+      <div
+        id="uitid-widget"
+        className="min-h-[50px]"
+        data-language={i18n.language}
+      ></div>
 
       <div id="uitid-widget-slot" hidden>
         <div>
