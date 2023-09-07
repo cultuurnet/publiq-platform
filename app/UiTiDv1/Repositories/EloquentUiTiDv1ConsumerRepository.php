@@ -6,6 +6,8 @@ namespace App\UiTiDv1\Repositories;
 
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use App\UiTiDv1\UiTiDv1Consumer;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\UuidInterface;
 
@@ -46,6 +48,17 @@ final class EloquentUiTiDv1ConsumerRepository implements UiTiDv1ConsumerReposito
             ->get()
             ->map(static fn (UiTiDv1ConsumerModel $model) => $model->toDomain())
             ->toArray();
+    }
+
+    /**
+     * @throws ModelNotFoundException<Model>
+     */
+    public function getById(UuidInterface $id): UiTiDv1Consumer
+    {
+        return UiTiDv1ConsumerModel::query()
+            ->where('id', $id->toString())
+            ->firstOrFail()
+            ->toDomain();
     }
 
     /**

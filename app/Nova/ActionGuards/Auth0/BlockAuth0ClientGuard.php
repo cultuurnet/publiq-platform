@@ -8,10 +8,10 @@ use App\Auth0\Auth0Client;
 use App\Auth0\Auth0ClusterSDK;
 use App\Nova\ActionGuards\ActionGuard;
 
-final class BlockAuth0ClientGuard implements ActionGuard
+final readonly class BlockAuth0ClientGuard implements ActionGuard
 {
     public function __construct(
-        private readonly Auth0ClusterSDK $clusterSDK,
+        private Auth0ClusterSDK $clusterSDK,
     ) {
     }
 
