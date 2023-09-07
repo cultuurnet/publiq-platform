@@ -64,7 +64,7 @@ final class Auth0Client extends Resource
             Text::make('Status', function (Auth0ClientModel $model) {
                 $auth0Client = $model->toDomain();
                 if (empty(App::get(CachedAuth0ClientGrants::class)->findGrantsOnClient($auth0Client))) {
-                    Log::debug('Auth0Client - status - ' . $auth0Client->clientId . ': blocked');
+                    Log::info('Auth0Client - status - ' . $auth0Client->clientId . ': blocked');
                     return 'Blocked';
                 }
 
