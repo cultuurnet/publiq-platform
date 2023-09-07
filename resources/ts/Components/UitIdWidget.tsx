@@ -47,7 +47,7 @@ export const UitIdWidget = () => {
   );
 
   return (
-    <div className="w-full px-6 lg:px-64">
+    <div className="w-full px-6 lg:px-64 bg-[#F8F8F8]">
       <script id="uitid-widget-config" type="application/json">
         {JSON.stringify(widgetConfig)}
       </script>
