@@ -10,7 +10,7 @@ use App\Auth0\CachedAuth0ClientGrants;
 use App\Json;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Ramsey\Uuid\Uuid;
 
@@ -19,7 +19,6 @@ final class CachedAuth0ClientGrantsTest extends TestCase
     use CreatesMockAuth0ClusterSDK;
 
     private ClientInterface&MockObject $httpClient;
-
     private CachedAuth0ClientGrants $cachedAuth0ClientGrants;
     private Auth0Client $client;
 
