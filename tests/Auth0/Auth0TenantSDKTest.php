@@ -11,7 +11,7 @@ use App\Json;
 use Auth0\SDK\Configuration\SdkConfiguration;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Ramsey\Uuid\Uuid;
 
