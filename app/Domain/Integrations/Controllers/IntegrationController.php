@@ -155,7 +155,9 @@ final class IntegrationController extends Controller
                 request: $request,
                 routeName: 'integrations.detail'
             ),
-            ['id' => $id]
+            [
+                'id' => $id,
+            ]
         );
     }
 
