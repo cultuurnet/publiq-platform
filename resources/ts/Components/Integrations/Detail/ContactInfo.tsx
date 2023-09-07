@@ -16,7 +16,6 @@ import { FormDropdown } from "../../FormDropdown";
 import { useForm } from "@inertiajs/react";
 import { ContactType } from "../../../types/ContactType";
 import { ButtonSecondary } from "../../ButtonSecondary";
-import { router } from "@inertiajs/react";
 import { QuestionDialog } from "../../QuestionDialog";
 import { useSectionCollapsedContext } from "../../../context/SectionCollapsedContext";
 
@@ -59,6 +58,7 @@ export const ContactInfo = ({ id, contacts }: Props) => {
     data,
     setData,
     patch,
+    delete: destroy,
     transform,
     errors: errs,
   } = useForm(initialFormValues);
@@ -99,7 +99,7 @@ export const ContactInfo = ({ id, contacts }: Props) => {
   };
 
   const handleDeleteContributor = () => {
-    router.delete(`/integrations/${id}/contacts/${toBeDeletedId}`, {
+    destroy(`/integrations/${id}/contacts/${toBeDeletedId}`, {
       preserveScroll: true,
     });
   };
