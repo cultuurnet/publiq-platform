@@ -63,4 +63,16 @@ final class UiTiDv1ClusterSDK
             $this->uitidv1EnvironmentSDKs[$uiTiDv1Consumer->environment->value]->blockConsumer($uiTiDv1Consumer);
         }
     }
+
+    public function activateConsumers(UiTiDv1Consumer ...$uiTiDv1Consumers): void
+    {
+        foreach ($uiTiDv1Consumers as $uiTiDv1Consumer) {
+            $this->uitidv1EnvironmentSDKs[$uiTiDv1Consumer->environment->value]->activateConsumer($uiTiDv1Consumer);
+        }
+    }
+
+    public function fetchStatusOfConsumer(UiTiDv1Consumer $uiTiDv1Consumer): UiTiDv1ConsumerStatus
+    {
+        return $this->uitidv1EnvironmentSDKs[$uiTiDv1Consumer->environment->value]->fetchStatusOfConsumer($uiTiDv1Consumer);
+    }
 }
