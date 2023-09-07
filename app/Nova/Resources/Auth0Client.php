@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Nova\Resources;
 
-use App\Auth0\Auth0ClusterSDK;
 use App\Auth0\Auth0Tenant;
+use App\Auth0\CachedAuth0ClientGrants;
 use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Nova\ActionGuards\Auth0\ActivateAuth0ClientGuard;
@@ -61,7 +61,7 @@ final class Auth0Client extends Resource
                     Auth0Tenant::Production->value => Auth0Tenant::Production->name,
                 ]),
             Text::make('Status', function ($model) {
-                if (empty(App::get(Auth0ClusterSDK::class)->findGrantsOnClient($model->toDomain()))) {
+                if (empty(App::get(CachedAuth0ClientGrants::class)->findGrantsOnClient($model->toDomain()))) {
                     return 'Blocked';
                 }
 

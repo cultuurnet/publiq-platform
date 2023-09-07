@@ -42,9 +42,8 @@ final class Auth0TenantSDKTest extends TestCase
         $this->client = new Auth0Client(Uuid::uuid4(), Uuid::uuid4(), 'client-id-1', 'client-secret-1', Auth0Tenant::Acceptance);
     }
 
-    public function test_find_grants_on_client_does_caching_work(): void
+    public function test_find_grants_on_client(): void
     {
-
         $expectedGrants = ['foo', 'bar'];
         $this->httpClient->expects($this->once())
             ->method('sendRequest')
@@ -53,9 +52,6 @@ final class Auth0TenantSDKTest extends TestCase
             );
 
         $receivedGrants = $this->auth0TenantSDK->findGrantsOnClient($this->client);
-
-        // Calling a second time to make sure the caching works, the API should only be requested once.
-        $this->auth0TenantSDK->findGrantsOnClient($this->client);
 
         $this->assertEquals($expectedGrants, $receivedGrants);
     }

@@ -18,8 +18,6 @@ use Ramsey\Uuid\Uuid;
 
 final class Auth0TenantSDK
 {
-    private array $grants = [];
-
     private const GRANTS = [ // Determines in what ways the client can request access tokens
         'authorization_code', // Enables the user login flow (but `callbacks` still required to make it work - see below)
         'refresh_token', // Makes it possible to request and use refresh tokens when using the authorization_code grant type
@@ -136,21 +134,15 @@ final class Auth0TenantSDK
 
     public function findGrantsOnClient(Auth0Client $auth0Client): array
     {
-        if(! isset($this->grants[$auth0Client->clientId])) {
-            $response = $this->management->clients()->get($auth0Client->clientId);
+        $response = $this->management->clients()->get($auth0Client->clientId);
 
-            $json = json_decode($response->getBody()->getContents());
+        $json = json_decode($response->getBody()->getContents());
 
-            if(! is_object($json) || ! property_exists($json, 'grant_types')) {
-                $this->grants[$auth0Client->clientId] = [];
-
-                return [];
-            }
-
-            $this->grants[$auth0Client->clientId] = $json->grant_types;
+        if(! is_object($json) || ! property_exists($json, 'grant_types')) {
+            return [];
         }
 
-        return $this->grants[$auth0Client->clientId];
+        return $json->grant_types;
     }
 
     private function callApiWithTokenRefresh(callable $callApi): void

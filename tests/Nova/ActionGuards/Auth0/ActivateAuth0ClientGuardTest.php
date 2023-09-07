@@ -6,6 +6,7 @@ namespace Tests\Nova\ActionGuards\Auth0;
 
 use App\Auth0\Auth0Client;
 use App\Auth0\Auth0Tenant;
+use App\Auth0\CachedAuth0ClientGrants;
 use App\Nova\ActionGuards\Auth0\ActivateAuth0ClientGuard;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -28,7 +29,7 @@ final class ActivateAuth0ClientGuardTest extends TestCase
         $this->httpClient = $this->createMock(ClientInterface::class);
 
         $this->activateAuth0ClientGuard = new ActivateAuth0ClientGuard(
-            $this->createMockAuth0ClusterSDK($this->httpClient)
+            new CachedAuth0ClientGrants($this->createMockAuth0ClusterSDK($this->httpClient))
         );
     }
 
