@@ -19,7 +19,7 @@ final class CachedAuth0ClientGrants
         if(! isset($this->grants[$auth0Client->clientId])) {
             $this->grants[$auth0Client->clientId] = $this->sdk->findGrantsOnClient($auth0Client);
         } else {
-            Log::info(self::class . '  - ' . $auth0Client->clientId . ': cache hit - '. $this->grants[$auth0Client->clientId]);
+            Log::info(self::class . '  - ' . $auth0Client->clientId . ': cache hit: ' . implode(', ', $this->grants[$auth0Client->clientId]));
         }
 
         return $this->grants[$auth0Client->clientId];
