@@ -18,6 +18,8 @@ final class BlockAuth0Client extends Action
     use InteractsWithQueue;
     use Queueable;
 
+    public $name = 'Block Auth0 client';
+
     public function handle(ActionFields $fields, ActionModelCollection $actionModelCollection): void
     {
         foreach ($actionModelCollection as $auth0ClientModel) {
