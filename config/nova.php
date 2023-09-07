@@ -96,7 +96,8 @@ return [
         'lucwollants@gmail.com',
         'corneel.wille@publiq.be',
         'jonas@cultuurnet.be',
-        'bert.ramakers@publiq.be',
+        'koen.eelen@publiq.be',
+        'paul@herbosch.be',
     ],
 
     /*

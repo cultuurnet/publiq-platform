@@ -43,6 +43,13 @@ docker run --rm \
 $ make up
 ```
 
+If you also have the `udb3-backend` container running, you will get errors because of colliding port numbers for MySQL and Redis.
+You can fix this with adding to the `.env` file:
+```
+FORWARD_DB_PORT=3307
+FORWARD_REDIS_PORT=6380
+```
+
 - Install the backend and frontend apps
 ```
 $ make install

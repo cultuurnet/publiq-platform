@@ -10,6 +10,7 @@ return new class () extends Migration {
     public function up(): void
     {
         Schema::create('auth0_clients', static function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->uuid('integration_id')->index();
             $table->string('auth0_client_id')->index();
             $table->string('auth0_client_secret');
