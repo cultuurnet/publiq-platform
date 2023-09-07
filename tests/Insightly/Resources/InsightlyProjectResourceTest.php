@@ -8,6 +8,9 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Subscriptions\Currency;
+use App\Domain\Subscriptions\Subscription;
+use App\Domain\Subscriptions\SubscriptionCategory;
 use App\Insightly\Exceptions\ContactCannotBeUnlinked;
 use App\Insightly\Objects\ProjectStage;
 use App\Insightly\Objects\ProjectState;
@@ -379,5 +382,81 @@ final class InsightlyProjectResourceTest extends TestCase
                 ],
             ],
         ];
+    }
+
+    public function test_it_updates_the_subscription_of_a_project(): void
+    {
+        $subscription = new Subscription(
+            Uuid::uuid4(),
+            'free',
+            'free',
+            SubscriptionCategory::Free,
+            IntegrationType::SearchApi,
+            Currency::EUR,
+            3.0,
+            null
+        );
+
+        $projectId = 1;
+
+        $project = [
+            'CUSTOMFIELDS' => [
+                [
+                    'FIELD_NAME' => 'Subscription_plan__c',
+                    'CUSTOM_FIELD_ID' => 'Subscription_plan__c',
+                    'FIELD_VALUE' => 'Paid',
+                ],
+                [
+                    'FIELD_NAME' => 'Setup_fee__c',
+                    'CUSTOM_FIELD_ID' => 'Setup_fee__c',
+                    'FIELD_VALUE' => 5.0,
+                ],
+                [
+                    'FIELD_NAME' => 'Subscription_price__c',
+                    'CUSTOM_FIELD_ID' => 'Subscription_price__c',
+                    'FIELD_VALUE' => 100.0,
+                ],
+            ],
+        ];
+
+        $expectedGetRequest = new Request(
+            'GET',
+            'Opportunities/' . $projectId
+        );
+        $expectedPutRequest = new Request(
+            'PUT',
+            'Opportunities/' . $projectId,
+            [],
+            Json::encode([
+                'CUSTOMFIELDS' => [
+                    [
+                        'FIELD_NAME' => 'Subscription_plan__c',
+                        'CUSTOM_FIELD_ID' => 'Subscription_plan__c',
+                        'FIELD_VALUE' => 'Free',
+                    ],
+                    [
+                        'FIELD_NAME' => 'Setup_fee__c',
+                        'CUSTOM_FIELD_ID' => 'Setup_fee__c',
+                        'FIELD_VALUE' => null,
+                    ],
+                    [
+                        'FIELD_NAME' => 'Subscription_price__c',
+                        'CUSTOM_FIELD_ID' => 'Subscription_price__c',
+                        'FIELD_VALUE' => 3.0,
+                    ],
+                ],
+            ])
+        );
+
+        $this->insightlyClient->expects($this->exactly(2))
+            ->method('sendRequest')
+            ->willReturnCallback(self::assertRequestResponseWithCallback(
+                $expectedGetRequest,
+                new Response(200, [], Json::encode($project)),
+                $expectedPutRequest,
+                new Response(202),
+            ));
+
+        $this->resource->updateSubscription($projectId, $subscription, null);
     }
 }

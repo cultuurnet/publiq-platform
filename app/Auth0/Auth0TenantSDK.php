@@ -14,9 +14,16 @@ use Auth0\SDK\Auth0;
 use Auth0\SDK\Configuration\SdkConfiguration;
 use Auth0\SDK\Contract\API\ManagementInterface;
 use Psr\Http\Message\ResponseInterface;
+use Ramsey\Uuid\Uuid;
 
 final class Auth0TenantSDK
 {
+    private const GRANTS = [ // Determines in what ways the client can request access tokens
+        'authorization_code', // Enables the user login flow (but `callbacks` still required to make it work - see below)
+        'refresh_token', // Makes it possible to request and use refresh tokens when using the authorization_code grant type
+        'client_credentials', // Enables the client credentials flow (m2m tokens)
+    ];
+
     private ManagementInterface $management;
 
     public function __construct(
@@ -55,11 +62,7 @@ final class Auth0TenantSDK
                 'is_token_endpoint_ip_header_trusted' => false, // Should be false to avoid security issues with X-Forwarded-For headers
                 'is_first_party' => true, // We cannot customize the consent step that would be shown to users when logging in if this was set to false
                 'oidc_conformant' => true, // Needed to enable refresh token rotation (see below)
-                'grant_types' => [ // Determines in what ways the client can request access tokens
-                    'authorization_code', // Enables the user login flow (but `callbacks` still required to make it work - see below)
-                    'refresh_token', // Makes it possible to request and use refresh tokens when using the authorization_code grant type
-                    'client_credentials', // Enables the client credentials flow (m2m tokens)
-                ],
+                'grant_types' => self::GRANTS,
                 'callbacks' => $this->getCallbackUrls($integration),
                 'allowed_logout_urls' => $this->getLogoutUrls($integration),
                 'initiate_login_uri' => $this->getLoginUrl($integration),
@@ -86,7 +89,7 @@ final class Auth0TenantSDK
         $grantResponse = $this->management->clientGrants()->create($clientId, 'https://api.publiq.be');
         $this->guardResponseStatus(201, $grantResponse);
 
-        return new Auth0Client($integration->id, $clientId, $clientSecret, $this->auth0Tenant);
+        return new Auth0Client(Uuid::uuid4(), $integration->id, $clientId, $clientSecret, $this->auth0Tenant);
     }
 
     public function updateClient(Integration $integration, Auth0Client $auth0Client): void
@@ -117,6 +120,29 @@ final class Auth0TenantSDK
                 ['grant_types' => []]
             )
         );
+    }
+
+    public function activateClient(Auth0Client $auth0Client): void
+    {
+        $this->callApiWithTokenRefresh(
+            fn () => $this->management->clients()->update(
+                $auth0Client->clientId,
+                ['grant_types' => self::GRANTS]
+            )
+        );
+    }
+
+    public function findGrantsOnClient(Auth0Client $auth0Client): array
+    {
+        $response = $this->management->clients()->get($auth0Client->clientId);
+
+        $json = json_decode($response->getBody()->getContents());
+
+        if(! is_object($json) || ! property_exists($json, 'grant_types')) {
+            return [];
+        }
+
+        return $json->grant_types;
     }
 
     private function callApiWithTokenRefresh(callable $callApi): void

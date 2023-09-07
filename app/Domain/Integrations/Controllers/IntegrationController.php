@@ -6,12 +6,14 @@ namespace App\Domain\Integrations\Controllers;
 
 use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Domain\Auth\CurrentUser;
-use App\Domain\Contacts\Contact;
-use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\ContactRepository;
-use App\Domain\Integrations\Integration;
-use App\Domain\Integrations\IntegrationStatus;
+use App\Domain\Integrations\FormRequests\StoreIntegration;
+use App\Domain\Integrations\FormRequests\UpdateBasicInfo;
+use App\Domain\Integrations\FormRequests\UpdateBillingInfo;
+use App\Domain\Integrations\FormRequests\UpdateContactInfo;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
+use App\Domain\Integrations\Mappers\UpdateContactInfoMapper;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Organization;
@@ -28,6 +30,7 @@ use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 use Ramsey\Uuid\Uuid;
+use Throwable;
 
 final class IntegrationController extends Controller
 {
@@ -68,7 +71,6 @@ final class IntegrationController extends Controller
 
     public function create(): Response
     {
-
         return Inertia::render('Integrations/New', [
             'integrationTypes' => IntegrationType::cases(),
             'subscriptions' => $this->subscriptionRepository->all(),
@@ -77,46 +79,7 @@ final class IntegrationController extends Controller
 
     public function store(StoreIntegration $storeIntegration): RedirectResponse
     {
-        $integrationId = Uuid::uuid4();
-
-        $contactOrganization = new Contact(
-            Uuid::uuid4(),
-            $integrationId,
-            $storeIntegration->input('emailFunctionalContact'),
-            ContactType::Functional,
-            $storeIntegration->input('firstNameFunctionalContact'),
-            $storeIntegration->input('lastNameFunctionalContact')
-        );
-
-        $contactPartner = new Contact(
-            Uuid::uuid4(),
-            $integrationId,
-            $storeIntegration->input('emailTechnicalContact'),
-            ContactType::Technical,
-            $storeIntegration->input('firstNameTechnicalContact'),
-            $storeIntegration->input('lastNameTechnicalContact')
-        );
-
-        $contributor = new Contact(
-            Uuid::uuid4(),
-            $integrationId,
-            $this->currentUser->email(),
-            ContactType::Contributor,
-            $this->currentUser->firstName(),
-            $this->currentUser->lastName()
-        );
-
-        $integration = (
-            new Integration(
-                $integrationId,
-                IntegrationType::from($storeIntegration->input('integrationType')),
-                $storeIntegration->input('integrationName'),
-                $storeIntegration->input('description'),
-                Uuid::fromString($storeIntegration->input('subscriptionId')),
-                IntegrationStatus::Draft
-            )
-        )->withContacts($contactOrganization, $contactPartner, $contributor);
-
+        $integration = StoreIntegrationMapper::map($storeIntegration, $this->currentUser);
         $this->integrationRepository->save($integration);
 
         return Redirect::route(
@@ -139,101 +102,33 @@ final class IntegrationController extends Controller
             TranslatedRoute::getTranslatedRouteName(
                 request: $request,
                 routeName: 'integrations.index'
-            ),
-            [],
-            303
+            )
         );
-
     }
 
-    public function update(Request $request, string $id, UpdateBasicInfo $updateInfo): RedirectResponse
+    public function update(UpdateBasicInfo $updateInfo, string $id): RedirectResponse
     {
-
         $this->integrationRepository->update(Uuid::fromString($id), $updateInfo);
 
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName(
-                request: $request,
+                request: $updateInfo,
                 routeName: 'integrations.detail'
             ),
             [
                 'id' => $id,
-            ],
-            303
+            ]
         );
-
     }
 
     public function updateContacts(string $id, UpdateContactInfo $updateContactInfo): RedirectResponse
     {
-        DB::transaction(function () use ($id, $updateContactInfo) {
-            if ($updateContactInfo->input('functional.id') !== null) {
-                $contactId = $updateContactInfo->input('functional.id');
+        $contacts = UpdateContactInfoMapper::map($updateContactInfo, $id);
 
-                $contact = new Contact(
-                    Uuid::fromString($contactId),
-                    Uuid::fromString($id),
-                    $updateContactInfo->input('functional.email'),
-                    ContactType::from($updateContactInfo->input('functional.type')),
-                    $updateContactInfo->input('functional.firstName'),
-                    $updateContactInfo->input('functional.lastName')
-                );
-
+        DB::transaction(function () use ($contacts) {
+            foreach ($contacts as $contact) {
                 $this->contactRepository->save($contact);
             }
-            if ($updateContactInfo->input('technical.id') !== null) {
-                $contactId = $updateContactInfo->input('technical.id');
-
-                $contact = new Contact(
-                    Uuid::fromString($contactId),
-                    Uuid::fromString($id),
-                    $updateContactInfo->input('technical.email'),
-                    ContactType::from($updateContactInfo->input('technical.type')),
-                    $updateContactInfo->input('technical.firstName'),
-                    $updateContactInfo->input('technical.lastName')
-                );
-
-                $this->contactRepository->save($contact);
-            }
-
-            $contributors = $updateContactInfo->input('contributors');
-
-            foreach ($contributors as $contributor) {
-                $contactId = $contributor['id'];
-
-                $contact = new Contact(
-                    Uuid::fromString($contactId),
-                    Uuid::fromString($id),
-                    $contributor['email'],
-                    ContactType::from($contributor['type']),
-                    $contributor['firstName'],
-                    $contributor['lastName']
-                );
-
-                $this->contactRepository->save($contact);
-            }
-
-            $newLastName = $updateContactInfo->input('newContributorLastName');
-            $newFirstName = $updateContactInfo->input('newContributorFirstName');
-            $newEmail = $updateContactInfo->input('newContributorEmail');
-
-
-
-            if ($newLastName !== null && $newFirstName !== null && $newEmail !== null) {
-                $contact = new Contact(
-                    Uuid::uuid4(),
-                    Uuid::fromString($id),
-                    $newEmail,
-                    ContactType::Contributor,
-                    $newFirstName,
-                    $newLastName
-                );
-
-                $this->contactRepository->save($contact);
-
-
-            }
-
         });
 
         return Redirect::route(
@@ -243,10 +138,8 @@ final class IntegrationController extends Controller
             ),
             [
                 'id' => $id,
-            ],
-            303
+            ]
         );
-
     }
 
     public function deleteContact(Request $request, string $id, string $contactId): RedirectResponse
@@ -262,10 +155,8 @@ final class IntegrationController extends Controller
                 request: $request,
                 routeName: 'integrations.detail'
             ),
-            ['id' => $id],
-            303
+            ['id' => $id]
         );
-
     }
 
     public function updateBilling(string $id, UpdateBillingInfo $updateBillingInfo): RedirectResponse
@@ -292,8 +183,7 @@ final class IntegrationController extends Controller
             ),
             [
                 'id' => $id,
-            ],
-            303
+            ]
         );
     }
 
@@ -303,7 +193,7 @@ final class IntegrationController extends Controller
             $integration = $this->integrationRepository->getById(Uuid::fromString($id));
             $subscription = $this->subscriptionRepository->getById($integration->subscriptionId);
             $contacts = $this->contactRepository->getByIntegrationId(UUid::fromString($id));
-        } catch (\Throwable $th) {
+        } catch (Throwable) {
             abort(404);
         }
 
@@ -317,5 +207,4 @@ final class IntegrationController extends Controller
             ],
         ]);
     }
-
 }
