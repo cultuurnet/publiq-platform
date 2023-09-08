@@ -53,13 +53,7 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
     logoutUrls,
   };
 
-  const {
-    data,
-    setData,
-    patch,
-    errors: err,
-    transform,
-  } = useForm(initialFormValues);
+  const { data, setData, patch, transform } = useForm(initialFormValues);
 
   transform((data) => ({
     callbackUrls: data.callbackUrls.filter((url) => url.changed),
