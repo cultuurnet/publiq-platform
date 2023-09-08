@@ -43,7 +43,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         });
     }
 
-    public function update(UuidInterface $id, FormRequest $updateInfo): Integration
+    public function update(UuidInterface $id, FormRequest $updatedInfo): Integration
     {
         /** @var IntegrationModel $integrationModel */
         $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
@@ -52,9 +52,9 @@ final class EloquentIntegrationRepository implements IntegrationRepository
             'integrationName' => 'name',
         ];
 
-        foreach ($updateInfo->keys() as $name) {
+        foreach ($updatedInfo->keys() as $name) {
             $modelName = $nameMapping[$name] ?? $name;
-            $integrationModel[$modelName] = $updateInfo->input($name);
+            $integrationModel[$modelName] = $updatedInfo->input($name);
         }
 
         $integrationModel->save();
