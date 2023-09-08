@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Heading } from "../../Heading";
 import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
@@ -30,16 +30,22 @@ export const ContactInfo = ({ id, contacts }: Props) => {
 
   // We know for sure there is a functional contact
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const functionalContact = contacts.find(
-    (contact) => contact.type === ContactType.Functional
-  )!;
+  const functionalContact = useMemo(
+    () => contacts.find((contact) => contact.type === ContactType.Functional)!,
+    [contacts]
+  );
+
   // We know for sure there is a technical contact
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const technicalContact = contacts.find(
-    (contact) => contact.type === ContactType.Technical
-  )!;
-  const contributorContacts = contacts.filter(
-    (contact) => contact.type === ContactType.Contributor
+  const technicalContact = useMemo(
+    () => contacts.find((contact) => contact.type === ContactType.Technical)!,
+    [contacts]
+  );
+
+  const contributorContacts = useMemo(
+    () =>
+      contacts.filter((contact) => contact.type === ContactType.Contributor),
+    [contacts]
   );
 
   const initialFormValues = {
