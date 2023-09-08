@@ -12,7 +12,7 @@ import { useForm } from "@inertiajs/react";
 
 type Props = {
   integration: Integration;
-  isMobile?: boolean;
+  isMobile: boolean;
 };
 export const BasicInfo = ({ integration, isMobile }: Props) => {
   const { t } = useTranslation();

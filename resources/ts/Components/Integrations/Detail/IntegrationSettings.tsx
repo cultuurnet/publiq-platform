@@ -13,7 +13,7 @@ import { Integration } from "../../../Pages/Integrations/Index";
 import { IntegrationUrlType } from "../../../types/IntegrationUrlType";
 
 type Props = {
-  isMobile?: boolean;
+  isMobile: boolean;
 } & Integration;
 
 export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
