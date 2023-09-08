@@ -25,7 +25,6 @@ export const ContactInfo = ({ id, contacts }: Props) => {
   const { t } = useTranslation();
   const [isDisabled, setIsDisabled] = useState(true);
   const [isAddFormVisible, setIsAddFormVisible] = useState(false);
-  const [isDeleteDialogVisible, setIsDeleteDialogVisible] = useState(false);
   const [toBeDeletedId, setToBeDeletedId] = useState("");
 
   // We know for sure there is a functional contact
@@ -356,7 +355,6 @@ export const ContactInfo = ({ id, contacts }: Props) => {
                   className="text-icon-gray self-end"
                   onClick={() => {
                     setToBeDeletedId(contributor.id);
-                    setIsDeleteDialogVisible(true);
                   }}
                 />
               </div>
@@ -439,14 +437,13 @@ export const ContactInfo = ({ id, contacts }: Props) => {
         )}
       </FormDropdown>
       <QuestionDialog
-        isVisible={isDeleteDialogVisible}
+        isVisible={!!toBeDeletedId}
         onClose={() => {
-          setIsDeleteDialogVisible((prev) => !prev);
+          setToBeDeletedId("");
         }}
         question={t("integrations.dialog.delete")}
         onConfirm={handleDeleteContributor}
         onCancel={() => {
-          setIsDeleteDialogVisible(false);
           setToBeDeletedId("");
         }}
       ></QuestionDialog>
