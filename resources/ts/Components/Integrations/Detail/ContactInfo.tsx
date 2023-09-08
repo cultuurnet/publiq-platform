@@ -27,16 +27,16 @@ export const ContactInfo = ({ id, contacts }: Props) => {
   const [isAddFormVisible, setIsAddFormVisible] = useState(false);
   const [toBeDeletedId, setToBeDeletedId] = useState("");
 
-  // We know for sure there is a functional contact
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const functionalContact = useMemo(
+    // We know for sure there is a functional contact
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     () => contacts.find((contact) => contact.type === ContactType.Functional)!,
     [contacts]
   );
 
-  // We know for sure there is a technical contact
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const technicalContact = useMemo(
+    // We know for sure there is a technical contact
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     () => contacts.find((contact) => contact.type === ContactType.Technical)!,
     [contacts]
   );
