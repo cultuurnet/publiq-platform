@@ -62,7 +62,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
 
         $loginUrls = $updateIntegration->input('loginUrls') ?? [];
 
-        DB::transaction(static function() use ($loginUrls) {
+        DB::transaction(static function () use ($loginUrls) {
             foreach ($loginUrls as $loginUrl) {
                 /** @var IntegrationUrlModel $integrationUrlModel */
                 $integrationUrlModel = IntegrationUrlModel::query()->findOrFail($loginUrl['id']);
