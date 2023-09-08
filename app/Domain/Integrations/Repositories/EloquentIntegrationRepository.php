@@ -44,6 +44,22 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         });
     }
 
+    private function updateUrls(array $urls): void
+    {
+        if (count($urls) === 0) {
+            return;
+        }
+
+        DB::transaction(static function () use ($urls) {
+            foreach ($urls as $url) {
+                /** @var IntegrationUrlModel $integrationUrlModel */
+                $integrationUrlModel = IntegrationUrlModel::query()->findOrFail($url['id']);
+                $integrationUrlModel['url'] = $url['url'];
+                $integrationUrlModel->save();
+            }
+        });
+    }
+
     public function update(UuidInterface $id, UpdateIntegration $updateIntegration): Integration
     {
         /** @var IntegrationModel $integrationModel */
@@ -60,43 +76,8 @@ final class EloquentIntegrationRepository implements IntegrationRepository
             $integrationModel['description'] = $integrationDescription;
         }
 
-        $loginUrls = $updateIntegration->input('loginUrls') ?? [];
-
-        if (count($loginUrls) > 0) {
-            DB::transaction(static function () use ($loginUrls) {
-                foreach ($loginUrls as $loginUrl) {
-                    /** @var IntegrationUrlModel $integrationUrlModel */
-                    $integrationUrlModel = IntegrationUrlModel::query()->findOrFail($loginUrl['id']);
-                    $integrationUrlModel['url'] = $loginUrl['url'];
-                    $integrationUrlModel->save();
-                }
-            });
-        }
-
-        $callbackUrls = $updateIntegration->input('callbackUrls') ?? [];
-
-        if (count($callbackUrls) > 0) {
-            DB::transaction(static function () use ($callbackUrls) {
-                foreach ($callbackUrls as $callbackUrl) {
-                    /** @var IntegrationUrlModel $integrationUrlModel */
-                    $integrationUrlModel = IntegrationUrlModel::query()->findOrFail($callbackUrl['id']);
-                    $integrationUrlModel['url'] = $callbackUrl['url'];
-                    $integrationUrlModel->save();
-                }
-            });
-        }
-
-        $logoutUrls = $updateIntegration->input('logoutUrls') ?? [];
-
-        if (count($logoutUrls) > 0) {
-            DB::transaction(static function () use ($logoutUrls) {
-                foreach ($logoutUrls as $logoutUrl) {
-                    /** @var IntegrationUrlModel $integrationUrlModel */
-                    $integrationUrlModel = IntegrationUrlModel::query()->findOrFail($logoutUrl['id']);
-                    $integrationUrlModel['url'] = $logoutUrl['url'];
-                    $integrationUrlModel->save();
-                }
-            });
+        foreach (['loginUrls', 'callbackUrls', 'logoutUrls'] as $property) {
+            $this->updateUrls($updateIntegration->input($property) ?? []);
         }
 
         $integrationModel->save();
