@@ -8,17 +8,41 @@ import { FormDropdown } from "../../FormDropdown";
 import { ButtonIcon } from "../../ButtonIcon";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { useSectionCollapsedContext } from "../../../context/SectionCollapsedContext";
+import { useForm } from "@inertiajs/react";
+import { Integration } from "../../../Pages/Integrations/Index";
+import { IntegrationUrlType } from "../../../types/IntegrationUrlType";
 
 type Props = {
   isMobile?: boolean;
-};
+} & Integration;
 
-export const IntegrationSettings = ({ isMobile }: Props) => {
+export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
   const { t } = useTranslation();
 
   const [isDisabled, setIsDisabled] = useState(true);
 
   const [collapsed, setCollapsed] = useSectionCollapsedContext();
+
+  const callbackUrls = urls.filter(
+    (url) => url.type === IntegrationUrlType.Callback
+  );
+  const loginUrls = urls
+    .filter((url) => url.type === IntegrationUrlType.Login)
+    .map((url) => ({ ...url, changed: false }));
+
+  const logoutUrls = urls.filter(
+    (url) => url.type === IntegrationUrlType.Logout
+  );
+
+  const initialFormValues = {
+    callbackUrls,
+    loginUrls,
+    logoutUrls,
+  };
+
+  const { data, setData, patch, errors: err } = useForm(initialFormValues);
+
+  console.log(urls, "urls");
 
   return (
     <FormDropdown
@@ -38,19 +62,40 @@ export const IntegrationSettings = ({ isMobile }: Props) => {
       <Heading className="font-semibold" level={3}>
         {t("details.integration_settings.login")}
       </Heading>
-      <FormElement
-        label={`${t("details.integration_settings.test")}`}
-        labelPosition={isMobile ? "top" : "left"}
-        component={
-          <Input
-            type="text"
-            name="loginTest"
-            defaultValue=""
-            className="md:min-w-[32rem]"
-            disabled={isDisabled}
+      {data.loginUrls.map((loginUrl) => {
+        return (
+          <FormElement
+            key={loginUrl.id}
+            label={`${t(
+              `details.integration_settings.${loginUrl.environment}`
+            )}`}
+            labelPosition={isMobile ? "top" : "left"}
+            component={
+              <Input
+                type="text"
+                name="loginProduction"
+                value={loginUrl.url}
+                className="md:min-w-[32rem]"
+                onChange={(e) =>
+                  setData(
+                    "loginUrls",
+                    data.loginUrls.map((url) => {
+                      if (url.id === loginUrl.id) {
+                        return { ...url, url: e.target.value, changed: true };
+                      }
+                      return url;
+                    })
+                  )
+                }
+                disabled={isDisabled}
+              />
+            }
           />
-        }
-      />
+        );
+      })}
+      {/* 
+      
+
       <FormElement
         label={`${t("details.integration_settings.production")}`}
         labelPosition={isMobile ? "top" : "left"}
@@ -121,10 +166,15 @@ export const IntegrationSettings = ({ isMobile }: Props) => {
             disabled={isDisabled}
           />
         }
-      />
+      /> */}
       {!isDisabled && (
         <div className="flex flex-col items-start md:pl-[10.5rem]">
-          <ButtonPrimary onClick={() => setIsDisabled(true)}>
+          <ButtonPrimary
+            onClick={() => {
+              setIsDisabled(true);
+              patch(`/integrations/${id}`);
+            }}
+          >
             {t("details.save")}
           </ButtonPrimary>
         </div>
