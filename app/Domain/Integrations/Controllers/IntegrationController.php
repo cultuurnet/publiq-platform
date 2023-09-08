@@ -8,9 +8,10 @@ use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Domain\Auth\CurrentUser;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Integrations\FormRequests\StoreIntegration;
-use App\Domain\Integrations\FormRequests\UpdateBasicInfo;
+use App\Domain\Integrations\FormRequests\UpdateIntegration;
 use App\Domain\Integrations\FormRequests\UpdateBillingInfo;
 use App\Domain\Integrations\FormRequests\UpdateContactInfo;
+use App\Domain\Integrations\FormRequests\UpdateIntegrationSettings;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
 use App\Domain\Integrations\Mappers\UpdateContactInfoMapper;
@@ -23,6 +24,7 @@ use App\Http\Controllers\Controller;
 use App\Router\TranslatedRoute;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -106,13 +108,13 @@ final class IntegrationController extends Controller
         );
     }
 
-    public function update(UpdateBasicInfo $updateInfo, string $id): RedirectResponse
+    public function update(UpdateIntegration $updateIntegration, string $id): RedirectResponse
     {
-        $this->integrationRepository->update(Uuid::fromString($id), $updateInfo);
+        $this->integrationRepository->update(Uuid::fromString($id), $updateIntegration);
 
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName(
-                request: $updateInfo,
+                request: $updateIntegration,
                 routeName: 'integrations.detail'
             ),
             [

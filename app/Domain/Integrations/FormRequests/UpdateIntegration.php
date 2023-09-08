@@ -7,7 +7,7 @@ namespace App\Domain\Integrations\FormRequests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-final class UpdateIntegrationSettings extends FormRequest
+final class UpdateIntegration extends FormRequest
 {
     /**
      * @return array<string, mixed>
@@ -15,13 +15,15 @@ final class UpdateIntegrationSettings extends FormRequest
     public function rules(): array
     {
         return [
+            'integrationName' => ['string', 'max:255'],
+            'description' => ['string', 'max:255'],
             'loginUrls.*' => Rule::forEach(function () {
                 return [
                     'id' => ['required', 'string'],
                     'url' => ['required', 'string'],
                 ];
             }),
-
         ];
     }
+
 }
