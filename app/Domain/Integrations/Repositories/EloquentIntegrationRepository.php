@@ -62,14 +62,42 @@ final class EloquentIntegrationRepository implements IntegrationRepository
 
         $loginUrls = $updateIntegration->input('loginUrls') ?? [];
 
-        DB::transaction(static function () use ($loginUrls) {
-            foreach ($loginUrls as $loginUrl) {
-                /** @var IntegrationUrlModel $integrationUrlModel */
-                $integrationUrlModel = IntegrationUrlModel::query()->findOrFail($loginUrl['id']);
-                $integrationUrlModel['url'] = $loginUrl['url'];
-                $integrationUrlModel->save();
-            }
-        });
+        if (count($loginUrls) > 0) {
+            DB::transaction(static function () use ($loginUrls) {
+                foreach ($loginUrls as $loginUrl) {
+                    /** @var IntegrationUrlModel $integrationUrlModel */
+                    $integrationUrlModel = IntegrationUrlModel::query()->findOrFail($loginUrl['id']);
+                    $integrationUrlModel['url'] = $loginUrl['url'];
+                    $integrationUrlModel->save();
+                }
+            });
+        }
+
+        $callbackUrls = $updateIntegration->input('callbackUrls') ?? [];
+
+        if (count($callbackUrls) > 0) {
+            DB::transaction(static function () use ($callbackUrls) {
+                foreach ($callbackUrls as $callbackUrl) {
+                    /** @var IntegrationUrlModel $integrationUrlModel */
+                    $integrationUrlModel = IntegrationUrlModel::query()->findOrFail($callbackUrl['id']);
+                    $integrationUrlModel['url'] = $callbackUrl['url'];
+                    $integrationUrlModel->save();
+                }
+            });
+        }
+
+        $logoutUrls = $updateIntegration->input('logoutUrls') ?? [];
+
+        if (count($logoutUrls) > 0) {
+            DB::transaction(static function () use ($logoutUrls) {
+                foreach ($logoutUrls as $logoutUrl) {
+                    /** @var IntegrationUrlModel $integrationUrlModel */
+                    $integrationUrlModel = IntegrationUrlModel::query()->findOrFail($logoutUrl['id']);
+                    $integrationUrlModel['url'] = $logoutUrl['url'];
+                    $integrationUrlModel->save();
+                }
+            });
+        }
 
         $integrationModel->save();
 
