@@ -27,8 +27,8 @@ Route::get('/', static fn () => Inertia::render('Index'));
 Route::get('/login', Login::class)->name('login');
 Route::get('/admin/login', static fn () => redirect('/login'));
 
-Route::get('/logout', Logout::class);
-Route::post('/admin/logout', Logout::class);
+Route::get('/logout', [Logout::class, 'inertia']);
+Route::post('/admin/logout', [Logout::class, 'admin']);
 
 Route::get('/auth/callback', Callback::class);
 
