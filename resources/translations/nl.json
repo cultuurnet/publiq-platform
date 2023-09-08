@@ -171,7 +171,8 @@
     "integration_settings": {
       "title": "Integratie-instellingen",
       "test": "testomgeving",
-      "production": "productieomgeving",
+      "prod": "productieomgeving",
+      "acc": "acceptatieomgeving",
       "login": "Login URL",
       "callback": "Callback URL",
       "logout": "Logout URL"
