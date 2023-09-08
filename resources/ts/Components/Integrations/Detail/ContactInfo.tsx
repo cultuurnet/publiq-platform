@@ -107,6 +107,7 @@ export const ContactInfo = ({ id, contacts }: Props) => {
   const handleDeleteContributor = () => {
     destroy(`/integrations/${id}/contacts/${toBeDeletedId}`, {
       preserveScroll: true,
+      preserveState: false,
     });
   };
 
