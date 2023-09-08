@@ -37,7 +37,6 @@ const Detail = ({ integration }: Props) => {
     });
   };
 
-
   return (
     <Page>
       <div className="w-full flex flex-col gap-5">
