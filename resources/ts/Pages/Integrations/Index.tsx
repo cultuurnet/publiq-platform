@@ -52,7 +52,7 @@ export type Subscription = {
   fee: number;
 };
 
-type IntegrationUrl = {
+export type IntegrationUrl = {
   id: string;
   environment: Environment;
   type: IntegrationUrlType;

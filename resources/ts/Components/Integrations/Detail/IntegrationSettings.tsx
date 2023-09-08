@@ -9,8 +9,66 @@ import { ButtonIcon } from "../../ButtonIcon";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { useSectionCollapsedContext } from "../../../context/SectionCollapsedContext";
 import { useForm } from "@inertiajs/react";
-import { Integration } from "../../../Pages/Integrations/Index";
+import { Integration, IntegrationUrl } from "../../../Pages/Integrations/Index";
 import { IntegrationUrlType } from "../../../types/IntegrationUrlType";
+
+type ChangedIntegrationUrl = IntegrationUrl & {
+  changed: boolean;
+};
+
+type UrlListProps = {
+  title: string;
+  urls: ChangedIntegrationUrl[];
+  onChangeData: (value: ChangedIntegrationUrl[]) => void;
+  isMobile: boolean;
+  isDisabled: boolean;
+};
+
+const UrlList = ({
+  title,
+  urls,
+  onChangeData,
+  isMobile,
+  isDisabled,
+}: UrlListProps) => {
+  const { t } = useTranslation();
+
+  return (
+    <>
+      <Heading className="font-semibold" level={3}>
+        {title}
+      </Heading>
+      {urls.map((url) => {
+        return (
+          <FormElement
+            key={url.id}
+            label={`${t(`details.integration_settings.${url.environment}`)}`}
+            labelPosition={isMobile ? "top" : "left"}
+            component={
+              <Input
+                type="text"
+                name="loginProduction"
+                value={url.url}
+                className="md:min-w-[32rem]"
+                onChange={(e) =>
+                  onChangeData(
+                    urls.map((url) => {
+                      if (url.id === url.id) {
+                        return { ...url, url: e.target.value, changed: true };
+                      }
+                      return url;
+                    })
+                  )
+                }
+                disabled={isDisabled}
+              />
+            }
+          />
+        );
+      })}
+    </>
+  );
+};
 
 type Props = {
   isMobile: boolean;
@@ -76,114 +134,28 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
         setCollapsed((prev) => ({ ...prev, integrationsSettings: newValue }))
       }
     >
-      <Heading className="font-semibold" level={3}>
-        {t("details.integration_settings.login")}
-      </Heading>
-      {data.loginUrls.map((loginUrl) => {
-        return (
-          <FormElement
-            key={loginUrl.id}
-            label={`${t(
-              `details.integration_settings.${loginUrl.environment}`
-            )}`}
-            labelPosition={isMobile ? "top" : "left"}
-            component={
-              <Input
-                type="text"
-                name="loginProduction"
-                value={loginUrl.url}
-                className="md:min-w-[32rem]"
-                onChange={(e) =>
-                  setData(
-                    "loginUrls",
-                    data.loginUrls.map((url) => {
-                      if (url.id === loginUrl.id) {
-                        return { ...url, url: e.target.value, changed: true };
-                      }
-                      return url;
-                    })
-                  )
-                }
-                disabled={isDisabled}
-              />
-            }
-          />
-        );
-      })}
-      {/* 
-      
+      <UrlList
+        title={t("details.integration_settings.login")}
+        urls={data.loginUrls}
+        onChangeData={(data) => setData("loginUrls", data)}
+        isDisabled={isDisabled}
+        isMobile={isMobile}
+      />
+      <UrlList
+        title={t("details.integration_settings.callback")}
+        urls={data.callbackUrls}
+        onChangeData={(data) => setData("callbackUrls", data)}
+        isDisabled={isDisabled}
+        isMobile={isMobile}
+      />
+      <UrlList
+        title={t("details.integration_settings.logout")}
+        urls={data.logoutUrls}
+        onChangeData={(data) => setData("logoutUrls", data)}
+        isDisabled={isDisabled}
+        isMobile={isMobile}
+      />
 
-      <FormElement
-        label={`${t("details.integration_settings.production")}`}
-        labelPosition={isMobile ? "top" : "left"}
-        component={
-          <Input
-            type="text"
-            name="loginProduction"
-            defaultValue=""
-            className="md:min-w-[32rem]"
-            disabled={isDisabled}
-          />
-        }
-      />
-      <Heading className="font-semibold" level={3}>
-        {t("details.integration_settings.callback")}
-      </Heading>
-      <FormElement
-        label={`${t("details.integration_settings.test")}`}
-        labelPosition={isMobile ? "top" : "left"}
-        component={
-          <Input
-            type="text"
-            name="callbackTest"
-            defaultValue=""
-            className="md:min-w-[32rem]"
-            disabled={isDisabled}
-          />
-        }
-      />
-      <FormElement
-        label={`${t("details.integration_settings.production")}`}
-        labelPosition={isMobile ? "top" : "left"}
-        component={
-          <Input
-            type="text"
-            name="callbackProduction"
-            defaultValue=""
-            className="md:min-w-[32rem]"
-            disabled={isDisabled}
-          />
-        }
-      />
-      <Heading className="font-semibold" level={3}>
-        {t("details.integration_settings.logout")}
-      </Heading>
-      <FormElement
-        label={`${t("details.integration_settings.test")}`}
-        labelPosition={isMobile ? "top" : "left"}
-        component={
-          <Input
-            type="text"
-            name="logoutTest"
-            defaultValue=""
-            className="md:min-w-[32rem]"
-            disabled={isDisabled}
-          />
-        }
-      />
-      <FormElement
-        label={`${t("details.integration_settings.production")}`}
-        labelPosition={isMobile ? "top" : "left"}
-        component={
-          <Input
-            type="text"
-            name="logoutProduction"
-            defaultValue=""
-            className="md:min-w-[32rem]"
-            disabled={isDisabled}
-          />
-        }
-      /> */}
       {!isDisabled && (
         <div className="flex flex-col items-start md:pl-[10.5rem]">
           <ButtonPrimary
