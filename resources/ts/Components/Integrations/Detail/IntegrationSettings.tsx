@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Heading } from "../../Heading";
 import { useTranslation } from "react-i18next";
 import { FormElement } from "../../FormElement";
@@ -23,15 +23,28 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
 
   const [collapsed, setCollapsed] = useSectionCollapsedContext();
 
-  const callbackUrls = urls.filter(
-    (url) => url.type === IntegrationUrlType.Callback
+  const callbackUrls = useMemo(
+    () =>
+      urls
+        .filter((url) => url.type === IntegrationUrlType.Callback)
+        .map((url) => ({ ...url, changed: false })),
+    [urls]
   );
-  const loginUrls = urls
-    .filter((url) => url.type === IntegrationUrlType.Login)
-    .map((url) => ({ ...url, changed: false }));
 
-  const logoutUrls = urls.filter(
-    (url) => url.type === IntegrationUrlType.Logout
+  const loginUrls = useMemo(
+    () =>
+      urls
+        .filter((url) => url.type === IntegrationUrlType.Login)
+        .map((url) => ({ ...url, changed: false })),
+    [urls]
+  );
+
+  const logoutUrls = useMemo(
+    () =>
+      urls
+        .filter((url) => url.type === IntegrationUrlType.Logout)
+        .map((url) => ({ ...url, changed: false })),
+    [urls]
   );
 
   const initialFormValues = {
@@ -40,9 +53,19 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
     logoutUrls,
   };
 
-  const { data, setData, patch, errors: err } = useForm(initialFormValues);
+  const {
+    data,
+    setData,
+    patch,
+    errors: err,
+    transform,
+  } = useForm(initialFormValues);
 
-  console.log(urls, "urls");
+  transform((data) => ({
+    callbackUrls: data.callbackUrls.filter((url) => url.changed),
+    loginUrls: data.loginUrls.filter((url) => url.changed),
+    logoutUrls: data.logoutUrls.filter((url) => url.changed),
+  }));
 
   return (
     <FormDropdown
