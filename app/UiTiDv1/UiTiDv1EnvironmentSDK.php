@@ -11,6 +11,7 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Query;
 use Psr\Http\Message\ResponseInterface;
+use Ramsey\Uuid\Uuid;
 use SimpleXMLElement;
 
 final class UiTiDv1EnvironmentSDK
@@ -41,6 +42,7 @@ final class UiTiDv1EnvironmentSDK
         $apiKey = $data['apiKeySapi3'];
 
         return new UiTiDv1Consumer(
+            Uuid::uuid4(),
             $integration->id,
             $consumerId,
             $consumerKey,
@@ -61,11 +63,34 @@ final class UiTiDv1EnvironmentSDK
 
     public function blockConsumer(UiTiDv1Consumer $consumer): void
     {
-        $formData = [
-            'status' => 'BLOCKED',
-        ];
+        $this->sendPostRequest('serviceconsumer/' . $consumer->consumerKey, [
+            'status' => UiTiDv1ConsumerStatus::Blocked->value,
+        ]);
+    }
 
-        $this->sendPostRequest('serviceconsumer/' . $consumer->consumerKey, $formData);
+    public function activateConsumer(UiTiDv1Consumer $consumer): void
+    {
+        $this->sendPostRequest('serviceconsumer/' . $consumer->consumerKey, [
+            'status' => UiTiDv1ConsumerStatus::Active->value,
+        ]);
+    }
+
+    public function fetchStatusOfConsumer(UiTiDv1Consumer $consumer): UiTiDv1ConsumerStatus
+    {
+        $response = $this->httpClient->request('GET', 'serviceconsumer/' . $consumer->consumerKey);
+
+        if($response->getStatusCode() !== 200) {
+            return UiTiDv1ConsumerStatus::Unknown;
+        }
+
+        $body = $response->getBody()->getContents();
+        $xml = simplexml_load_string($body);
+
+        if(! $xml instanceof SimpleXMLElement || ! $xml->status instanceof SimpleXMLElement) {
+            return UiTiDv1ConsumerStatus::Unknown;
+        }
+
+        return UiTiDv1ConsumerStatus::tryFrom($xml->status->__toString()) ?? UiTiDv1ConsumerStatus::Unknown;
     }
 
     public static function createOAuth1HttpClient(

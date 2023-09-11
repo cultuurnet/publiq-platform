@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace App\Auth0;
 
+use App\Auth0\Jobs\ActivateClient;
+use App\Auth0\Jobs\BlockClient;
+use App\Auth0\Jobs\BlockClientListener;
+use App\Auth0\Jobs\ActivateClientListener;
 use App\Auth0\Listeners\BlockClients;
 use App\Auth0\Listeners\CreateClients;
 use App\Auth0\Listeners\UpdateClients;
@@ -16,6 +20,7 @@ use App\Domain\Integrations\Events\IntegrationUrlCreated;
 use App\Domain\Integrations\Events\IntegrationUrlDeleted;
 use App\Domain\Integrations\Events\IntegrationUrlUpdated;
 use Auth0\SDK\Configuration\SdkConfiguration;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
@@ -62,6 +67,12 @@ final class Auth0ServiceProvider extends ServiceProvider
             );
         });
 
+        $this->app->singleton(CachedAuth0ClientGrants::class, function () {
+            return new CachedAuth0ClientGrants(
+                App::get(Auth0ClusterSDK::class)
+            );
+        });
+
         if (config('auth0.enabled')) {
             // By default, the Auth0 integration is enabled. For testing purposes this can be disabled inside the .env file.
 
@@ -74,6 +85,10 @@ final class Auth0ServiceProvider extends ServiceProvider
             Event::listen(IntegrationUrlCreated::class, [UpdateClients::class, 'handle']);
             Event::listen(IntegrationUrlUpdated::class, [UpdateClients::class, 'handle']);
             Event::listen(IntegrationUrlDeleted::class, [UpdateClients::class, 'handle']);
+
+            Event::listen(ActivateClient::class, [ActivateClientListener::class, 'handle']);
+            Event::listen(BlockClient::class, [BlockClientListener::class, 'handle']);
+
         }
     }
 }

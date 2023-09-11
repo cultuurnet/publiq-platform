@@ -12,6 +12,7 @@ use App\Insightly\Exceptions\ContactCannotBeUnlinked;
 use App\Insightly\InsightlyClient;
 use App\Insightly\Objects\OpportunityStage;
 use App\Insightly\Objects\OpportunityState;
+use App\Insightly\Resources\Trait\SyncCustomFields;
 use App\Insightly\Serializers\CustomFields\SubscriptionSerializer;
 use App\Insightly\Serializers\LinkSerializer;
 use App\Insightly\Serializers\OpportunitySerializer;
@@ -22,6 +23,7 @@ use GuzzleHttp\Psr7\Request;
 final class InsightlyOpportunityResource implements OpportunityResource
 {
     use InsightlyLinks;
+    use SyncCustomFields;
 
     private string $path = 'Opportunities/';
 
@@ -108,7 +110,7 @@ final class InsightlyOpportunityResource implements OpportunityResource
     {
         $opportunityAsArray = $this->get($id);
 
-        $opportunityAsArray['CUSTOMFIELDS'] = array_merge(
+        $opportunityAsArray['CUSTOMFIELDS'] = $this->syncCustomFields(
             $opportunityAsArray['CUSTOMFIELDS'] ?? [],
             (new SubscriptionSerializer())->toInsightlyArray($subscription, $coupon)
         );
