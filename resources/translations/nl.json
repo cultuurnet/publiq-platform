@@ -118,8 +118,6 @@
       "pending_approval_payment_description": "Aan de slag met echte data en evenementen? Activeer je Search API integratie (vanaf 125 euro per jaar)",
       "here": "hier.",
       "activate": "Activeren"
-
-
     },
     "documentation": {
       "title": "Documentatie",
@@ -136,13 +134,13 @@
       "title": "Basisgegevens",
       "name": "Integratienaam",
       "description": "Beschrijving"
-    }, 
+    },
     "contact_info": {
       "title": "Contactgegevens",
       "employees": "Andere medewerkers",
       "delete": "Verwijder medewerker",
       "new": "Nieuwe medewerker",
-      "save":"Opslaan",
+      "save": "Opslaan",
       "cancel": "Annuleren"
     },
     "billing_info": {
@@ -175,6 +173,9 @@
       "acc": "acceptatieomgeving",
       "login": "Login URL",
       "callback": "Callback URL",
+      "new_url": "Nieuwe {{type}} URL",
+      "url": "URL",
+      "environment": "Omgeving",
       "logout": "Logout URL"
     }
   },
