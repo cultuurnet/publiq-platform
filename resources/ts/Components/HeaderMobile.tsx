@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Navigation from "./Navigation";
-import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { Dialog } from "./Dialog";
@@ -9,7 +8,6 @@ import { PubliqLogoMobile } from "./logos/PubliqLogoMobile";
 import { Link } from "@inertiajs/react";
 
 export default function HeaderMobile() {
-  const { t } = useTranslation();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
