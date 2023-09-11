@@ -9,6 +9,7 @@ import { useForm } from "@inertiajs/react";
 import { Integration } from "../../../Pages/Integrations/Index";
 import { IntegrationUrlType } from "../../../types/IntegrationUrlType";
 import { UrlList } from "./UrlList";
+import { Environment } from "../../../types/Environment";
 
 type Props = {
   isMobile: boolean;
@@ -49,11 +50,19 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
     callbackUrls,
     loginUrls,
     logoutUrls,
+    newIntegrationUrl: {
+      environment: Environment.Test,
+      url: "",
+    },
   };
 
   const { data, setData, patch, transform } = useForm(initialFormValues);
 
+  const handleSave = () =>
+    patch(`/integrations/${id}`, { preserveState: false });
+
   transform((data) => ({
+    ...data,
     callbackUrls: data.callbackUrls.filter((url) => url.changed),
     loginUrls: data.loginUrls.filter((url) => url.changed),
     logoutUrls: data.logoutUrls.filter((url) => url.changed),
@@ -85,9 +94,17 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
       <UrlList
         type={IntegrationUrlType.Callback}
         urls={data.callbackUrls}
+        newUrl={data.newIntegrationUrl}
+        onChangeNewUrlEnvironment={(environment) =>
+          setData("newIntegrationUrl", {
+            ...data.newIntegrationUrl,
+            environment,
+          })
+        }
         onChangeData={(data) => setData("callbackUrls", data)}
         isDisabled={isDisabled}
         isMobile={isMobile}
+        onSave={handleSave}
       />
       <UrlList
         type={IntegrationUrlType.Logout}
@@ -102,7 +119,7 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
           <ButtonPrimary
             onClick={() => {
               setIsDisabled(true);
-              patch(`/integrations/${id}`);
+              handleSave();
             }}
           >
             {t("details.save")}
