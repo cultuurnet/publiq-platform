@@ -1,74 +1,14 @@
 import React, { useMemo, useState } from "react";
-import { Heading } from "../../Heading";
 import { useTranslation } from "react-i18next";
-import { FormElement } from "../../FormElement";
-import { Input } from "../../Input";
 import { ButtonPrimary } from "../../ButtonPrimary";
 import { FormDropdown } from "../../FormDropdown";
 import { ButtonIcon } from "../../ButtonIcon";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { useSectionCollapsedContext } from "../../../context/SectionCollapsedContext";
 import { useForm } from "@inertiajs/react";
-import { Integration, IntegrationUrl } from "../../../Pages/Integrations/Index";
+import { Integration } from "../../../Pages/Integrations/Index";
 import { IntegrationUrlType } from "../../../types/IntegrationUrlType";
-
-type ChangedIntegrationUrl = IntegrationUrl & {
-  changed: boolean;
-};
-
-type UrlListProps = {
-  title: string;
-  urls: ChangedIntegrationUrl[];
-  onChangeData: (value: ChangedIntegrationUrl[]) => void;
-  isMobile: boolean;
-  isDisabled: boolean;
-};
-
-const UrlList = ({
-  title,
-  urls,
-  onChangeData,
-  isMobile,
-  isDisabled,
-}: UrlListProps) => {
-  const { t } = useTranslation();
-
-  return (
-    <>
-      <Heading className="font-semibold" level={3}>
-        {title}
-      </Heading>
-      {urls.map((url) => {
-        return (
-          <FormElement
-            key={url.id}
-            label={`${t(`details.integration_settings.${url.environment}`)}`}
-            labelPosition={isMobile ? "top" : "left"}
-            component={
-              <Input
-                type="text"
-                name="loginProduction"
-                value={url.url}
-                className="md:min-w-[32rem]"
-                onChange={(e) =>
-                  onChangeData(
-                    urls.map((url) => {
-                      if (url.id === url.id) {
-                        return { ...url, url: e.target.value, changed: true };
-                      }
-                      return url;
-                    })
-                  )
-                }
-                disabled={isDisabled}
-              />
-            }
-          />
-        );
-      })}
-    </>
-  );
-};
+import { UrlList } from "./UrlList";
 
 type Props = {
   isMobile: boolean;
@@ -135,21 +75,22 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
       }
     >
       <UrlList
-        title={t("details.integration_settings.login")}
+        type={IntegrationUrlType.Login}
         urls={data.loginUrls}
         onChangeData={(data) => setData("loginUrls", data)}
         isDisabled={isDisabled}
         isMobile={isMobile}
+        isAddVisible={false}
       />
       <UrlList
-        title={t("details.integration_settings.callback")}
+        type={IntegrationUrlType.Callback}
         urls={data.callbackUrls}
         onChangeData={(data) => setData("callbackUrls", data)}
         isDisabled={isDisabled}
         isMobile={isMobile}
       />
       <UrlList
-        title={t("details.integration_settings.logout")}
+        type={IntegrationUrlType.Logout}
         urls={data.logoutUrls}
         onChangeData={(data) => setData("logoutUrls", data)}
         isDisabled={isDisabled}
