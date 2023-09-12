@@ -82,7 +82,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
             IntegrationUrlModel::query()->create(
                 [
                     'integration_id' => $id->toString(),
-                    ...$newIntegrationUrl
+                    ...$newIntegrationUrl,
                 ]
             );
         }
