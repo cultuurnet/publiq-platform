@@ -6,7 +6,7 @@ namespace App\Domain\Integrations\Repositories;
 
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
-use App\Domain\Integrations\FormRequests\UpdateIntegration;
+use App\Domain\Integrations\FormRequests\UpdateIntegrationRequest;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Models\IntegrationUrlModel;
@@ -60,7 +60,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         });
     }
 
-    public function update(UuidInterface $id, UpdateIntegration $updateIntegration): Integration
+    public function update(UuidInterface $id, UpdateIntegrationRequest $updateIntegration): Integration
     {
         /** @var IntegrationModel $integrationModel */
         $integrationModel = IntegrationModel::query()->findOrFail($id->toString());

@@ -7,7 +7,7 @@ namespace App\Domain\Integrations\FormRequests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-final class UpdateContactInfo extends FormRequest
+final class UpdateContactInfoRequest extends FormRequest
 {
     /**
      * @return array<string, mixed>

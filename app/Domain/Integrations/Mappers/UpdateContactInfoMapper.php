@@ -6,7 +6,7 @@ namespace App\Domain\Integrations\Mappers;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
-use App\Domain\Integrations\FormRequests\UpdateContactInfo;
+use App\Domain\Integrations\FormRequests\UpdateContactInfoRequest;
 use Ramsey\Uuid\Uuid;
 
 final class UpdateContactInfoMapper
@@ -14,7 +14,7 @@ final class UpdateContactInfoMapper
     /**
      * @return array<Contact>
      */
-    public static function map(UpdateContactInfo $updateContactInfo, string $integrationId): array
+    public static function map(UpdateContactInfoRequest $updateContactInfo, string $integrationId): array
     {
         /**
          * @var array<Contact> $contacts

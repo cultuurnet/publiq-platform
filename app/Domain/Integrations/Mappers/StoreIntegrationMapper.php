@@ -7,7 +7,7 @@ namespace App\Domain\Integrations\Mappers;
 use App\Domain\Auth\CurrentUser;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
-use App\Domain\Integrations\FormRequests\StoreIntegration;
+use App\Domain\Integrations\FormRequests\StoreIntegrationRequest;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
@@ -15,7 +15,7 @@ use Ramsey\Uuid\Uuid;
 
 final class StoreIntegrationMapper
 {
-    public static function map(StoreIntegration $storeIntegration, CurrentUser $currentUser): Integration
+    public static function map(StoreIntegrationRequest $storeIntegration, CurrentUser $currentUser): Integration
     {
         $integrationId = Uuid::uuid4();
 

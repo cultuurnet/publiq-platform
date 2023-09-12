@@ -6,7 +6,7 @@ namespace App\Domain\Integrations\FormRequests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-final class UpdateBillingInfo extends FormRequest
+final class UpdateBillingInfoRequest extends FormRequest
 {
     /**
      * @return array<string, mixed>

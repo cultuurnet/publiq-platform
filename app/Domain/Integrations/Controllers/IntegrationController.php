@@ -7,10 +7,10 @@ namespace App\Domain\Integrations\Controllers;
 use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Domain\Auth\CurrentUser;
 use App\Domain\Contacts\Repositories\ContactRepository;
-use App\Domain\Integrations\FormRequests\StoreIntegration;
-use App\Domain\Integrations\FormRequests\UpdateIntegration;
-use App\Domain\Integrations\FormRequests\UpdateBillingInfo;
-use App\Domain\Integrations\FormRequests\UpdateContactInfo;
+use App\Domain\Integrations\FormRequests\StoreIntegrationRequest;
+use App\Domain\Integrations\FormRequests\UpdateIntegrationRequest;
+use App\Domain\Integrations\FormRequests\UpdateBillingInfoRequest;
+use App\Domain\Integrations\FormRequests\UpdateContactInfoRequest;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
 use App\Domain\Integrations\Mappers\UpdateContactInfoMapper;
@@ -77,20 +77,20 @@ final class IntegrationController extends Controller
         ]);
     }
 
-    public function store(StoreIntegration $storeIntegration): RedirectResponse
+    public function store(StoreIntegrationRequest $request): RedirectResponse
     {
-        $integration = StoreIntegrationMapper::map($storeIntegration, $this->currentUser);
+        $integration = StoreIntegrationMapper::map($request, $this->currentUser);
         $this->integrationRepository->save($integration);
 
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName(
-                request: $storeIntegration,
+                request: $request,
                 routeName: 'integrations.index'
             )
         );
     }
 
-    public function delete(Request $request, string $id): RedirectResponse
+    public function destroy(Request $request, string $id): RedirectResponse
     {
         try {
             $this->integrationRepository->deleteById(Uuid::fromString($id));
@@ -106,14 +106,14 @@ final class IntegrationController extends Controller
         );
     }
 
-    public function update(UpdateIntegration $updateIntegration, string $id): RedirectResponse
+    public function update(UpdateIntegrationRequest $request, string $id): RedirectResponse
     {
-        $this->integrationRepository->update(Uuid::fromString($id), $updateIntegration);
+        $this->integrationRepository->update(Uuid::fromString($id), $request);
 
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName(
-                request: $updateIntegration,
-                routeName: 'integrations.detail'
+                request: $request,
+                routeName: 'integrations.show'
             ),
             [
                 'id' => $id,
@@ -121,9 +121,9 @@ final class IntegrationController extends Controller
         );
     }
 
-    public function updateContacts(string $id, UpdateContactInfo $updateContactInfo): RedirectResponse
+    public function updateContacts(string $id, UpdateContactInfoRequest $request): RedirectResponse
     {
-        $contacts = UpdateContactInfoMapper::map($updateContactInfo, $id);
+        $contacts = UpdateContactInfoMapper::map($request, $id);
 
         DB::transaction(function () use ($contacts) {
             foreach ($contacts as $contact) {
@@ -133,8 +133,8 @@ final class IntegrationController extends Controller
 
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName(
-                request: $updateContactInfo,
-                routeName: 'integrations.detail'
+                request: $request,
+                routeName: 'integrations.show'
             ),
             [
                 'id' => $id,
@@ -153,7 +153,7 @@ final class IntegrationController extends Controller
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName(
                 request: $request,
-                routeName: 'integrations.detail'
+                routeName: 'integrations.show'
             ),
             [
                 'id' => $id,
@@ -161,18 +161,18 @@ final class IntegrationController extends Controller
         );
     }
 
-    public function updateBilling(string $id, UpdateBillingInfo $updateBillingInfo): RedirectResponse
+    public function updateBilling(string $id, UpdateBillingInfoRequest $request): RedirectResponse
     {
         $organisation = new Organization(
-            Uuid::fromString($updateBillingInfo->input('organisation.id')),
-            $updateBillingInfo->input('organisation.name'),
+            Uuid::fromString($request->input('organisation.id')),
+            $request->input('organisation.name'),
             'test@test.be',
-            $updateBillingInfo->input('organisation.vat'),
+            $request->input('organisation.vat'),
             new Address(
-                $updateBillingInfo->input('organisation.address.street'),
-                $updateBillingInfo->input('organisation.address.zip'),
-                $updateBillingInfo->input('organisation.address.city'),
-                $updateBillingInfo->input('organisation.address.country'),
+                $request->input('organisation.address.street'),
+                $request->input('organisation.address.zip'),
+                $request->input('organisation.address.city'),
+                $request->input('organisation.address.country'),
             )
         );
 
@@ -180,8 +180,8 @@ final class IntegrationController extends Controller
 
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName(
-                request: $updateBillingInfo,
-                routeName: 'integrations.detail'
+                request: $request,
+                routeName: 'integrations.show'
             ),
             [
                 'id' => $id,
@@ -189,7 +189,7 @@ final class IntegrationController extends Controller
         );
     }
 
-    public function detail(string $id): Response
+    public function show(string $id): Response
     {
         try {
             $integration = $this->integrationRepository->getById(Uuid::fromString($id));
