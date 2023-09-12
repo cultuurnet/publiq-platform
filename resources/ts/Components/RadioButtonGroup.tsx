@@ -1,9 +1,14 @@
 import React, { ComponentProps } from "react";
 import { classNames } from "../utils/classNames";
 
+type Option = {
+  label: string;
+  value: string;
+};
+
 type Props = {
   name: string;
-  options: { label: string; value: string }[];
+  options: Option[];
   value: string;
   onChange: (newValue: string) => void;
 } & Omit<ComponentProps<"ul">, "onChange">;
@@ -25,6 +30,14 @@ export const RadioButtonGroup = ({
     }
   };
 
+  const optionClasses = (index: number, option: Option) => {
+    return classNames(
+      "px-4 py-2 text-sm font-medium text-center bg-white border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 ring-publiq-blue-dark focus:bg-gray-100 max-sm:rounded-lg",
+      getRoundedStyles(index),
+      value === option.value ? "text-publiq-blue-dark" : "text-publiq-gray-dark"
+    );
+  };
+
   return (
     <ul
       className={classNames("flex max-md:flex-col max-md:gap-1", className)}
@@ -41,13 +54,7 @@ export const RadioButtonGroup = ({
               onChange(option.value);
             }
           }}
-          className={classNames(
-            "px-4 py-2 text-sm font-medium text-center bg-white border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 ring-publiq-blue-dark focus:bg-gray-100 max-sm:rounded-lg",
-            getRoundedStyles(index),
-            value === option.value
-              ? "text-publiq-blue-dark"
-              : "text-publiq-gray-dark"
-          )}
+          className={optionClasses(index, option)}
         >
           <input
             type="radio"
