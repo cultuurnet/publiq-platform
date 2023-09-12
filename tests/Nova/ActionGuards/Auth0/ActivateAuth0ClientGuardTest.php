@@ -10,7 +10,7 @@ use App\Auth0\CachedAuth0ClientGrants;
 use App\Nova\ActionGuards\Auth0\ActivateAuth0ClientGuard;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Ramsey\Uuid\Uuid;
 use Tests\Auth0\CreatesMockAuth0ClusterSDK;
