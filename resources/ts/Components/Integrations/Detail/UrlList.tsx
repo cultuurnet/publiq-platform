@@ -21,7 +21,7 @@ type NewUrl = { environment: Environment; url: string };
 type UrlListProps = {
   type: IntegrationUrlType;
   urls: ChangedIntegrationUrl[];
-  newUrl: { environment: Environment; url: string };
+  newUrl: NewUrl;
   onChangeData: (value: ChangedIntegrationUrl[]) => void;
   onChangeNewUrl: (value: NewUrl) => void;
   isMobile: boolean;
