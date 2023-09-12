@@ -67,6 +67,9 @@ final class EloquentIntegrationRepository implements IntegrationRepository
 
         $integrationName = $updateIntegration->input('integrationName');
         $integrationDescription = $updateIntegration->input('description');
+        /**
+         * @var array<string, mixed> $newIntegrationUrl
+         */
         $newIntegrationUrl = $updateIntegration->input('newIntegrationUrl');
 
         if ($integrationName !== null) {
