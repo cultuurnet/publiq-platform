@@ -32,6 +32,12 @@ module.exports = {
         "icon-gray": "#5f6368",
         "icon-gray-light": "#F2F2F2",
         "icon-gray-dark": "#E3E3E3",
+        "status-red": "#F9CED6",
+        "status-red-dark": "#FB2047",
+        "status-yellow": "#FBDBAA80",
+        "status-yellow-dark": "#896B24",
+        "status-green": "#C8FFC7",
+        "status-green-dark": "#2A7D4B"
       },
       textColor: ({ theme }) => theme("colors.publiq-gray-dark"),
       fontFamily: {
