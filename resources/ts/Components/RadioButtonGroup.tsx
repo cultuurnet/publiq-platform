@@ -3,14 +3,14 @@ import { classNames } from "../utils/classNames";
 
 type Props = {
   name: string;
-  options: ({label: string, value: string})[];
+  options: { label: string; value: string }[];
   value: string;
   onChange: (newValue: string) => void;
 } & Omit<ComponentProps<"ul">, "onChange">;
 
 export const RadioButtonGroup = ({
   name,
- options,
+  options,
   value,
   onChange,
   className,
@@ -44,10 +44,18 @@ export const RadioButtonGroup = ({
           className={classNames(
             "px-4 py-2 text-sm font-medium text-center bg-white border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 ring-publiq-blue-dark focus:bg-gray-100 max-sm:rounded-lg",
             getRoundedStyles(index),
-            value === option.value ? "text-publiq-blue-dark" : "text-publiq-gray-dark"
+            value === option.value
+              ? "text-publiq-blue-dark"
+              : "text-publiq-gray-dark"
           )}
         >
-          <input type="radio" id={option.value} name={name} value={option.value} className="hidden" />
+          <input
+            type="radio"
+            id={option.value}
+            name={name}
+            value={option.value}
+            className="hidden"
+          />
           <label htmlFor={option.value}>{option.label}</label>
         </li>
       ))}
