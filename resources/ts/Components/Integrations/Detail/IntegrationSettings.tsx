@@ -60,7 +60,10 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
   const { data, setData, patch, transform } = useForm(initialFormValues);
 
   const handleSave = () =>
-    patch(`/integrations/${id}`, { preserveState: false });
+    patch(`/integrations/${id}`, {
+      preserveScroll: true,
+      preserveState: false,
+    });
 
   transform((data) => ({
     ...data,
