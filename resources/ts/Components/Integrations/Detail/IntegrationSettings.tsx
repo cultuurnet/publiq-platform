@@ -70,10 +70,6 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
     callbackUrls: data.callbackUrls.filter((url) => url.changed),
     loginUrls: data.loginUrls.filter((url) => url.changed),
     logoutUrls: data.logoutUrls.filter((url) => url.changed),
-    newIntegrationUrl: {
-      ...data.newIntegrationUrl,
-      url: `${Math.random()}@test.be`,
-    },
   }));
 
   return (
