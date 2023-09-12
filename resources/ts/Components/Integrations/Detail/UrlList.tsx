@@ -41,9 +41,6 @@ export const UrlList = ({
   const { t } = useTranslation();
 
   const [isAddFormVisible, setIsAddFormVisible] = useState(false);
-  const [newIntegrationEnvironment, setNewIntegrationEnvironment] = useState(
-    `${t("details.integration_settings.test")}`
-  );
 
   return (
     <>
