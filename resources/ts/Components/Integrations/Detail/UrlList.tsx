@@ -16,12 +16,14 @@ import { Environment } from "../../../types/Environment";
 type ChangedIntegrationUrl = IntegrationUrl & {
   changed: boolean;
 };
+
+type NewUrl = { environment: Environment; url: string };
 type UrlListProps = {
   type: IntegrationUrlType;
   urls: ChangedIntegrationUrl[];
   newUrl: { environment: Environment; url: string };
   onChangeData: (value: ChangedIntegrationUrl[]) => void;
-  onChangeNewUrlEnvironment: (value: Environment) => void;
+  onChangeNewUrl: (value: NewUrl) => void;
   isMobile: boolean;
   isDisabled: boolean;
   isAddVisible?: boolean;
@@ -32,7 +34,7 @@ export const UrlList = ({
   urls,
   newUrl,
   onChangeData,
-  onChangeNewUrlEnvironment,
+  onChangeNewUrl,
   isMobile,
   isDisabled,
   isAddVisible = true,
@@ -87,7 +89,10 @@ export const UrlList = ({
                 ]}
                 value={newUrl.environment}
                 onChange={(value) =>
-                  onChangeNewUrlEnvironment(value as Environment)
+                  onChangeNewUrl({
+                    ...newUrl,
+                    environment: value as Environment,
+                  })
                 }
               />
             }
@@ -95,7 +100,15 @@ export const UrlList = ({
           <FormElement
             label={`${t("details.integration_settings.url")}`}
             component={
-              <Input type="text" name="url" className="md:max-w-[32rem]" />
+              <Input
+                type="text"
+                name="url"
+                className="md:max-w-[32rem]"
+                value={newUrl.url}
+                onChange={(e) =>
+                  onChangeNewUrl({ ...newUrl, url: e.target.value })
+                }
+              />
             }
           />
           <div className="flex justify-center gap-2">

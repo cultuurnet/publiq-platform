@@ -51,8 +51,9 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
     loginUrls,
     logoutUrls,
     newIntegrationUrl: {
-      environment: Environment.Test,
+      environment: Environment.Test as Environment,
       url: "",
+      type: "",
     },
   };
 
@@ -66,6 +67,10 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
     callbackUrls: data.callbackUrls.filter((url) => url.changed),
     loginUrls: data.loginUrls.filter((url) => url.changed),
     logoutUrls: data.logoutUrls.filter((url) => url.changed),
+    newIntegrationUrl: {
+      ...data.newIntegrationUrl,
+      url: `${Math.random()}@test.be`,
+    },
   }));
 
   return (
@@ -86,19 +91,26 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
       <UrlList
         type={IntegrationUrlType.Login}
         urls={data.loginUrls}
+        newUrl={data.newIntegrationUrl}
+        onChangeNewUrl={(newUrl) =>
+          setData("newIntegrationUrl", {
+            ...newUrl,
+            type: IntegrationUrlType.Login,
+          })
+        }
         onChangeData={(data) => setData("loginUrls", data)}
         isDisabled={isDisabled}
         isMobile={isMobile}
-        isAddVisible={false}
+        onSave={handleSave}
       />
       <UrlList
         type={IntegrationUrlType.Callback}
         urls={data.callbackUrls}
         newUrl={data.newIntegrationUrl}
-        onChangeNewUrlEnvironment={(environment) =>
+        onChangeNewUrl={(newUrl) =>
           setData("newIntegrationUrl", {
-            ...data.newIntegrationUrl,
-            environment,
+            ...newUrl,
+            type: IntegrationUrlType.Callback,
           })
         }
         onChangeData={(data) => setData("callbackUrls", data)}
@@ -109,9 +121,17 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
       <UrlList
         type={IntegrationUrlType.Logout}
         urls={data.logoutUrls}
+        newUrl={data.newIntegrationUrl}
         onChangeData={(data) => setData("logoutUrls", data)}
+        onChangeNewUrl={(newUrl) =>
+          setData("newIntegrationUrl", {
+            ...newUrl,
+            type: IntegrationUrlType.Logout,
+          })
+        }
         isDisabled={isDisabled}
         isMobile={isMobile}
+        onSave={handleSave}
       />
 
       {!isDisabled && (

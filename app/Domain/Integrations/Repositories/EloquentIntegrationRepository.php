@@ -67,13 +67,24 @@ final class EloquentIntegrationRepository implements IntegrationRepository
 
         $integrationName = $updateIntegration->input('integrationName');
         $integrationDescription = $updateIntegration->input('description');
+        $newIntegrationUrl = $updateIntegration->input('newIntegrationUrl');
 
         if ($integrationName !== null) {
             $integrationModel['name'] = $integrationName;
         }
 
-        if ($integrationName !== null) {
+        if ($integrationDescription !== null) {
             $integrationModel['description'] = $integrationDescription;
+        }
+
+
+        if ($newIntegrationUrl !== null) {
+            IntegrationUrlModel::query()->create(
+                [
+                    'integration_id' => $id->toString(),
+                    ...$newIntegrationUrl
+                ]
+            );
         }
 
         foreach (['loginUrls', 'callbackUrls', 'logoutUrls'] as $property) {

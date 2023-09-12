@@ -23,6 +23,10 @@ final class UpdateIntegration extends FormRequest
                     'url' => ['required', 'string'],
                 ];
             }),
+            'newIntegrationUrl' => [
+                'url' => ['required', 'string'],
+                'environment' => ['required', 'string']
+            ],
         ];
     }
 
