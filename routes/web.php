@@ -32,13 +32,47 @@ Route::post('/admin/logout', Logout::class);
 
 Route::get('/auth/callback', Callback::class);
 
-TranslatedRoute::get(['/en/support', '/nl/ondersteuning'], static fn () => Inertia::render('Support/Index'));
-TranslatedRoute::get(['/en/subscriptions', '/nl/abonnementen'], [SubscriptionController::class, 'index']);
+TranslatedRoute::get(
+    [
+        '/en/support',
+        '/nl/ondersteuning',
+    ],
+    static fn () => Inertia::render('Support/Index')
+);
+
+TranslatedRoute::get(
+    [
+        '/en/subscriptions',
+        '/nl/abonnementen',
+    ],
+    [SubscriptionController::class, 'index']
+);
 
 Route::group(['middleware' => 'auth'], static function () {
-    TranslatedRoute::get(['/en/integrations', '/nl/integraties'], [IntegrationController::class, 'index'], 'integrations.index');
-    TranslatedRoute::get(['/en/integrations/new', '/nl/integraties/nieuw'], [IntegrationController::class, 'create']);
-    TranslatedRoute::get(['/en/integrations/{id}', '/nl/integraties/{id}'], [IntegrationController::class, 'show'], 'integrations.show');
+    TranslatedRoute::get(
+        [
+            '/en/integrations',
+            '/nl/integraties',
+        ],
+        [IntegrationController::class, 'index'],
+        'integrations.index'
+    );
+
+    TranslatedRoute::get(
+        [
+            '/en/integrations/new',
+            '/nl/integraties/nieuw',
+        ],
+        [IntegrationController::class, 'create']
+    );
+    TranslatedRoute::get(
+        [
+            '/en/integrations/{id}',
+            '/nl/integraties/{id}',
+        ],
+        [IntegrationController::class, 'show'],
+        'integrations.show'
+    );
 
     Route::delete('/integrations/{id}', [IntegrationController::class, 'destroy']);
 
