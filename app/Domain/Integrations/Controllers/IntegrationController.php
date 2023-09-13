@@ -96,7 +96,7 @@ final class IntegrationController extends Controller
             )
         );
     }
-    public function storeUrl(StoreIntegrationUrlRequest $request, string $id, string $urlId): RedirectResponse
+    public function storeUrl(StoreIntegrationUrlRequest $request, string $id): RedirectResponse
     {
         $integrationUrl = new IntegrationUrl(
             Uuid::uuid4(),
