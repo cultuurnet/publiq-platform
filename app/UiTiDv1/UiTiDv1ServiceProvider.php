@@ -16,6 +16,7 @@ use App\UiTiDv1\Listeners\CreateConsumers;
 use App\UiTiDv1\Listeners\UpdateConsumers;
 use App\UiTiDv1\Repositories\EloquentUiTiDv1ConsumerRepository;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
@@ -55,6 +56,12 @@ final class UiTiDv1ServiceProvider extends ServiceProvider
                     $environmentsConfig,
                     array_keys($environmentsConfig)
                 )
+            );
+        });
+
+        $this->app->singleton(CachedUiTiDv1Status::class, function () {
+            return new CachedUiTiDv1Status(
+                App::get(UiTiDv1ClusterSDK::class)
             );
         });
 
