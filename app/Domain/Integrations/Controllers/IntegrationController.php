@@ -111,8 +111,11 @@ final class IntegrationController extends Controller
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName(
                 request: $request,
-                routeName: 'integrations.index'
-            )
+                routeName: 'integrations.show'
+            ),
+            [
+                'id' => $id,
+            ]
         );
     }
 
