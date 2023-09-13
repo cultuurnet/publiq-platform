@@ -14,9 +14,9 @@ final class StoreIntegrationUrlRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'environment' => ['required', 'string'],
-            'type' => ['required', 'string'],
-            'url' => ['required', 'string'],
+            'environment' => ['required', 'string', 'max:255'],
+            'type' => ['required', 'string', 'max:255'],
+            'url' => ['required', 'string', 'max:255'],
         ];
     }
 }

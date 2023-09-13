@@ -18,19 +18,19 @@ final class UpdateIntegrationUrlRequest extends FormRequest
             'loginUrls.*' => Rule::forEach(function () {
                 return [
                     'id' => ['required', 'string'],
-                    'url' => ['required', 'string'],
+                    'url' => ['required', 'string', 'max:255'],
                 ];
             }),
             'callbackUrls.*' => Rule::forEach(function () {
                 return [
                     'id' => ['required', 'string'],
-                    'url' => ['required', 'string'],
+                    'url' => ['required', 'string', 'max:255'],
                 ];
             }),
             'logoutUrls.*' => Rule::forEach(function () {
                 return [
                     'id' => ['required', 'string'],
-                    'url' => ['required', 'string'],
+                    'url' => ['required', 'string', 'max:255'],
                 ];
             }),
         ];
