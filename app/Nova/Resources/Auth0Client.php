@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Nova\Resources;
 
 use App\Auth0\Auth0Tenant;
+use App\Auth0\CachedAuth0ClientGrants;
 use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Nova\ActionGuards\Auth0\ActivateAuth0ClientGuard;
@@ -13,6 +14,7 @@ use App\Nova\Actions\Auth0\ActivateAuth0Client;
 use App\Nova\Actions\Auth0\BlockAuth0Client;
 use App\Nova\Resource;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
@@ -59,6 +61,16 @@ final class Auth0Client extends Resource
                     Auth0Tenant::Acceptance->value => Auth0Tenant::Acceptance->name,
                     Auth0Tenant::Production->value => Auth0Tenant::Production->name,
                 ]),
+            Text::make('Status', function (Auth0ClientModel $model) {
+                $auth0Client = $model->toDomain();
+                if (empty(App::get(CachedAuth0ClientGrants::class)->findGrantsOnClient($auth0Client))) {
+                    Log::info('Auth0Client - status - ' . $auth0Client->clientId . ': blocked');
+                    return 'Blocked';
+                }
+
+                Log::debug('Auth0Client - status - ' . $auth0Client->clientId . ': active');
+                return 'Active';
+            })->asHtml(),
             Text::make('auth0_client_id')
                 ->readonly(),
             Text::make('auth0_client_secret')

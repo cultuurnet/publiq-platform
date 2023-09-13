@@ -112,8 +112,12 @@
       "blocked": "Geblokeerd",
       "active": "Actief",
       "deleted": "Verwijderd",
-      "pending_approval_integration": "Niet actief",
-      "pending_approval_payment": "Niet actief"
+      "pending_approval_integration": "In Aanvraag",
+      "pending_approval_payment": "In Aanvraag",
+      "pending_approval_integration_description": "Voor de live-integratie is goedkeuring van publiq noodzakelijk. Alle informatie om vlot live te kunnen gaan vind je",
+      "pending_approval_payment_description": "Aan de slag met echte data en evenementen? Activeer je Search API integratie (vanaf 125 euro per jaar)",
+      "here": "hier.",
+      "activate": "Activeren"
     },
     "documentation": {
       "title": "Documentatie",
@@ -136,7 +140,7 @@
       "employees": "Andere medewerkers",
       "delete": "Verwijder medewerker",
       "new": "Nieuwe medewerker",
-      "save":"Opslaan",
+      "save": "Opslaan",
       "cancel": "Annuleren"
     },
     "billing_info": {
@@ -165,9 +169,13 @@
     "integration_settings": {
       "title": "Integratie-instellingen",
       "test": "testomgeving",
-      "production": "productieomgeving",
+      "prod": "productieomgeving",
+      "acc": "acceptatieomgeving",
       "login": "Login URL",
       "callback": "Callback URL",
+      "new_url": "Nieuwe {{type}} URL",
+      "url": "URL",
+      "environment": "Omgeving",
       "logout": "Logout URL"
     }
   },

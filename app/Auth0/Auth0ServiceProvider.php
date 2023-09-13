@@ -20,6 +20,7 @@ use App\Domain\Integrations\Events\IntegrationUrlCreated;
 use App\Domain\Integrations\Events\IntegrationUrlDeleted;
 use App\Domain\Integrations\Events\IntegrationUrlUpdated;
 use Auth0\SDK\Configuration\SdkConfiguration;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
@@ -63,6 +64,12 @@ final class Auth0ServiceProvider extends ServiceProvider
                     $tenantsConfig,
                     $tenants
                 )
+            );
+        });
+
+        $this->app->singleton(CachedAuth0ClientGrants::class, function () {
+            return new CachedAuth0ClientGrants(
+                App::get(Auth0ClusterSDK::class)
             );
         });
 

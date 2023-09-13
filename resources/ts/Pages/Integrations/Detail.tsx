@@ -53,7 +53,7 @@ const Detail = ({ integration }: Props) => {
 
         <BasicInfo integration={integration} isMobile={isMobile} />
         <IntegrationInfo {...integration} />
-        <IntegrationSettings isMobile={isMobile} />
+        <IntegrationSettings {...integration} isMobile={isMobile} />
         <ContactInfo {...integration} />
         <BillingInfo {...integration} />
         <ButtonSecondary

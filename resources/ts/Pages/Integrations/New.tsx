@@ -7,7 +7,7 @@ import { Input } from "../../Components/Input";
 import { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
 import { Card } from "../../Components/Card";
-import { Button } from "../../Components/Button";
+import { ButtonPrimary } from "../../Components/ButtonPrimary";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { Page } from "../../Components/Page";
@@ -417,9 +417,9 @@ const New = ({ subscriptions }: Props) => {
             />
           </div>
 
-          <Button type="submit" disabled={processing} className="w-fit">
+          <ButtonPrimary type="submit" disabled={processing} className="w-fit">
             {t("integration_form.submit")}
-          </Button>
+          </ButtonPrimary>
         </form>
       </div>
     </Page>

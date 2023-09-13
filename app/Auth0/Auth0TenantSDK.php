@@ -13,6 +13,7 @@ use App\Json;
 use Auth0\SDK\Auth0;
 use Auth0\SDK\Configuration\SdkConfiguration;
 use Auth0\SDK\Contract\API\ManagementInterface;
+use Illuminate\Support\Facades\Log;
 use Psr\Http\Message\ResponseInterface;
 use Ramsey\Uuid\Uuid;
 
@@ -141,6 +142,8 @@ final class Auth0TenantSDK
         if(! is_object($json) || ! property_exists($json, 'grant_types')) {
             return [];
         }
+
+        Log::info('Grants for client ' . $auth0Client->clientId . ': ' . implode(', ', $json->grant_types));
 
         return $json->grant_types;
     }
