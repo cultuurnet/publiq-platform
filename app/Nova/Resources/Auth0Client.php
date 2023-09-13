@@ -107,7 +107,7 @@ final class Auth0Client extends Resource
     public function actions(NovaRequest $request): array
     {
         return [
-            (new ActivateAuth0Client())
+            App::make(ActivateAuth0Client::class)
                 ->showOnDetail()
                 ->showInline()
                 ->confirmText('Are you sure you want to activate this client?')
@@ -118,7 +118,7 @@ final class Auth0Client extends Resource
                     $guard = App::make(ActivateAuth0ClientGuard::class);
                     return $guard->canDo($model->toDomain());
                 }),
-            (new BlockAuth0Client())
+            App::make(BlockAuth0Client::class)
                 ->showOnDetail()
                 ->showInline()
                 ->confirmText('Are you sure you want to block this client?')
