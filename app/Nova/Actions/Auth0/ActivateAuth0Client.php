@@ -20,6 +20,8 @@ final class ActivateAuth0Client extends Action
     use InteractsWithQueue;
     use Queueable;
 
+    public $name = 'Activate Auth0 client';
+
     public function __construct(private readonly Dispatcher $dispatcher, private readonly ActivateClientListener $listener)
     {
     }

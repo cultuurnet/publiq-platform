@@ -18,6 +18,8 @@ final class ActivateUiTiDv1Consumer extends Action
     use InteractsWithQueue;
     use Queueable;
 
+    public $name = 'Activate UiTiD v1 consumer';
+
     public function handle(ActionFields $fields, ActionModelCollection $actionModelCollection): void
     {
         foreach ($actionModelCollection as $uiTiDv1ConsumerModel) {

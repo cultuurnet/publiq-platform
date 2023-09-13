@@ -20,6 +20,8 @@ final class BlockAuth0Client extends Action
     use InteractsWithQueue;
     use Queueable;
 
+    public $name = 'Block Auth0 client';
+
     public function __construct(private readonly Dispatcher $dispatcher, private readonly BlockClientListener $listener)
     {
     }
