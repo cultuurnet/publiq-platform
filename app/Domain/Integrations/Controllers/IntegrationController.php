@@ -7,14 +7,20 @@ namespace App\Domain\Integrations\Controllers;
 use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Domain\Auth\CurrentUser;
 use App\Domain\Contacts\Repositories\ContactRepository;
+use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\FormRequests\StoreIntegrationRequest;
+use App\Domain\Integrations\FormRequests\StoreIntegrationUrlRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationRequest;
 use App\Domain\Integrations\FormRequests\UpdateBillingInfoRequest;
 use App\Domain\Integrations\FormRequests\UpdateContactInfoRequest;
+use App\Domain\Integrations\FormRequests\UpdateIntegrationUrlRequest;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\IntegrationUrl;
+use App\Domain\Integrations\IntegrationUrlType;
 use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
 use App\Domain\Integrations\Mappers\UpdateContactInfoMapper;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Domain\Integrations\Repositories\IntegrationUrlRepository;
 use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Organization;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
@@ -37,6 +43,7 @@ final class IntegrationController extends Controller
     public function __construct(
         private readonly SubscriptionRepository $subscriptionRepository,
         private readonly IntegrationRepository $integrationRepository,
+        private readonly IntegrationUrlRepository $integrationUrlRepository,
         private readonly ContactRepository $contactRepository,
         private readonly OrganizationRepository $organizationRepository,
         private readonly Auth0ClientRepository $auth0ClientRepository,
@@ -89,6 +96,25 @@ final class IntegrationController extends Controller
             )
         );
     }
+    public function storeUrl(StoreIntegrationUrlRequest $request): RedirectResponse
+    {
+        $integrationUrl = new IntegrationUrl(
+            Uuid::fromString($request->input('id')),
+            Uuid::fromString($request->input('integrationId')),
+            Environment::from($request->input('environment')),
+            IntegrationUrlType::from($request->input('type')),
+            $request->input('url')
+        );
+
+        $this->integrationUrlRepository->save($integrationUrl);
+
+        return Redirect::route(
+            TranslatedRoute::getTranslatedRouteName(
+                request: $request,
+                routeName: 'integrations.index'
+            )
+        );
+    }
 
     public function destroy(Request $request, string $id): RedirectResponse
     {
@@ -106,9 +132,40 @@ final class IntegrationController extends Controller
         );
     }
 
+    public function destroyUrl(Request $request, string $id): RedirectResponse
+    {
+        try {
+            $this->integrationUrlRepository->deleteById(Uuid::fromString($id));
+        } catch (ModelNotFoundException) {
+            // We can redirect back to integrations, even if not successful
+        }
+
+        return Redirect::route(
+            TranslatedRoute::getTranslatedRouteName(
+                request: $request,
+                routeName: 'integrations.index'
+            )
+        );
+    }
+
     public function update(UpdateIntegrationRequest $request, string $id): RedirectResponse
     {
         $this->integrationRepository->update(Uuid::fromString($id), $request);
+
+        return Redirect::route(
+            TranslatedRoute::getTranslatedRouteName(
+                request: $request,
+                routeName: 'integrations.show'
+            ),
+            [
+                'id' => $id,
+            ]
+        );
+    }
+
+    public function updateUrls(UpdateIntegrationUrlRequest $request, string $id): RedirectResponse
+    {
+        $this->integrationUrlRepository->update($request);
 
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName(

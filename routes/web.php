@@ -74,11 +74,14 @@ Route::group(['middleware' => 'auth'], static function () {
         'integrations.show'
     );
 
-    Route::delete('/integrations/{id}', [IntegrationController::class, 'destroy']);
-
     Route::post('/integrations', [IntegrationController::class, 'store']);
 
+    Route::delete('/integrations/{id}', [IntegrationController::class, 'destroy']);
     Route::patch('/integrations/{id}', [IntegrationController::class, 'update']);
+
+    Route::patch('/integrations/{id}/urls', [IntegrationController::class, 'updateUrls']);
+    Route::delete('/integrations/{id}/urls/{urlId}', [IntegrationController::class, 'destroyUrl']);
+    Route::post('/integrations/{id}/urls', [IntegrationController::class, 'storeUrl']);
 
     Route::patch('/integrations/{id}/contacts', [IntegrationController::class, 'updateContacts']);
     Route::delete('/integrations/{id}/contacts/{contactId}', [IntegrationController::class, 'deleteContact']);

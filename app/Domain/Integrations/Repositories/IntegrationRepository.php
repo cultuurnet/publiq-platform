@@ -12,7 +12,7 @@ use Ramsey\Uuid\UuidInterface;
 interface IntegrationRepository
 {
     public function save(Integration $integration): void;
-    public function update(UuidInterface $id, UpdateIntegrationRequest $updateIntegration): Integration;
+    public function update(UuidInterface $id, UpdateIntegrationRequest $request): Integration;
     public function getById(UuidInterface $id): Integration;
     public function deleteById(UuidInterface $id): ?bool;
     public function getByContactEmail(string $email, ?string $searchQuery): PaginatedCollection;
