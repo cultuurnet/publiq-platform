@@ -41,6 +41,6 @@ final class UpdateContactInfoRequest extends FormRequest
                         'lastName' => ['required', 'string', 'min:2', 'max:255'],
                     ];
                 }),
-    ];
+        ];
     }
 }

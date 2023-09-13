@@ -18,5 +18,4 @@ final class UpdateIntegrationRequest extends FormRequest
             'description' => ['string', 'max:255'],
         ];
     }
-
 }
