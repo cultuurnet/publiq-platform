@@ -18,7 +18,7 @@ final class ActivateUiTiDv1Consumer extends Action
     use InteractsWithQueue;
     use Queueable;
 
-    public $name = 'Activate Auth0 consumer';
+    public $name = 'Activate UiTiD v1 consumer';
 
     public function handle(ActionFields $fields, ActionModelCollection $actionModelCollection): void
     {
