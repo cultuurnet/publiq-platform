@@ -96,11 +96,11 @@ final class IntegrationController extends Controller
             )
         );
     }
-    public function storeUrl(StoreIntegrationUrlRequest $request): RedirectResponse
+    public function storeUrl(StoreIntegrationUrlRequest $request, string $id, string $urlId): RedirectResponse
     {
         $integrationUrl = new IntegrationUrl(
-            Uuid::fromString($request->input('id')),
-            Uuid::fromString($request->input('integrationId')),
+            Uuid::uuid4(),
+            Uuid::fromString($id),
             Environment::from($request->input('environment')),
             IntegrationUrlType::from($request->input('type')),
             $request->input('url')
@@ -132,10 +132,10 @@ final class IntegrationController extends Controller
         );
     }
 
-    public function destroyUrl(Request $request, string $id): RedirectResponse
+    public function destroyUrl(Request $request, string $id, string $urlId): RedirectResponse
     {
         try {
-            $this->integrationUrlRepository->deleteById(Uuid::fromString($id));
+            $this->integrationUrlRepository->deleteById(Uuid::fromString($urlId));
         } catch (ModelNotFoundException) {
             // We can redirect back to integrations, even if not successful
         }
@@ -143,8 +143,11 @@ final class IntegrationController extends Controller
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName(
                 request: $request,
-                routeName: 'integrations.index'
-            )
+                routeName: 'integrations.show'
+            ),
+            [
+                'id' => $id,
+            ]
         );
     }
 
