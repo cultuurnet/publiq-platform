@@ -90,10 +90,7 @@ final class IntegrationController extends Controller
         $this->integrationRepository->save($integration);
 
         return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName(
-                request: $request,
-                routeName: 'integrations.index'
-            )
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.index')
         );
     }
     public function storeUrl(StoreIntegrationUrlRequest $request, string $id): RedirectResponse
@@ -109,10 +106,7 @@ final class IntegrationController extends Controller
         $this->integrationUrlRepository->save($integrationUrl);
 
         return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName(
-                request: $request,
-                routeName: 'integrations.show'
-            ),
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
             [
                 'id' => $id,
             ]
@@ -128,10 +122,7 @@ final class IntegrationController extends Controller
         }
 
         return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName(
-                request: $request,
-                routeName: 'integrations.index'
-            )
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.index')
         );
     }
 
@@ -144,10 +135,7 @@ final class IntegrationController extends Controller
         }
 
         return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName(
-                request: $request,
-                routeName: 'integrations.show'
-            ),
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
             [
                 'id' => $id,
             ]
@@ -159,10 +147,7 @@ final class IntegrationController extends Controller
         $this->integrationRepository->update(Uuid::fromString($id), $request);
 
         return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName(
-                request: $request,
-                routeName: 'integrations.show'
-            ),
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
             [
                 'id' => $id,
             ]
@@ -174,10 +159,7 @@ final class IntegrationController extends Controller
         $this->integrationUrlRepository->update($request);
 
         return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName(
-                request: $request,
-                routeName: 'integrations.show'
-            ),
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
             [
                 'id' => $id,
             ]
@@ -195,10 +177,7 @@ final class IntegrationController extends Controller
         });
 
         return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName(
-                request: $request,
-                routeName: 'integrations.show'
-            ),
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
             [
                 'id' => $id,
             ]
@@ -214,10 +193,7 @@ final class IntegrationController extends Controller
         }
 
         return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName(
-                request: $request,
-                routeName: 'integrations.show'
-            ),
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
             [
                 'id' => $id,
             ]
@@ -242,10 +218,7 @@ final class IntegrationController extends Controller
         $this->organizationRepository->save($organisation);
 
         return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName(
-                request: $request,
-                routeName: 'integrations.show'
-            ),
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
             [
                 'id' => $id,
             ]
