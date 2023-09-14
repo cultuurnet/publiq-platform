@@ -14,11 +14,13 @@ use App\Domain\Integrations\FormRequests\UpdateIntegrationRequest;
 use App\Domain\Integrations\FormRequests\UpdateBillingInfoRequest;
 use App\Domain\Integrations\FormRequests\UpdateContactInfoRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationUrlRequest;
+use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\IntegrationUrlType;
 use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
 use App\Domain\Integrations\Mappers\UpdateContactInfoMapper;
+use App\Domain\Integrations\Mappers\UpdateIntegrationMapper;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\IntegrationUrlRepository;
 use App\Domain\Organizations\Address;
@@ -144,7 +146,11 @@ final class IntegrationController extends Controller
 
     public function update(UpdateIntegrationRequest $request, string $id): RedirectResponse
     {
-        $this->integrationRepository->update(Uuid::fromString($id), $request);
+        $currentIntegration = $this->integrationRepository->getById(Uuid::fromString($id));
+
+        $updatedIntegration = UpdateIntegrationMapper::map($request, $currentIntegration);
+
+        $this->integrationRepository->update($updatedIntegration);
 
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),

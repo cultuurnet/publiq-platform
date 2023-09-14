@@ -14,8 +14,8 @@ final class UpdateIntegrationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'integrationName' => ['string', 'max:255'],
-            'description' => ['string', 'max:255'],
+            'integrationName' => ['required_without:description', 'string', 'max:255'],
+            'description' => ['required_without:integrationName', 'string', 'max:255'],
         ];
     }
 }
