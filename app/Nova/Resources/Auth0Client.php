@@ -13,7 +13,6 @@ use App\Nova\ActionGuards\Auth0\BlockAuth0ClientGuard;
 use App\Nova\Actions\Auth0\ActivateAuth0Client;
 use App\Nova\Actions\Auth0\BlockAuth0Client;
 use App\Nova\Resource;
-use App\UiTiDv1\UiTiDv1ConsumerStatus;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Laravel\Nova\Fields\Field;
