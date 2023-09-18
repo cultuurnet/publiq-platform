@@ -13,6 +13,7 @@ use App\Nova\ActionGuards\Auth0\BlockAuth0ClientGuard;
 use App\Nova\Actions\Auth0\ActivateAuth0Client;
 use App\Nova\Actions\Auth0\BlockAuth0Client;
 use App\Nova\Resource;
+use App\UiTiDv1\UiTiDv1ConsumerStatus;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Laravel\Nova\Fields\Field;
@@ -65,11 +66,11 @@ final class Auth0Client extends Resource
                 $auth0Client = $model->toDomain();
                 if (empty(App::get(CachedAuth0ClientGrants::class)->findGrantsOnClient($auth0Client))) {
                     Log::info('Auth0Client - status - ' . $auth0Client->clientId . ': blocked');
-                    return 'Blocked';
+                    return '<span style="color: red;">Blocked</span>';
                 }
 
                 Log::debug('Auth0Client - status - ' . $auth0Client->clientId . ': active');
-                return 'Active';
+                return '<span style="color: green;">Active</span>';
             })->asHtml(),
             Text::make('auth0_client_id')
                 ->readonly(),
