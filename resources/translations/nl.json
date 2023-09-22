@@ -1,4 +1,8 @@
-{
+{ "global": {
+  "publiq": "publiq vzw",
+  "btw": "BTW",
+  "IBAN": "IBAN"
+},
   "pages": {
     "/integrations": "/nl/integraties",
     "/integrations/new": "/nl/integraties/nieuw",
@@ -141,7 +145,8 @@
       "delete": "Verwijder medewerker",
       "new": "Nieuwe medewerker",
       "save": "Opslaan",
-      "cancel": "Annuleren"
+      "cancel": "Annuleren",
+      "dialog": "Wil je deze medewerker echt verwijderen?"
     },
     "billing_info": {
       "title": "Facturatiegegevens",
@@ -176,7 +181,8 @@
       "new_url": "Nieuwe {{type}} URL",
       "url": "URL",
       "environment": "Omgeving",
-      "logout": "Logout URL"
+      "logout": "Logout URL",
+      "dialog": "Wil je deze URL echt verwijderen?"
     }
   },
   "support": {
@@ -224,5 +230,31 @@
   },
   "tooltip": {
     "copy": "Gekopieerd!"
+  },
+  "footer": {
+    "legal": "Legal",
+    "support": "Ondersteuning",
+    "address": {
+      "part1": "Henegouwenkaai 41-43",
+      "part2": "1080 Brussel"
+    },
+    "links": {
+      "what": "Wat?",
+      "opportunities": "Mogelijkheden",
+      "price": "Prijs",
+      "start": "Aan de slag",
+      "terms_of_use": "Gebruiksvoorwaarden",
+      "privacy": "Privacyverklaring",
+      "cookie": "Cookieverklaring",
+      "documentation": "Documentatie",
+      "status_page": "Statuspagina",
+      "help": "Helpcentrum",
+      "slack": "Support via slack"
+    },
+    "newsletter": {
+      "title": "Blijf op de hoogte",
+      "description": "Schrijf je in op onze nieuwsbrief en blijf op de hoogte van het laatste publiq-nieuws.",
+      "action": "Inschrijven"
+    }
   }
 }
