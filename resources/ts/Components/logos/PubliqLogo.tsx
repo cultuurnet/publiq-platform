@@ -1,6 +1,10 @@
 import React, { ComponentProps } from "react";
 
-type Props = { color: string, width: number, height:number & ComponentProps<"svg"> };
+type Props = {
+  color: string;
+  width: number;
+  height: number & ComponentProps<"svg">;
+};
 
 export const PubliqLogo = ({ color, width, height, ...props }: Props) => {
   return (
