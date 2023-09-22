@@ -44,8 +44,8 @@ export const IntegrationTypes = () => {
   const translatedIntegrationTypes = useMemo(() => getIntegrationTypes(t), [t]);
 
   return (
-    <div>
-      <ul className="flex justify-center gap-4 flex-wrap">
+    <div >
+      <ul className="grid grid-cols-3 gap-5 max-md:flex mt-[2rem] max-md:flex-col">
         {translatedIntegrationTypes.map((integration) => (
           <IntegrationTypeCard key={integration.title} {...integration} />
         ))}
