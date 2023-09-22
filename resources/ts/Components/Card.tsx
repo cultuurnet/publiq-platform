@@ -37,7 +37,9 @@ export const Card = ({
         ></img>
       )}
       <div>
-        <Heading level={2} className="font-medium mb-2">{title}</Heading>
+        <Heading level={2} className="font-medium mb-2">
+          {title}
+        </Heading>
         <p className="text-gray-700 text-base min-h-[5rem] break-words">
           {description}
         </p>

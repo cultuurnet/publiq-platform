@@ -23,7 +23,10 @@ export const IntegrationTypeCard = ({
       key={title}
       title={title}
       description={description}
-      className={classNames("md:max-w-sm md:hover:translate-y-[-2rem] md:overflow-visible gap-7", after)}
+      className={classNames(
+        "md:max-w-sm md:hover:translate-y-[-2rem] md:overflow-visible gap-7",
+        after
+      )}
     >
       <div className="flex flex-col flex-1 justify-between min-h-[10rem] gap-7">
         <ul className="flex flex-col gap-3">
@@ -35,7 +38,7 @@ export const IntegrationTypeCard = ({
           ))}
         </ul>
         <ButtonLinkSecondary className="self-center" href={actionUrl}>
-          {t("home.integration_types.action", {type:title})}
+          {t("home.integration_types.action", { type: title })}
         </ButtonLinkSecondary>
       </div>
     </Card>
