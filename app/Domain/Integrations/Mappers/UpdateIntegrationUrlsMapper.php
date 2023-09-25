@@ -30,7 +30,7 @@ final class UpdateIntegrationUrlsMapper
         return $changedUrlsCollection->map(
             function (array $changedUrl) use ($currentUrlsCollection) {
                 $currentUrl = $currentUrlsCollection->firstOrFail(
-                    fn (IntegrationUrl $currentUrl, int $index) => $currentUrl->id->equals(
+                    fn (IntegrationUrl $currentUrl) => $currentUrl->id->equals(
                         Uuid::fromString($changedUrl['id'])
                     )
                 );
@@ -38,9 +38,9 @@ final class UpdateIntegrationUrlsMapper
                 return new IntegrationUrl(
                     $currentUrl->id,
                     $currentUrl->integrationId,
-                    $currentUrl->environment,
+                    $changedUrl['environment'] ?? $currentUrl->environment,
                     $currentUrl->type,
-                    $changedUrl['url']
+                    $changedUrl['url'] ?? $currentUrl->url
                 );
             }
         )->toArray();
