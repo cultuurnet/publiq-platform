@@ -15,26 +15,26 @@ use Ramsey\Uuid\Uuid;
 
 final class StoreIntegrationMapper
 {
-    public static function map(StoreIntegrationRequest $storeIntegration, CurrentUser $currentUser): Integration
+    public static function map(StoreIntegrationRequest $request, CurrentUser $currentUser): Integration
     {
         $integrationId = Uuid::uuid4();
 
         $contactOrganization = new Contact(
             Uuid::uuid4(),
             $integrationId,
-            $storeIntegration->input('emailFunctionalContact'),
+            $request->input('emailFunctionalContact'),
             ContactType::Functional,
-            $storeIntegration->input('firstNameFunctionalContact'),
-            $storeIntegration->input('lastNameFunctionalContact')
+            $request->input('firstNameFunctionalContact'),
+            $request->input('lastNameFunctionalContact')
         );
 
         $contactPartner = new Contact(
             Uuid::uuid4(),
             $integrationId,
-            $storeIntegration->input('emailTechnicalContact'),
+            $request->input('emailTechnicalContact'),
             ContactType::Technical,
-            $storeIntegration->input('firstNameTechnicalContact'),
-            $storeIntegration->input('lastNameTechnicalContact')
+            $request->input('firstNameTechnicalContact'),
+            $request->input('lastNameTechnicalContact')
         );
 
         $contributor = new Contact(
@@ -49,10 +49,10 @@ final class StoreIntegrationMapper
 
         return (new Integration(
             $integrationId,
-            IntegrationType::from($storeIntegration->input('integrationType')),
-            $storeIntegration->input('integrationName'),
-            $storeIntegration->input('description'),
-            Uuid::fromString($storeIntegration->input('subscriptionId')),
+            IntegrationType::from($request->input('integrationType')),
+            $request->input('integrationName'),
+            $request->input('description'),
+            Uuid::fromString($request->input('subscriptionId')),
             IntegrationStatus::Draft
         ))->withContacts($contactOrganization, $contactPartner, $contributor);
     }
