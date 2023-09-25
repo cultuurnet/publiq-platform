@@ -3,13 +3,13 @@ import { useTranslation } from "react-i18next";
 import { ButtonPrimary } from "../../ButtonPrimary";
 import { FormDropdown } from "../../FormDropdown";
 import { ButtonIcon } from "../../ButtonIcon";
-import { faPencil } from "@fortawesome/free-solid-svg-icons";
-import { useSectionCollapsedContext } from "../../../context/SectionCollapsedContext";
+import { faPencil } from "@fortawesome/free-solid-svg-icons"; 
 import { useForm } from "@inertiajs/react";
 import { Integration } from "../../../Pages/Integrations/Index";
 import { IntegrationUrlType } from "../../../types/IntegrationUrlType";
 import { UrlList } from "./UrlList";
 import { Environment } from "../../../types/Environment";
+import { IntegrationUrl } from "../../../Pages/Integrations/Index";
 
 type Props = {
   isMobile: boolean;
@@ -19,8 +19,6 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
   const { t } = useTranslation();
 
   const [isDisabled, setIsDisabled] = useState(true);
-
-  const [collapsed, setCollapsed] = useSectionCollapsedContext();
 
   const callbackUrls = useMemo(
     () =>
@@ -57,13 +55,22 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
     },
   };
 
-  const { data, setData, patch, transform } = useForm(initialFormValues);
+  const { data, setData, patch, transform, delete:destroy } = useForm(initialFormValues);
+
+  const handleDeleteUrl = (urlId: IntegrationUrl['id']) => {
+    destroy(`/integrations/${id}/urls/${urlId}`, {
+      preserveScroll: true,
+      preserveState: false,
+    });
+  };
 
   const handleSave = () =>
     patch(`/integrations/${id}`, {
       preserveScroll: true,
       preserveState: false,
     });
+
+  
 
   transform((data) => ({
     ...data,
@@ -76,21 +83,19 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
     <FormDropdown
       title={t("details.integration_settings.title")}
       actions={
+        urls.length > 0 ?
         <ButtonIcon
           icon={faPencil}
           className="text-icon-gray"
           onClick={() => setIsDisabled((prev) => !prev)}
-        />
-      }
-      isCollapsed={collapsed.integrationsSettings}
-      onChangeCollapsed={(newValue) =>
-        setCollapsed((prev) => ({ ...prev, integrationsSettings: newValue }))
+        /> : ""
       }
     >
       <UrlList
         type={IntegrationUrlType.Login}
         urls={data.loginUrls}
         newUrl={data.newIntegrationUrl}
+        onDelete={(urlId) => handleDeleteUrl(urlId)}
         onChangeNewUrl={(newUrl) =>
           setData("newIntegrationUrl", {
             ...newUrl,
@@ -106,6 +111,7 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
         type={IntegrationUrlType.Callback}
         urls={data.callbackUrls}
         newUrl={data.newIntegrationUrl}
+        onDelete={(urlId) => handleDeleteUrl(urlId)}
         onChangeNewUrl={(newUrl) =>
           setData("newIntegrationUrl", {
             ...newUrl,
@@ -122,6 +128,7 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
         urls={data.logoutUrls}
         newUrl={data.newIntegrationUrl}
         onChangeData={(data) => setData("logoutUrls", data)}
+        onDelete={(urlId) => handleDeleteUrl(urlId)}
         onChangeNewUrl={(newUrl) =>
           setData("newIntegrationUrl", {
             ...newUrl,
@@ -132,7 +139,6 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
         isMobile={isMobile}
         onSave={handleSave}
       />
-
       {!isDisabled && (
         <div className="flex flex-col items-start md:pl-[10.5rem]">
           <ButtonPrimary
