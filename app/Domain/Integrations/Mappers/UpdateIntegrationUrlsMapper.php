@@ -17,34 +17,32 @@ final class UpdateIntegrationUrlsMapper
      */
     public static function map(UpdateIntegrationUrlsRequest $request, array $currentIntegrationUrls): array
     {
-        $loginUrls = $request->input('loginUrls') ?? [];
-        $callbackUrls = $request->input('callbackUrls') ?? [];
-        $logoutUrls = $request->input('logoutUrls') ?? [];
-
-        $changedUrls = [
-            ...$loginUrls,
-            ...$callbackUrls,
-            ...$logoutUrls,
-        ];
-
-        $updated = [];
-
         $currentUrlsCollection = Collection::make($currentIntegrationUrls);
 
-        foreach ($changedUrls as $changedUrl) {
-            $currentUrl = $currentUrlsCollection->firstOrFail(
-                fn (IntegrationUrl $currentUrl, int $index) => $currentUrl->id->equals(Uuid::fromString($changedUrl['id']))
-            );
+        $changedUrlsCollection = Collection::make(
+            [
+                ...($request->input('loginUrls') ?? []),
+                ...($request->input('callbackUrls') ?? []),
+                ...($request->input('logoutUrls') ?? []),
+            ]
+        );
 
-            $updated[] = new IntegrationUrl(
-                $currentUrl->id,
-                $currentUrl->integrationId,
-                $currentUrl->environment,
-                $currentUrl->type,
-                $changedUrl->url
-            );
-        }
+        return $changedUrlsCollection->map(
+            function (array $changedUrl) use ($currentUrlsCollection) {
+                $currentUrl = $currentUrlsCollection->firstOrFail(
+                    fn (IntegrationUrl $currentUrl, int $index) => $currentUrl->id->equals(
+                        Uuid::fromString($changedUrl['id'])
+                    )
+                );
 
-        return $updated;
+                return new IntegrationUrl(
+                    $currentUrl->id,
+                    $currentUrl->integrationId,
+                    $currentUrl->environment,
+                    $currentUrl->type,
+                    $changedUrl['url']
+                );
+            }
+        )->toArray();
     }
 }
