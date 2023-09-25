@@ -32,7 +32,7 @@ export default function Footer() {
               <span className="font-extralight">BE 0475 250 609</span>
             </div>
             <div className="flex gap-3">
-              <span>{t("global.IBAN")}</span>
+              <span>{t("global.iban")}</span>
               <span className="font-extralight">BE87 7330 0837 7594</span>
             </div>
           </div>

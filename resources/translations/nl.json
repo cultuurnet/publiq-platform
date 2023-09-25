@@ -1,8 +1,9 @@
-{ "global": {
-  "publiq": "publiq vzw",
-  "btw": "BTW",
-  "IBAN": "IBAN"
-},
+{
+  "global": {
+    "publiq": "publiq vzw",
+    "btw": "BTW",
+    "iban": "IBAN"
+  },
   "pages": {
     "/integrations": "/nl/integraties",
     "/integrations/new": "/nl/integraties/nieuw",
