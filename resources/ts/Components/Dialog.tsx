@@ -23,10 +23,10 @@ export const Dialog = ({
     <>
       <div
         className={classNames(
-          "flex flex-col fixed bg-publiq-gray-light z-[60] p-5",
+          "fixed bg-white flex flex-col items-center z-[60] top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] rounded-lg",
           isFullscreen
-            ? "left-[1rem] right-[1rem] top-[1rem] bottom-[1rem]"
-            : "min-h-[14rem] max-md:w-[90%] md:min-w-[40rem] top-[30%]"
+            ? "h-full w-full p-4"
+            : "min-h-[14rem] max-md:w-[90%] md:min-w-[40rem] top-[30%] p-4"
         )}
       >
         <ButtonIcon
