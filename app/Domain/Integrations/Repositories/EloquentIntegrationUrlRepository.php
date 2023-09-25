@@ -62,7 +62,6 @@ final class EloquentIntegrationUrlRepository implements IntegrationUrlRepository
 
         DB::transaction(static function () use ($integrationUrls) {
             foreach ($integrationUrls as $integrationUrl) {
-                /** @var IntegrationUrlModel $integrationUrlModel */
                 IntegrationUrlModel::query()->update(
                     [
                         'id' => $integrationUrl->id,
@@ -74,5 +73,18 @@ final class EloquentIntegrationUrlRepository implements IntegrationUrlRepository
                 );
             }
         });
+    }
+
+    public function update(IntegrationUrl $integrationUrl): void
+    {
+        IntegrationUrlModel::query()->update(
+            [
+                'id' => $integrationUrl->id,
+                'integration_id' => $integrationUrl->integrationId,
+                'type' => $integrationUrl->type,
+                'environment' => $integrationUrl->environment,
+                'url' => $integrationUrl->url,
+            ]
+        );
     }
 }
