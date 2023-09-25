@@ -14,7 +14,7 @@ export default function Footer() {
       data-component-name="footer"
     >
       <div className="flex-col">
-        <PubliqLogo color="#FFFFFF" width={140} height={114} />
+        <PubliqLogo color="white" width={140} height={114} />
         <div className="flex flex-col gap-7">
           <div className="flex flex-col gap-1">
             <Heading level={3} className="font-medium">
