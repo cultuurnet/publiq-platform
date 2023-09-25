@@ -162,24 +162,16 @@ final class IntegrationController extends Controller
 
     public function updateUrls(UpdateIntegrationUrlsRequest $request, string $id): RedirectResponse
     {
-        $loginIds = array_map(
+        $ids = array_map(
             fn ($url) => Uuid::fromString($url['id']),
-            $request->input('loginUrls') ?? []
-        );
-        $callbackIds = array_map(
-            fn ($url) => Uuid::fromString($url['id']),
-            $request->input('callbackUrls') ?? []
-        );
-        $logoutIds = array_map(
-            fn ($url) => Uuid::fromString($url['id']),
-            $request->input('logoutUrls') ?? []
+            [
+                ...($request->input('loginUrls') ?? []),
+                ...($request->input('callbackUrls') ?? []),
+                ...($request->input('logoutUrls') ?? []),
+            ]
         );
 
-        $currentUrls = $this->integrationUrlRepository->getByIds([
-            ...$loginIds,
-            ...$callbackIds,
-            ...$logoutIds,
-        ]);
+        $currentUrls = $this->integrationUrlRepository->getByIds($ids);
 
         $updatedUrls = UpdateIntegrationUrlsMapper::map($request, $currentUrls);
 
