@@ -43,22 +43,6 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         });
     }
 
-    private function updateUrls(array $urls): void
-    {
-        if (count($urls) === 0) {
-            return;
-        }
-
-        DB::transaction(static function () use ($urls) {
-            foreach ($urls as $url) {
-                /** @var IntegrationUrlModel $integrationUrlModel */
-                $integrationUrlModel = IntegrationUrlModel::query()->findOrFail($url['id']);
-                $integrationUrlModel['url'] = $url['url'];
-                $integrationUrlModel->save();
-            }
-        });
-    }
-
     public function update(Integration $integration): void
     {
         IntegrationModel::query()->update([
