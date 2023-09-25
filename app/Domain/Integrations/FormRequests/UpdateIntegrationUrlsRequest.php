@@ -14,28 +14,16 @@ final class UpdateIntegrationUrlsRequest extends FormRequest
      */
     public function rules(): array
     {
+        $urlValidation = [
+            'id' => ['required', 'string'],
+            'url' => ['required_without:environment', 'string', 'max:255'],
+            'environment' => ['required_without:url', 'string', 'max:255'],
+        ];
+
         return [
-            'loginUrls.*' => Rule::forEach(function () {
-                return [
-                    'id' => ['required', 'string'],
-                    'url' => ['required_without:environment', 'string', 'max:255'],
-                    'environment' => ['required_without:url', 'string', 'max:255'],
-                ];
-            }),
-            'callbackUrls.*' => Rule::forEach(function () {
-                return [
-                    'id' => ['required', 'string'],
-                    'url' => ['required_without:environment', 'string', 'max:255'],
-                    'environment' => ['required_without:url', 'string', 'max:255'],
-                ];
-            }),
-            'logoutUrls.*' => Rule::forEach(function () {
-                return [
-                    'id' => ['required', 'string'],
-                    'url' => ['required_without:environment', 'string', 'max:255'],
-                    'environment' => ['required_without:url', 'string', 'max:255'],
-                ];
-            }),
+            'loginUrls.*' => Rule::forEach(fn () => $urlValidation),
+            'callbackUrls.*' => Rule::forEach(fn () => $urlValidation),
+            'logoutUrls.*' => Rule::forEach(fn () => $urlValidation),
         ];
     }
 }
