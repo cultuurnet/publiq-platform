@@ -16,7 +16,7 @@ export const IntegrationTypeCard = ({
   actionUrl,
 }: Props) => {
   const { t } = useTranslation();
-  const after =
+  const afterStyles =
     "md:after:hidden md:after:fixed md:after:bottom-[-2rem] md:after:right-[0rem] md:after:w-0 md:after:h-0 md:after:border-r-[3rem] md:after:border-r-white md:after:border-b-[2rem] md:after:border-b-transparent md:hover:after:block";
   return (
     <Card
@@ -25,7 +25,7 @@ export const IntegrationTypeCard = ({
       description={description}
       className={classNames(
         "md:max-w-sm md:hover:translate-y-[-2rem] md:overflow-visible gap-7",
-        after
+        afterStyles
       )}
     >
       <div className="flex flex-col flex-1 justify-between min-h-[10rem] gap-7">
