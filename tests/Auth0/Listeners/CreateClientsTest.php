@@ -67,6 +67,8 @@ final class CreateClientsTest extends TestCase
             ->with($integrationId)
             ->willReturn($integration);
 
+        $clientIds = [Uuid::uuid4(),Uuid::uuid4(),Uuid::uuid4()];
+
         $this->httpClient->expects($this->exactly(6))
             ->method('sendRequest')
             ->willReturnOnConsecutiveCalls(
@@ -78,16 +80,31 @@ final class CreateClientsTest extends TestCase
                 new Response(201, [], Json::encode(['id' => 'grant-id-3'])),
             );
 
+
         $expectedClients = [
-            new Auth0Client($integrationId, 'client-id-1', 'client-secret-1', Auth0Tenant::Acceptance),
-            new Auth0Client($integrationId, 'client-id-2', 'client-secret-2', Auth0Tenant::Testing),
-            new Auth0Client($integrationId, 'client-id-3', 'client-secret-3', Auth0Tenant::Production),
+            new Auth0Client($clientIds[0], $integrationId, 'client-id-1', 'client-secret-1', Auth0Tenant::Acceptance),
+            new Auth0Client($clientIds[1], $integrationId, 'client-id-2', 'client-secret-2', Auth0Tenant::Testing),
+            new Auth0Client($clientIds[2], $integrationId, 'client-id-3', 'client-secret-3', Auth0Tenant::Production),
         ];
 
         $this->clientRepository->expects($this->once())
             ->method('save')
-            ->with(...$expectedClients);
+            ->with(
+                $this->callback(fn (Auth0Client $client) => $this->assertAuth0Client($client, $expectedClients[0])),
+                $this->callback(fn (Auth0Client $client) => $this->assertAuth0Client($client, $expectedClients[1])),
+                $this->callback(fn (Auth0Client $client) => $this->assertAuth0Client($client, $expectedClients[2])),
+            );
 
         $this->createClients->handle(new IntegrationCreated($integrationId));
+    }
+
+    private function assertAuth0Client(Auth0Client $client, Auth0Client $expectedClient): true
+    {
+        $this->assertEquals($client->clientId, $expectedClient->clientId);
+        $this->assertEquals($client->integrationId, $expectedClient->integrationId);
+        $this->assertEquals($client->tenant, $expectedClient->tenant);
+        $this->assertEquals($client->clientSecret, $expectedClient->clientSecret);
+
+        return true;
     }
 }

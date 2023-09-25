@@ -8,6 +8,7 @@ import { usePage, router } from "@inertiajs/react";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTranslateRoute } from "../hooks/useTranslateRoute";
+import { PubliqLogo } from "./logos/PubliqLogo";
 
 type LanguageButtonProps = ButtonSecondaryProps;
 
@@ -62,12 +63,7 @@ export default function Navigation({
     <section className={classes} {...props}>
       {children && <div className="fixed top-10 right-16">{children}</div>}
       <Link href="/">
-        <Heading
-          className="max-md:text-2xl py-2 border-transparent border-b-4"
-          level={3}
-        >
-          {t("title")}
-        </Heading>
+        <PubliqLogo color="publiq-blue" width={50} height={50} />
       </Link>
       <div className="flex max-md:flex-col md:gap-8 min-w-[50%]">
         {pages.map((pageTitle) => (

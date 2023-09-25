@@ -7,11 +7,16 @@ namespace App\UiTiDv1;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationUpdated;
+use App\UiTiDv1\Jobs\ActivateConsumer;
+use App\UiTiDv1\Jobs\ActivateConsumerListener;
+use App\UiTiDv1\Jobs\BlockConsumer;
+use App\UiTiDv1\Jobs\BlockConsumerListener;
 use App\UiTiDv1\Listeners\BlockConsumers;
 use App\UiTiDv1\Listeners\CreateConsumers;
 use App\UiTiDv1\Listeners\UpdateConsumers;
 use App\UiTiDv1\Repositories\EloquentUiTiDv1ConsumerRepository;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
@@ -54,6 +59,12 @@ final class UiTiDv1ServiceProvider extends ServiceProvider
             );
         });
 
+        $this->app->singleton(CachedUiTiDv1Status::class, function () {
+            return new CachedUiTiDv1Status(
+                App::get(UiTiDv1ClusterSDK::class)
+            );
+        });
+
         if (config('uitidv1.enabled')) {
             // By default, the UiTiD V1 integration is enabled. For testing purposes this can be disabled inside the .env file.
 
@@ -62,6 +73,9 @@ final class UiTiDv1ServiceProvider extends ServiceProvider
             Event::listen(IntegrationCreated::class, [CreateConsumers::class, 'handle']);
             Event::listen(IntegrationUpdated::class, [UpdateConsumers::class, 'handle']);
             Event::listen(IntegrationBlocked::class, [BlockConsumers::class, 'handle']);
+
+            Event::listen(ActivateConsumer::class, [ActivateConsumerListener::class, 'handle']);
+            Event::listen(BlockConsumer::class, [BlockConsumerListener::class, 'handle']);
         }
     }
 }

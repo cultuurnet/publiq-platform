@@ -81,7 +81,7 @@ pipeline {
             }
             steps {
                 publishAptlySnapshot snapshotName: "${env.REPOSITORY_NAME}-${env.PIPELINE_VERSION}", publishTarget: "${env.REPOSITORY_NAME}-${env.APPLICATION_ENVIRONMENT}", distributions: 'focal'
-                //triggerDeployment nodeName: 'platform-acc01'
+                triggerDeployment nodeName: 'platform-web-acc01'
             }
             post {
                 always {
@@ -91,7 +91,7 @@ pipeline {
         }
 
         stage('Deploy to testing') {
-            input { message "Deploy to Testing?" }
+            // input { message "Deploy to Testing?" }
             agent { label 'ubuntu && 20.04' }
             options { skipDefaultCheckout() }
             environment {
@@ -110,7 +110,7 @@ pipeline {
         }
 
         stage('Deploy to production') {
-            input { message "Deploy to Production?" }
+            // input { message "Deploy to Production?" }
             agent { label 'ubuntu && 20.04' }
             options { skipDefaultCheckout() }
             environment {

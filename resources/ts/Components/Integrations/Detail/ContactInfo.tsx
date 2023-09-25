@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Heading } from "../../Heading";
 import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
@@ -10,13 +10,12 @@ import {
   faFloppyDisk,
 } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
-import { Button } from "../../Button";
+import { ButtonPrimary } from "../../ButtonPrimary";
 import { Contact, Integration } from "../../../Pages/Integrations/Index";
 import { FormDropdown } from "../../FormDropdown";
 import { useForm } from "@inertiajs/react";
 import { ContactType } from "../../../types/ContactType";
 import { ButtonSecondary } from "../../ButtonSecondary";
-import { router } from "@inertiajs/react";
 import { QuestionDialog } from "../../QuestionDialog";
 import { useSectionCollapsedContext } from "../../../context/SectionCollapsedContext";
 
@@ -26,21 +25,26 @@ export const ContactInfo = ({ id, contacts }: Props) => {
   const { t } = useTranslation();
   const [isDisabled, setIsDisabled] = useState(true);
   const [isAddFormVisible, setIsAddFormVisible] = useState(false);
-  const [isDeleteDialogVisible, setIsDeleteDialogVisible] = useState(false);
   const [toBeDeletedId, setToBeDeletedId] = useState("");
 
-  // We know for sure there is a functional contact
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const functionalContact = contacts.find(
-    (contact) => contact.type === ContactType.Functional
-  )!;
-  // We know for sure there is a technical contact
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const technicalContact = contacts.find(
-    (contact) => contact.type === ContactType.Technical
-  )!;
-  const contributorContacts = contacts.filter(
-    (contact) => contact.type === ContactType.Contributor
+  const functionalContact = useMemo(
+    // We know for sure there is a functional contact
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    () => contacts.find((contact) => contact.type === ContactType.Functional)!,
+    [contacts]
+  );
+
+  const technicalContact = useMemo(
+    // We know for sure there is a technical contact
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    () => contacts.find((contact) => contact.type === ContactType.Technical)!,
+    [contacts]
+  );
+
+  const contributorContacts = useMemo(
+    () =>
+      contacts.filter((contact) => contact.type === ContactType.Contributor),
+    [contacts]
   );
 
   const initialFormValues = {
@@ -59,6 +63,7 @@ export const ContactInfo = ({ id, contacts }: Props) => {
     data,
     setData,
     patch,
+    delete: destroy,
     transform,
     errors: errs,
   } = useForm(initialFormValues);
@@ -99,8 +104,9 @@ export const ContactInfo = ({ id, contacts }: Props) => {
   };
 
   const handleDeleteContributor = () => {
-    router.delete(`/integrations/${id}/contacts/${toBeDeletedId}`, {
+    destroy(`/integrations/${id}/contacts/${toBeDeletedId}`, {
       preserveScroll: true,
+      preserveState: false,
     });
   };
 
@@ -324,9 +330,9 @@ export const ContactInfo = ({ id, contacts }: Props) => {
                   />
                 </div>
                 <div className="flex justify-center gap-2">
-                  <Button onClick={handleSaveChanges} className="p-0">
+                  <ButtonPrimary onClick={handleSaveChanges} className="p-0">
                     {t("details.contact_info.save")}
-                  </Button>
+                  </ButtonPrimary>
                   <ButtonSecondary onClick={() => setIsAddFormVisible(false)}>
                     {t("details.contact_info.cancel")}
                   </ButtonSecondary>
@@ -349,7 +355,6 @@ export const ContactInfo = ({ id, contacts }: Props) => {
                   className="text-icon-gray self-end"
                   onClick={() => {
                     setToBeDeletedId(contributor.id);
-                    setIsDeleteDialogVisible(true);
                   }}
                 />
               </div>
@@ -417,7 +422,7 @@ export const ContactInfo = ({ id, contacts }: Props) => {
         </div>
         {!isDisabled && (
           <div className="flex flex-col gap-2 items-center">
-            <Button
+            <ButtonPrimary
               onClick={() => {
                 setIsDisabled(true);
 
@@ -427,19 +432,18 @@ export const ContactInfo = ({ id, contacts }: Props) => {
               }}
             >
               {t("details.save")}
-            </Button>
+            </ButtonPrimary>
           </div>
         )}
       </FormDropdown>
       <QuestionDialog
-        isVisible={isDeleteDialogVisible}
+        isVisible={!!toBeDeletedId}
         onClose={() => {
-          setIsDeleteDialogVisible((prev) => !prev);
+          setToBeDeletedId("");
         }}
         question={t("integrations.dialog.delete")}
         onConfirm={handleDeleteContributor}
         onCancel={() => {
-          setIsDeleteDialogVisible(false);
           setToBeDeletedId("");
         }}
       ></QuestionDialog>

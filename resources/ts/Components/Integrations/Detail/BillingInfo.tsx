@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Heading } from "../../Heading";
 import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
-import { Button } from "../../Button";
+import { ButtonPrimary } from "../../ButtonPrimary";
 import { FormDropdown } from "../../FormDropdown";
 import { Integration } from "../../../Pages/Integrations/Index";
 import { useTranslation } from "react-i18next";
@@ -181,7 +181,7 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
             </div>
             {!isDisabled && (
               <div className="flex flex-col gap-2 items-center">
-                <Button
+                <ButtonPrimary
                   onClick={() => {
                     setIsDisabled(true);
 
@@ -191,7 +191,7 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
                   }}
                 >
                   {t("details.save")}
-                </Button>
+                </ButtonPrimary>
               </div>
             )}
           </>

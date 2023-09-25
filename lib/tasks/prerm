@@ -1,0 +1,9 @@
+#!/bin/bash
+
+
+# replace simple service restart as per https://laravel.com/docs/10.x/horizon#deploying-horizon
+#
+# service platform-api-horizon stop || exit 0
+
+cd /var/www/platform-api
+sudo su -s /bin/bash -c 'php artisan horizon:terminate' www-data || exit 0

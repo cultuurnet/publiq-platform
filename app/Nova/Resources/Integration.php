@@ -4,17 +4,15 @@ declare(strict_types=1);
 
 namespace App\Nova\Resources;
 
-use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
-use App\Nova\Actions\ActivateIntegrationWithOrganization;
 use App\Nova\Actions\ActivateIntegrationWithCoupon;
+use App\Nova\Actions\ActivateIntegrationWithOrganization;
 use App\Nova\Actions\BlockIntegration;
 use App\Nova\Resource;
-use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use Illuminate\Support\Facades\App;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\DateTime;
@@ -26,7 +24,6 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\ActionRequest;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\ResourceTool;
-use Publiq\ClientCredentials\ClientCredentials;
 use Publiq\InsightlyLink\InsightlyLink;
 use Publiq\InsightlyLink\InsightlyType;
 
@@ -53,24 +50,6 @@ final class Integration extends Resource
      */
     public function fields(NovaRequest $request): array
     {
-        $uitidEnvironmentsConfig = config('uitidv1.environments');
-        $uitidEnvironments = array_keys($uitidEnvironmentsConfig);
-        $uitidActionUrlTemplates = array_filter(
-            array_map(
-                static fn (array $envConfig): ?string => $envConfig['consumerDetailUrlTemplate'] ?? null,
-                $uitidEnvironmentsConfig
-            )
-        );
-
-        $auth0TenantsConfig = config('auth0.tenants');
-        $auth0Tenants = array_keys($auth0TenantsConfig);
-        $auth0ActionUrlTemplates = array_filter(
-            array_map(
-                static fn (array $tenantConfig): ?string => $tenantConfig['clientDetailUrlTemplate'] ?? null,
-                $auth0TenantsConfig
-            )
-        );
-
         return [
             ID::make()
                 ->readonly()
@@ -142,48 +121,8 @@ final class Integration extends Resource
                 ->asHtml()
                 ->onlyOnDetail(),
 
-            ClientCredentials::make(
-                title: 'UiTiD v1 Consumer Credentials',
-                modelClassName: UiTiDv1ConsumerModel::class,
-                columns: [
-                    'environment' => 'Environment',
-                    'api_key' => 'API key',
-                    'consumer_key' => 'Consumer key',
-                    'consumer_secret' => 'Consumer secret',
-                ],
-                filterColumn: 'integration_id',
-                filterValue: $this->id,
-                sortColumn: 'environment',
-                sortValues: $uitidEnvironments,
-                actionLabel: 'Open in UiTiD v1',
-                actionUrlCallback: static function (UiTiDv1ConsumerModel $model) use ($uitidActionUrlTemplates): ?string {
-                    if (isset($uitidActionUrlTemplates[$model->environment])) {
-                        return sprintf($uitidActionUrlTemplates[$model->environment], $model->consumer_id);
-                    }
-                    return null;
-                },
-            ),
-
-            ClientCredentials::make(
-                title: 'UiTiD v2 Client Credentials (Auth0)',
-                modelClassName: Auth0ClientModel::class,
-                columns: [
-                    'auth0_tenant' => 'Environment',
-                    'auth0_client_id' => 'Client id',
-                    'auth0_client_secret' => 'Client secret',
-                ],
-                filterColumn: 'integration_id',
-                filterValue: $this->id,
-                sortColumn: 'auth0_tenant',
-                sortValues: $auth0Tenants,
-                actionLabel: 'Open in Auth0',
-                actionUrlCallback: static function (Auth0ClientModel $model) use ($auth0ActionUrlTemplates): ?string {
-                    if (isset($auth0ActionUrlTemplates[$model->auth0_tenant])) {
-                        return sprintf($auth0ActionUrlTemplates[$model->auth0_tenant], $model->auth0_client_id);
-                    }
-                    return null;
-                },
-            ),
+            HasMany::make('UiTiD v1 Consumer Credentials', 'uiTiDv1Consumers', UiTiDv1::class),
+            HasMany::make('UiTiD v2 Client Credentials (Auth0)', 'auth0Clients', Auth0Client::class),
 
             HasMany::make('Contacts'),
 

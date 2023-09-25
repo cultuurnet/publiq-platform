@@ -202,5 +202,6 @@ return [
         'simon.debruijn@publiq.be',
         'hande.vanhove@publiq.be',
         'lucwollants@gmail.com',
+        'paul@herbosch.be',
     ],
 ];

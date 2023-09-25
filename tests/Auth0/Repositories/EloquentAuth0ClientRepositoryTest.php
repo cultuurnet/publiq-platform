@@ -28,18 +28,21 @@ final class EloquentAuth0ClientRepositoryTest extends TestCase
         $integrationId = Uuid::uuid4();
 
         $client1 = new Auth0Client(
+            Uuid::uuid4(),
             $integrationId,
             'client-id-1',
             'client-secret-1',
             Auth0Tenant::Acceptance
         );
         $client2 = new Auth0Client(
+            Uuid::uuid4(),
             $integrationId,
             'client-id-2',
             'client-secret-2',
             Auth0Tenant::Testing
         );
         $client3 = new Auth0Client(
+            Uuid::uuid4(),
             $integrationId,
             'client-id-3',
             'client-secret-3',
@@ -76,18 +79,21 @@ final class EloquentAuth0ClientRepositoryTest extends TestCase
         $integrationId = Uuid::uuid4();
 
         $client1 = new Auth0Client(
+            Uuid::uuid4(),
             $integrationId,
             'client-id-1',
             'client-secret-1',
             Auth0Tenant::Acceptance
         );
         $client2 = new Auth0Client(
+            Uuid::uuid4(),
             $integrationId,
             'client-id-2',
             'client-secret-2',
             Auth0Tenant::Testing
         );
         $client3 = new Auth0Client(
+            Uuid::uuid4(),
             $integrationId,
             'client-id-3',
             'client-secret-3',
@@ -123,6 +129,7 @@ final class EloquentAuth0ClientRepositoryTest extends TestCase
                 $count = count($clients) + 1;
 
                 $clients[] = new Auth0Client(
+                    Uuid::uuid4(),
                     $integrationId,
                     'client-id-' . $count,
                     'client-secret-' . $count,
@@ -161,6 +168,7 @@ final class EloquentAuth0ClientRepositoryTest extends TestCase
                 $count = count($clients) + 1;
 
                 $clients[] = new Auth0Client(
+                    Uuid::uuid4(),
                     $integrationId,
                     'client-id-' . $count,
                     'client-secret-' . $count,

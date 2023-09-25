@@ -3,7 +3,7 @@ import { Heading } from "../../Heading";
 import { useTranslation } from "react-i18next";
 import type { Integration } from "../../../Pages/Integrations/Index";
 import { StatusLight } from "../../StatusLight";
-import { Button } from "../../Button";
+import { ButtonPrimary } from "../../ButtonPrimary";
 import { Link } from "../../Link";
 
 type Props = Integration;
@@ -37,9 +37,6 @@ export const IntegrationInfo = ({ id, status }: Props) => {
               </Heading>
               <div className="flex gap-1 align-center">
                 <StatusLight status={status} />
-                <Heading level={5}>
-                  {t(`integrations.status.${status}`)}
-                </Heading>
               </div>
             </div>
             {status === "pending_approval_payment" && (
@@ -55,9 +52,9 @@ export const IntegrationInfo = ({ id, status }: Props) => {
                     {t("details.integration_info.link")}
                   </Link>
                 </p>
-                <Button className="ml-[5rem] self-start">
+                <ButtonPrimary className="ml-[5rem] self-start">
                   {t("details.integration_info.action_status")}
-                </Button>
+                </ButtonPrimary>
               </div>
             )}
           </div>
@@ -69,9 +66,9 @@ export const IntegrationInfo = ({ id, status }: Props) => {
           {v1 ? (
             <div className="flex flex-col gap-4">
               <p>{t("details.integration_info.uitid_alert")}</p>
-              <Button className="self-start">
+              <ButtonPrimary className="self-start">
                 {t("details.integration_info.action_uitid")}
-              </Button>
+              </ButtonPrimary>
             </div>
           ) : (
             <div>
@@ -97,9 +94,9 @@ export const IntegrationInfo = ({ id, status }: Props) => {
                   <p className="ml-[5rem] max-w-[25rem]">
                     {t("details.integration_info.status_alert")}
                   </p>
-                  <Button className="ml-[5rem] self-start">
+                  <ButtonPrimary className="ml-[5rem] self-start">
                     {t("details.integration_info.action_status")}
-                  </Button>
+                  </ButtonPrimary>
                 </div>
               )}
             </div>

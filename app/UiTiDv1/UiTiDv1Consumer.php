@@ -9,6 +9,7 @@ use Ramsey\Uuid\UuidInterface;
 final class UiTiDv1Consumer
 {
     public function __construct(
+        public readonly UuidInterface $id,
         public readonly UuidInterface $integrationId,
         public readonly string $consumerId,
         public readonly string $consumerKey,
