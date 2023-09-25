@@ -13,6 +13,8 @@ import { ButtonSecondary } from "../../Components/ButtonSecondary";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTranslation } from "react-i18next";
 import { router } from "@inertiajs/react";
+import { QuestionDialog } from "../../Components/QuestionDialog";
+import DetailTabs from "../../Components/DetailTabs";
 
 type Props = { integration: Integration };
 
@@ -20,6 +22,10 @@ const Detail = ({ integration }: Props) => {
   const { t } = useTranslation();
 
   const [isMobile, setIsMobile] = useState(false);
+
+  const [isComponentVisible, setIsComponentVisible] = useState("");
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const handleResize = () => {
     setIsMobile(window.innerWidth < 768);
@@ -51,18 +57,44 @@ const Detail = ({ integration }: Props) => {
           </div>
         </div>
 
-        <BasicInfo integration={integration} isMobile={isMobile} />
-        <IntegrationInfo {...integration} />
-        <IntegrationSettings {...integration} isMobile={isMobile} />
-        <ContactInfo {...integration} />
-        <BillingInfo {...integration} />
+        <DetailTabs
+          onNavigation={(component) => setIsComponentVisible(component)}
+          isVisible={isComponentVisible}
+        />
+
+        {isComponentVisible === "basic-info" && (
+          <BasicInfo integration={integration} isMobile={isMobile} />
+        )}
+        {isComponentVisible === "integration-info" && (
+          <IntegrationInfo {...integration} />
+        )}
+        {isComponentVisible === "integration-settings" && (
+          <IntegrationSettings {...integration} isMobile={isMobile} />
+        )}
+        {isComponentVisible === "contact-info" && (
+          <ContactInfo {...integration} isMobile={isMobile} />
+        )}
+        {isComponentVisible === "billing-info" && (
+          <BillingInfo {...integration} />
+        )}
         <ButtonSecondary
           className="self-center"
-          onClick={handleDeleteIntegration}
+          onClick={() => setIsModalVisible(true)}
         >
           {t("details.delete")}
           <FontAwesomeIcon className="pl-1" icon={faTrash} />
         </ButtonSecondary>
+        <QuestionDialog
+          isVisible={isModalVisible}
+          onClose={() => {
+            setIsModalVisible(false);
+          }}
+          question={t("integrations.dialog.delete")}
+          onConfirm={handleDeleteIntegration}
+          onCancel={() => {
+            setIsModalVisible(false);
+          }}
+        ></QuestionDialog>
       </div>
     </Page>
   );
