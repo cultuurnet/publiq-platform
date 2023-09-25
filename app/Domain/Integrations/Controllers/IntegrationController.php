@@ -13,14 +13,14 @@ use App\Domain\Integrations\FormRequests\StoreIntegrationUrlRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationRequest;
 use App\Domain\Integrations\FormRequests\UpdateBillingInfoRequest;
 use App\Domain\Integrations\FormRequests\UpdateContactInfoRequest;
-use App\Domain\Integrations\FormRequests\UpdateIntegrationUrlRequest;
-use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\FormRequests\UpdateIntegrationUrlsRequest;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\IntegrationUrlType;
 use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
 use App\Domain\Integrations\Mappers\UpdateContactInfoMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationMapper;
+use App\Domain\Integrations\Mappers\UpdateIntegrationUrlsMapper;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\IntegrationUrlRepository;
 use App\Domain\Organizations\Address;
@@ -160,9 +160,30 @@ final class IntegrationController extends Controller
         );
     }
 
-    public function updateUrls(UpdateIntegrationUrlRequest $request, string $id): RedirectResponse
+    public function updateUrls(UpdateIntegrationUrlsRequest $request, string $id): RedirectResponse
     {
-        $this->integrationUrlRepository->update($request);
+        $loginIds = array_map(
+            fn ($url) => Uuid::fromString($url['id']),
+            $request->input('loginUrls') ?? []
+        );
+        $callbackIds = array_map(
+            fn ($url) => Uuid::fromString($url['id']),
+            $request->input('callbackUrls') ?? []
+        );
+        $logoutIds = array_map(
+            fn ($url) => Uuid::fromString($url['id']),
+            $request->input('logoutUrls') ?? []
+        );
+
+        $currentUrls = $this->integrationUrlRepository->getByIds([
+            ...$loginIds,
+            ...$callbackIds,
+            ...$logoutIds,
+        ]);
+
+        $updatedUrls = UpdateIntegrationUrlsMapper::map($request, $currentUrls);
+
+        $this->integrationUrlRepository->updateUrls($updatedUrls);
 
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),

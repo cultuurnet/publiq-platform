@@ -9,7 +9,8 @@ use App\Domain\Integrations\Integration;
 
 final class UpdateIntegrationMapper
 {
-    public static function map(UpdateIntegrationRequest $request, Integration $currentIntegration): Integration {
+    public static function map(UpdateIntegrationRequest $request, Integration $currentIntegration): Integration
+    {
         return new Integration(
             $currentIntegration->id,
             $currentIntegration->type,

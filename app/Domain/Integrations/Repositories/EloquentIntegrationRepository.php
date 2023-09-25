@@ -6,7 +6,6 @@ namespace App\Domain\Integrations\Repositories;
 
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
-use App\Domain\Integrations\FormRequests\UpdateIntegrationRequest;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Models\IntegrationUrlModel;
@@ -68,7 +67,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
                 'name' => $integration->name,
                 'description' => $integration->description,
                 'subscription_id' => $integration->subscriptionId->toString(),
-                'status' => $integration->status
+                'status' => $integration->status,
         ]);
     }
 

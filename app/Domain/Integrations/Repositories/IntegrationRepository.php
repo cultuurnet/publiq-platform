@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Repositories;
 
-use App\Domain\Integrations\FormRequests\UpdateIntegrationRequest;
 use App\Domain\Integrations\Integration;
 use App\Pagination\PaginatedCollection;
 use Ramsey\Uuid\UuidInterface;

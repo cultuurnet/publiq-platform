@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Repositories;
 
-use App\Domain\Integrations\FormRequests\UpdateIntegrationUrlRequest;
 use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\Models\IntegrationUrlModel;
 use Illuminate\Support\Facades\DB;
@@ -23,20 +22,27 @@ final class EloquentIntegrationUrlRepository implements IntegrationUrlRepository
          ]);
     }
 
-    public function update(UpdateIntegrationUrlRequest $request): void
-    {
-        foreach (['loginUrls', 'callbackUrls', 'logoutUrls'] as $property) {
-            $this->updateUrls($request->input($property) ?? []);
-        }
-    }
-
     public function getById(UuidInterface $id): IntegrationUrl
     {
         /**
          * @var IntegrationUrlModel $integrationUrlModel
          */
         $integrationUrlModel = IntegrationUrlModel::query()->findOrFail($id->toString());
+
+
         return $integrationUrlModel->toDomain();
+    }
+
+    public function getByIds(array $ids): array
+    {
+        $ids = array_map(fn ($id) => $id->toString(), $ids);
+
+        return IntegrationUrlModel::query()
+           ->whereIn('id', $ids)
+           ->orderBy('created_at')
+           ->get()
+           ->map(static fn (IntegrationUrlModel $model) => $model->toDomain())
+           ->toArray();
     }
 
     public function deleteById(UuidInterface $id): ?bool
@@ -48,18 +54,24 @@ final class EloquentIntegrationUrlRepository implements IntegrationUrlRepository
         return $integrationUrlModel->delete();
     }
 
-    private function updateUrls(array $urls): void
+    public function updateUrls(array $integrationUrls): void
     {
-        if (count($urls) === 0) {
+        if (count($integrationUrls) === 0) {
             return;
         }
 
-        DB::transaction(static function () use ($urls) {
-            foreach ($urls as $url) {
+        DB::transaction(static function () use ($integrationUrls) {
+            foreach ($integrationUrls as $integrationUrl) {
                 /** @var IntegrationUrlModel $integrationUrlModel */
-                $integrationUrlModel = IntegrationUrlModel::query()->findOrFail($url['id']);
-                $integrationUrlModel['url'] = $url['url'];
-                $integrationUrlModel->save();
+                IntegrationUrlModel::query()->update(
+                    [
+                        'id' => $integrationUrl->id,
+                        'integration_id' => $integrationUrl->integrationId,
+                        'type' => $integrationUrl->type,
+                        'environment' => $integrationUrl->environment,
+                        'url' => $integrationUrl->url,
+                     ]
+                );
             }
         });
     }
