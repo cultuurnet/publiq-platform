@@ -32,7 +32,7 @@ export const RadioButtonGroup = ({
 
   const optionClasses = (index: number, option: Option) => {
     return classNames(
-      "px-4 py-2 text-sm font-medium text-center bg-white border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 ring-publiq-blue-dark focus:bg-gray-100 max-sm:rounded-lg",
+      "px-4 py-2 text-base font-medium text-center bg-white border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 ring-publiq-blue-dark focus:bg-gray-100 max-sm:rounded-lg",
       getRoundedStyles(index),
       value === option.value ? "text-publiq-blue-dark" : "text-publiq-gray-dark"
     );
@@ -54,7 +54,7 @@ export const RadioButtonGroup = ({
               onChange(option.value);
             }
           }}
-          className={optionClasses(index, option)}
+          className={classNames(optionClasses(index, option), 'px-10 py-3 max-md:px-5 max-md:py-2 w-[100%] h-[100%]')}
         >
           <input
             type="radio"
