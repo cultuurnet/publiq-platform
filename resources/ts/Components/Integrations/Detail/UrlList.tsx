@@ -135,7 +135,7 @@ export const UrlList = ({
               {t("details.contact_info.cancel")}
             </ButtonSecondary>
           </div>
-          </div>
+        </div>
       </Dialog>
       {urls.length > 0 ? (
         urls.map((url) => {
@@ -189,7 +189,7 @@ export const UrlList = ({
           );
         })
       ) : (
-        <div>{t('details.integration_settings.empty')}</div>
+        <div>{t("details.integration_settings.empty")}</div>
       )}
     </>
   );

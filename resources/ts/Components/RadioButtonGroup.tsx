@@ -54,7 +54,10 @@ export const RadioButtonGroup = ({
               onChange(option.value);
             }
           }}
-          className={classNames(optionClasses(index, option), 'px-10 py-3 max-md:px-5 max-md:py-2 w-[100%] h-[100%]')}
+          className={classNames(
+            optionClasses(index, option),
+            "px-10 py-3 max-md:px-5 max-md:py-2 w-[100%] h-[100%]"
+          )}
         >
           <input
             type="radio"

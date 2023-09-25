@@ -1,10 +1,5 @@
 import React, { ReactNode } from "react";
 import { Heading } from "./Heading";
-import { ButtonIcon } from "./ButtonIcon";
-import {
-  faChevronRight,
-  faChevronDown,
-} from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
   children: React.ReactNode;

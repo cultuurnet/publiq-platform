@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { ButtonPrimary } from "../../ButtonPrimary";
 import { FormDropdown } from "../../FormDropdown";
 import { ButtonIcon } from "../../ButtonIcon";
-import { faPencil } from "@fortawesome/free-solid-svg-icons"; 
+import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "@inertiajs/react";
 import { Integration } from "../../../Pages/Integrations/Index";
 import { IntegrationUrlType } from "../../../types/IntegrationUrlType";
@@ -55,9 +55,15 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
     },
   };
 
-  const { data, setData, patch, transform, delete:destroy } = useForm(initialFormValues);
+  const {
+    data,
+    setData,
+    patch,
+    transform,
+    delete: destroy,
+  } = useForm(initialFormValues);
 
-  const handleDeleteUrl = (urlId: IntegrationUrl['id']) => {
+  const handleDeleteUrl = (urlId: IntegrationUrl["id"]) => {
     destroy(`/integrations/${id}/urls/${urlId}`, {
       preserveScroll: true,
       preserveState: false,
@@ -70,8 +76,6 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
       preserveState: false,
     });
 
-  
-
   transform((data) => ({
     ...data,
     callbackUrls: data.callbackUrls.filter((url) => url.changed),
@@ -83,12 +87,15 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
     <FormDropdown
       title={t("details.integration_settings.title")}
       actions={
-        urls.length > 0 ?
-        <ButtonIcon
-          icon={faPencil}
-          className="text-icon-gray"
-          onClick={() => setIsDisabled((prev) => !prev)}
-        /> : ""
+        urls.length > 0 ? (
+          <ButtonIcon
+            icon={faPencil}
+            className="text-icon-gray"
+            onClick={() => setIsDisabled((prev) => !prev)}
+          />
+        ) : (
+          ""
+        )
       }
     >
       <UrlList
