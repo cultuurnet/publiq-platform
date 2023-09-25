@@ -19,11 +19,12 @@
   },
   "home": {
     "hero": {
-      "title": "Bereik een groter publiek",
+      "title": "Bereik een groter publiek met UiT",
       "intro": "publiq biedt een waaier van toepassingen om eigen activiteiten te promoten en agenda-informatie in je website of app te integreren.",
-      "start_here": "Start hier"
+      "start_here": "Probeer gratis"
     },
     "integration_types": {
+      "action": "Probeer {{type}}",
       "entry_api": {
         "title": "Entry API",
         "description": "Via Entry API kan je items in de UiTdatabank aanmaken, aanpassen en verwijderen.",
@@ -31,8 +32,7 @@
           "JSON-standaard",
           "Award-winning API",
           "Activatie op live-omgeving op aanvraag"
-        ],
-        "action_url": "#"
+        ]
       },
       "search_api": {
         "title": "Search API",
@@ -41,8 +41,7 @@
           "JSON-standaard",
           "Robuuste performantie",
           "Uitgebreide filtermogelijkheden"
-        ],
-        "action_url": "#"
+        ]
       },
       "widgets": {
         "title": "Widgets",
@@ -51,10 +50,8 @@
           "Zelf of door publiq in te stellen",
           "Plug & play oplossing",
           "Uitgebreide configuratiemogelijkheden"
-        ],
-        "action_url": "#"
-      },
-      "more_info": "Meer info"
+        ]
+      }
     }
   },
   "integration_form": {

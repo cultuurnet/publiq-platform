@@ -7,7 +7,7 @@ import { Page } from "../Components/Page";
 const Index = () => {
   return (
     <>
-      <div className="w-full bg-red-100 h-44"></div>
+      <div className="w-full bg-gray-600 h-44"></div>
       <Page>
         <Hero />
         <IntegrationTypes />

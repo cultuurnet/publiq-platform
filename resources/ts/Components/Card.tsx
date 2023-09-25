@@ -1,5 +1,6 @@
 import React, { ComponentProps, ReactElement } from "react";
 import { classNames } from "../utils/classNames";
+import { Heading } from "./Heading";
 
 type Props = {
   title: ReactElement | string;
@@ -36,7 +37,9 @@ export const Card = ({
         ></img>
       )}
       <div>
-        <div className="font-bold text-xl mb-2">{title}</div>
+        <Heading level={2} className="font-medium mb-2">
+          {title}
+        </Heading>
         <p className="text-gray-700 text-base min-h-[5rem] break-words">
           {description}
         </p>
