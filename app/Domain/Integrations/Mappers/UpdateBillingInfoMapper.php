@@ -16,7 +16,7 @@ final class UpdateBillingInfoMapper
         return new Organization(
             Uuid::fromString($request->input('organisation.id')),
             $request->input('organisation.name'),
-            'test@test.be',
+            $request->input('organisation.invoiceEmail'),
             $request->input('organisation.vat'),
             new Address(
                 $request->input('organisation.address.street'),
