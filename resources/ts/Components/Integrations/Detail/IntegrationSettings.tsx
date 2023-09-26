@@ -87,14 +87,12 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
     <FormDropdown
       title={t("details.integration_settings.title")}
       actions={
-        urls.length > 0 ? (
+        urls.length > 0 && (
           <ButtonIcon
             icon={faPencil}
             className="text-icon-gray"
             onClick={() => setIsDisabled((prev) => !prev)}
           />
-        ) : (
-          ""
         )
       }
     >
