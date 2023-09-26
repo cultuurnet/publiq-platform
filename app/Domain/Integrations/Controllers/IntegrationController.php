@@ -18,6 +18,7 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\IntegrationUrlType;
 use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
+use App\Domain\Integrations\Mappers\StoreIntegrationUrlMapper;
 use App\Domain\Integrations\Mappers\UpdateContactInfoMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationUrlsMapper;
@@ -97,13 +98,7 @@ final class IntegrationController extends Controller
     }
     public function storeUrl(StoreIntegrationUrlRequest $request, string $id): RedirectResponse
     {
-        $integrationUrl = new IntegrationUrl(
-            Uuid::uuid4(),
-            Uuid::fromString($id),
-            Environment::from($request->input('environment')),
-            IntegrationUrlType::from($request->input('type')),
-            $request->input('url')
-        );
+        $integrationUrl = StoreIntegrationUrlMapper::map($request, $id);
 
         $this->integrationUrlRepository->save($integrationUrl);
 
