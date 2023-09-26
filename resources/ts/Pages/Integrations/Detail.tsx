@@ -23,7 +23,8 @@ const Detail = ({ integration }: Props) => {
 
   const [isMobile, setIsMobile] = useState(false);
 
-  const [isComponentVisible, setIsComponentVisible] = useState("");
+  const activeTab =
+    new URL(document.location.href).searchParams.get("tab") ?? "basic_info";
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -57,26 +58,21 @@ const Detail = ({ integration }: Props) => {
           </div>
         </div>
 
-        <DetailTabs
-          onNavigation={(component) => setIsComponentVisible(component)}
-          isVisible={isComponentVisible}
-        />
+        <DetailTabs activeTab={activeTab} />
 
-        {isComponentVisible === "basic-info" && (
+        {activeTab === "basic_info" && (
           <BasicInfo integration={integration} isMobile={isMobile} />
         )}
-        {isComponentVisible === "integration-info" && (
+        {activeTab === "integration_info" && (
           <IntegrationInfo {...integration} />
         )}
-        {isComponentVisible === "integration-settings" && (
+        {activeTab === "integration_settings" && (
           <IntegrationSettings {...integration} isMobile={isMobile} />
         )}
-        {isComponentVisible === "contact-info" && (
+        {activeTab === "contact_info" && (
           <ContactInfo {...integration} isMobile={isMobile} />
         )}
-        {isComponentVisible === "billing-info" && (
-          <BillingInfo {...integration} />
-        )}
+        {activeTab === "billing_info" && <BillingInfo {...integration} />}
         <ButtonSecondary
           className="self-center"
           onClick={() => setIsModalVisible(true)}

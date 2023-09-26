@@ -1,77 +1,45 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { classNames } from "../utils/classNames";
+import { router } from "@inertiajs/react";
 
 type Props = {
-  isVisible: string;
-  onNavigation: (component: string) => void;
+  activeTab: string;
 };
 
-export default function DetailTabs({ isVisible, onNavigation }: Props) {
+export const tabs = [
+  "basic_info",
+  "integration_info",
+  "integration_settings",
+  "contact_info",
+];
+
+export default function DetailTabs({ activeTab }: Props) {
   const { t } = useTranslation();
+
+  const url = new URL(document.location.href);
+
+  const changeTabInUrl = (tab: string) => {
+    url.searchParams.set("tab", tab);
+    router.get(url.toString());
+  };
 
   return (
     <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200">
-      <li className="mr-2">
-        <button
-          onClick={() => onNavigation("basic-info")}
-          aria-current="page"
-          className={classNames(
-            isVisible === "basic-info" && "text-publiq-blue-dark bg-gray-100 ",
-            "inline-block p-4 rounded-t-lg"
-          )}
-        >
-          {t("details.basic_info.title")}
-        </button>
-      </li>
-      <li className="mr-2">
-        <button
-          onClick={() => onNavigation("integration-info")}
-          className={classNames(
-            isVisible === "integration-info" &&
-              "text-publiq-blue-dark bg-gray-100 ",
-            "inline-block p-4 rounded-t-lg"
-          )}
-        >
-          {t("details.integration_info.title")}
-        </button>
-      </li>
-      <li className="mr-2">
-        <button
-          onClick={() => onNavigation("integration-settings")}
-          className={classNames(
-            isVisible === "integration-settings" &&
-              "text-publiq-blue-dark bg-gray-100 ",
-            "inline-block p-4 rounded-t-lg"
-          )}
-        >
-          {t("details.integration_settings.title")}
-        </button>
-      </li>
-      <li className="mr-2">
-        <button
-          onClick={() => onNavigation("contact-info")}
-          className={classNames(
-            isVisible === "contact-info" &&
-              "text-publiq-blue-dark bg-gray-100 ",
-            "inline-block p-4 rounded-t-lg"
-          )}
-        >
-          {t("details.contact_info.title")}
-        </button>
-      </li>
-      <li>
-        <button
-          onClick={() => onNavigation("billing-info")}
-          className={classNames(
-            isVisible === "billing-info" &&
-              "text-publiq-blue-dark bg-gray-100 ",
-            "inline-block p-4 rounded-t-lg"
-          )}
-        >
-          {t("details.billing_info.title")}
-        </button>
-      </li>
+      {tabs.map((tab) => (
+        <li className="mr-2" key={tab}>
+          <button
+            onClick={() => changeTabInUrl(tab)}
+            aria-current="page"
+            className={classNames(
+              activeTab === tab && "text-publiq-blue-dark bg-gray-100 ",
+              "inline-block p-4 rounded-t-lg"
+            )}
+          >
+            {t(`details.${tab}.title`)}
+          </button>
+        </li>
+      ))}
     </ul>
   );
 }
