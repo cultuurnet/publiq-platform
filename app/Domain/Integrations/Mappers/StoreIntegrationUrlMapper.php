@@ -12,7 +12,8 @@ use Ramsey\Uuid\Uuid;
 
 final class StoreIntegrationUrlMapper
 {
-    public static function map(StoreIntegrationUrlRequest $request, string $integrationId): IntegrationUrl {
+    public static function map(StoreIntegrationUrlRequest $request, string $integrationId): IntegrationUrl
+    {
         return new IntegrationUrl(
             Uuid::uuid4(),
             Uuid::fromString($integrationId),
