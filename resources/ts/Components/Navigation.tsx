@@ -63,7 +63,7 @@ export default function Navigation({
     <section className={classes} {...props}>
       {children && <div className="fixed top-10 right-16">{children}</div>}
       <Link href="/">
-        <PubliqLogo />
+        <PubliqLogo color="publiq-blue" width={50} height={50} />
       </Link>
       <div className="flex max-md:flex-col md:gap-8 min-w-[50%]">
         {pages.map((pageTitle) => (
