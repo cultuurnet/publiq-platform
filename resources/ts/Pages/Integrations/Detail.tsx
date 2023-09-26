@@ -44,6 +44,13 @@ const Detail = ({ integration }: Props) => {
     });
   };
 
+  const url = new URL(document.location.href);
+
+  const changeTabInUrl = (tab: string) => {
+    url.searchParams.set("tab", tab);
+    router.get(url.toString());
+  };
+
   return (
     <Page>
       <div className="w-full flex flex-col gap-5">
