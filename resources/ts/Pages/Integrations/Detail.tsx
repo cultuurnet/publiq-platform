@@ -14,7 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTranslation } from "react-i18next";
 import { router } from "@inertiajs/react";
 import { QuestionDialog } from "../../Components/QuestionDialog";
-import DetailTabs from "../../Components/DetailTabs";
+import { Tabs } from "../../Components/Tabs";
 
 type Props = { integration: Integration };
 
@@ -58,21 +58,36 @@ const Detail = ({ integration }: Props) => {
           </div>
         </div>
 
-        <DetailTabs activeTab={activeTab} />
+        <Tabs active={activeTab} onChange={changeTabInUrl}>
+          <Tabs.Item type="basic_info" label={t("details.basic_info.title")}>
+            <BasicInfo integration={integration} isMobile={isMobile} />
+          </Tabs.Item>
+          <Tabs.Item
+            type="integration_info"
+            label={t("details.integration_info.title")}
+          >
+            <IntegrationInfo {...integration} />
+          </Tabs.Item>
+          <Tabs.Item
+            type="integration_settings"
+            label={t("details.integration_settings.title")}
+          >
+            <IntegrationSettings {...integration} isMobile={isMobile} />
+          </Tabs.Item>
+          <Tabs.Item
+            type="contact_info"
+            label={t("details.contact_info.title")}
+          >
+            <ContactInfo {...integration} isMobile={isMobile} />
+          </Tabs.Item>
+          <Tabs.Item
+            type="billing_info"
+            label={t("details.billing_info.title")}
+          >
+            <BillingInfo {...integration} />
+          </Tabs.Item>
+        </Tabs>
 
-        {activeTab === "basic_info" && (
-          <BasicInfo integration={integration} isMobile={isMobile} />
-        )}
-        {activeTab === "integration_info" && (
-          <IntegrationInfo {...integration} />
-        )}
-        {activeTab === "integration_settings" && (
-          <IntegrationSettings {...integration} isMobile={isMobile} />
-        )}
-        {activeTab === "contact_info" && (
-          <ContactInfo {...integration} isMobile={isMobile} />
-        )}
-        {activeTab === "billing_info" && <BillingInfo {...integration} />}
         <ButtonSecondary
           className="self-center"
           onClick={() => setIsModalVisible(true)}
