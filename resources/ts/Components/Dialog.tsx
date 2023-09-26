@@ -14,6 +14,7 @@ export const Dialog = ({
   isFullscreen = false,
   onClose,
   children,
+  className
 }: Props) => {
   if (!isVisible) {
     return null;
@@ -36,7 +37,7 @@ export const Dialog = ({
           className="text-publiq-blue-dark self-end"
         />
 
-        <div className="flex flex-col flex-1 w-full p-4 text-xl">
+        <div className={classNames("flex flex-col flex-1 w-full p-4 text-xl", className)}>
           {children}
         </div>
       </div>
