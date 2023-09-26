@@ -155,11 +155,14 @@ final class IntegrationController extends Controller
     {
         $ids = array_map(
             fn ($url) => Uuid::fromString($url['id']),
-            [
-                ...($request->input('loginUrls') ?? []),
-                ...($request->input('callbackUrls') ?? []),
-                ...($request->input('logoutUrls') ?? []),
-            ]
+            array_filter(
+                [
+                    $request->input('loginUrl'),
+                    ...($request->input('callbackUrls') ?? []),
+                    ...($request->input('logoutUrls') ?? []),
+                ],
+                fn ($val) => $val !== null
+            )
         );
 
         $currentUrls = $this->integrationUrlRepository->getByIds($ids);

@@ -21,7 +21,7 @@ final class UpdateIntegrationUrlsRequest extends FormRequest
         ];
 
         return [
-            'loginUrls.*' => Rule::forEach(fn () => $urlValidation),
+            'loginUrl' => $urlValidation,
             'callbackUrls.*' => Rule::forEach(fn () => $urlValidation),
             'logoutUrls.*' => Rule::forEach(fn () => $urlValidation),
         ];

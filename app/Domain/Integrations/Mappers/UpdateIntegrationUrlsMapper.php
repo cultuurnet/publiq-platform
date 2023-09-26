@@ -20,11 +20,14 @@ final class UpdateIntegrationUrlsMapper
         $currentUrlsCollection = Collection::make($currentIntegrationUrls);
 
         $changedUrlsCollection = Collection::make(
-            [
-                ...($request->input('loginUrls') ?? []),
-                ...($request->input('callbackUrls') ?? []),
-                ...($request->input('logoutUrls') ?? []),
-            ]
+            array_filter(
+                [
+                    $request->input('loginUrl'),
+                    ...($request->input('callbackUrls') ?? []),
+                    ...($request->input('logoutUrls') ?? []),
+                ],
+                fn ($val) => $val !== null
+            )
         );
 
         return $changedUrlsCollection->map(
