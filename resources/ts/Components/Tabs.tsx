@@ -54,7 +54,7 @@ export const Tabs = ({ children, active, onChange, ...props }: Props) => {
           ...item.props,
           className: classNames(
             item.props.className,
-            "text-publiq-blue-edark bg-gray-100"
+            "text-publiq-blue-dark bg-gray-100"
           ),
           onChange,
         });
