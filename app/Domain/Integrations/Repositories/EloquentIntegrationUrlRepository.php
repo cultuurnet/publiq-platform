@@ -62,15 +62,7 @@ final class EloquentIntegrationUrlRepository implements IntegrationUrlRepository
 
         DB::transaction(static function () use ($integrationUrls) {
             foreach ($integrationUrls as $integrationUrl) {
-                IntegrationUrlModel::query()->update(
-                    [
-                        'id' => $integrationUrl->id,
-                        'integration_id' => $integrationUrl->integrationId,
-                        'type' => $integrationUrl->type,
-                        'environment' => $integrationUrl->environment,
-                        'url' => $integrationUrl->url,
-                     ]
-                );
+                EloquentIntegrationUrlRepository::update($integrationUrl);
             }
         });
     }
