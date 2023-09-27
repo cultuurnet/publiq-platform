@@ -26,7 +26,7 @@ export const BasicInfo = ({ integration, isMobile }: Props) => {
   const { data, setData, patch } = useForm(initialFormValues);
 
   return (
-    <div className="flex flex-col gap-4 shadow-md shadow-slate-200 max-md:px-5 px-10 py-5">
+    <div className="flex flex-col gap-4 max-md:px-5 px-10 py-5">
       <div className="flex gap-2 items-center">
         <Heading level={2} className="font-semibold">
           {t("details.basic_info.title")}
@@ -37,7 +37,7 @@ export const BasicInfo = ({ integration, isMobile }: Props) => {
           onClick={() => setIsDisabled((prev) => !prev)}
         />
       </div>
-      <div className="flex flex-col gap-6 border-t py-6">
+      <div className="flex flex-col gap-6 py-6">
         <FormElement
           label={`${t("details.basic_info.name")}`}
           labelPosition={isMobile ? "top" : "left"}
