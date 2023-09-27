@@ -30,7 +30,6 @@ final class UpdateContactInfoRequest extends FormRequest
                 'firstname' => ['nullable', 'string', 'min:2', 'max:255'],
                 'lastname' => ['nullable', 'string', 'min:2', 'max:255'],
                 'email' => ['nullable', 'string', 'email', 'min:2', 'max:255'],
-                // 'contributors' => ['required', 'array'],
                 'contributors.*' => Rule::forEach(function () {
                     return [
                         'id' => ['required', 'string'],
