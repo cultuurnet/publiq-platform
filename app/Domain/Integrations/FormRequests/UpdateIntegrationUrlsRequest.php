@@ -16,7 +16,7 @@ final class UpdateIntegrationUrlsRequest extends FormRequest
     {
         $urlValidation = [
             'id' => ['required', 'string'],
-            'url' => ['required_without:environment', 'string', 'max:255'],
+            'url' => ['required_without:environment', 'url:https', 'max:255'],
             'environment' => ['required_without:url', 'string', 'max:255'],
         ];
 

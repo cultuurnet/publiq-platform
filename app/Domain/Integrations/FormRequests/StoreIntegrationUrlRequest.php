@@ -16,7 +16,7 @@ final class StoreIntegrationUrlRequest extends FormRequest
         return [
             'environment' => ['required', 'string', 'max:255'],
             'type' => ['required', 'string', 'max:255'],
-            'url' => ['required', 'string', 'max:255'],
+            'url' => ['required', 'url:https', 'max:255'],
         ];
     }
 }
