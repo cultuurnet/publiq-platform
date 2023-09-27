@@ -295,54 +295,54 @@ const New = ({ subscriptions }: Props) => {
               {t("integration_form.contact_label_2")}
             </Heading>
             <div className="grid grid-cols-3 max-md:flex max-md:flex-col gap-5">
-                <FormElement
-                  label={t("integration_form.contact.last_name")}
-                  component={
-                    <Input
-                      type="text"
-                      name="lastNameTechnicalContact"
-                      value={data.lastNameTechnicalContact}
-                      onChange={(e) =>
-                        setData("lastNameTechnicalContact", e.target.value)
-                      }
-                      placeholder={t("integration_form.contact.last_name")}
-                    />
-                  }
-                  error={errors.lastNameTechnicalContact}
-                />
-                <FormElement
-                  label={t("integration_form.contact.first_name")}
-                  component={
-                    <Input
-                      type="text"
-                      name="firstNameTechnicalContact"
-                      value={data.firstNameTechnicalContact}
-                      onChange={(e) =>
-                        setData("firstNameTechnicalContact", e.target.value)
-                      }
-                      placeholder={t("integration_form.contact.first_name")}
-                    />
-                  }
-                  error={errors.firstNameTechnicalContact}
-                />
+              <FormElement
+                label={t("integration_form.contact.last_name")}
+                component={
+                  <Input
+                    type="text"
+                    name="lastNameTechnicalContact"
+                    value={data.lastNameTechnicalContact}
+                    onChange={(e) =>
+                      setData("lastNameTechnicalContact", e.target.value)
+                    }
+                    placeholder={t("integration_form.contact.last_name")}
+                  />
+                }
+                error={errors.lastNameTechnicalContact}
+              />
+              <FormElement
+                label={t("integration_form.contact.first_name")}
+                component={
+                  <Input
+                    type="text"
+                    name="firstNameTechnicalContact"
+                    value={data.firstNameTechnicalContact}
+                    onChange={(e) =>
+                      setData("firstNameTechnicalContact", e.target.value)
+                    }
+                    placeholder={t("integration_form.contact.first_name")}
+                  />
+                }
+                error={errors.firstNameTechnicalContact}
+              />
 
-                <FormElement
-                  label={t("integration_form.contact.email")}
-                  component={
-                    <Input
-                      type="email"
-                      name="emailPartner"
-                      value={data.emailTechnicalContact}
-                      onChange={(e) =>
-                        setData("emailTechnicalContact", e.target.value)
-                      }
-                      placeholder={t("integration_form.contact.email")}
-                    />
-                  }
-                  error={errors.emailTechnicalContact}
-                />
-              </div>
+              <FormElement
+                label={t("integration_form.contact.email")}
+                component={
+                  <Input
+                    type="email"
+                    name="emailPartner"
+                    value={data.emailTechnicalContact}
+                    onChange={(e) =>
+                      setData("emailTechnicalContact", e.target.value)
+                    }
+                    placeholder={t("integration_form.contact.email")}
+                  />
+                }
+                error={errors.emailTechnicalContact}
+              />
             </div>
+          </div>
 
           <div className="flex flex-col gap-5">
             <FormElement
