@@ -240,7 +240,7 @@ const New = ({ subscriptions }: Props) => {
               {t("integration_form.contact_label_1")}
             </Heading>
             <div className="flex flex-col gap-5">
-              <div className="flex max-md:flex-col gap-5 ">
+              <div className="grid grid-cols-3 max-md:flex max-md:flex-col gap-5 ">
                 <FormElement
                   label={t("integration_form.contact.last_name")}
                   component={
@@ -294,8 +294,7 @@ const New = ({ subscriptions }: Props) => {
             <Heading className="font-semibold" level={3}>
               {t("integration_form.contact_label_2")}
             </Heading>
-            <div className="flex flex-col gap-5">
-              <div className="flex basis-1/2 max-md:flex-col gap-5">
+            <div className="grid grid-cols-3 max-md:flex max-md:flex-col gap-5">
                 <FormElement
                   label={t("integration_form.contact.last_name")}
                   component={
@@ -344,7 +343,6 @@ const New = ({ subscriptions }: Props) => {
                 />
               </div>
             </div>
-          </div>
 
           <div className="flex flex-col gap-5">
             <FormElement
