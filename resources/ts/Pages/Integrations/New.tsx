@@ -101,7 +101,7 @@ const initialFormValues = {
   emailTechnicalContact: "",
   agreement: "",
   coupon: "",
-  couponCode: ""
+  couponCode: "",
 };
 
 type Subscription = {
@@ -157,26 +157,23 @@ const New = ({ subscriptions }: Props) => {
         <Heading level={2}>{t("integration_form.title")}</Heading>
         <p className="mb-5">{t("integration_form.description")}</p>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-7">
           <FormElement
             label={t("integration_form.type")}
             labelSize="xl"
             component={
               <div className="md:grid md:grid-cols-3 gap-5 max-md:flex max-md:flex-col max-md:items-center pb-3">
                 {translatedIntegrations.map((integration) => (
-                  <button
-                    type="button"
+                  <Card
+                    active={data.integrationType === integration.type}
+                    {...integration}
+                    className="rounded-lg"
+                    role="button"
                     key={integration.type}
                     onClick={() => {
                       setData("integrationType", integration.type);
                     }}
-                  >
-                    <Card
-                      active={data.integrationType === integration.type}
-                      {...integration}
-                      className="w-full md:min-h-[14rem]"
-                    ></Card>
-                  </button>
+                  ></Card>
                 ))}
               </div>
             }
@@ -189,22 +186,19 @@ const New = ({ subscriptions }: Props) => {
             component={
               <div className="md:grid md:grid-cols-3 gap-5 max-md:flex max-md:flex-col max-md:items-center pb-3">
                 {translatedPricing.map((pricing) => (
-                  <button
-                    type="button"
-                    className="w-full"
+                  <Card
+                    role="button"
                     key={pricing.title}
                     onClick={() => {
                       setData("subscriptionId", pricing.id);
                     }}
+                    {...pricing}
+                    active={data.subscriptionId === pricing.id}
+                    className="rounded-lg"
+                    contentStyles="font-bold"
                   >
-                    <Card
-                      {...pricing}
-                      active={data.subscriptionId === pricing.id}
-                      className="md:min-h-[14rem]"
-                    >
-                      {pricing.price}
-                    </Card>
-                  </button>
+                    {pricing.price}
+                  </Card>
                 ))}
               </div>
             }
@@ -270,9 +264,7 @@ const New = ({ subscriptions }: Props) => {
                       onChange={(e) =>
                         setData("firstNameFunctionalContact", e.target.value)
                       }
-                      placeholder={t(
-                        "integration_form.contact.first_name"
-                      )}
+                      placeholder={t("integration_form.contact.first_name")}
                     />
                   }
                   error={errors.firstNameFunctionalContact}
@@ -327,9 +319,7 @@ const New = ({ subscriptions }: Props) => {
                       onChange={(e) =>
                         setData("firstNameTechnicalContact", e.target.value)
                       }
-                      placeholder={t(
-                        "integration_form.contact.first_name"
-                      )}
+                      placeholder={t("integration_form.contact.first_name")}
                     />
                   }
                   error={errors.firstNameTechnicalContact}
@@ -377,7 +367,7 @@ const New = ({ subscriptions }: Props) => {
               }
               error={errors.agreement}
             />
-             <FormElement
+            <FormElement
               label={t("integration_form.coupon")}
               labelPosition="right"
               component={
@@ -387,30 +377,26 @@ const New = ({ subscriptions }: Props) => {
                   className="text-publiq-blue-dark focus:ring-publiq-blue-dark rounded-sm"
                   checked={data.coupon === "true"}
                   onChange={() =>
-                    setData(
-                      "coupon",
-                      data.coupon === "true" ? "" : "true"
-                    )
+                    setData("coupon", data.coupon === "true" ? "" : "true")
                   }
                 />
               }
               error={errors.coupon}
             />
-            {data.coupon &&  
-             <FormElement
-                  component={
-                    <Input
-                      type="text"
-                      name="couponCode"
-                      value={data.couponCode}
-                      onChange={(e) =>
-                        setData("couponCode", e.target.value)
-                      }
-                      placeholder={t("integration_form.code")}
-                    />
-                  }
-                  error={errors.couponCode}
-                />}
+            {data.coupon && (
+              <FormElement
+                component={
+                  <Input
+                    type="text"
+                    name="couponCode"
+                    value={data.couponCode}
+                    onChange={(e) => setData("couponCode", e.target.value)}
+                    placeholder={t("integration_form.code")}
+                  />
+                }
+                error={errors.couponCode}
+              />
+            )}
           </div>
 
           <ButtonPrimary type="submit" disabled={processing} className="w-fit">
