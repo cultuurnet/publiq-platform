@@ -7,6 +7,7 @@ type Props = ComponentProps<"div"> & {
   isVisible?: boolean;
   onClose?: () => void;
   isFullscreen?: boolean;
+  contentStyles?: string;
 };
 
 export const Dialog = ({
@@ -14,7 +15,7 @@ export const Dialog = ({
   isFullscreen = false,
   onClose,
   children,
-  className,
+  contentStyles,
 }: Props) => {
   if (!isVisible) {
     return null;
@@ -40,7 +41,7 @@ export const Dialog = ({
         <div
           className={classNames(
             "flex flex-col flex-1 w-full p-4 text-xl",
-            className
+            contentStyles
           )}
         >
           {children}

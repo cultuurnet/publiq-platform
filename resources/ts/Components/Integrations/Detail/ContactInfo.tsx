@@ -18,7 +18,7 @@ import { ContactType } from "../../../types/ContactType";
 import { ButtonSecondary } from "../../ButtonSecondary";
 import { QuestionDialog } from "../../QuestionDialog";
 import { Dialog } from "../../Dialog";
-import ContributorTable from "../../ContributorTable";
+import { ContributorTable } from "../../ContributorTable";
 
 type Props = {
   isMobile: boolean;
@@ -284,7 +284,7 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
           isVisible={isAddFormVisible}
           onClose={() => setIsAddFormVisible(false)}
           isFullscreen={isMobile}
-          className="gap-5"
+          contentStyles="gap-5"
         >
           <Heading className="font-semibold" level={3}>
             {t("details.contact_info.new")}
@@ -371,7 +371,7 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
             isVisible={!!toBeEditedId}
             onClose={() => setToBeEditedId("")}
             isFullscreen={isMobile}
-            className="gap-5"
+            contentStyles="gap-5"
           >
             <FormElement
               label={`${t("integration_form.contact.last_name")}`}
