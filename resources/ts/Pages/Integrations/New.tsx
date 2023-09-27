@@ -231,7 +231,7 @@ const New = ({ subscriptions }: Props) => {
             component={
               <textarea
                 rows={3}
-                className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                className="appearance-none block w-full rounded-lg bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                 name="description"
                 value={data.description}
                 onChange={(e) => setData("description", e.target.value)}
