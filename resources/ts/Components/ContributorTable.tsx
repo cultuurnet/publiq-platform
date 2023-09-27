@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 type Props = ComponentProps<"div">;
 
-export default function ContributorTable({ children }: Props) {
+export const ContributorTable = ({ children }: Props) => {
   const { t } = useTranslation();
   return (
     <div className="relative overflow-x-scroll">
