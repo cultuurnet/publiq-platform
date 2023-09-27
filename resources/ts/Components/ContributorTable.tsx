@@ -28,4 +28,4 @@ export const ContributorTable = ({ children }: Props) => {
       </table>
     </div>
   );
-}
+};

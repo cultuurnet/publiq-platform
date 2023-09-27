@@ -16,7 +16,7 @@ export const FormDropdown = ({ title, children, actions }: Props) => {
         </Heading>
         {actions}
       </div>
-        <div className="flex flex-col gap-6 py-4">{children}</div>
+      <div className="flex flex-col gap-6 py-4">{children}</div>
     </div>
   );
 };

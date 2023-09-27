@@ -38,8 +38,7 @@ const Detail = ({ integration }: Props) => {
   }, []);
 
   const handleDeleteIntegration = () => {
-    router.delete(`/integrations/${integration.id}`, {
-    });
+    router.delete(`/integrations/${integration.id}`, {});
   };
 
   const changeTabInUrl = (tab: string) => {
