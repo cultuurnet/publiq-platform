@@ -23,8 +23,8 @@ const Detail = ({ integration }: Props) => {
 
   const [isMobile, setIsMobile] = useState(false);
 
-  const activeTab =
-    new URL(document.location.href).searchParams.get("tab") ?? "basic_info";
+  const url = new URL(document.location.href);
+  const activeTab = url.searchParams.get("tab") ?? "basic_info";
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -43,8 +43,6 @@ const Detail = ({ integration }: Props) => {
       // preserveState: false,
     });
   };
-
-  const url = new URL(document.location.href);
 
   const changeTabInUrl = (tab: string) => {
     url.searchParams.set("tab", tab);
