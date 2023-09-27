@@ -159,7 +159,7 @@ const New = ({ subscriptions }: Props) => {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <FormElement
-            label={`${t("integration_form.type")}`}
+            label={t("integration_form.type")}
             labelSize="xl"
             component={
               <div className="md:grid md:grid-cols-3 gap-5 max-md:flex max-md:flex-col max-md:items-center pb-3">
@@ -184,7 +184,7 @@ const New = ({ subscriptions }: Props) => {
           />
 
           <FormElement
-            label={`${t("integration_form.pricing_plan")}`}
+            label={t("integration_form.pricing_plan")}
             labelSize="xl"
             component={
               <div className="md:grid md:grid-cols-3 gap-5 max-md:flex max-md:flex-col max-md:items-center pb-3">
@@ -211,10 +211,9 @@ const New = ({ subscriptions }: Props) => {
             error={errors.subscriptionId}
           />
           <FormElement
-            label={`${t("integration_form.integration_name")}`}
+            label={t("integration_form.integration_name")}
             labelSize="xl"
-            info={`${t("integration_form.description_name")}`}
-            className="md:w-[65%]"
+            info={t("integration_form.description_name")}
             component={
               <Input
                 type="text"
@@ -226,9 +225,9 @@ const New = ({ subscriptions }: Props) => {
             error={errors.integrationName}
           />
           <FormElement
-            label={`${t("integration_form.aim")}`}
+            label={t("integration_form.aim")}
             labelSize="xl"
-            info={`${t("integration_form.description_aim")}`}
+            info={t("integration_form.description_aim")}
             component={
               <textarea
                 rows={3}
@@ -247,7 +246,7 @@ const New = ({ subscriptions }: Props) => {
             <div className="flex flex-col gap-5">
               <div className="flex max-md:flex-col gap-5 ">
                 <FormElement
-                  label={`${t("integration_form.contact.last_name")}`}
+                  label={t("integration_form.contact.last_name")}
                   component={
                     <Input
                       type="text"
@@ -256,13 +255,13 @@ const New = ({ subscriptions }: Props) => {
                       onChange={(e) =>
                         setData("lastNameFunctionalContact", e.target.value)
                       }
-                      placeholder={`${t("integration_form.contact.last_name")}`}
+                      placeholder={t("integration_form.contact.last_name")}
                     />
                   }
                   error={errors.lastNameFunctionalContact}
                 />
                 <FormElement
-                  label={`${t("integration_form.contact.first_name")}`}
+                  label={t("integration_form.contact.first_name")}
                   component={
                     <Input
                       type="text"
@@ -271,15 +270,15 @@ const New = ({ subscriptions }: Props) => {
                       onChange={(e) =>
                         setData("firstNameFunctionalContact", e.target.value)
                       }
-                      placeholder={`${t(
+                      placeholder={t(
                         "integration_form.contact.first_name"
-                      )}`}
+                      )}
                     />
                   }
                   error={errors.firstNameFunctionalContact}
                 />
                 <FormElement
-                  label={`${t("integration_form.contact.email")}`}
+                  label={t("integration_form.contact.email")}
                   component={
                     <Input
                       type="email"
@@ -288,7 +287,7 @@ const New = ({ subscriptions }: Props) => {
                       onChange={(e) =>
                         setData("emailFunctionalContact", e.target.value)
                       }
-                      placeholder={`${t("integration_form.contact.email")}`}
+                      placeholder={t("integration_form.contact.email")}
                     />
                   }
                   error={errors.emailFunctionalContact}
@@ -304,7 +303,7 @@ const New = ({ subscriptions }: Props) => {
             <div className="flex flex-col gap-5">
               <div className="flex basis-1/2 max-md:flex-col gap-5">
                 <FormElement
-                  label={`${t("integration_form.contact.last_name")}`}
+                  label={t("integration_form.contact.last_name")}
                   component={
                     <Input
                       type="text"
@@ -313,13 +312,13 @@ const New = ({ subscriptions }: Props) => {
                       onChange={(e) =>
                         setData("lastNameTechnicalContact", e.target.value)
                       }
-                      placeholder={`${t("integration_form.contact.last_name")}`}
+                      placeholder={t("integration_form.contact.last_name")}
                     />
                   }
                   error={errors.lastNameTechnicalContact}
                 />
                 <FormElement
-                  label={`${t("integration_form.contact.first_name")}`}
+                  label={t("integration_form.contact.first_name")}
                   component={
                     <Input
                       type="text"
@@ -328,25 +327,25 @@ const New = ({ subscriptions }: Props) => {
                       onChange={(e) =>
                         setData("firstNameTechnicalContact", e.target.value)
                       }
-                      placeholder={`${t(
+                      placeholder={t(
                         "integration_form.contact.first_name"
-                      )}`}
+                      )}
                     />
                   }
                   error={errors.firstNameTechnicalContact}
                 />
 
                 <FormElement
-                  label={`${t("integration_form.contact.email")}`}
+                  label={t("integration_form.contact.email")}
                   component={
                     <Input
-                      type="emailTechnicalContact"
+                      type="email"
                       name="emailPartner"
                       value={data.emailTechnicalContact}
                       onChange={(e) =>
                         setData("emailTechnicalContact", e.target.value)
                       }
-                      placeholder={`${t("integration_form.contact.email")}`}
+                      placeholder={t("integration_form.contact.email")}
                     />
                   }
                   error={errors.emailTechnicalContact}
