@@ -1,4 +1,9 @@
-import React, { ComponentProps, ReactElement, cloneElement } from "react";
+import React, {
+  ComponentProps,
+  ReactElement,
+  cloneElement,
+  useMemo,
+} from "react";
 import { classNames } from "../utils/classNames";
 
 type OnTabChange = (tab: string) => void;
@@ -28,29 +33,40 @@ type Props = {
 } & Omit<ComponentProps<"div">, "onChange">;
 
 export const Tabs = ({ children, active, onChange, ...props }: Props) => {
-  const tabItems = React.Children.toArray(children).filter(
-    (child) => (child as ReactElement).type === Item
-  ) as ReactElement[];
+  const tabItems = useMemo(
+    () =>
+      React.Children.toArray(children).filter(
+        (child) =>
+          typeof child === "object" && "type" in child && child.type === Item
+      ) as ReactElement[],
+    [children]
+  );
+  const styledTabItems = useMemo(
+    () =>
+      tabItems.map((item) => {
+        const isActive = item.props.type === active;
 
-  const styledTabItems = tabItems.map((item) => {
-    const isActive = item.props.type === active;
+        if (!isActive) {
+          return cloneElement(item, { ...item.props, onChange });
+        }
 
-    if (!isActive) {
-      return cloneElement(item, { ...item.props, onChange });
-    }
+        return cloneElement(item, {
+          ...item.props,
+          className: classNames(
+            item.props.className,
+            "text-publiq-blue-edark bg-gray-100"
+          ),
+          onChange,
+        });
+      }),
+    [active, onChange, tabItems]
+  );
 
-    return cloneElement(item, {
-      ...item.props,
-      className: classNames(
-        item.props.className,
-        "text-publiq-blue-dark bg-gray-100"
-      ),
-      onChange,
-    });
-  });
-
-  const tabContent = tabItems.find((tabItem) => tabItem.props.type === active)
-    ?.props.children;
+  const tabContent = useMemo(
+    () =>
+      tabItems.find((tabItem) => tabItem.props.type === active)?.props.children,
+    [active, tabItems]
+  );
 
   return (
     <div className="flex flex-col gap-3" {...props}>
