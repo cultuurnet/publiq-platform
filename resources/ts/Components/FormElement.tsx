@@ -32,8 +32,8 @@ const getFlexDirection = (labelPosition: LabelPosition | undefined) => {
 };
 
 const getAlignItems = (labelPosition: LabelPosition | undefined) => {
-  if (labelPosition === "right") return "items-baseline";
-  if (labelPosition === "left") return "items-baseline";
+  if (labelPosition === "right") return "self-center";
+  if (labelPosition === "left") return "self-center";
   return;
 };
 
@@ -62,7 +62,7 @@ const InputStyle = {
   top: "",
   bottom: "",
   left: "w-[35%]",
-  right: "pt-1",
+  right: "flex self-center",
 };
 
 type Props = {
@@ -103,7 +103,7 @@ export const FormElement = ({
               id={id}
               label={label}
               labelSize={labelSize}
-              className={labelPosition === "left" ? "w-40" : ""}
+              className={classNames(labelPosition === "left" ? "w-40" : "")}
             />
           )}
           <div className={InputStyle[labelPosition]}>{clonedComponent}</div>
