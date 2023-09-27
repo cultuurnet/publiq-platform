@@ -173,6 +173,7 @@ const New = ({ subscriptions }: Props) => {
                     onClick={() => {
                       setData("integrationType", integration.type);
                     }}
+                    textCenter
                   ></Card>
                 ))}
               </div>
@@ -196,6 +197,7 @@ const New = ({ subscriptions }: Props) => {
                     active={data.subscriptionId === pricing.id}
                     className="rounded-lg"
                     contentStyles="font-bold"
+                    textCenter
                   >
                     {pricing.price}
                   </Card>

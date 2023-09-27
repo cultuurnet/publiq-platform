@@ -10,6 +10,7 @@ type Props = {
   img?: string;
   active?: boolean;
   contentStyles?: string;
+  textCenter?: boolean;
 } & Omit<ComponentProps<"div">, "title">;
 
 export const Card = ({
@@ -20,6 +21,7 @@ export const Card = ({
   children,
   className,
   contentStyles,
+  textCenter,
   ...props
 }: Props) => {
   return (
@@ -50,7 +52,12 @@ export const Card = ({
         )}
       </div>
 
-      <div className="flex flex-col text-center gap-5">
+      <div
+        className={classNames(
+          "flex flex-col gap-5",
+          textCenter && "text-center"
+        )}
+      >
         <Heading level={2} className="font-medium mb-2">
           {title}
         </Heading>
