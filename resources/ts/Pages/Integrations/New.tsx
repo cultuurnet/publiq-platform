@@ -100,6 +100,8 @@ const initialFormValues = {
   lastNameTechnicalContact: "",
   emailTechnicalContact: "",
   agreement: "",
+  coupon: "",
+  couponCode: ""
 };
 
 type Subscription = {
@@ -393,7 +395,7 @@ const New = ({ subscriptions }: Props) => {
             </div>
           </div>
 
-          <div>
+          <div className="flex flex-col gap-5">
             <FormElement
               label={`${t("integration_form.agree")} ${t(
                 "integration_form.terms_of_use"
@@ -404,6 +406,7 @@ const New = ({ subscriptions }: Props) => {
                 <input
                   type="checkbox"
                   name="agreement"
+                  className="text-publiq-blue-dark focus:ring-publiq-blue-dark rounded-sm"
                   checked={data.agreement === "true"}
                   onChange={() =>
                     setData(
@@ -415,6 +418,40 @@ const New = ({ subscriptions }: Props) => {
               }
               error={errors.agreement}
             />
+             <FormElement
+              label={t("integration_form.coupon")}
+              labelPosition="right"
+              component={
+                <input
+                  type="checkbox"
+                  name="coupon"
+                  className="text-publiq-blue-dark focus:ring-publiq-blue-dark rounded-sm"
+                  checked={data.coupon === "true"}
+                  onChange={() =>
+                    setData(
+                      "coupon",
+                      data.coupon === "true" ? "" : "true"
+                    )
+                  }
+                />
+              }
+              error={errors.coupon}
+            />
+            {data.coupon &&  
+             <FormElement
+                  component={
+                    <Input
+                      type="text"
+                      name="couponCode"
+                      value={data.couponCode}
+                      onChange={(e) =>
+                        setData("couponCode", e.target.value)
+                      }
+                      placeholder={t("integration_form.code")}
+                    />
+                  }
+                  error={errors.couponCode}
+                />}
           </div>
 
           <ButtonPrimary type="submit" disabled={processing} className="w-fit">
