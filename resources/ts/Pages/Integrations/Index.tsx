@@ -94,9 +94,6 @@ const Index = ({ integrations, paginationInfo }: Props) => {
           // Don't append search query param to url if empty
           search: e.target.value || undefined,
         },
-        {
-          // preserveState: true,
-        }
       );
     },
     250
