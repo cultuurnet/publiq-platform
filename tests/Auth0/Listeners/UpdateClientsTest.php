@@ -114,6 +114,9 @@ final class UpdateClientsTest extends TestCase
                                 'https://www.publiq.be/logout',
                                 'https://www.madewithlove.be/logout',
                             ],
+                            'client_metadata' => [
+                                'partner-status' => IntegrationPartnerStatus::THIRD_PARTY->value,
+                            ],
                             'initiate_login_uri' => 'https://www.publiq.be/login',
                         ]),
                     ],
@@ -125,6 +128,9 @@ final class UpdateClientsTest extends TestCase
                             'callbacks' => ['https://oauth.pstmn.io/v1/callback'],
                             'allowed_logout_urls' => [
                                 'https://www.madewithlove.be/logout',
+                            ],
+                            'client_metadata' => [
+                                'partner-status' => IntegrationPartnerStatus::THIRD_PARTY->value,
                             ],
                         ]),
                     ],
@@ -138,6 +144,9 @@ final class UpdateClientsTest extends TestCase
                                 'https://oauth.pstmn.io/v1/callback',
                             ],
                             'allowed_logout_urls' => [],
+                            'client_metadata' => [
+                                'partner-status' => IntegrationPartnerStatus::THIRD_PARTY->value,
+                            ],
                         ]),
                     ] => new Response(200, [], ''),
                     default => throw new \LogicException('Invalid arguments received'),
