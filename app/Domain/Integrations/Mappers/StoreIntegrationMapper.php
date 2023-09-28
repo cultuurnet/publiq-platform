@@ -19,7 +19,7 @@ final class StoreIntegrationMapper
     {
         $integrationId = Uuid::uuid4();
 
-        $contactOrganization = new Contact(
+        $functionalContact = new Contact(
             Uuid::uuid4(),
             $integrationId,
             $request->input('emailFunctionalContact'),
@@ -28,7 +28,7 @@ final class StoreIntegrationMapper
             $request->input('lastNameFunctionalContact')
         );
 
-        $contactPartner = new Contact(
+        $technicalContact = new Contact(
             Uuid::uuid4(),
             $integrationId,
             $request->input('emailTechnicalContact'),
@@ -37,7 +37,7 @@ final class StoreIntegrationMapper
             $request->input('lastNameTechnicalContact')
         );
 
-        $contributor = new Contact(
+        $contributorContact = new Contact(
             Uuid::uuid4(),
             $integrationId,
             $currentUser->email(),
@@ -54,6 +54,6 @@ final class StoreIntegrationMapper
             $request->input('description'),
             Uuid::fromString($request->input('subscriptionId')),
             IntegrationStatus::Draft
-        ))->withContacts($contactOrganization, $contactPartner, $contributor);
+        ))->withContacts($functionalContact, $technicalContact, $contributorContact);
     }
 }
