@@ -30,24 +30,14 @@ final class StoreIntegrationMapperTest extends TestCase
         parent::setUp();
 
         $this->ids = [
-            'c541a07b-068a-4f66-944f-90f8e64237da', // userModel id
-            '8b1760f6-13ae-45e8-9514-9a040608d40d', // subscriptionId
             'a8ab2245-17b4-44e3-9920-fab075effbdc', // integrationId
             '8549201e-961b-4022-8c37-497f3b599dbe', // functionalContact id
             'bb43b31f-a297-4a41-bd6b-ed2188f4ea75', // technicalContact id
             '43c9cb94-ec6f-4211-a0fb-d589223e0fd6', // contributorContact id
         ];
 
-        Uuid::setFactory(new UuidTestFactory([
-            'uuid4' => $this->ids
-        ]));
-
-        // Deze zijn wel van mijn array :D 
-        var_dump(Uuid::uuid4());
-        var_dump(Uuid::uuid4());
-
         $userModel = UserModel::fromSession([
-            'user_id' => $this->ids[0],
+            'user_id' => 'c541a07b-068a-4f66-944f-90f8e64237da',
             'email' => 'john.doe@test.com',
             'name' => 'John Doe',
             'first_name' => 'John',
@@ -61,7 +51,7 @@ final class StoreIntegrationMapperTest extends TestCase
 
         $this->inputs = [
             'integrationType' => IntegrationType::SearchApi->value,
-            'subscriptionId' => $this->ids[1],
+            'subscriptionId' => '4f1d3b79-dd1d-47d9-aa5a-2b55d32ea65f',
             'integrationName' => 'My searches',
             'description' => 'To view my searches',
             'organisationFunctionalContact' => 'Tesla',
@@ -78,10 +68,10 @@ final class StoreIntegrationMapperTest extends TestCase
 
     private function getExpectedIntegration(): Integration
     {
-        $integrationId = Uuid::fromString($this->ids[2]);
+        $integrationId = Uuid::fromString($this->ids[0]);
 
         $functionalContact = new Contact(
-            Uuid::fromString($this->ids[3]),
+            Uuid::fromString($this->ids[1]),
             $integrationId,
             $this->inputs['emailFunctionalContact'],
             ContactType::Functional,
@@ -90,7 +80,7 @@ final class StoreIntegrationMapperTest extends TestCase
         );
 
         $technicalContact = new Contact(
-            Uuid::fromString($this->ids[4]),
+            Uuid::fromString($this->ids[2]),
             $integrationId,
             $this->inputs['emailTechnicalContact'],
             ContactType::Technical,
@@ -99,7 +89,7 @@ final class StoreIntegrationMapperTest extends TestCase
         );
 
         $contributor = new Contact(
-            Uuid::fromString($this->ids[5]),
+            Uuid::fromString($this->ids[3]),
             $integrationId,
             $this->currentUser->email(),
             ContactType::Contributor,
@@ -119,6 +109,10 @@ final class StoreIntegrationMapperTest extends TestCase
 
     public function test_it_creates_an_integration_from_request(): void
     {
+        Uuid::setFactory(new UuidTestFactory([
+            'uuid4' => $this->ids,
+        ]));
+
         $request = new StoreIntegrationRequest();
         $request->merge($this->inputs);
 

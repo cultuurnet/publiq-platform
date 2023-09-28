@@ -16,7 +16,7 @@ use Ramsey\Uuid\Validator\ValidatorInterface;
 final class UuidTestFactory implements UuidFactoryInterface
 {
     /**
-     * @var array<string, array<string>> $uuids
+     * @var array<string, array<string>>
      */
     private array $uuids;
     private int $uuid4Index;
@@ -24,9 +24,9 @@ final class UuidTestFactory implements UuidFactoryInterface
 
     /**
      * @param array<string, array<string>> $uuids
-     * @param UuidFactoryInterface|null $factory
      */
-    public function __construct(array $uuids, ?UuidFactoryInterface $factory = null) {
+    public function __construct(array $uuids, ?UuidFactoryInterface $factory = null)
+    {
         $this->uuids = $uuids;
         $this->uuid4Index = 0;
         $this->defaultFactory = $factory ?? new UuidFactory();
