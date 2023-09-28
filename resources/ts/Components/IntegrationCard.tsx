@@ -18,7 +18,6 @@ export const IntegrationCard = ({
   id,
   name,
   type,
-  description,
   status,
   onDelete,
   onEdit,
