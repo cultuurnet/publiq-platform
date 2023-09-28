@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Integrations\Policies;
 
 use App\Domain\Auth\Models\UserModel;
+use App\Domain\Integrations\IntegrationUrlType;
 use App\Domain\Integrations\Models\IntegrationUrlModel;
 
 final class IntegrationUrlPolicy
@@ -31,7 +32,7 @@ final class IntegrationUrlPolicy
 
     public function delete(UserModel $userModel, IntegrationUrlModel $integrationUrlModel): bool
     {
-        return true;
+        return ($integrationUrlModel->toDomain()->type !== IntegrationUrlType::Login);
     }
 
     public function restore(UserModel $userModel, IntegrationUrlModel $integrationUrlModel): bool
