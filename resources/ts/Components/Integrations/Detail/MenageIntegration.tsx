@@ -8,12 +8,12 @@ import { t } from "i18next";
 import { Integration } from "../../../Pages/Integrations/Index";
 import { Heading } from "../../Heading";
 
-type Props = { integration: Integration };
+type Props = Integration;
 
-export const MenageIntegration = ({ integration }: Props) => {
+export const MenageIntegration = ({ id }: Props) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const handleDeleteIntegration = () => {
-    router.delete(`/integrations/${integration.id}`, {});
+    router.delete(`/integrations/${id}`, {});
   };
   return (
     <>
