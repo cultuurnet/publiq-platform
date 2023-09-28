@@ -11,6 +11,7 @@ use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\IntegrationUrl;
@@ -66,7 +67,8 @@ final class UpdateClientsTest extends TestCase
             'Mock Integration',
             'Mock description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
         ))->withUrls(
             new IntegrationUrl(Uuid::uuid4(), $integrationId, Environment::Acceptance, IntegrationUrlType::Logout, 'https://www.publiq.be/logout'),
             new IntegrationUrl(Uuid::uuid4(), $integrationId, Environment::Acceptance, IntegrationUrlType::Logout, 'https://www.madewithlove.be/logout'),

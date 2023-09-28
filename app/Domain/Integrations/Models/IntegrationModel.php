@@ -43,12 +43,12 @@ final class IntegrationModel extends UuidModel
         'subscription_id',
         'organization_id',
         'status',
-        'partnerStatus'
+        'partner_status',
     ];
 
     protected $attributes = [
         'status' => IntegrationStatus::Draft,
-        'partnerStatus' => IntegrationPartnerStatus::THIRD_PARTY,
+        'partner_status' => IntegrationPartnerStatus::THIRD_PARTY,
     ];
 
     protected string $partnerStatus;

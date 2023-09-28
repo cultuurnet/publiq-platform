@@ -8,6 +8,7 @@ use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
@@ -70,7 +71,8 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Test Integration',
             'Test Integration description',
             $subscriptionId,
-            IntegrationStatus::Draft
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
         ))->withContacts(...$contacts);
 
         $this->integrationRepository->save($integration);
@@ -104,7 +106,8 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Test Integration',
             'Test Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
         );
 
         IntegrationModel::query()->insert([
@@ -114,6 +117,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'description' => $integration->description,
             'subscription_id' => $integration->subscriptionId,
             'status' => $integration->status,
+            'partner_status' => IntegrationPartnerStatus::THIRD_PARTY,
         ]);
 
         $integrationFromRepository = $this->integrationRepository->getById($integration->id);
@@ -149,7 +153,8 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Search Integration',
             'Search Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
         ))->withContacts($technicalContact, $organizationContact);
 
         $this->integrationRepository->save($searchIntegration);
@@ -180,7 +185,8 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Widgets Integration',
             'Widgets Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
         ))->withContacts($contributor, $otherTechnicalContact);
 
         $this->integrationRepository->save($widgetsIntegration);
@@ -200,7 +206,8 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Test Integration',
             'Test Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
         );
 
         $this->integrationRepository->save($integration);
@@ -237,7 +244,8 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Search Integration',
             'Search Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
         );
 
         $this->integrationRepository->save($searchIntegration);
@@ -282,7 +290,8 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Search Integration',
             'Search Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
         );
 
         $this->integrationRepository->save($searchIntegration);
@@ -311,7 +320,8 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Search Integration',
             'Search Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
         );
 
         $this->integrationRepository->save($searchIntegration);
@@ -331,7 +341,8 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Search Integration',
             'Search Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
         );
 
         $this->integrationRepository->save($searchIntegration);
