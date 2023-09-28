@@ -67,7 +67,6 @@
     "contact_label_2": "Technical contact",
     "contact_label_3": "Andere medewerkers",
     "contact": {
-      "organisation": "Naam organisatie",
       "first_name": "Voornaam contactpersoon",
       "last_name": "Achternaam contactpersoon",
       "email": "E-mailadres",
@@ -75,6 +74,8 @@
     },
     "agree": "Ik ga akkoord met de",
     "terms_of_use": "gebruiksvoorwaarden",
+    "coupon": "Ik heb een coupon",
+    "code": "Couponcode",
     "submit": "Integratie aanmaken",
     "back": "Terug naar integratieoverzicht",
     "pricing": {

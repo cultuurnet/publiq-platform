@@ -37,6 +37,7 @@ module.exports = {
         "status-yellow": "#FBDBAA80",
         "status-yellow-dark": "#896B24",
         "status-green": "#C8FFC7",
+        "status-green-medium": "#66CA8E",
         "status-green-dark": "#2A7D4B"
       },
       textColor: ({ theme }) => theme("colors.publiq-gray-dark"),
