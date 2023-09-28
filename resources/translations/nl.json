@@ -70,7 +70,8 @@
       "organisation": "Naam organisatie",
       "first_name": "Voornaam contactpersoon",
       "last_name": "Achternaam contactpersoon",
-      "email": "E-mailadres"
+      "email": "E-mailadres",
+      "action": "Actie"
     },
     "agree": "Ik ga akkoord met de",
     "terms_of_use": "gebruiksvoorwaarden",
@@ -178,6 +179,7 @@
       "callback": "Callback URL",
       "new_url": "Nieuwe {{type}} URL",
       "url": "URL",
+      "empty": "Geen URL gevonden",
       "environment": "Omgeving",
       "logout": "Logout URL",
       "dialog": "Wil je deze URL echt verwijderen?"

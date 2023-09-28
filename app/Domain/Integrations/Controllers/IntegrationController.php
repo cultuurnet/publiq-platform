@@ -131,15 +131,7 @@ final class IntegrationController extends Controller
             }
         });
 
-        return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName(
-                request: $updateContactInfo,
-                routeName: 'integrations.detail'
-            ),
-            [
-                'id' => $id,
-            ]
-        );
+        return Redirect::back();
     }
 
     public function deleteContact(Request $request, string $id, string $contactId): RedirectResponse
@@ -150,15 +142,7 @@ final class IntegrationController extends Controller
             // We can redirect back to integrations, even if not successful
         }
 
-        return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName(
-                request: $request,
-                routeName: 'integrations.detail'
-            ),
-            [
-                'id' => $id,
-            ]
-        );
+        return Redirect::back();
     }
 
     public function updateBilling(string $id, UpdateBillingInfo $updateBillingInfo): RedirectResponse
