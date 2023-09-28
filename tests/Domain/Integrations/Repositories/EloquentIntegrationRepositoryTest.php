@@ -359,4 +359,27 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'status' => IntegrationStatus::Active,
         ]);
     }
+
+    public function test_it_can_save_partner_status(): void
+    {
+        $integrationId = Uuid::uuid4();
+
+        $searchIntegration = new Integration(
+            $integrationId,
+            IntegrationType::SearchApi,
+            'First party integration',
+            'First party integration',
+            Uuid::uuid4(),
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::FIRST_PARTY,
+        );
+
+        $this->integrationRepository->save($searchIntegration);
+
+        $this->assertDatabaseHas('integrations', [
+            'id' => $integrationId,
+            'name' => 'First party integration',
+            'partner_status' => IntegrationPartnerStatus::FIRST_PARTY,
+        ]);
+    }
 }
