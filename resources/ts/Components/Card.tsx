@@ -40,8 +40,6 @@ export const Card = ({
         <Heading level={2} className="font-medium mb-2">
           {title}
         </Heading>
-        <p className="text-gray-700 text-base min-h-[5rem] break-words">
-          {description}
         </p>
       </div>
       {children && <div className="flex flex-1">{children}</div>}
