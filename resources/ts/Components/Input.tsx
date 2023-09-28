@@ -19,7 +19,7 @@ export const Input = ({
     <div className={classNames("block relative w-full", className)}>
       <input
         className={classNames(
-          "appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500",
+          "appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 rounded-lg",
           !!iconBack && "pl-4 pr-9",
           !disabled && "bg-white border-gray-500 outline-none"
         )}
