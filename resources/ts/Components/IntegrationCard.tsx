@@ -62,7 +62,6 @@ export const IntegrationCard = ({
           </div>
         </div>
       }
-      description={description}
     >
       <div className="flex w-full flex-col gap-4">
         <section className="flex max-md:flex-col max-md:items-start gap-3 md:items-center">
