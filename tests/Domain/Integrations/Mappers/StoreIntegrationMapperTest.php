@@ -36,6 +36,10 @@ final class StoreIntegrationMapperTest extends TestCase
             '43c9cb94-ec6f-4211-a0fb-d589223e0fd6', // contributorContact id
         ];
 
+        Uuid::setFactory(new UuidTestFactory([
+            'uuid4' => $this->ids,
+        ]));
+
         $userModel = UserModel::fromSession([
             'user_id' => 'c541a07b-068a-4f66-944f-90f8e64237da',
             'email' => 'john.doe@test.com',
@@ -109,9 +113,6 @@ final class StoreIntegrationMapperTest extends TestCase
 
     public function test_it_creates_an_integration_from_request(): void
     {
-        Uuid::setFactory(new UuidTestFactory([
-            'uuid4' => $this->ids,
-        ]));
 
         $request = new StoreIntegrationRequest();
         $request->merge($this->inputs);
