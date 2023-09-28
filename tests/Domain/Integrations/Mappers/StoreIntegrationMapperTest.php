@@ -17,9 +17,11 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
+use Tests\UuidTestFactory;
 
 final class StoreIntegrationMapperTest extends TestCase
 {
+    private array $ids;
     private array $inputs;
     private CurrentUser $currentUser;
 
@@ -27,8 +29,21 @@ final class StoreIntegrationMapperTest extends TestCase
     {
         parent::setUp();
 
+        $this->ids = [
+            'c541a07b-068a-4f66-944f-90f8e64237da', // userModel id
+            '8b1760f6-13ae-45e8-9514-9a040608d40d', // subscriptionId
+            'a8ab2245-17b4-44e3-9920-fab075effbdc', // integrationId
+            '8549201e-961b-4022-8c37-497f3b599dbe', // functionalContact id
+            'bb43b31f-a297-4a41-bd6b-ed2188f4ea75', // technicalContact id
+            '43c9cb94-ec6f-4211-a0fb-d589223e0fd6', // contributorContact id
+        ];
+
+        Uuid::setFactory(new UuidTestFactory([
+            'uuid4' => $this->ids
+        ]));
+
         $userModel = UserModel::fromSession([
-            'id' => Uuid::uuid4()->toString(),
+            'user_id' => $this->ids[0],
             'email' => 'john.doe@test.com',
             'name' => 'John Doe',
             'first_name' => 'John',
@@ -42,7 +57,7 @@ final class StoreIntegrationMapperTest extends TestCase
 
         $this->inputs = [
             'integrationType' => IntegrationType::SearchApi->value,
-            'subscriptionId' => Uuid::uuid4()->toString(),
+            'subscriptionId' => $this->ids[1],
             'integrationName' => 'My searches',
             'description' => 'To view my searches',
             'organisationFunctionalContact' => 'Tesla',
@@ -59,10 +74,10 @@ final class StoreIntegrationMapperTest extends TestCase
 
     private function getExpectedIntegration(): Integration
     {
-        $integrationId = Uuid::uuid4();
+        $integrationId = Uuid::fromString($this->ids[2]);
 
         $functionalContact = new Contact(
-            Uuid::uuid4(),
+            Uuid::fromString($this->ids[3]),
             $integrationId,
             $this->inputs['emailFunctionalContact'],
             ContactType::Functional,
@@ -71,7 +86,7 @@ final class StoreIntegrationMapperTest extends TestCase
         );
 
         $technicalContact = new Contact(
-            Uuid::uuid4(),
+            Uuid::fromString($this->ids[4]),
             $integrationId,
             $this->inputs['emailTechnicalContact'],
             ContactType::Technical,
@@ -80,7 +95,7 @@ final class StoreIntegrationMapperTest extends TestCase
         );
 
         $contributor = new Contact(
-            Uuid::uuid4(),
+            Uuid::fromString($this->ids[5]),
             $integrationId,
             $this->currentUser->email(),
             ContactType::Contributor,
@@ -98,38 +113,15 @@ final class StoreIntegrationMapperTest extends TestCase
         ))->withContacts($functionalContact, $technicalContact, $contributor);
     }
 
-    private function assertIntegrationData(Integration $expected, Integration $actual): void
-    {
-        $this->assertEquals($expected->type, $actual->type);
-        $this->assertEquals($expected->name, $actual->name);
-        $this->assertEquals($expected->description, $actual->description);
-        $this->assertEquals($expected->subscriptionId, $actual->subscriptionId);
-        $this->assertEquals($expected->status, $actual->status);
-    }
-
-    private function assertContactData(Contact $expected, Contact $actual): void
-    {
-        $this->assertEquals($expected->type, $actual->type);
-        $this->assertEquals($expected->email, $actual->email);
-        $this->assertEquals($expected->firstName, $actual->firstName);
-        $this->assertEquals($expected->lastName, $actual->lastName);
-    }
-
     public function test_it_creates_an_integration_from_request(): void
     {
         $request = new StoreIntegrationRequest();
         $request->merge($this->inputs);
 
-        $actualIntegration = StoreIntegrationMapper::map($request, $this->currentUser);
-        $actualContacts = $actualIntegration->contacts();
+        $actual = StoreIntegrationMapper::map($request, $this->currentUser);
 
-        $expectedIntegration = $this->getExpectedIntegration();
-        $expectedContacts = $expectedIntegration->contacts();
+        $expected = $this->getExpectedIntegration();
 
-        $this->assertIntegrationData($expectedIntegration, $actualIntegration);
-
-        $this->assertContactData($expectedContacts[0], $actualContacts[0]);
-        $this->assertContactData($expectedContacts[1], $actualContacts[1]);
-        $this->assertContactData($expectedContacts[2], $actualContacts[2]);
+        $this->assertEquals($expected, $actual);
     }
 }
