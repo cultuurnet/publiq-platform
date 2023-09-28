@@ -42,6 +42,10 @@ final class StoreIntegrationMapperTest extends TestCase
             'uuid4' => $this->ids
         ]));
 
+        // Deze zijn wel van mijn array :D 
+        var_dump(Uuid::uuid4());
+        var_dump(Uuid::uuid4());
+
         $userModel = UserModel::fromSession([
             'user_id' => $this->ids[0],
             'email' => 'john.doe@test.com',
