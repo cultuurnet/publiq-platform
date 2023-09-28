@@ -4,7 +4,7 @@ import { Heading } from "./Heading";
 
 type Props = {
   title: ReactElement | string;
-  description: string;
+  description?: string;
   img?: string;
   active?: boolean;
 } & Omit<ComponentProps<"div">, "title">;
@@ -40,7 +40,11 @@ export const Card = ({
         <Heading level={2} className="font-medium mb-2">
           {title}
         </Heading>
-        </p>
+        {description && (
+          <p className="text-gray-700 text-base min-h-[5rem] break-words">
+            {description}
+          </p>
+        )}
       </div>
       {children && <div className="flex flex-1">{children}</div>}
     </div>
