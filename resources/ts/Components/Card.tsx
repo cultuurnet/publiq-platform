@@ -66,6 +66,7 @@ export const Card = ({
             {description}
           </p>
         )}
+        {children && <div className={contentStyles}>{children}</div>}
       </div>
     </div>
   );
