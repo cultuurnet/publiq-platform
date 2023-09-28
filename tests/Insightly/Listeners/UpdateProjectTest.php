@@ -7,6 +7,7 @@ namespace Tests\Insightly\Listeners;
 use App\Domain\Coupons\Repositories\CouponRepository;
 use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
@@ -66,7 +67,8 @@ final class UpdateProjectTest extends TestCase
             'Test Integration',
             'Test Integration description',
             $subscriptionId,
-            IntegrationStatus::Draft
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
         );
 
         $subscription = new Subscription(

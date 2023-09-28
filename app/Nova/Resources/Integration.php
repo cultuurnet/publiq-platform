@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Nova\Resources;
 
+use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
@@ -67,6 +68,16 @@ final class Integration extends Resource
                     IntegrationType::SearchApi->value => IntegrationType::SearchApi->name,
                     IntegrationType::Widgets->value => IntegrationType::Widgets->name,
                 ])
+                ->rules('required'),
+
+            Select::make('Partner status')
+                ->filterable()
+                ->sortable()
+                ->options([
+                    IntegrationPartnerStatus::FIRST_PARTY->value => IntegrationPartnerStatus::FIRST_PARTY->value,
+                    IntegrationPartnerStatus::THIRD_PARTY->value => IntegrationPartnerStatus::THIRD_PARTY->value,
+                ])
+                ->default(IntegrationPartnerStatus::THIRD_PARTY->value)
                 ->rules('required'),
 
             Text::make('Description')

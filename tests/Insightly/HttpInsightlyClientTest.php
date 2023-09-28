@@ -7,6 +7,7 @@ namespace Tests\Insightly;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Organizations\Address;
@@ -101,7 +102,8 @@ final class HttpInsightlyClientTest extends TestCase
             'Test Integration',
             'Test Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
         );
 
         $insightlyId = $this->insightlyClient->opportunities()->create($integration);
@@ -118,7 +120,8 @@ final class HttpInsightlyClientTest extends TestCase
             'Test Integration',
             'Test Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
         );
 
         $insightlyId = $this->insightlyClient->projects()->create($integration);
@@ -135,7 +138,8 @@ final class HttpInsightlyClientTest extends TestCase
             'Test Integration',
             'Test Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
         );
 
         $insightlyId = $this->insightlyClient->projects()->create($integration);
@@ -154,7 +158,8 @@ final class HttpInsightlyClientTest extends TestCase
             'Test Integration',
             'Test Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
         );
 
         $insightlyId = $this->insightlyClient->projects()->create($integration);
@@ -173,7 +178,8 @@ final class HttpInsightlyClientTest extends TestCase
             'Test Integration',
             'Test Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
         );
 
         $insightlyOpportunityId = $this->insightlyClient->opportunities()->create($integration);
@@ -203,7 +209,8 @@ final class HttpInsightlyClientTest extends TestCase
             'Test Integration',
             'Test Integration description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
         );
 
         $contact = new Contact(

@@ -13,6 +13,7 @@ use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Organizations\Models\OrganizationModel;
@@ -42,10 +43,12 @@ final class IntegrationModel extends UuidModel
         'subscription_id',
         'organization_id',
         'status',
+        'partner_status',
     ];
 
     protected $attributes = [
         'status' => IntegrationStatus::Draft,
+        'partner_status' => IntegrationPartnerStatus::THIRD_PARTY,
     ];
 
     protected static function booted(): void
@@ -191,6 +194,7 @@ final class IntegrationModel extends UuidModel
             $this->description,
             Uuid::fromString($this->subscription_id),
             IntegrationStatus::from($this->status),
+            IntegrationPartnerStatus::from($this->partner_status),
         ))->withContacts(
             ...$this->contacts()
             ->get()

@@ -29,6 +29,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
                 'description' => $integration->description,
                 'subscription_id' => $integration->subscriptionId,
                 'status' => $integration->status,
+                'partner_status' => $integration->partnerStatus,
             ]);
 
             foreach ($integration->contacts() as $contact) {
