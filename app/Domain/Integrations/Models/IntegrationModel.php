@@ -51,8 +51,6 @@ final class IntegrationModel extends UuidModel
         'partner_status' => IntegrationPartnerStatus::THIRD_PARTY,
     ];
 
-    protected string $partnerStatus;
-
     protected static function booted(): void
     {
         self::created(
@@ -188,10 +186,6 @@ final class IntegrationModel extends UuidModel
     {
         $foundOrganisation = $this->organization()->first();
 
-        if (empty($this->partnerStatus)) {
-            $this->partnerStatus = IntegrationPartnerStatus::THIRD_PARTY->value;
-        }
-
         /** @var Integration */
         $integration = (new Integration(
             Uuid::fromString($this->id),
@@ -200,7 +194,7 @@ final class IntegrationModel extends UuidModel
             $this->description,
             Uuid::fromString($this->subscription_id),
             IntegrationStatus::from($this->status),
-            IntegrationPartnerStatus::from($this->partnerStatus),
+            IntegrationPartnerStatus::from($this->partner_status),
         ))->withContacts(
             ...$this->contacts()
             ->get()
