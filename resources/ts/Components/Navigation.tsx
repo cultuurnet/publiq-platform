@@ -37,8 +37,6 @@ export default function Navigation({
   const { t, i18n } = useTranslation();
   const translateRoute = useTranslateRoute();
 
-  const path = new URL(document.location.href).pathname;
-
   const pages = ["integrations", "integrations/new", "support"];
 
   const { component } = usePage();
