@@ -15,11 +15,11 @@ export const IntegrationInfo = ({ id, status }: Props) => {
   const v2 = true;
 
   return (
-    <div className="flex flex-col gap-4 shadow-md shadow-slate-200 max-md:px-5 px-10 py-5">
+    <div className="flex flex-col gap-4 max-md:px-5 px-10 py-5 ">
       <Heading className="font-semibold" level={2}>
         {t("details.integration_info.title")}
       </Heading>
-      <div className="grid grid-cols-2 max-md:grid-cols-1 gap-4 border-t py-4">
+      <div className="grid grid-cols-2 max-md:grid-cols-1 gap-4 py-4">
         {v2 && (
           <div className="flex flex-col gap-6 pt-4">
             <Heading className="font-semibold" level={3}>

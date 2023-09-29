@@ -11,6 +11,7 @@ use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\IntegrationUrl;
@@ -66,7 +67,8 @@ final class UpdateClientsTest extends TestCase
             'Mock Integration',
             'Mock description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
         ))->withUrls(
             new IntegrationUrl(Uuid::uuid4(), $integrationId, Environment::Acceptance, IntegrationUrlType::Logout, 'https://www.publiq.be/logout'),
             new IntegrationUrl(Uuid::uuid4(), $integrationId, Environment::Acceptance, IntegrationUrlType::Logout, 'https://www.madewithlove.be/logout'),
@@ -112,6 +114,9 @@ final class UpdateClientsTest extends TestCase
                                 'https://www.publiq.be/logout',
                                 'https://www.madewithlove.be/logout',
                             ],
+                            'client_metadata' => [
+                                'partner-status' => IntegrationPartnerStatus::THIRD_PARTY->value,
+                            ],
                             'initiate_login_uri' => 'https://www.publiq.be/login',
                         ]),
                     ],
@@ -123,6 +128,9 @@ final class UpdateClientsTest extends TestCase
                             'callbacks' => ['https://oauth.pstmn.io/v1/callback'],
                             'allowed_logout_urls' => [
                                 'https://www.madewithlove.be/logout',
+                            ],
+                            'client_metadata' => [
+                                'partner-status' => IntegrationPartnerStatus::THIRD_PARTY->value,
                             ],
                         ]),
                     ],
@@ -136,6 +144,9 @@ final class UpdateClientsTest extends TestCase
                                 'https://oauth.pstmn.io/v1/callback',
                             ],
                             'allowed_logout_urls' => [],
+                            'client_metadata' => [
+                                'partner-status' => IntegrationPartnerStatus::THIRD_PARTY->value,
+                            ],
                         ]),
                     ] => new Response(200, [], ''),
                     default => throw new \LogicException('Invalid arguments received'),

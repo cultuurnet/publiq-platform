@@ -45,7 +45,7 @@
       },
       "widgets": {
         "title": "Widgets",
-        "description": "Kant en klare HTML-modules die je in je website kan inpassen om een doorzoekbare lijst van evenementen weer te geven.",
+        "description": "Kant en klare html-modules die je in je website kan inpassen.",
         "features": [
           "Zelf of door publiq in te stellen",
           "Plug & play oplossing",
@@ -67,13 +67,15 @@
     "contact_label_2": "Technical contact",
     "contact_label_3": "Andere medewerkers",
     "contact": {
-      "organisation": "Naam organisatie",
       "first_name": "Voornaam contactpersoon",
       "last_name": "Achternaam contactpersoon",
-      "email": "E-mailadres"
+      "email": "E-mailadres",
+      "action": "Actie"
     },
     "agree": "Ik ga akkoord met de",
     "terms_of_use": "gebruiksvoorwaarden",
+    "coupon": "Ik heb een coupon",
+    "code": "Couponcode",
     "submit": "Integratie aanmaken",
     "back": "Terug naar integratieoverzicht",
     "pricing": {
@@ -131,7 +133,6 @@
   },
   "details": {
     "save": "Wijzigingen opslaan",
-    "delete": "Integratie verwijderen",
     "basic_info": {
       "title": "Basisgegevens",
       "name": "Integratienaam",
@@ -178,9 +179,19 @@
       "callback": "Callback URL",
       "new_url": "Nieuwe {{type}} URL",
       "url": "URL",
+      "empty": "Geen URL gevonden",
       "environment": "Omgeving",
       "logout": "Logout URL",
       "dialog": "Wil je deze URL echt verwijderen?"
+    },
+    "menage_account": {
+      "title": "Integratiebeheer",
+      "delete": {
+        "title": "Integratie verwijderen",
+        "description": "Ben je zeker dat je je integratie wilt verwijderen? Nadat je hebt gekozen om je integratie te verwijderen, zal deze niet langer toegankelijk zijn en kan de verwijdering niet ongedaan gemaakt worden."
+      },
+
+      "action": "Verwijderen"
     }
   },
   "support": {

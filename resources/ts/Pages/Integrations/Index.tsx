@@ -88,16 +88,10 @@ const Index = ({ integrations, paginationInfo }: Props) => {
 
   const handleChangeSearchInput = debounce(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      router.get(
-        translateRoute("/integrations"),
-        {
-          // Don't append search query param to url if empty
-          search: e.target.value || undefined,
-        },
-        {
-          preserveState: true,
-        }
-      );
+      router.get(translateRoute("/integrations"), {
+        // Don't append search query param to url if empty
+        search: e.target.value || undefined,
+      });
     },
     250
   );

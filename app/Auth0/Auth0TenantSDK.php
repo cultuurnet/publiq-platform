@@ -57,6 +57,7 @@ final class Auth0TenantSDK
                 'app_type' => 'regular_web', // The app type has no real meaning/implications, but regular_web is the most logical for generic clients for integrators
                 'client_metadata' => [
                     'publiq-apis' => $apis,
+                    'partner-status' => $integration->partnerStatus->value,
                 ],
                 'token_endpoint_auth_method' => 'client_secret_post', // To require the client to authenticate with their client secret in a JSON body in "POST /oauth/token" (instead of HTTP basic auth or no secret)
                 'cross_origin_auth' => true, // Required to make it possible for SPAs to get tokens using the PKCE flow
@@ -99,6 +100,9 @@ final class Auth0TenantSDK
             'name' => $this->clientName($integration),
             'callbacks' => $this->getCallbackUrls($integration),
             'allowed_logout_urls' => $this->getLogoutUrls($integration),
+            'client_metadata' => [
+                'partner-status' => $integration->partnerStatus->value,
+            ],
         ];
 
         if ($this->getLoginUrl($integration) !== '') {
