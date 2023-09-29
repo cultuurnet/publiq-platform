@@ -47,12 +47,16 @@ export const UitIdWidget = () => {
   );
 
   return (
-    <div className="w-full px-6 lg:px-64">
+    <div className="w-full px-7 bg-uitid-widget">
       <script id="uitid-widget-config" type="application/json">
         {JSON.stringify(widgetConfig)}
       </script>
 
-      <div id="uitid-widget" data-language={i18n.language}></div>
+      <div
+        id="uitid-widget"
+        data-current-page={currentPage}
+        data-language={i18n.language}
+      ></div>
 
       <div id="uitid-widget-slot" hidden>
         <div>
