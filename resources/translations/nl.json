@@ -15,7 +15,8 @@
     "integrations": "Mijn integraties",
     "opportunities": "Mogelijkheden",
     "support": "Ondersteuning",
-    "hello": "Hallo"
+    "hello": "Hallo",
+    "integrations/new": "Integratie toevoegen"
   },
   "home": {
     "hero": {

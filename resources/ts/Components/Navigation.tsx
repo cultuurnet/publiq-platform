@@ -1,4 +1,4 @@
-import React, { ComponentProps, useMemo } from "react";
+import React, { ComponentProps, useMemo, useState } from "react";
 import { Heading } from "./Heading";
 import { useTranslation } from "react-i18next";
 import { Link } from "@inertiajs/react";
@@ -39,7 +39,7 @@ export default function Navigation({
 
   const path = new URL(document.location.href).pathname;
 
-  const pages = ["integrations", "support"];
+  const pages = ["integrations", "integrations/new", "support"];
 
   const { component } = usePage();
 
@@ -59,6 +59,8 @@ export default function Navigation({
     className
   );
 
+  const [activeTab, setActiveTab] = useState("");
+
   return (
     <section className={classes} {...props}>
       {children && <div className="fixed top-10 right-16">{children}</div>}
@@ -70,9 +72,10 @@ export default function Navigation({
           <Link
             key={pageTitle}
             href={translateRoute(`/${pageTitle}`)}
+            onClick={() => setActiveTab(pageTitle)}
             className={classNames(
               "max-md:inline-flex items-center justify-between py-3 border-transparent border-b-4",
-              path.startsWith(`${translateRoute(`/${pageTitle}`)}`) &&
+              activeTab === pageTitle &&
                 "md:border-b-4 md:border-b-publiq-blue max-md:font-semibold"
             )}
           >
