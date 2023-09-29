@@ -24,7 +24,6 @@ final class UuidTestFactory extends UuidFactory
     public function uuid4(): UuidInterface
     {
         $current = $this->idGenerator->current();
-        var_dump($current);
         $this->idGenerator->next();
 
         if ($current !== null) {
