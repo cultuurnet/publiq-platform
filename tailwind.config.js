@@ -29,6 +29,7 @@ module.exports = {
         "publiq-gray-dark": "#3b3b3b",
         "publiq-gray-medium": "#efefef",
         "publiq-gray-light": "#fcfcfc",
+        "uitid-widget": "#F8F8F8",
         "icon-gray": "#5f6368",
         "icon-gray-light": "#F2F2F2",
         "icon-gray-dark": "#E3E3E3",
