@@ -2,15 +2,27 @@ import React, { ComponentProps } from "react";
 
 import { classNames } from "../utils/classNames";
 
+type ButtonVariant = "default" | "danger";
+
 type Props = {
   orientation?: string;
+  variant?: ButtonVariant;
 } & ComponentProps<"button">;
 
-export const ButtonSecondary = ({ children, className, ...props }: Props) => {
+export const ButtonSecondary = ({
+  children,
+  className,
+  variant = "default",
+  ...props
+}: Props) => {
   return (
     <button
       className={classNames(
-        "relative inline-flex items-center justify-center px-10 py-3 max-md:px-5 max-md:py-2 font-medium border border-publiq-blue text-publiq-blue group hover:bg-publiq-blue-dark hover:bg-opacity-10",
+        "relative inline-flex items-center justify-center rounded px-7 py-2 max-md:px-5 font-medium border hover:bg-opacity-10",
+        variant === "default" &&
+          "border-publiq-blue text-publiq-blue hover:bg-publiq-blue-dark",
+        variant === "danger" &&
+          "border-status-red-dark text-status-red-dark hover:bg-status-red",
         className
       )}
       {...props}

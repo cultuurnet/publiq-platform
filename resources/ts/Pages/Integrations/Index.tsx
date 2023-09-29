@@ -16,6 +16,8 @@ import { QuestionDialog } from "../../Components/QuestionDialog";
 import { IconLink } from "../../Components/IconLink";
 import { IntegrationStatus } from "../../types/IntegrationStatus";
 import { ContactType } from "../../types/ContactType";
+import { Environment } from "../../types/Environment";
+import { IntegrationUrlType } from "../../types/IntegrationUrlType";
 
 type Organisation = {
   id: string;
@@ -50,6 +52,13 @@ export type Subscription = {
   fee: number;
 };
 
+export type IntegrationUrl = {
+  id: string;
+  environment: Environment;
+  type: IntegrationUrlType;
+  url: string;
+};
+
 export type Integration = {
   id: string;
   type: string;
@@ -60,6 +69,7 @@ export type Integration = {
   contacts: Contact[];
   organisation?: Organisation;
   subscription: Subscription;
+  urls: IntegrationUrl[];
 };
 
 type Props = {
@@ -78,16 +88,10 @@ const Index = ({ integrations, paginationInfo }: Props) => {
 
   const handleChangeSearchInput = debounce(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      router.get(
-        translateRoute("/integrations"),
-        {
-          // Don't append search query param to url if empty
-          search: e.target.value || undefined,
-        },
-        {
-          preserveState: true,
-        }
-      );
+      router.get(translateRoute("/integrations"), {
+        // Don't append search query param to url if empty
+        search: e.target.value || undefined,
+      });
     },
     250
   );

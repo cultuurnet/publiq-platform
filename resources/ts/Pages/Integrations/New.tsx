@@ -7,7 +7,7 @@ import { Input } from "../../Components/Input";
 import { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
 import { Card } from "../../Components/Card";
-import { Button } from "../../Components/Button";
+import { ButtonPrimary } from "../../Components/ButtonPrimary";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { Page } from "../../Components/Page";
@@ -100,6 +100,8 @@ const initialFormValues = {
   lastNameTechnicalContact: "",
   emailTechnicalContact: "",
   agreement: "",
+  coupon: "",
+  couponCode: "",
 };
 
 type Subscription = {
@@ -155,26 +157,24 @@ const New = ({ subscriptions }: Props) => {
         <Heading level={2}>{t("integration_form.title")}</Heading>
         <p className="mb-5">{t("integration_form.description")}</p>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-7">
           <FormElement
-            label={`${t("integration_form.type")}`}
+            label={t("integration_form.type")}
             labelSize="xl"
             component={
               <div className="md:grid md:grid-cols-3 gap-5 max-md:flex max-md:flex-col max-md:items-center pb-3">
                 {translatedIntegrations.map((integration) => (
-                  <button
-                    type="button"
+                  <Card
+                    active={data.integrationType === integration.type}
+                    {...integration}
+                    className="rounded-lg"
+                    role="button"
                     key={integration.type}
                     onClick={() => {
                       setData("integrationType", integration.type);
                     }}
-                  >
-                    <Card
-                      active={data.integrationType === integration.type}
-                      {...integration}
-                      className="w-full md:min-h-[14rem]"
-                    ></Card>
-                  </button>
+                    textCenter
+                  ></Card>
                 ))}
               </div>
             }
@@ -182,37 +182,34 @@ const New = ({ subscriptions }: Props) => {
           />
 
           <FormElement
-            label={`${t("integration_form.pricing_plan")}`}
+            label={t("integration_form.pricing_plan")}
             labelSize="xl"
             component={
               <div className="md:grid md:grid-cols-3 gap-5 max-md:flex max-md:flex-col max-md:items-center pb-3">
                 {translatedPricing.map((pricing) => (
-                  <button
-                    type="button"
-                    className="w-full"
+                  <Card
+                    role="button"
                     key={pricing.title}
                     onClick={() => {
                       setData("subscriptionId", pricing.id);
                     }}
+                    {...pricing}
+                    active={data.subscriptionId === pricing.id}
+                    className="rounded-lg"
+                    contentStyles="font-bold"
+                    textCenter
                   >
-                    <Card
-                      {...pricing}
-                      active={data.subscriptionId === pricing.id}
-                      className="md:min-h-[14rem]"
-                    >
-                      {pricing.price}
-                    </Card>
-                  </button>
+                    {pricing.price}
+                  </Card>
                 ))}
               </div>
             }
             error={errors.subscriptionId}
           />
           <FormElement
-            label={`${t("integration_form.integration_name")}`}
+            label={t("integration_form.integration_name")}
             labelSize="xl"
-            info={`${t("integration_form.description_name")}`}
-            className="md:w-[65%]"
+            info={t("integration_form.description_name")}
             component={
               <Input
                 type="text"
@@ -224,13 +221,13 @@ const New = ({ subscriptions }: Props) => {
             error={errors.integrationName}
           />
           <FormElement
-            label={`${t("integration_form.aim")}`}
+            label={t("integration_form.aim")}
             labelSize="xl"
-            info={`${t("integration_form.description_aim")}`}
+            info={t("integration_form.description_aim")}
             component={
               <textarea
                 rows={3}
-                className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                className="appearance-none block w-full rounded-lg bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                 name="description"
                 value={data.description}
                 onChange={(e) => setData("description", e.target.value)}
@@ -243,29 +240,9 @@ const New = ({ subscriptions }: Props) => {
               {t("integration_form.contact_label_1")}
             </Heading>
             <div className="flex flex-col gap-5">
-              <div className="flex">
+              <div className="grid grid-cols-3 max-md:flex max-md:flex-col gap-5 ">
                 <FormElement
-                  label={`${t("integration_form.contact.organisation")}`}
-                  component={
-                    <Input
-                      type="text"
-                      name="organisationFunctionalContact"
-                      className="md:w-[32%]"
-                      value={data.organisationFunctionalContact}
-                      onChange={(e) =>
-                        setData("organisationFunctionalContact", e.target.value)
-                      }
-                      placeholder={`${t(
-                        "integration_form.contact.organisation"
-                      )}`}
-                    />
-                  }
-                  error={errors.organisationFunctionalContact}
-                />
-              </div>
-              <div className="flex max-md:flex-col gap-5 ">
-                <FormElement
-                  label={`${t("integration_form.contact.last_name")}`}
+                  label={t("integration_form.contact.last_name")}
                   component={
                     <Input
                       type="text"
@@ -274,13 +251,13 @@ const New = ({ subscriptions }: Props) => {
                       onChange={(e) =>
                         setData("lastNameFunctionalContact", e.target.value)
                       }
-                      placeholder={`${t("integration_form.contact.last_name")}`}
+                      placeholder={t("integration_form.contact.last_name")}
                     />
                   }
                   error={errors.lastNameFunctionalContact}
                 />
                 <FormElement
-                  label={`${t("integration_form.contact.first_name")}`}
+                  label={t("integration_form.contact.first_name")}
                   component={
                     <Input
                       type="text"
@@ -289,15 +266,13 @@ const New = ({ subscriptions }: Props) => {
                       onChange={(e) =>
                         setData("firstNameFunctionalContact", e.target.value)
                       }
-                      placeholder={`${t(
-                        "integration_form.contact.first_name"
-                      )}`}
+                      placeholder={t("integration_form.contact.first_name")}
                     />
                   }
                   error={errors.firstNameFunctionalContact}
                 />
                 <FormElement
-                  label={`${t("integration_form.contact.email")}`}
+                  label={t("integration_form.contact.email")}
                   component={
                     <Input
                       type="email"
@@ -306,7 +281,7 @@ const New = ({ subscriptions }: Props) => {
                       onChange={(e) =>
                         setData("emailFunctionalContact", e.target.value)
                       }
-                      placeholder={`${t("integration_form.contact.email")}`}
+                      placeholder={t("integration_form.contact.email")}
                     />
                   }
                   error={errors.emailFunctionalContact}
@@ -319,81 +294,57 @@ const New = ({ subscriptions }: Props) => {
             <Heading className="font-semibold" level={3}>
               {t("integration_form.contact_label_2")}
             </Heading>
-            <div className="flex flex-col gap-5">
-              <div className="flex">
-                <FormElement
-                  label={`${t("integration_form.contact.organisation")}`}
-                  component={
-                    <Input
-                      type="text"
-                      className="md:w-[32%]"
-                      name="organisationTechnicalContact"
-                      value={data.organisationTechnicalContact}
-                      onChange={(e) =>
-                        setData("organisationTechnicalContact", e.target.value)
-                      }
-                      placeholder={`${t(
-                        "integration_form.contact.organisation"
-                      )}`}
-                    />
-                  }
-                  error={errors.organisationTechnicalContact}
-                />
-              </div>
-              <div className="flex basis-1/2 max-md:flex-col gap-5">
-                <FormElement
-                  label={`${t("integration_form.contact.last_name")}`}
-                  component={
-                    <Input
-                      type="text"
-                      name="lastNameTechnicalContact"
-                      value={data.lastNameTechnicalContact}
-                      onChange={(e) =>
-                        setData("lastNameTechnicalContact", e.target.value)
-                      }
-                      placeholder={`${t("integration_form.contact.last_name")}`}
-                    />
-                  }
-                  error={errors.lastNameTechnicalContact}
-                />
-                <FormElement
-                  label={`${t("integration_form.contact.first_name")}`}
-                  component={
-                    <Input
-                      type="text"
-                      name="firstNameTechnicalContact"
-                      value={data.firstNameTechnicalContact}
-                      onChange={(e) =>
-                        setData("firstNameTechnicalContact", e.target.value)
-                      }
-                      placeholder={`${t(
-                        "integration_form.contact.first_name"
-                      )}`}
-                    />
-                  }
-                  error={errors.firstNameTechnicalContact}
-                />
+            <div className="grid grid-cols-3 max-md:flex max-md:flex-col gap-5">
+              <FormElement
+                label={t("integration_form.contact.last_name")}
+                component={
+                  <Input
+                    type="text"
+                    name="lastNameTechnicalContact"
+                    value={data.lastNameTechnicalContact}
+                    onChange={(e) =>
+                      setData("lastNameTechnicalContact", e.target.value)
+                    }
+                    placeholder={t("integration_form.contact.last_name")}
+                  />
+                }
+                error={errors.lastNameTechnicalContact}
+              />
+              <FormElement
+                label={t("integration_form.contact.first_name")}
+                component={
+                  <Input
+                    type="text"
+                    name="firstNameTechnicalContact"
+                    value={data.firstNameTechnicalContact}
+                    onChange={(e) =>
+                      setData("firstNameTechnicalContact", e.target.value)
+                    }
+                    placeholder={t("integration_form.contact.first_name")}
+                  />
+                }
+                error={errors.firstNameTechnicalContact}
+              />
 
-                <FormElement
-                  label={`${t("integration_form.contact.email")}`}
-                  component={
-                    <Input
-                      type="emailTechnicalContact"
-                      name="emailPartner"
-                      value={data.emailTechnicalContact}
-                      onChange={(e) =>
-                        setData("emailTechnicalContact", e.target.value)
-                      }
-                      placeholder={`${t("integration_form.contact.email")}`}
-                    />
-                  }
-                  error={errors.emailTechnicalContact}
-                />
-              </div>
+              <FormElement
+                label={t("integration_form.contact.email")}
+                component={
+                  <Input
+                    type="email"
+                    name="emailPartner"
+                    value={data.emailTechnicalContact}
+                    onChange={(e) =>
+                      setData("emailTechnicalContact", e.target.value)
+                    }
+                    placeholder={t("integration_form.contact.email")}
+                  />
+                }
+                error={errors.emailTechnicalContact}
+              />
             </div>
           </div>
 
-          <div>
+          <div className="flex flex-col gap-5">
             <FormElement
               label={`${t("integration_form.agree")} ${t(
                 "integration_form.terms_of_use"
@@ -404,6 +355,7 @@ const New = ({ subscriptions }: Props) => {
                 <input
                   type="checkbox"
                   name="agreement"
+                  className="text-publiq-blue-dark focus:ring-publiq-blue-dark rounded-sm"
                   checked={data.agreement === "true"}
                   onChange={() =>
                     setData(
@@ -415,11 +367,41 @@ const New = ({ subscriptions }: Props) => {
               }
               error={errors.agreement}
             />
+            <FormElement
+              label={t("integration_form.coupon")}
+              labelPosition="right"
+              component={
+                <input
+                  type="checkbox"
+                  name="coupon"
+                  className="text-publiq-blue-dark focus:ring-publiq-blue-dark rounded-sm"
+                  checked={data.coupon === "true"}
+                  onChange={() =>
+                    setData("coupon", data.coupon === "true" ? "" : "true")
+                  }
+                />
+              }
+              error={errors.coupon}
+            />
+            {data.coupon && (
+              <FormElement
+                component={
+                  <Input
+                    type="text"
+                    name="couponCode"
+                    value={data.couponCode}
+                    onChange={(e) => setData("couponCode", e.target.value)}
+                    placeholder={t("integration_form.code")}
+                  />
+                }
+                error={errors.couponCode}
+              />
+            )}
           </div>
 
-          <Button type="submit" disabled={processing} className="w-fit">
+          <ButtonPrimary type="submit" disabled={processing} className="w-fit">
             {t("integration_form.submit")}
-          </Button>
+          </ButtonPrimary>
         </form>
       </div>
     </Page>

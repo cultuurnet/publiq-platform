@@ -2,22 +2,19 @@ import React, { useState } from "react";
 import { Heading } from "../../Heading";
 import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
-import { Button } from "../../Button";
+import { ButtonPrimary } from "../../ButtonPrimary";
 import { FormDropdown } from "../../FormDropdown";
 import { Integration } from "../../../Pages/Integrations/Index";
 import { useTranslation } from "react-i18next";
 import { useForm } from "@inertiajs/react";
 import { ButtonIcon } from "../../ButtonIcon";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
-import { useSectionCollapsedContext } from "../../../context/SectionCollapsedContext";
 
 type Props = Integration;
 
 export const BillingInfo = ({ id, organisation, subscription }: Props) => {
   const { t } = useTranslation();
   const [isDisabled, setIsDisabled] = useState(true);
-
-  const [collapsed, setCollapsed] = useSectionCollapsedContext();
 
   const initialFormValues = {
     organisation,
@@ -38,10 +35,6 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
             onClick={() => setIsDisabled((prev) => !prev)}
           />
         ) : null
-      }
-      isCollapsed={collapsed.billing}
-      onChangeCollapsed={(newValue) =>
-        setCollapsed((prev) => ({ ...prev, billing: newValue }))
       }
     >
       <div className="flex flex-col gap-5">
@@ -181,7 +174,7 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
             </div>
             {!isDisabled && (
               <div className="flex flex-col gap-2 items-center">
-                <Button
+                <ButtonPrimary
                   onClick={() => {
                     setIsDisabled(true);
 
@@ -191,7 +184,7 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
                   }}
                 >
                   {t("details.save")}
-                </Button>
+                </ButtonPrimary>
               </div>
             )}
           </>

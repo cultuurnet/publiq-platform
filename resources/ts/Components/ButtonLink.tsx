@@ -8,7 +8,7 @@ export const ButtonLink = ({ children, className, ...props }: Props) => {
   return (
     <Link
       className={classNames(
-        "relative inline-flex items-center justify-center bg-publiq-blue font-medium px-10 py-3 max-md:px-5 max-md:py-2 text-white group hover:bg-publiq-blue-light",
+        "relative inline-flex items-center justify-center rounded bg-publiq-blue-dark font-medium px-7 py-2 max-md:px-5 text-white group hover:bg-publiq-blue-light",
         className
       )}
       {...props}

@@ -2,17 +2,16 @@ import React, { ReactNode, useState, useEffect } from "react";
 import Layout from "../../Components/Layout";
 import { Page } from "../../Components/Page";
 import { Heading } from "../../Components/Heading";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Integration } from "./Index";
 import { BasicInfo } from "../../Components/Integrations/Detail/BasicInfo";
 import { ContactInfo } from "../../Components/Integrations/Detail/ContactInfo";
 import { BillingInfo } from "../../Components/Integrations/Detail/BillingInfo";
 import { IntegrationInfo } from "../../Components/Integrations/Detail/IntegrationInfo";
 import { IntegrationSettings } from "../../Components/Integrations/Detail/IntegrationSettings";
-import { ButtonSecondary } from "../../Components/ButtonSecondary";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTranslation } from "react-i18next";
 import { router } from "@inertiajs/react";
+import { Tabs } from "../../Components/Tabs";
+import { MenageIntegration } from "../../Components/Integrations/Detail/MenageIntegration";
 
 type Props = { integration: Integration };
 
@@ -20,6 +19,9 @@ const Detail = ({ integration }: Props) => {
   const { t } = useTranslation();
 
   const [isMobile, setIsMobile] = useState(false);
+
+  const url = new URL(document.location.href);
+  const activeTab = url.searchParams.get("tab") ?? "basic_info";
 
   const handleResize = () => {
     setIsMobile(window.innerWidth < 768);
@@ -30,11 +32,9 @@ const Detail = ({ integration }: Props) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const handleDeleteIntegration = () => {
-    router.delete(`/integrations/${integration.id}`, {
-      preserveScroll: true,
-      preserveState: false,
-    });
+  const changeTabInUrl = (tab: string) => {
+    url.searchParams.set("tab", tab);
+    router.get(url.toString());
   };
 
   return (
@@ -51,18 +51,41 @@ const Detail = ({ integration }: Props) => {
           </div>
         </div>
 
-        <BasicInfo integration={integration} isMobile={isMobile} />
-        <IntegrationInfo {...integration} />
-        <IntegrationSettings isMobile={isMobile} />
-        <ContactInfo {...integration} />
-        <BillingInfo {...integration} />
-        <ButtonSecondary
-          className="self-center"
-          onClick={handleDeleteIntegration}
-        >
-          {t("details.delete")}
-          <FontAwesomeIcon className="pl-1" icon={faTrash} />
-        </ButtonSecondary>
+        <Tabs active={activeTab} onChange={changeTabInUrl}>
+          <Tabs.Item type="basic_info" label={t("details.basic_info.title")}>
+            <BasicInfo integration={integration} isMobile={isMobile} />
+          </Tabs.Item>
+          <Tabs.Item
+            type="integration_info"
+            label={t("details.integration_info.title")}
+          >
+            <IntegrationInfo {...integration} />
+          </Tabs.Item>
+          <Tabs.Item
+            type="integration_settings"
+            label={t("details.integration_settings.title")}
+          >
+            <IntegrationSettings {...integration} isMobile={isMobile} />
+          </Tabs.Item>
+          <Tabs.Item
+            type="contact_info"
+            label={t("details.contact_info.title")}
+          >
+            <ContactInfo {...integration} isMobile={isMobile} />
+          </Tabs.Item>
+          <Tabs.Item
+            type="billing_info"
+            label={t("details.billing_info.title")}
+          >
+            <BillingInfo {...integration} />
+          </Tabs.Item>
+          <Tabs.Item
+            type="menage_account"
+            label={t("details.menage_account.title")}
+          >
+            <MenageIntegration {...integration} />
+          </Tabs.Item>
+        </Tabs>
       </div>
     </Page>
   );

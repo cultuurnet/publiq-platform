@@ -6,13 +6,13 @@ import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
 import { useTranslation } from "react-i18next";
 import { Integration } from "../../../Pages/Integrations/Index";
-import { Button } from "../../Button";
+import { ButtonPrimary } from "../../ButtonPrimary";
 import { classNames } from "../../../utils/classNames";
 import { useForm } from "@inertiajs/react";
 
 type Props = {
   integration: Integration;
-  isMobile?: boolean;
+  isMobile: boolean;
 };
 export const BasicInfo = ({ integration, isMobile }: Props) => {
   const { t } = useTranslation();
@@ -26,7 +26,7 @@ export const BasicInfo = ({ integration, isMobile }: Props) => {
   const { data, setData, patch } = useForm(initialFormValues);
 
   return (
-    <div className="flex flex-col gap-4 shadow-md shadow-slate-200 max-md:px-5 px-10 py-5">
+    <div className="flex flex-col gap-4 max-md:px-5 px-10 py-5">
       <div className="flex gap-2 items-center">
         <Heading level={2} className="font-semibold">
           {t("details.basic_info.title")}
@@ -37,7 +37,7 @@ export const BasicInfo = ({ integration, isMobile }: Props) => {
           onClick={() => setIsDisabled((prev) => !prev)}
         />
       </div>
-      <div className="flex flex-col gap-6 border-t py-6">
+      <div className="flex flex-col gap-6 py-6">
         <FormElement
           label={`${t("details.basic_info.name")}`}
           labelPosition={isMobile ? "top" : "left"}
@@ -71,7 +71,7 @@ export const BasicInfo = ({ integration, isMobile }: Props) => {
         />
         {!isDisabled && (
           <div className="flex flex-col items-start md:pl-[10.5rem]">
-            <Button
+            <ButtonPrimary
               onClick={() => {
                 setIsDisabled(true);
 
@@ -81,7 +81,7 @@ export const BasicInfo = ({ integration, isMobile }: Props) => {
               }}
             >
               {t("details.save")}
-            </Button>
+            </ButtonPrimary>
           </div>
         )}
       </div>

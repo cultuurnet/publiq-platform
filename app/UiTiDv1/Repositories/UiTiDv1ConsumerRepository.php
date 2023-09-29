@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\UiTiDv1\Repositories;
 
 use App\UiTiDv1\UiTiDv1Consumer;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Ramsey\Uuid\UuidInterface;
 
 interface UiTiDv1ConsumerRepository
@@ -17,8 +19,14 @@ interface UiTiDv1ConsumerRepository
     public function getByIntegrationId(UuidInterface $integrationId): array;
 
     /**
+     * @throws ModelNotFoundException<Model>
+     */
+    public function getById(UuidInterface $id): UiTiDv1Consumer;
+
+    /**
      * @param array<UuidInterface> $integrationIds
      * @return UiTiDv1Consumer[]
      */
     public function getByIntegrationIds(array $integrationIds): array;
+
 }

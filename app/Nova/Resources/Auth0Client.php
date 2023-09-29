@@ -5,9 +5,16 @@ declare(strict_types=1);
 namespace App\Nova\Resources;
 
 use App\Auth0\Auth0Tenant;
+use App\Auth0\CachedAuth0ClientGrants;
 use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Contacts\Models\ContactModel;
+use App\Nova\ActionGuards\Auth0\ActivateAuth0ClientGuard;
+use App\Nova\ActionGuards\Auth0\BlockAuth0ClientGuard;
+use App\Nova\Actions\Auth0\ActivateAuth0Client;
+use App\Nova\Actions\Auth0\BlockAuth0Client;
 use App\Nova\Resource;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
@@ -54,6 +61,16 @@ final class Auth0Client extends Resource
                     Auth0Tenant::Acceptance->value => Auth0Tenant::Acceptance->name,
                     Auth0Tenant::Production->value => Auth0Tenant::Production->name,
                 ]),
+            Text::make('Status', function (Auth0ClientModel $model) {
+                $auth0Client = $model->toDomain();
+                if (empty(App::get(CachedAuth0ClientGrants::class)->findGrantsOnClient($auth0Client))) {
+                    Log::info('Auth0Client - status - ' . $auth0Client->clientId . ': blocked');
+                    return '<span style="color: red;">Blocked</span>';
+                }
+
+                Log::debug('Auth0Client - status - ' . $auth0Client->clientId . ': active');
+                return '<span style="color: green;">Active</span>';
+            })->asHtml(),
             Text::make('auth0_client_id')
                 ->readonly(),
             Text::make('auth0_client_secret')
@@ -85,5 +102,33 @@ final class Auth0Client extends Resource
                 config('auth0.tenants')
             )
         );
+    }
+
+    public function actions(NovaRequest $request): array
+    {
+        return [
+            App::make(ActivateAuth0Client::class)
+                ->showOnDetail()
+                ->showInline()
+                ->confirmText('Are you sure you want to activate this client?')
+                ->confirmButtonText('Activate')
+                ->cancelButtonText("Don't activate")
+                ->canRun(function ($request, $model) {
+                    /** @var ActivateAuth0ClientGuard $guard */
+                    $guard = App::make(ActivateAuth0ClientGuard::class);
+                    return $guard->canDo($model->toDomain());
+                }),
+            App::make(BlockAuth0Client::class)
+                ->showOnDetail()
+                ->showInline()
+                ->confirmText('Are you sure you want to block this client?')
+                ->confirmButtonText('Block')
+                ->cancelButtonText("Don't block")
+                ->canRun(function ($request, $model) {
+                    /** @var BlockAuth0ClientGuard $guard */
+                    $guard = App::make(BlockAuth0ClientGuard::class);
+                    return $guard->canDo($model->toDomain());
+                }),
+        ];
     }
 }

@@ -11,6 +11,7 @@ use App\Domain\Coupons\Coupon;
 use App\Domain\Coupons\Repositories\CouponRepository;
 use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
@@ -189,7 +190,8 @@ final class CreateProjectWithCouponTest extends TestCase
             'My integration',
             'This is my integration',
             $subscriptionId,
-            IntegrationStatus::Draft
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
         );
 
         $this->integrationRepository->expects($this->once())

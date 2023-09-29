@@ -6,6 +6,7 @@ namespace Tests\UiTiDv1\Listeners;
 
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
@@ -58,7 +59,8 @@ final class CreateConsumersTest extends TestCase
             'Mock Integration',
             'Mock description',
             Uuid::uuid4(),
-            IntegrationStatus::Draft
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
         );
 
         $this->integrationRepository->expects($this->once())
