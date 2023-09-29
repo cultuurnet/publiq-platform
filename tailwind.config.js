@@ -28,7 +28,7 @@ module.exports = {
         "publiq-blue-light": "#1ebeff",
         "publiq-gray-dark": "#3b3b3b",
         "publiq-gray-medium": "#efefef",
-        "publiq-gray-light": "#fcfcfc",
+        "publiq-gray-light": "#F5F5F5",
         "icon-gray": "#5f6368",
         "icon-gray-light": "#F2F2F2",
         "icon-gray-dark": "#E3E3E3",
@@ -38,7 +38,7 @@ module.exports = {
         "status-yellow-dark": "#896B24",
         "status-green": "#C8FFC7",
         "status-green-medium": "#66CA8E",
-        "status-green-dark": "#2A7D4B"
+        "status-green-dark": "#2A7D4B",
       },
       textColor: ({ theme }) => theme("colors.publiq-gray-dark"),
       fontFamily: {
