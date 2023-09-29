@@ -2,9 +2,14 @@ import React from "react";
 import { Link, InertiaLinkProps } from "@inertiajs/react";
 import { classNames } from "../utils/classNames";
 
-type Props = InertiaLinkProps;
+type Props = { contentStyles?: string } & InertiaLinkProps;
 
-export const ButtonLink = ({ children, className, ...props }: Props) => {
+export const ButtonLink = ({
+  children,
+  className,
+  contentStyles,
+  ...props
+}: Props) => {
   return (
     <Link
       className={classNames(
@@ -14,7 +19,9 @@ export const ButtonLink = ({ children, className, ...props }: Props) => {
       {...props}
     >
       <div className="absolute w-[50%] h-[50%] opacity-0 group-focus:animate-pulse bg-publiq-blue text-white"></div>
-      <div className="relative z-10">{children}</div>
+      <div className={classNames("relative z-10", contentStyles)}>
+        {children}
+      </div>
     </Link>
   );
 };
