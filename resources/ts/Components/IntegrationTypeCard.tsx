@@ -24,7 +24,7 @@ export const IntegrationTypeCard = ({
       title={title}
       description={description}
       className={classNames(
-        "md:max-w-sm md:hover:translate-y-[-2rem] md:overflow-visible gap-7",
+        "md:max-w-sm md:hover:translate-y-[-2rem] md:overflow-visible gap-7 md:transition md:duration-500",
         afterStyles
       )}
     >
