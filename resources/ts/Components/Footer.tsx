@@ -98,7 +98,14 @@ export default function Footer() {
           <p className="text-publiq-gray-dark text-lg font-light">
             {t("footer.newsletter.description")}
           </p>
-          <ButtonLink href="#">{t("footer.newsletter.action")}</ButtonLink>
+          <ButtonLink
+            href="#"
+            className="self-start"
+            contentStyles="flex gap-2 items-center"
+          >
+            <span>{t("footer.newsletter.action")}</span>
+            <FontAwesomeIcon size="xs" icon={faChevronRight} />
+          </ButtonLink>
         </div>
         <div className="lg:self-end">
           <VlaanderenLogo />
