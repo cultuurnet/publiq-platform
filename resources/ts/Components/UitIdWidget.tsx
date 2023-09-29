@@ -15,20 +15,6 @@ const widgetConfig = {
   logoutUrl: "http://localhost/logout",
   accessTokenCookieName: "",
   idTokenCookieName: "auth.token.idToken",
-  actions: {
-    nl: [
-      {
-        url: "/nl/ondersteuning",
-        label: "Ondersteuning",
-      },
-    ],
-    en: [
-      {
-        url: "/en/support",
-        label: "Support",
-      },
-    ],
-  },
 };
 
 export const UitIdWidget = () => {
