@@ -57,7 +57,7 @@ export default function Navigation({
     className
   );
 
-  const [activeTab, setActiveTab] = useState("");
+  const [activeLink, setActiveLink] = useState("");
 
   return (
     <section className={classes} {...props}>
@@ -70,10 +70,10 @@ export default function Navigation({
           <Link
             key={pageTitle}
             href={translateRoute(`/${pageTitle}`)}
-            onClick={() => setActiveTab(pageTitle)}
+            onClick={() => setActiveLink(pageTitle)}
             className={classNames(
               "max-md:inline-flex items-center justify-between py-3 border-transparent border-b-4",
-              activeTab === pageTitle &&
+              activeLink === pageTitle &&
                 "md:border-b-4 md:border-b-publiq-blue max-md:font-semibold"
             )}
           >
