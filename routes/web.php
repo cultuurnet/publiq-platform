@@ -22,7 +22,7 @@ use App\Router\TranslatedRoute;
 |
 */
 
-Route::get('/', static fn () => Inertia::render('Index'));
+TranslatedRoute::get(['/nl', '/en'], static fn () => Inertia::render('Index'));
 
 Route::get('/login', Login::class)->name('login');
 Route::get('/admin/login', static fn () => redirect('/login'));

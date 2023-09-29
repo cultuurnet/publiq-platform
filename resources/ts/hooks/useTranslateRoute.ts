@@ -6,8 +6,6 @@ export const useTranslateRoute = () => {
 
   return useCallback(
     (path: string, language?: string) => {
-      if (path === "/") return path;
-
       return t(`pages.${path}`, {
         lng: language,
       });
