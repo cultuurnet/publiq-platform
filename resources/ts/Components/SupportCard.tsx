@@ -1,7 +1,9 @@
 import React from "react";
-import { ButtonLink } from "./ButtonLink";
 import { SupportType } from "./SupportTypes";
 import { Heading } from "./Heading";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
+import { ButtonLinkSecondary } from "./ButtonLinkSecondary";
 
 type Props = SupportType;
 
@@ -28,12 +30,13 @@ export const SupportCard = ({
             <p className="max-md:text-sm">{description}</p>
           </div>
           <div className="flex max-sm:self-center">
-            <ButtonLink
+            <ButtonLinkSecondary
               className="min-w-[15rem] max-sm:min-w-[10rem] max-sm:px-3"
               href={actionUrl}
             >
               {actionTitle}
-            </ButtonLink>
+              <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+            </ButtonLinkSecondary>
           </div>
         </div>
       </div>

@@ -6,7 +6,7 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
   title: ReactElement | string;
-  description: string;
+  description?: string;
   img?: string;
   active?: boolean;
   contentStyles?: string;
@@ -61,7 +61,11 @@ export const Card = ({
         <Heading level={2} className="font-medium mb-2">
           {title}
         </Heading>
-        <p className="text-gray-700 text-base break-words">{description}</p>
+        {description && (
+          <p className="text-gray-700 text-base min-h-[5rem] break-words">
+            {description}
+          </p>
+        )}
         {children && <div className={contentStyles}>{children}</div>}
       </div>
     </div>

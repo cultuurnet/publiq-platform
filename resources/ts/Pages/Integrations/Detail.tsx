@@ -2,19 +2,16 @@ import React, { ReactNode, useState, useEffect } from "react";
 import Layout from "../../Components/Layout";
 import { Page } from "../../Components/Page";
 import { Heading } from "../../Components/Heading";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Integration } from "./Index";
 import { BasicInfo } from "../../Components/Integrations/Detail/BasicInfo";
 import { ContactInfo } from "../../Components/Integrations/Detail/ContactInfo";
 import { BillingInfo } from "../../Components/Integrations/Detail/BillingInfo";
 import { IntegrationInfo } from "../../Components/Integrations/Detail/IntegrationInfo";
 import { IntegrationSettings } from "../../Components/Integrations/Detail/IntegrationSettings";
-import { ButtonSecondary } from "../../Components/ButtonSecondary";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTranslation } from "react-i18next";
 import { router } from "@inertiajs/react";
-import { QuestionDialog } from "../../Components/QuestionDialog";
 import { Tabs } from "../../Components/Tabs";
+import { MenageIntegration } from "../../Components/Integrations/Detail/MenageIntegration";
 
 type Props = { integration: Integration };
 
@@ -26,8 +23,6 @@ const Detail = ({ integration }: Props) => {
   const url = new URL(document.location.href);
   const activeTab = url.searchParams.get("tab") ?? "basic_info";
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
   const handleResize = () => {
     setIsMobile(window.innerWidth < 768);
   };
@@ -36,10 +31,6 @@ const Detail = ({ integration }: Props) => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  const handleDeleteIntegration = () => {
-    router.delete(`/integrations/${integration.id}`, {});
-  };
 
   const changeTabInUrl = (tab: string) => {
     url.searchParams.set("tab", tab);
@@ -88,26 +79,13 @@ const Detail = ({ integration }: Props) => {
           >
             <BillingInfo {...integration} />
           </Tabs.Item>
+          <Tabs.Item
+            type="menage_account"
+            label={t("details.menage_account.title")}
+          >
+            <MenageIntegration {...integration} />
+          </Tabs.Item>
         </Tabs>
-
-        <ButtonSecondary
-          className="self-center"
-          onClick={() => setIsModalVisible(true)}
-        >
-          {t("details.delete")}
-          <FontAwesomeIcon className="pl-1" icon={faTrash} />
-        </ButtonSecondary>
-        <QuestionDialog
-          isVisible={isModalVisible}
-          onClose={() => {
-            setIsModalVisible(false);
-          }}
-          question={t("integrations.dialog.delete")}
-          onConfirm={handleDeleteIntegration}
-          onCancel={() => {
-            setIsModalVisible(false);
-          }}
-        ></QuestionDialog>
       </div>
     </Page>
   );
