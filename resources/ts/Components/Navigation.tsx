@@ -59,6 +59,9 @@ export default function Navigation({
     className
   );
 
+  const afterStyles =
+    "after:hidden md:after:hover:block md:after:hover:absolute md:after:hover:top-[3rem] md:after:hover:left-1/4 md:after:hover:w-14 md:after:hover:h-0 md:after:hover:border-b-4 md:after:hover:border-b-publiq-blue";
+
   return (
     <section className={classes} {...props}>
       {children && <div className="fixed top-10 right-16">{children}</div>}
@@ -71,9 +74,10 @@ export default function Navigation({
             key={pageTitle}
             href={translateRoute(`/${pageTitle}`)}
             className={classNames(
-              "max-md:inline-flex items-center justify-between py-3 border-transparent border-b-4",
+              "relative max-md:inline-flex items-center justify-between py-3 border-transparent border-b-4 ",
               path.startsWith(`${translateRoute(`/${pageTitle}`)}`) &&
-                "md:border-b-4 md:border-b-publiq-blue max-md:font-semibold"
+                "md:border-b-4 md:border-b-publiq-blue max-md:font-semibold",
+              afterStyles
             )}
           >
             <Heading level={5} className="max-md:text-xl">
