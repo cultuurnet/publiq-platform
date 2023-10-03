@@ -13,18 +13,22 @@ use Ramsey\Uuid\UuidInterface;
 final class UuidTestFactory extends UuidFactory
 {
     use CreatesGenerator;
-    private Generator $idGenerator;
 
+    private Generator $uuid4Generator;
+
+    /**
+     * @param array<string, array<string>> $uuids
+     */
     public function __construct(array $uuids, ?FeatureSet $features = null)
     {
         parent::__construct($features);
-        $this->idGenerator = $this->createGenerator($uuids);
+        $this->uuid4Generator = $this->createGenerator($uuids['uuid4']);
     }
 
     public function uuid4(): UuidInterface
     {
-        $current = $this->idGenerator->current();
-        $this->idGenerator->next();
+        $current = $this->uuid4Generator->current();
+        $this->uuid4Generator->next();
 
         if ($current !== null) {
             return Uuid::fromString($current);
