@@ -11,6 +11,7 @@ use App\Domain\Integrations\IntegrationUrlType;
 use App\Domain\Integrations\Mappers\StoreIntegrationUrlMapper;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidFactory;
 use Tests\UuidTestFactory;
 
 final class StoreIntegrationUrlMapperTest extends TestCase
@@ -36,6 +37,12 @@ final class StoreIntegrationUrlMapperTest extends TestCase
             'type' => IntegrationUrlType::Login->value,
             'url' => 'https://test.testing.com',
         ];
+    }
+
+    protected function tearDown() : void{
+        parent::tearDown();
+        
+        Uuid::setFactory(new UuidFactory());
     }
 
     private function getExpectedIntegrationUrl(): IntegrationUrl

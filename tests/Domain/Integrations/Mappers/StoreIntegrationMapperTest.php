@@ -17,6 +17,7 @@ use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidFactory;
 use Tests\TestCase;
 use Tests\UuidTestFactory;
 
@@ -69,6 +70,12 @@ final class StoreIntegrationMapperTest extends TestCase
             'emailTechnicalContact' => 'jane.doe@test.com',
             'agreement' => 'true',
         ];
+    }
+
+    protected function tearDown() : void{
+        parent::tearDown();
+
+        Uuid::setFactory(new UuidFactory());
     }
 
     private function getExpectedIntegration(): Integration
