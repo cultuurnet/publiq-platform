@@ -50,12 +50,12 @@ final class StoreIntegrationMapper
 
         return (new Integration(
             $integrationId,
-            IntegrationType::from($storeIntegration->input('integrationType')),
-            $storeIntegration->input('integrationName'),
-            $storeIntegration->input('description'),
-            Uuid::fromString($storeIntegration->input('subscriptionId')),
+            IntegrationType::from($request->input('integrationType')),
+            $request->input('integrationName'),
+            $request->input('description'),
+            Uuid::fromString($request->input('subscriptionId')),
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::THIRD_PARTY,
-        ))->withContacts($contactOrganization, $contactPartner, $contributor);
+        ))->withContacts($functionalContact, $technicalContact, $contributorContact);
     }
 }

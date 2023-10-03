@@ -10,6 +10,7 @@ use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\FormRequests\StoreIntegrationRequest;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
@@ -92,7 +93,7 @@ final class StoreIntegrationMapperTest extends TestCase
             $this->inputs['lastNameTechnicalContact']
         );
 
-        $contributor = new Contact(
+        $contributorContact = new Contact(
             Uuid::fromString($this->ids[3]),
             $integrationId,
             $this->currentUser->email(),
@@ -107,8 +108,9 @@ final class StoreIntegrationMapperTest extends TestCase
             $this->inputs['integrationName'],
             $this->inputs['description'],
             Uuid::fromString($this->inputs['subscriptionId']),
-            IntegrationStatus::Draft
-        ))->withContacts($functionalContact, $technicalContact, $contributor);
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY
+        ))->withContacts($functionalContact, $technicalContact, $contributorContact);
     }
 
     public function test_it_creates_an_integration_from_request(): void

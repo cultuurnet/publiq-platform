@@ -17,7 +17,8 @@ final class UpdateIntegrationMapper
             $request->input('integrationName') ?? $currentIntegration->name,
             $request->input('description') ?? $currentIntegration->description,
             $currentIntegration->subscriptionId,
-            $currentIntegration->status
+            $currentIntegration->status,
+            $currentIntegration->partnerStatus
         );
     }
 }
