@@ -39,9 +39,10 @@ final class StoreIntegrationUrlMapperTest extends TestCase
         ];
     }
 
-    protected function tearDown() : void{
+    protected function tearDown(): void
+    {
         parent::tearDown();
-        
+
         Uuid::setFactory(new UuidFactory());
     }
 
