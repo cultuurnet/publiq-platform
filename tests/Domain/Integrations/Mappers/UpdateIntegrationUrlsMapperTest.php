@@ -14,32 +14,37 @@ use Tests\TestCase;
 
 final class UpdateIntegrationUrlsMapperTest extends TestCase
 {
-    private string $integrationId = '965a5b22-bcb6-4b93-a78b-229e4667a52d';
+    private const INTEGRATION_ID = '965a5b22-bcb6-4b93-a78b-229e4667a52d';
+    private const LOGIN_URL_ID = 'e9bcfca2-f6ee-404f-aca3-372eacf72b7f';
+    private const FIRST_CALLBACK_URL_ID = '0d92e499-1ead-44f1-9bec-9901d638626e';
+    private const SECOND_CALLBACK_URL_ID = '044683b8-d689-4900-a135-9873161e145f';
+    private const FIRST_LOGOUT_URL_ID = '9ca543c3-a695-4403-adc1-a1159e6ae0a5';
+    private const SECOND_LOGOUT_URL_ID = '5a199895-878f-4987-bafd-df2a69e0dcf4';
 
     private function getInputsForFullUpdate(): array
     {
         return [
             'loginUrl' => [
-                'id' => 'e9bcfca2-f6ee-404f-aca3-372eacf72b7f',
+                'id' => self::LOGIN_URL_ID,
                 'url' => 'https://publiqtest.be/login-new',
             ],
             'callbackUrls' => [
                 [
-                    'id' => '0d92e499-1ead-44f1-9bec-9901d638626e',
+                    'id' => self::FIRST_CALLBACK_URL_ID,
                     'url' => 'https://publiqtest.be/callback-1-new',
                 ],
                 [
-                    'id' => '044683b8-d689-4900-a135-9873161e145f',
+                    'id' => self::SECOND_CALLBACK_URL_ID,
                     'url' => 'https://publiqtest.be/callback-2-new',
                 ],
             ],
             'logoutUrls' => [
                 [
-                    'id' => '9ca543c3-a695-4403-adc1-a1159e6ae0a5',
+                    'id' => self::FIRST_LOGOUT_URL_ID,
                     'url' => 'https://publiqtest.be/logout-1-new',
                 ],
                 [
-                    'id' => '5a199895-878f-4987-bafd-df2a69e0dcf4',
+                    'id' => self::SECOND_LOGOUT_URL_ID,
                     'url' => 'https://publiqtest.be/logout-2-new',
                 ],
             ],
@@ -53,36 +58,36 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
     {
         return [
             new IntegrationUrl(
-                Uuid::fromString('e9bcfca2-f6ee-404f-aca3-372eacf72b7f'),
-                Uuid::fromString($this->integrationId),
+                Uuid::fromString(self::LOGIN_URL_ID),
+                Uuid::fromString(self::INTEGRATION_ID),
                 Environment::Production,
                 IntegrationUrlType::Callback,
                 'https://publiqtest.be/login'
             ),
             new IntegrationUrl(
-                Uuid::fromString('0d92e499-1ead-44f1-9bec-9901d638626e'),
-                Uuid::fromString($this->integrationId),
+                Uuid::fromString(self::FIRST_CALLBACK_URL_ID),
+                Uuid::fromString(self::INTEGRATION_ID),
                 Environment::Testing,
                 IntegrationUrlType::Login,
                 'https://publiqtest.be/callback-1'
             ),
             new IntegrationUrl(
-                Uuid::fromString('044683b8-d689-4900-a135-9873161e145f'),
-                Uuid::fromString($this->integrationId),
+                Uuid::fromString(self::SECOND_CALLBACK_URL_ID),
+                Uuid::fromString(self::INTEGRATION_ID),
                 Environment::Testing,
                 IntegrationUrlType::Login,
                 'https://publiqtest.be/callback-2'
             ),
             new IntegrationUrl(
-                Uuid::fromString('9ca543c3-a695-4403-adc1-a1159e6ae0a5'),
-                Uuid::fromString($this->integrationId),
+                Uuid::fromString(self::FIRST_LOGOUT_URL_ID),
+                Uuid::fromString(self::INTEGRATION_ID),
                 Environment::Testing,
                 IntegrationUrlType::Logout,
                 'https://publiqtest.be/logout-1'
             ),
             new IntegrationUrl(
-                Uuid::fromString('5a199895-878f-4987-bafd-df2a69e0dcf4'),
-                Uuid::fromString($this->integrationId),
+                Uuid::fromString(self::SECOND_LOGOUT_URL_ID),
+                Uuid::fromString(self::INTEGRATION_ID),
                 Environment::Testing,
                 IntegrationUrlType::Logout,
                 'https://publiqtest.be/logout-2'
@@ -97,36 +102,36 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
     {
         return [
             new IntegrationUrl(
-                Uuid::fromString('e9bcfca2-f6ee-404f-aca3-372eacf72b7f'),
-                Uuid::fromString($this->integrationId),
+                Uuid::fromString(self::LOGIN_URL_ID),
+                Uuid::fromString(self::INTEGRATION_ID),
                 Environment::Production,
                 IntegrationUrlType::Callback,
                 'https://publiqtest.be/login-new'
             ),
             new IntegrationUrl(
-                Uuid::fromString('0d92e499-1ead-44f1-9bec-9901d638626e'),
-                Uuid::fromString($this->integrationId),
+                Uuid::fromString(self::FIRST_CALLBACK_URL_ID),
+                Uuid::fromString(self::INTEGRATION_ID),
                 Environment::Testing,
                 IntegrationUrlType::Login,
                 'https://publiqtest.be/callback-1-new'
             ),
             new IntegrationUrl(
-                Uuid::fromString('044683b8-d689-4900-a135-9873161e145f'),
-                Uuid::fromString($this->integrationId),
+                Uuid::fromString(self::SECOND_CALLBACK_URL_ID),
+                Uuid::fromString(self::INTEGRATION_ID),
                 Environment::Testing,
                 IntegrationUrlType::Login,
                 'https://publiqtest.be/callback-2-new'
             ),
             new IntegrationUrl(
-                Uuid::fromString('9ca543c3-a695-4403-adc1-a1159e6ae0a5'),
-                Uuid::fromString($this->integrationId),
+                Uuid::fromString(self::FIRST_LOGOUT_URL_ID),
+                Uuid::fromString(self::INTEGRATION_ID),
                 Environment::Testing,
                 IntegrationUrlType::Logout,
                 'https://publiqtest.be/logout-1-new'
             ),
             new IntegrationUrl(
-                Uuid::fromString('5a199895-878f-4987-bafd-df2a69e0dcf4'),
-                Uuid::fromString($this->integrationId),
+                Uuid::fromString(self::SECOND_LOGOUT_URL_ID),
+                Uuid::fromString(self::INTEGRATION_ID),
                 Environment::Testing,
                 IntegrationUrlType::Logout,
                 'https://publiqtest.be/logout-2-new'
@@ -154,7 +159,7 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
     {
         $inputs = [
             'loginUrl' => [
-                'id' => 'e9bcfca2-f6ee-404f-aca3-372eacf72b7f',
+                'id' => self::LOGIN_URL_ID,
                 'url' => 'https://publiqtest.be/login-new',
             ],
         ];
@@ -168,8 +173,8 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
 
         $expected = [
             new IntegrationUrl(
-                Uuid::fromString('e9bcfca2-f6ee-404f-aca3-372eacf72b7f'),
-                Uuid::fromString($this->integrationId),
+                Uuid::fromString(self::LOGIN_URL_ID),
+                Uuid::fromString(self::INTEGRATION_ID),
                 Environment::Production,
                 IntegrationUrlType::Callback,
                 'https://publiqtest.be/login-new'
@@ -184,11 +189,11 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
         $inputs = [
             'callbackUrls' => [
                 [
-                    'id' => '0d92e499-1ead-44f1-9bec-9901d638626e',
+                    'id' => self::FIRST_CALLBACK_URL_ID,
                     'url' => 'https://publiqtest.be/callback-1-new',
                 ],
                 [
-                    'id' => '044683b8-d689-4900-a135-9873161e145f',
+                    'id' => self::SECOND_CALLBACK_URL_ID,
                     'url' => 'https://publiqtest.be/callback-2-new',
                 ],
             ],
@@ -203,15 +208,15 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
 
         $expected = [
             new IntegrationUrl(
-                Uuid::fromString('0d92e499-1ead-44f1-9bec-9901d638626e'),
-                Uuid::fromString($this->integrationId),
+                Uuid::fromString(self::FIRST_CALLBACK_URL_ID),
+                Uuid::fromString(self::INTEGRATION_ID),
                 Environment::Testing,
                 IntegrationUrlType::Login,
                 'https://publiqtest.be/callback-1-new'
             ),
             new IntegrationUrl(
-                Uuid::fromString('044683b8-d689-4900-a135-9873161e145f'),
-                Uuid::fromString($this->integrationId),
+                Uuid::fromString(self::SECOND_CALLBACK_URL_ID),
+                Uuid::fromString(self::INTEGRATION_ID),
                 Environment::Testing,
                 IntegrationUrlType::Login,
                 'https://publiqtest.be/callback-2-new'
@@ -226,11 +231,11 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
         $inputs = [
             'logoutUrls' => [
                 [
-                    'id' => '9ca543c3-a695-4403-adc1-a1159e6ae0a5',
+                    'id' => self::FIRST_LOGOUT_URL_ID,
                     'url' => 'https://publiqtest.be/logout-1-new',
                 ],
                 [
-                    'id' => '5a199895-878f-4987-bafd-df2a69e0dcf4',
+                    'id' => self::SECOND_LOGOUT_URL_ID,
                     'url' => 'https://publiqtest.be/logout-2-new',
                 ],
             ],
@@ -245,15 +250,15 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
 
         $expected = [
             new IntegrationUrl(
-                Uuid::fromString('9ca543c3-a695-4403-adc1-a1159e6ae0a5'),
-                Uuid::fromString($this->integrationId),
+                Uuid::fromString(self::FIRST_LOGOUT_URL_ID),
+                Uuid::fromString(self::INTEGRATION_ID),
                 Environment::Testing,
                 IntegrationUrlType::Logout,
                 'https://publiqtest.be/logout-1-new'
             ),
             new IntegrationUrl(
-                Uuid::fromString('5a199895-878f-4987-bafd-df2a69e0dcf4'),
-                Uuid::fromString($this->integrationId),
+                Uuid::fromString(self::SECOND_LOGOUT_URL_ID),
+                Uuid::fromString(self::INTEGRATION_ID),
                 Environment::Testing,
                 IntegrationUrlType::Logout,
                 'https://publiqtest.be/logout-2-new'
