@@ -51,7 +51,7 @@ final class UpdateContactInfoMapper
             $contacts[] = $contact;
         }
 
-        $contributors = $request->input('contributors');
+        $contributors = $request->input('contributors') ?? [];
 
         foreach ($contributors as $contributor) {
             $contactId = $contributor['id'];

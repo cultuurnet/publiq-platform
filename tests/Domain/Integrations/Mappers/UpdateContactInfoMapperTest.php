@@ -13,13 +13,11 @@ use Tests\TestCase;
 
 final class UpdateContactInfoMapperTest extends TestCase
 {
-    private string $integrationId;
-    private array $inputs;
+    private string $integrationId = 'd741f32b-58c5-48f5-9b68-b9b867650edd';
 
-    protected function setUp(): void
+    private function getFullUpdateInputs()
     {
-        $this->integrationId = 'd741f32b-58c5-48f5-9b68-b9b867650edd';
-        $this->inputs = [
+        return [
             'functional' => [
                 'id' => '9442d8cb-b1c7-48ad-b16e-fd88977eaa50',
                 'integrationId' => $this->integrationId,
@@ -60,40 +58,40 @@ final class UpdateContactInfoMapperTest extends TestCase
     /**
      * @return Contact[]
      */
-    private function getExpectedContacts(): array
+    private function getExpectedContactsForFullUpdate(array $inputs): array
     {
         return [
             new Contact(
-                Uuid::fromString($this->inputs['functional']['id']),
+                Uuid::fromString($inputs['functional']['id']),
                 Uuid::fromString($this->integrationId),
-                $this->inputs['functional']['email'],
-                ContactType::from($this->inputs['functional']['type']),
-                $this->inputs['functional']['firstName'],
-                $this->inputs['functional']['lastName']
+                $inputs['functional']['email'],
+                ContactType::from($inputs['functional']['type']),
+                $inputs['functional']['firstName'],
+                $inputs['functional']['lastName']
             ),
             new Contact(
-                Uuid::fromString($this->inputs['technical']['id']),
+                Uuid::fromString($inputs['technical']['id']),
                 Uuid::fromString($this->integrationId),
-                $this->inputs['technical']['email'],
-                ContactType::from($this->inputs['technical']['type']),
-                $this->inputs['technical']['firstName'],
-                $this->inputs['technical']['lastName']
+                $inputs['technical']['email'],
+                ContactType::from($inputs['technical']['type']),
+                $inputs['technical']['firstName'],
+                $inputs['technical']['lastName']
             ),
             new Contact(
-                Uuid::fromString($this->inputs['contributors'][0]['id']),
+                Uuid::fromString($inputs['contributors'][0]['id']),
                 Uuid::fromString($this->integrationId),
-                $this->inputs['contributors'][0]['email'],
-                ContactType::from($this->inputs['contributors'][0]['type']),
-                $this->inputs['contributors'][0]['firstName'],
-                $this->inputs['contributors'][0]['lastName']
+                $inputs['contributors'][0]['email'],
+                ContactType::from($inputs['contributors'][0]['type']),
+                $inputs['contributors'][0]['firstName'],
+                $inputs['contributors'][0]['lastName']
             ),
             new Contact(
-                Uuid::fromString($this->inputs['contributors'][1]['id']),
+                Uuid::fromString($inputs['contributors'][1]['id']),
                 Uuid::fromString($this->integrationId),
-                $this->inputs['contributors'][1]['email'],
-                ContactType::from($this->inputs['contributors'][0]['type']),
-                $this->inputs['contributors'][1]['firstName'],
-                $this->inputs['contributors'][1]['lastName']
+                $inputs['contributors'][1]['email'],
+                ContactType::from($inputs['contributors'][0]['type']),
+                $inputs['contributors'][1]['firstName'],
+                $inputs['contributors'][1]['lastName']
             ),
         ];
     }
@@ -102,12 +100,46 @@ final class UpdateContactInfoMapperTest extends TestCase
 
     public function test_it_creates_updated_contacts_from_request(): void
     {
-        $request = new UpdateContactInfoRequest();
-        $request->merge($this->inputs);
+        $inputs = $this->getFullUpdateInputs();
 
-        $expected = $this->getExpectedContacts();
+        $request = new UpdateContactInfoRequest();
+        $request->merge($inputs);
+
+        $expected = $this->getExpectedContactsForFullUpdate($inputs);
 
         $actual = UpdateContactInfoMapper::map($request, $this->integrationId);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function test_it_only_updates_functional_contact_from_request(): void
+    {
+        $updateFunctionalInputs = [
+            'functional' => [
+                'id' => '9442d8cb-b1c7-48ad-b16e-fd88977eaa50',
+                'integrationId' => $this->integrationId,
+                'email' => 'functional@publiqtest.be',
+                'type' => ContactType::Functional->value,
+                'firstName' => 'John',
+                'lastName' => 'Doe',
+            ],
+        ];
+
+        $request = new UpdateContactInfoRequest();
+        $request->merge($updateFunctionalInputs);
+
+        $actual = UpdateContactInfoMapper::map($request, $this->integrationId);
+
+        $expected = [
+            new Contact(
+                Uuid::fromString($updateFunctionalInputs['functional']['id']),
+                Uuid::fromString($this->integrationId),
+                $updateFunctionalInputs['functional']['email'],
+                ContactType::from($updateFunctionalInputs['functional']['type']),
+                $updateFunctionalInputs['functional']['firstName'],
+                $updateFunctionalInputs['functional']['lastName']
+            ),
+        ];
 
         $this->assertEquals($expected, $actual);
     }
