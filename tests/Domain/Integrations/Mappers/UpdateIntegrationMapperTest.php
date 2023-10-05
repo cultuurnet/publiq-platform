@@ -15,10 +15,10 @@ use Tests\TestCase;
 
 final class UpdateIntegrationMapperTest extends TestCase
 {
+    private const INTEGRATION_ID = '0b7289b5-717c-44c0-8c05-b3d2bbb190ab';
+
     public function test_it_creates_an_updated_integration_from_request(): void
     {
-        $integrationId = '0b7289b5-717c-44c0-8c05-b3d2bbb190ab';
-
         $inputs = [
             'integrationName' => 'new integration name',
             'description' => 'new integration description',
@@ -28,7 +28,7 @@ final class UpdateIntegrationMapperTest extends TestCase
         $request->merge($inputs);
 
         $currentIntegration = new Integration(
-            Uuid::fromString($integrationId),
+            Uuid::fromString(self::INTEGRATION_ID),
             IntegrationType::SearchApi,
             'old integration name',
             'old integration description',
@@ -40,7 +40,7 @@ final class UpdateIntegrationMapperTest extends TestCase
         $actual = UpdateIntegrationMapper::map($request, $currentIntegration);
 
         $expected = new Integration(
-            Uuid::fromString($integrationId),
+            Uuid::fromString(self::INTEGRATION_ID),
             IntegrationType::SearchApi,
             $inputs['integrationName'],
             $inputs['description'],
