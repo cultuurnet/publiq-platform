@@ -7,20 +7,20 @@ namespace Tests\Nova\ActionGuards\Auth0;
 use App\Auth0\Auth0Client;
 use App\Auth0\Auth0Tenant;
 use App\Auth0\CachedAuth0ClientGrants;
-use App\Nova\ActionGuards\Auth0\BlockAuth0ClientGuard;
+use App\Nova\ActionGuards\Auth0\ActivateAuth0ClientGuard;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
-use Tests\TestCase;
+use Tests\TestCaseWithDatabase;
 use Psr\Http\Client\ClientInterface;
 use Ramsey\Uuid\Uuid;
 use Tests\Auth0\CreatesMockAuth0ClusterSDK;
 
-final class BlockAuth0ClientGuardTest extends TestCase
+final class ActivateAuth0ClientGuardTest extends TestCaseWithDatabase
 {
     use CreatesMockAuth0ClusterSDK;
 
     private ClientInterface&MockObject $httpClient;
-    private BlockAuth0ClientGuard $blockAuth0ClientGuard;
+    private ActivateAuth0ClientGuard $activateAuth0ClientGuard;
 
     public function setUp(): void
     {
@@ -28,7 +28,7 @@ final class BlockAuth0ClientGuardTest extends TestCase
 
         $this->httpClient = $this->createMock(ClientInterface::class);
 
-        $this->blockAuth0ClientGuard = new BlockAuth0ClientGuard(
+        $this->activateAuth0ClientGuard = new ActivateAuth0ClientGuard(
             new CachedAuth0ClientGrants($this->createMockAuth0ClusterSDK($this->httpClient))
         );
     }
@@ -44,14 +44,14 @@ final class BlockAuth0ClientGuardTest extends TestCase
                 new Response(200, [], $body)
             );
 
-        $this->assertEquals($expectedValue, $this->blockAuth0ClientGuard->canDo($client));
+        $this->assertEquals($expectedValue, $this->activateAuth0ClientGuard->canDo($client));
     }
 
     public function dataprovider(): array
     {
         return [
-            [json_encode(['grant_types' => ['test']]), true],
-            [json_encode([]), false],
+            [json_encode(['grant_types' => ['test']]), false],
+            [json_encode([]), true],
         ];
     }
 }

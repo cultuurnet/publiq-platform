@@ -9,9 +9,9 @@ use App\Domain\Integrations\FormRequests\StoreIntegrationUrlRequest;
 use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\IntegrationUrlType;
 use App\Domain\Integrations\Mappers\StoreIntegrationUrlMapper;
-use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidFactory;
+use Tests\TestCase;
 use Tests\UuidTestFactory;
 
 final class StoreIntegrationUrlMapperTest extends TestCase

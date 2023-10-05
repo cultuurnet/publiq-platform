@@ -16,9 +16,9 @@ use App\Domain\Integrations\Repositories\EloquentIntegrationRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
-use Tests\TestCase;
+use Tests\TestCaseWithDatabase;
 
-final class EloquentIntegrationRepositoryTest extends TestCase
+final class EloquentIntegrationRepositoryTest extends TestCaseWithDatabase
 {
     use RefreshDatabase;
 

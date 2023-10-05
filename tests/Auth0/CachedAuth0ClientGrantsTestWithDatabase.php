@@ -10,11 +10,11 @@ use App\Auth0\CachedAuth0ClientGrants;
 use App\Json;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
-use Tests\TestCase;
+use Tests\TestCaseWithDatabase;
 use Psr\Http\Client\ClientInterface;
 use Ramsey\Uuid\Uuid;
 
-final class CachedAuth0ClientGrantsTest extends TestCase
+final class CachedAuth0ClientGrantsTest extends TestCaseWithDatabase
 {
     use CreatesMockAuth0ClusterSDK;
 

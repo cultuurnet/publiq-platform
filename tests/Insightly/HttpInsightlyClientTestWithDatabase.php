@@ -20,9 +20,9 @@ use App\Insightly\Pipelines;
 use App\Insightly\Resources\ResourceType;
 use GuzzleHttp\Client;
 use Ramsey\Uuid\Uuid;
-use Tests\TestCase;
+use Tests\TestCaseWithDatabase;
 
-final class HttpInsightlyClientTest extends TestCase
+final class HttpInsightlyClientTest extends TestCaseWithDatabase
 {
     private HttpInsightlyClient $insightlyClient;
 

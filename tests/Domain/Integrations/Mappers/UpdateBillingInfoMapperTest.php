@@ -8,14 +8,11 @@ use App\Domain\Integrations\FormRequests\UpdateBillingInfoRequest;
 use App\Domain\Integrations\Mappers\UpdateBillingInfoMapper;
 use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Organization;
-use Illuminate\Foundation\Testing\TestCase;
 use Ramsey\Uuid\Uuid;
-use Tests\CreatesApplication;
+use Tests\TestCase;
 
 final class UpdateBillingInfoMapperTest extends TestCase
 {
-    use CreatesApplication;
-
     private array $ids;
     private array $inputs;
 

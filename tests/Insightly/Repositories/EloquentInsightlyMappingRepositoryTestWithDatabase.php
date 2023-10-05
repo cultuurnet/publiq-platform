@@ -9,9 +9,9 @@ use App\Insightly\Models\InsightlyMappingModel;
 use App\Insightly\Repositories\EloquentInsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use Ramsey\Uuid\Uuid;
-use Tests\TestCase;
+use Tests\TestCaseWithDatabase;
 
-final class EloquentInsightlyMappingRepositoryTest extends TestCase
+final class EloquentInsightlyMappingRepositoryTest extends TestCaseWithDatabase
 {
     private EloquentInsightlyMappingRepository $insightlyMappingRepository;
 

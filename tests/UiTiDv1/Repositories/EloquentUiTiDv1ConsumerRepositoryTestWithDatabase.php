@@ -8,9 +8,9 @@ use App\UiTiDv1\Repositories\EloquentUiTiDv1ConsumerRepository;
 use App\UiTiDv1\UiTiDv1Consumer;
 use App\UiTiDv1\UiTiDv1Environment;
 use Ramsey\Uuid\Uuid;
-use Tests\TestCase;
+use Tests\TestCaseWithDatabase;
 
-final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
+final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCaseWithDatabase
 {
     private EloquentUiTiDv1ConsumerRepository $repository;
 
