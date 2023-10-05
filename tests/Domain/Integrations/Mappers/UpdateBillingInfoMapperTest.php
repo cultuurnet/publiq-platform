@@ -13,20 +13,17 @@ use Tests\TestCase;
 
 final class UpdateBillingInfoMapperTest extends TestCase
 {
-    private array $ids;
+    private const ORGANISATION_ID = 'a8ab2245-17b4-44e3-9920-fab075effbdc';
+
     private array $inputs;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->ids = [
-            'a8ab2245-17b4-44e3-9920-fab075effbdc',
-        ];
-
         $this->inputs = [
             'organisation' => [
-                'id' => $this->ids[0],
+                'id' => self::ORGANISATION_ID,
                 'name' => 'publiq vzw',
                 'invoiceEmail' => 'info@publiqtest.be',
                 'vat' => 'BE 0475 250 609',
@@ -43,7 +40,7 @@ final class UpdateBillingInfoMapperTest extends TestCase
     private function getExpectedOrganization(): Organization
     {
         return new Organization(
-            Uuid::fromString($this->ids[0]),
+            Uuid::fromString(self::ORGANISATION_ID),
             $this->inputs['organisation']['name'],
             $this->inputs['organisation']['invoiceEmail'],
             $this->inputs['organisation']['vat'],
