@@ -41,9 +41,9 @@ final class UpdateIntegrationUrlsMapper
                 return new IntegrationUrl(
                     $currentUrl->id,
                     $currentUrl->integrationId,
-                    $changedUrl['environment'] ?? $currentUrl->environment,
+                    $currentUrl->environment,
                     $currentUrl->type,
-                    $changedUrl['url'] ?? $currentUrl->url
+                    $changedUrl['url']
                 );
             }
         )->toArray();

@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\FormRequests;
 
-use App\Domain\Integrations\Environment;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 
 final class UpdateIntegrationUrlsRequest extends FormRequest
 {
@@ -18,8 +16,7 @@ final class UpdateIntegrationUrlsRequest extends FormRequest
     {
         $urlValidation = [
             'id' => ['required', 'string'],
-            'url' => ['required_without:environment', 'url:https', 'max:255'],
-            'environment' => ['required_without:url', new Enum(Environment::class)],
+            'url' => ['required', 'url:https', 'max:255'],
         ];
 
         return [
