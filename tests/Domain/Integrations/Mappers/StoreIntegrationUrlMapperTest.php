@@ -29,7 +29,7 @@ final class StoreIntegrationUrlMapperTest extends TestCase
             'uuid4' => [
                 self::INTEGRATION_URL_ID,
                 self::INTEGRATION_ID,
-            ]
+            ],
         ]));
 
         $this->inputs = [
