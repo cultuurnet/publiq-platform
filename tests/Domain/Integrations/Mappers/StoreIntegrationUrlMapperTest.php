@@ -16,20 +16,20 @@ use Tests\UuidTestFactory;
 
 final class StoreIntegrationUrlMapperTest extends TestCase
 {
+    private const INTEGRATION_URL_ID = 'a8ab2245-17b4-44e3-9920-fab075effbdc';
+    private const INTEGRATION_ID = '8549201e-961b-4022-8c37-497f3b599dbe';
+
     private array $inputs;
-    private array $ids;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->ids = [
-            'a8ab2245-17b4-44e3-9920-fab075effbdc', // integrationUrlId
-            '8549201e-961b-4022-8c37-497f3b599dbe', // integrationId
-        ];
-
         Uuid::setFactory(new UuidTestFactory([
-            'uuid4' => $this->ids,
+            'uuid4' => [
+                self::INTEGRATION_URL_ID,
+                self::INTEGRATION_ID,
+            ]
         ]));
 
         $this->inputs = [
@@ -49,8 +49,8 @@ final class StoreIntegrationUrlMapperTest extends TestCase
     private function getExpectedIntegrationUrl(): IntegrationUrl
     {
         return new IntegrationUrl(
-            Uuid::fromString($this->ids[0]),
-            Uuid::fromString($this->ids[1]),
+            Uuid::fromString(self::INTEGRATION_URL_ID),
+            Uuid::fromString(self::INTEGRATION_ID),
             Environment::from($this->inputs['environment']),
             IntegrationUrlType::from($this->inputs['type']),
             $this->inputs['url']
@@ -64,7 +64,7 @@ final class StoreIntegrationUrlMapperTest extends TestCase
 
         $expected = $this->getExpectedIntegrationUrl();
 
-        $actual = StoreIntegrationUrlMapper::map($request, $this->ids[1]);
+        $actual = StoreIntegrationUrlMapper::map($request, self::INTEGRATION_ID);
 
         $this->assertEquals($expected, $actual);
     }
