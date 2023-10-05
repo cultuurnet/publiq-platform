@@ -23,7 +23,13 @@ use Tests\UuidTestFactory;
 
 final class StoreIntegrationMapperTest extends TestCase
 {
-    private array $ids;
+    private const SUBSCRIPTION_ID = '4f1d3b79-dd1d-47d9-aa5a-2b55d32ea65f';
+    private const USER_ID = 'c541a07b-068a-4f66-944f-90f8e64237da';
+    private const INTEGRATION_ID = 'a8ab2245-17b4-44e3-9920-fab075effbdc';
+    private const FUNCTIONAL_CONTACT_ID = '8549201e-961b-4022-8c37-497f3b599dbe';
+    private const TECHNICAL_CONTACT_ID = 'bb43b31f-a297-4a41-bd6b-ed2188f4ea75';
+    private const CONTRIBUTOR_CONTACT_ID = '43c9cb94-ec6f-4211-a0fb-d589223e0fd6';
+
     private array $inputs;
     private CurrentUser $currentUser;
 
@@ -31,19 +37,17 @@ final class StoreIntegrationMapperTest extends TestCase
     {
         parent::setUp();
 
-        $this->ids = [
-            'a8ab2245-17b4-44e3-9920-fab075effbdc', // integrationId
-            '8549201e-961b-4022-8c37-497f3b599dbe', // functionalContact id
-            'bb43b31f-a297-4a41-bd6b-ed2188f4ea75', // technicalContact id
-            '43c9cb94-ec6f-4211-a0fb-d589223e0fd6', // contributorContact id
-        ];
-
         Uuid::setFactory(new UuidTestFactory([
-            'uuid4' => $this->ids,
+            'uuid4' => [
+                self::INTEGRATION_ID,
+                self::FUNCTIONAL_CONTACT_ID,
+                self::TECHNICAL_CONTACT_ID,
+                self::CONTRIBUTOR_CONTACT_ID,
+            ],
         ]));
 
         $userModel = UserModel::fromSession([
-            'user_id' => 'c541a07b-068a-4f66-944f-90f8e64237da',
+            'user_id' => self::USER_ID,
             'email' => 'john.doe@test.com',
             'name' => 'John Doe',
             'first_name' => 'John',
@@ -57,7 +61,7 @@ final class StoreIntegrationMapperTest extends TestCase
 
         $this->inputs = [
             'integrationType' => IntegrationType::SearchApi->value,
-            'subscriptionId' => '4f1d3b79-dd1d-47d9-aa5a-2b55d32ea65f',
+            'subscriptionId' => self::SUBSCRIPTION_ID,
             'integrationName' => 'My searches',
             'description' => 'To view my searches',
             'organisationFunctionalContact' => 'Tesla',
@@ -81,10 +85,10 @@ final class StoreIntegrationMapperTest extends TestCase
 
     private function getExpectedIntegration(): Integration
     {
-        $integrationId = Uuid::fromString($this->ids[0]);
+        $integrationId = Uuid::fromString(self::INTEGRATION_ID);
 
         $functionalContact = new Contact(
-            Uuid::fromString($this->ids[1]),
+            Uuid::fromString(self::FUNCTIONAL_CONTACT_ID),
             $integrationId,
             $this->inputs['emailFunctionalContact'],
             ContactType::Functional,
@@ -93,7 +97,7 @@ final class StoreIntegrationMapperTest extends TestCase
         );
 
         $technicalContact = new Contact(
-            Uuid::fromString($this->ids[2]),
+            Uuid::fromString(self::TECHNICAL_CONTACT_ID),
             $integrationId,
             $this->inputs['emailTechnicalContact'],
             ContactType::Technical,
@@ -102,7 +106,7 @@ final class StoreIntegrationMapperTest extends TestCase
         );
 
         $contributorContact = new Contact(
-            Uuid::fromString($this->ids[3]),
+            Uuid::fromString(self::CONTRIBUTOR_CONTACT_ID),
             $integrationId,
             $this->currentUser->email(),
             ContactType::Contributor,
@@ -123,7 +127,6 @@ final class StoreIntegrationMapperTest extends TestCase
 
     public function test_it_creates_an_integration_from_request(): void
     {
-
         $request = new StoreIntegrationRequest();
         $request->merge($this->inputs);
 
