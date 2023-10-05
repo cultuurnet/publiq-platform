@@ -96,8 +96,6 @@ final class UpdateContactInfoMapperTest extends TestCase
         ];
     }
 
-
-
     public function test_it_creates_updated_contacts_from_request(): void
     {
         $inputs = $this->getFullUpdateInputs();
