@@ -176,4 +176,53 @@ final class UpdateContactInfoMapperTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    public function test_it_only_updates_contributor_contacts_from_request(): void
+    {
+        $updateContributorsInputs = [
+            'contributors' => [
+                [
+                    'id' => 'd741f32b-58c5-48f5-9b68-b9b867650edd',
+                    'integrationId' => $this->integrationId,
+                    'email' => 'technical@publiqtest.be',
+                    'type' => ContactType::Contributor->value,
+                    'firstName' => 'Kathleen',
+                    'lastName' => 'Camden',
+                ],
+                [
+                    'id' => 'd741f32b-58c5-48f5-9b68-b9b867650edd',
+                    'integrationId' => $this->integrationId,
+                    'email' => 'technical@publiqtest.be',
+                    'type' => ContactType::Contributor->value,
+                    'firstName' => 'Harlan',
+                    'lastName' => 'Tod',
+                ],
+            ],
+        ];
+
+        $request = new UpdateContactInfoRequest();
+        $request->merge($updateContributorsInputs);
+
+        $actual = UpdateContactInfoMapper::map($request, $this->integrationId);
+
+        $expected = [
+            new Contact(
+                Uuid::fromString($updateContributorsInputs['contributors'][0]['id']),
+                Uuid::fromString($this->integrationId),
+                $updateContributorsInputs['contributors'][0]['email'],
+                ContactType::from($updateContributorsInputs['contributors'][0]['type']),
+                $updateContributorsInputs['contributors'][0]['firstName'],
+                $updateContributorsInputs['contributors'][0]['lastName']
+            ),
+            new Contact(
+                Uuid::fromString($updateContributorsInputs['contributors'][1]['id']),
+                Uuid::fromString($this->integrationId),
+                $updateContributorsInputs['contributors'][1]['email'],
+                ContactType::from($updateContributorsInputs['contributors'][1]['type']),
+                $updateContributorsInputs['contributors'][1]['firstName'],
+                $updateContributorsInputs['contributors'][1]['lastName']
+            ),
+        ];
+
+        $this->assertEquals($expected, $actual);
+    }
 }
