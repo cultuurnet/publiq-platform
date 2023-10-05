@@ -15,7 +15,7 @@ final class UpdateContactInfoMapperTest extends TestCase
 {
     private string $integrationId = 'd741f32b-58c5-48f5-9b68-b9b867650edd';
 
-    private function getFullUpdateInputs()
+    private function getFullUpdateInputs(): array
     {
         return [
             'functional' => [
@@ -138,6 +138,38 @@ final class UpdateContactInfoMapperTest extends TestCase
                 ContactType::from($updateFunctionalInputs['functional']['type']),
                 $updateFunctionalInputs['functional']['firstName'],
                 $updateFunctionalInputs['functional']['lastName']
+            ),
+        ];
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function test_it_only_updates_technical_contact_from_request(): void
+    {
+        $updateTechnicalInputs = [
+            'technical' => [
+                'id' => '9442d8cb-b1c7-48ad-b16e-fd88977eaa50',
+                'integrationId' => $this->integrationId,
+                'email' => 'technical@publiqtest.be',
+                'type' => ContactType::Technical->value,
+                'firstName' => 'John',
+                'lastName' => 'Doe',
+            ],
+        ];
+
+        $request = new UpdateContactInfoRequest();
+        $request->merge($updateTechnicalInputs);
+
+        $actual = UpdateContactInfoMapper::map($request, $this->integrationId);
+
+        $expected = [
+            new Contact(
+                Uuid::fromString($updateTechnicalInputs['technical']['id']),
+                Uuid::fromString($this->integrationId),
+                $updateTechnicalInputs['technical']['email'],
+                ContactType::from($updateTechnicalInputs['technical']['type']),
+                $updateTechnicalInputs['technical']['firstName'],
+                $updateTechnicalInputs['technical']['lastName']
             ),
         ];
 
