@@ -1,4 +1,4 @@
-import React, { ComponentProps, useMemo } from "react";
+import React, { ComponentProps, useMemo, useState } from "react";
 import { Heading } from "./Heading";
 import { useTranslation } from "react-i18next";
 import { Link } from "@inertiajs/react";
@@ -37,9 +37,7 @@ export default function Navigation({
   const { t, i18n } = useTranslation();
   const translateRoute = useTranslateRoute();
 
-  const path = new URL(document.location.href).pathname;
-
-  const pages = ["integrations", "support"];
+  const pages = ["integrations", "integrations/new", "support"];
 
   const { component } = usePage();
 
@@ -59,6 +57,8 @@ export default function Navigation({
     className
   );
 
+  const [activeLink, setActiveLink] = useState("");
+
   const afterStyles =
     "after:hidden md:after:hover:block md:after:hover:absolute md:after:hover:top-[3rem] md:after:hover:left-1/4 md:after:hover:w-14 md:after:hover:h-0 md:after:hover:border-b-4 md:after:hover:border-b-publiq-blue";
 
@@ -73,9 +73,10 @@ export default function Navigation({
           <Link
             key={pageTitle}
             href={translateRoute(`/${pageTitle}`)}
+            onClick={() => setActiveLink(pageTitle)}
             className={classNames(
               "relative max-md:inline-flex items-center justify-between py-3 border-transparent border-b-4 ",
-              path.startsWith(`${translateRoute(`/${pageTitle}`)}`) &&
+              activeLink === pageTitle &&
                 "md:border-b-4 md:border-b-publiq-blue max-md:font-semibold",
               afterStyles
             )}
