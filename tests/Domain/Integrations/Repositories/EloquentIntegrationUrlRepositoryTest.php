@@ -8,6 +8,7 @@ use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\IntegrationUrlType;
 use App\Domain\Integrations\Repositories\EloquentIntegrationUrlRepository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCaseWithDatabase;
 
@@ -22,7 +23,7 @@ final class EloquentIntegrationUrlRepositoryTest extends TestCaseWithDatabase
         $this->integrationUrlRepository = new EloquentIntegrationUrlRepository();
     }
 
-    public function test_it_saves_integration_url()
+    public function test_it_saves_integration_url(): void
     {
         $integrationUrlId = Uuid::uuid4();
         $integrationId = Uuid::uuid4();
@@ -46,7 +47,7 @@ final class EloquentIntegrationUrlRepositoryTest extends TestCaseWithDatabase
         ]);
     }
 
-    public function test_it_gets_integration_url_by_id()
+    public function test_it_gets_integration_url_by_id(): void
     {
         $integrationUrlId = Uuid::uuid4();
         $integrationId = Uuid::uuid4();
@@ -66,7 +67,7 @@ final class EloquentIntegrationUrlRepositoryTest extends TestCaseWithDatabase
         $this->assertEquals($integrationUrl, $foundIntegration);
     }
 
-    public function test_it_gets_integration_urls_by_ids()
+    public function test_it_gets_integration_urls_by_ids(): void
     {
         $integrationId = Uuid::uuid4();
         $firstIntegrationUrlId = Uuid::uuid4();
@@ -119,18 +120,125 @@ final class EloquentIntegrationUrlRepositoryTest extends TestCaseWithDatabase
 
 
 
-    public function testUpdateUrls()
+    public function test_it_updates_integration_urls(): void
     {
+        $integrationId = Uuid::uuid4();
+        $firstIntegrationId = Uuid::uuid4();
+        $secondIntegrationId = Uuid::uuid4();
+        $thirdIntegrationId = Uuid::uuid4();
+
+        $firstInitialIntegrationUrl = new IntegrationUrl(
+            $firstIntegrationId,
+            $integrationId,
+            Environment::Testing,
+            IntegrationUrlType::Callback,
+            'https://publiqtest.be/callback-1'
+        );
+
+        $secondInitialIntegrationUrl = new IntegrationUrl(
+            $secondIntegrationId,
+            $integrationId,
+            Environment::Production,
+            IntegrationUrlType::Login,
+            'https://publiqtest.be/login'
+        );
+
+        $thirdInitialIntegrationUrl = new IntegrationUrl(
+            $thirdIntegrationId,
+            $integrationId,
+            Environment::Acceptance,
+            IntegrationUrlType::Logout,
+            'https://publiqtest.be/logout'
+        );
+
+        $this->integrationUrlRepository->save($firstInitialIntegrationUrl);
+        $this->integrationUrlRepository->save($secondInitialIntegrationUrl);
+        $this->integrationUrlRepository->save($thirdInitialIntegrationUrl);
+
+        $firstUpdatedInitialIntegrationUrl = new IntegrationUrl(
+            $firstIntegrationId,
+            $integrationId,
+            Environment::Testing,
+            IntegrationUrlType::Callback,
+            'https://publiqtest.be/callback-new'
+        );
+        $thirdUpdatedInitialIntegrationUrl = new IntegrationUrl(
+            $thirdIntegrationId,
+            $integrationId,
+            Environment::Acceptance,
+            IntegrationUrlType::Logout,
+            'https://publiqtest.be/logout-new'
+        );
+
+        $this->integrationUrlRepository->updateUrls([
+            $firstUpdatedInitialIntegrationUrl,
+            $thirdUpdatedInitialIntegrationUrl,
+        ]);
+
+        $expected = [
+            $firstUpdatedInitialIntegrationUrl,
+            $secondInitialIntegrationUrl,
+            $thirdUpdatedInitialIntegrationUrl,
+        ];
+
+        $foundIntegrationUrls = $this->integrationUrlRepository->getByIds([
+            $firstIntegrationId,
+            $secondIntegrationId,
+            $thirdIntegrationId,
+        ]);
+
+        $this->assertEquals($expected, $foundIntegrationUrls);
 
     }
 
-    public function testUpdate()
+    public function test_it_updates_integration_url(): void
     {
+        $integrationUrlId = Uuid::uuid4();
+        $integrationId = Uuid::uuid4();
 
+        $initialIntegrationUrl = new IntegrationUrl(
+            $integrationUrlId,
+            $integrationId,
+            Environment::Testing,
+            IntegrationUrlType::Callback,
+            'https://publiqtest.be/callback'
+        );
+
+        $this->integrationUrlRepository->save($initialIntegrationUrl);
+
+        $updatedIntegrationUrl = new IntegrationUrl(
+            $integrationUrlId,
+            $integrationId,
+            Environment::Testing,
+            IntegrationUrlType::Callback,
+            'https://publiqtest.be/callback-new'
+        );
+
+        $this->integrationUrlRepository->update($updatedIntegrationUrl);
+
+        $foundIntegrationUrl = $this->integrationUrlRepository->getById($integrationUrlId);
+
+        $this->assertEquals($updatedIntegrationUrl, $foundIntegrationUrl);
     }
 
-    public function testDeleteById()
+    public function test_it_deletes_by_id(): void
     {
+        $integrationUrlId = Uuid::uuid4();
+        $integrationId = Uuid::uuid4();
 
+        $integrationUrl = new IntegrationUrl(
+            $integrationUrlId,
+            $integrationId,
+            Environment::Testing,
+            IntegrationUrlType::Callback,
+            'https://publiqtest.be/callback'
+        );
+
+        $this->integrationUrlRepository->save($integrationUrl);
+
+        $this->integrationUrlRepository->deleteById($integrationUrl->id);
+
+        $this->expectException(ModelNotFoundException::class);
+        $this->integrationUrlRepository->getById($integrationUrl->id);
     }
 }
