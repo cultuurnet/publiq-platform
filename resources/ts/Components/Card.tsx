@@ -8,28 +8,33 @@ type Props = {
   title: ReactElement | string;
   description?: string;
   img?: string;
+  badge?: string;
   active?: boolean;
   contentStyles?: string;
   textCenter?: boolean;
+  border?: boolean;
 } & Omit<ComponentProps<"div">, "title">;
 
 export const Card = ({
   title,
   description,
   img,
+  badge,
   active,
   children,
   className,
   contentStyles,
+  border,
   textCenter,
   ...props
 }: Props) => {
   return (
     <div
       className={classNames(
-        "w-full flex flex-col overflow-hidden shadow-lg px-6 py-6",
+        "w-full flex flex-col overflow-hidden shadow-lg",
         img && "px-0 py-0 gap-10 max-lg:gap-3 p-0",
         active ? "bg-status-green-medium bg-opacity-10" : "bg-white",
+        border ? "border border-publiq-gray-dark" : "px-6 py-6",
         className
       )}
       {...props}
@@ -54,13 +59,27 @@ export const Card = ({
 
       <div
         className={classNames(
-          "flex flex-col gap-5",
-          textCenter && "text-center"
+          "flex flex-col",
+          textCenter && "text-center",
+          !border && "gap-5"
         )}
       >
-        <Heading level={2} className="font-medium mb-2">
-          {title}
-        </Heading>
+        <div
+          className={classNames(
+            "flex gap-3 items-center",
+            border && "border border-b-publiq-gray-dark px-10 py-2"
+          )}
+        >
+          <Heading level={2} className="font-medium mb-2">
+            {title}
+          </Heading>
+          {badge && (
+            <span className="bg-publiq-blue-dark text-white text-xs font-medium  mr-2 px-2.5 py-0.5 rounded">
+              {badge}
+            </span>
+          )}
+        </div>
+
         {description && (
           <p className="text-gray-700 text-base min-h-[5rem] break-words">
             {description}
