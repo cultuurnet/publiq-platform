@@ -61,7 +61,12 @@ export const Dialog = ({
         >
           {children}
         </div>
-        <div className="w-full flex items-center gap-3 justify-end px-6 py-4 border-t border-gray-300">
+        <div
+          className={classNames(
+            "w-full flex items-center gap-3 justify-end px-6 py-4",
+            !isFullscreen && "border-t border-gray-300"
+          )}
+        >
           {actions}
         </div>
       </div>
