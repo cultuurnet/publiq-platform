@@ -136,7 +136,7 @@ export const ContactsTableContent = ({
             <ButtonIcon
               icon={faTrash}
               className="text-icon-gray"
-              onClick={() => onDelete(contributor.id)}
+              onClick={() => onDelete(contributor.id, contributor.email)}
             />
           </td>
         </tr>

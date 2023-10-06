@@ -32,6 +32,7 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
   const [isDisabled, setIsDisabled] = useState(true);
   const [isAddFormVisible, setIsAddFormVisible] = useState(false);
   const [toBeDeletedId, setToBeDeletedId] = useState("");
+  const [toBeDeletedEmail, setToBeDeletedEmail] = useState("")
   const [toBeEditedId, setToBeEditedId] = useState("");
   const [isMobileContactVisible, setIsMobileContactVisible] = useState(false);
 
@@ -224,7 +225,7 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
         <ContactsTable
           data={data}
           onEdit={(id) => setToBeEditedId(id)}
-          onDelete={(id) => setToBeDeletedId(id)}
+          onDelete={(id, email) => {setToBeDeletedId(id); setToBeDeletedEmail(email);}}
           onPreview={(bool) => setIsMobileContactVisible(bool)}
           functionalId={functionalContact.id}
           technicalId={technicalContact.id}
@@ -343,7 +344,9 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
         onClose={() => {
           setToBeDeletedId("");
         }}
-        question={t("details.contact_info.dialog")}
+        question={t("details.contact_info.delete_dialog.question", {
+          email: toBeDeletedEmail,
+        })}
         onConfirm={handleDeleteContributor}
         onCancel={() => {
           setToBeDeletedId("");

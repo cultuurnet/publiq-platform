@@ -7,7 +7,7 @@ import { ContactsTableContent } from "./ContactsTableContent";
 export type ContactsTableProps = {
   data: ContactFormData;
   onEdit: (id: string) => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: string, email:string) => void;
   onPreview: (bool: boolean) => void;
   functionalId: string;
   technicalId: string;
