@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from "react";
-import { Heading } from "../../Heading";
 import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
 import { useTranslation } from "react-i18next";
@@ -32,7 +31,7 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
   const [isDisabled, setIsDisabled] = useState(true);
   const [isAddFormVisible, setIsAddFormVisible] = useState(false);
   const [toBeDeletedId, setToBeDeletedId] = useState("");
-  const [toBeDeletedEmail, setToBeDeletedEmail] = useState("")
+  const [toBeDeletedEmail, setToBeDeletedEmail] = useState("");
   const [toBeEditedId, setToBeEditedId] = useState("");
   const [isMobileContactVisible, setIsMobileContactVisible] = useState(false);
 
@@ -162,39 +161,64 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
           isVisible={isAddFormVisible}
           onClose={() => setIsAddFormVisible(false)}
           isFullscreen={isMobile}
-          contentStyles="gap-5"
+          contentStyles="gap-3"
+          title={t("details.contact_info.new")}
+          actions={
+            <>
+              <ButtonSecondary onClick={() => setIsAddFormVisible(false)}>
+                {t("dialog.cancel")}
+              </ButtonSecondary>
+              <ButtonPrimary
+                onClick={() => {
+                  handleSaveChanges();
+                  setIsAddFormVisible(false);
+                }}
+                className="p-0"
+              >
+                {t("dialog.confirm")}
+              </ButtonPrimary>
+            </>
+          }
         >
-          <Heading className="font-semibold" level={3}>
-            {t("details.contact_info.new")}
-          </Heading>
-          <FormElement
-            label={`${t("integration_form.contact.last_name")}`}
-            error={errors["newContributorLastName"]}
-            component={
-              <Input
-                type="text"
-                name="newContributorLastName"
-                value={data.newContributorLastName}
-                onChange={(e) =>
-                  setData("newContributorLastName", e.target.value)
-                }
-              />
-            }
-          />
-          <FormElement
-            label={`${t("integration_form.contact.first_name")}`}
-            error={errors["newContributorFirstName"]}
-            component={
-              <Input
-                type="text"
-                name="newContributorFirstName"
-                value={data.newContributorFirstName}
-                onChange={(e) =>
-                  setData("newContributorFirstName", e.target.value)
-                }
-              />
-            }
-          />
+          <div
+            className={classNames(
+              "w-full",
+              !isMobile && "grid grid-cols-2 gap-3"
+            )}
+          >
+            <FormElement
+              label={`${t("integration_form.contact.last_name")}`}
+              error={errors["newContributorLastName"]}
+              className="w-full"
+              component={
+                <Input
+                  type="text"
+                  name="newContributorLastName"
+                  value={data.newContributorLastName}
+                  onChange={(e) =>
+                    setData("newContributorLastName", e.target.value)
+                  }
+                  className="w-full"
+                />
+              }
+            />
+            <FormElement
+              label={`${t("integration_form.contact.first_name")}`}
+              error={errors["newContributorFirstName"]}
+              className="w-full"
+              component={
+                <Input
+                  type="text"
+                  name="newContributorFirstName"
+                  value={data.newContributorFirstName}
+                  onChange={(e) =>
+                    setData("newContributorFirstName", e.target.value)
+                  }
+                />
+              }
+            />
+          </div>
+
           <FormElement
             label={`${t("integration_form.contact.email")}`}
             error={errors["newContributorEmail"]}
@@ -207,25 +231,14 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
               />
             }
           />
-          <div className="flex justify-center gap-2 m-5">
-            <ButtonPrimary
-              onClick={() => {
-                handleSaveChanges();
-                setIsAddFormVisible(false);
-              }}
-              className="p-0"
-            >
-              {t("details.contact_info.save")}
-            </ButtonPrimary>
-            <ButtonSecondary onClick={() => setIsAddFormVisible(false)}>
-              {t("details.contact_info.cancel")}
-            </ButtonSecondary>
-          </div>
         </Dialog>
         <ContactsTable
           data={data}
           onEdit={(id) => setToBeEditedId(id)}
-          onDelete={(id, email) => {setToBeDeletedId(id); setToBeDeletedEmail(email);}}
+          onDelete={(id, email) => {
+            setToBeDeletedId(id);
+            setToBeDeletedEmail(email);
+          }}
           onPreview={(bool) => setIsMobileContactVisible(bool)}
           functionalId={functionalContact.id}
           technicalId={technicalContact.id}
@@ -244,50 +257,81 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
         </div>
         {toBeEditedContact && (
           <Dialog
+            title={t("details.contact_info.edit_dialog")}
+            actions={
+              <>
+                <ButtonSecondary onClick={() => setIsAddFormVisible(false)}>
+                  {t("dialog.cancel")}
+                </ButtonSecondary>
+                <ButtonPrimary
+                  onClick={() => {
+                    setToBeEditedId("");
+                    patch(`/integrations/${id}/contacts`, {
+                      preserveScroll: true,
+                    });
+                  }}
+                  className={classNames(
+                    "self-center",
+                    isMobileContactVisible && "hidden"
+                  )}
+                >
+                  {t("dialog.confirm")}
+                </ButtonPrimary>
+              </>
+            }
             isVisible={!!toBeEditedId}
             onClose={() => {
               setToBeEditedId("");
               setIsMobileContactVisible(false);
             }}
             isFullscreen={isMobile}
-            contentStyles="gap-5"
+            contentStyles="gap-3"
           >
-            <FormElement
-              label={`${t("integration_form.contact.last_name")}`}
-              error={errors[`${formContactType}.lastName`]}
-              component={
-                <Input
-                  type="text"
-                  name={`${formContactType}.lastName`}
-                  value={toBeEditedContact?.lastName}
-                  onChange={(e) =>
-                    changeContact(formContactType, {
-                      ...toBeEditedContact,
-                      lastName: e.target.value,
-                    })
-                  }
-                  disabled={isMobileContactVisible}
-                />
-              }
-            />
-            <FormElement
-              label={`${t("integration_form.contact.first_name")}`}
-              error={errors[`${formContactType}.firstName`]}
-              component={
-                <Input
-                  type="text"
-                  name={`${formContactType}.firstName`}
-                  value={toBeEditedContact?.firstName}
-                  onChange={(e) =>
-                    changeContact(formContactType, {
-                      ...toBeEditedContact,
-                      firstName: e.target.value,
-                    })
-                  }
-                  disabled={isMobileContactVisible}
-                />
-              }
-            />
+            <div
+              className={classNames(
+                "w-full",
+                !isMobile && "grid grid-cols-2 gap-3"
+              )}
+            >
+              <FormElement
+                label={`${t("integration_form.contact.last_name")}`}
+                error={errors[`${formContactType}.lastName`]}
+                className="w-full"
+                component={
+                  <Input
+                    type="text"
+                    name={`${formContactType}.lastName`}
+                    value={toBeEditedContact?.lastName}
+                    onChange={(e) =>
+                      changeContact(formContactType, {
+                        ...toBeEditedContact,
+                        lastName: e.target.value,
+                      })
+                    }
+                    disabled={isMobileContactVisible}
+                  />
+                }
+              />
+              <FormElement
+                label={`${t("integration_form.contact.first_name")}`}
+                error={errors[`${formContactType}.firstName`]}
+                className="w-full"
+                component={
+                  <Input
+                    type="text"
+                    name={`${formContactType}.firstName`}
+                    value={toBeEditedContact?.firstName}
+                    onChange={(e) =>
+                      changeContact(formContactType, {
+                        ...toBeEditedContact,
+                        firstName: e.target.value,
+                      })
+                    }
+                    disabled={isMobileContactVisible}
+                  />
+                }
+              />
+            </div>
             <FormElement
               label={`${t("integration_form.contact.email")}`}
               error={errors[`${formContactType}.email`]}
@@ -306,20 +350,6 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
                 />
               }
             />
-            <ButtonPrimary
-              onClick={() => {
-                setToBeEditedId("");
-                patch(`/integrations/${id}/contacts`, {
-                  preserveScroll: true,
-                });
-              }}
-              className={classNames(
-                "self-center",
-                isMobileContactVisible && "hidden"
-              )}
-            >
-              {t("details.save")}
-            </ButtonPrimary>
           </Dialog>
         )}
 
@@ -344,6 +374,7 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
         onClose={() => {
           setToBeDeletedId("");
         }}
+        title={t("details.contact_info.delete_dialog.title")}
         question={t("details.contact_info.delete_dialog.question", {
           email: toBeDeletedEmail,
         })}
