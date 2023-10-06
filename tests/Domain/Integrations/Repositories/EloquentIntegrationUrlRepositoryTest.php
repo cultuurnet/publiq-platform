@@ -76,9 +76,9 @@ final class EloquentIntegrationUrlRepositoryTest extends TestCaseWithDatabase
         $firstIntegrationUrl = new IntegrationUrl(
             $firstIntegrationUrlId,
             $integrationId,
-            Environment::Testing,
-            IntegrationUrlType::Callback,
-            'https://publiqtest.be/callback'
+            Environment::Production,
+            IntegrationUrlType::Login,
+            'https://publiqtest.be/login'
         );
 
         $secondIntegrationUrl = new IntegrationUrl(
@@ -92,9 +92,9 @@ final class EloquentIntegrationUrlRepositoryTest extends TestCaseWithDatabase
         $thirdIntegrationUrl = new IntegrationUrl(
             $thirdIntegrationUrlId,
             $integrationId,
-            Environment::Testing,
-            IntegrationUrlType::Callback,
-            'https://publiqtest.be/callback'
+            Environment::Production,
+            IntegrationUrlType::Logout,
+            'https://publiqtest.be/logout'
         );
 
         $this->integrationUrlRepository->save($firstIntegrationUrl);
