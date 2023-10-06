@@ -2,20 +2,25 @@ import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ButtonPrimary } from "../../ButtonPrimary";
 import { FormDropdown } from "../../FormDropdown";
-import { ButtonIcon } from "../../ButtonIcon";
-import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "@inertiajs/react";
 import { Integration } from "../../../Pages/Integrations/Index";
 import { IntegrationUrlType } from "../../../types/IntegrationUrlType";
 import { UrlList } from "./UrlList";
 import { Environment } from "../../../types/Environment";
 import { IntegrationUrl } from "../../../Pages/Integrations/Index";
+import { BasicInfo } from "./BasicInfo";
 
 type Props = {
   isMobile: boolean;
+  integration: Integration;
 } & Integration;
 
-export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
+export const IntegrationSettings = ({
+  integration,
+  isMobile,
+  id,
+  urls,
+}: Props) => {
   const { t } = useTranslation();
 
   const [isDisabled, setIsDisabled] = useState(true);
@@ -84,18 +89,13 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
   }));
 
   return (
-    <FormDropdown
-      title={t("details.integration_settings.title")}
-      actions={
-        urls.length > 0 && (
-          <ButtonIcon
-            icon={faPencil}
-            className="text-icon-gray"
-            onClick={() => setIsDisabled((prev) => !prev)}
-          />
-        )
-      }
-    >
+    <FormDropdown title={t("details.integration_settings.title")}>
+      <BasicInfo
+        isMobile={isMobile}
+        integration={integration}
+        isDisabled={isDisabled}
+        onEdit={(prev) => setIsDisabled(!prev)}
+      />
       <UrlList
         type={IntegrationUrlType.Login}
         urls={data.loginUrls}
