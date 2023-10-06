@@ -63,14 +63,16 @@
     "description_name": "Geef een duidelijk titel aan je integratie en vermeld de naam van de organisatie of gemeente waarvoor de integratie gebouwd wordt",
     "aim": "Doel van de integratie",
     "description_aim": "Geef een duidelijke, gemotiveerde beschrijving van de integraite die je met het publiq platform wil opzetten (max. 200 karakters)",
-    "contact_label_1": "Inhoudelijk contact ",
-    "contact_label_2": "Technical contact",
-    "contact_label_3": "Andere medewerkers",
+    "contact_label_functional": "Inhoudelijk contact",
+    "contact_label_technical": "Technisch contact",
+    "contact_label_contributor": "Medewerker",
+    "add": "Medewerker toevogen",
     "contact": {
-      "first_name": "Voornaam contactpersoon",
-      "last_name": "Achternaam contactpersoon",
-      "email": "E-mailadres",
-      "action": "Actie"
+      "title": "Contact",
+      "first_name": "Voornaam",
+      "last_name": "Achternaam",
+      "name": "Naam",
+      "email": "E-mailadres"
     },
     "agree": "Ik ga akkoord met de",
     "terms_of_use": "gebruiksvoorwaarden",
@@ -139,7 +141,7 @@
       "description": "Beschrijving"
     },
     "contact_info": {
-      "title": "Contactgegevens",
+      "title": "Contacten",
       "employees": "Andere medewerkers",
       "delete": "Verwijder medewerker",
       "new": "Nieuwe medewerker",
