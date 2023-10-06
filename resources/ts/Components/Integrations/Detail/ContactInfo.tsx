@@ -259,25 +259,23 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
           <Dialog
             title={t("details.contact_info.edit_dialog")}
             actions={
-              <>
-                <ButtonSecondary onClick={() => setIsAddFormVisible(false)}>
-                  {t("dialog.cancel")}
-                </ButtonSecondary>
-                <ButtonPrimary
-                  onClick={() => {
-                    setToBeEditedId("");
-                    patch(`/integrations/${id}/contacts`, {
-                      preserveScroll: true,
-                    });
-                  }}
-                  className={classNames(
-                    "self-center",
-                    isMobileContactVisible && "hidden"
-                  )}
-                >
-                  {t("dialog.confirm")}
-                </ButtonPrimary>
-              </>
+              !isMobileContactVisible && (
+                <>
+                  <ButtonSecondary onClick={() => setIsAddFormVisible(false)}>
+                    {t("dialog.cancel")}
+                  </ButtonSecondary>
+                  <ButtonPrimary
+                    onClick={() => {
+                      setToBeEditedId("");
+                      patch(`/integrations/${id}/contacts`, {
+                        preserveScroll: true,
+                      });
+                    }}
+                  >
+                    {t("dialog.confirm")}
+                  </ButtonPrimary>
+                </>
+              )
             }
             isVisible={!!toBeEditedId}
             onClose={() => {
