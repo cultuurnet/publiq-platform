@@ -261,7 +261,7 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
             actions={
               !isMobileContactVisible && (
                 <>
-                  <ButtonSecondary onClick={() => setIsAddFormVisible(false)}>
+                  <ButtonSecondary onClick={() => setToBeEditedId("")}>
                     {t("dialog.cancel")}
                   </ButtonSecondary>
                   <ButtonPrimary
