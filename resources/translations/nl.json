@@ -46,7 +46,7 @@
       },
       "widgets": {
         "title": "Widgets",
-        "description": "Snel een agenda configureren en integreren met onze kant -en klare HTML-modules.",
+        "description": "Kant en klare html-modules die je in je website kan inpassen.",
         "features": [
           "Zelf of door publiq in te stellen",
           "Plug & play oplossing",
@@ -134,7 +134,6 @@
   },
   "details": {
     "save": "Wijzigingen opslaan",
-    "delete": "Integratie verwijderen",
     "basic_info": {
       "title": "Basisgegevens",
       "name": "Integratienaam",
@@ -185,6 +184,15 @@
       "environment": "Omgeving",
       "logout": "Logout URL",
       "dialog": "Wil je deze URL echt verwijderen?"
+    },
+    "menage_account": {
+      "title": "Integratiebeheer",
+      "delete": {
+        "title": "Integratie verwijderen",
+        "description": "Ben je zeker dat je je integratie wilt verwijderen? Nadat je hebt gekozen om je integratie te verwijderen, zal deze niet langer toegankelijk zijn en kan de verwijdering niet ongedaan gemaakt worden."
+      },
+
+      "action": "Verwijderen"
     }
   },
   "support": {
