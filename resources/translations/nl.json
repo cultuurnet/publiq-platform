@@ -68,7 +68,6 @@
     "contact_label_contributor": "Medewerker",
     "add": "Medewerker toevogen",
     "contact": {
-      "title": "Contact",
       "first_name": "Voornaam",
       "last_name": "Achternaam",
       "name": "Naam",
@@ -145,9 +144,11 @@
       "employees": "Andere medewerkers",
       "delete": "Verwijder medewerker",
       "new": "Nieuwe medewerker",
-      "save": "Opslaan",
-      "cancel": "Annuleren",
-      "dialog": "Wil je deze medewerker echt verwijderen?"
+      "delete_dialog": {
+        "title": "Contact verwijderen",
+        "question": "Ben je zeker dat je het contact met e-mailadres {{email}} wilt verwijderen?"
+      },
+      "edit_dialog": "Contact bewerken"
     },
     "billing_info": {
       "title": "Facturatiegegevens",
@@ -236,8 +237,8 @@
     }
   },
   "dialog": {
-    "confirm": "Doorgaan",
-    "cancel": "Annuleer"
+    "confirm": "Bevestigen",
+    "cancel": "Annuleren"
   },
   "tooltip": {
     "copy": "Gekopieerd!"
