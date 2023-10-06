@@ -54,6 +54,9 @@ final class EloquentIntegrationUrlRepository implements IntegrationUrlRepository
         return $integrationUrlModel->delete();
     }
 
+    /**
+     * @param array<IntegrationUrl> $integrationUrls
+     */
     public function updateUrls(array $integrationUrls): void
     {
         if (count($integrationUrls) === 0) {
