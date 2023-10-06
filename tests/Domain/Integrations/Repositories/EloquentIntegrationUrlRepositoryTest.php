@@ -8,14 +8,11 @@ use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\IntegrationUrlType;
 use App\Domain\Integrations\Repositories\EloquentIntegrationUrlRepository;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCaseWithDatabase;
 
 final class EloquentIntegrationUrlRepositoryTest extends TestCaseWithDatabase
 {
-    use RefreshDatabase;
-
     private EloquentIntegrationUrlRepository $integrationUrlRepository;
 
     protected function setUp(): void
