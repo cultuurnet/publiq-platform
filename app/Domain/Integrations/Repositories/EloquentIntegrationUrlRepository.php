@@ -60,9 +60,9 @@ final class EloquentIntegrationUrlRepository implements IntegrationUrlRepository
             return;
         }
 
-        DB::transaction(static function () use ($integrationUrls) {
+        DB::transaction(function () use ($integrationUrls) {
             foreach ($integrationUrls as $integrationUrl) {
-                EloquentIntegrationUrlRepository::update($integrationUrl);
+                $this->update($integrationUrl);
             }
         });
     }
