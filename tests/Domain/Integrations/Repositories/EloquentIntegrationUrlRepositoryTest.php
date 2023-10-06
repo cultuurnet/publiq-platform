@@ -114,6 +114,9 @@ final class EloquentIntegrationUrlRepositoryTest extends TestCaseWithDatabase
             $thirdIntegrationUrl,
         ];
 
+        sort($foundIntegrationUrls);
+        sort($expected);
+
         $this->assertEquals($expected, $foundIntegrationUrls);
     }
 
