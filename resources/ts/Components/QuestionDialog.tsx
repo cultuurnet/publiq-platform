@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 
 type Props = DialogProps & {
   question: string;
+  title: string;
   confirmLabel?: string;
   cancelLabel?: string;
   onConfirm: () => void;
@@ -15,11 +16,11 @@ type Props = DialogProps & {
 
 export const QuestionDialog = ({
   question,
+  title,
   confirmLabel,
   cancelLabel,
   onConfirm,
   onCancel,
-  children,
   ...props
 }: Props) => {
   const { t } = useTranslation();
@@ -28,13 +29,17 @@ export const QuestionDialog = ({
   const cancel = cancelLabel ?? t("dialog.cancel");
 
   return (
-    <Dialog {...props}>
+    <Dialog
+      {...props}
+      title={title}
+      actions={
+        <>
+          <ButtonSecondary onClick={onCancel}>{cancel}</ButtonSecondary>
+          <ButtonPrimary onClick={onConfirm}>{confirm}</ButtonPrimary>
+        </>
+      }
+    >
       <p className="flex">{question}</p>
-      <div className="flex p-5">{children}</div>
-      <div className="self-end w-full inline-flex gap-3 justify-end border-t-publiq-gray-medium">
-        <ButtonSecondary onClick={onCancel}>{cancel}</ButtonSecondary>
-        <ButtonPrimary onClick={onConfirm}>{confirm}</ButtonPrimary>
-      </div>
     </Dialog>
   );
 };
