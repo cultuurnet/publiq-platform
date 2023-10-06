@@ -24,7 +24,7 @@ export const ContactsTableContent = ({
   const contactTypes = [
     { label: "functional", id: functionalId },
     { label: "technical", id: technicalId },
-  ];
+  ] as const;
 
   return (
     <tbody>
@@ -57,11 +57,7 @@ export const ContactsTableContent = ({
                   "text-publiq-blue-dark flex gap-2 items-center underline"
               )}
             >
-              {
-                (data[type.label as keyof ContactFormData] as Contact)
-                  ?.firstName
-              }{" "}
-              {(data[type.label as keyof ContactFormData] as Contact)?.lastName}
+              {data[type.label]?.firstName} {data[type.label].lastName}
             </div>
             <div
               className={classNames(
