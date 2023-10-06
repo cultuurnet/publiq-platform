@@ -19,12 +19,12 @@ export const Card = ({
   title,
   description,
   img,
-  badge,
+  badge = "",
   active,
   children,
   className,
   contentStyles,
-  border,
+  border = false,
   textCenter,
   ...props
 }: Props) => {
@@ -73,7 +73,7 @@ export const Card = ({
           <Heading level={2} className="font-medium mb-2">
             {title}
           </Heading>
-          {badge && (
+          {!!badge && (
             <span className="bg-publiq-blue-dark text-white text-xs font-medium  mr-2 px-2.5 py-0.5 rounded">
               {badge}
             </span>
