@@ -161,6 +161,7 @@ const Index = ({ integrations, paginationInfo }: Props) => {
         onClose={() => {
           setIsDeleteDialogVisible((prev) => !prev);
         }}
+        title={t("integrations.dialog.title")}
         question={t("integrations.dialog.delete")}
         onConfirm={handleDeleteIntegration}
         onCancel={() => {

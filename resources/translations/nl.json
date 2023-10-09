@@ -130,6 +130,7 @@
       "action_title": "Aan de slag met {{product}}"
     },
     "dialog": {
+      "title": "Integratie verwijderen",
       "delete": "Wil je deze integratie echt verwijderen?"
     }
   },
