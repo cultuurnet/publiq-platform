@@ -155,14 +155,14 @@ final class EloquentIntegrationUrlRepositoryTest extends TestCaseWithDatabase
         $this->integrationUrlRepository->save($secondInitialIntegrationUrl);
         $this->integrationUrlRepository->save($thirdInitialIntegrationUrl);
 
-        $firstUpdatedInitialIntegrationUrl = new IntegrationUrl(
+        $firstUpdatedIntegrationUrl = new IntegrationUrl(
             $firstIntegrationId,
             $integrationId,
             Environment::Testing,
             IntegrationUrlType::Callback,
             'https://publiqtest.be/callback-new'
         );
-        $thirdUpdatedInitialIntegrationUrl = new IntegrationUrl(
+        $thirdUpdatedIntegrationUrl = new IntegrationUrl(
             $thirdIntegrationId,
             $integrationId,
             Environment::Acceptance,
@@ -171,14 +171,14 @@ final class EloquentIntegrationUrlRepositoryTest extends TestCaseWithDatabase
         );
 
         $this->integrationUrlRepository->updateUrls([
-            $firstUpdatedInitialIntegrationUrl,
-            $thirdUpdatedInitialIntegrationUrl,
+            $firstUpdatedIntegrationUrl,
+            $thirdUpdatedIntegrationUrl,
         ]);
 
         $expected = [
-            $firstUpdatedInitialIntegrationUrl,
+            $firstUpdatedIntegrationUrl,
             $secondInitialIntegrationUrl,
-            $thirdUpdatedInitialIntegrationUrl,
+            $thirdUpdatedIntegrationUrl,
         ];
 
         $foundIntegrationUrls = $this->integrationUrlRepository->getByIds([
@@ -187,8 +187,10 @@ final class EloquentIntegrationUrlRepositoryTest extends TestCaseWithDatabase
             $thirdIntegrationId,
         ]);
 
-        $this->assertEquals($expected, $foundIntegrationUrls);
+        sort($expected);
+        sort($foundIntegrationUrls);
 
+        $this->assertEquals($expected, $foundIntegrationUrls);
     }
 
     public function test_it_updates_integration_url(): void
