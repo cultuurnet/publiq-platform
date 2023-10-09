@@ -171,17 +171,6 @@ export const UrlList = ({
                     onClick={() => setToBeDeletedId(url.id)}
                     className="text-icon-gray"
                   />
-                  <QuestionDialog
-                    isVisible={!!toBeDeletedId}
-                    onClose={() => {
-                      setToBeDeletedId("");
-                    }}
-                    question={t("details.integration_settings.dialog")}
-                    onConfirm={() => onDelete(toBeDeletedId)}
-                    onCancel={() => {
-                      setToBeDeletedId("");
-                    }}
-                  ></QuestionDialog>
                 </div>
               }
             />
@@ -191,6 +180,17 @@ export const UrlList = ({
         <div>{t("details.integration_settings.empty")}</div>
       )}
     </>
+      <QuestionDialog
+        isVisible={!!toBeDeletedId}
+        onClose={() => {
+          setToBeDeletedId("");
+        }}
         title={t("details.integration_settings.delete.title")}
+        question={t("details.integration_settings.delete.question")}
+        onConfirm={() => onDelete(toBeDeletedId)}
+        onCancel={() => {
+          setToBeDeletedId("");
+        }}
+      ></QuestionDialog>
   );
 };
