@@ -17,7 +17,7 @@ final class SetLocale
             return TranslatedRoute::DEFAULT_LANGUAGE;
         }
 
-        $isSingleLocale = str_contains(';', $locale);
+        $isSingleLocale = !str_contains(';', $locale);
 
         if ($isSingleLocale && array_search($locale, TranslatedRoute::SUPPORTED_LANGUAGES)) {
             return $locale;
