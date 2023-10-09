@@ -1,4 +1,4 @@
-import React, { ComponentProps, useMemo, useState } from "react";
+import React, { ComponentProps, useState } from "react";
 import { Heading } from "./Heading";
 import { useTranslation } from "react-i18next";
 import { Link } from "@inertiajs/react";
