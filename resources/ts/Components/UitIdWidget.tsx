@@ -7,12 +7,12 @@ import { useTranslateRoute } from "../hooks/useTranslateRoute";
 const widgetConfig = {
   $schema: "https://assets.uit.be/uitid-widget/config-schema.json",
   applicationName: "Publiq platform",
-  uitidProfileUrl: "https://profile-acc.uitid.be",
-  uitidRegisterUrl: "https://account-acc.uitid.be/login",
+  uitidProfileUrl: import.meta.env.VITE_UITID_PROFILE_URL,
+  uitidRegisterUrl: import.meta.env.VITE_UITID_REGISTER_URL,
   defaultLanguage: "nl",
-  auth0Domain: "https://account-acc.uitid.be",
-  loginUrl: "http://localhost/login",
-  logoutUrl: "http://localhost/logout",
+  auth0Domain: import.meta.env.VITE_AUTH0_DOMAIN,
+  loginUrl: "/login",
+  logoutUrl: "/logout",
   accessTokenCookieName: "",
   idTokenCookieName: "auth.token.idToken",
 };
