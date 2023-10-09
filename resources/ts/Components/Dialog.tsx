@@ -9,7 +9,7 @@ type Props = ComponentProps<"div"> & {
   onClose?: () => void;
   isFullscreen?: boolean;
   contentStyles?: string;
-  title: string;
+  title?: string;
   actions?: ReactNode;
 };
 
