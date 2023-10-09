@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 import { usePage } from "@inertiajs/react";
 import { useTranslateRoute } from "../hooks/useTranslateRoute";
 
+console.log("import.meta.env", import.meta.env);
+
 const widgetConfig = {
   $schema: "https://assets.uit.be/uitid-widget/config-schema.json",
   applicationName: "Publiq platform",
