@@ -15,20 +15,6 @@ const widgetConfig = {
   logoutUrl: "http://localhost/logout",
   accessTokenCookieName: "",
   idTokenCookieName: "auth.token.idToken",
-  actions: {
-    nl: [
-      {
-        url: "/nl/ondersteuning",
-        label: "Ondersteuning",
-      },
-    ],
-    en: [
-      {
-        url: "/en/support",
-        label: "Support",
-      },
-    ],
-  },
 };
 
 export const UitIdWidget = () => {
@@ -47,13 +33,14 @@ export const UitIdWidget = () => {
   );
 
   return (
-    <div className="w-full px-6 lg:px-64 bg-[#F8F8F8]">
+    <div className="w-full px-7 bg-uitid-widget">
       <script id="uitid-widget-config" type="application/json">
         {JSON.stringify(widgetConfig)}
       </script>
 
       <div
         id="uitid-widget"
+        data-current-page={currentPage}
         className="min-h-[50px]"
         data-language={i18n.language}
       ></div>

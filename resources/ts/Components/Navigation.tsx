@@ -24,7 +24,7 @@ export default function Navigation({
   const pages = ["integrations", "integrations/new", "support"];
 
   const classes = classNames(
-    "flex md:items-center md:justify-around max-md:p-4 max-md:gap-5",
+    "flex md:items-center md:justify-start gap-36 px-7 max-md:p-4 max-md:gap-5",
     orientation === "vertical" && "flex-col",
     className
   );
