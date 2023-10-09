@@ -3,7 +3,8 @@ import Header from "./Header";
 import HeaderMobile from "./HeaderMobile";
 import Footer from "./Footer";
 import { SectionCollapsedProvider } from "../context/SectionCollapsedContext";
-import { usePage } from "@inertiajs/react";
+import { usePage, Head } from "@inertiajs/react";
+import { UitIdWidget } from "./UitIdWidget";
 
 const Main = ({ children }: { children: ReactNode }) => {
   const page = usePage();
@@ -23,9 +24,18 @@ const Main = ({ children }: { children: ReactNode }) => {
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="flex flex-col flex-1 items-center text-publiq-gray-dark bg-publiq-gray-light">
+      <Head>
+        <script
+          type="module"
+          src="https://assets.uit.be/uitid-widget/index.js"
+          async
+        ></script>
+      </Head>
+
+      <UitIdWidget />
+
       <Header />
       <HeaderMobile />
-
       <Main>{children}</Main>
       <Footer />
     </div>
