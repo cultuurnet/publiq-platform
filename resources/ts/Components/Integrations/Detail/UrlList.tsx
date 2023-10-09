@@ -40,7 +40,6 @@ export const UrlList = ({
   onChangeNewUrl,
   onDelete,
   isMobile,
-  isDisabled,
   isAddVisible = true,
   onSave,
 }: UrlListProps) => {
@@ -192,5 +191,6 @@ export const UrlList = ({
         <div>{t("details.integration_settings.empty")}</div>
       )}
     </>
+        title={t("details.integration_settings.delete.title")}
   );
 };
