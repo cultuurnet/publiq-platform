@@ -9,7 +9,6 @@ createInertiaApp({
   resolve: (name) =>
     resolvePageComponent(
       `./Pages/${name}.tsx`,
-      // @ts-expect-error
       import.meta.glob("./Pages/**/*.tsx")
     ),
   setup({ el, App, props }) {
