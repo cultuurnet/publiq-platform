@@ -11,8 +11,12 @@ use Illuminate\Support\Facades\App;
 
 final class SetLocale
 {
-    private function processLocale(string $locale): string
+    private function processLocale(string|null $locale): string
     {
+        if ($locale === null) {
+            return TranslatedRoute::DEFAULT_LANGUAGE;
+        }
+
         $isSingleLocale = str_contains(';', $locale);
 
         if ($isSingleLocale && array_search($locale, TranslatedRoute::SUPPORTED_LANGUAGES)) {
