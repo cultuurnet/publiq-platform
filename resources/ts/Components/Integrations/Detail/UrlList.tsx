@@ -1,19 +1,16 @@
-import React, { useState } from "react";
+import React, { ComponentProps, useMemo, useState } from "react";
 import { Heading } from "../../Heading";
 import { useTranslation } from "react-i18next";
 import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
 import { ButtonIcon } from "../../ButtonIcon";
-import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { IntegrationUrl } from "../../../Pages/Integrations/Index";
 import { IntegrationUrlType } from "../../../types/IntegrationUrlType";
-import { capitalize } from "../../../utils/capitalize";
-import { RadioButtonGroup } from "../../RadioButtonGroup";
-import { ButtonPrimary } from "../../ButtonPrimary";
-import { ButtonSecondary } from "../../ButtonSecondary";
 import { Environment } from "../../../types/Environment";
 import { QuestionDialog } from "../../QuestionDialog";
-import { Dialog } from "../../Dialog";
+import { ButtonSecondary } from "../../ButtonSecondary";
+import { classNames } from "../../../utils/classNames";
 
 type ChangedIntegrationUrl = IntegrationUrl & {
   changed: boolean;
@@ -27,159 +24,158 @@ type UrlListProps = {
   onChangeData: (value: ChangedIntegrationUrl[]) => void;
   onChangeNewUrl: (value: NewUrl) => void;
   onDelete: (urlId: IntegrationUrl["id"]) => void;
-  isMobile: boolean;
-  isDisabled: boolean;
-  isAddVisible?: boolean;
-  onSave: () => void;
-};
+} & ComponentProps<"div">;
 export const UrlList = ({
   type,
   urls,
-  newUrl,
   onChangeData,
   onChangeNewUrl,
   onDelete,
-  isMobile,
-  isAddVisible = true,
-  onSave,
+  className
 }: UrlListProps) => {
   const { t } = useTranslation();
 
-  const [isAddFormVisible, setIsAddFormVisible] = useState(false);
   const [toBeDeletedId, setToBeDeletedId] = useState("");
+  const [isAddTestVisible, setIsAddTestVisible] = useState(false);
+  const [isAddProdVisible, setIsAddProdVisible] = useState(false);
+
+  const testUrls = useMemo(
+    () => urls.filter((url) => url.environment === Environment.Test),
+    [urls]
+  );
+
+  const prodUrls = useMemo(
+    () => urls.filter((url) => url.environment === Environment.Prod),
+    [urls]
+  );
+
+  const modifiedUrls = [
+    {
+      urls: testUrls,
+      env: Environment.Test,
+      visible: isAddTestVisible,
+      changeVisibility(param: boolean) {
+        setIsAddTestVisible(param);
+      },
+    },
+    {
+      urls: prodUrls,
+      env: Environment.Prod,
+      visible: isAddProdVisible,
+      changeVisibility(param: boolean) {
+        setIsAddProdVisible(param);
+      },
+    },
+  ];
 
   return (
-    <>
-      <div className="flex items-center gap-2 ">
-        <Heading className="font-semibold" level={3}>
-          {t(`details.integration_settings.${type}`)}
-        </Heading>
-        {isAddVisible && (
-          <ButtonIcon
-            className="flex gap-2 items-center"
-            icon={faPlus}
-            onClick={() => {
-              setIsAddFormVisible(true);
-            }}
-          ></ButtonIcon>
-        )}
-      </div>
-
-      <Dialog
-        isVisible={isAddFormVisible}
-        onClose={() => setIsAddFormVisible(false)}
-        isFullscreen={isMobile}
-      >
-        <div className="flex flex-col gap-2">
-          <Heading className="font-semibold" level={3}>
-            {t("details.integration_settings.new_url", {
-              type: capitalize(type),
-            })}
-          </Heading>
-          <FormElement
-            label={`${t("details.integration_settings.environment")}`}
-            component={
-              <RadioButtonGroup
-                name="integrationType"
-                className="md:min-w-[32rem]"
-                options={[
-                  {
-                    label: t("details.integration_settings.acc"),
-                    value: Environment.Acc,
-                  },
-                  {
-                    label: t("details.integration_settings.test"),
-                    value: Environment.Test,
-                  },
-                  {
-                    label: t("details.integration_settings.prod"),
-                    value: Environment.Prod,
-                  },
-                ]}
-                value={newUrl.environment}
-                onChange={(value) =>
-                  onChangeNewUrl({
-                    ...newUrl,
-                    environment: value as Environment,
-                  })
-                }
-              />
-            }
-          />
-
-          <FormElement
-            label={`${t("details.integration_settings.url")}`}
-            component={
-              <Input
-                type="text"
-                name="url"
-                value={newUrl.url}
-                onChange={(e) =>
-                  onChangeNewUrl({ ...newUrl, url: e.target.value })
-                }
-              />
-            }
-          />
-          <div className="flex justify-center gap-2 m-5">
-            <ButtonPrimary
-              className="p-0"
-              onClick={() => {
-                onSave();
-                setIsAddFormVisible(false);
-              }}
-            >
-              {t("details.contact_info.save")}
-            </ButtonPrimary>
-            <ButtonSecondary onClick={() => setIsAddFormVisible(false)}>
-              {t("details.contact_info.cancel")}
-            </ButtonSecondary>
-          </div>
-        </div>
-      </Dialog>
-      {urls.length > 0 ? (
-        urls.map((url) => {
-          return (
+    <div
+      className={classNames(
+        "max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-5 py-10",
+        className
+      )}
+    >
+      <Heading className="font-semibold" level={3}>
+        {t(`details.integration_settings.${type}`)}
+      </Heading>
+      <div className="flex flex-col gap-5">
+        {modifiedUrls.map((option) =>
+          option.urls.length > 0 ? (
+            <div key={option.env} className="flex flex-col gap-2">
+              {option.urls.map((url) => (
+                <FormElement
+                  key={url.id}
+                  label={`${t(
+                    `details.integration_settings.${url.environment}`
+                  )}`}
+                  component={
+                    <div className="flex gap-2">
+                      <Input
+                        type="text"
+                        name="url"
+                        value={url.url}
+                        className="md:min-w-[32rem]"
+                        onChange={(e) =>
+                          onChangeData(
+                            urls.map((urlItem) => {
+                              if (urlItem.id === url.id) {
+                                return {
+                                  ...urlItem,
+                                  url: e.target.value,
+                                  changed: true,
+                                };
+                              }
+                              return urlItem;
+                            })
+                          )
+                        }
+                      />
+                      {type !== IntegrationUrlType.Login && (
+                        <ButtonIcon
+                          icon={faTrash}
+                          onClick={() => setToBeDeletedId(url.id)}
+                          className="text-icon-gray"
+                        />
+                      )}
+                    </div>
+                  }
+                />
+              ))}
+              {option.visible && (
+                <div className="flex flex-col">
+                  <FormElement
+                    label={t("details.integration_settings.new")}
+                    className=""
+                    component={
+                      <Input
+                        type="text"
+                        name="newUrl"
+                        className="md:min-w-[32rem]"
+                        onChange={(e) =>
+                          onChangeNewUrl({
+                            environment: option.env,
+                            url: e.target.value,
+                          })
+                        }
+                      />
+                    }
+                  />
+                </div>
+              )}
+              {type !== IntegrationUrlType.Login && (
+                <ButtonSecondary
+                  onClick={() => {
+                    option.changeVisibility(true);
+                  }}
+                  className="self-start"
+                >
+                  {t("details.integration_settings.add")}
+                </ButtonSecondary>
+              )}
+            </div>
+          ) : (
             <FormElement
-              key={url.id}
-              label={`${t(`details.integration_settings.${url.environment}`)}`}
-              labelPosition={isMobile ? "top" : "left"}
+              key={option.env}
+              label={`${t(`details.integration_settings.${option.env}`)}`}
               component={
                 <div className="flex gap-2">
                   <Input
                     type="text"
-                    name="loginProduction"
-                    value={url.url}
+                    name="url"
                     className="md:min-w-[32rem]"
                     onChange={(e) =>
-                      onChangeData(
-                        urls.map((url) => {
-                          if (url.id === url.id) {
-                            return {
-                              ...url,
-                              url: e.target.value,
-                              changed: true,
-                            };
-                          }
-                          return url;
-                        })
-                      )
+                      onChangeNewUrl({
+                        environment: option.env,
+                        url: e.target.value,
+                      })
                     }
-                    disabled={isDisabled}
-                  />
-                  <ButtonIcon
-                    icon={faTrash}
-                    onClick={() => setToBeDeletedId(url.id)}
-                    className="text-icon-gray"
                   />
                 </div>
               }
             />
-          );
-        })
-      ) : (
-        <div>{t("details.integration_settings.empty")}</div>
-      )}
-    </>
+          )
+        )}
+      </div>
       <QuestionDialog
         isVisible={!!toBeDeletedId}
         onClose={() => {
@@ -191,6 +187,7 @@ export const UrlList = ({
         onCancel={() => {
           setToBeDeletedId("");
         }}
-      ></QuestionDialog>
+      />
+    </div>
   );
 };
