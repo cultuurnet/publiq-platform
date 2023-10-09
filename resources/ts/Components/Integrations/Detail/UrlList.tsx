@@ -31,7 +31,7 @@ export const UrlList = ({
   onChangeData,
   onChangeNewUrl,
   onDelete,
-  className
+  className,
 }: UrlListProps) => {
   const { t } = useTranslation();
 
