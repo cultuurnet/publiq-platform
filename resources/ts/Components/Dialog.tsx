@@ -63,7 +63,7 @@ export const Dialog = ({
         </div>
         <div
           className={classNames(
-            "w-full flex items-center gap-3 justify-end px-6 py-4",
+            "w-full flex items-center gap-3 justify-end px-6 py-2",
             !isFullscreen && "border-t border-gray-300"
           )}
         >
