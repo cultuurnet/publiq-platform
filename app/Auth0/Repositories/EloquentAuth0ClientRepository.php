@@ -6,6 +6,8 @@ namespace App\Auth0\Repositories;
 
 use App\Auth0\Auth0Client;
 use App\Auth0\Models\Auth0ClientModel;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\UuidInterface;
 
@@ -44,6 +46,17 @@ final class EloquentAuth0ClientRepository implements Auth0ClientRepository
             ->get()
             ->map(static fn (Auth0ClientModel $auth0ClientModel) => $auth0ClientModel->toDomain())
             ->toArray();
+    }
+
+    /**
+     * @throws ModelNotFoundException<Model>
+     */
+    public function getById(UuidInterface $id): Auth0Client
+    {
+        return Auth0ClientModel::query()
+            ->where('id', $id->toString())
+            ->firstOrFail()
+            ->toDomain();
     }
 
     /**

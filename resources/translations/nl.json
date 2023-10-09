@@ -1,4 +1,9 @@
 {
+  "global": {
+    "publiq": "publiq vzw",
+    "btw": "BTW",
+    "iban": "IBAN"
+  },
   "pages": {
     "/integrations": "/nl/integraties",
     "/integrations/new": "/nl/integraties/nieuw",
@@ -10,15 +15,17 @@
     "integrations": "Mijn integraties",
     "opportunities": "Mogelijkheden",
     "support": "Ondersteuning",
-    "hello": "Hallo"
+    "hello": "Hallo",
+    "integrations/new": "Integratie toevoegen"
   },
   "home": {
     "hero": {
-      "title": "Bereik een groter publiek",
+      "title": "Bereik een groter publiek met UiT",
       "intro": "publiq biedt een waaier van toepassingen om eigen activiteiten te promoten en agenda-informatie in je website of app te integreren.",
-      "start_here": "Start hier"
+      "start_here": "Probeer gratis"
     },
     "integration_types": {
+      "action": "Probeer {{type}}",
       "entry_api": {
         "title": "Entry API",
         "description": "Via Entry API kan je items in de UiTdatabank aanmaken, aanpassen en verwijderen.",
@@ -26,8 +33,7 @@
           "JSON-standaard",
           "Award-winning API",
           "Activatie op live-omgeving op aanvraag"
-        ],
-        "action_url": "#"
+        ]
       },
       "search_api": {
         "title": "Search API",
@@ -36,20 +42,17 @@
           "JSON-standaard",
           "Robuuste performantie",
           "Uitgebreide filtermogelijkheden"
-        ],
-        "action_url": "#"
+        ]
       },
       "widgets": {
         "title": "Widgets",
-        "description": "Kant en klare HTML-modules die je in je website kan inpassen om een doorzoekbare lijst van evenementen weer te geven.",
+        "description": "Kant en klare html-modules die je in je website kan inpassen.",
         "features": [
           "Zelf of door publiq in te stellen",
           "Plug & play oplossing",
           "Uitgebreide configuratiemogelijkheden"
-        ],
-        "action_url": "#"
-      },
-      "more_info": "Meer info"
+        ]
+      }
     }
   },
   "integration_form": {
@@ -65,13 +68,15 @@
     "contact_label_2": "Technical contact",
     "contact_label_3": "Andere medewerkers",
     "contact": {
-      "organisation": "Naam organisatie",
       "first_name": "Voornaam contactpersoon",
       "last_name": "Achternaam contactpersoon",
-      "email": "E-mailadres"
+      "email": "E-mailadres",
+      "action": "Actie"
     },
     "agree": "Ik ga akkoord met de",
     "terms_of_use": "gebruiksvoorwaarden",
+    "coupon": "Ik heb een coupon",
+    "code": "Couponcode",
     "submit": "Integratie aanmaken",
     "back": "Terug naar integratieoverzicht",
     "pricing": {
@@ -112,8 +117,12 @@
       "blocked": "Geblokeerd",
       "active": "Actief",
       "deleted": "Verwijderd",
-      "pending_approval_integration": "Niet actief",
-      "pending_approval_payment": "Niet actief"
+      "pending_approval_integration": "In Aanvraag",
+      "pending_approval_payment": "In Aanvraag",
+      "pending_approval_integration_description": "Voor de live-integratie is goedkeuring van publiq noodzakelijk. Alle informatie om vlot live te kunnen gaan vind je",
+      "pending_approval_payment_description": "Aan de slag met echte data en evenementen? Activeer je Search API integratie (vanaf 125 euro per jaar)",
+      "here": "hier.",
+      "activate": "Activeren"
     },
     "documentation": {
       "title": "Documentatie",
@@ -125,7 +134,6 @@
   },
   "details": {
     "save": "Wijzigingen opslaan",
-    "delete": "Integratie verwijderen",
     "basic_info": {
       "title": "Basisgegevens",
       "name": "Integratienaam",
@@ -136,8 +144,9 @@
       "employees": "Andere medewerkers",
       "delete": "Verwijder medewerker",
       "new": "Nieuwe medewerker",
-      "save":"Opslaan",
-      "cancel": "Annuleren"
+      "save": "Opslaan",
+      "cancel": "Annuleren",
+      "dialog": "Wil je deze medewerker echt verwijderen?"
     },
     "billing_info": {
       "title": "Facturatiegegevens",
@@ -165,10 +174,25 @@
     "integration_settings": {
       "title": "Integratie-instellingen",
       "test": "testomgeving",
-      "production": "productieomgeving",
+      "prod": "productieomgeving",
+      "acc": "acceptatieomgeving",
       "login": "Login URL",
       "callback": "Callback URL",
-      "logout": "Logout URL"
+      "new_url": "Nieuwe {{type}} URL",
+      "url": "URL",
+      "empty": "Geen URL gevonden",
+      "environment": "Omgeving",
+      "logout": "Logout URL",
+      "dialog": "Wil je deze URL echt verwijderen?"
+    },
+    "menage_account": {
+      "title": "Integratiebeheer",
+      "delete": {
+        "title": "Integratie verwijderen",
+        "description": "Ben je zeker dat je je integratie wilt verwijderen? Nadat je hebt gekozen om je integratie te verwijderen, zal deze niet langer toegankelijk zijn en kan de verwijdering niet ongedaan gemaakt worden."
+      },
+
+      "action": "Verwijderen"
     }
   },
   "support": {
@@ -216,5 +240,31 @@
   },
   "tooltip": {
     "copy": "Gekopieerd!"
+  },
+  "footer": {
+    "legal": "Legal",
+    "support": "Ondersteuning",
+    "address": {
+      "part1": "Henegouwenkaai 41-43",
+      "part2": "1080 Brussel"
+    },
+    "links": {
+      "what": "Wat?",
+      "opportunities": "Mogelijkheden",
+      "price": "Prijs",
+      "start": "Aan de slag",
+      "terms_of_use": "Gebruiksvoorwaarden",
+      "privacy": "Privacyverklaring",
+      "cookie": "Cookieverklaring",
+      "documentation": "Documentatie",
+      "status_page": "Statuspagina",
+      "help": "Helpcentrum",
+      "slack": "Support via slack"
+    },
+    "newsletter": {
+      "title": "Blijf op de hoogte",
+      "description": "Schrijf je in op onze nieuwsbrief en blijf op de hoogte van het laatste publiq-nieuws.",
+      "action": "Inschrijven"
+    }
   }
 }

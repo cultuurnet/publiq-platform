@@ -8,7 +8,7 @@ use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Domain\Auth\CurrentUser;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Integrations\FormRequests\StoreIntegration;
-use App\Domain\Integrations\FormRequests\UpdateBasicInfo;
+use App\Domain\Integrations\FormRequests\UpdateIntegration;
 use App\Domain\Integrations\FormRequests\UpdateBillingInfo;
 use App\Domain\Integrations\FormRequests\UpdateContactInfo;
 use App\Domain\Integrations\IntegrationType;
@@ -106,13 +106,13 @@ final class IntegrationController extends Controller
         );
     }
 
-    public function update(UpdateBasicInfo $updateInfo, string $id): RedirectResponse
+    public function update(UpdateIntegration $updateIntegration, string $id): RedirectResponse
     {
-        $this->integrationRepository->update(Uuid::fromString($id), $updateInfo);
+        $this->integrationRepository->update(Uuid::fromString($id), $updateIntegration);
 
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName(
-                request: $updateInfo,
+                request: $updateIntegration,
                 routeName: 'integrations.detail'
             ),
             [
@@ -131,15 +131,7 @@ final class IntegrationController extends Controller
             }
         });
 
-        return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName(
-                request: $updateContactInfo,
-                routeName: 'integrations.detail'
-            ),
-            [
-                'id' => $id,
-            ]
-        );
+        return Redirect::back();
     }
 
     public function deleteContact(Request $request, string $id, string $contactId): RedirectResponse
@@ -150,13 +142,7 @@ final class IntegrationController extends Controller
             // We can redirect back to integrations, even if not successful
         }
 
-        return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName(
-                request: $request,
-                routeName: 'integrations.detail'
-            ),
-            ['id' => $id]
-        );
+        return Redirect::back();
     }
 
     public function updateBilling(string $id, UpdateBillingInfo $updateBillingInfo): RedirectResponse

@@ -6,12 +6,13 @@ namespace App\Domain\Integrations\Repositories;
 
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
+use App\Domain\Integrations\FormRequests\UpdateIntegration;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Models\IntegrationModel;
+use App\Domain\Integrations\Models\IntegrationUrlModel;
 use App\Pagination\PaginatedCollection;
 use App\Pagination\PaginationInfo;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\UuidInterface;
@@ -28,6 +29,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
                 'description' => $integration->description,
                 'subscription_id' => $integration->subscriptionId,
                 'status' => $integration->status,
+                'partner_status' => $integration->partnerStatus,
             ]);
 
             foreach ($integration->contacts() as $contact) {
@@ -43,18 +45,54 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         });
     }
 
-    public function update(UuidInterface $id, FormRequest $updateInfo): Integration
+    private function updateUrls(array $urls): void
+    {
+        if (count($urls) === 0) {
+            return;
+        }
+
+        DB::transaction(static function () use ($urls) {
+            foreach ($urls as $url) {
+                /** @var IntegrationUrlModel $integrationUrlModel */
+                $integrationUrlModel = IntegrationUrlModel::query()->findOrFail($url['id']);
+                $integrationUrlModel['url'] = $url['url'];
+                $integrationUrlModel->save();
+            }
+        });
+    }
+
+    public function update(UuidInterface $id, UpdateIntegration $updateIntegration): Integration
     {
         /** @var IntegrationModel $integrationModel */
         $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
 
-        $nameMapping = [
-            'integrationName' => 'name',
-        ];
+        $integrationName = $updateIntegration->input('integrationName');
+        $integrationDescription = $updateIntegration->input('description');
+        /**
+         * @var array<string, mixed> $newIntegrationUrl
+         */
+        $newIntegrationUrl = $updateIntegration->input('newIntegrationUrl');
 
-        foreach ($updateInfo->keys() as $name) {
-            $modelName = $nameMapping[$name] ?? $name;
-            $integrationModel[$modelName] = $updateInfo->input($name);
+        if ($integrationName !== null) {
+            $integrationModel['name'] = $integrationName;
+        }
+
+        if ($integrationDescription !== null) {
+            $integrationModel['description'] = $integrationDescription;
+        }
+
+
+        if ($newIntegrationUrl !== null) {
+            IntegrationUrlModel::query()->create(
+                [
+                    'integration_id' => $id->toString(),
+                    ...$newIntegrationUrl,
+                ]
+            );
+        }
+
+        foreach (['loginUrls', 'callbackUrls', 'logoutUrls'] as $property) {
+            $this->updateUrls($updateIntegration->input($property) ?? []);
         }
 
         $integrationModel->save();

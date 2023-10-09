@@ -9,6 +9,7 @@ use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\FormRequests\StoreIntegration;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use Ramsey\Uuid\Uuid;
@@ -53,7 +54,8 @@ final class StoreIntegrationMapper
             $storeIntegration->input('integrationName'),
             $storeIntegration->input('description'),
             Uuid::fromString($storeIntegration->input('subscriptionId')),
-            IntegrationStatus::Draft
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
         ))->withContacts($contactOrganization, $contactPartner, $contributor);
     }
 }

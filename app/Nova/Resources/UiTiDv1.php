@@ -5,9 +5,16 @@ declare(strict_types=1);
 namespace App\Nova\Resources;
 
 use App\Domain\Contacts\Models\ContactModel;
+use App\Nova\ActionGuards\UiTiDv1\ActivateUiTiDv1ConsumerGuard;
+use App\Nova\ActionGuards\UiTiDv1\BlockUiTiDv1ConsumerGuard;
+use App\Nova\Actions\UiTiDv1\ActivateUiTiDv1Consumer;
+use App\Nova\Actions\UiTiDv1\BlockUiTiDv1Consumer;
 use App\Nova\Resource;
+use App\UiTiDv1\CachedUiTiDv1Status;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
+use App\UiTiDv1\UiTiDv1ConsumerStatus;
 use App\UiTiDv1\UiTiDv1Environment;
+use Illuminate\Support\Facades\App;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
@@ -56,6 +63,15 @@ final class UiTiDv1 extends Resource
                     UiTiDv1Environment::Acceptance->value => UiTiDv1Environment::Acceptance->name,
                     UiTiDv1Environment::Production->value => UiTiDv1Environment::Production->name,
                 ]),
+            Text::make('Status', static function (UiTiDv1ConsumerModel $model) {
+                $status = App::get(CachedUiTiDv1Status::class)->findStatusOnConsumer($model->toDomain());
+
+                return sprintf(
+                    '<span style="color: %s">%s</span>',
+                    $status === UiTiDv1ConsumerStatus::Active ? 'green' : 'red',
+                    $status->name
+                );
+            })->asHtml(),
             Text::make('consumer_key')
                 ->readonly(),
             Text::make('consumer_secret')
@@ -89,5 +105,33 @@ final class UiTiDv1 extends Resource
                 config('uitidv1.environments')
             )
         );
+    }
+
+    public function actions(NovaRequest $request): array
+    {
+        return [
+            App::make(ActivateUiTiDv1Consumer::class)
+                ->showOnDetail()
+                ->showInline()
+                ->confirmText('Are you sure you want to activate this consumer?')
+                ->confirmButtonText('Activate')
+                ->cancelButtonText("Don't activate")
+                ->canRun(function ($request, $model) {
+                    /** @var ActivateUiTiDv1ConsumerGuard $guard */
+                    $guard = App::make(ActivateUiTiDv1ConsumerGuard::class);
+                    return $guard->canDo($model->toDomain());
+                }),
+            App::make(BlockUiTiDv1Consumer::class)
+                ->showOnDetail()
+                ->showInline()
+                ->confirmText('Are you sure you want to block this consumer?')
+                ->confirmButtonText('Block')
+                ->cancelButtonText("Don't block")
+                ->canRun(function ($request, $model) {
+                    /** @var BlockUiTiDv1ConsumerGuard $guard */
+                    $guard = App::make(BlockUiTiDv1ConsumerGuard::class);
+                    return $guard->canDo($model->toDomain());
+                }),
+        ];
     }
 }

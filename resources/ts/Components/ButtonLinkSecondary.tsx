@@ -12,7 +12,7 @@ export const ButtonLinkSecondary = ({
   return (
     <Link
       className={classNames(
-        "relative inline-flex items-center justify-center px-10 py-3 max-md:px-5 max-md:py-2 font-medium border border-publiq-blue text-publiq-blue group hover:bg-publiq-blue-dark hover:bg-opacity-10",
+        "relative inline-flex items-center justify-center rounded px-7 py-2 max-md:px-5 font-medium border border-publiq-blue text-publiq-blue group hover:bg-publiq-blue-dark hover:bg-opacity-10",
         className
       )}
       {...props}
