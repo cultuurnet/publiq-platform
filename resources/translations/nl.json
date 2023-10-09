@@ -5,6 +5,7 @@
     "iban": "IBAN"
   },
   "pages": {
+    "/": "/nl",
     "/integrations": "/nl/integraties",
     "/integrations/new": "/nl/integraties/nieuw",
     "/support": "/nl/ondersteuning",
@@ -15,7 +16,8 @@
     "integrations": "Mijn integraties",
     "opportunities": "Mogelijkheden",
     "support": "Ondersteuning",
-    "hello": "Hallo"
+    "hello": "Hallo",
+    "integrations/new": "Integratie toevoegen"
   },
   "home": {
     "hero": {

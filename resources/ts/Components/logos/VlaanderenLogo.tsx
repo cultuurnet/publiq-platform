@@ -5,8 +5,8 @@ type Props = ComponentProps<"svg">;
 export const VlaanderenLogo = (props: Props) => {
   return (
     <svg
-      width="198px"
-      height="84px"
+      width="125px"
+      height="53.7px"
       viewBox="0 0 198 84"
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
