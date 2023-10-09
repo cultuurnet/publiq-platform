@@ -35,10 +35,10 @@ final class EloquentIntegrationUrlRepository implements IntegrationUrlRepository
 
     public function getByIds(array $ids): array
     {
-        $ids = array_map(fn ($id) => $id->toString(), $ids);
+        $idsAsStrings = array_map(fn ($id) => $id->toString(), $ids);
 
         return IntegrationUrlModel::query()
-           ->whereIn('id', $ids)
+           ->whereIn('id', $idsAsStrings)
            ->orderBy('created_at')
            ->get()
            ->map(static fn (IntegrationUrlModel $model) => $model->toDomain())
