@@ -72,14 +72,15 @@ final class EloquentIntegrationUrlRepository implements IntegrationUrlRepository
 
     public function update(IntegrationUrl $integrationUrl): void
     {
-        IntegrationUrlModel::query()->update(
-            [
-                'id' => $integrationUrl->id,
+        IntegrationUrlModel::query()
+            ->where('id', $integrationUrl->id->toString())
+            ->update(
+                [
                 'integration_id' => $integrationUrl->integrationId,
                 'type' => $integrationUrl->type,
                 'environment' => $integrationUrl->environment,
                 'url' => $integrationUrl->url,
             ]
-        );
+            );
     }
 }
