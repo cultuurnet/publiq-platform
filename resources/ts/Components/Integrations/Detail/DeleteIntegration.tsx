@@ -32,7 +32,7 @@ export const DeleteIntegration = ({ id }: Props) => {
             variant="danger"
             onClick={() => setIsModalVisible(true)}
           >
-            {t("details.delete_integration.action")}
+            {t("details.delete_integration.delete.title")}
             <FontAwesomeIcon className="pl-1" icon={faTrash} />
           </ButtonSecondary>
         </div>
@@ -41,8 +41,8 @@ export const DeleteIntegration = ({ id }: Props) => {
           onClose={() => {
             setIsModalVisible(false);
           }}
-          title={t("integrations.dialog.title")}
-          question={t("integrations.dialog.delete")}
+          title={t("details.delete_integration.delete.title")}
+          question={t("details.delete_integration.delete.question")}
           onConfirm={handleDeleteIntegration}
           onCancel={() => {
             setIsModalVisible(false);
