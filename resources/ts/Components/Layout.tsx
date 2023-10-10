@@ -4,7 +4,7 @@ import HeaderMobile from "./HeaderMobile";
 import Footer from "./Footer";
 import { SectionCollapsedProvider } from "../context/SectionCollapsedContext";
 import { usePage, Head } from "@inertiajs/react";
-import { UitIdWidget } from "./UitIdWidget";
+import { UitIdWidget, WidgetConfigVariables } from "./UitIdWidget";
 
 const Main = ({ children }: { children: ReactNode }) => {
   const page = usePage();
@@ -22,6 +22,10 @@ const Main = ({ children }: { children: ReactNode }) => {
 };
 
 export default function Layout({ children }: { children: ReactNode }) {
+  const { widgetConfig } = usePage<{
+    widgetConfig: WidgetConfigVariables;
+  }>().props;
+
   return (
     <div className="flex flex-col flex-1 items-center text-publiq-gray-dark bg-publiq-gray-light">
       <Head>
@@ -32,7 +36,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         ></script>
       </Head>
 
-      <UitIdWidget />
+      <UitIdWidget {...widgetConfig} />
 
       <Header />
       <HeaderMobile />

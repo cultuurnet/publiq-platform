@@ -4,25 +4,37 @@ import { useTranslation } from "react-i18next";
 import { usePage } from "@inertiajs/react";
 import { useTranslateRoute } from "../hooks/useTranslateRoute";
 
-console.log("import.meta.env", import.meta.env);
-
-const widgetConfig = {
-  $schema: "https://assets.uit.be/uitid-widget/config-schema.json",
-  applicationName: "Publiq platform",
-  uitidProfileUrl: import.meta.env.VITE_UITID_PROFILE_URL,
-  uitidRegisterUrl: import.meta.env.VITE_UITID_REGISTER_URL,
-  defaultLanguage: "nl",
-  auth0Domain: import.meta.env.VITE_AUTH0_DOMAIN,
-  loginUrl: "/login",
-  logoutUrl: "/logout",
-  accessTokenCookieName: "",
-  idTokenCookieName: "auth.token.idToken",
+export type WidgetConfigVariables = {
+  profileUrl: string;
+  registerUrl: string;
+  auth0Domain: string;
 };
 
-export const UitIdWidget = () => {
+export const UitIdWidget = ({
+  profileUrl,
+  registerUrl,
+  auth0Domain,
+}: WidgetConfigVariables) => {
   const { i18n } = useTranslation();
   const translateRoute = useTranslateRoute();
   const { component } = usePage();
+
+  const widgetConfig = useMemo(
+    () =>
+      JSON.stringify({
+        $schema: "https://assets.uit.be/uitid-widget/config-schema.json",
+        applicationName: "Publiq platform",
+        uitidProfileUrl: profileUrl,
+        uitidRegisterUrl: registerUrl,
+        defaultLanguage: "nl",
+        auth0Domain: auth0Domain,
+        loginUrl: "/login",
+        logoutUrl: "/logout",
+        accessTokenCookieName: "",
+        idTokenCookieName: "auth.token.idToken",
+      }),
+    [auth0Domain, profileUrl, registerUrl]
+  );
 
   const currentPage = useMemo(
     () =>
@@ -37,7 +49,7 @@ export const UitIdWidget = () => {
   return (
     <div className="w-full px-7 bg-uitid-widget">
       <script id="uitid-widget-config" type="application/json">
-        {JSON.stringify(widgetConfig)}
+        {widgetConfig}
       </script>
 
       <div
