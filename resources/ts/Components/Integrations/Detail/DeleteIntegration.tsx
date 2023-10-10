@@ -10,7 +10,7 @@ import { Heading } from "../../Heading";
 
 type Props = Integration;
 
-export const MenageIntegration = ({ id }: Props) => {
+export const DeleteIntegration = ({ id }: Props) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const handleDeleteIntegration = () => {
     router.delete(`/integrations/${id}`, {});
@@ -20,15 +20,19 @@ export const MenageIntegration = ({ id }: Props) => {
       <div className="flex flex-col gap-4 max-md:px-5 px-10 py-5">
         <div className="max-w-[30rem] flex flex-col gap-5">
           <Heading level={2} className="font-semibold">
-            {t("details.menage_account.delete.title")}
+            {t("details.delete_integration.title")}
           </Heading>
-          <p>{t("details.menage_account.delete.description")}</p>
+          <p className="font-semibold">
+            {t("details.delete_integration.delete.description.part1")}
+          </p>
+          <p>{t("details.delete_integration.delete.description.part2")}</p>
+          <p> {t("details.delete_integration.delete.description.part3")}</p>
           <ButtonSecondary
             className="self-start"
             variant="danger"
             onClick={() => setIsModalVisible(true)}
           >
-            {t("details.menage_account.action")}
+            {t("details.delete_integration.action")}
             <FontAwesomeIcon className="pl-1" icon={faTrash} />
           </ButtonSecondary>
         </div>
@@ -37,6 +41,7 @@ export const MenageIntegration = ({ id }: Props) => {
           onClose={() => {
             setIsModalVisible(false);
           }}
+          title={t("integrations.dialog.title")}
           question={t("integrations.dialog.delete")}
           onConfirm={handleDeleteIntegration}
           onCancel={() => {
