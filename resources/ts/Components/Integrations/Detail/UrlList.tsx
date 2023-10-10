@@ -170,6 +170,7 @@ export const UrlList = ({
                       onChangeNewUrl({
                         environment: option.env,
                         url: e.target.value,
+                        type,
                       })
                     }
                   />
