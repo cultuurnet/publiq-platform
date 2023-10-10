@@ -13,7 +13,7 @@ type Props = {
   contentStyles?: string;
   textCenter?: boolean;
   border?: boolean;
-  iconButton: ReactElement;
+  iconButton?: ReactElement;
 } & Omit<ComponentProps<"div">, "title">;
 
 export const Card = ({
