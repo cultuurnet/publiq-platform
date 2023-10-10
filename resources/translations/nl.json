@@ -67,7 +67,7 @@
     "contact_label_functional": "Inhoudelijk contact",
     "contact_label_technical": "Technisch contact",
     "contact_label_contributor": "Medewerker",
-    "add": "Medewerker toevogen",
+    "add": "Medewerker toevoegen",
     "contact": {
       "first_name": "Voornaam",
       "last_name": "Achternaam",
@@ -128,14 +128,10 @@
     "documentation": {
       "title": "Documentatie",
       "action_title": "Aan de slag met {{product}}"
-    },
-    "dialog": {
-      "title": "Integratie verwijderen",
-      "delete": "Wil je deze integratie echt verwijderen?"
     }
   },
   "details": {
-    "save": "Wijzigingen opslaan",
+    "save": "Aanpassingen bewaren",
     "basic_info": {
       "title": "Basisgegevens",
       "name": "Integratienaam",
@@ -163,8 +159,8 @@
       },
       "vat": "BTW of ondernemingsnummer"
     },
-    "integration_info": {
-      "title": "Integratiegegevens",
+    "credentials": {
+      "title": "Credentials",
       "uitid_v1": "UITID v1",
       "uitid_v2": "UITID v2",
       "test": "Test",
@@ -176,27 +172,31 @@
       "action_uitid": "UiTIDv2 credentials aanvragen"
     },
     "integration_settings": {
-      "title": "Integratie-instellingen",
+      "title": "Instellingen",
       "test": "testomgeving",
       "prod": "productieomgeving",
-      "acc": "acceptatieomgeving",
       "login": "Login URL",
-      "callback": "Callback URL",
-      "new_url": "Nieuwe {{type}} URL",
-      "url": "URL",
-      "empty": "Geen URL gevonden",
+      "callback": "Callback URL's",
+      "add": "URL toevogen",
+      "new": "Nieuwe URL",
       "environment": "Omgeving",
-      "logout": "Logout URL",
-      "dialog": "Wil je deze URL echt verwijderen?"
+      "logout": "Logout URL's",
+      "delete": {
+        "title": "URL verwijderen",
+        "question": "Wil je deze URL echt verwijderen?"
+      }
     },
-    "menage_account": {
-      "title": "Integratiebeheer",
+    "delete_integration": {
+      "title": "Verwijderen",
       "delete": {
         "title": "Integratie verwijderen",
-        "description": "Ben je zeker dat je je integratie wilt verwijderen? Nadat je hebt gekozen om je integratie te verwijderen, zal deze niet langer toegankelijk zijn en kan de verwijdering niet ongedaan gemaakt worden."
-      },
-
-      "action": "Verwijderen"
+        "question": "Wil je deze integratie echt verwijderen?",
+        "description": {
+          "part1": "Ben je zeker dat je je integratie definitief wil verwijderen?",
+          "part2": "Wanneer je je integratie verwijdert wordt de toegang tot de API's onmiddellijk stopgezet. Na het verwijderen van je integratie ontvang je van ons nog een factuur voor het laatste jaar.",
+          "part3": "Het verwijderen van een integratie kan niet ongedaan gemaakt worden."
+        }
+      }
     }
   },
   "support": {
