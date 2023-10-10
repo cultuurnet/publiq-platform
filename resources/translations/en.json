@@ -1,5 +1,6 @@
 {
   "pages": {
+    "/": "/en",
     "/integrations": "/en/integrations",
     "/integrations/new": "/en/integrations/new",
     "/support": "/en/support",

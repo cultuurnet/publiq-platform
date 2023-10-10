@@ -5,6 +5,7 @@
     "iban": "IBAN"
   },
   "pages": {
+    "/": "/nl",
     "/integrations": "/nl/integraties",
     "/integrations/new": "/nl/integraties/nieuw",
     "/support": "/nl/ondersteuning",
