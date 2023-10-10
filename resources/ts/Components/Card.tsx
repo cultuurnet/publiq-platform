@@ -67,7 +67,7 @@ export const Card = ({
         <div
           className={classNames(
             "flex gap-3 items-center",
-            border && "border border-b-publiq-gray-dark px-10 py-2"
+            border && "border-b border-publiq-gray-dark px-10 py-2"
           )}
         >
           <Heading level={2} className="font-medium mb-2">
