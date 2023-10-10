@@ -70,7 +70,7 @@ export const ContactsTableContent = ({
           </td>
           {desktop && (
             <td className="w-2/4 px-6 py-4">
-              {(data[type.label as keyof ContactFormData] as Contact).email}
+              {data[type.label].email}
             </td>
           )}
           <td
