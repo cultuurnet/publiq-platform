@@ -29,7 +29,7 @@ final class HandleInertiaRequests extends Middleware
                 'profileUrl' => config('uitidwidget.profileUrl'),
                 'registerUrl' => config('uitidwidget.registerUrl'),
                 'auth0Domain' => config('uitidwidget.auth0Domain'),
-            ]
+            ],
         ]);
     }
 }
