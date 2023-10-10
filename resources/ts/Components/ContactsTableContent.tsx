@@ -4,8 +4,6 @@ import { classNames } from "../utils/classNames";
 import { ButtonIcon } from "./ButtonIcon";
 import { faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
-import { ContactFormData } from "./Integrations/Detail/ContactInfo";
-import { Contact } from "../Pages/Integrations/Index";
 
 type Props = { desktop?: boolean; mobile?: boolean } & ContactsTableProps &
   ComponentProps<"div">;
@@ -69,9 +67,7 @@ export const ContactsTableContent = ({
             </div>
           </td>
           {desktop && (
-            <td className="w-2/4 px-6 py-4">
-              {data[type.label].email}
-            </td>
+            <td className="w-2/4 px-6 py-4">{data[type.label].email}</td>
           )}
           <td
             className={classNames(
