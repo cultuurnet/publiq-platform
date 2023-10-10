@@ -98,7 +98,12 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
 
   return (
     <div className="w-full flex flex-col max-md:px-5 px-10 py-5">
-      <BasicInfo name={data.integrationName} description={data.description} />
+      <BasicInfo
+        name={data.integrationName}
+        description={data.description}
+        onChangeName={(data) => setData("integrationName", data)}
+        onChangeDescription={(data) => setData("description", data)}
+      />
       <UrlList
         type={IntegrationUrlType.Login}
         urls={data.loginUrls}
