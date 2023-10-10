@@ -1,7 +1,6 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { ButtonPrimary } from "../../ButtonPrimary";
-import { FormDropdown } from "../../FormDropdown";
 import { useForm } from "@inertiajs/react";
 import { Integration } from "../../../Pages/Integrations/Index";
 import { IntegrationUrlType } from "../../../types/IntegrationUrlType";
@@ -15,15 +14,8 @@ type Props = {
   integration: Integration;
 } & Integration;
 
-export const IntegrationSettings = ({
-  integration,
-  isMobile,
-  id,
-  urls,
-}: Props) => {
+export const IntegrationSettings = ({ integration, id, urls }: Props) => {
   const { t } = useTranslation();
-
-  const [isDisabled, setIsDisabled] = useState(true);
 
   const callbackUrls = useMemo(
     () =>
@@ -50,6 +42,8 @@ export const IntegrationSettings = ({
   );
 
   const initialFormValues = {
+    integrationName: integration.name,
+    description: integration.description,
     callbackUrls,
     loginUrls,
     logoutUrls,
@@ -89,13 +83,8 @@ export const IntegrationSettings = ({
   }));
 
   return (
-    <FormDropdown title={t("details.integration_settings.title")}>
-      <BasicInfo
-        isMobile={isMobile}
-        integration={integration}
-        isDisabled={isDisabled}
-        onEdit={(prev) => setIsDisabled(!prev)}
-      />
+    <div className="w-full flex flex-col max-md:px-5 px-10 py-5">
+      <BasicInfo name={data.integrationName} description={data.description} />
       <UrlList
         type={IntegrationUrlType.Login}
         urls={data.loginUrls}
@@ -108,9 +97,7 @@ export const IntegrationSettings = ({
           })
         }
         onChangeData={(data) => setData("loginUrls", data)}
-        isDisabled={isDisabled}
-        isMobile={isMobile}
-        onSave={handleSave}
+        className="border-b border-b-gray-300"
       />
       <UrlList
         type={IntegrationUrlType.Callback}
@@ -123,10 +110,11 @@ export const IntegrationSettings = ({
             type: IntegrationUrlType.Callback,
           })
         }
-        onChangeData={(data) => setData("callbackUrls", data)}
-        isDisabled={isDisabled}
-        isMobile={isMobile}
-        onSave={handleSave}
+        onChangeData={(data) => {
+          setData("callbackUrls", data);
+          console.log(data);
+        }}
+        className="border-b border-b-gray-300"
       />
       <UrlList
         type={IntegrationUrlType.Logout}
@@ -140,22 +128,19 @@ export const IntegrationSettings = ({
             type: IntegrationUrlType.Logout,
           })
         }
-        isDisabled={isDisabled}
-        isMobile={isMobile}
-        onSave={handleSave}
+        className="py-10"
       />
-      {!isDisabled && (
-        <div className="flex flex-col items-start md:pl-[10.5rem]">
-          <ButtonPrimary
-            onClick={() => {
-              setIsDisabled(true);
-              handleSave();
-            }}
-          >
-            {t("details.save")}
-          </ButtonPrimary>
-        </div>
-      )}
-    </FormDropdown>
+      <div className="lg:grid lg:grid-cols-3 gap-6">
+        <div></div>
+        <ButtonPrimary
+          onClick={() => {
+            handleSave();
+          }}
+          className="col-span-2 justify-self-start"
+        >
+          {t("details.save")}
+        </ButtonPrimary>
+      </div>
+    </div>
   );
 };
