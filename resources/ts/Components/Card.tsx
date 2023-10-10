@@ -13,6 +13,7 @@ type Props = {
   contentStyles?: string;
   textCenter?: boolean;
   border?: boolean;
+  iconButton: ReactElement;
 } & Omit<ComponentProps<"div">, "title">;
 
 export const Card = ({
@@ -20,6 +21,7 @@ export const Card = ({
   description,
   img,
   badge = "",
+  iconButton,
   active,
   children,
   className,
@@ -34,7 +36,7 @@ export const Card = ({
         "w-full flex flex-col overflow-hidden shadow-lg",
         img && "px-0 py-0 gap-10 max-lg:gap-3 p-0",
         active ? "bg-status-green-medium bg-opacity-10" : "bg-white",
-        border ? "border border-publiq-gray-dark" : "px-6 py-6",
+        border ? "border border-gray-300" : "px-6 py-6",
         className
       )}
       {...props}
@@ -66,18 +68,21 @@ export const Card = ({
       >
         <div
           className={classNames(
-            "flex gap-3 items-center",
-            border && "border-b border-publiq-gray-dark px-10 py-2"
+            "flex justify-between",
+            border && "border-b border-publiq-gray-300 max-sm:px-2 px-6 py-2"
           )}
         >
-          <Heading level={2} className="font-medium mb-2">
-            {title}
-          </Heading>
-          {!!badge && (
-            <span className="bg-publiq-blue-dark text-white text-xs font-medium  mr-2 px-2.5 py-0.5 rounded">
-              {badge}
-            </span>
-          )}
+          <div className="flex items-center gap-3">
+            <Heading level={2} className="font-medium max-sm:text-basis">
+              {title}
+            </Heading>
+            {!!badge && (
+              <span className="bg-publiq-blue-dark text-white text-xs font-medium  mr-2 px-2.5 py-0.5 rounded">
+                {badge}
+              </span>
+            )}
+          </div>
+          <div className="justify-self-end">{iconButton}</div>
         </div>
 
         {description && (
