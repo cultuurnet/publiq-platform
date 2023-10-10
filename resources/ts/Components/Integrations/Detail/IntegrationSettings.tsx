@@ -4,8 +4,7 @@ import { ButtonPrimary } from "../../ButtonPrimary";
 import { useForm } from "@inertiajs/react";
 import { Integration } from "../../../Pages/Integrations/Index";
 import { IntegrationUrlType } from "../../../types/IntegrationUrlType";
-import { UrlList } from "./UrlList";
-import { Environment } from "../../../types/Environment";
+import { NewIntegrationUrl, UrlList } from "./UrlList";
 import { IntegrationUrl } from "../../../Pages/Integrations/Index";
 import { BasicInfo } from "./BasicInfo";
 
@@ -47,11 +46,7 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
     callbackUrls,
     loginUrls,
     logoutUrls,
-    newIntegrationUrl: {
-      environment: Environment.Test as Environment,
-      url: "",
-      type: "",
-    },
+    newIntegrationUrls: [] as NewIntegrationUrl[],
   };
 
   const {
@@ -75,6 +70,25 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
       preserveState: false,
     });
 
+  const handleChangeNewUrl = (newUrl: NewIntegrationUrl) => {
+    let found = false;
+
+    const updated = data.newIntegrationUrls.map((url) => {
+      if (url.type === newUrl.type && url.environment === newUrl.environment) {
+        found = true;
+        return newUrl;
+      }
+
+      return url;
+    });
+
+    if (!found) {
+      updated.push(newUrl);
+    }
+
+    setData("newIntegrationUrls", updated);
+  };
+
   transform((data) => ({
     ...data,
     callbackUrls: data.callbackUrls.filter((url) => url.changed),
@@ -88,46 +102,30 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
       <UrlList
         type={IntegrationUrlType.Login}
         urls={data.loginUrls}
-        newUrl={data.newIntegrationUrl}
+        newUrls={data.newIntegrationUrls}
         onDelete={(urlId) => handleDeleteUrl(urlId)}
-        onChangeNewUrl={(newUrl) =>
-          setData("newIntegrationUrl", {
-            ...newUrl,
-            type: IntegrationUrlType.Login,
-          })
-        }
+        onChangeNewUrl={handleChangeNewUrl}
         onChangeData={(data) => setData("loginUrls", data)}
         className="border-b border-b-gray-300"
       />
       <UrlList
         type={IntegrationUrlType.Callback}
         urls={data.callbackUrls}
-        newUrl={data.newIntegrationUrl}
+        newUrls={data.newIntegrationUrls}
         onDelete={(urlId) => handleDeleteUrl(urlId)}
-        onChangeNewUrl={(newUrl) =>
-          setData("newIntegrationUrl", {
-            ...newUrl,
-            type: IntegrationUrlType.Callback,
-          })
-        }
+        onChangeNewUrl={handleChangeNewUrl}
         onChangeData={(data) => {
           setData("callbackUrls", data);
-          console.log(data);
         }}
         className="border-b border-b-gray-300"
       />
       <UrlList
         type={IntegrationUrlType.Logout}
         urls={data.logoutUrls}
-        newUrl={data.newIntegrationUrl}
+        newUrls={data.newIntegrationUrls}
         onChangeData={(data) => setData("logoutUrls", data)}
         onDelete={(urlId) => handleDeleteUrl(urlId)}
-        onChangeNewUrl={(newUrl) =>
-          setData("newIntegrationUrl", {
-            ...newUrl,
-            type: IntegrationUrlType.Logout,
-          })
-        }
+        onChangeNewUrl={handleChangeNewUrl}
         className="py-10"
       />
       <div className="lg:grid lg:grid-cols-3 gap-6">

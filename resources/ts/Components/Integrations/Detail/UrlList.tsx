@@ -16,15 +16,17 @@ type ChangedIntegrationUrl = IntegrationUrl & {
   changed: boolean;
 };
 
-type NewUrl = { environment: Environment; url: string };
+export type NewIntegrationUrl = Omit<IntegrationUrl, "id">;
+
 type UrlListProps = {
   type: IntegrationUrlType;
   urls: ChangedIntegrationUrl[];
-  newUrl: NewUrl;
+  newUrls: NewIntegrationUrl[];
   onChangeData: (value: ChangedIntegrationUrl[]) => void;
-  onChangeNewUrl: (value: NewUrl) => void;
+  onChangeNewUrl: (value: NewIntegrationUrl) => void;
   onDelete: (urlId: IntegrationUrl["id"]) => void;
 } & ComponentProps<"div">;
+
 export const UrlList = ({
   type,
   urls,
@@ -131,10 +133,11 @@ export const UrlList = ({
                         type="text"
                         name="newUrl"
                         className="md:min-w-[32rem]"
-                        onChange={(e) =>
+                        onBlur={(e) =>
                           onChangeNewUrl({
                             environment: option.env,
                             url: e.target.value,
+                            type,
                           })
                         }
                       />
