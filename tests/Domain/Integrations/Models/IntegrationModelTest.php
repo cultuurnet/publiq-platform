@@ -14,9 +14,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
 use Tests\CreatesApplication;
-use Tests\TestCaseWithDatabase;
+use Tests\TestCase;
 
-final class IntegrationModelTest extends TestCaseWithDatabase
+final class IntegrationModelTest extends TestCase
 {
     use RefreshDatabase;
     use CreatesApplication;

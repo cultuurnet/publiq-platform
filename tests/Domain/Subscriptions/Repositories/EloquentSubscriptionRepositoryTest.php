@@ -10,9 +10,9 @@ use App\Domain\Subscriptions\Repositories\EloquentSubscriptionRepository;
 use App\Domain\Subscriptions\Subscription;
 use App\Domain\Subscriptions\SubscriptionCategory;
 use Ramsey\Uuid\Uuid;
-use Tests\TestCaseWithDatabase;
+use Tests\TestCase;
 
-final class EloquentSubscriptionRepositoryTest extends TestCaseWithDatabase
+final class EloquentSubscriptionRepositoryTest extends TestCase
 {
     private EloquentSubscriptionRepository $subscriptionRepository;
 

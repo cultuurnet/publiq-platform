@@ -16,11 +16,11 @@ use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
-use Tests\TestCaseWithDatabase;
+use Tests\TestCase;
 use Tests\UiTiDv1\CreatesMockUiTiDv1ClusterSDK;
 use Tests\UiTiDv1\CreatesMockUiTiDv1Consumer;
 
-final class BlockConsumerListenerTest extends TestCaseWithDatabase
+final class BlockConsumerListenerTest extends TestCase
 {
     use CreatesMockUiTiDv1ClusterSDK;
     use CreatesMockUiTiDv1Consumer;

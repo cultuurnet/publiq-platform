@@ -9,16 +9,22 @@ use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\IntegrationUrlType;
 use App\Domain\Integrations\Repositories\EloquentIntegrationUrlRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
-use Tests\TestCaseWithDatabase;
+use Tests\TestCase;
 
-final class EloquentIntegrationUrlRepositoryTest extends TestCaseWithDatabase
+final class EloquentIntegrationUrlRepositoryTest extends TestCase
 {
+    use RefreshDatabase;
+
     private EloquentIntegrationUrlRepository $integrationUrlRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
+
+        Event::fake();
 
         $this->integrationUrlRepository = new EloquentIntegrationUrlRepository();
     }

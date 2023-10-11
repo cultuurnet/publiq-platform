@@ -16,14 +16,14 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Event;
 use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
-use Tests\TestCaseWithDatabase;
+use Tests\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
 use Tests\Auth0\CreatesMockAuth0ClusterSDK;
 
-final class ActivateClientListenerTest extends TestCaseWithDatabase
+final class ActivateClientListenerTest extends TestCase
 {
     use CreatesMockAuth0ClusterSDK;
 

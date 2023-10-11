@@ -10,16 +10,22 @@ use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Organization;
 use App\Domain\Organizations\Repositories\EloquentOrganizationRepository;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
-use Tests\TestCaseWithDatabase;
+use Tests\TestCase;
 
-final class EloquentOrganizationRepositoryTest extends TestCaseWithDatabase
+final class EloquentOrganizationRepositoryTest extends TestCase
 {
+    use RefreshDatabase;
+
     private EloquentOrganizationRepository $organizationRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
+
+        Event::fake();
 
         $this->organizationRepository = new EloquentOrganizationRepository();
     }
