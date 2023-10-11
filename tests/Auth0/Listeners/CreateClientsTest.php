@@ -17,7 +17,7 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Json;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;

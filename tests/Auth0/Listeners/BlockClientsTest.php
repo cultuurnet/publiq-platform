@@ -12,7 +12,7 @@ use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Json;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\NullLogger;
