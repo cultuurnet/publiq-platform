@@ -33,7 +33,7 @@ export const BasicInfo = ({
               name="integrationName"
               value={name}
               onChange={(e) => onChangeName(e.target.value)}
-              className="md:min-w-[32rem]"
+              className="md:min-w-[40rem]"
             />
           }
         />
@@ -43,7 +43,7 @@ export const BasicInfo = ({
             <textarea
               rows={4}
               className={classNames(
-                "appearance-none rounded-lg block w-full  text-gray-700 border border-gray-500 py-3 px-4 leading-tight md:min-w-[32rem]"
+                "appearance-none rounded-lg block w-full  text-gray-700 border border-gray-500 py-3 px-4 leading-tight md:min-w-[40rem]"
               )}
               name="description"
               value={description}
