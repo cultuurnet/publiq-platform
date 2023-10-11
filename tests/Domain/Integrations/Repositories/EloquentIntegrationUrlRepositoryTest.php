@@ -10,7 +10,6 @@ use App\Domain\Integrations\IntegrationUrlType;
 use App\Domain\Integrations\Repositories\EloquentIntegrationUrlRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
