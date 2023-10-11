@@ -10,12 +10,12 @@ use App\Auth0\CachedAuth0ClientGrants;
 use App\Nova\ActionGuards\Auth0\BlockAuth0ClientGuard;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
-use Tests\TestCase;
+use Tests\TestCaseWithDatabase;
 use Psr\Http\Client\ClientInterface;
 use Ramsey\Uuid\Uuid;
 use Tests\Auth0\CreatesMockAuth0ClusterSDK;
 
-final class BlockAuth0ClientGuardTest extends TestCase
+final class BlockAuth0ClientGuardTest extends TestCaseWithDatabase
 {
     use CreatesMockAuth0ClusterSDK;
 

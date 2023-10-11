@@ -6,7 +6,7 @@ namespace App\Domain\Integrations\FormRequests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-final class UpdateBasicInfo extends FormRequest
+final class UpdateIntegrationRequest extends FormRequest
 {
     /**
      * @return array<string, mixed>
@@ -14,8 +14,8 @@ final class UpdateBasicInfo extends FormRequest
     public function rules(): array
     {
         return [
-            'integrationName' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string', 'max:255'],
+            'integrationName' => ['required_without:description', 'string', 'max:255'],
+            'description' => ['required_without:integrationName', 'string', 'max:255'],
         ];
     }
 }

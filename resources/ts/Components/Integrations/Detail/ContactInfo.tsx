@@ -1,46 +1,58 @@
-import React, { useState } from "react";
-import { Heading } from "../../Heading";
+import React, { useMemo, useState } from "react";
 import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
-import { ButtonIcon } from "../../ButtonIcon";
-import {
-  faPencil,
-  faPlus,
-  faTrash,
-  faFloppyDisk,
-} from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
-import { Button } from "../../Button";
+import { ButtonPrimary } from "../../ButtonPrimary";
 import { Contact, Integration } from "../../../Pages/Integrations/Index";
 import { FormDropdown } from "../../FormDropdown";
 import { useForm } from "@inertiajs/react";
 import { ContactType } from "../../../types/ContactType";
 import { ButtonSecondary } from "../../ButtonSecondary";
-import { router } from "@inertiajs/react";
 import { QuestionDialog } from "../../QuestionDialog";
-import { useSectionCollapsedContext } from "../../../context/SectionCollapsedContext";
+import { Dialog } from "../../Dialog";
+import { ContactsTable } from "../../ContactsTable";
+import { classNames } from "../../../utils/classNames";
 
-type Props = Integration;
+export type ContactFormData = {
+  functional: Contact;
+  technical: Contact;
+  contributors: Contact[];
+  newContributorLastName: string;
+  newContributorFirstName: string;
+  newContributorEmail: string;
+};
 
-export const ContactInfo = ({ id, contacts }: Props) => {
+type Props = {
+  isMobile: boolean;
+} & Integration;
+
+export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
   const { t } = useTranslation();
   const [isDisabled, setIsDisabled] = useState(true);
   const [isAddFormVisible, setIsAddFormVisible] = useState(false);
-  const [isDeleteDialogVisible, setIsDeleteDialogVisible] = useState(false);
   const [toBeDeletedId, setToBeDeletedId] = useState("");
+  const [toBeDeletedEmail, setToBeDeletedEmail] = useState("");
+  const [toBeEditedId, setToBeEditedId] = useState("");
+  const [isMobileContactVisible, setIsMobileContactVisible] = useState(false);
 
-  // We know for sure there is a functional contact
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const functionalContact = contacts.find(
-    (contact) => contact.type === ContactType.Functional
-  )!;
-  // We know for sure there is a technical contact
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const technicalContact = contacts.find(
-    (contact) => contact.type === ContactType.Technical
-  )!;
-  const contributorContacts = contacts.filter(
-    (contact) => contact.type === ContactType.Contributor
+  const functionalContact = useMemo(
+    // We know for sure there is a functional contact
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    () => contacts.find((contact) => contact.type === ContactType.Functional)!,
+    [contacts]
+  );
+
+  const technicalContact = useMemo(
+    // We know for sure there is a technical contact
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    () => contacts.find((contact) => contact.type === ContactType.Technical)!,
+    [contacts]
+  );
+
+  const contributorContacts = useMemo(
+    () =>
+      contacts.filter((contact) => contact.type === ContactType.Contributor),
+    [contacts]
   );
 
   const initialFormValues = {
@@ -59,11 +71,10 @@ export const ContactInfo = ({ id, contacts }: Props) => {
     data,
     setData,
     patch,
+    delete: destroy,
     transform,
     errors: errs,
   } = useForm(initialFormValues);
-
-  const [collapsed, setCollapsed] = useSectionCollapsedContext();
 
   transform(
     (data) =>
@@ -99,8 +110,9 @@ export const ContactInfo = ({ id, contacts }: Props) => {
   };
 
   const handleDeleteContributor = () => {
-    router.delete(`/integrations/${id}/contacts/${toBeDeletedId}`, {
+    destroy(`/integrations/${id}/contacts/${toBeDeletedId}`, {
       preserveScroll: true,
+      preserveState: false,
     });
   };
 
@@ -112,312 +124,236 @@ export const ContactInfo = ({ id, contacts }: Props) => {
     });
   };
 
+  const foundContributor = useMemo(
+    () =>
+      data.contributors.find((contributor) => contributor.id === toBeEditedId),
+    [data.contributors, toBeEditedId]
+  );
+
+  const [formContactType, setFormContactType] = useState("" as ContactType);
+
+  const toBeEditedContact = useMemo(() => {
+    if (functionalContact.id === toBeEditedId) {
+      setFormContactType(ContactType.Functional);
+      return data.functional;
+    }
+    if (technicalContact.id === toBeEditedId) {
+      setFormContactType(ContactType.Technical);
+      return data.technical;
+    }
+    if (foundContributor) {
+      setFormContactType(ContactType.Contributor);
+      return foundContributor;
+    }
+  }, [
+    functionalContact,
+    technicalContact,
+    foundContributor,
+    data.functional,
+    data.technical,
+    toBeEditedId,
+  ]);
+
   return (
     <>
-      <FormDropdown
-        title={t("details.contact_info.title")}
-        actions={
-          isDisabled ? (
-            <ButtonIcon
-              icon={faPencil}
-              className="text-icon-gray"
-              onClick={() => setIsDisabled((prev) => !prev)}
-            />
-          ) : (
-            <ButtonIcon
-              icon={faFloppyDisk}
-              className="text-icon-gray"
-              onClick={handleSaveChanges}
-            />
-          )
-        }
-        isCollapsed={collapsed.contacts}
-        onChangeCollapsed={(newValue) =>
-          setCollapsed((prev) => ({ ...prev, contacts: newValue }))
-        }
-      >
-        <div className="flex flex-col gap-5">
-          <Heading className="font-semibold" level={3}>
-            {t("integration_form.contact_label_1")}
-          </Heading>
-          <div className="grid grid-cols-3 gap-3 max-md:grid-cols-1">
-            <FormElement
-              label={`${t("integration_form.contact.last_name")}`}
-              error={errors["functional.lastName"]}
-              component={
-                <Input
-                  type="text"
-                  name="functional.lastName"
-                  value={data.functional.lastName}
-                  onChange={(e) =>
-                    changeContact("functional", {
-                      ...data.functional,
-                      lastName: e.target.value,
-                    })
-                  }
-                  disabled={isDisabled}
-                />
-              }
-            />
-            <FormElement
-              label={`${t("integration_form.contact.first_name")}`}
-              error={errors["functional.firstName"]}
-              component={
-                <Input
-                  type="text"
-                  name="functional.firstName"
-                  value={data.functional.firstName}
-                  onChange={(e) =>
-                    changeContact("functional", {
-                      ...data.functional,
-                      firstName: e.target.value,
-                    })
-                  }
-                  disabled={isDisabled}
-                />
-              }
-            />
-            <FormElement
-              label={`${t("integration_form.contact.email")}`}
-              error={errors["functional.email"]}
-              component={
-                <Input
-                  type="email"
-                  name="functional.email"
-                  value={data.functional.email}
-                  onChange={(e) =>
-                    changeContact("functional", {
-                      ...data.functional,
-                      email: e.target.value,
-                    })
-                  }
-                  disabled={isDisabled}
-                />
-              }
-            />
-          </div>
-          <Heading className="font-semibold" level={3}>
-            {t("integration_form.contact_label_2")}
-          </Heading>
-          <div className="grid grid-cols-3 gap-3 max-md:grid-cols-1 ">
-            <FormElement
-              label={`${t("integration_form.contact.last_name")}`}
-              error={errors["technical.lastName"]}
-              component={
-                <Input
-                  type="text"
-                  name="technical.lastName"
-                  value={data.technical.lastName}
-                  onChange={(e) =>
-                    changeContact("technical", {
-                      ...data.technical,
-                      lastName: e.target.value,
-                    })
-                  }
-                  disabled={isDisabled}
-                />
-              }
-            />
-            <FormElement
-              label={`${t("integration_form.contact.first_name")}`}
-              error={errors["technical.firstName"]}
-              component={
-                <Input
-                  type="text"
-                  name="technical.firstName"
-                  value={data.technical.firstName}
-                  onChange={(e) =>
-                    changeContact("technical", {
-                      ...data.technical,
-                      firstName: e.target.value,
-                    })
-                  }
-                  disabled={isDisabled}
-                />
-              }
-            />
-            <FormElement
-              label={`${t("integration_form.contact.email")}`}
-              error={errors["technical.email"]}
-              component={
-                <Input
-                  type="email"
-                  name="technical.email"
-                  value={data.technical.email}
-                  onChange={(e) =>
-                    changeContact("technical", {
-                      ...data.technical,
-                      email: e.target.value,
-                    })
-                  }
-                  disabled={isDisabled}
-                />
-              }
-            />
-          </div>
-
-          <div className="flex gap-2 items-center min-h-[3rem]">
-            <Heading className="font-semibold" level={3}>
-              {t("integration_form.contact_label_3")}
-            </Heading>
-            {!isAddFormVisible && (
-              <ButtonIcon
-                className="flex gap-2 items-center"
-                icon={faPlus}
-                onClick={() => {
-                  setIsAddFormVisible(true);
-                  setIsDisabled(true);
-                }}
-              ></ButtonIcon>
-            )}
-          </div>
-
-          {isAddFormVisible && (
+      <FormDropdown title={t("details.contact_info.title")}>
+        <Dialog
+          isVisible={isAddFormVisible}
+          onClose={() => setIsAddFormVisible(false)}
+          isFullscreen={isMobile}
+          contentStyles="gap-3"
+          title={t("details.contact_info.new")}
+          actions={
             <>
-              <div className="flex flex-col gap-4 shadow p-4">
-                <Heading className="font-semibold" level={3}>
-                  {t("details.contact_info.new")}
-                </Heading>
-
-                <div className="grid grid-cols-3 gap-3 max-md:grid-cols-1">
-                  <FormElement
-                    label={`${t("integration_form.contact.last_name")}`}
-                    error={errors["newContributorLastName"]}
-                    component={
-                      <Input
-                        type="text"
-                        name="newContributorLastName"
-                        value={data.newContributorLastName}
-                        onChange={(e) =>
-                          setData("newContributorLastName", e.target.value)
-                        }
-                      />
-                    }
-                  />
-                  <FormElement
-                    label={`${t("integration_form.contact.first_name")}`}
-                    error={errors["newContributorFirstName"]}
-                    component={
-                      <Input
-                        type="text"
-                        name="newContributorFirstName"
-                        value={data.newContributorFirstName}
-                        onChange={(e) =>
-                          setData("newContributorFirstName", e.target.value)
-                        }
-                      />
-                    }
-                  />
-                  <FormElement
-                    label={`${t("integration_form.contact.email")}`}
-                    error={errors["newContributorEmail"]}
-                    component={
-                      <Input
-                        type="newContributorEmail"
-                        name="newContributorEmail"
-                        value={data.newContributorEmail}
-                        onChange={(e) =>
-                          setData("newContributorEmail", e.target.value)
-                        }
-                      />
-                    }
-                  />
-                </div>
-                <div className="flex justify-center gap-2">
-                  <Button onClick={handleSaveChanges} className="p-0">
-                    {t("details.contact_info.save")}
-                  </Button>
-                  <ButtonSecondary onClick={() => setIsAddFormVisible(false)}>
-                    {t("details.contact_info.cancel")}
-                  </ButtonSecondary>
-                </div>
-              </div>
+              <ButtonSecondary onClick={() => setIsAddFormVisible(false)}>
+                {t("dialog.cancel")}
+              </ButtonSecondary>
+              <ButtonPrimary
+                onClick={() => {
+                  handleSaveChanges();
+                  setIsAddFormVisible(false);
+                }}
+                className="p-0"
+              >
+                {t("dialog.confirm")}
+              </ButtonPrimary>
             </>
-          )}
-          {data.contributors.map((contributor, index) => (
-            <div
-              key={contributor.id}
-              className="flex flex-col gap-4 shadow p-4"
+          }
+        >
+          <div
+            className={classNames(
+              "w-full",
+              !isMobile && "grid grid-cols-2 gap-3"
+            )}
+          >
+            <FormElement
+              label={`${t("integration_form.contact.last_name")}`}
+              error={errors["newContributorLastName"]}
+              className="w-full"
+              component={
+                <Input
+                  type="text"
+                  name="newContributorLastName"
+                  value={data.newContributorLastName}
+                  onChange={(e) =>
+                    setData("newContributorLastName", e.target.value)
+                  }
+                  className="w-full"
+                />
+              }
+            />
+            <FormElement
+              label={`${t("integration_form.contact.first_name")}`}
+              error={errors["newContributorFirstName"]}
+              className="w-full"
+              component={
+                <Input
+                  type="text"
+                  name="newContributorFirstName"
+                  value={data.newContributorFirstName}
+                  onChange={(e) =>
+                    setData("newContributorFirstName", e.target.value)
+                  }
+                />
+              }
+            />
+          </div>
+
+          <FormElement
+            label={`${t("integration_form.contact.email")}`}
+            error={errors["newContributorEmail"]}
+            component={
+              <Input
+                type="text"
+                name="newContributorEmail"
+                value={data.newContributorEmail}
+                onChange={(e) => setData("newContributorEmail", e.target.value)}
+              />
+            }
+          />
+        </Dialog>
+        <ContactsTable
+          data={data}
+          onEdit={(id) => setToBeEditedId(id)}
+          onDelete={(id, email) => {
+            setToBeDeletedId(id);
+            setToBeDeletedEmail(email);
+          }}
+          onPreview={(bool) => setIsMobileContactVisible(bool)}
+          functionalId={functionalContact.id}
+          technicalId={technicalContact.id}
+        />
+        <div className="flex gap-2 items-center min-h-[3rem]">
+          {!isAddFormVisible && (
+            <ButtonPrimary
+              onClick={() => {
+                setIsAddFormVisible(true);
+                setIsDisabled(true);
+              }}
             >
-              <div className="flex justify-between items-center">
-                <Heading className="font-semibold" level={3}>{`Medewerker #${
-                  index + 1
-                }`}</Heading>
-                <ButtonIcon
-                  icon={faTrash}
-                  size="lg"
-                  className="text-icon-gray self-end"
-                  onClick={() => {
-                    setToBeDeletedId(contributor.id);
-                    setIsDeleteDialogVisible(true);
-                  }}
-                />
-              </div>
-              <div className="grid grid-cols-3 gap-3 max-md:grid-cols-1">
-                <FormElement
-                  label={`${t("integration_form.contact.last_name")}`}
-                  error={errors[`contributors.${index}.lastName`]}
-                  component={
-                    <Input
-                      type="text"
-                      name={`contributors.${index}.lastName`}
-                      value={contributor.lastName}
-                      onChange={(e) =>
-                        changeContact("contributor", {
-                          ...contributor,
-                          lastName: e.target.value,
-                        })
-                      }
-                      disabled={isDisabled}
-                    />
-                  }
-                />
-                <FormElement
-                  label={`${t("integration_form.contact.first_name")}`}
-                  error={errors[`contributors.${index}.firstName`]}
-                  component={
-                    <Input
-                      type="text"
-                      name={`contributors.${index}.firstName`}
-                      value={contributor.firstName}
-                      onChange={(e) =>
-                        changeContact("contributor", {
-                          ...contributor,
-                          firstName: e.target.value,
-                        })
-                      }
-                      disabled={isDisabled}
-                    />
-                  }
-                />
-                <FormElement
-                  label={`${t("integration_form.contact.email")}`}
-                  error={errors[`contributors.${index}.email`]}
-                  component={
-                    <Input
-                      type="email"
-                      name={`contributors.${index}.email`}
-                      value={contributor.email}
-                      onChange={(e) =>
-                        changeContact("contributor", {
-                          ...contributor,
-                          email: e.target.value,
-                        })
-                      }
-                      disabled={isDisabled}
-                    />
-                  }
-                />
-              </div>
-            </div>
-          ))}
-          {/* <ButtonSecondary className="self-start">
-          {t("details.contact_info.delete")}
-        </ButtonSecondary> */}
+              {t("integration_form.add")}
+            </ButtonPrimary>
+          )}
         </div>
+        {toBeEditedContact && (
+          <Dialog
+            title={t("details.contact_info.edit_dialog")}
+            actions={
+              !isMobileContactVisible && (
+                <>
+                  <ButtonSecondary onClick={() => setToBeEditedId("")}>
+                    {t("dialog.cancel")}
+                  </ButtonSecondary>
+                  <ButtonPrimary
+                    onClick={() => {
+                      setToBeEditedId("");
+                      patch(`/integrations/${id}/contacts`, {
+                        preserveScroll: true,
+                      });
+                    }}
+                  >
+                    {t("dialog.confirm")}
+                  </ButtonPrimary>
+                </>
+              )
+            }
+            isVisible={!!toBeEditedId}
+            onClose={() => {
+              setToBeEditedId("");
+              setIsMobileContactVisible(false);
+            }}
+            isFullscreen={isMobile}
+            contentStyles="gap-3"
+          >
+            <div
+              className={classNames(
+                "w-full",
+                !isMobile && "grid grid-cols-2 gap-3"
+              )}
+            >
+              <FormElement
+                label={`${t("integration_form.contact.last_name")}`}
+                error={errors[`${formContactType}.lastName`]}
+                className="w-full"
+                component={
+                  <Input
+                    type="text"
+                    name={`${formContactType}.lastName`}
+                    value={toBeEditedContact?.lastName}
+                    onChange={(e) =>
+                      changeContact(formContactType, {
+                        ...toBeEditedContact,
+                        lastName: e.target.value,
+                      })
+                    }
+                    disabled={isMobileContactVisible}
+                  />
+                }
+              />
+              <FormElement
+                label={`${t("integration_form.contact.first_name")}`}
+                error={errors[`${formContactType}.firstName`]}
+                className="w-full"
+                component={
+                  <Input
+                    type="text"
+                    name={`${formContactType}.firstName`}
+                    value={toBeEditedContact?.firstName}
+                    onChange={(e) =>
+                      changeContact(formContactType, {
+                        ...toBeEditedContact,
+                        firstName: e.target.value,
+                      })
+                    }
+                    disabled={isMobileContactVisible}
+                  />
+                }
+              />
+            </div>
+            <FormElement
+              label={`${t("integration_form.contact.email")}`}
+              error={errors[`${formContactType}.email`]}
+              component={
+                <Input
+                  type="email"
+                  name={`${formContactType}.email`}
+                  value={toBeEditedContact?.email}
+                  onChange={(e) =>
+                    changeContact(formContactType, {
+                      ...toBeEditedContact,
+                      email: e.target.value,
+                    })
+                  }
+                  disabled={isMobileContactVisible}
+                />
+              }
+            />
+          </Dialog>
+        )}
+
         {!isDisabled && (
           <div className="flex flex-col gap-2 items-center">
-            <Button
+            <ButtonPrimary
               onClick={() => {
                 setIsDisabled(true);
 
@@ -427,19 +363,21 @@ export const ContactInfo = ({ id, contacts }: Props) => {
               }}
             >
               {t("details.save")}
-            </Button>
+            </ButtonPrimary>
           </div>
         )}
       </FormDropdown>
       <QuestionDialog
-        isVisible={isDeleteDialogVisible}
+        isVisible={!!toBeDeletedId}
         onClose={() => {
-          setIsDeleteDialogVisible((prev) => !prev);
+          setToBeDeletedId("");
         }}
-        question={t("integrations.dialog.delete")}
+        title={t("details.contact_info.delete_dialog.title")}
+        question={t("details.contact_info.delete_dialog.question", {
+          email: toBeDeletedEmail,
+        })}
         onConfirm={handleDeleteContributor}
         onCancel={() => {
-          setIsDeleteDialogVisible(false);
           setToBeDeletedId("");
         }}
       ></QuestionDialog>

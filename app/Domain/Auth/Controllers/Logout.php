@@ -6,13 +6,13 @@ namespace App\Domain\Auth\Controllers;
 
 use Auth0\SDK\Auth0;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+use Symfony\Component\HttpFoundation\Response;
 
 final class Logout
 {
-    public function getLogoutLink()
+    private function getLogoutLink(): string
     {
         /** @var Auth0 $auth0 */
         $auth0 = app(Auth0::class);
@@ -27,11 +27,11 @@ final class Logout
             Auth::guard(config('nova.guard'))->logout();
         }
 
-        $redirectTo = config('app.url');
-
-        return $auth0->authentication()->getLogoutLink($redirectTo);
+        return $auth0->authentication()->getLogoutLink(config('app.url'));
     }
-    public function admin(): JsonResponse {
+
+    public function adminLogout(): JsonResponse
+    {
         $logoutLink = $this->getLogoutLink();
 
         return new JsonResponse([
@@ -39,9 +39,10 @@ final class Logout
         ]);
     }
 
-    public function inertia() {
+    public function inertiaLogout(): Response
+    {
         $logoutLink = $this->getLogoutLink();
 
-        return new RedirectResponse($logoutLink);
+        return Inertia::location($logoutLink);
     }
 }

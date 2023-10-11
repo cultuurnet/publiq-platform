@@ -7,16 +7,21 @@ namespace App\Domain\Integrations\Controllers;
 use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Domain\Auth\CurrentUser;
 use App\Domain\Contacts\Repositories\ContactRepository;
-use App\Domain\Integrations\FormRequests\StoreIntegration;
-use App\Domain\Integrations\FormRequests\UpdateBasicInfo;
-use App\Domain\Integrations\FormRequests\UpdateBillingInfo;
-use App\Domain\Integrations\FormRequests\UpdateContactInfo;
+use App\Domain\Integrations\FormRequests\StoreIntegrationRequest;
+use App\Domain\Integrations\FormRequests\StoreIntegrationUrlRequest;
+use App\Domain\Integrations\FormRequests\UpdateIntegrationRequest;
+use App\Domain\Integrations\FormRequests\UpdateBillingInfoRequest;
+use App\Domain\Integrations\FormRequests\UpdateContactInfoRequest;
+use App\Domain\Integrations\FormRequests\UpdateIntegrationUrlsRequest;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
+use App\Domain\Integrations\Mappers\StoreIntegrationUrlMapper;
+use App\Domain\Integrations\Mappers\UpdateBillingInfoMapper;
 use App\Domain\Integrations\Mappers\UpdateContactInfoMapper;
+use App\Domain\Integrations\Mappers\UpdateIntegrationMapper;
+use App\Domain\Integrations\Mappers\UpdateIntegrationUrlsMapper;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Domain\Organizations\Address;
-use App\Domain\Organizations\Organization;
+use App\Domain\Integrations\Repositories\IntegrationUrlRepository;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Http\Controllers\Controller;
@@ -37,6 +42,7 @@ final class IntegrationController extends Controller
     public function __construct(
         private readonly SubscriptionRepository $subscriptionRepository,
         private readonly IntegrationRepository $integrationRepository,
+        private readonly IntegrationUrlRepository $integrationUrlRepository,
         private readonly ContactRepository $contactRepository,
         private readonly OrganizationRepository $organizationRepository,
         private readonly Auth0ClientRepository $auth0ClientRepository,
@@ -77,20 +83,30 @@ final class IntegrationController extends Controller
         ]);
     }
 
-    public function store(StoreIntegration $storeIntegration): RedirectResponse
+    public function store(StoreIntegrationRequest $request): RedirectResponse
     {
-        $integration = StoreIntegrationMapper::map($storeIntegration, $this->currentUser);
+        $integration = StoreIntegrationMapper::map($request, $this->currentUser);
         $this->integrationRepository->save($integration);
 
         return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName(
-                request: $storeIntegration,
-                routeName: 'integrations.index'
-            )
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.index')
+        );
+    }
+    public function storeUrl(StoreIntegrationUrlRequest $request, string $id): RedirectResponse
+    {
+        $integrationUrl = StoreIntegrationUrlMapper::map($request, $id);
+
+        $this->integrationUrlRepository->save($integrationUrl);
+
+        return Redirect::route(
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
+            [
+                'id' => $id,
+            ]
         );
     }
 
-    public function delete(Request $request, string $id): RedirectResponse
+    public function destroy(Request $request, string $id): RedirectResponse
     {
         try {
             $this->integrationRepository->deleteById(Uuid::fromString($id));
@@ -99,31 +115,73 @@ final class IntegrationController extends Controller
         }
 
         return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName(
-                request: $request,
-                routeName: 'integrations.index'
-            )
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.index')
         );
     }
 
-    public function update(UpdateBasicInfo $updateInfo, string $id): RedirectResponse
+    public function destroyUrl(Request $request, string $id, string $urlId): RedirectResponse
     {
-        $this->integrationRepository->update(Uuid::fromString($id), $updateInfo);
+        try {
+            $this->integrationUrlRepository->deleteById(Uuid::fromString($urlId));
+        } catch (ModelNotFoundException) {
+            // We can redirect back to integrations, even if not successful
+        }
 
         return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName(
-                request: $updateInfo,
-                routeName: 'integrations.detail'
-            ),
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
             [
                 'id' => $id,
             ]
         );
     }
 
-    public function updateContacts(string $id, UpdateContactInfo $updateContactInfo): RedirectResponse
+    public function update(UpdateIntegrationRequest $request, string $id): RedirectResponse
     {
-        $contacts = UpdateContactInfoMapper::map($updateContactInfo, $id);
+        $currentIntegration = $this->integrationRepository->getById(Uuid::fromString($id));
+
+        $updatedIntegration = UpdateIntegrationMapper::map($request, $currentIntegration);
+
+        $this->integrationRepository->update($updatedIntegration);
+
+        return Redirect::route(
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
+            [
+                'id' => $id,
+            ]
+        );
+    }
+
+    public function updateUrls(UpdateIntegrationUrlsRequest $request, string $id): RedirectResponse
+    {
+        $ids = array_map(
+            fn ($url) => Uuid::fromString($url['id']),
+            array_filter(
+                [
+                    $request->input('loginUrl'),
+                    ...($request->input('callbackUrls') ?? []),
+                    ...($request->input('logoutUrls') ?? []),
+                ],
+                fn ($val) => $val !== null
+            )
+        );
+
+        $currentUrls = $this->integrationUrlRepository->getByIds($ids);
+
+        $updatedUrls = UpdateIntegrationUrlsMapper::map($request, $currentUrls);
+
+        $this->integrationUrlRepository->updateUrls($updatedUrls);
+
+        return Redirect::route(
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
+            [
+                'id' => $id,
+            ]
+        );
+    }
+
+    public function updateContacts(string $id, UpdateContactInfoRequest $request): RedirectResponse
+    {
+        $contacts = UpdateContactInfoMapper::map($request, $id);
 
         DB::transaction(function () use ($contacts) {
             foreach ($contacts as $contact) {
@@ -131,15 +189,7 @@ final class IntegrationController extends Controller
             }
         });
 
-        return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName(
-                request: $updateContactInfo,
-                routeName: 'integrations.detail'
-            ),
-            [
-                'id' => $id,
-            ]
-        );
+        return Redirect::back();
     }
 
     public function deleteContact(Request $request, string $id, string $contactId): RedirectResponse
@@ -150,44 +200,24 @@ final class IntegrationController extends Controller
             // We can redirect back to integrations, even if not successful
         }
 
-        return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName(
-                request: $request,
-                routeName: 'integrations.detail'
-            ),
-            ['id' => $id]
-        );
+        return Redirect::back();
     }
 
-    public function updateBilling(string $id, UpdateBillingInfo $updateBillingInfo): RedirectResponse
+    public function updateBilling(string $id, UpdateBillingInfoRequest $request): RedirectResponse
     {
-        $organisation = new Organization(
-            Uuid::fromString($updateBillingInfo->input('organisation.id')),
-            $updateBillingInfo->input('organisation.name'),
-            'test@test.be',
-            $updateBillingInfo->input('organisation.vat'),
-            new Address(
-                $updateBillingInfo->input('organisation.address.street'),
-                $updateBillingInfo->input('organisation.address.zip'),
-                $updateBillingInfo->input('organisation.address.city'),
-                $updateBillingInfo->input('organisation.address.country'),
-            )
-        );
+        $organisation = UpdateBillingInfoMapper::map($request);
 
         $this->organizationRepository->save($organisation);
 
         return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName(
-                request: $updateBillingInfo,
-                routeName: 'integrations.detail'
-            ),
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
             [
                 'id' => $id,
             ]
         );
     }
 
-    public function detail(string $id): Response
+    public function show(string $id): Response
     {
         try {
             $integration = $this->integrationRepository->getById(Uuid::fromString($id));

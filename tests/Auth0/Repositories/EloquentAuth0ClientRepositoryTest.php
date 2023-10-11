@@ -8,9 +8,9 @@ use App\Auth0\Auth0Client;
 use App\Auth0\Auth0Tenant;
 use App\Auth0\Repositories\EloquentAuth0ClientRepository;
 use Ramsey\Uuid\Uuid;
-use Tests\TestCase;
+use Tests\TestCaseWithDatabase;
 
-final class EloquentAuth0ClientRepositoryTest extends TestCase
+final class EloquentAuth0ClientRepositoryTest extends TestCaseWithDatabase
 {
     private EloquentAuth0ClientRepository $repository;
 

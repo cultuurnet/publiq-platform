@@ -19,6 +19,7 @@ final class IntegrationUrlModel extends UuidModel
     protected $table = 'integrations_urls';
 
     protected $fillable = [
+        'id',
         'integration_id',
         'environment',
         'type',

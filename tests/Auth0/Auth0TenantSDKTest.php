@@ -11,11 +11,11 @@ use App\Json;
 use Auth0\SDK\Configuration\SdkConfiguration;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
-use Tests\TestCase;
+use Tests\TestCaseWithDatabase;
 use Psr\Http\Client\ClientInterface;
 use Ramsey\Uuid\Uuid;
 
-final class Auth0TenantSDKTest extends TestCase
+final class Auth0TenantSDKTest extends TestCaseWithDatabase
 {
     private ClientInterface&MockObject $httpClient;
 

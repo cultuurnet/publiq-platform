@@ -1,89 +1,56 @@
-import React, { useState } from "react";
-import { Heading } from "../../Heading";
-import { ButtonIcon } from "../../ButtonIcon";
-import { faPencil } from "@fortawesome/free-solid-svg-icons";
+import React from "react";
 import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
 import { useTranslation } from "react-i18next";
-import { Integration } from "../../../Pages/Integrations/Index";
-import { Button } from "../../Button";
 import { classNames } from "../../../utils/classNames";
-import { useForm } from "@inertiajs/react";
+import { Heading } from "../../Heading";
 
 type Props = {
-  integration: Integration;
-  isMobile?: boolean;
+  name: string;
+  description: string;
+  onChangeName: (val: string) => void;
+  onChangeDescription: (val: string) => void;
 };
-export const BasicInfo = ({ integration, isMobile }: Props) => {
+export const BasicInfo = ({
+  name,
+  description,
+  onChangeName,
+  onChangeDescription,
+}: Props) => {
   const { t } = useTranslation();
-  const [isDisabled, setIsDisabled] = useState(true);
-
-  const initialFormValues = {
-    integrationName: integration.name,
-    description: integration.description,
-  };
-
-  const { data, setData, patch } = useForm(initialFormValues);
 
   return (
-    <div className="flex flex-col gap-4 shadow-md shadow-slate-200 max-md:px-5 px-10 py-5">
-      <div className="flex gap-2 items-center">
-        <Heading level={2} className="font-semibold">
-          {t("details.basic_info.title")}
-        </Heading>
-        <ButtonIcon
-          icon={faPencil}
-          className="text-icon-gray"
-          onClick={() => setIsDisabled((prev) => !prev)}
-        />
-      </div>
-      <div className="flex flex-col gap-6 border-t py-6">
+    <div className="max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-6 border-b pb-10 border-gray-300">
+      <Heading level={3} className="font-semibold">
+        {t("details.basic_info.title")}
+      </Heading>
+      <div className="grid-cols-2 flex flex-col gap-5">
         <FormElement
           label={`${t("details.basic_info.name")}`}
-          labelPosition={isMobile ? "top" : "left"}
           component={
             <Input
               type="text"
               name="integrationName"
-              value={data.integrationName}
-              onChange={(e) => setData("integrationName", e.target.value)}
+              value={name}
+              onChange={(e) => onChangeName(e.target.value)}
               className="md:min-w-[32rem]"
-              disabled={isDisabled}
             />
           }
         />
         <FormElement
           label={`${t("details.basic_info.description")}`}
-          labelPosition={isMobile ? "top" : "left"}
           component={
             <textarea
               rows={4}
               className={classNames(
-                "appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 leading-tight md:min-w-[32rem]",
-                !isDisabled && "outline-none bg-white border-gray-500"
+                "appearance-none rounded-lg block w-full  text-gray-700 border border-gray-500 py-3 px-4 leading-tight md:min-w-[32rem]"
               )}
               name="description"
-              value={data.description}
-              onChange={(e) => setData("description", e.target.value)}
-              disabled={isDisabled}
+              value={description}
+              onChange={(e) => onChangeDescription(e.target.value)}
             />
           }
         />
-        {!isDisabled && (
-          <div className="flex flex-col items-start md:pl-[10.5rem]">
-            <Button
-              onClick={() => {
-                setIsDisabled(true);
-
-                patch(`/integrations/${integration.id}`, {
-                  preserveScroll: true,
-                });
-              }}
-            >
-              {t("details.save")}
-            </Button>
-          </div>
-        )}
       </div>
     </div>
   );

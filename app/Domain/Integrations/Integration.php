@@ -33,6 +33,7 @@ final class Integration
         public readonly string $description,
         public readonly UuidInterface $subscriptionId,
         public readonly IntegrationStatus $status,
+        public readonly IntegrationPartnerStatus $partnerStatus,
     ) {
         $this->contacts = [];
         $this->urls = [];
@@ -129,6 +130,7 @@ final class Integration
             'description' => $this->description,
             'subscriptionId' => $this->subscriptionId,
             'status' => $this->status,
+            'partnerStatus' => $this->partnerStatus,
         ];
     }
 }

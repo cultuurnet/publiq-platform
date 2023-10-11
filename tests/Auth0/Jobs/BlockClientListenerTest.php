@@ -21,9 +21,9 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
 use Tests\Auth0\CreatesMockAuth0ClusterSDK;
-use Tests\TestCase;
+use Tests\TestCaseWithDatabase;
 
-final class BlockClientListenerTest extends TestCase
+final class BlockClientListenerTest extends TestCaseWithDatabase
 {
     use CreatesMockAuth0ClusterSDK;
 

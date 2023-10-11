@@ -2,22 +2,17 @@ import React, { useState } from "react";
 import { Heading } from "../../Heading";
 import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
-import { Button } from "../../Button";
+import { ButtonPrimary } from "../../ButtonPrimary";
 import { FormDropdown } from "../../FormDropdown";
 import { Integration } from "../../../Pages/Integrations/Index";
 import { useTranslation } from "react-i18next";
 import { useForm } from "@inertiajs/react";
-import { ButtonIcon } from "../../ButtonIcon";
-import { faPencil } from "@fortawesome/free-solid-svg-icons";
-import { useSectionCollapsedContext } from "../../../context/SectionCollapsedContext";
 
 type Props = Integration;
 
 export const BillingInfo = ({ id, organisation, subscription }: Props) => {
   const { t } = useTranslation();
   const [isDisabled, setIsDisabled] = useState(true);
-
-  const [collapsed, setCollapsed] = useSectionCollapsedContext();
 
   const initialFormValues = {
     organisation,
@@ -28,22 +23,7 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
   const errors = err as Record<string, string | undefined>;
 
   return (
-    <FormDropdown
-      title={t("details.billing_info.title")}
-      actions={
-        data.organisation ? (
-          <ButtonIcon
-            icon={faPencil}
-            className="text-icon-gray"
-            onClick={() => setIsDisabled((prev) => !prev)}
-          />
-        ) : null
-      }
-      isCollapsed={collapsed.billing}
-      onChangeCollapsed={(newValue) =>
-        setCollapsed((prev) => ({ ...prev, billing: newValue }))
-      }
-    >
+    <FormDropdown title={t("details.billing_info.title")}>
       <div className="flex flex-col gap-5">
         <div className="flex max-sm:flex-col md:items-center gap-2">
           <Heading level={5} className="font-semibold w50">
@@ -181,7 +161,7 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
             </div>
             {!isDisabled && (
               <div className="flex flex-col gap-2 items-center">
-                <Button
+                <ButtonPrimary
                   onClick={() => {
                     setIsDisabled(true);
 
@@ -191,7 +171,7 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
                   }}
                 >
                   {t("details.save")}
-                </Button>
+                </ButtonPrimary>
               </div>
             )}
           </>

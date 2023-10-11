@@ -8,9 +8,9 @@ use App\Domain\Coupons\Coupon;
 use App\Domain\Coupons\Repositories\EloquentCouponRepository;
 use Illuminate\Database\QueryException;
 use Ramsey\Uuid\Uuid;
-use Tests\TestCase;
+use Tests\TestCaseWithDatabase;
 
-final class EloquentCouponRepositoryTest extends TestCase
+final class EloquentCouponRepositoryTest extends TestCaseWithDatabase
 {
     private EloquentCouponRepository $couponRepository;
 

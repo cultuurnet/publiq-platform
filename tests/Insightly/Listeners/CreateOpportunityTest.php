@@ -8,6 +8,7 @@ use App\Domain\Coupons\Coupon;
 use App\Domain\Coupons\Repositories\CouponRepository;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
@@ -163,7 +164,8 @@ final class CreateOpportunityTest extends TestCase
             'my little integration',
             'a little integration',
             $subscriptionId,
-            IntegrationStatus::Draft
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
         );
 
         $this->integrationRepository->expects($this->once())

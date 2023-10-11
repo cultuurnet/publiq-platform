@@ -11,9 +11,9 @@ use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Organization;
 use App\Domain\Organizations\Repositories\EloquentOrganizationRepository;
 use Ramsey\Uuid\Uuid;
-use Tests\TestCase;
+use Tests\TestCaseWithDatabase;
 
-final class EloquentOrganizationRepositoryTest extends TestCase
+final class EloquentOrganizationRepositoryTest extends TestCaseWithDatabase
 {
     private EloquentOrganizationRepository $organizationRepository;
 

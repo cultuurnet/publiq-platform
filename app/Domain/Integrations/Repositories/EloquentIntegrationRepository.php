@@ -11,7 +11,6 @@ use App\Domain\Integrations\Models\IntegrationModel;
 use App\Pagination\PaginatedCollection;
 use App\Pagination\PaginationInfo;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\UuidInterface;
@@ -28,6 +27,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
                 'description' => $integration->description,
                 'subscription_id' => $integration->subscriptionId,
                 'status' => $integration->status,
+                'partner_status' => $integration->partnerStatus,
             ]);
 
             foreach ($integration->contacts() as $contact) {
@@ -43,23 +43,16 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         });
     }
 
-    public function update(UuidInterface $id, FormRequest $updateInfo): Integration
+    public function update(Integration $integration): void
     {
-        /** @var IntegrationModel $integrationModel */
-        $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
-
-        $nameMapping = [
-            'integrationName' => 'name',
-        ];
-
-        foreach ($updateInfo->keys() as $name) {
-            $modelName = $nameMapping[$name] ?? $name;
-            $integrationModel[$modelName] = $updateInfo->input($name);
-        }
-
-        $integrationModel->save();
-
-        return $integrationModel->toDomain();
+        IntegrationModel::query()->update([
+                'id' => $integration->id->toString(),
+                'type' => $integration->type,
+                'name' => $integration->name,
+                'description' => $integration->description,
+                'subscription_id' => $integration->subscriptionId->toString(),
+                'status' => $integration->status,
+        ]);
     }
 
     public function getById(UuidInterface $id): Integration

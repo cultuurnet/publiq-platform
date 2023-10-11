@@ -10,6 +10,7 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Subscriptions\SubscriptionPlan;
@@ -128,7 +129,8 @@ final class MigrateProjects extends Command
             $migrationProject->name(),
             $migrationProject->description() !== null ? $migrationProject->description() : '',
             Uuid::fromString(SubscriptionPlan::BASIC_SEARCH_API_PLAN->value),
-            $migrationProject->status()
+            $migrationProject->status(),
+            IntegrationPartnerStatus::THIRD_PARTY,
         );
         $this->integrationRepository->save($integration);
 

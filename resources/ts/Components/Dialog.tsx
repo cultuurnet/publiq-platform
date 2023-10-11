@@ -1,12 +1,16 @@
-import React, { ComponentProps } from "react";
+import React, { ComponentProps, ReactNode } from "react";
 import { ButtonIcon } from "./ButtonIcon";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { classNames } from "../utils/classNames";
+import { Heading } from "./Heading";
 
 type Props = ComponentProps<"div"> & {
   isVisible?: boolean;
   onClose?: () => void;
   isFullscreen?: boolean;
+  contentStyles?: string;
+  title?: string;
+  actions?: ReactNode;
 };
 
 export const Dialog = ({
@@ -14,6 +18,9 @@ export const Dialog = ({
   isFullscreen = false,
   onClose,
   children,
+  contentStyles,
+  title,
+  actions,
 }: Props) => {
   if (!isVisible) {
     return null;
@@ -23,21 +30,44 @@ export const Dialog = ({
     <>
       <div
         className={classNames(
-          "flex flex-col fixed bg-publiq-gray-light z-[60] p-5",
+          "fixed bg-white flex flex-col items-center z-[60] top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%]",
           isFullscreen
-            ? "left-[1rem] right-[1rem] top-[1rem] bottom-[1rem]"
-            : "min-h-[14rem] max-md:w-[90%] md:min-w-[40rem] top-[30%]"
+            ? "h-full w-full p-4"
+            : "min-h-[14rem] md:max-w-[40rem] md:min-w-[40rem] top-[30%]"
         )}
       >
-        <ButtonIcon
-          icon={faXmark}
-          onClick={onClose}
-          size="lg"
-          className="text-publiq-blue-dark self-end"
-        />
+        <div
+          className={classNames(
+            "w-full flex items-center justify-between px-6 py-2",
+            !isFullscreen && "border-b border-gray-300"
+          )}
+        >
+          <Heading level={3} className="font-semibold">
+            {title}
+          </Heading>
+          <ButtonIcon
+            icon={faXmark}
+            onClick={onClose}
+            size="lg"
+            className="text-publiq-blue-dark self-end"
+          />
+        </div>
 
-        <div className="flex flex-col flex-1 w-full p-4 text-xl">
+        <div
+          className={classNames(
+            "flex flex-col flex-1 w-full p-6 text-xl",
+            contentStyles
+          )}
+        >
           {children}
+        </div>
+        <div
+          className={classNames(
+            "w-full flex items-center gap-3 justify-end px-6 py-2",
+            !isFullscreen && "border-t border-gray-300"
+          )}
+        >
+          {actions}
         </div>
       </div>
       <div

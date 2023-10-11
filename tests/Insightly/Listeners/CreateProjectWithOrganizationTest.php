@@ -10,6 +10,7 @@ use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Coupons\Repositories\CouponRepository;
 use App\Domain\Integrations\Events\IntegrationActivatedWithOrganization;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
@@ -36,9 +37,9 @@ use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Tests\MockInsightlyClient;
-use Tests\TestCase;
+use Tests\TestCaseWithDatabase;
 
-final class CreateProjectWithOrganizationTest extends TestCase
+final class CreateProjectWithOrganizationTest extends TestCaseWithDatabase
 {
     use MockInsightlyClient;
 
@@ -98,10 +99,10 @@ final class CreateProjectWithOrganizationTest extends TestCase
          * @var InsightlyMapping $technicalContactMapping
          * @var InsightlyMapping $functionalContactMapping
          */
-        list($opportunityMapping,
+        [$opportunityMapping,
             $organizationMapping,
             $technicalContactMapping,
-            $functionalContactMapping) = $this->givenThereAreInsightlyMappings($integration, $organization, $contacts);
+            $functionalContactMapping] = $this->givenThereAreInsightlyMappings($integration, $organization, $contacts);
 
         $this->opportunityResource->expects($this->once())
             ->method('updateState')
@@ -186,7 +187,8 @@ final class CreateProjectWithOrganizationTest extends TestCase
             'My integration',
             'This is my integration',
             $subscriptionId,
-            IntegrationStatus::Draft
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
         );
 
         $this->integrationRepository->expects($this->once())
