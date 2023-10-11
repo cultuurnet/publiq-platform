@@ -9,11 +9,14 @@ use App\Domain\Subscriptions\Currency;
 use App\Domain\Subscriptions\Repositories\EloquentSubscriptionRepository;
 use App\Domain\Subscriptions\Subscription;
 use App\Domain\Subscriptions\SubscriptionCategory;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
 final class EloquentSubscriptionRepositoryTest extends TestCase
 {
+    use RefreshDatabase;
+
     private EloquentSubscriptionRepository $subscriptionRepository;
 
     protected function setUp(): void
