@@ -1,18 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import { Heading } from "../../Heading";
 import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
 import { ButtonPrimary } from "../../ButtonPrimary";
-import { FormDropdown } from "../../FormDropdown";
 import { Integration } from "../../../Pages/Integrations/Index";
 import { useTranslation } from "react-i18next";
 import { useForm } from "@inertiajs/react";
+import { TabLayout } from "../../TabLayout";
 
 type Props = Integration;
 
 export const BillingInfo = ({ id, organisation, subscription }: Props) => {
   const { t } = useTranslation();
-  const [isDisabled, setIsDisabled] = useState(true);
 
   const initialFormValues = {
     organisation,
@@ -23,30 +22,43 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
   const errors = err as Record<string, string | undefined>;
 
   return (
-    <FormDropdown title={t("details.billing_info.title")}>
-      <div className="flex flex-col gap-5">
-        <div className="flex max-sm:flex-col md:items-center gap-2">
-          <Heading level={5} className="font-semibold w50">
-            {t("details.billing_info.subscription")}
-          </Heading>
-          <p>
-            {subscription.category} {"("}
-            {subscription.currency === "EUR" ? "€" : subscription.currency}{" "}
-            {subscription.fee / 100}
-            {")"}
-          </p>
-        </div>
+    <TabLayout>
+      <div className="w-full max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-6">
+        <Heading level={3} className="font-semibold">
+          {t("details.billing_info.title.subscription")}
+        </Heading>
+        <FormElement
+          error={errors["organisation.address.street"]}
+          component={
+            <Input
+              type="text"
+              name="price"
+              value={`${subscription.category} (${
+                subscription.currency === "EUR" ? "€" : subscription.currency
+              } ${subscription.fee / 100})`}
+              className="md:min-w-[40rem]"
+              disabled
+            />
+          }
+        />
+      </div>
+      {organisation && (
+        <>
+          <div className="w-full max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-6">
+            <Heading level={3} className="font-semibold">
+              {t("details.billing_info.title.organization")}
+            </Heading>
 
-        {organisation && (
-          <>
-            <div className="grid md:w-[50%] ">
+            <div className="flex flex-col gap-5">
               <FormElement
                 label={`${t("details.billing_info.name")}`}
                 error={errors["organisation.name"]}
+                className="w-full"
                 component={
                   <Input
                     type="text"
                     name="organisation.name"
+                    className="md:min-w-[40rem]"
                     value={data.organisation?.name}
                     onChange={(e) =>
                       setData("organisation", {
@@ -56,95 +68,93 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
                         name: e.target.value,
                       })
                     }
-                    disabled={isDisabled}
                   />
                 }
               />
-            </div>
-            <div className="grid grid-cols-3 gap-3 max-md:grid-cols-1">
-              <FormElement
-                label={`${t("details.billing_info.address.street")}`}
-                error={errors["organisation.address.street"]}
-                component={
-                  <Input
-                    type="text"
-                    name="organisation.address.street"
-                    value={data.organisation?.address.street}
-                    onChange={(e) =>
-                      setData("organisation", {
-                        // We know organisation exists
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        ...data.organisation!,
-                        address: {
+              <div className="max-md:flex max-md:flex-col md:grid md:grid-cols-5 gap-3 md:min-w-[40rem]">
+                <FormElement
+                  label={`${t("details.billing_info.address.street")}`}
+                  error={errors["organisation.address.street"]}
+                  className="col-span-2"
+                  component={
+                    <Input
+                      type="text"
+                      name="organisation.address.street"
+                      value={data.organisation?.address.street}
+                      onChange={(e) =>
+                        setData("organisation", {
+                          // We know organisation exists
                           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                          ...data.organisation!.address,
-                          street: e.target.value,
-                        },
-                      })
-                    }
-                    disabled={isDisabled}
-                  />
-                }
-              />
-              <FormElement
-                label={`${t("details.billing_info.address.postcode")}`}
-                error={errors["organisation.address.zip"]}
-                component={
-                  <Input
-                    type="text"
-                    name="organisation.address.zip"
-                    value={data.organisation?.address.zip}
-                    onChange={(e) =>
-                      setData("organisation", {
-                        // We know organisation exists
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        ...data.organisation!,
-                        address: {
+                          ...data.organisation!,
+                          address: {
+                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                            ...data.organisation!.address,
+                            street: e.target.value,
+                          },
+                        })
+                      }
+                    />
+                  }
+                />
+                <FormElement
+                  label={`${t("details.billing_info.address.postcode")}`}
+                  error={errors["organisation.address.zip"]}
+                  className="col-span-1"
+                  component={
+                    <Input
+                      type="text"
+                      name="organisation.address.zip"
+                      value={data.organisation?.address.zip}
+                      onChange={(e) =>
+                        setData("organisation", {
+                          // We know organisation exists
                           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                          ...data.organisation!.address,
-                          zip: e.target.value,
-                        },
-                      })
-                    }
-                    disabled={isDisabled}
-                  />
-                }
-              />
-
-              <FormElement
-                label={`${t("details.billing_info.address.city")}`}
-                error={errors["organisation.address.city"]}
-                component={
-                  <Input
-                    type="text"
-                    name="organisation.address.city"
-                    value={data.organisation?.address.city}
-                    onChange={(e) =>
-                      setData("organisation", {
-                        // We know organisation exists
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        ...data.organisation!,
-                        address: {
+                          ...data.organisation!,
+                          address: {
+                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                            ...data.organisation!.address,
+                            zip: e.target.value,
+                          },
+                        })
+                      }
+                    />
+                  }
+                />
+                <FormElement
+                  label={`${t("details.billing_info.address.city")}`}
+                  error={errors["organisation.address.city"]}
+                  className="col-span-2"
+                  component={
+                    <Input
+                      type="text"
+                      name="organisation.address.city"
+                      value={data.organisation?.address.city}
+                      onChange={(e) =>
+                        setData("organisation", {
+                          // We know organisation exists
                           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                          ...data.organisation!.address,
-                          city: e.target.value,
-                        },
-                      })
-                    }
-                    disabled={isDisabled}
-                  />
-                }
-              />
-            </div>
-            <div className="grid md:w-[50%]">
+                          ...data.organisation!,
+                          address: {
+                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                            ...data.organisation!.address,
+                            city: e.target.value,
+                          },
+                        })
+                      }
+                    />
+                  }
+                />
+              </div>
               <FormElement
                 label={`${t("details.billing_info.vat")}`}
                 error={errors["organisation.vat"]}
+                className="w-full"
                 component={
                   <Input
                     type="text"
                     name="organisation.vat"
                     value={data.organisation?.vat}
+                    className="md:min-w-[40rem]"
                     onChange={(e) =>
                       setData("organisation", {
                         // We know organisation exists
@@ -154,29 +164,26 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
                         vat: e.target.value,
                       })
                     }
-                    disabled={isDisabled}
                   />
                 }
               />
             </div>
-            {!isDisabled && (
-              <div className="flex flex-col gap-2 items-center">
-                <ButtonPrimary
-                  onClick={() => {
-                    setIsDisabled(true);
-
-                    patch(`/integrations/${id}/billing`, {
-                      preserveScroll: true,
-                    });
-                  }}
-                >
-                  {t("details.save")}
-                </ButtonPrimary>
-              </div>
-            )}
-          </>
-        )}
-      </div>
-    </FormDropdown>
+          </div>
+          <div className="lg:grid lg:grid-cols-3 gap-6">
+            <div></div>
+            <ButtonPrimary
+              className="col-span-2 justify-self-start"
+              onClick={() => {
+                patch(`/integrations/${id}/billing`, {
+                  preserveScroll: true,
+                });
+              }}
+            >
+              {t("details.save")}
+            </ButtonPrimary>
+          </div>
+        </>
+      )}
+    </TabLayout>
   );
 };
