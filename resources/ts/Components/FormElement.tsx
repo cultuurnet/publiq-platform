@@ -33,7 +33,6 @@ const getFlexDirection = (labelPosition: LabelPosition | undefined) => {
 
 const getAlignItems = (labelPosition: LabelPosition | undefined) => {
   if (labelPosition === "right") return "self-center";
-  if (labelPosition === "left") return "self-center";
   return;
 };
 
@@ -88,14 +87,13 @@ export const FormElement = ({
   const clonedComponent = cloneElement(component, { ...component.props, id });
 
   return (
-    <div className="inline-flex flex-col">
+    <div className={classNames("inline-flex flex-col ", className)}>
       <Wrapper labelPosition={labelPosition}>
         <div
           className={classNames(
             "flex gap-2",
             getFlexDirection(labelPosition),
-            getAlignItems(labelPosition),
-            className
+            getAlignItems(labelPosition)
           )}
         >
           {label && (

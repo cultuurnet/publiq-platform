@@ -65,14 +65,14 @@
     "description_name": "Geef een duidelijk titel aan je integratie en vermeld de naam van de organisatie of gemeente waarvoor de integratie gebouwd wordt",
     "aim": "Doel van de integratie",
     "description_aim": "Geef een duidelijke, gemotiveerde beschrijving van de integraite die je met het publiq platform wil opzetten (max. 200 karakters)",
-    "contact_label_1": "Inhoudelijk contact ",
-    "contact_label_2": "Technical contact",
-    "contact_label_3": "Andere medewerkers",
+    "contact_label_functional": "Inhoudelijk contact",
+    "contact_label_technical": "Technisch contact",
+    "contact_label_contributor": "Medewerker",
+    "add": "Medewerker toevoegen",
     "contact": {
-      "first_name": "Voornaam contactpersoon",
-      "last_name": "Achternaam contactpersoon",
-      "email": "E-mailadres",
-      "action": "Actie"
+      "first_name": "Voornaam",
+      "last_name": "Achternaam",
+      "email": "E-mailadres"
     },
     "agree": "Ik ga akkoord met de",
     "terms_of_use": "gebruiksvoorwaarden",
@@ -128,26 +128,25 @@
     "documentation": {
       "title": "Documentatie",
       "action_title": "Aan de slag met {{product}}"
-    },
-    "dialog": {
-      "delete": "Wil je deze integratie echt verwijderen?"
     }
   },
   "details": {
-    "save": "Wijzigingen opslaan",
+    "save": "Aanpassingen bewaren",
     "basic_info": {
       "title": "Basisgegevens",
       "name": "Integratienaam",
       "description": "Beschrijving"
     },
     "contact_info": {
-      "title": "Contactgegevens",
+      "title": "Contacten",
       "employees": "Andere medewerkers",
       "delete": "Verwijder medewerker",
       "new": "Nieuwe medewerker",
-      "save": "Opslaan",
-      "cancel": "Annuleren",
-      "dialog": "Wil je deze medewerker echt verwijderen?"
+      "delete_dialog": {
+        "title": "Contact verwijderen",
+        "question": "Ben je zeker dat je het contact met e-mailadres {{email}} wilt verwijderen?"
+      },
+      "edit_dialog": "Contact bewerken"
     },
     "billing_info": {
       "title": "Facturatiegegevens",
@@ -160,8 +159,8 @@
       },
       "vat": "BTW of ondernemingsnummer"
     },
-    "integration_info": {
-      "title": "Integratiegegevens",
+    "credentials": {
+      "title": "Credentials",
       "uitid_v1": "UITID v1",
       "uitid_v2": "UITID v2",
       "test": "Test",
@@ -173,27 +172,31 @@
       "action_uitid": "UiTIDv2 credentials aanvragen"
     },
     "integration_settings": {
-      "title": "Integratie-instellingen",
+      "title": "Instellingen",
       "test": "testomgeving",
       "prod": "productieomgeving",
-      "acc": "acceptatieomgeving",
       "login": "Login URL",
-      "callback": "Callback URL",
-      "new_url": "Nieuwe {{type}} URL",
-      "url": "URL",
-      "empty": "Geen URL gevonden",
+      "callback": "Callback URL's",
+      "add": "URL toevogen",
+      "new": "Nieuwe URL",
       "environment": "Omgeving",
-      "logout": "Logout URL",
-      "dialog": "Wil je deze URL echt verwijderen?"
+      "logout": "Logout URL's",
+      "delete": {
+        "title": "URL verwijderen",
+        "question": "Wil je deze URL echt verwijderen?"
+      }
     },
-    "menage_account": {
-      "title": "Integratiebeheer",
+    "delete_integration": {
+      "title": "Verwijderen",
       "delete": {
         "title": "Integratie verwijderen",
-        "description": "Ben je zeker dat je je integratie wilt verwijderen? Nadat je hebt gekozen om je integratie te verwijderen, zal deze niet langer toegankelijk zijn en kan de verwijdering niet ongedaan gemaakt worden."
-      },
-
-      "action": "Verwijderen"
+        "question": "Wil je deze integratie echt verwijderen?",
+        "description": {
+          "part1": "Ben je zeker dat je je integratie definitief wil verwijderen?",
+          "part2": "Wanneer je je integratie verwijdert wordt de toegang tot de API's onmiddellijk stopgezet. Na het verwijderen van je integratie ontvang je van ons nog een factuur voor het laatste jaar.",
+          "part3": "Het verwijderen van een integratie kan niet ongedaan gemaakt worden."
+        }
+      }
     }
   },
   "support": {
@@ -236,8 +239,8 @@
     }
   },
   "dialog": {
-    "confirm": "Doorgaan",
-    "cancel": "Annuleer"
+    "confirm": "Bevestigen",
+    "cancel": "Annuleren"
   },
   "tooltip": {
     "copy": "Gekopieerd!"

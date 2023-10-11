@@ -15,15 +15,13 @@ type ItemProps = { type: string; label: string; onChange?: OnTabChange } & Omit<
 
 const Item = ({ type, label, className, onChange }: ItemProps) => {
   return (
-    <li className="mr-2">
-      <button
-        onClick={() => onChange!(type)}
-        aria-current="page"
-        className={classNames("inline-block p-4 rounded-t-lg", className)}
-      >
-        {label}
-      </button>
-    </li>
+    <button
+      onClick={() => onChange!(type)}
+      aria-current="page"
+      className={classNames("inline-block p-3 grow", className)}
+    >
+      <li className="mr-2">{label}</li>
+    </button>
   );
 };
 
@@ -70,7 +68,7 @@ export const Tabs = ({ children, active, onChange, ...props }: Props) => {
 
   return (
     <div className="flex flex-col gap-3" {...props}>
-      <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200">
+      <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-300">
         {styledTabItems}
       </ul>
       {tabContent}
