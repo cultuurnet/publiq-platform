@@ -37,8 +37,6 @@ final class ActivateClientListenerTest extends TestCase
     {
         parent::setUp();
 
-        Event::fake();
-
         $this->httpClient = $this->createMock(ClientInterface::class);
 
         $this->clientRepository = $this->createMock(Auth0ClientRepository::class);

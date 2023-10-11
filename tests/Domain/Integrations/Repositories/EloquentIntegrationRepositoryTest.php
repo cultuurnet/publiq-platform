@@ -29,8 +29,6 @@ final class EloquentIntegrationRepositoryTest extends TestCase
     {
         parent::setUp();
 
-        Event::fake();
-
         $this->integrationRepository = new EloquentIntegrationRepository();
     }
 

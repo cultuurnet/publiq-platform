@@ -27,8 +27,6 @@ final class IntegrationModelTest extends TestCase
     {
         parent::setUp();
 
-        Event::fake();
-
         /** @var IntegrationModel $integrationModel */
         $integrationModel = IntegrationModel::query()->create([
             'id' => Uuid::uuid4()->toString(),

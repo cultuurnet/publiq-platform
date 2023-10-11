@@ -25,8 +25,6 @@ final class EloquentOrganizationRepositoryTest extends TestCase
     {
         parent::setUp();
 
-        Event::fake();
-
         $this->organizationRepository = new EloquentOrganizationRepository();
     }
 

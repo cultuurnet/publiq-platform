@@ -36,8 +36,6 @@ final class BlockConsumerListenerTest extends TestCase
     {
         parent::setUp();
 
-        Event::fake();
-
         $this->httpClient = $this->createMock(ClientInterface::class);
 
         $this->clientRepository = $this->createMock(UiTiDv1ConsumerRepository::class);
