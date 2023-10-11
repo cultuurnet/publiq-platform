@@ -32,19 +32,56 @@ Route::post('/admin/logout', [Logout::class, 'adminLogout']);
 
 Route::get('/auth/callback', Callback::class);
 
-TranslatedRoute::get(['/en/support', '/nl/ondersteuning'], static fn () => Inertia::render('Support/Index'));
-TranslatedRoute::get(['/en/subscriptions', '/nl/abonnementen'], [SubscriptionController::class, 'index']);
+TranslatedRoute::get(
+    [
+        '/en/support',
+        '/nl/ondersteuning',
+    ],
+    static fn () => Inertia::render('Support/Index')
+);
+
+TranslatedRoute::get(
+    [
+        '/en/subscriptions',
+        '/nl/abonnementen',
+    ],
+    [SubscriptionController::class, 'index']
+);
 
 Route::group(['middleware' => 'auth'], static function () {
-    TranslatedRoute::get(['/en/integrations', '/nl/integraties'], [IntegrationController::class, 'index'], 'integrations.index');
-    TranslatedRoute::get(['/en/integrations/new', '/nl/integraties/nieuw'], [IntegrationController::class, 'create']);
-    TranslatedRoute::get(['/en/integrations/{id}', '/nl/integraties/{id}'], [IntegrationController::class, 'detail'], 'integrations.detail');
+    TranslatedRoute::get(
+        [
+            '/en/integrations',
+            '/nl/integraties',
+        ],
+        [IntegrationController::class, 'index'],
+        'integrations.index'
+    );
 
-    Route::delete('/integrations/{id}', [IntegrationController::class, 'delete']);
+    TranslatedRoute::get(
+        [
+            '/en/integrations/new',
+            '/nl/integraties/nieuw',
+        ],
+        [IntegrationController::class, 'create']
+    );
+    TranslatedRoute::get(
+        [
+            '/en/integrations/{id}',
+            '/nl/integraties/{id}',
+        ],
+        [IntegrationController::class, 'show'],
+        'integrations.show'
+    );
 
     Route::post('/integrations', [IntegrationController::class, 'store']);
 
+    Route::delete('/integrations/{id}', [IntegrationController::class, 'destroy']);
     Route::patch('/integrations/{id}', [IntegrationController::class, 'update']);
+
+    Route::patch('/integrations/{id}/urls', [IntegrationController::class, 'updateUrls']);
+    Route::post('/integrations/{id}/urls', [IntegrationController::class, 'storeUrl']);
+    Route::delete('/integrations/{id}/urls/{urlId}', [IntegrationController::class, 'destroyUrl']);
 
     Route::patch('/integrations/{id}/contacts', [IntegrationController::class, 'updateContacts']);
     Route::delete('/integrations/{id}/contacts/{contactId}', [IntegrationController::class, 'deleteContact']);

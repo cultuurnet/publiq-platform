@@ -6,10 +6,8 @@ namespace App\Domain\Integrations\Repositories;
 
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
-use App\Domain\Integrations\FormRequests\UpdateIntegration;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Models\IntegrationModel;
-use App\Domain\Integrations\Models\IntegrationUrlModel;
 use App\Pagination\PaginatedCollection;
 use App\Pagination\PaginationInfo;
 use Illuminate\Database\Eloquent\Builder;
@@ -45,59 +43,16 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         });
     }
 
-    private function updateUrls(array $urls): void
+    public function update(Integration $integration): void
     {
-        if (count($urls) === 0) {
-            return;
-        }
-
-        DB::transaction(static function () use ($urls) {
-            foreach ($urls as $url) {
-                /** @var IntegrationUrlModel $integrationUrlModel */
-                $integrationUrlModel = IntegrationUrlModel::query()->findOrFail($url['id']);
-                $integrationUrlModel['url'] = $url['url'];
-                $integrationUrlModel->save();
-            }
-        });
-    }
-
-    public function update(UuidInterface $id, UpdateIntegration $updateIntegration): Integration
-    {
-        /** @var IntegrationModel $integrationModel */
-        $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
-
-        $integrationName = $updateIntegration->input('integrationName');
-        $integrationDescription = $updateIntegration->input('description');
-        /**
-         * @var array<string, mixed> $newIntegrationUrl
-         */
-        $newIntegrationUrl = $updateIntegration->input('newIntegrationUrl');
-
-        if ($integrationName !== null) {
-            $integrationModel['name'] = $integrationName;
-        }
-
-        if ($integrationDescription !== null) {
-            $integrationModel['description'] = $integrationDescription;
-        }
-
-
-        if ($newIntegrationUrl !== null) {
-            IntegrationUrlModel::query()->create(
-                [
-                    'integration_id' => $id->toString(),
-                    ...$newIntegrationUrl,
-                ]
-            );
-        }
-
-        foreach (['loginUrls', 'callbackUrls', 'logoutUrls'] as $property) {
-            $this->updateUrls($updateIntegration->input($property) ?? []);
-        }
-
-        $integrationModel->save();
-
-        return $integrationModel->toDomain();
+        IntegrationModel::query()->update([
+                'id' => $integration->id->toString(),
+                'type' => $integration->type,
+                'name' => $integration->name,
+                'description' => $integration->description,
+                'subscription_id' => $integration->subscriptionId->toString(),
+                'status' => $integration->status,
+        ]);
     }
 
     public function getById(UuidInterface $id): Integration

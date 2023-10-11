@@ -7,7 +7,7 @@ namespace App\Domain\Integrations\FormRequests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-final class UpdateContactInfo extends FormRequest
+final class UpdateContactInfoRequest extends FormRequest
 {
     /**
      * @return array<string, mixed>
@@ -30,7 +30,6 @@ final class UpdateContactInfo extends FormRequest
                 'firstname' => ['nullable', 'string', 'min:2', 'max:255'],
                 'lastname' => ['nullable', 'string', 'min:2', 'max:255'],
                 'email' => ['nullable', 'string', 'email', 'min:2', 'max:255'],
-                // 'contributors' => ['required', 'array'],
                 'contributors.*' => Rule::forEach(function () {
                     return [
                         'id' => ['required', 'string'],
@@ -41,6 +40,6 @@ final class UpdateContactInfo extends FormRequest
                         'lastName' => ['required', 'string', 'min:2', 'max:255'],
                     ];
                 }),
-    ];
+        ];
     }
 }

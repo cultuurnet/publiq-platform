@@ -6,7 +6,7 @@ namespace App\Domain\Integrations\FormRequests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-final class StoreIntegration extends FormRequest
+final class StoreIntegrationRequest extends FormRequest
 {
     /**
      * @return array<string, mixed>

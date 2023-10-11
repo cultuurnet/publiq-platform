@@ -16,9 +16,9 @@ use App\Domain\Integrations\Repositories\EloquentIntegrationRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
-use Tests\TestCase;
+use Tests\TestCaseWithDatabase;
 
-final class EloquentIntegrationRepositoryTest extends TestCase
+final class EloquentIntegrationRepositoryTest extends TestCaseWithDatabase
 {
     use RefreshDatabase;
 
@@ -96,6 +96,41 @@ final class EloquentIntegrationRepositoryTest extends TestCase
                 'email' => $contact->email,
             ]);
         }
+    }
+
+
+    public function test_it_can_update_an_integration(): void
+    {
+        $integrationId = Uuid::uuid4();
+        $subscriptionId = Uuid::uuid4();
+
+        $initialIntegration = new Integration(
+            $integrationId,
+            IntegrationType::SearchApi,
+            'Initial Integration',
+            'Initial Integration description',
+            $subscriptionId,
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
+        );
+
+        $this->integrationRepository->save($initialIntegration);
+
+        $updatedIntegration = new Integration(
+            $initialIntegration->id,
+            $initialIntegration->type,
+            'Updated Integration',
+            'Updated Integration description',
+            $initialIntegration->subscriptionId,
+            IntegrationStatus::Active,
+            $initialIntegration->partnerStatus,
+        );
+
+        $this->integrationRepository->update($updatedIntegration);
+
+        $retrievedIntegration = $this->integrationRepository->getById($integrationId);
+
+        $this->assertEquals($updatedIntegration, $retrievedIntegration);
     }
 
     public function test_it_can_get_an_integration_by_id(): void
