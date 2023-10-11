@@ -149,7 +149,10 @@
       "edit_dialog": "Contact bewerken"
     },
     "billing_info": {
-      "title": "Facturatiegegevens",
+      "title": {
+        "subscription": "Prijsplan",
+        "organization": "Organisatiegegevens"
+      },
       "subscription": "Prijsplan",
       "name": "Naam bedrijf, organisatie of gemeente",
       "address": {
