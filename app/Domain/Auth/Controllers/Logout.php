@@ -17,13 +17,8 @@ final class Logout
         /** @var Auth0 $auth0 */
         $auth0 = app(Auth0::class);
 
-        $isLoggedIn = Auth::check();
-
-        if ($isLoggedIn) {
-            // deletes logged in state in auth0 sdk
+        if (Auth::check()) {
             $auth0->logout();
-
-            // logout in custom auth guard
             Auth::guard(config('nova.guard'))->logout();
         }
 
