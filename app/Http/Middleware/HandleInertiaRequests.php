@@ -25,6 +25,11 @@ final class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         return array_merge(parent::share($request), [
+            'widgetConfig' => [
+                'profileUrl' => config('uitidwidget.profileUrl'),
+                'registerUrl' => config('uitidwidget.registerUrl'),
+                'auth0Domain' => config('uitidwidget.auth0Domain'),
+            ],
         ]);
     }
 }

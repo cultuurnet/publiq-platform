@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import type { Integration } from "../Pages/Integrations/Index";
 import { ButtonIcon } from "./ButtonIcon";
-import { faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { Heading } from "./Heading";
 import { Card } from "./Card";
 import { useTranslation } from "react-i18next";
@@ -10,18 +10,10 @@ import { StatusLight } from "./StatusLight";
 import { ButtonIconCopy } from "./ButtonIconCopy";
 import { Tooltip } from "./Tooltip";
 type Props = Integration & {
-  onDelete: (id: string) => void;
   onEdit: (id: string) => void;
 };
 
-export const IntegrationCard = ({
-  id,
-  name,
-  type,
-  status,
-  onDelete,
-  onEdit,
-}: Props) => {
+export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
   const { t } = useTranslation();
 
   const codeFieldRef = useRef<HTMLSpanElement>(null);
@@ -39,35 +31,24 @@ export const IntegrationCard = ({
 
   return (
     <Card
-      title={
-        <div className="inline-flex w-full justify-between">
-          <div className="inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">
-            <Heading level={2}>{name}</Heading>
-            <span className="bg-publiq-blue-dark text-white text-xs font-medium mr-2 px-2.5 py-0.5 rounded ">
-              {type}
-            </span>
-          </div>
-          <div className="inline-flex gap-2 max-md:self-start">
-            <ButtonIcon
-              icon={faPencil}
-              className="text-icon-gray"
-              onClick={() => onEdit(id)}
-            />
-            <ButtonIcon
-              icon={faTrash}
-              className="text-icon-gray"
-              onClick={() => onDelete(id)}
-            />
-          </div>
-        </div>
+      title={name}
+      border
+      badge={type}
+      iconButton={
+        <ButtonIcon
+          icon={faPencil}
+          size="lg"
+          className="text-icon-gray"
+          onClick={() => onEdit(id)}
+        />
       }
     >
-      <div className="flex w-full flex-col gap-4">
+      <div className="flex flex-col gap-4 mx-10 my-6">
         <section className="flex max-md:flex-col max-md:items-start gap-3 md:items-center">
           <Heading level={5} className="font-semibold min-w-[10rem]">
             {t("integrations.test")}
           </Heading>
-          <div className="inline-flex gap-2 items-center bg-status-green rounded px-3 whitespace-nowrap max-sm:w-full justify-between">
+          <div className="flex gap-2 items-center bg-status-green rounded px-3">
             <span
               className=" overflow-hidden text-ellipsis text-status-green-dark"
               ref={codeFieldRef}

@@ -1,24 +1,20 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { ButtonPrimary } from "../../ButtonPrimary";
-import { FormDropdown } from "../../FormDropdown";
-import { ButtonIcon } from "../../ButtonIcon";
-import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "@inertiajs/react";
 import { Integration } from "../../../Pages/Integrations/Index";
 import { IntegrationUrlType } from "../../../types/IntegrationUrlType";
-import { UrlList } from "./UrlList";
-import { Environment } from "../../../types/Environment";
+import { NewIntegrationUrl, UrlList } from "./UrlList";
 import { IntegrationUrl } from "../../../Pages/Integrations/Index";
+import { BasicInfo } from "./BasicInfo";
 
 type Props = {
   isMobile: boolean;
+  integration: Integration;
 } & Integration;
 
-export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
+export const IntegrationSettings = ({ integration, id, urls }: Props) => {
   const { t } = useTranslation();
-
-  const [isDisabled, setIsDisabled] = useState(true);
 
   const callbackUrls = useMemo(
     () =>
@@ -45,14 +41,12 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
   );
 
   const initialFormValues = {
+    integrationName: integration.name,
+    description: integration.description,
     callbackUrls,
     loginUrls,
     logoutUrls,
-    newIntegrationUrl: {
-      environment: Environment.Test as Environment,
-      url: "",
-      type: "",
-    },
+    newIntegrationUrls: [] as NewIntegrationUrl[],
   };
 
   const {
@@ -76,6 +70,25 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
       preserveState: false,
     });
 
+  const handleChangeNewUrl = (newUrl: NewIntegrationUrl) => {
+    let found = false;
+
+    const updated = data.newIntegrationUrls.map((url) => {
+      if (url.type === newUrl.type && url.environment === newUrl.environment) {
+        found = true;
+        return newUrl;
+      }
+
+      return url;
+    });
+
+    if (!found) {
+      updated.push(newUrl);
+    }
+
+    setData("newIntegrationUrls", updated);
+  };
+
   transform((data) => ({
     ...data,
     callbackUrls: data.callbackUrls.filter((url) => url.changed),
@@ -84,78 +97,53 @@ export const IntegrationSettings = ({ isMobile, id, urls }: Props) => {
   }));
 
   return (
-    <FormDropdown
-      title={t("details.integration_settings.title")}
-      actions={
-        urls.length > 0 && (
-          <ButtonIcon
-            icon={faPencil}
-            className="text-icon-gray"
-            onClick={() => setIsDisabled((prev) => !prev)}
-          />
-        )
-      }
-    >
+    <div className="w-full flex flex-col max-md:px-5 px-10 py-5">
+      <BasicInfo
+        name={data.integrationName}
+        description={data.description}
+        onChangeName={(data) => setData("integrationName", data)}
+        onChangeDescription={(data) => setData("description", data)}
+      />
       <UrlList
         type={IntegrationUrlType.Login}
         urls={data.loginUrls}
-        newUrl={data.newIntegrationUrl}
+        newUrls={data.newIntegrationUrls}
         onDelete={(urlId) => handleDeleteUrl(urlId)}
-        onChangeNewUrl={(newUrl) =>
-          setData("newIntegrationUrl", {
-            ...newUrl,
-            type: IntegrationUrlType.Login,
-          })
-        }
+        onChangeNewUrl={handleChangeNewUrl}
         onChangeData={(data) => setData("loginUrls", data)}
-        isDisabled={isDisabled}
-        isMobile={isMobile}
-        onSave={handleSave}
+        className="border-b border-b-gray-300"
       />
       <UrlList
         type={IntegrationUrlType.Callback}
         urls={data.callbackUrls}
-        newUrl={data.newIntegrationUrl}
+        newUrls={data.newIntegrationUrls}
         onDelete={(urlId) => handleDeleteUrl(urlId)}
-        onChangeNewUrl={(newUrl) =>
-          setData("newIntegrationUrl", {
-            ...newUrl,
-            type: IntegrationUrlType.Callback,
-          })
-        }
-        onChangeData={(data) => setData("callbackUrls", data)}
-        isDisabled={isDisabled}
-        isMobile={isMobile}
-        onSave={handleSave}
+        onChangeNewUrl={handleChangeNewUrl}
+        onChangeData={(data) => {
+          setData("callbackUrls", data);
+        }}
+        className="border-b border-b-gray-300"
       />
       <UrlList
         type={IntegrationUrlType.Logout}
         urls={data.logoutUrls}
-        newUrl={data.newIntegrationUrl}
+        newUrls={data.newIntegrationUrls}
         onChangeData={(data) => setData("logoutUrls", data)}
         onDelete={(urlId) => handleDeleteUrl(urlId)}
-        onChangeNewUrl={(newUrl) =>
-          setData("newIntegrationUrl", {
-            ...newUrl,
-            type: IntegrationUrlType.Logout,
-          })
-        }
-        isDisabled={isDisabled}
-        isMobile={isMobile}
-        onSave={handleSave}
+        onChangeNewUrl={handleChangeNewUrl}
+        className="py-10"
       />
-      {!isDisabled && (
-        <div className="flex flex-col items-start md:pl-[10.5rem]">
-          <ButtonPrimary
-            onClick={() => {
-              setIsDisabled(true);
-              handleSave();
-            }}
-          >
-            {t("details.save")}
-          </ButtonPrimary>
-        </div>
-      )}
-    </FormDropdown>
+      <div className="lg:grid lg:grid-cols-3 gap-6">
+        <div></div>
+        <ButtonPrimary
+          onClick={() => {
+            handleSave();
+          }}
+          className="col-span-2 justify-self-start"
+        >
+          {t("details.save")}
+        </ButtonPrimary>
+      </div>
+    </div>
   );
 };

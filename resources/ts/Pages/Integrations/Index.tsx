@@ -141,10 +141,6 @@ const Index = ({ integrations, paginationInfo }: Props) => {
             <li className="flex w-full" key={integration.id}>
               <IntegrationCard
                 {...integration}
-                onDelete={(id) => {
-                  setToBeDeletedId(id);
-                  setIsDeleteDialogVisible(true);
-                }}
                 onEdit={(id) =>
                   router.get(`${translateRoute("/integrations")}/${id}`)
                 }
@@ -161,6 +157,7 @@ const Index = ({ integrations, paginationInfo }: Props) => {
         onClose={() => {
           setIsDeleteDialogVisible((prev) => !prev);
         }}
+        title={t("integrations.dialog.title")}
         question={t("integrations.dialog.delete")}
         onConfirm={handleDeleteIntegration}
         onCancel={() => {
