@@ -73,7 +73,7 @@ export const UrlList = ({
   return (
     <div
       className={classNames(
-        "max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-5 py-10",
+        "max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-5",
         className
       )}
     >
@@ -96,7 +96,7 @@ export const UrlList = ({
                         type="text"
                         name="url"
                         value={url.url}
-                        className="md:min-w-[32rem]"
+                        className="md:min-w-[40rem]"
                         onChange={(e) =>
                           onChangeData(
                             urls.map((urlItem) => {
@@ -132,7 +132,7 @@ export const UrlList = ({
                       <Input
                         type="text"
                         name="newUrl"
-                        className="md:min-w-[32rem]"
+                        className="md:min-w-[40rem]"
                         onBlur={(e) =>
                           onChangeNewUrl({
                             environment: option.env,
@@ -165,7 +165,7 @@ export const UrlList = ({
                   <Input
                     type="text"
                     name="url"
-                    className="md:min-w-[32rem]"
+                    className="md:min-w-[40rem]"
                     onChange={(e) =>
                       onChangeNewUrl({
                         environment: option.env,

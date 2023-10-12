@@ -5,8 +5,8 @@ type Props = ComponentProps<"div">;
 
 export const ContactsTableDesktop = ({ className, children }: Props) => {
   return (
-    <div className={classNames("relative overflow-x-auto", className)}>
-      <table className="relative w-full text-left border border-publiq-gray-light text-gray-500">
+    <div className={classNames("relative", className)}>
+      <table className="w-full text-left border border-publiq-gray-light text-gray-500 min-w-[40rem]">
         {children}
       </table>
     </div>

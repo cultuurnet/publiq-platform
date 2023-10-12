@@ -52,7 +52,7 @@ export const Tabs = ({ children, active, onChange, ...props }: Props) => {
           ...item.props,
           className: classNames(
             item.props.className,
-            "text-publiq-blue-dark bg-gray-100"
+            "text-publiq-blue-dark bg-slate-100"
           ),
           onChange,
         });
@@ -71,7 +71,9 @@ export const Tabs = ({ children, active, onChange, ...props }: Props) => {
       <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-300">
         {styledTabItems}
       </ul>
-      {tabContent}
+      <div className="flex flex-col gap-10 max-md:px-5 px-12 py-5">
+        {tabContent}
+      </div>
     </div>
   );
 };

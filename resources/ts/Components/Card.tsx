@@ -70,7 +70,7 @@ export const Card = ({
         className={classNames(
           "flex flex-col",
           textCenter && "text-center",
-          !border && "gap-5"
+          !border && "gap-5 items-center"
         )}
       >
         <div
@@ -101,7 +101,7 @@ export const Card = ({
               </span>
             )}
           </div>
-          <div className="justify-self-end">{iconButton}</div>
+          {iconButton && <div className="justify-self-end">{iconButton}</div>}
         </div>
 
         {description && (

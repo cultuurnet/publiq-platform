@@ -97,7 +97,7 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
   }));
 
   return (
-    <div className="w-full flex flex-col max-md:px-5 px-10 py-5">
+    <>
       <BasicInfo
         name={data.integrationName}
         description={data.description}
@@ -111,7 +111,7 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
         onDelete={(urlId) => handleDeleteUrl(urlId)}
         onChangeNewUrl={handleChangeNewUrl}
         onChangeData={(data) => setData("loginUrls", data)}
-        className="border-b border-b-gray-300"
+        className="border-b border-b-gray-300 pb-10"
       />
       <UrlList
         type={IntegrationUrlType.Callback}
@@ -122,7 +122,7 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
         onChangeData={(data) => {
           setData("callbackUrls", data);
         }}
-        className="border-b border-b-gray-300"
+        className="border-b border-b-gray-300 pb-10"
       />
       <UrlList
         type={IntegrationUrlType.Logout}
@@ -131,7 +131,6 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
         onChangeData={(data) => setData("logoutUrls", data)}
         onDelete={(urlId) => handleDeleteUrl(urlId)}
         onChangeNewUrl={handleChangeNewUrl}
-        className="py-10"
       />
       <div className="lg:grid lg:grid-cols-3 gap-6">
         <div></div>
@@ -144,6 +143,6 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
           {t("details.save")}
         </ButtonPrimary>
       </div>
-    </div>
+    </>
   );
 };
