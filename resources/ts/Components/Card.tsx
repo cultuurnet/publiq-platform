@@ -75,8 +75,7 @@ export const Card = ({
           <div className="flex items-center gap-3">
             <Heading
               level={2}
-              className={classNames("font-medium max-sm:text-basis")}
-              className="font-medium text-publiq-blue-dark hover:underline max-sm:text-basis"
+              className="font-medium max-sm:text-basis"
             >
               {title}
             </Heading>
