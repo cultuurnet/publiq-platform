@@ -5,7 +5,6 @@ import type { Integration } from "../../../Pages/Integrations/Index";
 import { StatusLight } from "../../StatusLight";
 import { ButtonPrimary } from "../../ButtonPrimary";
 import { Link } from "../../Link";
-import { TabLayout } from "../../TabLayout";
 
 type Props = Integration;
 
@@ -16,7 +15,7 @@ export const Credentials = ({ id, status }: Props) => {
   const v2 = true;
 
   return (
-    <TabLayout>
+    <>
       <div>
         {v2 && (
           <div className="w-full max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-6 border-b pb-10 border-gray-300">
@@ -103,6 +102,6 @@ export const Credentials = ({ id, status }: Props) => {
           </div>
         )}
       </div>
-    </TabLayout>
+    </>
   );
 };

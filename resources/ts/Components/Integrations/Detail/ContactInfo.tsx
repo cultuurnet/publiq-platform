@@ -12,7 +12,6 @@ import { Dialog } from "../../Dialog";
 import { ContactsTable } from "../../ContactsTable";
 import { classNames } from "../../../utils/classNames";
 import { Heading } from "../../Heading";
-import { TabLayout } from "../../TabLayout";
 
 export type ContactFormData = {
   functional: Contact;
@@ -156,7 +155,7 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
   ]);
 
   return (
-    <TabLayout>
+    <>
       <div className="w-full flex flex-col gap-6">
         <Heading level={3} className="font-semibold col-span-1">
           {t("details.contact_info.title")}
@@ -386,6 +385,6 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
           setToBeDeletedId("");
         }}
       ></QuestionDialog>
-    </TabLayout>
+    </>
   );
 };

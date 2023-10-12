@@ -7,7 +7,6 @@ import { IntegrationUrlType } from "../../../types/IntegrationUrlType";
 import { NewIntegrationUrl, UrlList } from "./UrlList";
 import { IntegrationUrl } from "../../../Pages/Integrations/Index";
 import { BasicInfo } from "./BasicInfo";
-import { TabLayout } from "../../TabLayout";
 
 type Props = {
   isMobile: boolean;
@@ -98,7 +97,7 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
   }));
 
   return (
-    <TabLayout>
+    <>
       <BasicInfo
         name={data.integrationName}
         description={data.description}
@@ -144,6 +143,6 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
           {t("details.save")}
         </ButtonPrimary>
       </div>
-    </TabLayout>
+    </>
   );
 };

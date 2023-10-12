@@ -17,7 +17,6 @@ export const DeleteIntegration = ({ id }: Props) => {
   };
   return (
     <>
-      <div className="flex flex-col gap-4 max-md:px-5 px-10 py-5">
         <div className="max-w-[30rem] flex flex-col gap-5">
           <Heading level={2} className="font-semibold">
             {t("details.delete_integration.title")}
@@ -48,7 +47,6 @@ export const DeleteIntegration = ({ id }: Props) => {
             setIsModalVisible(false);
           }}
         ></QuestionDialog>
-      </div>
     </>
   );
 };

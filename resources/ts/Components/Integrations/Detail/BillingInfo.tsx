@@ -6,7 +6,6 @@ import { ButtonPrimary } from "../../ButtonPrimary";
 import { Integration } from "../../../Pages/Integrations/Index";
 import { useTranslation } from "react-i18next";
 import { useForm } from "@inertiajs/react";
-import { TabLayout } from "../../TabLayout";
 
 type Props = Integration;
 
@@ -22,7 +21,7 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
   const errors = err as Record<string, string | undefined>;
 
   return (
-    <TabLayout>
+    <>
       <div className="w-full max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-6">
         <Heading level={3} className="font-semibold">
           {t("details.billing_info.title.subscription")}
@@ -184,6 +183,6 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
           </div>
         </>
       )}
-    </TabLayout>
+    </>
   );
 };
