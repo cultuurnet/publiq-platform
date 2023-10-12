@@ -32,7 +32,7 @@ export const Card = ({
   contentStyles,
   border = false,
   textCenter,
-  clickableHeading,
+  clickableHeading = false,
   id,
   ...props
 }: Props) => {
