@@ -41,7 +41,7 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
           }
         />
       </div>
-      {organisation && (
+      {data.organisation && (
         <>
           <div className="w-full max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-6">
             <Heading level={3} className="font-semibold">
@@ -58,7 +58,7 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
                     type="text"
                     name="organisation.name"
                     className="md:min-w-[40rem]"
-                    value={data.organisation?.name}
+                    value={data.organisation.name}
                     onChange={(e) =>
                       setData("organisation", {
                         // We know organisation exists
@@ -79,7 +79,7 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
                     <Input
                       type="text"
                       name="organisation.address.street"
-                      value={data.organisation?.address.street}
+                      value={data.organisation.address.street}
                       onChange={(e) =>
                         setData("organisation", {
                           // We know organisation exists
@@ -103,7 +103,7 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
                     <Input
                       type="text"
                       name="organisation.address.zip"
-                      value={data.organisation?.address.zip}
+                      value={data.organisation.address.zip}
                       onChange={(e) =>
                         setData("organisation", {
                           // We know organisation exists
