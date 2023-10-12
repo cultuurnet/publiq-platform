@@ -237,7 +237,7 @@ const New = ({ subscriptions }: Props) => {
           />
           <div className="flex flex-col gap-5">
             <Heading className="font-semibold" level={3}>
-              {t("integration_form.contact_label_1")}
+              {t("integration_form.contact_label_functional")}
             </Heading>
             <div className="flex flex-col gap-5">
               <div className="grid grid-cols-3 max-md:flex max-md:flex-col gap-5 ">
@@ -292,7 +292,7 @@ const New = ({ subscriptions }: Props) => {
 
           <div className="flex flex-col gap-5 mb-5">
             <Heading className="font-semibold" level={3}>
-              {t("integration_form.contact_label_2")}
+              {t("integration_form.contact_label_technical")}
             </Heading>
             <div className="grid grid-cols-3 max-md:flex max-md:flex-col gap-5">
               <FormElement
