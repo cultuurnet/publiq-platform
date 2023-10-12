@@ -73,10 +73,7 @@ export const Card = ({
           )}
         >
           <div className="flex items-center gap-3">
-            <Heading
-              level={2}
-              className="font-medium max-sm:text-basis"
-            >
+            <Heading level={2} className="font-medium max-sm:text-basis">
               {title}
             </Heading>
             {!!badge && (
