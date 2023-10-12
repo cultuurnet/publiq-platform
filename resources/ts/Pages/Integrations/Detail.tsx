@@ -60,7 +60,10 @@ const Detail = ({ integration }: Props) => {
             <Tabs.Item type="contacts" label={t("details.contact_info.title")}>
               <ContactInfo {...integration} isMobile={isMobile} />
             </Tabs.Item>
-            <Tabs.Item type="billing" label={t("details.billing_info.title.billing")}>
+            <Tabs.Item
+              type="billing"
+              label={t("details.billing_info.title.billing")}
+            >
               <BillingInfo {...integration} />
             </Tabs.Item>
             <Tabs.Item
