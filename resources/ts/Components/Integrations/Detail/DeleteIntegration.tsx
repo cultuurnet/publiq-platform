@@ -17,36 +17,36 @@ export const DeleteIntegration = ({ id }: Props) => {
   };
   return (
     <>
-        <div className="max-w-[30rem] flex flex-col gap-5">
-          <Heading level={2} className="font-semibold">
-            {t("details.delete_integration.title")}
-          </Heading>
-          <p className="font-semibold">
-            {t("details.delete_integration.delete.description.part1")}
-          </p>
-          <p>{t("details.delete_integration.delete.description.part2")}</p>
-          <p> {t("details.delete_integration.delete.description.part3")}</p>
-          <ButtonSecondary
-            className="self-start"
-            variant="danger"
-            onClick={() => setIsModalVisible(true)}
-          >
-            {t("details.delete_integration.delete.title")}
-            <FontAwesomeIcon className="pl-1" icon={faTrash} />
-          </ButtonSecondary>
-        </div>
-        <QuestionDialog
-          isVisible={isModalVisible}
-          onClose={() => {
-            setIsModalVisible(false);
-          }}
-          title={t("details.delete_integration.delete.title")}
-          question={t("details.delete_integration.delete.question")}
-          onConfirm={handleDeleteIntegration}
-          onCancel={() => {
-            setIsModalVisible(false);
-          }}
-        ></QuestionDialog>
+      <div className="max-w-[30rem] flex flex-col gap-5">
+        <Heading level={2} className="font-semibold">
+          {t("details.delete_integration.title")}
+        </Heading>
+        <p className="font-semibold">
+          {t("details.delete_integration.delete.description.part1")}
+        </p>
+        <p>{t("details.delete_integration.delete.description.part2")}</p>
+        <p> {t("details.delete_integration.delete.description.part3")}</p>
+        <ButtonSecondary
+          className="self-start"
+          variant="danger"
+          onClick={() => setIsModalVisible(true)}
+        >
+          {t("details.delete_integration.delete.title")}
+          <FontAwesomeIcon className="pl-1" icon={faTrash} />
+        </ButtonSecondary>
+      </div>
+      <QuestionDialog
+        isVisible={isModalVisible}
+        onClose={() => {
+          setIsModalVisible(false);
+        }}
+        title={t("details.delete_integration.delete.title")}
+        question={t("details.delete_integration.delete.question")}
+        onConfirm={handleDeleteIntegration}
+        onCancel={() => {
+          setIsModalVisible(false);
+        }}
+      ></QuestionDialog>
     </>
   );
 };

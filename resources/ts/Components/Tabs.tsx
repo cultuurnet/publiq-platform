@@ -72,7 +72,7 @@ export const Tabs = ({ children, active, onChange, ...props }: Props) => {
         {styledTabItems}
       </ul>
       <div className="flex flex-col gap-10 max-md:px-5 px-12 py-5">
-      {tabContent}
+        {tabContent}
       </div>
     </div>
   );
