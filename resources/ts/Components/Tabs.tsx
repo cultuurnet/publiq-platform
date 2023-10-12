@@ -52,7 +52,7 @@ export const Tabs = ({ children, active, onChange, ...props }: Props) => {
           ...item.props,
           className: classNames(
             item.props.className,
-            "text-publiq-blue-dark bg-gray-100"
+            "text-publiq-blue-dark bg-slate-100"
           ),
           onChange,
         });
