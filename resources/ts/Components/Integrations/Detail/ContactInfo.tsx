@@ -157,7 +157,7 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
 
   return (
     <TabLayout>
-      <div className="w-full max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-6">
+      <div className="w-full flex flex-col gap-6">
         <Heading level={3} className="font-semibold col-span-1">
           {t("details.contact_info.title")}
         </Heading>
@@ -174,20 +174,19 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
           className="col-span-2"
         />
       </div>
-      <div className="lg:grid lg:grid-cols-3 gap-6">
-        <div></div>
-        {!isAddFormVisible && (
-          <ButtonPrimary
-            onClick={() => {
-              setIsAddFormVisible(true);
-              setIsDisabled(true);
-            }}
-            className="col-span-2 justify-self-start"
-          >
-            {t("integration_form.add")}
-          </ButtonPrimary>
-        )}
-      </div>
+
+      {!isAddFormVisible && (
+        <ButtonPrimary
+          onClick={() => {
+            setIsAddFormVisible(true);
+            setIsDisabled(true);
+          }}
+          className="self-start"
+        >
+          {t("integration_form.add")}
+        </ButtonPrimary>
+      )}
+
       <Dialog
         isVisible={isAddFormVisible}
         onClose={() => setIsAddFormVisible(false)}
