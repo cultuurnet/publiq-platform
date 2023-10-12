@@ -3,6 +3,8 @@ import { classNames } from "../utils/classNames";
 import { Heading } from "./Heading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { useTranslateRoute } from "../hooks/useTranslateRoute";
+import { Link } from "@inertiajs/react";
 
 type Props = {
   title: ReactElement | string;
@@ -14,6 +16,8 @@ type Props = {
   textCenter?: boolean;
   border?: boolean;
   iconButton?: ReactElement;
+  clickableHeading?: boolean;
+  id?: string;
 } & Omit<ComponentProps<"div">, "title">;
 
 export const Card = ({
@@ -28,8 +32,11 @@ export const Card = ({
   contentStyles,
   border = false,
   textCenter,
+  clickableHeading = false,
+  id,
   ...props
 }: Props) => {
+  const translateRoute = useTranslateRoute();
   return (
     <div
       className={classNames(
@@ -73,11 +80,23 @@ export const Card = ({
           )}
         >
           <div className="flex items-center gap-3">
-            <Heading level={2} className="font-medium max-sm:text-basis">
-              {title}
-            </Heading>
+            {clickableHeading ? (
+              <Link href={`${translateRoute("/integrations")}/${id}`}>
+                <Heading
+                  level={2}
+                  className="font-medium text-publiq-blue-dark hover:underline max-sm:text-basis"
+                >
+                  {title}
+                </Heading>
+              </Link>
+            ) : (
+              <Heading level={2} className="font-medium max-sm:text-basis">
+                {title}
+              </Heading>
+            )}
+
             {!!badge && (
-              <span className="bg-publiq-blue-dark text-white text-xs font-medium  mr-2 px-2.5 py-0.5 rounded">
+              <span className="bg-white text-publiq-blue border border-publiq-blue text-xs font-medium  mr-2 px-2.5 py-0.5 rounded">
                 {badge}
               </span>
             )}
