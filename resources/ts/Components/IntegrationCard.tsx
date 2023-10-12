@@ -34,6 +34,8 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
       title={name}
       border
       badge={type}
+      clickableHeading
+      id={id}
       iconButton={
         <ButtonIcon
           icon={faPencil}
