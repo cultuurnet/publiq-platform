@@ -150,6 +150,7 @@
     },
     "billing_info": {
       "title": {
+        "billing": "Facturatiegegevens",
         "subscription": "Prijsplan",
         "organization": "Organisatiegegevens"
       },
