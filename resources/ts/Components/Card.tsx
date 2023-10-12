@@ -63,7 +63,7 @@ export const Card = ({
         className={classNames(
           "flex flex-col",
           textCenter && "text-center",
-          !border && "gap-5"
+          !border && "gap-5 items-center"
         )}
       >
         <div
@@ -73,7 +73,10 @@ export const Card = ({
           )}
         >
           <div className="flex items-center gap-3">
-            <Heading level={2} className="font-medium max-sm:text-basis">
+            <Heading
+              level={2}
+              className={classNames("font-medium max-sm:text-basis")}
+            >
               {title}
             </Heading>
             {!!badge && (
@@ -82,7 +85,7 @@ export const Card = ({
               </span>
             )}
           </div>
-          <div className="justify-self-end">{iconButton}</div>
+          {iconButton && <div className="justify-self-end">{iconButton}</div>}
         </div>
 
         {description && (
