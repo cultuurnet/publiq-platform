@@ -3,7 +3,6 @@ import { classNames } from "../utils/classNames";
 import { Heading } from "./Heading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
-import { router } from "@inertiajs/core";
 import { useTranslateRoute } from "../hooks/useTranslateRoute";
 import { Link } from "@inertiajs/react";
 
