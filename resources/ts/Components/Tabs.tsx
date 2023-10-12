@@ -71,7 +71,9 @@ export const Tabs = ({ children, active, onChange, ...props }: Props) => {
       <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-300">
         {styledTabItems}
       </ul>
+      <div className="flex flex-col gap-10 max-md:px-5 px-12 py-5">
       {tabContent}
+      </div>
     </div>
   );
 };
