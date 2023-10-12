@@ -24,8 +24,8 @@ use App\Router\TranslatedRoute;
 
 TranslatedRoute::get(['/nl', '/en'], static fn () => Inertia::render('Index'));
 
-Route::get('/login', Login::class)->name('login');
-Route::get('/admin/login', static fn () => redirect('/login'));
+Route::get('/login', [Login::class, 'inertiaLogin'])->name('login');
+Route::get('/admin/login', [Login::class, 'adminLogin']);
 
 Route::get('/logout', [Logout::class, 'inertiaLogout']);
 Route::post('/admin/logout', [Logout::class, 'adminLogout']);
