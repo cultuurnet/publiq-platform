@@ -98,6 +98,9 @@ return [
         'jonas@cultuurnet.be',
         'koen.eelen@publiq.be',
         'paul@herbosch.be',
+        'emma@madewithlove.be',
+        'corneel.wille@cultuurnet.be',
+        'wannes.van.ingelghem@publiq.be',
     ],
 
     /*
