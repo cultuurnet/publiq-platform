@@ -21,9 +21,9 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
 use Tests\Auth0\CreatesMockAuth0ClusterSDK;
-use Tests\TestCaseWithDatabase;
+use Tests\TestCase;
 
-final class BlockClientListenerTest extends TestCaseWithDatabase
+final class BlockClientListenerTest extends TestCase
 {
     use CreatesMockAuth0ClusterSDK;
 
@@ -36,8 +36,6 @@ final class BlockClientListenerTest extends TestCaseWithDatabase
     protected function setUp(): void
     {
         parent::setUp();
-
-        Event::fake();
 
         $this->httpClient = $this->createMock(ClientInterface::class);
 

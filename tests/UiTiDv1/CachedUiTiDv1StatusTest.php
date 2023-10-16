@@ -11,9 +11,9 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
 use Ramsey\Uuid\Uuid;
-use Tests\TestCaseWithDatabase;
+use Tests\TestCase;
 
-final class CachedUiTiDv1StatusTest extends TestCaseWithDatabase
+final class CachedUiTiDv1StatusTest extends TestCase
 {
     use CreatesMockUiTiDv1ClusterSDK;
     use CreatesMockUiTiDv1Consumer;
