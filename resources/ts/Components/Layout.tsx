@@ -2,7 +2,6 @@ import React, { ReactNode } from "react";
 import Header from "./Header";
 import HeaderMobile from "./HeaderMobile";
 import Footer from "./Footer";
-import { SectionCollapsedProvider } from "../context/SectionCollapsedContext";
 import { usePage, Head } from "@inertiajs/react";
 import { UitIdWidget, WidgetConfigVariables } from "./UitIdWidget";
 
@@ -11,11 +10,7 @@ const Main = ({ children }: { children: ReactNode }) => {
   const classes = "flex flex-col items-center w-full";
 
   if (page.component === "Integrations/Detail") {
-    return (
-      <SectionCollapsedProvider>
-        <main className={classes}>{children}</main>
-      </SectionCollapsedProvider>
-    );
+    return <main className={classes}>{children}</main>;
   }
 
   return <main className={classes}>{children}</main>;
