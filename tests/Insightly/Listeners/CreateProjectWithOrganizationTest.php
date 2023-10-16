@@ -37,9 +37,9 @@ use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Tests\MockInsightlyClient;
-use Tests\TestCaseWithDatabase;
+use Tests\TestCase;
 
-final class CreateProjectWithOrganizationTest extends TestCaseWithDatabase
+final class CreateProjectWithOrganizationTest extends TestCase
 {
     use MockInsightlyClient;
 
