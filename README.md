@@ -11,6 +11,11 @@ $ git clone git@github.com:cultuurnet/publiq-platform.git
 $ cd publiq-platform
 ```
 
+For local development with [Docker](https://www.docker.com/products/docker-desktop/), you can use the .env & auth.json 
+files found at [AppConfig](https://github.com/cultuurnet/appconfig/tree/main/files/platform/docker)
+
+Alternativly, you can use your own values with:
+
 - Create `.env` file
 ```
 $ cp .env.example .env
