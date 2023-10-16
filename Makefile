@@ -1,4 +1,4 @@
-.PHONY: up down bash install composer-install npm-install key-generate migrate lint stan ci
+.PHONY: up down bash install composer-install npm-install key-generate migrate lint stan ci config
 
 up:
 	vendor/bin/sail up -d
@@ -11,6 +11,9 @@ destroy:
 
 bash:
 	docker-compose exec laravel bash
+
+config:
+	./config.sh
 
 install: composer-install key-generate migrate seed npm-install npm-build
 
