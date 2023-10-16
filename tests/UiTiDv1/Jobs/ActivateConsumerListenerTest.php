@@ -16,11 +16,11 @@ use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
-use Tests\TestCaseWithDatabase;
+use Tests\TestCase;
 use Tests\UiTiDv1\CreatesMockUiTiDv1ClusterSDK;
 use Tests\UiTiDv1\CreatesMockUiTiDv1Consumer;
 
-final class ActivateConsumerListenerTest extends TestCaseWithDatabase
+final class ActivateConsumerListenerTest extends TestCase
 {
     use CreatesMockUiTiDv1ClusterSDK;
     use CreatesMockUiTiDv1Consumer;
@@ -34,8 +34,6 @@ final class ActivateConsumerListenerTest extends TestCaseWithDatabase
     protected function setUp(): void
     {
         parent::setUp();
-
-        Event::fake();
 
         $this->httpClient = $this->createMock(ClientInterface::class);
 
