@@ -32,13 +32,13 @@ export default function Navigation({
   const [activeLink, setActiveLink] = useState("");
 
   const afterStyles =
-    "after:hidden md:after:hover:block md:after:hover:absolute md:after:hover:top-[3rem] md:after:hover:left-1/4 md:after:hover:w-14 md:after:hover:h-0 md:after:hover:border-b-4 md:after:hover:border-b-publiq-blue";
+    "after:block after:border-b-4 after:absolute after:top-[3rem] after:left-0 after:bottom-0 after:right-0 after:border-publiq-blue after:transform after:scale-x-0 after:transition after:duration-300 after:hover:scale-x-100";
 
   return (
     <section className={classes} {...props}>
       {children && <div className="fixed top-10 right-16">{children}</div>}
       <Link href="/">
-        <PubliqLogo color="publiq-blue" width={50} height={50} />
+        <PubliqLogo color="publiq-blue" width={48} height={48} />
       </Link>
       <div className="flex max-md:flex-col md:gap-8 min-w-[50%]">
         {pages.map((pageTitle) => (
