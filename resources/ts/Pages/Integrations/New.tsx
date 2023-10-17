@@ -1,6 +1,6 @@
 import React, { FormEvent, ReactNode, useMemo } from "react";
 import { useForm } from "@inertiajs/react";
-import Layout from "../../Components/Layout";
+import Layout from "../../layouts/Layout";
 import { Heading } from "../../Components/Heading";
 import { FormElement } from "../../Components/FormElement";
 import { Input } from "../../Components/Input";
