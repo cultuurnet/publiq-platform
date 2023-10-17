@@ -1,8 +1,8 @@
 import React, { ReactNode } from "react";
-import Layout from "../Components/Layout";
 import { Hero } from "../Components/Hero";
 import { IntegrationTypes } from "../Components/IntegrationTypes";
 import { Page } from "../Components/Page";
+import HomePageLayout from "../layouts/HomePageLayout";
 
 const Index = () => {
   return (
@@ -16,6 +16,6 @@ const Index = () => {
   );
 };
 
-Index.layout = (page: ReactNode) => <Layout>{page}</Layout>;
+Index.layout = (page: ReactNode) => <HomePageLayout>{page}</HomePageLayout>;
 
 export default Index;
