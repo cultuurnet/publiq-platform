@@ -2,6 +2,7 @@
 
 ## Pre-requisites
 - Docker Desktop, can be downloaded from [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop)
+-  appconfig: you'll have to clone [appconfig](https://github.com/cultuurnet/appconfig) in the same folder as where you will clone [publiq-platform](https://github.com/cultuurnet/publiq-platform)
 
 ## Installation and setup
 
@@ -11,21 +12,9 @@ $ git clone git@github.com:cultuurnet/publiq-platform.git
 $ cd publiq-platform
 ```
 
-- Create `.env` file
+- Install the config files from [appconfig](https://github.com/cultuurnet/appconfig) by running
 ```
-$ cp .env.example .env
-```
-
-- Create an `auth.json` file inside the root of the project to install Laravel Nova
-```
-{
-    "http-basic": {
-        "nova.laravel.com": {
-            "username": "dev@publiq.be",
-            "password": "laravel nova license key here"
-        }
-    }
-}
+$ make config
 ```
 
 - Install composer dependencies with lightweight container (this container can be deleted after installation)
