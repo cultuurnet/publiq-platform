@@ -25,8 +25,8 @@ export const IntegrationTypeCard = ({
     translateRoute("/integrations/new"),
     document.location.origin
   );
-  const changeTypeInUrl = (tab: string) => {
-    url.searchParams.set("type", tab);
+  const changeTypeInUrl = (type: string) => {
+    url.searchParams.set("type", type);
     router.get(url.toString());
   };
   return (
