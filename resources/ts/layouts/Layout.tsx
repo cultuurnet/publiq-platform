@@ -1,17 +1,12 @@
 import React, { ReactNode } from "react";
-import Header from "./Header";
-import HeaderMobile from "./HeaderMobile";
-import Footer from "./Footer";
+import Header from "../Components/Header";
+import HeaderMobile from "../Components/HeaderMobile";
+import Footer from "../Components/Footer";
 import { usePage, Head } from "@inertiajs/react";
-import { UitIdWidget, WidgetConfigVariables } from "./UitIdWidget";
+import { UitIdWidget, WidgetConfigVariables } from "../Components/UitIdWidget";
 
 const Main = ({ children }: { children: ReactNode }) => {
-  const page = usePage();
   const classes = "flex flex-col items-center w-full";
-
-  if (page.component === "Integrations/Detail") {
-    return <main className={classes}>{children}</main>;
-  }
 
   return <main className={classes}>{children}</main>;
 };

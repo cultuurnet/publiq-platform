@@ -1,7 +1,7 @@
 import React, { ReactNode, useState } from "react";
 import { router } from "@inertiajs/react";
 import { Heading } from "../../Components/Heading";
-import Layout from "../../Components/Layout";
+import Layout from "../../layouts/Layout";
 import { ButtonLink } from "../../Components/ButtonLink";
 import { Input } from "../../Components/Input";
 import { debounce } from "lodash";

@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import { Heading } from "../../Components/Heading";
-import Layout from "../../Components/Layout";
+import Layout from "../../layouts/Layout";
 
 type Props = {
   subscriptions: { id: string; name: string }[];

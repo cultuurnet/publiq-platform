@@ -1,6 +1,6 @@
 import React, { FormEvent, ReactNode, useMemo } from "react";
 import { useForm } from "@inertiajs/react";
-import Layout from "../../Components/Layout";
+import Layout from "../../layouts/Layout";
 import { Heading } from "../../Components/Heading";
 import { FormElement } from "../../Components/FormElement";
 import { Input } from "../../Components/Input";
@@ -86,24 +86,6 @@ const pricing = (t: TFunction, subscriptions: Subscription[]) => {
   ];
 };
 
-const initialFormValues = {
-  integrationType: "",
-  subscriptionId: "",
-  integrationName: "",
-  description: "",
-  organisationFunctionalContact: "",
-  firstNameFunctionalContact: "",
-  lastNameFunctionalContact: "",
-  emailFunctionalContact: "",
-  organisationTechnicalContact: "",
-  firstNameTechnicalContact: "",
-  lastNameTechnicalContact: "",
-  emailTechnicalContact: "",
-  agreement: "",
-  coupon: "",
-  couponCode: "",
-};
-
 type Subscription = {
   id: string;
   name: string;
@@ -124,10 +106,32 @@ type Props = {
 
 const New = ({ subscriptions }: Props) => {
   const { t } = useTranslation();
-  const { data, setData, errors, post, processing } =
-    useForm(initialFormValues);
   const { i18n } = useTranslation();
   const translateRoute = useTranslateRoute();
+
+  const url = new URL(document.location.href);
+  const activeType = url.searchParams.get("type") ?? "";
+
+  const initialFormValues = {
+    integrationType: activeType,
+    subscriptionId: "",
+    integrationName: "",
+    description: "",
+    organisationFunctionalContact: "",
+    firstNameFunctionalContact: "",
+    lastNameFunctionalContact: "",
+    emailFunctionalContact: "",
+    organisationTechnicalContact: "",
+    firstNameTechnicalContact: "",
+    lastNameTechnicalContact: "",
+    emailTechnicalContact: "",
+    agreement: "",
+    coupon: "",
+    couponCode: "",
+  };
+
+  const { data, setData, errors, post, processing } =
+    useForm(initialFormValues);
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();

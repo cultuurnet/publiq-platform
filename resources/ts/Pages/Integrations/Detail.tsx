@@ -1,5 +1,5 @@
 import React, { ReactNode, useState, useEffect } from "react";
-import Layout from "../../Components/Layout";
+import Layout from "../../layouts/Layout";
 import { Page } from "../../Components/Page";
 import { Integration } from "./Index";
 import { ContactInfo } from "../../Components/Integrations/Detail/ContactInfo";
