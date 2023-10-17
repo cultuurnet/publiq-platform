@@ -2,9 +2,11 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { Heading } from "./Heading";
 import { ButtonLink } from "./ButtonLink";
+import { useTranslateRoute } from "../hooks/useTranslateRoute";
 
 export const Hero = () => {
   const { t } = useTranslation();
+  const translateRoute = useTranslateRoute();
 
   return (
     <section className="w-full flex flex-col items-center">
@@ -15,7 +17,9 @@ export const Hero = () => {
         <Heading level={2} className="text-center font-light max-w-[37rem]">
           {t("home.hero.intro")}
         </Heading>
-        <ButtonLink href="#">{t("home.hero.start_here")}</ButtonLink>
+        <ButtonLink href={translateRoute("/integrations/new")}>
+          {t("home.hero.start_here")}
+        </ButtonLink>
       </div>
     </section>
   );

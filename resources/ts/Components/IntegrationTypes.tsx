@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { IntegrationTypeCard } from "./IntegrationTypeCard";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "i18next";
+import { IntegrationType } from "../types/IntegrationType";
 
 const getIntegrationTypes = (t: TFunction) => [
   {
@@ -12,7 +13,7 @@ const getIntegrationTypes = (t: TFunction) => [
       t("home.integration_types.entry_api.features.1"),
       t("home.integration_types.entry_api.features.2"),
     ],
-    actionUrl: t("home.integration_types.entry_api.action_url"),
+    type: IntegrationType.EntryApi,
   },
   {
     title: t("home.integration_types.search_api.title"),
@@ -22,7 +23,7 @@ const getIntegrationTypes = (t: TFunction) => [
       t("home.integration_types.search_api.features.1"),
       t("home.integration_types.search_api.features.2"),
     ],
-    actionUrl: t("home.integration_types.search_api.action_url"),
+    type: IntegrationType.SearchApi,
   },
   {
     title: t("home.integration_types.widgets.title"),
@@ -32,7 +33,7 @@ const getIntegrationTypes = (t: TFunction) => [
       t("home.integration_types.widgets.features.1"),
       t("home.integration_types.widgets.features.2"),
     ],
-    actionUrl: t("home.integration_types.widgets.action_url"),
+    type: IntegrationType.Widgets,
   },
 ];
 

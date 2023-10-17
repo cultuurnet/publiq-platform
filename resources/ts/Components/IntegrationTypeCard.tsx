@@ -5,7 +5,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
 import { classNames } from "../utils/classNames";
-import { ButtonLinkSecondary } from "./ButtonLinkSecondary";
+import { router } from "@inertiajs/core";
+import { useTranslateRoute } from "../hooks/useTranslateRoute";
+import { ButtonSecondary } from "./ButtonSecondary";
 
 type Props = IntegrationType;
 
@@ -13,11 +15,20 @@ export const IntegrationTypeCard = ({
   title,
   description,
   features,
-  actionUrl,
+  type,
 }: Props) => {
   const { t } = useTranslation();
+  const translateRoute = useTranslateRoute();
   const afterStyles =
     "md:after:hidden md:after:fixed md:after:bottom-[-2rem] md:after:right-[0rem] md:after:w-0 md:after:h-0 md:after:border-r-[3rem] md:after:border-r-white md:after:border-b-[2rem] md:after:border-b-transparent md:hover:after:block";
+  const url = new URL(
+    translateRoute("/integrations/new"),
+    document.location.origin
+  );
+  const changeTypeInUrl = (tab: string) => {
+    url.searchParams.set("type", tab);
+    router.get(url.toString());
+  };
   return (
     <Card
       key={title}
@@ -37,9 +48,12 @@ export const IntegrationTypeCard = ({
             </li>
           ))}
         </ul>
-        <ButtonLinkSecondary className="self-center" href={actionUrl}>
+        <ButtonSecondary
+          className="self-center"
+          onClick={() => changeTypeInUrl(type)}
+        >
           {t("home.integration_types.action", { type: title })}
-        </ButtonLinkSecondary>
+        </ButtonSecondary>
       </div>
     </Card>
   );
