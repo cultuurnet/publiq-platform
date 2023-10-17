@@ -10,6 +10,7 @@ use App\Domain\Subscriptions\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Router\TranslatedRoute;
+use App\Http\Controllers\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,7 +23,7 @@ use App\Router\TranslatedRoute;
 |
 */
 
-TranslatedRoute::get(['/nl', '/en'], static fn () => Inertia::render('Index'));
+TranslatedRoute::get(['/nl', '/en'], [HomeController::class, 'index']);
 
 Route::get('/login', [Login::class, 'inertiaLogin'])->name('login');
 Route::get('/admin/login', [Login::class, 'adminLogin']);
