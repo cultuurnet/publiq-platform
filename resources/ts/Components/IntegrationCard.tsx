@@ -29,6 +29,18 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
     }, 1000);
   }
 
+  const getProductUrl = () => {
+    if (type === "entry-api") {
+      return "/uitdatabank/entry-api%2Fintroduction";
+    }
+    if (type === "search-api") {
+      return "/uitdatabank/search-api%2Fintroduction";
+    }
+    if (type === "widgets") {
+      return "/widgets/aan-de-slag";
+    }
+  };
+
   return (
     <Card
       title={name}
@@ -70,7 +82,7 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
             <StatusLight status={status} id={id} />
           </div>
         </section>
-        <section className="inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">
+        <section className="inline-flex gap-3 max-md:flex-col items-start">
           <Heading className="font-semibold min-w-[10rem]" level={5}>
             {t("integrations.documentation.title")}
           </Heading>
@@ -79,6 +91,15 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
               product: t(`integrations.products.${type}`),
             })}
           </Link>
+            <Link
+              href={t("integrations.documentation.action_url", {
+                product: getProductUrl(),
+              })}
+            >
+              {t("integrations.documentation.action_title", {
+                product: t(`integrations.products.${type}`),
+              })}
+            </Link>
         </section>
       </div>
     </Card>
