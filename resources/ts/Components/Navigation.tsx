@@ -32,7 +32,7 @@ export default function Navigation({
   const [activeLink, setActiveLink] = useState("");
 
   const afterStyles =
-    "after:block after:border-b-4 after:absolute after:top-[3rem] after:left-0 after:bottom-0 after:right-0 after:border-publiq-blue after:transform after:scale-x-0 after:transition after:duration-300 after:hover:scale-x-100";
+    "md:after:block md:after:border-b-4 md:after:absolute md:after:top-[3rem] md:after:left-0 md:after:bottom-0 md:after:right-0 md:after:border-publiq-blue md:after:transform md:after:scale-x-0 md:after:transition md:after:duration-300 md:after:hover:scale-x-100";
 
   return (
     <section className={classes} {...props}>
