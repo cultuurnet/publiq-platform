@@ -127,7 +127,8 @@
     },
     "documentation": {
       "title": "Documentatie",
-      "action_title": "Aan de slag met {{product}}"
+      "action_title": "Aan de slag met {{product}}",
+      "requirements": "Vereisten om live te gaan"
     }
   },
   "details": {
