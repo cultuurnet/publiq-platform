@@ -227,6 +227,20 @@
       "action_title": "Naar de statuspagina",
       "action_url": "#"
     },
+    "roadmap": {
+      "title": "Roadmap",
+      "description": "Neem een kijkje in onze plannen en deel jouw briljante ideeën om onze producten nog beter te maken.",
+      "img_url": "#",
+      "action_title": "Naar de roadmap",
+      "action_url": "#"
+    },
+    "release_notes": {
+      "title": "Relase notes",
+      "description": "Een overzicht van alle nieuwe mogelijkheden, technische aanpassingen en verbeteringen binnen het publiq platform.",
+      "img_url": "#",
+      "action_title": "Naar de relase notes",
+      "action_url": "#"
+    },
     "support_via_slack": {
       "title": "Support via slack",
       "description": "Heb je na het lezen van onze documentatie toch nog vragen? We horen ze graag. Via ons support kanaal op slack spelen we kort op de bal.",
