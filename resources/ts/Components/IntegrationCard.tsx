@@ -86,11 +86,7 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
           <Heading className="font-semibold min-w-[10rem]" level={5}>
             {t("integrations.documentation.title")}
           </Heading>
-          <Link href="#">
-            {t("integrations.documentation.action_title", {
-              product: t(`integrations.products.${type}`),
-            })}
-          </Link>
+          <div className="flex flex-col gap-2">
             <Link
               href={t("integrations.documentation.action_url", {
                 product: getProductUrl(),
@@ -100,6 +96,12 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
                 product: t(`integrations.products.${type}`),
               })}
             </Link>
+            {type === "entry-api" && (
+              <Link href="https://docs.publiq.be/docs/uitdatabank/entry-api%2Frequirements-before-going-live">
+                {t("integrations.documentation.requirements")}
+              </Link>
+            )}
+          </div>
         </section>
       </div>
     </Card>
