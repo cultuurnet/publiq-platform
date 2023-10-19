@@ -13,6 +13,12 @@ type Props = Integration & {
   onEdit: (id: string) => void;
 };
 
+const productTypeToPath = {
+  "entry-api": encodeURIComponent("/uitdatabank/entry-api/introduction"),
+  "search-api": encodeURIComponent("/uitdatabank/search-api/introduction"),
+  widgets: encodeURIComponent("/widgets/aan-de-slag"),
+};
+
 export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
   const { t } = useTranslation();
 
@@ -28,18 +34,6 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
       clearTimeout(timeoutId);
     }, 1000);
   }
-
-  const getProductUrl = () => {
-    if (type === "entry-api") {
-      return "/uitdatabank/entry-api%2Fintroduction";
-    }
-    if (type === "search-api") {
-      return "/uitdatabank/search-api%2Fintroduction";
-    }
-    if (type === "widgets") {
-      return "/widgets/aan-de-slag";
-    }
-  };
 
   return (
     <Card
@@ -89,7 +83,7 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
           <div className="flex flex-col gap-2">
             <Link
               href={t("integrations.documentation.action_url", {
-                product: getProductUrl(),
+                product: productTypeToPath[type],
               })}
             >
               {t("integrations.documentation.action_title", {
