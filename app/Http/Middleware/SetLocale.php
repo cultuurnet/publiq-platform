@@ -41,7 +41,7 @@ final class SetLocale
         if (gettype($locale) === 'string') {
             App::setLocale($locale);
         }
-        
+
         return $next($request);
     }
 }
