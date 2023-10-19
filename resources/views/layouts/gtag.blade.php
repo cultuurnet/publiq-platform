@@ -4,5 +4,5 @@
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
 
-    gtag('config', '{{ env('GTAG_MEASUREMENT_ID') }}', {debug_mode: true})
+    gtag('config', '{{ env('GTAG_MEASUREMENT_ID') }}');
 </script>
