@@ -6,12 +6,9 @@ namespace App\Http\Middleware;
 
 use App\Router\TranslatedRoute;
 use Closure;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\URL;
 
 final class SetLocale
 {

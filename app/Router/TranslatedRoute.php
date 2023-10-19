@@ -7,7 +7,6 @@ namespace App\Router;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\URL;
 
 final class TranslatedRoute
 {
@@ -21,7 +20,7 @@ final class TranslatedRoute
 
     public static function getTranslatedRouteName(Request $request, string $routeName): string
     {
-          $lang = App::getLocale();
+        $lang = App::getLocale();
 
         return self::createTranslatedRouteName($routeName, $lang);
     }
