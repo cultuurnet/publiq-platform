@@ -34,8 +34,14 @@ final class SetLocale
             $this->setLocaleCookie($locale);
         }
 
-        App::setLocale($locale);
+        if (gettype($locale) === 'array') {
+            App::setLocale($locale[0]);
+        }
 
+        if (gettype($locale) === 'string') {
+            App::setLocale($locale);
+        }
+        
         return $next($request);
     }
 }
