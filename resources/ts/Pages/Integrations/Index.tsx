@@ -18,6 +18,8 @@ import { IntegrationStatus } from "../../types/IntegrationStatus";
 import { ContactType } from "../../types/ContactType";
 import { Environment } from "../../types/Environment";
 import { IntegrationUrlType } from "../../types/IntegrationUrlType";
+import { IntegrationType } from "../../types/IntegrationType";
+import { Values } from "../../types/Values";
 
 type Organisation = {
   id: string;
@@ -61,7 +63,7 @@ export type IntegrationUrl = {
 
 export type Integration = {
   id: string;
-  type: string;
+  type: Values<typeof IntegrationType>;
   name: string;
   description: string;
   subscriptionId: string;
