@@ -26,6 +26,20 @@ const getSupportTypes = (t: TFunction) => [
     actionUrl: t("support.statuspage.action_url"),
   },
   {
+    title: t("support.roadmap.title"),
+    description: t("support.roadmap.description"),
+    imgUrl: t("support.roadmap.img_url"),
+    actionTitle: t("support.roadmap.action_title"),
+    actionUrl: t("support.roadmap.action_url"),
+  },
+  {
+    title: t("support.release_notes.title"),
+    description: t("support.release_notes.description"),
+    imgUrl: t("support.release_notes.img_url"),
+    actionTitle: t("support.release_notes.action_title"),
+    actionUrl: t("support.release_notes.action_url"),
+  },
+  {
     title: t("support.support_via_slack.title"),
     description: t("support.support_via_slack.description"),
     imgUrl: t("support.support_via_slacksupport.img_url"),
