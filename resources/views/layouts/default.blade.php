@@ -10,8 +10,8 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>publiq-platform</title>
         @inertiaHead
+        @include('layouts.gtag', ['tagId' => 1])
     </head>
-
     <body>
         @inertia
     </body>
