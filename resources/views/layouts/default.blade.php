@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
     <head>
+        @include('layouts.gtag')
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         @vite([
@@ -10,7 +11,6 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>publiq-platform</title>
         @inertiaHead
-        @include('layouts.gtag', ['tagId' => 1])
     </head>
     <body>
         @inertia

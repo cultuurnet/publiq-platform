@@ -1,1 +1,1 @@
-@include('layouts.gtag', ['tagId' => 1])
+@include('layouts.gtag')
