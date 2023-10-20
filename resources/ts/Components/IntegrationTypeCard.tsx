@@ -2,12 +2,11 @@ import React from "react";
 import { Card } from "./Card";
 import { IntegrationType } from "./IntegrationTypes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
 import { classNames } from "../utils/classNames";
 import { router } from "@inertiajs/core";
 import { useTranslateRoute } from "../hooks/useTranslateRoute";
-import { ButtonSecondary } from "./ButtonSecondary";
 
 type Props = IntegrationType;
 
@@ -20,7 +19,7 @@ export const IntegrationTypeCard = ({
   const { t } = useTranslation();
   const translateRoute = useTranslateRoute();
   const afterStyles =
-    "md:after:hidden md:after:fixed md:after:bottom-[-2rem] md:after:right-[0rem] md:after:w-0 md:after:h-0 md:after:border-r-[3rem] md:after:border-r-white md:after:border-b-[2rem] md:after:border-b-transparent md:hover:after:block";
+    "md:after:hidden md:after:absolute md:after:drop-shadow-triangle md:after:bottom-[-2rem] md:after:right-[0rem] md:after:w-0 md:after:h-0 md:after:border-r-[3rem] md:after:border-r-white md:after:border-b-[2rem] md:after:border-b-transparent md:hover:after:block";
   const url = new URL(
     translateRoute("/integrations/new"),
     document.location.origin
@@ -35,25 +34,26 @@ export const IntegrationTypeCard = ({
       title={title}
       description={description}
       className={classNames(
-        "md:max-w-sm md:hover:translate-y-[-2rem] md:overflow-visible gap-7 md:transition md:duration-500",
+        "m-5 md:max-w-sm md:hover:translate-y-[-2rem] md:overflow-visible md:transition-transform md:duration-500 hover:shadow-md shadow-slate-200 group",
         afterStyles
       )}
+      role="button"
+      onClick={() => changeTypeInUrl(type)}
+      headingStyles="group-hover:text-publiq-blue-dark"
     >
       <div className="flex flex-col flex-1 justify-between min-h-[10rem] gap-7">
         <ul className="flex flex-col gap-3">
           {features.map((feature) => (
-            <li key={feature}>
-              <FontAwesomeIcon icon={faCheck} className="text-green-500" />{" "}
+            <li key={feature} className="flex items-center gap-2">
+              <FontAwesomeIcon icon={faCheck} className="text-green-500" />
               {feature}
             </li>
           ))}
         </ul>
-        <ButtonSecondary
-          className="self-center"
-          onClick={() => changeTypeInUrl(type)}
-        >
+        <div className="self-center flex items-center gap-2 text-publiq-blue group-hover:text-publiq-blue-dark group-hover:underline">
           {t("home.integration_types.action", { type: title })}
-        </ButtonSecondary>
+          <FontAwesomeIcon icon={faChevronRight} size="xs" />
+        </div>
       </div>
     </Card>
   );
