@@ -7,6 +7,12 @@ module.exports = {
       animation: {
         pulse: "pulse 0.4s",
       },
+      dropShadow: {
+        'triangle': [
+          "0 4px 1px rgb(0 0 0 / 0.07)",
+          "0 2px 1px rgb(0 0 0 / 0.06)",
+        ],
+      },
       keyframes: {
         pulse: {
           "0%": {
