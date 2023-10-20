@@ -34,7 +34,7 @@ export const IntegrationTypeCard = ({
       title={title}
       description={description}
       className={classNames(
-        "m-5 md:max-w-sm md:hover:translate-y-[-2rem] md:overflow-visible md:transition-transform md:duration-500 hover:shadow-md shadow-slate-200 group",
+        "md:max-w-sm md:hover:translate-y-[-2rem] md:overflow-visible md:transition-transform md:duration-500 hover:shadow-md shadow-slate-200 group",
         afterStyles
       )}
       role="button"
