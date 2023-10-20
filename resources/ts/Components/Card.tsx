@@ -18,6 +18,7 @@ type Props = {
   iconButton?: ReactElement;
   clickableHeading?: boolean;
   id?: string;
+  headingStyles?: string;
 } & Omit<ComponentProps<"div">, "title">;
 
 export const Card = ({
@@ -33,6 +34,7 @@ export const Card = ({
   border = false,
   textCenter,
   clickableHeading = false,
+  headingStyles,
   id,
   ...props
 }: Props) => {
@@ -84,13 +86,22 @@ export const Card = ({
               <Link href={`${translateRoute("/integrations")}/${id}`}>
                 <Heading
                   level={2}
-                  className="font-medium text-publiq-blue-dark hover:underline max-sm:text-basis"
+                  className={classNames(
+                    "font-medium text-publiq-blue-dark hover:underline max-sm:text-basis",
+                    headingStyles
+                  )}
                 >
                   {title}
                 </Heading>
               </Link>
             ) : (
-              <Heading level={2} className="font-medium max-sm:text-basis">
+              <Heading
+                level={2}
+                className={classNames(
+                  "font-medium max-sm:text-basis",
+                  headingStyles
+                )}
+              >
                 {title}
               </Heading>
             )}
@@ -105,7 +116,12 @@ export const Card = ({
         </div>
 
         {description && (
-          <p className="text-gray-700 text-base min-h-[5rem] break-words">
+          <p
+            className={classNames(
+              "text-gray-700 text-base min-h-[5rem] break-words",
+              descriptionStyles
+            )}
+          >
             {description}
           </p>
         )}
