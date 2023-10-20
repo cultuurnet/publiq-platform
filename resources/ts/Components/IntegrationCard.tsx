@@ -13,6 +13,12 @@ type Props = Integration & {
   onEdit: (id: string) => void;
 };
 
+const productTypeToPath = {
+  "entry-api": encodeURIComponent("/uitdatabank/entry-api/introduction"),
+  "search-api": encodeURIComponent("/uitdatabank/search-api/introduction"),
+  widgets: encodeURIComponent("/widgets/aan-de-slag"),
+};
+
 export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
   const { t } = useTranslation();
 
@@ -70,15 +76,26 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
             <StatusLight status={status} id={id} />
           </div>
         </section>
-        <section className="inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">
+        <section className="inline-flex gap-3 max-md:flex-col items-start">
           <Heading className="font-semibold min-w-[10rem]" level={5}>
             {t("integrations.documentation.title")}
           </Heading>
-          <Link href="#">
-            {t("integrations.documentation.action_title", {
-              product: t(`integrations.products.${type}`),
-            })}
-          </Link>
+          <div className="flex flex-col gap-2">
+            <Link
+              href={t("integrations.documentation.action_url", {
+                product: productTypeToPath[type],
+              })}
+            >
+              {t("integrations.documentation.action_title", {
+                product: t(`integrations.products.${type}`),
+              })}
+            </Link>
+            {type === "entry-api" && (
+              <Link href="https://docs.publiq.be/docs/uitdatabank/entry-api%2Frequirements-before-going-live">
+                {t("integrations.documentation.requirements")}
+              </Link>
+            )}
+          </div>
         </section>
       </div>
     </Card>
