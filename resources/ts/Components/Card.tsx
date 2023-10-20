@@ -116,12 +116,7 @@ export const Card = ({
         </div>
 
         {description && (
-          <p
-            className={classNames(
-              "text-gray-700 text-base min-h-[5rem] break-words",
-              descriptionStyles
-            )}
-          >
+          <p className="text-gray-700 text-base min-h-[5rem] break-words">
             {description}
           </p>
         )}
