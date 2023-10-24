@@ -14,9 +14,9 @@ final class SetLocale
 {
     private function getLocaleFromUrl(Request $request): ?string
     {
-        $parts = explode('/', $request->path())[0];
+        $locale = explode('/', $request->path())[0];
 
-        return in_array($parts, TranslatedRoute::SUPPORTED_LANGUAGES) ? $parts : null;
+        return in_array($locale, TranslatedRoute::SUPPORTED_LANGUAGES) ? $locale : null;
     }
 
     private function setLocaleCookie(string $locale): void
