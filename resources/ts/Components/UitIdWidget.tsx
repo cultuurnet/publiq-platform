@@ -55,7 +55,7 @@ export const UitIdWidget = ({
       <div
         id="uitid-widget"
         data-current-page={currentPage}
-        className="min-h-[50px]"
+        className="min-h-[40px]"
         data-language={i18n.language}
       ></div>
 
