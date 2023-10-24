@@ -126,6 +126,7 @@ const New = ({ subscriptions }: Props) => {
     lastNameTechnicalContact: "",
     emailTechnicalContact: "",
     agreement: "",
+    privacy: "",
     coupon: "",
     couponCode: "",
   };
@@ -370,6 +371,25 @@ const New = ({ subscriptions }: Props) => {
                 />
               }
               error={errors.agreement}
+            />
+            <FormElement
+              label={t("integration_form.agree")}
+              clickableLabel={t("integration_form.privacy_statement")}
+              clickableLabelLink={t("integration_form.privacy_link")}
+              labelPosition="right"
+              className=""
+              component={
+                <input
+                  type="checkbox"
+                  name="privacy"
+                  className="text-publiq-blue-dark focus:ring-publiq-blue-dark rounded-sm"
+                  checked={data.privacy === "true"}
+                  onChange={() =>
+                    setData("privacy", data.privacy === "true" ? "" : "true")
+                  }
+                />
+              }
+              error={errors.privacy}
             />
             <FormElement
               label={t("integration_form.coupon")}
