@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Router;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 
 final class TranslatedRoute
@@ -19,14 +20,9 @@ final class TranslatedRoute
 
     public static function getTranslatedRouteName(Request $request, string $routeName): string
     {
-        $supportedLanguages = ['en', 'nl'];
-        $language = $request->headers->get('Accept-Language');
+        $lang = App::getLocale();
 
-        if ($language === null || !in_array($language, $supportedLanguages)) {
-            $language = self::DEFAULT_LANGUAGE;
-        }
-
-        return self::createTranslatedRouteName($routeName, $language);
+        return self::createTranslatedRouteName($routeName, $lang);
     }
 
     public static function get(array $uris, \Closure|array|string|null $action = null, ?string $routeName = null): void

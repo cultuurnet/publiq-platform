@@ -21,7 +21,8 @@ export const initializeI18n = async () => {
           escapeValue: false,
         },
         detection: {
-          order: ["path"],
+          lookupCookie: "locale",
+          order: ["path", "cookie"],
         },
       });
 
