@@ -11,6 +11,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>publiq-platform</title>
         @inertiaHead
+        @include('layouts.hotjar')
     </head>
     <body>
         @inertia
