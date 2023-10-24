@@ -66,6 +66,8 @@ const InputStyle = {
 
 type Props = {
   label?: string;
+  clickableLabel?: string;
+  clickableLabelLink?: string;
   labelPosition?: LabelPosition;
   labelSize?: LabelSize;
   error?: string;
@@ -75,6 +77,8 @@ type Props = {
 
 export const FormElement = ({
   label,
+  clickableLabel,
+  clickableLabelLink,
   labelPosition = "top",
   labelSize = "base",
   component,
@@ -106,6 +110,19 @@ export const FormElement = ({
           )}
           <div className={InputStyle[labelPosition]}>{clonedComponent}</div>
         </div>
+        {clickableLabel && (
+          <a
+            href={clickableLabelLink}
+            target="_blank"
+            rel="noreferrer"
+            className={classNames(
+              "font-semibold text-publiq-blue-dark hover:underline pl-1",
+              labelSize ? `text-${labelSize}` : ""
+            )}
+          >
+            {clickableLabel}
+          </a>
+        )}
       </Wrapper>
       {error && <span className="text-red-500 mt-1">{error}</span>}
       {info && <span className="text-gray-500 mt-1">{info}</span>}

@@ -351,9 +351,9 @@ const New = ({ subscriptions }: Props) => {
 
           <div className="flex flex-col gap-5">
             <FormElement
-              label={`${t("integration_form.agree")} ${t(
-                "integration_form.terms_of_use"
-              )}`}
+              label={t("integration_form.agree")}
+              clickableLabel={t("integration_form.terms_of_use")}
+              clickableLabelLink={t("integration_form.terms_of_use_link")}
               labelPosition="right"
               className=""
               component={
@@ -372,6 +372,7 @@ const New = ({ subscriptions }: Props) => {
               }
               error={errors.agreement}
             />
+
             <FormElement
               label={t("integration_form.agree")}
               clickableLabel={t("integration_form.privacy_statement")}
