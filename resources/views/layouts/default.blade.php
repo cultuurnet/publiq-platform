@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
     <head>
+        @include('layouts.gtag')
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         @vite([
@@ -12,7 +13,6 @@
         @inertiaHead
         @include('layouts.hotjar')
     </head>
-
     <body>
         @inertia
     </body>
