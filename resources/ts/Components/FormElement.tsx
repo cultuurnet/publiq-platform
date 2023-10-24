@@ -93,36 +93,38 @@ export const FormElement = ({
   return (
     <div className={classNames("inline-flex flex-col ", className)}>
       <Wrapper labelPosition={labelPosition}>
-        <div
-          className={classNames(
-            "flex gap-2",
-            getFlexDirection(labelPosition),
-            getAlignItems(labelPosition)
-          )}
-        >
-          {label && (
-            <Label
-              id={id}
-              label={label}
-              labelSize={labelSize}
-              className={classNames(labelPosition === "left" ? "w-40" : "")}
-            />
-          )}
-          <div className={InputStyle[labelPosition]}>{clonedComponent}</div>
-        </div>
-        {clickableLabel && (
-          <a
-            href={clickableLabelLink}
-            target="_blank"
-            rel="noreferrer"
+        <>
+          <div
             className={classNames(
-              "font-semibold text-publiq-blue-dark hover:underline pl-1",
-              labelSize ? `text-${labelSize}` : ""
+              "flex gap-2",
+              getFlexDirection(labelPosition),
+              getAlignItems(labelPosition)
             )}
           >
-            {clickableLabel}
-          </a>
-        )}
+            {label && (
+              <Label
+                id={id}
+                label={label}
+                labelSize={labelSize}
+                className={classNames(labelPosition === "left" ? "w-40" : "")}
+              />
+            )}
+            <div className={InputStyle[labelPosition]}>{clonedComponent}</div>
+          </div>
+          {clickableLabel && (
+            <a
+              href={clickableLabelLink}
+              target="_blank"
+              rel="noreferrer"
+              className={classNames(
+                "font-semibold text-publiq-blue-dark hover:underline pl-1",
+                labelSize ? `text-${labelSize}` : ""
+              )}
+            >
+              {clickableLabel}
+            </a>
+          )}
+        </>
       </Wrapper>
       {error && <span className="text-red-500 mt-1">{error}</span>}
       {info && <span className="text-gray-500 mt-1">{info}</span>}
