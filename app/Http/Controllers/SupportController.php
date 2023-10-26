@@ -15,7 +15,7 @@ use Inertia\Response;
 
 final class SupportController extends Controller
 {
-    public function index(Request $request):Response
+    public function index(Request $request): Response
     {
         $slackSuccess = $request->query->has('slackSuccess');
         $slackError = $request->query->has('slackError');
@@ -26,7 +26,7 @@ final class SupportController extends Controller
             'slackError' => $slackError,
         ]);
     }
-    public function sendInvitation(Request $request):RedirectResponse
+    public function sendInvitation(Request $request): RedirectResponse
     {
         $botToken = 'xoxb-3000199719-6086825016259-VR1Qh7bZaGKybPt140PIvDwv';
         $channelID = 'C062K494YLA';
