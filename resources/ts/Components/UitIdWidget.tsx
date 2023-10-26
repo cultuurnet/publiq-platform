@@ -64,7 +64,7 @@ export const UitIdWidget = ({
           <div className="flex gap-2">
             <a
               className={classNames(i18n.language === "nl" && "active")}
-              href={`${translateRoute(`/${currentPage}`, "nl")}`}
+              href={`${translateRoute(`/${currentPage}`, "nl")}?setLocale=true`}
             >
               NL
             </a>
@@ -75,7 +75,7 @@ export const UitIdWidget = ({
             ></div>
             <a
               className={classNames(i18n.language === "en" && "active")}
-              href={`${translateRoute(`/${currentPage}`, "en")}`}
+              href={`${translateRoute(`/${currentPage}`, "en")}?setLocale=true`}
             >
               EN
             </a>

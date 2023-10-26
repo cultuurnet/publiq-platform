@@ -8,39 +8,39 @@ use App\Router\TranslatedRoute;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Cookie;
 
 final class SetLocale
 {
-    private function processLocale(string|null $locale): string
+    private function getLocaleFromUrl(Request $request): ?string
     {
-        if ($locale === null) {
-            return TranslatedRoute::DEFAULT_LANGUAGE;
-        }
+        $locale = explode('/', $request->path())[0];
 
-        $isSingleLocale = !str_contains(';', $locale);
+        return in_array($locale, TranslatedRoute::SUPPORTED_LANGUAGES) ? $locale : null;
+    }
 
-        if ($isSingleLocale && array_search($locale, TranslatedRoute::SUPPORTED_LANGUAGES)) {
-            return $locale;
-        }
-
-        $firstLocale = explode(';', $locale)[0];
-
-        foreach (TranslatedRoute::SUPPORTED_LANGUAGES as $supported) {
-            if (str_starts_with($firstLocale, $supported)) {
-                return $supported;
-            }
-        }
-
-        return TranslatedRoute::DEFAULT_LANGUAGE;
+    private function setLocaleCookie(string $locale): void
+    {
+        Cookie::queue(Cookie::make(name: 'locale', value: $locale, minutes: 3600 * 60 * 24));
     }
 
     public function handle(Request $request, Closure $next): mixed
     {
-        $locale = $request->headers->get('Accept-Language');
+        $locale = Cookie::get('locale');
 
-        $processed = $this->processLocale($locale);
+        if ($locale === null || $request->query('setLocale') === 'true') {
+            $localeFromUrl = $this->getLocaleFromUrl($request);
+            $locale = $localeFromUrl ?? TranslatedRoute::DEFAULT_LANGUAGE;
+            $this->setLocaleCookie($locale);
+        }
 
-        App::setLocale($processed);
+        if (gettype($locale) === 'array') {
+            App::setLocale($locale[0]);
+        }
+
+        if (gettype($locale) === 'string') {
+            App::setLocale($locale);
+        }
 
         return $next($request);
     }

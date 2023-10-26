@@ -15,5 +15,6 @@ final class EncryptCookies extends Middleware
      */
     protected $except = [
         SetAuthIdTokenCookie::COOKIE,
+        'locale',
     ];
 }
