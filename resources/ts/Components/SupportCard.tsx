@@ -4,16 +4,31 @@ import { Heading } from "./Heading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { ButtonLinkSecondary } from "./ButtonLinkSecondary";
+import { ButtonSecondary } from "./ButtonSecondary";
+import { router } from "@inertiajs/react";
+import { InformationDialog } from "./InformationDialog";
+import { useTranslation } from "react-i18next";
+import { SupportProps } from "../Pages/Support/Index";
+import { useTranslateRoute } from "../hooks/useTranslateRoute";
 
-type Props = SupportType;
+type Props = SupportType & SupportProps;
 
 export const SupportCard = ({
+  type,
   title,
   description,
   imgUrl,
   actionTitle,
   actionUrl,
+  email,
+  slackError,
+  slackSuccess,
 }: Props) => {
+  const { t } = useTranslation();
+  const translateRoute = useTranslateRoute();
+  const handleSlackInvitation = () => router.post("/support/slack");
+  const handleRedirect = () => router.get(translateRoute("/support"));
+
   return (
     <div className="w-full flex flex-col bg-white shadow hover:bg-publiq-blue-light hover:bg-opacity-5">
       <div className="flex flex-1 max-sm:flex-col ">
@@ -30,13 +45,36 @@ export const SupportCard = ({
             <p className="max-md:text-sm">{description}</p>
           </div>
           <div className="flex max-sm:self-center">
-            <ButtonLinkSecondary
-              className="min-w-[15rem] max-sm:min-w-[10rem] max-sm:px-3"
-              href={actionUrl}
-            >
-              {actionTitle}
-              <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
-            </ButtonLinkSecondary>
+            {type === "slack" ? (
+              <>
+                <ButtonSecondary
+                  onClick={() => {
+                    handleSlackInvitation();
+                  }}
+                >
+                  {actionTitle}
+                </ButtonSecondary>
+                <InformationDialog
+                  isVisible={slackError || slackSuccess}
+                  title={title}
+                  info={
+                    slackSuccess
+                      ? t("dialog.invite_success", { email: email })
+                      : t("dialog.invite_wrong")
+                  }
+                  onConfirm={() => handleRedirect()}
+                  onClose={() => handleRedirect()}
+                ></InformationDialog>
+              </>
+            ) : (
+              <ButtonLinkSecondary
+                className="min-w-[15rem] max-sm:min-w-[10rem] max-sm:px-3"
+                href={actionUrl}
+              >
+                {actionTitle}
+                <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+              </ButtonLinkSecondary>
+            )}
           </div>
         </div>
       </div>
