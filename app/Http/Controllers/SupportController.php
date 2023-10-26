@@ -28,8 +28,8 @@ final class SupportController extends Controller
     }
     public function sendInvitation(Request $request): RedirectResponse
     {
-        $botToken = 'xoxb-3000199719-6086825016259-VR1Qh7bZaGKybPt140PIvDwv';
-        $channelID = 'C062K494YLA';
+        $botToken = config('slack.botToken');
+        $channelID = config('slack.channelID');
         $email = Auth::user()?->email;
 
         try {
