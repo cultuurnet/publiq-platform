@@ -39,7 +39,13 @@ final class SupportController extends Controller
                     'emails' => $email,
                 ]);
 
-            if (!$response->ok()) {
+            $body = json_decode(
+                json: $response->body(),
+                associative: true,
+                flags: JSON_THROW_ON_ERROR
+            );
+
+            if (!$response->ok() | $body['ok'] === false) {
                 throw new \Exception('Response not ok');
             }
 

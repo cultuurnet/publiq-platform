@@ -60,7 +60,7 @@ export const SupportCard = ({
                   info={
                     slackSuccess
                       ? t("dialog.invite_success", { email: email })
-                      : t("dialog.invite_wrong")
+                      : t("dialog.invite_error")
                   }
                   onConfirm={() => handleRedirect()}
                   onClose={() => handleRedirect()}
