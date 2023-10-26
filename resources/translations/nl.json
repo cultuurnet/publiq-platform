@@ -259,7 +259,11 @@
   },
   "dialog": {
     "confirm": "Bevestigen",
-    "cancel": "Annuleren"
+    "cancel": "Annuleren",
+    "close": "Sluiten",
+    "invite_success": "Wij hebben een uitnodiging gestuurd naar {{email}}",
+    "invite_wrong": "Er is iets fout gegaan. Probeer het later opnieuw."
+    
   },
   "tooltip": {
     "copy": "Gekopieerd!"
