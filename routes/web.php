@@ -8,9 +8,9 @@ use App\Domain\Auth\Controllers\Logout;
 use App\Domain\Integrations\Controllers\IntegrationController;
 use App\Domain\Subscriptions\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 use App\Router\TranslatedRoute;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\SupportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,8 +38,11 @@ TranslatedRoute::get(
         '/en/support',
         '/nl/ondersteuning',
     ],
-    static fn () => Inertia::render('Support/Index')
+    [SupportController::class, 'index'],
+    'support.index'
 );
+
+Route::post('/support/slack', [SupportController::class, 'sendInvitation']);
 
 TranslatedRoute::get(
     [
