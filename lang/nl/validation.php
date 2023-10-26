@@ -192,7 +192,8 @@ return [
         'firstNameTechnicalContact' => 'voornaam',
         'lastNameTechnicalContact' => 'achternaam',
         'emailTechnicalContact' => 'email',
-        'agreement' => 'gebruikersvoorwaarden'
+        'agreement' => 'gebruikersvoorwaarden',
+        'privacy' => 'privacyverklaring'
     ],
 
 ];
