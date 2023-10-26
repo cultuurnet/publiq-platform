@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "i18next";
 import { SupportCard } from "./SupportCard";
+import { SupportProps } from "../Pages/Support/Index";
 
 const getSupportTypes = (t: TFunction) => [
   {
@@ -57,7 +58,9 @@ const getSupportTypes = (t: TFunction) => [
 
 export type SupportType = ReturnType<typeof getSupportTypes>[number];
 
-export const SupportTypes = () => {
+type Props = SupportProps;
+
+export const SupportTypes = (props: Props) => {
   const { t } = useTranslation();
 
   const translatedSupportTypes = useMemo(() => getSupportTypes(t), [t]);
@@ -66,7 +69,7 @@ export const SupportTypes = () => {
     <div>
       <ul className="flex justify-center gap-4 flex-wrap">
         {translatedSupportTypes.map((support) => (
-          <SupportCard key={support.title} {...support} />
+          <SupportCard key={support.title} {...support} {...props} />
         ))}
       </ul>
     </div>
