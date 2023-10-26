@@ -43,7 +43,7 @@ TranslatedRoute::get(
 );
 
 Route::group(['middleware' => 'auth'], static function () {
-Route::post('/support/slack', [SupportController::class, 'sendInvitation']);
+    Route::post('/support/slack', [SupportController::class, 'sendInvitation']);
 });
 
 TranslatedRoute::get(
