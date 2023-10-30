@@ -1773,16 +1773,16 @@
         },
         {
             "name": "inertiajs/inertia-laravel",
-            "version": "v0.6.10",
+            "version": "v0.6.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/inertiajs/inertia-laravel.git",
-                "reference": "609f960c9392e61f8f10418e333599cf1b12efbe"
+                "reference": "2a1e19048f95c0e4adb2b2733f9119e49c4fc09f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/inertiajs/inertia-laravel/zipball/609f960c9392e61f8f10418e333599cf1b12efbe",
-                "reference": "609f960c9392e61f8f10418e333599cf1b12efbe",
+                "url": "https://api.github.com/repos/inertiajs/inertia-laravel/zipball/2a1e19048f95c0e4adb2b2733f9119e49c4fc09f",
+                "reference": "2a1e19048f95c0e4adb2b2733f9119e49c4fc09f",
                 "shasum": ""
             },
             "require": {
@@ -1833,7 +1833,7 @@
             ],
             "support": {
                 "issues": "https://github.com/inertiajs/inertia-laravel/issues",
-                "source": "https://github.com/inertiajs/inertia-laravel/tree/v0.6.10"
+                "source": "https://github.com/inertiajs/inertia-laravel/tree/v0.6.11"
             },
             "funding": [
                 {
@@ -1841,7 +1841,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-09-13T02:24:55+00:00"
+            "time": "2023-10-27T10:59:02+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
@@ -2184,17 +2184,17 @@
         },
         {
             "name": "laravel/nova",
-            "version": "4.27.14",
+            "version": "4.28.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:laravel/nova.git",
-                "reference": "e49202a34fdbdfcc857f60df8cb76da89dff0a7c"
+                "reference": "35853aa9d1092a47b7c79c98afcd1519a1a20f3f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://nova.laravel.com/dist/laravel/nova/laravel-nova-e49202a34fdbdfcc857f60df8cb76da89dff0a7c-zip-fc0f64.zip",
-                "reference": "e49202a34fdbdfcc857f60df8cb76da89dff0a7c",
-                "shasum": "5ce70233aefa671ec94706aa0ddeea5ae6b69a9c"
+                "url": "https://nova.laravel.com/dist/laravel/nova/laravel-nova-35853aa9d1092a47b7c79c98afcd1519a1a20f3f-zip-ef405b.zip",
+                "reference": "35853aa9d1092a47b7c79c98afcd1519a1a20f3f",
+                "shasum": "c98c9768fcffd5fc0919e97ed95efb76589791c6"
             },
             "require": {
                 "brick/money": "^0.5.0|^0.6.0|^0.7.0|^0.8.0",
@@ -2273,10 +2273,10 @@
                 ],
                 "dusk:test": [
                     "@php vendor/bin/testbench-dusk package:dusk-purge --ansi",
-                    "@php vendor/bin/phpunit -c phpunit.dusk.xml"
+                    "@php vendor/bin/phpunit -c phpunit.dusk.xml --stop-on-failure --stop-on-error"
                 ],
                 "dusk:filter": [
-                    "@php vendor/bin/testbench-dusk package:dusk-purge --ansi && ./vendor/bin/phpunit -c phpunit.dusk.xml --filter"
+                    "./vendor/bin/testbench-dusk package:dusk-purge --ansi && ./vendor/bin/phpunit -c phpunit.dusk.xml --filter"
                 ],
                 "test:local": [
                     "@php vendor/bin/phpunit -c phpunit.xml --group date-field,datetime-field,external-network --testdox",
@@ -2304,9 +2304,9 @@
                 "laravel"
             ],
             "support": {
-                "source": "https://github.com/laravel/nova/tree/v4.27.14"
+                "source": "https://github.com/laravel/nova/tree/v4.28.0"
             },
-            "time": "2023-10-10T20:43:10+00:00"
+            "time": "2023-10-24T20:43:10+00:00"
         },
         {
             "name": "laravel/prompts",
@@ -3527,16 +3527,16 @@
         },
         {
             "name": "openspout/openspout",
-            "version": "v4.18.0",
+            "version": "v4.19.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openspout/openspout.git",
-                "reference": "61e59f1cd93eec21bf5eeff5775d194d9df0ee9d"
+                "reference": "b2d9a007eff4cbdf0a3befe63d696c365ad1abc0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openspout/openspout/zipball/61e59f1cd93eec21bf5eeff5775d194d9df0ee9d",
-                "reference": "61e59f1cd93eec21bf5eeff5775d194d9df0ee9d",
+                "url": "https://api.github.com/repos/openspout/openspout/zipball/b2d9a007eff4cbdf0a3befe63d696c365ad1abc0",
+                "reference": "b2d9a007eff4cbdf0a3befe63d696c365ad1abc0",
                 "shasum": ""
             },
             "require": {
@@ -3550,13 +3550,13 @@
             },
             "require-dev": {
                 "ext-zlib": "*",
-                "friendsofphp/php-cs-fixer": "^3.26.1",
-                "infection/infection": "^0.27",
+                "friendsofphp/php-cs-fixer": "^3.35.1",
+                "infection/infection": "^0.27.6",
                 "phpbench/phpbench": "^1.2.14",
-                "phpstan/phpstan": "^1.10.33",
-                "phpstan/phpstan-phpunit": "^1.3.14",
+                "phpstan/phpstan": "^1.10.39",
+                "phpstan/phpstan-phpunit": "^1.3.15",
                 "phpstan/phpstan-strict-rules": "^1.5.1",
-                "phpunit/phpunit": "^10.3.3"
+                "phpunit/phpunit": "^10.4.1"
             },
             "suggest": {
                 "ext-iconv": "To handle non UTF-8 CSV files (if \"php-mbstring\" is not already installed or is too limited)",
@@ -3604,7 +3604,7 @@
             ],
             "support": {
                 "issues": "https://github.com/openspout/openspout/issues",
-                "source": "https://github.com/openspout/openspout/tree/v4.18.0"
+                "source": "https://github.com/openspout/openspout/tree/v4.19.0"
             },
             "funding": [
                 {
@@ -3616,7 +3616,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-09-15T14:12:06+00:00"
+            "time": "2023-10-19T11:52:22+00:00"
         },
         {
             "name": "php-http/client-common",
