@@ -91,7 +91,7 @@ pipeline {
         }
 
         stage('Deploy to testing') {
-            // input { message "Deploy to Testing?" }
+            input { message "Deploy to Testing?" }
             agent { label 'ubuntu && 20.04' }
             options { skipDefaultCheckout() }
             environment {
@@ -99,8 +99,8 @@ pipeline {
             }
 
             steps {
-                publishAptlySnapshot snapshotName: "${env.REPOSITORY_NAME}-${env.PIPELINE_VERSION}", publishTarget: "${env.JOB_NAME}-${env.APPLICATION_ENVIRONMENT}", distributions: 'focal'
-                //triggerDeployment nodeName: 'platform-test01'
+                publishAptlySnapshot snapshotName: "${env.REPOSITORY_NAME}-${env.PIPELINE_VERSION}", publishTarget: "${env.REPOSITORY_NAME}-${env.APPLICATION_ENVIRONMENT}", distributions: 'focal'
+                triggerDeployment nodeName: 'platform-web-test01'
             }
             post {
                 always {
@@ -118,8 +118,8 @@ pipeline {
             }
 
             steps {
-                publishAptlySnapshot snapshotName: "${env.REPOSITORY_NAME}-${env.PIPELINE_VERSION}", publishTarget: "${env.JOB_NAME}-${env.APPLICATION_ENVIRONMENT}", distributions: 'focal'
-                //triggerDeployment nodeName: 'platform-prod01'
+                publishAptlySnapshot snapshotName: "${env.REPOSITORY_NAME}-${env.PIPELINE_VERSION}", publishTarget: "${env.REPOSITORY_NAME}-${env.APPLICATION_ENVIRONMENT}", distributions: 'focal'
+                //triggerDeployment nodeName: 'platform-web-prod01'
             }
             post {
                 always {
