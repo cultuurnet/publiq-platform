@@ -45,7 +45,7 @@ final class SupportController extends Controller
                 flags: JSON_THROW_ON_ERROR
             );
 
-            if (!$response->ok() | $body['ok'] === false) {
+            if (!$response->ok() || $body['ok'] === false) {
                 throw new \Exception('Response not ok');
             }
 
