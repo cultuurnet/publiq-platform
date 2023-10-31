@@ -213,7 +213,7 @@
       "description": "Met onze uitgebreide documentatie zetten we je op weg bij elke integratie.",
       "img_url": "#",
       "action_title": "Naar de documentatie",
-      "action_url": "https://docs.publiq.be"
+      "action_url": "#"
     },
     "styleguide": {
       "title": "Stijlgids",
@@ -227,7 +227,7 @@
       "description": "We bieden een overzicht van de status van de applicaties & services binnen het publiq platform. Je kan je inschrijven om op de hoogte te blijven van belangrijke updates.",
       "img_url": "#",
       "action_title": "Naar de statuspagina",
-      "action_url": "https://status.publiq.be"
+      "action_url": "#"
     },
     "support_via_slack": {
       "title": "Support via slack",
@@ -241,7 +241,7 @@
       "description": "Een organisatie met een hart voor cultuur en vrije tijd? Dan werken we graag een voorstel op maat uit!",
       "img_url": "#",
       "action_title": "Contacteer ons",
-      "action_url": "mailto:partnerships@publiq.be"
+      "action_url": "#"
     }
   },
   "dialog": {
