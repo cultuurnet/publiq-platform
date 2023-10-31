@@ -54,7 +54,7 @@ export const SupportCard = ({
                   {actionTitle}
                 </ButtonSecondary>
                 <InformationDialog
-                  isVisible={slackStatus}
+                  isVisible={!!slackStatus}
                   title={title}
                   info={
                     slackStatus === "success"
