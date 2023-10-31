@@ -36,7 +36,7 @@ final class SupportController extends Controller
             $response = Http::withToken($botToken)
                 ->post('https://slack.com/api/conversations.inviteShared', [
                     'channel' => $channelID,
-                    'emails' => $email,
+                    'emails' => [$email],
                 ]);
 
             $body = json_decode(
