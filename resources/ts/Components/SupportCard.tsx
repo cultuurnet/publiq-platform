@@ -21,8 +21,7 @@ export const SupportCard = ({
   actionTitle,
   actionUrl,
   email,
-  slackError,
-  slackSuccess,
+  slackStatus,
 }: Props) => {
   const { t } = useTranslation();
   const translateRoute = useTranslateRoute();
@@ -55,10 +54,10 @@ export const SupportCard = ({
                   {actionTitle}
                 </ButtonSecondary>
                 <InformationDialog
-                  isVisible={slackError || slackSuccess}
+                  isVisible={slackStatus}
                   title={title}
                   info={
-                    slackSuccess
+                    slackStatus === "success"
                       ? t("dialog.invite_success", { email: email })
                       : t("dialog.invite_error")
                   }

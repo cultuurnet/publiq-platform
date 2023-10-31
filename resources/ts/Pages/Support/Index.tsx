@@ -7,8 +7,7 @@ import { Page } from "../../Components/Page";
 
 export type SupportProps = {
   email: string;
-  slackSuccess: boolean;
-  slackError: boolean;
+  slackStatus: string;
 };
 
 const Index = (props: SupportProps) => {

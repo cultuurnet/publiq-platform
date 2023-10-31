@@ -17,13 +17,11 @@ final class SupportController extends Controller
 {
     public function index(Request $request): Response
     {
-        $slackSuccess = $request->query->has('slackSuccess');
-        $slackError = $request->query->has('slackError');
+        $slackStatus = $request->query->get('slackStatus');
 
         return Inertia::render('Support/Index', [
             'email' => Auth::user()?->email,
-            'slackSuccess' => $slackSuccess,
-            'slackError' => $slackError,
+            'slackStatus' => $slackStatus,
         ]);
     }
     public function sendInvitation(Request $request): RedirectResponse
@@ -52,12 +50,12 @@ final class SupportController extends Controller
         } catch (\Throwable $th) {
             return Redirect::route(
                 TranslatedRoute::getTranslatedRouteName($request, 'support.index'),
-                ['slackError']
+                ['slackStatus'=> 'error']
             );
         }
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName($request, 'support.index'),
-            ['slackSuccess']
+            ['slackStatus'=> 'success']
         );
     }
 }
