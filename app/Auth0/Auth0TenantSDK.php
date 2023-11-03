@@ -103,11 +103,8 @@ final class Auth0TenantSDK
             'client_metadata' => [
                 'partner-status' => $integration->partnerStatus->value,
             ],
+            'initiate_login_uri' => $this->getLoginUrl($integration),
         ];
-
-        if ($this->getLoginUrl($integration) !== '') {
-            $body['initiate_login_uri'] = $this->getLoginUrl($integration);
-        }
 
         $this->callApiWithTokenRefresh(
             fn () => $this->management->clients()->update(
