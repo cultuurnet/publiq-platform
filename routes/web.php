@@ -33,14 +33,16 @@ Route::post('/admin/logout', [Logout::class, 'adminLogout']);
 
 Route::get('/auth/callback', Callback::class);
 
-TranslatedRoute::get(
-    [
-        '/en/support',
-        '/nl/ondersteuning',
-    ],
-    [SupportController::class, 'index'],
-    'support.index'
-);
+Route::group(['middleware' => 'auth'], static function () {
+    TranslatedRoute::get(
+        [
+            '/en/support',
+            '/nl/ondersteuning',
+        ],
+        [SupportController::class, 'index'],
+        'support.index'
+    );
+});
 
 Route::group(['middleware' => 'auth'], static function () {
     Route::post('/support/slack', [SupportController::class, 'sendInvitation']);
