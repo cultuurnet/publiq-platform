@@ -200,7 +200,7 @@ return [
         App\Providers\NovaServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\UiTiDv1\UiTiDv1ServiceProvider::class,
-
+        App\ProjectAanvraag\ProjectAanvraagServiceProvider::class,
     ],
 
     /*
@@ -222,5 +222,10 @@ return [
     // But the Sentry SDK has a list of allowed configs and enabled is not part of it which results in an exception.
     'sentry' => [
         'enabled' => env('SENTRY_LARAVEL_ENABLED', true),
+    ],
+
+    'project_aanvraag' => [
+        'create_widget' => env('PROJECT_AANVRAAG_CREATE_WIDGET', false),
+        'base_uri' => env('PROJECT_AANVRAAG_BASE_URI', 'http://localhst'),
     ],
 ];
