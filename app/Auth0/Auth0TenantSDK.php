@@ -195,7 +195,7 @@ final class Auth0TenantSDK
         return $integration->name . ' (via publiq platform)';
     }
 
-    private function getLoginUrl(Integration $integration): string
+    private function getLoginUrl(Integration $integration): ?string
     {
         $loginUrls = $integration->urlsForTypeAndEnvironment(
             IntegrationUrlType::Login,
@@ -203,7 +203,7 @@ final class Auth0TenantSDK
         );
 
         if (count($loginUrls) === 0) {
-            return '';
+            return null;
         }
 
         return reset($loginUrls)->url;
