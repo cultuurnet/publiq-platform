@@ -19,7 +19,7 @@ final readonly class ProjectAanvraagClient
     {
         $request = new Request(
             'POST',
-            'projects',
+            'project',
             [],
             Json::encode([
                 'userId' => $createWidgetRequest->userId,
