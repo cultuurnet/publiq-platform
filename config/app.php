@@ -223,9 +223,4 @@ return [
     'sentry' => [
         'enabled' => env('SENTRY_LARAVEL_ENABLED', true),
     ],
-
-    'project_aanvraag' => [
-        'create_widget' => env('PROJECT_AANVRAAG_CREATE_WIDGET', false),
-        'base_uri' => env('PROJECT_AANVRAAG_BASE_URI', 'http://localhst'),
-    ],
 ];
