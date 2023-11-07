@@ -34,7 +34,7 @@ final class CreateWidget implements ShouldQueue
     ) {
     }
 
-    public function handleIntegration(IntegrationCreated $integrationCreated): void
+    public function handleIntegrationCreated(IntegrationCreated $integrationCreated): void
     {
         $this->handle($integrationCreated->integrationId);
     }
