@@ -76,6 +76,9 @@
     },
     "agree": "Ik ga akkoord met de",
     "terms_of_use": "gebruiksvoorwaarden",
+    "terms_of_use_link": "https://www.publiq.be/nl/gebruiksvoorwaarden",
+    "privacy_statement": "privacyverklaring",
+    "privacy_link": "https://www.publiq.be/nl/privacy",
     "coupon": "Ik heb een coupon",
     "code": "Couponcode",
     "submit": "Integratie aanmaken",
@@ -128,7 +131,6 @@
     "documentation": {
       "title": "Documentatie",
       "action_title": "Aan de slag met {{product}}",
-      "action_url": "https://docs.publiq.be/docs{{product}}",
       "requirements": "Requirements before going live"
     }
   },
@@ -213,7 +215,7 @@
       "description": "Met onze uitgebreide documentatie zetten we je op weg bij elke integratie.",
       "img_url": "#",
       "action_title": "Naar de documentatie",
-      "action_url": "#"
+      "action_url": "https://docs.publiq.be"
     },
     "styleguide": {
       "title": "Stijlgids",
@@ -227,6 +229,20 @@
       "description": "We bieden een overzicht van de status van de applicaties & services binnen het publiq platform. Je kan je inschrijven om op de hoogte te blijven van belangrijke updates.",
       "img_url": "#",
       "action_title": "Naar de statuspagina",
+      "action_url": "https://status.publiq.be"
+    },
+    "roadmap": {
+      "title": "Roadmap",
+      "description": "Neem een kijkje in onze plannen en deel jouw briljante ideeën om onze producten nog beter te maken.",
+      "img_url": "#",
+      "action_title": "Naar de roadmap",
+      "action_url": "#"
+    },
+    "release_notes": {
+      "title": "Relase notes",
+      "description": "Een overzicht van alle nieuwe mogelijkheden, technische aanpassingen en verbeteringen binnen het publiq platform.",
+      "img_url": "#",
+      "action_title": "Naar de relase notes",
       "action_url": "#"
     },
     "support_via_slack": {
@@ -241,12 +257,15 @@
       "description": "Een organisatie met een hart voor cultuur en vrije tijd? Dan werken we graag een voorstel op maat uit!",
       "img_url": "#",
       "action_title": "Contacteer ons",
-      "action_url": "#"
+      "action_url": "mailto:partnerships@publiq.be"
     }
   },
   "dialog": {
     "confirm": "Bevestigen",
-    "cancel": "Annuleren"
+    "cancel": "Annuleren",
+    "close": "Sluiten",
+    "invite_success": "Wij hebben een uitnodiging gestuurd naar {{email}}",
+    "invite_error": "Er is iets fout gegaan. Probeer het later opnieuw."
   },
   "tooltip": {
     "copy": "Gekopieerd!"
