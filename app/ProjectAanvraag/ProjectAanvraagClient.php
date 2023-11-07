@@ -22,7 +22,7 @@ final readonly class ProjectAanvraagClient
     {
         $request = new Request(
             'POST',
-            'project',
+            'project/' . $createWidgetRequest->integrationId->toString(),
             [],
             Json::encode([
                 'userId' => $createWidgetRequest->userId,

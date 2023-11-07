@@ -9,6 +9,7 @@ use Ramsey\Uuid\UuidInterface;
 final readonly class CreateWidgetRequest
 {
     public function __construct(
+        public UuidInterface $integrationId,
         public UuidInterface $userId,
         public string $name,
         public string $summary,

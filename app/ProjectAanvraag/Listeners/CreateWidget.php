@@ -114,6 +114,7 @@ final class CreateWidget implements ShouldQueue
 
         $this->projectAanvraagClient->createWidget(
             new CreateWidgetRequest(
+                $integration->id,
                 $contributor->id,
                 $integration->name,
                 $integration->description,
