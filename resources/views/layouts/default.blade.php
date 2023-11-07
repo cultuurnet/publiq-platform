@@ -12,8 +12,10 @@
         <title>publiq-platform</title>
         @inertiaHead
         @include('layouts.hotjar')
+        @include('layouts.gtm', ['part' => 'head'])
     </head>
     <body>
         @inertia
+        @include('layouts.gtm', ['part' => 'body'])
     </body>
 </html>
