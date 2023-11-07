@@ -152,6 +152,6 @@ final class CreateWidgetTest extends TestCase
             ->method('sendRequest')
             ->with(self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedRequest, $actualRequest)));
 
-        $this->createWidget->handleIntegration(new IntegrationCreated($integrationId));
+        $this->createWidget->handleIntegrationCreated(new IntegrationCreated($integrationId));
     }
 }
