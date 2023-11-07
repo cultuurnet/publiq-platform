@@ -1,25 +1,51 @@
-import React from "react";
+import React, { ComponentProps } from "react";
 import { Link, InertiaLinkProps } from "@inertiajs/react";
 import { classNames } from "../utils/classNames";
 
-type Props = InertiaLinkProps;
+type Props = InertiaLinkProps & ComponentProps<"a">;
 
 export const ButtonLinkSecondary = ({
   children,
+  href,
   className,
   ...props
 }: Props) => {
+  const isExternal = !href.startsWith("/") && !href.startsWith("#");
+
   return (
-    <Link
-      className={classNames(
-        "relative inline-flex items-center justify-center rounded px-7 py-2 max-md:px-5 font-medium border border-publiq-blue text-publiq-blue group hover:bg-publiq-blue-dark hover:bg-opacity-10",
-        className
+    <>
+      {isExternal ? (
+        <a
+          className={classNames(
+            "relative inline-flex items-center justify-center rounded px-7 py-2 max-md:px-5 font-medium border border-publiq-blue text-publiq-blue group hover:bg-publiq-blue-dark hover:bg-opacity-10",
+            className
+          )}
+          href={href}
+          target="_blank"
+          rel="noreferrer"
+          {...props}
+        >
+          <div className="absolute w-[50%] h-[50%] opacity-0 group-focus:animate-pulse bg-publiq-gray-light"></div>
+          <div className="relative z-10 flex items-center gap-2">
+            {children}
+          </div>
+        </a>
+      ) : (
+        <Link
+          className={classNames(
+            "relative inline-flex items-center justify-center rounded px-7 py-2 max-md:px-5 font-medium border border-publiq-blue text-publiq-blue group hover:bg-publiq-blue-dark hover:bg-opacity-10",
+            className
+          )}
+          href={href}
+          {...props}
+        >
+          <div className="absolute w-[50%] h-[50%] opacity-0 group-focus:animate-pulse bg-publiq-gray-light"></div>
+          <div className="relative z-10 flex items-center gap-2">
+            {children}
+          </div>
+        </Link>
       )}
-      {...props}
-    >
-      <div className="absolute w-[50%] h-[50%] opacity-0 group-focus:animate-pulse bg-publiq-gray-light"></div>
-      <div className="relative z-10 flex items-center gap-2">{children}</div>
-    </Link>
+    </>
   );
 };
 

@@ -2,9 +2,11 @@ import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { TFunction } from "i18next";
 import { SupportCard } from "./SupportCard";
+import { SupportProps } from "../Pages/Support/Index";
 
 const getSupportTypes = (t: TFunction) => [
   {
+    type: "documentation",
     title: t("support.documentation.title"),
     description: t("support.documentation.description"),
     imgUrl: t("support.documentation.img_url"),
@@ -12,6 +14,7 @@ const getSupportTypes = (t: TFunction) => [
     actionUrl: t("support.documentation.action_url"),
   },
   {
+    type: "styleguide",
     title: t("support.styleguide.title"),
     description: t("support.styleguide.description"),
     imgUrl: t("support.styleguide.img_url"),
@@ -19,6 +22,7 @@ const getSupportTypes = (t: TFunction) => [
     actionUrl: t("support.styleguide.action_url"),
   },
   {
+    type: "statuspage",
     title: t("support.statuspage.title"),
     description: t("support.statuspage.description"),
     imgUrl: t("support.statuspage.img_url"),
@@ -26,6 +30,7 @@ const getSupportTypes = (t: TFunction) => [
     actionUrl: t("support.statuspage.action_url"),
   },
   {
+    type: "roadmap",
     title: t("support.roadmap.title"),
     description: t("support.roadmap.description"),
     imgUrl: t("support.roadmap.img_url"),
@@ -33,6 +38,7 @@ const getSupportTypes = (t: TFunction) => [
     actionUrl: t("support.roadmap.action_url"),
   },
   {
+    type: "release notes",
     title: t("support.release_notes.title"),
     description: t("support.release_notes.description"),
     imgUrl: t("support.release_notes.img_url"),
@@ -40,6 +46,7 @@ const getSupportTypes = (t: TFunction) => [
     actionUrl: t("support.release_notes.action_url"),
   },
   {
+    type: "slack",
     title: t("support.support_via_slack.title"),
     description: t("support.support_via_slack.description"),
     imgUrl: t("support.support_via_slacksupport.img_url"),
@@ -47,6 +54,7 @@ const getSupportTypes = (t: TFunction) => [
     actionUrl: t("support.support_via_slack.action_url"),
   },
   {
+    type: "customized support",
     title: t("support.customized_support.title"),
     description: t("support.customized_support.description"),
     imgUrl: t("support.support_via_slacksupport.img_url"),
@@ -57,7 +65,9 @@ const getSupportTypes = (t: TFunction) => [
 
 export type SupportType = ReturnType<typeof getSupportTypes>[number];
 
-export const SupportTypes = () => {
+type Props = SupportProps;
+
+export const SupportTypes = (props: Props) => {
   const { t } = useTranslation();
 
   const translatedSupportTypes = useMemo(() => getSupportTypes(t), [t]);
@@ -66,7 +76,7 @@ export const SupportTypes = () => {
     <div>
       <ul className="flex justify-center gap-4 flex-wrap">
         {translatedSupportTypes.map((support) => (
-          <SupportCard key={support.title} {...support} />
+          <SupportCard key={support.title} {...support} {...props} />
         ))}
       </ul>
     </div>
