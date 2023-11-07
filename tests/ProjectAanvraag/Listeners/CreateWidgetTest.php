@@ -68,7 +68,10 @@ final class CreateWidgetTest extends TestCase
         $this->logger = $this->createMock(LoggerInterface::class);
 
         $this->createWidget = new CreateWidget(
-            new ProjectAanvraagClient($this->client),
+            new ProjectAanvraagClient(
+                $this->client,
+                $this->logger
+            ),
             $this->integrationRepository,
             $this->contactRepository,
             $this->uiTiDv1ConsumerRepository,

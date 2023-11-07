@@ -8,11 +8,14 @@ use App\Json;
 use App\ProjectAanvraag\Requests\CreateWidgetRequest;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Client\ClientInterface;
+use Psr\Log\LoggerInterface;
 
 final readonly class ProjectAanvraagClient
 {
-    public function __construct(private ClientInterface $httpClient)
-    {
+    public function __construct(
+        private ClientInterface $httpClient,
+        private LoggerInterface $logger
+    ) {
     }
 
     public function createWidget(CreateWidgetRequest $createWidgetRequest): void
@@ -31,6 +34,24 @@ final readonly class ProjectAanvraagClient
             ])
         );
 
-        $this->httpClient->sendRequest($request);
+        $response = $this->httpClient->sendRequest($request);
+
+        if ($response->getStatusCode() !== 200) {
+            $this->logger->error(
+                'Failed to create widget',
+                [
+                    'status_code' => $response->getStatusCode(),
+                    'body' => $response->getBody()->getContents(),
+                ]
+            );
+        } else {
+            $this->logger->info(
+                'Widget created',
+                [
+                    'status_code' => $response->getStatusCode(),
+                    'body' => $response->getBody()->getContents(),
+                ]
+            );
+        }
     }
 }

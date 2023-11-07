@@ -28,6 +28,7 @@ final class ProjectAanvraagServiceProvider extends ServiceProvider
                         'http_errors' => false,
                     ]
                 ),
+                $this->app->get(LoggerInterface::class)
             );
         });
 
