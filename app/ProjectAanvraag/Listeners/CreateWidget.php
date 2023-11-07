@@ -8,6 +8,7 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Integrations\Events\IntegrationCreated;
+use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\ProjectAanvraag\ProjectAanvraagClient;
 use App\ProjectAanvraag\Requests\CreateWidgetRequest;
@@ -53,6 +54,13 @@ final class CreateWidget implements ShouldQueue
     private function handle(UuidInterface $integrationId): void
     {
         $integration = $this->integrationRepository->getById($integrationId);
+        if ($integration->type !== IntegrationType::Widgets) {
+            $this->logger->info(
+                'Integration {integrationId} is not a widget integration, skipping widget creation',
+                ['integrationId' => $integration->id->toString()]
+            );
+            return;
+        }
 
         $contacts = $this->contactRepository->getByIntegrationId($integration->id);
         if ($contacts->count() === 0) {
