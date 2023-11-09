@@ -12,6 +12,7 @@ use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\IntegrationUrlType;
 use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Ramsey\Uuid\Lazy\LazyUuidFromString;
 use Ramsey\Uuid\Uuid;
 
 final class IntegrationUrlModel extends UuidModel
@@ -29,10 +30,17 @@ final class IntegrationUrlModel extends UuidModel
     protected static function booted(): void
     {
         self::created(
-            static fn (IntegrationUrlModel $integrationUrlModel) => IntegrationUrlCreated::dispatch(
-                Uuid::fromString($integrationUrlModel->id),
-                Uuid::fromString($integrationUrlModel->integration_id)
-            )
+            static function (IntegrationUrlModel $integrationUrlModel) {
+                // @phpstan-ignore-next-line
+                $id = $integrationUrlModel->id instanceof LazyUuidFromString ? $integrationUrlModel->id : Uuid::fromString($integrationUrlModel->id);
+                // @phpstan-ignore-next-line
+                $integrationId = $integrationUrlModel->integration_id instanceof LazyUuidFromString ? $integrationUrlModel->integration_id : Uuid::fromString($integrationUrlModel->integration_id);
+
+                return IntegrationUrlCreated::dispatch(
+                    $id,
+                    $integrationId
+                );
+            }
         );
         self::updated(
             static fn (IntegrationUrlModel $integrationUrlModel) => IntegrationUrlUpdated::dispatch(
