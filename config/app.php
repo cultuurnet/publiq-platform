@@ -200,7 +200,7 @@ return [
         App\Providers\NovaServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\UiTiDv1\UiTiDv1ServiceProvider::class,
-
+        App\ProjectAanvraag\ProjectAanvraagServiceProvider::class,
     ],
 
     /*
