@@ -87,8 +87,6 @@ Route::group(['middleware' => 'auth'], static function () {
     Route::delete('/integrations/{id}', [IntegrationController::class, 'destroy']);
     Route::patch('/integrations/{id}', [IntegrationController::class, 'update']);
 
-    Route::patch('/integrations/{id}/urls', [IntegrationController::class, 'updateUrls']);
-    Route::post('/integrations/{id}/urls', [IntegrationController::class, 'storeUrl']);
     Route::delete('/integrations/{id}/urls/{urlId}', [IntegrationController::class, 'destroyUrl']);
 
     Route::patch('/integrations/{id}/contacts', [IntegrationController::class, 'updateContacts']);
