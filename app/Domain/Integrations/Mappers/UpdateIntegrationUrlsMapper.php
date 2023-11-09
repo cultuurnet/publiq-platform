@@ -21,7 +21,7 @@ final class UpdateIntegrationUrlsMapper
 
         $changedUrlsCollection = Collection::make(
             [
-                $request->input('loginUrl'),
+                ...($request->input('loginUrls') ?? []),
                 ...($request->input('callbackUrls') ?? []),
                 ...($request->input('logoutUrls') ?? []),
             ]
