@@ -55,6 +55,7 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
     patch,
     transform,
     delete: destroy,
+    errors,
   } = useForm(initialFormValues);
 
   const handleDeleteUrl = (urlId: IntegrationUrl["id"]) => {
@@ -67,14 +68,14 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
   const handleSave = () =>
     patch(`/integrations/${id}`, {
       preserveScroll: true,
-      preserveState: false,
+      preserveState: true,
     });
 
-  const handleChangeNewUrl = (newUrl: NewIntegrationUrl) => {
+  const handleChangeNewUrl = (newUrl: NewIntegrationUrl & { id: string }) => {
     let found = false;
 
     const updated = data.newIntegrationUrls.map((url) => {
-      if (url.type === newUrl.type && url.environment === newUrl.environment) {
+      if (url.id === newUrl.id) {
         found = true;
         return newUrl;
       }
@@ -87,6 +88,18 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
     }
 
     setData("newIntegrationUrls", updated);
+  };
+
+  const handleDeleteNewUrl = (fields?: string[], id?: string) => {
+    const updatedUrls = data.newIntegrationUrls.filter(
+      (url) => fields?.includes(url.id)
+    );
+
+    const updatedNewUrls = data.newIntegrationUrls.filter(
+      (url) => url.id !== id
+    );
+
+    setData("newIntegrationUrls", [...updatedUrls, ...updatedNewUrls]);
   };
 
   transform((data) => ({
@@ -110,7 +123,9 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
         newUrls={data.newIntegrationUrls}
         onDelete={(urlId) => handleDeleteUrl(urlId)}
         onChangeNewUrl={handleChangeNewUrl}
+        onDeleteNewUrl={handleDeleteNewUrl}
         onChangeData={(data) => setData("loginUrls", data)}
+        errors={errors}
         className="border-b border-b-gray-300 pb-10"
       />
       <UrlList
@@ -119,9 +134,11 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
         newUrls={data.newIntegrationUrls}
         onDelete={(urlId) => handleDeleteUrl(urlId)}
         onChangeNewUrl={handleChangeNewUrl}
+        onDeleteNewUrl={handleDeleteNewUrl}
         onChangeData={(data) => {
           setData("callbackUrls", data);
         }}
+        errors={errors}
         className="border-b border-b-gray-300 pb-10"
       />
       <UrlList
@@ -131,6 +148,8 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
         onChangeData={(data) => setData("logoutUrls", data)}
         onDelete={(urlId) => handleDeleteUrl(urlId)}
         onChangeNewUrl={handleChangeNewUrl}
+        onDeleteNewUrl={handleDeleteNewUrl}
+        errors={errors}
       />
       <div className="lg:grid lg:grid-cols-3 gap-6">
         <div></div>

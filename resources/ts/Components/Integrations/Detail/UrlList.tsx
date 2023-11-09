@@ -16,30 +16,32 @@ type ChangedIntegrationUrl = IntegrationUrl & {
   changed: boolean;
 };
 
-export type NewIntegrationUrl = Omit<IntegrationUrl, "id">;
+export type NewIntegrationUrl = IntegrationUrl;
 
 type UrlListProps = {
   type: IntegrationUrlType;
   urls: ChangedIntegrationUrl[];
   newUrls: NewIntegrationUrl[];
+  errors: Record<string, string | undefined>;
   onChangeData: (value: ChangedIntegrationUrl[]) => void;
-  onChangeNewUrl: (value: NewIntegrationUrl) => void;
+  onChangeNewUrl: (value: NewIntegrationUrl & { id: string }) => void;
+  onDeleteNewUrl: (fields?: string[], id?: string) => void;
   onDelete: (urlId: IntegrationUrl["id"]) => void;
 } & ComponentProps<"div">;
 
 export const UrlList = ({
   type,
   urls,
+  errors,
   onChangeData,
   onChangeNewUrl,
+  onDeleteNewUrl,
   onDelete,
   className,
 }: UrlListProps) => {
   const { t } = useTranslation();
 
   const [toBeDeletedId, setToBeDeletedId] = useState("");
-  const [isAddTestVisible, setIsAddTestVisible] = useState(false);
-  const [isAddProdVisible, setIsAddProdVisible] = useState(false);
 
   const testUrls = useMemo(
     () => urls.filter((url) => url.environment === Environment.Test),
@@ -51,21 +53,34 @@ export const UrlList = ({
     [urls]
   );
 
+  const [fields, setFields] = useState<string[]>([]);
+
+  const deleteField = (field?: string, id?: string) => {
+    const updatedFields = fields.filter((item) => item !== field);
+    setFields(updatedFields);
+    onDeleteNewUrl(updatedFields, id);
+  };
+
+  const cleanField = (fieldId: string) => {
+    const element = document.getElementById(fieldId) as HTMLInputElement | null;
+    if (element) {
+      element.value = "";
+    }
+  };
+
   const modifiedUrls = [
     {
       urls: testUrls,
       env: Environment.Test,
-      visible: isAddTestVisible,
-      changeVisibility(param: boolean) {
-        setIsAddTestVisible(param);
+      changeVisibility(param: string) {
+        setFields([...fields, param]);
       },
     },
     {
       urls: prodUrls,
       env: Environment.Prod,
-      visible: isAddProdVisible,
-      changeVisibility(param: boolean) {
-        setIsAddProdVisible(param);
+      changeVisibility(param: string) {
+        setFields([...fields, param]);
       },
     },
   ];
@@ -84,12 +99,16 @@ export const UrlList = ({
         {modifiedUrls.map((option) =>
           option.urls.length > 0 ? (
             <div key={option.env} className="flex flex-col gap-2">
-              {option.urls.map((url) => (
+              {option.urls.map((url, index) => (
                 <FormElement
                   key={url.id}
-                  label={`${t(
-                    `details.integration_settings.${url.environment}`
-                  )}`}
+                  label={
+                    index === 0
+                      ? `${t(
+                          `details.integration_settings.${url.environment}`
+                        )}`
+                      : ""
+                  }
                   component={
                     <div className="flex gap-2">
                       <Input
@@ -112,43 +131,54 @@ export const UrlList = ({
                           )
                         }
                       />
-                      {type !== IntegrationUrlType.Login && (
-                        <ButtonIcon
-                          icon={faTrash}
-                          onClick={() => setToBeDeletedId(url.id)}
-                          className="text-icon-gray"
-                        />
-                      )}
+                      <ButtonIcon
+                        icon={faTrash}
+                        onClick={() => setToBeDeletedId(url.id)}
+                        className="text-icon-gray"
+                      />
                     </div>
                   }
                 />
               ))}
-              {option.visible && (
-                <div className="flex flex-col">
-                  <FormElement
-                    label={t("details.integration_settings.new")}
-                    className=""
-                    component={
-                      <Input
-                        type="text"
-                        name="newUrl"
-                        className="md:min-w-[40rem]"
-                        onBlur={(e) =>
-                          onChangeNewUrl({
-                            environment: option.env,
-                            url: e.target.value,
-                            type,
-                          })
+              <div className="flex flex-col gap-2">
+                {fields.map(
+                  (field) =>
+                    field.startsWith(option.env) && (
+                      <FormElement
+                        key={field}
+                        error={errors[`newIntegrationUrls.${`${field}`}.url`]}
+                        component={
+                          <div className="flex gap-2">
+                            <Input
+                              type="text"
+                              name="newUrl"
+                              className="md:min-w-[40rem]"
+                              onBlur={(e) =>
+                                onChangeNewUrl({
+                                  environment: option.env,
+                                  url: e.target.value,
+                                  type,
+                                  id: field,
+                                })
+                              }
+                            />
+                            <ButtonIcon
+                              icon={faTrash}
+                              onClick={() => {
+                                deleteField(field);
+                              }}
+                              className="text-icon-gray"
+                            />
+                          </div>
                         }
                       />
-                    }
-                  />
-                </div>
-              )}
+                    )
+                )}
+              </div>
               {type !== IntegrationUrlType.Login && (
                 <ButtonSecondary
                   onClick={() => {
-                    option.changeVisibility(true);
+                    option.changeVisibility(`${option.env + Math.random()}`);
                   }}
                   className="self-start"
                 >
@@ -157,26 +187,82 @@ export const UrlList = ({
               )}
             </div>
           ) : (
-            <FormElement
-              key={option.env}
-              label={`${t(`details.integration_settings.${option.env}`)}`}
-              component={
-                <div className="flex gap-2">
-                  <Input
-                    type="text"
-                    name="url"
-                    className="md:min-w-[40rem]"
-                    onChange={(e) =>
-                      onChangeNewUrl({
-                        environment: option.env,
-                        url: e.target.value,
-                        type,
-                      })
-                    }
-                  />
-                </div>
-              }
-            />
+            <div key={option.env} className="flex flex-col gap-2">
+              <FormElement
+                label={`${t(`details.integration_settings.${option.env}`)}`}
+                error={
+                  errors[`newIntegrationUrls.${`${type + option.env}`}.url`]
+                }
+                component={
+                  <div className="flex gap-2">
+                    <Input
+                      type="text"
+                      inputId={`${type + option.env}`}
+                      name="url"
+                      className="md:min-w-[40rem]"
+                      onBlur={(e) =>
+                        onChangeNewUrl({
+                          environment: option.env,
+                          url: e.target.value,
+                          type,
+                          id: `${type + option.env}`,
+                        })
+                      }
+                    />
+                    <ButtonIcon
+                      icon={faTrash}
+                      className="text-icon-gray"
+                      onClick={() => {
+                        deleteField(undefined, `${type + option.env}`);
+                        cleanField(`${type + option.env}`);
+                      }}
+                    />
+                  </div>
+                }
+              />
+              {fields.map(
+                (field) =>
+                  field.startsWith(option.env) && (
+                    <FormElement
+                      key={field}
+                      component={
+                        <div className="flex gap-2">
+                          <Input
+                            type="text"
+                            name="newUrl"
+                            className="md:min-w-[40rem]"
+                            onBlur={(e) =>
+                              onChangeNewUrl({
+                                environment: option.env,
+                                url: e.target.value,
+                                type,
+                                id: field,
+                              })
+                            }
+                          />
+                          <ButtonIcon
+                            icon={faTrash}
+                            onClick={() => {
+                              deleteField(field);
+                            }}
+                            className="text-icon-gray"
+                          />
+                        </div>
+                      }
+                    />
+                  )
+              )}
+              {type !== IntegrationUrlType.Login && (
+                <ButtonSecondary
+                  onClick={() => {
+                    option.changeVisibility(`${option.env + Math.random()}`);
+                  }}
+                  className="self-start"
+                >
+                  {t("details.integration_settings.add")}
+                </ButtonSecondary>
+              )}
+            </div>
           )
         )}
       </div>
