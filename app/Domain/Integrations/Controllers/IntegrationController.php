@@ -92,18 +92,11 @@ final class IntegrationController extends Controller
             TranslatedRoute::getTranslatedRouteName($request, 'integrations.index')
         );
     }
-    public function storeUrl(StoreIntegrationUrlRequest $request, string $id): RedirectResponse
+    public function storeUrl(StoreIntegrationUrlRequest $request, string $id): void
     {
         $integrationUrl = StoreIntegrationUrlMapper::map($request, $id);
 
         $this->integrationUrlRepository->save($integrationUrl);
-
-        return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
-            [
-                'id' => $id,
-            ]
-        );
     }
 
     public function destroy(Request $request, string $id): RedirectResponse
@@ -135,29 +128,28 @@ final class IntegrationController extends Controller
         );
     }
 
-    public function update(UpdateIntegrationRequest $request, string $id): RedirectResponse
+    public function updateIntegration(UpdateIntegrationRequest $request, string $id): void
     {
         $currentIntegration = $this->integrationRepository->getById(Uuid::fromString($id));
 
         $updatedIntegration = UpdateIntegrationMapper::map($request, $currentIntegration);
 
         $this->integrationRepository->update($updatedIntegration);
-
-        return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
-            [
-                'id' => $id,
-            ]
-        );
     }
 
-    public function updateUrls(UpdateIntegrationUrlsRequest $request, string $id): RedirectResponse
+    public function update(UpdateIntegrationUrlsRequest $request, string $id): RedirectResponse
     {
+        $integrationRequest = ['integrationName' => $request->input('integrationName'), 'description' => $request->input('description')];
+
+        $integrationUpdateRequest = new UpdateIntegrationRequest($integrationRequest);
+
+        $this->updateIntegration($integrationUpdateRequest, $id);
+
         $ids = array_map(
             fn ($url) => Uuid::fromString($url['id']),
             array_filter(
                 [
-                    $request->input('loginUrl'),
+                    ...($request->input('loginUrls') ?? []),
                     ...($request->input('callbackUrls') ?? []),
                     ...($request->input('logoutUrls') ?? []),
                 ],
@@ -165,11 +157,30 @@ final class IntegrationController extends Controller
             )
         );
 
-        $currentUrls = $this->integrationUrlRepository->getByIds($ids);
+        if (count($ids) > 0) {
+            $currentUrls = $this->integrationUrlRepository->getByIds($ids);
 
-        $updatedUrls = UpdateIntegrationUrlsMapper::map($request, $currentUrls);
+            $updatedUrls = UpdateIntegrationUrlsMapper::map($request, $currentUrls);
 
-        $this->integrationUrlRepository->updateUrls($updatedUrls);
+            $this->integrationUrlRepository->updateUrls($updatedUrls);
+        }
+
+        $newUrls =
+            array_filter(
+                [
+                    ...($request->input('newIntegrationUrls') ?? []),
+                ],
+                fn ($val) => $val !== null
+            );
+
+        if (count($newUrls) > 0) {
+
+            foreach ($newUrls as $url) {
+                $storeRequest = new StoreIntegrationUrlRequest($url);
+
+                $this->storeUrl($storeRequest, $id);
+            }
+        }
 
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
