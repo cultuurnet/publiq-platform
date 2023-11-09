@@ -6,6 +6,7 @@ namespace App\Domain\Integrations\FormRequests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 final class UpdateIntegrationUrlsRequest extends FormRequest
 {
@@ -20,9 +21,33 @@ final class UpdateIntegrationUrlsRequest extends FormRequest
         ];
 
         return [
-            'loginUrl' => $urlValidation,
+            'integrationName' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string', 'max:255'],
+            'loginUrls.*' => Rule::forEach(fn () => $urlValidation),
             'callbackUrls.*' => Rule::forEach(fn () => $urlValidation),
             'logoutUrls.*' => Rule::forEach(fn () => $urlValidation),
+            'newIntegrationUrls.*' => Rule::forEach(fn () => [
+                'id' => ['required', 'string'],
+                'url' => ['required', 'url:https'],
+            ]),
+            ];
+    }
+
+    public function after(): array
+    {
+        return [
+            function (Validator $validator) {
+                $failing = $validator->errors()->get('newIntegrationUrls.*');
+                $values = $validator->getData()['newIntegrationUrls'];
+
+
+                foreach (array_keys($failing) as $errorMessage) {
+                    $index = (int) explode('.', $errorMessage)[1];
+                    $failingValue = $values[$index];
+
+                    $validator->errors()->add('newIntegrationUrls' . '.' . $failingValue['id'] . '.url', 'validation.url');
+                }
+            },
         ];
     }
 }
