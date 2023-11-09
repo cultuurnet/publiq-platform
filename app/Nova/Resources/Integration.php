@@ -15,6 +15,7 @@ use App\Nova\Actions\ActivateIntegrationWithOrganization;
 use App\Nova\Actions\BlockIntegration;
 use App\Nova\Resource;
 use Illuminate\Support\Facades\App;
+use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
@@ -176,6 +177,18 @@ final class Integration extends Resource
 
                     return $model->status === IntegrationStatus::Draft->value;
                 }),
+
+            Action::redirect('Open Widget beheer', config('project_aanvraag.beheer_widgets') . str(1))
+                ->showOnDetail()
+                ->showInline()
+                ->withoutConfirmation()
+                ->canRun(function ($request, $model) {
+                    if ($request instanceof ActionRequest) {
+                        return true;
+                    }
+                    return $model->type === IntegrationType::Widgets->value;
+                })
+                ->standalone(),
 
             (new BlockIntegration())
                 ->showOnDetail()
