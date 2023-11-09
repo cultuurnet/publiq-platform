@@ -6,6 +6,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 type Props = ComponentProps<"input"> & {
   iconBack?: IconProp;
+  inputId?: string;
 };
 
 export const Input = ({
@@ -13,6 +14,7 @@ export const Input = ({
   className,
   iconBack,
   disabled,
+  inputId,
   ...props
 }: Props) => {
   return (
@@ -24,6 +26,7 @@ export const Input = ({
           !disabled && "bg-white border-gray-500 outline-none"
         )}
         disabled={disabled}
+        id={inputId}
         {...props}
       >
         {children}
