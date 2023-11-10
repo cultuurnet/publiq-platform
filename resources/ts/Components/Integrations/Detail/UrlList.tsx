@@ -11,6 +11,7 @@ import { Environment } from "../../../types/Environment";
 import { QuestionDialog } from "../../QuestionDialog";
 import { ButtonSecondary } from "../../ButtonSecondary";
 import { classNames } from "../../../utils/classNames";
+import { random } from "lodash";
 
 type ChangedIntegrationUrl = IntegrationUrl & {
   changed: boolean;
@@ -42,6 +43,8 @@ export const UrlList = ({
   const { t } = useTranslation();
 
   const [toBeDeletedId, setToBeDeletedId] = useState("");
+
+  const randomNumber = random(0, 1000);
 
   const testUrls = useMemo(
     () => urls.filter((url) => url.environment === Environment.Test),
@@ -178,7 +181,7 @@ export const UrlList = ({
               {type !== IntegrationUrlType.Login && (
                 <ButtonSecondary
                   onClick={() => {
-                    option.changeVisibility(`${option.env + Math.random()}`);
+                    option.changeVisibility(`${option.env + randomNumber}`);
                   }}
                   className="self-start"
                 >
@@ -255,7 +258,7 @@ export const UrlList = ({
               {type !== IntegrationUrlType.Login && (
                 <ButtonSecondary
                   onClick={() => {
-                    option.changeVisibility(`${option.env + Math.random()}`);
+                    option.changeVisibility(`${option.env + randomNumber}`);
                   }}
                   className="self-start"
                 >
