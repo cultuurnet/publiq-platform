@@ -8,12 +8,14 @@ import { Heading } from "../../Heading";
 type Props = {
   name: string;
   description: string;
+  errors: Record<string, string | undefined>;
   onChangeName: (val: string) => void;
   onChangeDescription: (val: string) => void;
 };
 export const BasicInfo = ({
   name,
   description,
+  errors,
   onChangeName,
   onChangeDescription,
 }: Props) => {
@@ -27,6 +29,7 @@ export const BasicInfo = ({
       <div className="grid-cols-2 flex flex-col gap-5">
         <FormElement
           label={`${t("details.basic_info.name")}`}
+          error={errors['integrationName']}
           component={
             <Input
               type="text"
@@ -39,6 +42,7 @@ export const BasicInfo = ({
         />
         <FormElement
           label={`${t("details.basic_info.description")}`}
+          error={errors['description']}
           component={
             <textarea
               rows={4}

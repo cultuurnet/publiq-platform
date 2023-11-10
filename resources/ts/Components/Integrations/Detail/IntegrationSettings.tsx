@@ -116,6 +116,7 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
         description={data.description}
         onChangeName={(data) => setData("integrationName", data)}
         onChangeDescription={(data) => setData("description", data)}
+        errors={errors}
       />
       <UrlList
         type={IntegrationUrlType.Login}
