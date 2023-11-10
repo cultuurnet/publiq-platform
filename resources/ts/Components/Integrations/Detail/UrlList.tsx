@@ -43,6 +43,12 @@ export const UrlList = ({
   const { t } = useTranslation();
 
   const [toBeDeletedId, setToBeDeletedId] = useState("");
+  const [toBeDeletedClass, setToBeDeletedClass] = useState("");
+
+  const [toBeDeletedField, setToBeDeletedField] = useState("");
+  const [toBeDeletedUrlId, setToBeDeletedUrlId] = useState("");
+
+  const [isDialogVisible, setIsDialogVisible] = useState(false);
 
   const randomNumber = random(0, 1000);
 
@@ -68,6 +74,25 @@ export const UrlList = ({
     const element = document.getElementById(fieldId) as HTMLInputElement | null;
     if (element) {
       element.value = "";
+      element.setAttribute("changed", "true");
+    }
+  };
+
+  const deleteExistingUrlFieldsVisually = (
+    fieldId: string,
+    classId: string
+  ) => {
+    const elementExists = document.querySelectorAll(`.${classId}`).length <= 1;
+
+    if (elementExists) {
+      cleanField(classId);
+    } else {
+      const element = document.getElementById(
+        fieldId
+      ) as HTMLInputElement | null;
+      if (element) {
+        element.remove();
+      }
     }
   };
 
@@ -105,6 +130,8 @@ export const UrlList = ({
               {option.urls.map((url, index) => (
                 <FormElement
                   key={url.id}
+                  elementId={url.id}
+                  className={`${type + option.env}`}
                   label={
                     index === 0
                       ? `${t(
@@ -117,26 +144,45 @@ export const UrlList = ({
                       <Input
                         type="text"
                         name="url"
-                        value={url.url}
+                        defaultValue={url.url}
                         className="md:min-w-[40rem]"
-                        onChange={(e) =>
-                          onChangeData(
-                            urls.map((urlItem) => {
-                              if (urlItem.id === url.id) {
-                                return {
-                                  ...urlItem,
-                                  url: e.target.value,
-                                  changed: true,
-                                };
-                              }
-                              return urlItem;
-                            })
-                          )
-                        }
+                        inputId={type + option.env}
+                        onChange={(e) => {
+                          if (
+                            // if it's a visually cleared field
+                            document
+                              .getElementById(type + option.env)
+                              ?.getAttribute("changed")
+                          ) {
+                            onChangeNewUrl({
+                              environment: option.env,
+                              url: e.target.value,
+                              type,
+                              id: `${type + option.env}`,
+                            });
+                          } else {
+                            onChangeData(
+                              urls.map((urlItem) => {
+                                if (urlItem.id === url.id) {
+                                  return {
+                                    ...urlItem,
+                                    url: e.target.value,
+                                    changed: true,
+                                  };
+                                }
+                                return urlItem;
+                              })
+                            );
+                          }
+                        }}
                       />
                       <ButtonIcon
                         icon={faTrash}
-                        onClick={() => setToBeDeletedId(url.id)}
+                        onClick={() => {
+                          setToBeDeletedId(url.id);
+                          setToBeDeletedClass(type + option.env);
+                          setIsDialogVisible(true);
+                        }}
                         className="text-icon-gray"
                       />
                     </div>
@@ -168,7 +214,8 @@ export const UrlList = ({
                             <ButtonIcon
                               icon={faTrash}
                               onClick={() => {
-                                deleteField(field);
+                                setToBeDeletedField(field);
+                                setIsDialogVisible(true);
                               }}
                               className="text-icon-gray"
                             />
@@ -216,8 +263,9 @@ export const UrlList = ({
                       icon={faTrash}
                       className="text-icon-gray"
                       onClick={() => {
-                        deleteField(undefined, `${type + option.env}`);
+                        setToBeDeletedUrlId(`${type + option.env}`);
                         cleanField(`${type + option.env}`);
+                        setIsDialogVisible(true);
                       }}
                     />
                   </div>
@@ -246,7 +294,8 @@ export const UrlList = ({
                           <ButtonIcon
                             icon={faTrash}
                             onClick={() => {
-                              deleteField(field);
+                              setToBeDeletedField(field);
+                              setIsDialogVisible(true);
                             }}
                             className="text-icon-gray"
                           />
@@ -270,15 +319,25 @@ export const UrlList = ({
         )}
       </div>
       <QuestionDialog
-        isVisible={!!toBeDeletedId}
+        isVisible={isDialogVisible}
         onClose={() => {
           setToBeDeletedId("");
+          setIsDialogVisible(false);
         }}
         title={t("details.integration_settings.delete.title")}
         question={t("details.integration_settings.delete.question")}
-        onConfirm={() => onDelete(toBeDeletedId)}
+        onConfirm={() => {
+          if (toBeDeletedId) {
+            onDelete(toBeDeletedId);
+            setToBeDeletedId("");
+            deleteExistingUrlFieldsVisually(toBeDeletedId, toBeDeletedClass);
+          }
+          setIsDialogVisible(false);
+          deleteField(toBeDeletedField, toBeDeletedUrlId);
+        }}
         onCancel={() => {
           setToBeDeletedId("");
+          setIsDialogVisible(false);
         }}
       />
     </div>
