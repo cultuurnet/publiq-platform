@@ -132,9 +132,11 @@ final class IntegrationController extends Controller
     {
         $currentIntegration = $this->integrationRepository->getById(Uuid::fromString($id));
 
-        $updatedIntegration = UpdateIntegrationMapper::map($request, $currentIntegration);
+        if($currentIntegration->name !== $request->get('integrationName') || $currentIntegration->description !== $request->get('description')) {
+            $updatedIntegration = UpdateIntegrationMapper::map($request, $currentIntegration);
 
-        $this->integrationRepository->update($updatedIntegration);
+            $this->integrationRepository->update($updatedIntegration);
+        }
     }
 
     public function update(UpdateIntegrationUrlsRequest $request, string $id): RedirectResponse
