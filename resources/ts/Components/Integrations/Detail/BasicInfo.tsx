@@ -29,7 +29,7 @@ export const BasicInfo = ({
       <div className="grid-cols-2 flex flex-col gap-5">
         <FormElement
           label={`${t("details.basic_info.name")}`}
-          error={errors['integrationName']}
+          error={errors["integrationName"]}
           component={
             <Input
               type="text"
@@ -42,7 +42,7 @@ export const BasicInfo = ({
         />
         <FormElement
           label={`${t("details.basic_info.description")}`}
-          error={errors['description']}
+          error={errors["description"]}
           component={
             <textarea
               rows={4}
