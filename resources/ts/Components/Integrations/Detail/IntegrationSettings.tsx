@@ -61,14 +61,14 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
   const handleDeleteUrl = (urlId: IntegrationUrl["id"]) => {
     destroy(`/integrations/${id}/urls/${urlId}`, {
       preserveScroll: true,
-      preserveState: false,
+      preserveState: true,
     });
   };
 
   const handleSave = () =>
     patch(`/integrations/${id}`, {
       preserveScroll: true,
-      preserveState: true,
+      preserveState: false,
     });
 
   const handleChangeNewUrl = (newUrl: NewIntegrationUrl & { id: string }) => {
