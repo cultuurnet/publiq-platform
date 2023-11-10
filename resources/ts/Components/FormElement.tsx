@@ -73,6 +73,7 @@ type Props = {
   error?: string;
   info?: string;
   component: ReactElement;
+  elementId?: string;
 } & ComponentProps<"div">;
 
 export const FormElement = ({
@@ -84,6 +85,7 @@ export const FormElement = ({
   component,
   error,
   info,
+  elementId,
   className,
 }: Props) => {
   const id = useId();
@@ -91,7 +93,10 @@ export const FormElement = ({
   const clonedComponent = cloneElement(component, { ...component.props, id });
 
   return (
-    <div className={classNames("inline-flex flex-col ", className)}>
+    <div
+      id={elementId}
+      className={classNames("inline-flex flex-col ", className)}
+    >
       <Wrapper labelPosition={labelPosition}>
         <>
           <div
