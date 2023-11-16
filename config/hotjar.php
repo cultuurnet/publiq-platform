@@ -3,5 +3,5 @@
 declare(strict_types=1);
 
 return [
-    'hotjarId' => env('HOTJAR_ID')
+    'hotjarId' => env('HOTJAR_ID'),
 ];
