@@ -23,7 +23,7 @@ final class ApiController extends Controller
         }
 
         return new JsonResponse([
-            'user' => 'unknown'
+            'user' => 'unknown',
         ]);
     }
 
