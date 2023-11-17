@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Domain\Auth\Controllers\User;
+use App\Domain\Auth\Controllers\Token;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,4 +19,4 @@ Route::get('ping', function () {
     return 'pong';
 });
 
-Route::get('user', [User::class, 'handle']);
+Route::get('token/{idToken}', [Token::class, 'handle']);
