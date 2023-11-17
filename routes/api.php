@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\ApiController;
+use App\Domain\Auth\Controllers\User;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,7 +15,8 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::group(['middleware' => 'web'], static function () {
-    Route::get('validateUser', [ApiController::class, 'validateUser']);
+Route::get('ping', function () {
+    return 'pong';
 });
+
+Route::get('user', [User::class, 'handle']);
