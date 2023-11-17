@@ -16,4 +16,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('validateUser', [ApiController::class, 'validateUser']);
+Route::group(['middleware' => 'web'], static function () {
+    Route::get('validateUser', [ApiController::class, 'validateUser']);
+});
