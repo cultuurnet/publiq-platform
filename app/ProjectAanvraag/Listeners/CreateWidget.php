@@ -115,7 +115,7 @@ final class CreateWidget implements ShouldQueue
         $this->projectAanvraagClient->createWidget(
             new CreateWidgetRequest(
                 $integration->id,
-                $contributor->id,
+                $contributor->id, // TODO: This should be the UiTiD v2 user id
                 $integration->name,
                 $integration->description,
                 $this->groupId,
