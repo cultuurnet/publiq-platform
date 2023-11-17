@@ -1,5 +1,5 @@
 @php
-$gtmId = env('GTM_ID');
+$gtmId = config('gtm.gtmId');
 @endphp
 
 @if ($gtmId)

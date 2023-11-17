@@ -131,6 +131,7 @@
     "documentation": {
       "title": "Documentatie",
       "action_title": "Aan de slag met {{product}}",
+      "action_url": "https://docs.publiq.be/docs{{product}}",
       "requirements": "Vereisten om live te gaan"
     }
   },
