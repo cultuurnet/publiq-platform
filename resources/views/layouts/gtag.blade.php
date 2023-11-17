@@ -1,4 +1,4 @@
-@php $tagId = env('GTAG_MEASUREMENT_ID') @endphp
+@php $tagId = config('gtag.gtagMeasurementId') @endphp
 @if ($tagId)
     <script async src="https://www.googletagmanager.com/gtag/js?id={{ $tagId }}"></script>
     <script>
