@@ -19,6 +19,7 @@ final class Callback
 
         if ($auth0->exchange()) {
             $user = $auth0->getUser();
+            $request->session()->put('id_token', $auth0->getIdToken());
 
             if ($user !== null) {
                 Auth::login(UserModel::fromSession($user));
