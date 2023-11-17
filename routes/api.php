@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\ApiController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,6 +16,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('ping', function () {
-    return 'pong';
-});
+Route::get('validateUser', [ApiController::class, 'validateUser']);
