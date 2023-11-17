@@ -13,6 +13,6 @@ final class OpenWidgetBeheer extends Action
     public function handle(): ActionResponse|Action
     {
         $idToken = Session::get('id_token');
-        return Action::redirect(config('project_aanvraag.base_uri') . '/session/?idToken=' . $idToken);
+        return Action::redirect(config('project_aanvraag.base_uri') . 'project/1/widget/?idToken=' . $idToken);
     }
 }
