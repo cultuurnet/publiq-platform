@@ -14,9 +14,9 @@ type Props = Integration & {
 };
 
 const productTypeToPath = {
-  "entry-api": encodeURIComponent("/uitdatabank/entry-api/introduction"),
-  "search-api": encodeURIComponent("/uitdatabank/search-api/introduction"),
-  widgets: encodeURIComponent("/widgets/aan-de-slag"),
+  "entry-api": "/uitdatabank/entry-api/introduction",
+  "search-api": "/uitdatabank/search-api/introduction",
+  widgets: "/widgets/aan-de-slag",
 };
 
 export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {

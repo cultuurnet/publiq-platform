@@ -5,7 +5,12 @@ import { Heading } from "../../Components/Heading";
 import { useTranslation } from "react-i18next";
 import { Page } from "../../Components/Page";
 
-const Index = () => {
+export type SupportProps = {
+  email: string;
+  slackStatus: string;
+};
+
+const Index = (props: SupportProps) => {
   const { t } = useTranslation();
   return (
     <Page>
@@ -13,7 +18,7 @@ const Index = () => {
         <Heading level={1}>{t("support.title")}</Heading>
         <p>{t("support.description")}</p>
       </div>
-      <SupportTypes />
+      <SupportTypes {...props} />
     </Page>
   );
 };

@@ -8,9 +8,9 @@ use App\Domain\Auth\Controllers\Logout;
 use App\Domain\Integrations\Controllers\IntegrationController;
 use App\Domain\Subscriptions\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 use App\Router\TranslatedRoute;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\SupportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,13 +33,20 @@ Route::post('/admin/logout', [Logout::class, 'adminLogout']);
 
 Route::get('/auth/callback', Callback::class);
 
-TranslatedRoute::get(
-    [
-        '/en/support',
-        '/nl/ondersteuning',
-    ],
-    static fn () => Inertia::render('Support/Index')
-);
+Route::group(['middleware' => 'auth'], static function () {
+    TranslatedRoute::get(
+        [
+            '/en/support',
+            '/nl/ondersteuning',
+        ],
+        [SupportController::class, 'index'],
+        'support.index'
+    );
+});
+
+Route::group(['middleware' => 'auth'], static function () {
+    Route::post('/support/slack', [SupportController::class, 'sendInvitation']);
+});
 
 TranslatedRoute::get(
     [
