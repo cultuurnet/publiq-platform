@@ -16,7 +16,7 @@ final class Token extends Controller
         $auth0 = app(Auth0::class);
         try {
             $token = $auth0->decode($idToken);
-            return  new JsonResponse($token->toArray());
+            return new JsonResponse($token->toArray());
         } catch (\Exception $exception) {
             return new JsonResponse(
                 ['exception' => $exception->getMessage()],
