@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\ProjectAanvraag\Models;
 
 use App\Domain\Integrations\Models\IntegrationModel;
@@ -14,7 +16,7 @@ final class ProjectAanvraagModel extends Model
 
     protected $fillable = [
         'integration_id',
-        'projectaanvraag_id'
+        'projectaanvraag_id',
     ];
 
     /**
