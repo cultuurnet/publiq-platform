@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Domain\Auth\Controllers\Token;
+use App\Domain\Auth\Controllers\Widget;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,3 +21,5 @@ Route::get('ping', function () {
 });
 
 Route::get('token/{idToken}', [Token::class, 'handle']);
+
+Route::post('widget/{platformId}/{widgetId}', [Widget::class, 'handle']);
