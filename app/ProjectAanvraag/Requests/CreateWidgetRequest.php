@@ -10,7 +10,7 @@ final readonly class CreateWidgetRequest
 {
     public function __construct(
         public UuidInterface $integrationId,
-        public UuidInterface $userId,
+        public string $userId,
         public string $name,
         public string $summary,
         public int $groupId,

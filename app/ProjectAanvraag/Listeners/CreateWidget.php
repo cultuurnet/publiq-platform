@@ -15,6 +15,7 @@ use App\ProjectAanvraag\Requests\CreateWidgetRequest;
 use App\UiTiDv1\Events\ConsumerCreated;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use App\UiTiDv1\UiTiDv1Environment;
+use Auth0\SDK\Auth0;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
@@ -111,11 +112,14 @@ final class CreateWidget implements ShouldQueue
             );
             return;
         }
+        /** @var Auth0 $auth0 */
+        $auth0 = app(Auth0::class);
+        $user = $auth0->getUser();
 
         $this->projectAanvraagClient->createWidget(
             new CreateWidgetRequest(
                 $integration->id,
-                $contributor->id, // TODO: This should be the UiTiD v2 user id
+                $user !== null ? $user['sub'] : $contributor->id,
                 $integration->name,
                 $integration->description,
                 $this->groupId,
