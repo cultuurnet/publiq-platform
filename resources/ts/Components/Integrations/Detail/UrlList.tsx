@@ -25,6 +25,7 @@ type UrlListProps = {
   onChangeData: (value: ChangedIntegrationUrl[]) => void;
   onChangeNewUrl: (value: NewIntegrationUrl) => void;
   onDelete: (urlId: IntegrationUrl["id"]) => void;
+  disabled?: boolean;
 } & ComponentProps<"div">;
 
 export const UrlList = ({
@@ -34,6 +35,7 @@ export const UrlList = ({
   onChangeNewUrl,
   onDelete,
   className,
+  disabled,
 }: UrlListProps) => {
   const { t } = useTranslation();
 
@@ -166,6 +168,7 @@ export const UrlList = ({
                     type="text"
                     name="url"
                     className="md:min-w-[40rem]"
+                    disabled={disabled}
                     onChange={(e) =>
                       onChangeNewUrl({
                         environment: option.env,
