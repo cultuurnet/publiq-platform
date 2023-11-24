@@ -6,8 +6,6 @@ namespace Tests\ProjectAanvraag\Listeners;
 
 use App\Domain\Auth\CurrentUser;
 use App\Domain\Auth\Models\UserModel;
-use App\Domain\Contacts\Contact;
-use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Integration;
@@ -22,7 +20,6 @@ use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use App\UiTiDv1\UiTiDv1Consumer;
 use App\UiTiDv1\UiTiDv1Environment;
 use GuzzleHttp\Psr7\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -99,15 +96,6 @@ final class CreateWidgetTest extends TestCase
             IntegrationPartnerStatus::THIRD_PARTY,
         );
 
-        $contact = new Contact(
-            Uuid::uuid4(),
-            $integrationId,
-            'john.doe@anonymous.com',
-            ContactType::Contributor,
-            'John',
-            'Doe'
-        );
-
         $testConsumer = new UiTiDv1Consumer(
             Uuid::uuid4(),
             $integrationId,
@@ -145,11 +133,6 @@ final class CreateWidgetTest extends TestCase
             ->method('getById')
             ->with($integrationId)
             ->willReturn($integration);
-
-        $this->contactRepository->expects($this->once())
-            ->method('getByIntegrationId')
-            ->with($integrationId)
-            ->willReturn(new Collection([$contact]));
 
         $this->uiTiDv1ConsumerRepository->expects($this->once())
             ->method('getByIntegrationId')
