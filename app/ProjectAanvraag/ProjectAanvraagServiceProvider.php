@@ -44,8 +44,8 @@ final class ProjectAanvraagServiceProvider extends ServiceProvider
                 $this->app->get(ContactRepository::class),
                 $this->app->get(UiTiDv1ConsumerRepository::class),
                 (int) end($groups),
-                $this->app->get(LoggerInterface::class),
                 $this->app->get(CurrentUser::class),
+                $this->app->get(LoggerInterface::class)
             );
         });
 

@@ -37,32 +37,13 @@ final class CreateWidgetTest extends TestCase
 {
     use AssertRequest;
 
-    /**
-     * @var ClientInterface&MockObject
-     */
-    private $client;
+    private ClientInterface&MockObject $client;
 
-    /**
-     * @var IntegrationRepository&MockObject
-     */
-    private $integrationRepository;
+    private IntegrationRepository&MockObject $integrationRepository;
 
-    /**
-     * @var ContactRepository&MockObject
-     */
-    private $contactRepository;
+    private ContactRepository&MockObject $contactRepository;
 
-    /**
-     * @var UiTiDv1ConsumerRepository&MockObject
-     */
-    private $uiTiDv1ConsumerRepository;
-
-    /**
-     * @var LoggerInterface&MockObject
-     */
-    private $logger;
-
-    private CurrentUser $currentUser;
+    private UiTiDv1ConsumerRepository&MockObject $uiTiDv1ConsumerRepository;
 
     private CreateWidget $createWidget;
 
@@ -76,7 +57,7 @@ final class CreateWidgetTest extends TestCase
         $this->integrationRepository = $this->createMock(IntegrationRepository::class);
         $this->contactRepository = $this->createMock(ContactRepository::class);
         $this->uiTiDv1ConsumerRepository = $this->createMock(UiTiDv1ConsumerRepository::class);
-        $this->logger = $this->createMock(LoggerInterface::class);
+        $logger = $this->createMock(LoggerInterface::class);
         $this->userId = Uuid::uuid4();
 
         $userModel = UserModel::fromSession([
@@ -89,19 +70,19 @@ final class CreateWidgetTest extends TestCase
 
         Auth::shouldReceive('user')
             ->andReturn($userModel);
-        $this->currentUser = new CurrentUser(App::get(Auth::class));
+        $currentUser = new CurrentUser(App::get(Auth::class));
 
         $this->createWidget = new CreateWidget(
             new ProjectAanvraagClient(
                 $this->client,
-                $this->logger
+                $logger
             ),
             $this->integrationRepository,
             $this->contactRepository,
             $this->uiTiDv1ConsumerRepository,
             123,
-            $this->logger,
-            $this->currentUser
+            $currentUser,
+            $logger
         );
     }
 
@@ -152,7 +133,7 @@ final class CreateWidgetTest extends TestCase
             'projects',
             [],
             Json::encode([
-                'userId' => $userId->toString(),
+                'userId' => $this->userId->toString(),
                 'name' => $integration->name,
                 'summary' => $integration->description,
                 'groupId' => 123,

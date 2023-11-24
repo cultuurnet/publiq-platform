@@ -31,8 +31,8 @@ final class CreateWidget implements ShouldQueue
         private readonly ContactRepository $contactRepository,
         private readonly UiTiDv1ConsumerRepository $uiTiDv1ConsumerRepository,
         private readonly int $groupId,
-        private readonly LoggerInterface $logger,
-        private readonly CurrentUser $currentUser
+        private readonly CurrentUser $currentUser,
+        private readonly LoggerInterface $logger
     ) {
     }
 
