@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\ProjectAanvraag\Listeners;
 
+use App\Domain\Auth\CurrentUser;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Contacts\Repositories\ContactRepository;
@@ -18,6 +19,7 @@ use App\UiTiDv1\UiTiDv1Environment;
 use Auth0\SDK\Auth0;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Auth;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\UuidInterface;
 
@@ -112,14 +114,11 @@ final class CreateWidget implements ShouldQueue
             );
             return;
         }
-        /** @var Auth0 $auth0 */
-        $auth0 = app(Auth0::class);
-        $user = $auth0->getUser();
 
         $this->projectAanvraagClient->createWidget(
             new CreateWidgetRequest(
                 $integration->id,
-                $user !== null ? $user['sub'] : $contributor->id,
+                Auth::user()->id,
                 $integration->name,
                 $integration->description,
                 $this->groupId,
