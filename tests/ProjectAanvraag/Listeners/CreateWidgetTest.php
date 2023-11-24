@@ -26,11 +26,12 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use Tests\AssertRequest;
+use Tests\TestCase;
 
 final class CreateWidgetTest extends TestCase
 {
@@ -65,16 +66,21 @@ final class CreateWidgetTest extends TestCase
 
     private CreateWidget $createWidget;
 
+    private UuidInterface $userId;
+
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->client = $this->createMock(ClientInterface::class);
         $this->integrationRepository = $this->createMock(IntegrationRepository::class);
         $this->contactRepository = $this->createMock(ContactRepository::class);
         $this->uiTiDv1ConsumerRepository = $this->createMock(UiTiDv1ConsumerRepository::class);
         $this->logger = $this->createMock(LoggerInterface::class);
+        $this->userId = Uuid::uuid4();
 
         $userModel = UserModel::fromSession([
-            'id' => 'auth0|6ab8d3ff-018f-4c85-b778-ecc915f2b887',
+            'user_id' => $this->userId->toString(),
             'email' => 'an.mock@example.com',
             'name' => 'An Mock',
             'first_name' => 'An',
@@ -107,7 +113,7 @@ final class CreateWidgetTest extends TestCase
             IntegrationType::Widgets,
             'My widgets project',
             'This is my widgets project',
-            Uuid::uuid4(),
+            $this->userId,
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::THIRD_PARTY,
         );
