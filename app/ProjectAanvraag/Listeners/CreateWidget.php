@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\ProjectAanvraag\Listeners;
 
 use App\Domain\Auth\CurrentUser;
-use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Integrations\Events\IntegrationCreated;
