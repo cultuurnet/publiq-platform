@@ -99,9 +99,8 @@ final class CreateWidgetTest extends TestCase
             IntegrationPartnerStatus::THIRD_PARTY,
         );
 
-        $userId = Uuid::uuid4();
         $contact = new Contact(
-            $userId,
+            Uuid::uuid4(),
             $integrationId,
             'john.doe@anonymous.com',
             ContactType::Contributor,
