@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\ProjectAanvraag;
 
+use App\Domain\Auth\CurrentUser;
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Integrations\Events\IntegrationCreated;
@@ -43,7 +44,8 @@ final class ProjectAanvraagServiceProvider extends ServiceProvider
                 $this->app->get(ContactRepository::class),
                 $this->app->get(UiTiDv1ConsumerRepository::class),
                 (int) end($groups),
-                $this->app->get(LoggerInterface::class)
+                $this->app->get(LoggerInterface::class),
+                $this->app->get(CurrentUser::class),
             );
         });
 

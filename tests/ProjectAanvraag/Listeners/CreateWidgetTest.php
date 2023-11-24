@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\ProjectAanvraag\Listeners;
 
+use App\Domain\Auth\CurrentUser;
+use App\Domain\Auth\Models\UserModel;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\ContactRepository;
@@ -21,6 +23,8 @@ use App\UiTiDv1\UiTiDv1Consumer;
 use App\UiTiDv1\UiTiDv1Environment;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
@@ -57,6 +61,8 @@ final class CreateWidgetTest extends TestCase
      */
     private $logger;
 
+    private CurrentUser $currentUser;
+
     private CreateWidget $createWidget;
 
     protected function setUp(): void
@@ -67,6 +73,19 @@ final class CreateWidgetTest extends TestCase
         $this->uiTiDv1ConsumerRepository = $this->createMock(UiTiDv1ConsumerRepository::class);
         $this->logger = $this->createMock(LoggerInterface::class);
 
+        $userModel = UserModel::fromSession([
+            'id' => 'auth0|6ab8d3ff-018f-4c85-b778-ecc915f2b887',
+            'email' => 'an.mock@example.com',
+            'name' => 'An Mock',
+            'first_name' => 'An',
+            'last_name' => 'Mock',
+        ]);
+
+        Auth::shouldReceive('user')
+            ->andReturn($userModel);
+        $this->currentUser = new CurrentUser(App::get(Auth::class));
+        dd($this->currentUser);
+
         $this->createWidget = new CreateWidget(
             new ProjectAanvraagClient(
                 $this->client,
@@ -76,7 +95,8 @@ final class CreateWidgetTest extends TestCase
             $this->contactRepository,
             $this->uiTiDv1ConsumerRepository,
             123,
-            $this->logger
+            $this->logger,
+            $this->currentUser
         );
     }
 

@@ -18,8 +18,6 @@ use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use App\UiTiDv1\UiTiDv1Environment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Auth;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\UuidInterface;
 
@@ -33,7 +31,8 @@ final class CreateWidget implements ShouldQueue
         private readonly ContactRepository $contactRepository,
         private readonly UiTiDv1ConsumerRepository $uiTiDv1ConsumerRepository,
         private readonly int $groupId,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly CurrentUser $currentUser
     ) {
     }
 
@@ -118,7 +117,7 @@ final class CreateWidget implements ShouldQueue
         $this->projectAanvraagClient->createWidget(
             new CreateWidgetRequest(
                 $integration->id,
-                (new CurrentUser(App::get(Auth::class)))->id(),
+                $this->currentUser->id(),
                 $integration->name,
                 $integration->description,
                 $this->groupId,
