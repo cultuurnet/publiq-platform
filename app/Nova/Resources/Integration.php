@@ -187,8 +187,7 @@ final class Integration extends Resource
                         return true;
                     }
                     return $model->type === IntegrationType::Widgets->value;
-                })
-                ->standalone(),
+                }),
 
             (new BlockIntegration())
                 ->showOnDetail()
