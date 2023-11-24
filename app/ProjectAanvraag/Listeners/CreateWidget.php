@@ -64,23 +64,6 @@ final class CreateWidget implements ShouldQueue
             return;
         }
 
-        $contacts = $this->contactRepository->getByIntegrationId($integration->id);
-        if ($contacts->count() === 0) {
-            $this->logger->info(
-                'Integration {integrationId} has no contacts, skipping widget creation',
-                ['integrationId' => $integration->id->toString()]
-            );
-            return;
-        }
-        $contributor = $contacts->firstWhere('type', ContactType::Contributor);
-        if ($contributor === null) {
-            $this->logger->info(
-                'Integration {integrationId} has no contributor, skipping widget creation',
-                ['integrationId' => $integration->id->toString()]
-            );
-            return;
-        }
-
         $uiTiDv1Consumers = $this->uiTiDv1ConsumerRepository->getByIntegrationId($integration->id);
         if (count($uiTiDv1Consumers) === 0) {
             $this->logger->info(
