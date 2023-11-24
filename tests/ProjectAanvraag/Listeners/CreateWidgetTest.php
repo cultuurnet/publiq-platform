@@ -84,7 +84,6 @@ final class CreateWidgetTest extends TestCase
         Auth::shouldReceive('user')
             ->andReturn($userModel);
         $this->currentUser = new CurrentUser(App::get(Auth::class));
-        dd($this->currentUser);
 
         $this->createWidget = new CreateWidget(
             new ProjectAanvraagClient(
