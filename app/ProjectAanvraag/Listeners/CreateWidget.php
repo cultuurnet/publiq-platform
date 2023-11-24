@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\ProjectAanvraag\Listeners;
 
-use App\Domain\Contacts\ContactType;
+use App\Domain\Auth\CurrentUser;
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Integrations\Events\IntegrationCreated;
@@ -30,6 +30,7 @@ final class CreateWidget implements ShouldQueue
         private readonly ContactRepository $contactRepository,
         private readonly UiTiDv1ConsumerRepository $uiTiDv1ConsumerRepository,
         private readonly int $groupId,
+        private readonly CurrentUser $currentUser,
         private readonly LoggerInterface $logger
     ) {
     }
@@ -57,23 +58,6 @@ final class CreateWidget implements ShouldQueue
         if ($integration->type !== IntegrationType::Widgets) {
             $this->logger->info(
                 'Integration {integrationId} is not a widget integration, skipping widget creation',
-                ['integrationId' => $integration->id->toString()]
-            );
-            return;
-        }
-
-        $contacts = $this->contactRepository->getByIntegrationId($integration->id);
-        if ($contacts->count() === 0) {
-            $this->logger->info(
-                'Integration {integrationId} has no contacts, skipping widget creation',
-                ['integrationId' => $integration->id->toString()]
-            );
-            return;
-        }
-        $contributor = $contacts->firstWhere('type', ContactType::Contributor);
-        if ($contributor === null) {
-            $this->logger->info(
-                'Integration {integrationId} has no contributor, skipping widget creation',
                 ['integrationId' => $integration->id->toString()]
             );
             return;
@@ -115,7 +99,7 @@ final class CreateWidget implements ShouldQueue
         $this->projectAanvraagClient->createWidget(
             new CreateWidgetRequest(
                 $integration->id,
-                $contributor->id,
+                $this->currentUser->id(),
                 $integration->name,
                 $integration->description,
                 $this->groupId,

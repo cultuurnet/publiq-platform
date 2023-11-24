@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\ProjectAanvraag\Listeners;
 
-use App\Domain\Contacts\Contact;
-use App\Domain\Contacts\ContactType;
+use App\Domain\Auth\CurrentUser;
+use App\Domain\Auth\Models\UserModel;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Integration;
@@ -20,63 +20,66 @@ use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use App\UiTiDv1\UiTiDv1Consumer;
 use App\UiTiDv1\UiTiDv1Environment;
 use GuzzleHttp\Psr7\Request;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use Tests\AssertRequest;
+use Tests\TestCase;
 
 final class CreateWidgetTest extends TestCase
 {
     use AssertRequest;
 
-    /**
-     * @var ClientInterface&MockObject
-     */
-    private $client;
+    private ClientInterface&MockObject $client;
 
-    /**
-     * @var IntegrationRepository&MockObject
-     */
-    private $integrationRepository;
+    private IntegrationRepository&MockObject $integrationRepository;
 
-    /**
-     * @var ContactRepository&MockObject
-     */
-    private $contactRepository;
+    private ContactRepository&MockObject $contactRepository;
 
-    /**
-     * @var UiTiDv1ConsumerRepository&MockObject
-     */
-    private $uiTiDv1ConsumerRepository;
-
-    /**
-     * @var LoggerInterface&MockObject
-     */
-    private $logger;
+    private UiTiDv1ConsumerRepository&MockObject $uiTiDv1ConsumerRepository;
 
     private CreateWidget $createWidget;
 
+    private UuidInterface $userId;
+
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->client = $this->createMock(ClientInterface::class);
         $this->integrationRepository = $this->createMock(IntegrationRepository::class);
         $this->contactRepository = $this->createMock(ContactRepository::class);
         $this->uiTiDv1ConsumerRepository = $this->createMock(UiTiDv1ConsumerRepository::class);
-        $this->logger = $this->createMock(LoggerInterface::class);
+        $logger = $this->createMock(LoggerInterface::class);
+        $this->userId = Uuid::uuid4();
+
+        $userModel = UserModel::fromSession([
+            'user_id' => $this->userId->toString(),
+            'email' => 'an.mock@example.com',
+            'name' => 'An Mock',
+            'first_name' => 'An',
+            'last_name' => 'Mock',
+        ]);
+
+        Auth::shouldReceive('user')
+            ->andReturn($userModel);
+        $currentUser = new CurrentUser(App::get(Auth::class));
 
         $this->createWidget = new CreateWidget(
             new ProjectAanvraagClient(
                 $this->client,
-                $this->logger
+                $logger
             ),
             $this->integrationRepository,
             $this->contactRepository,
             $this->uiTiDv1ConsumerRepository,
             123,
-            $this->logger
+            $currentUser,
+            $logger
         );
     }
 
@@ -91,16 +94,6 @@ final class CreateWidgetTest extends TestCase
             Uuid::uuid4(),
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::THIRD_PARTY,
-        );
-
-        $userId = Uuid::uuid4();
-        $contact = new Contact(
-            $userId,
-            $integrationId,
-            'john.doe@anonymous.com',
-            ContactType::Contributor,
-            'John',
-            'Doe'
         );
 
         $testConsumer = new UiTiDv1Consumer(
@@ -127,7 +120,7 @@ final class CreateWidgetTest extends TestCase
             'projects',
             [],
             Json::encode([
-                'userId' => $userId->toString(),
+                'userId' => $this->userId->toString(),
                 'name' => $integration->name,
                 'summary' => $integration->description,
                 'groupId' => 123,
@@ -140,11 +133,6 @@ final class CreateWidgetTest extends TestCase
             ->method('getById')
             ->with($integrationId)
             ->willReturn($integration);
-
-        $this->contactRepository->expects($this->once())
-            ->method('getByIntegrationId')
-            ->with($integrationId)
-            ->willReturn(new Collection([$contact]));
 
         $this->uiTiDv1ConsumerRepository->expects($this->once())
             ->method('getByIntegrationId')
