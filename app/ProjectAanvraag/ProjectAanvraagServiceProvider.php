@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\ProjectAanvraag;
 
-use App\Auth0\Repositories\Auth0ManagementUserRepository;
 use App\Auth0\Repositories\Auth0UserRepository;
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Contacts\Repositories\ContactRepository;
