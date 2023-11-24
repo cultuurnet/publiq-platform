@@ -16,9 +16,9 @@ use App\ProjectAanvraag\Requests\CreateWidgetRequest;
 use App\UiTiDv1\Events\ConsumerCreated;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use App\UiTiDv1\UiTiDv1Environment;
-use Auth0\SDK\Auth0;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\UuidInterface;
@@ -118,7 +118,7 @@ final class CreateWidget implements ShouldQueue
         $this->projectAanvraagClient->createWidget(
             new CreateWidgetRequest(
                 $integration->id,
-                Auth::user()->id,
+                (new CurrentUser(App::get(Auth::class)))->id(),
                 $integration->name,
                 $integration->description,
                 $this->groupId,
