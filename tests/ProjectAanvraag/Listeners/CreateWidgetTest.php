@@ -94,7 +94,7 @@ final class CreateWidgetTest extends TestCase
             IntegrationType::Widgets,
             'My widgets project',
             'This is my widgets project',
-            $this->userId,
+            Uuid::uuid4(),
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::THIRD_PARTY,
         );
