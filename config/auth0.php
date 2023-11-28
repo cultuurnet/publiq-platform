@@ -16,6 +16,9 @@ return [
     // Auth0 domain for your tenant, found in your Auth0 Application settings.
     'domain' => env('AUTH0_LOGIN_DOMAIN'),
 
+    // Auth0 Management API domain for your tenant, found in your Auth0 Application settings.
+    'managementDomain' => env('AUTH0_LOGIN_MANAGEMENT_DOMAIN'),
+
     // If you have configured Auth0 to use a custom domain, configure it here.
     'customDomain' => env('AUTH0_LOGIN_CUSTOM_DOMAIN'),
 
