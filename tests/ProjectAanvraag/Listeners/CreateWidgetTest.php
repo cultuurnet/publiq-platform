@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\ProjectAanvraag\Listeners;
 
-use App\Domain\Auth\CurrentUser;
-use App\Domain\Auth\Models\UserModel;
+use App\Auth0\Repositories\Auth0UserRepository;
+use App\Domain\Contacts\Contact;
+use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Integration;
@@ -20,13 +21,11 @@ use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use App\UiTiDv1\UiTiDv1Consumer;
 use App\UiTiDv1\UiTiDv1Environment;
 use GuzzleHttp\Psr7\Request;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Collection;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Http\Client\ClientInterface;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidInterface;
 use Tests\AssertRequest;
 use Tests\TestCase;
 
@@ -42,9 +41,9 @@ final class CreateWidgetTest extends TestCase
 
     private UiTiDv1ConsumerRepository&MockObject $uiTiDv1ConsumerRepository;
 
-    private CreateWidget $createWidget;
+    private Auth0UserRepository&MockObject $auth0UserRepository;
 
-    private UuidInterface $userId;
+    private CreateWidget $createWidget;
 
     protected function setUp(): void
     {
@@ -54,20 +53,8 @@ final class CreateWidgetTest extends TestCase
         $this->integrationRepository = $this->createMock(IntegrationRepository::class);
         $this->contactRepository = $this->createMock(ContactRepository::class);
         $this->uiTiDv1ConsumerRepository = $this->createMock(UiTiDv1ConsumerRepository::class);
+        $this->auth0UserRepository = $this->createMock(Auth0UserRepository::class);
         $logger = $this->createMock(LoggerInterface::class);
-        $this->userId = Uuid::uuid4();
-
-        $userModel = UserModel::fromSession([
-            'user_id' => $this->userId->toString(),
-            'email' => 'an.mock@example.com',
-            'name' => 'An Mock',
-            'first_name' => 'An',
-            'last_name' => 'Mock',
-        ]);
-
-        Auth::shouldReceive('user')
-            ->andReturn($userModel);
-        $currentUser = new CurrentUser(App::get(Auth::class));
 
         $this->createWidget = new CreateWidget(
             new ProjectAanvraagClient(
@@ -78,7 +65,7 @@ final class CreateWidgetTest extends TestCase
             $this->contactRepository,
             $this->uiTiDv1ConsumerRepository,
             123,
-            $currentUser,
+            $this->auth0UserRepository,
             $logger
         );
     }
@@ -94,6 +81,15 @@ final class CreateWidgetTest extends TestCase
             Uuid::uuid4(),
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::THIRD_PARTY,
+        );
+
+        $contact = new Contact(
+            Uuid::uuid4(),
+            $integrationId,
+            'john.doe@anonymous.com',
+            ContactType::Contributor,
+            'John',
+            'Doe'
         );
 
         $testConsumer = new UiTiDv1Consumer(
@@ -120,7 +116,7 @@ final class CreateWidgetTest extends TestCase
             'projects',
             [],
             Json::encode([
-                'userId' => $this->userId->toString(),
+                'userId' => 'google-oauth2|102486314601596809843',
                 'name' => $integration->name,
                 'summary' => $integration->description,
                 'groupId' => 123,
@@ -133,6 +129,16 @@ final class CreateWidgetTest extends TestCase
             ->method('getById')
             ->with($integrationId)
             ->willReturn($integration);
+
+        $this->contactRepository->expects($this->once())
+            ->method('getByIntegrationId')
+            ->with($integrationId)
+            ->willReturn(new Collection([$contact]));
+
+        $this->auth0UserRepository->expects($this->once())
+            ->method('findUserIdByEmail')
+            ->with($contact->email)
+            ->willReturn('google-oauth2|102486314601596809843');
 
         $this->uiTiDv1ConsumerRepository->expects($this->once())
             ->method('getByIntegrationId')

@@ -218,6 +218,7 @@ return [
         'simon.debruijn@publiq.be',
         'hande.vanhove@publiq.be',
         'lucwollants@gmail.com',
+        'jonas@cultuurnet.be',
         'paul@herbosch.be',
     ],
 ];
