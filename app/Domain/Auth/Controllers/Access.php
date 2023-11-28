@@ -1,0 +1,51 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Domain\Auth\Controllers;
+
+use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Http\Controllers\Controller;
+use Auth0\SDK\Auth0;
+use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
+final class Access extends Controller
+{
+    public function __construct(
+        private readonly IntegrationRepository $integrationRepository,
+        private readonly LoggerInterface $logger
+    ) {
+    }
+
+    public function handle(string $idToken, string $integrationId): JsonResponse
+    {
+        $this->logger->info('Requested IntegrationAccess for integration ' . $integrationId);
+
+        /** @var Auth0 $auth0 */
+        $auth0 = app(Auth0::class);
+        try {
+            $token = $auth0->decode($idToken);
+        } catch (\Exception $exception) {
+            return new JsonResponse(
+                ['exception' => $exception->getMessage()],
+                400
+            );
+        }
+
+        $email = $token->toArray()['email'];
+        $integration = $this->integrationRepository->getById(Uuid::fromString($integrationId));
+        $hasAccess = $integration->contactHasAccess($email);
+        $this->logger->info(
+            'IntegrationAccess for ',
+            [
+                'email' => $email,
+                'integrationId' => $integrationId,
+                'hasAccess' => $hasAccess,
+            ]
+        );
+
+        return $hasAccess ? new JsonResponse() : new JsonResponse(null, 403);
+    }
+}
