@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Domain\Auth\Controllers\Callback;
-use App\Domain\Auth\Controllers\Login;
-use App\Domain\Auth\Controllers\Logout;
+use App\Domain\Auth\Controllers\CallbackController;
+use App\Domain\Auth\Controllers\LoginController;
+use App\Domain\Auth\Controllers\LogoutController;
 use App\Domain\Integrations\Controllers\IntegrationController;
 use App\Domain\Subscriptions\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
@@ -25,13 +25,13 @@ use App\Http\Controllers\SupportController;
 
 TranslatedRoute::get(['/nl', '/en'], [HomeController::class, 'index']);
 
-Route::get('/login', [Login::class, 'inertiaLogin'])->name('login');
-Route::get('/admin/login', [Login::class, 'adminLogin']);
+Route::get('/login', [LoginController::class, 'inertiaLogin'])->name('login');
+Route::get('/admin/login', [LoginController::class, 'adminLogin']);
 
-Route::get('/logout', [Logout::class, 'inertiaLogout']);
-Route::post('/admin/logout', [Logout::class, 'adminLogout']);
+Route::get('/logout', [LogoutController::class, 'inertiaLogout']);
+Route::post('/admin/logout', [LogoutController::class, 'adminLogout']);
 
-Route::get('/auth/callback', Callback::class);
+Route::get('/auth/callback', CallbackController::class);
 
 Route::group(['middleware' => 'auth'], static function () {
     TranslatedRoute::get(

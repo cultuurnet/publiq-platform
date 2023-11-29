@@ -78,6 +78,11 @@ final class Integration
         return $this->contacts;
     }
 
+    public function contactHasAccess(string $email): bool
+    {
+        return collect($this->contacts)->contains(fn (Contact $contact) => $contact->email === $email);
+    }
+
     public function organization(): ?Organization
     {
         return $this->organization;
