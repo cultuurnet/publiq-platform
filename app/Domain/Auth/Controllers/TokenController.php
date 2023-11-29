@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use Auth0\SDK\Auth0;
 use Illuminate\Http\JsonResponse;
 
-final class Token extends Controller
+final class TokenController extends Controller
 {
     public function handle(string $idToken): JsonResponse
     {

@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Domain\Auth\Controllers\Access;
-use App\Domain\Auth\Controllers\Token;
+use App\Domain\Auth\Controllers\AccessController;
+use App\Domain\Auth\Controllers\TokenController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,5 +20,5 @@ Route::get('ping', function () {
     return 'pong';
 });
 
-Route::get('token/{idToken}', [Token::class, 'handle']);
-Route::get('token/{idToken}/integration/{id}', [Access::class, 'handle']);
+Route::get('token/{idToken}', [TokenController::class, 'handle']);
+Route::get('token/{idToken}/integration/{id}', [AccessController::class, 'handle']);

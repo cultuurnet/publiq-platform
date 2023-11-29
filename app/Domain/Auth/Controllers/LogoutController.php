@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 
-final class Logout
+final class LogoutController
 {
     private function getLogoutLink(): string
     {

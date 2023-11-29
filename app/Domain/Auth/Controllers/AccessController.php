@@ -11,7 +11,7 @@ use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-final class Access extends Controller
+final class AccessController extends Controller
 {
     public function __construct(
         private readonly IntegrationRepository $integrationRepository,
