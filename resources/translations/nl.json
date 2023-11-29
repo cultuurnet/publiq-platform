@@ -131,6 +131,7 @@
     "documentation": {
       "title": "Documentatie",
       "action_title": "Aan de slag met {{product}}",
+      "action_url": "https://docs.publiq.be/docs{{product}}",
       "requirements": "Vereisten om live te gaan"
     }
   },
@@ -262,7 +263,11 @@
   },
   "dialog": {
     "confirm": "Bevestigen",
-    "cancel": "Annuleren"
+    "cancel": "Annuleren",
+    "close": "Sluiten",
+    "invite_success": "Wij hebben een uitnodiging gestuurd naar {{email}}",
+    "invite_error": "Er is iets fout gegaan. Probeer het later opnieuw."
+    
   },
   "tooltip": {
     "copy": "Gekopieerd!"

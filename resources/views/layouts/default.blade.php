@@ -11,9 +11,11 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>publiq-platform</title>
         @inertiaHead
+        @include('layouts.gtm', ['part' => 'head'])
         @include('layouts.hotjar')
     </head>
     <body>
         @inertia
+        @include('layouts.gtm', ['part' => 'body'])
     </body>
 </html>

@@ -93,7 +93,7 @@ return [
         'dev+e2etest@publiq.be',
         'simon.debruijn@publiq.be',
         'hande.vanhove@publiq.be',
-        'lucwollants@gmail.com',
+        'luc@madewithlove.be',
         'corneel.wille@publiq.be',
         'jonas@cultuurnet.be',
         'koen.eelen@publiq.be',
