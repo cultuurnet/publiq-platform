@@ -37,8 +37,7 @@ final class AccessController extends Controller
         }
 
         $tokenAsArray = $token->toArray();
-        if (!isset($tokenAsArray['email']))
-        {
+        if (!isset($tokenAsArray['email'])) {
             $this->logger->warning('No email in token');
             return new JsonResponse(
                 ['exception' => 'No email in token'],
