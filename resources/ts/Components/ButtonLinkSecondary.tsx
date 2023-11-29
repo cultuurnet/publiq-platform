@@ -1,8 +1,9 @@
-import React, { ComponentProps } from "react";
-import { Link, InertiaLinkProps } from "@inertiajs/react";
+import React from "react";
+import { Link } from "@inertiajs/react";
 import { classNames } from "../utils/classNames";
+import { LinkProps } from "./Link";
 
-type Props = InertiaLinkProps & ComponentProps<"a">;
+type Props = LinkProps;
 
 export const ButtonLinkSecondary = ({
   children,
