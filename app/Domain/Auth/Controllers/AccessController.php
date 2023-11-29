@@ -28,13 +28,24 @@ final class AccessController extends Controller
         try {
             $token = $auth0->decode($idToken);
         } catch (\Exception $exception) {
+            $this->logger->warning('Invalid token', ['exception' => $exception->getMessage()]);
             return new JsonResponse(
                 ['exception' => $exception->getMessage()],
                 400
             );
         }
 
+        $tokenAsArray = $token->toArray();
+        if (!isset($tokenAsArray['email']))
+        {
+            $this->logger->warning('No email in token');
+            return new JsonResponse(
+                ['exception' => 'No email in token'],
+                400
+            );
+        }
         $email = $token->toArray()['email'];
+
         $integration = $this->integrationRepository->getById(Uuid::fromString($integrationId));
         $hasAccess = $integration->contactHasAccess($email);
         $this->logger->info(
