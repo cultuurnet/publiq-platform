@@ -53,7 +53,7 @@ final class AccessControllerTest extends TestCase
         );
     }
 
-    public function testInvalidTokenFails(): void
+    public function test_access_with_invalid_token_fails(): void
     {
         $this->logger->expects($this->once())
             ->method('info')
@@ -75,7 +75,7 @@ final class AccessControllerTest extends TestCase
         );
     }
 
-    public function testTokenWithMissingEmailFails(): void
+    public function test_access_with_token_with_missing_email_fails(): void
     {
         $this->logger->expects($this->once())
             ->method('info')
@@ -100,7 +100,7 @@ final class AccessControllerTest extends TestCase
         );
     }
 
-    public function testAdminHasAccess(): void
+    public function test_admin_has_full_access(): void
     {
         $this->logger->expects($this->exactly(2))
             ->method('info')
@@ -122,7 +122,7 @@ final class AccessControllerTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    public function testKnownContactHasAccess(): void
+    public function test_known_contact_has_access(): void
     {
         $this->logger->expects($this->exactly(2))
             ->method('info')
@@ -163,7 +163,7 @@ final class AccessControllerTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    public function testUnknownContactHasNoAccess(): void
+    public function test_unknown_contact_has_no_access(): void
     {
         $this->logger->expects($this->exactly(2))
             ->method('info')
