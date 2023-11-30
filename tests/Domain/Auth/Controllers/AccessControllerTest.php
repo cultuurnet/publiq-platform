@@ -110,7 +110,6 @@ final class AccessControllerTest extends TestCase
                     'Admin access for admin@publiq.be'
                 )
             );
-            ;
 
         $this->integrationRepository->expects($this->never())
             ->method('getById');
