@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace App\Auth0;
 
 use App\Auth0\Jobs\ActivateClient;
+use App\Auth0\Jobs\ActivateClientListener;
 use App\Auth0\Jobs\BlockClient;
 use App\Auth0\Jobs\BlockClientListener;
-use App\Auth0\Jobs\ActivateClientListener;
 use App\Auth0\Listeners\BlockClients;
 use App\Auth0\Listeners\CreateClients;
 use App\Auth0\Listeners\UpdateClients;
 use App\Auth0\Repositories\Auth0ClientRepository;
+use App\Auth0\Repositories\Auth0ManagementUserRepository;
+use App\Auth0\Repositories\Auth0UserRepository;
 use App\Auth0\Repositories\EloquentAuth0ClientRepository;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
@@ -30,6 +32,18 @@ final class Auth0ServiceProvider extends ServiceProvider
     {
         $this->app->singleton(Auth0ClientRepository::class, function () {
             return $this->app->get(EloquentAuth0ClientRepository::class);
+        });
+
+        $this->app->singleton(Auth0UserRepository::class, function () {
+            return new Auth0ManagementUserRepository(
+                new SdkConfiguration(
+                    strategy: SdkConfiguration::STRATEGY_MANAGEMENT_API,
+                    domain: config('auth0.managementDomain'),
+                    clientId: config('auth0.clientId'),
+                    clientSecret: config('auth0.clientSecret'),
+                    audience: config('auth0.audience'),
+                )
+            );
         });
 
         $this->app->singleton(Auth0ClusterSDK::class, function () {

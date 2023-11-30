@@ -7,7 +7,7 @@ namespace App\Providers;
 use App\Auth0\Models\Auth0ClientModel;
 use App\Auth0\Policies\Auth0ClientPolicy;
 use App\Domain\Activity\Policies\ActivityPolicy;
-use App\Domain\Auth\Controllers\Login;
+use App\Domain\Auth\Controllers\LoginController;
 use App\Domain\Auth\UserProvider;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Contacts\Policies\ContactPolicy;
@@ -60,7 +60,7 @@ final class AuthServiceProvider extends ServiceProvider
         $auth0LoginParameters = [];
         parse_str(config('auth0.login_parameters'), $auth0LoginParameters);
 
-        $this->app->when(Login::class)
+        $this->app->when(LoginController::class)
             ->needs('$loginParams')
             ->give($auth0LoginParameters);
     }

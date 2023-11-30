@@ -9,8 +9,9 @@ use Auth0\SDK\Auth0;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
-final class Callback
+final class CallbackController
 {
     public function __invoke(Request $request): RedirectResponse
     {
@@ -19,6 +20,7 @@ final class Callback
 
         if ($auth0->exchange()) {
             $user = $auth0->getUser();
+            Session::put('id_token', $auth0->getIdToken());
 
             if ($user !== null) {
                 Auth::login(UserModel::fromSession($user));

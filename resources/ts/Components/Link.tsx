@@ -1,12 +1,15 @@
-import React, { ComponentProps } from "react";
+import React, { ComponentPropsWithoutRef, Ref } from "react";
 import { Link as InertiaLink, InertiaLinkProps } from "@inertiajs/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { classNames } from "../utils/classNames";
 
-type Props = InertiaLinkProps & ComponentProps<"a">;
+export type LinkProps = InertiaLinkProps &
+  ComponentPropsWithoutRef<"a"> & {
+    ref?: Ref<HTMLAnchorElement>;
+  };
 
-export const Link = ({ children, href, className, ...props }: Props) => {
+export const Link = ({ children, href, className, ...props }: LinkProps) => {
   const isExternal = !href.startsWith("/") && !href.startsWith("#");
 
   return (
