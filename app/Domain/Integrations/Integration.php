@@ -136,6 +136,10 @@ final class Integration
             'subscriptionId' => $this->subscriptionId,
             'status' => $this->status,
             'partnerStatus' => $this->partnerStatus,
+            'hasCredentials' => [
+                'v1' => !empty($this->uiTiDv1Consumers),
+                'v2' => !empty($this->auth0Clients)
+            ]
         ];
     }
 }
