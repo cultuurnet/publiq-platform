@@ -138,8 +138,8 @@ final class Integration
             'partnerStatus' => $this->partnerStatus,
             'hasCredentials' => [
                 'v1' => !empty($this->uiTiDv1Consumers),
-                'v2' => !empty($this->auth0Clients)
-            ]
+                'v2' => !empty($this->auth0Clients),
+            ],
         ];
     }
 }
