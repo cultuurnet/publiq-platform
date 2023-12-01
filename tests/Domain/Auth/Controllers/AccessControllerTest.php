@@ -22,7 +22,6 @@ use Tests\TestCase;
 
 final class AccessControllerTest extends TestCase
 {
-    private Auth0Interface & MockObject $auth0;
     private IntegrationRepository & MockObject $integrationRepository;
     private LoggerInterface & MockObject $logger;
 
@@ -32,8 +31,8 @@ final class AccessControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->auth0 = $this->createMock(Auth0Interface::class);
-        $this->auth0->expects($this->once())
+        $auth0 = $this->createMock(Auth0Interface::class);
+        $auth0->expects($this->once())
             ->method('configuration')
             ->willReturn(new SdkConfiguration(
                 strategy: SdkConfiguration::STRATEGY_MANAGEMENT_API,
@@ -46,7 +45,7 @@ final class AccessControllerTest extends TestCase
         $this->logger = $this->createMock(LoggerInterface::class);
 
         $this->accessController = new AccessController(
-            $this->auth0,
+            $auth0,
             $this->integrationRepository,
             ['admin@publiq.be'],
             $this->logger
