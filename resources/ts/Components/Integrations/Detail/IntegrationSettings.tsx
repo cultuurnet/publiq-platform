@@ -97,11 +97,12 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
     logoutUrls: data.logoutUrls.filter((url) => url.changed),
   }));
 
-  const hasIntegrationUrls = useMemo(() => {
-    return integration.type !== IntegrationType.Widgets;
-    console.log(integration);
-    return true;
-  }, []);
+  const hasIntegrationUrls = useMemo(
+    () =>
+      integration.type !== IntegrationType.Widgets &&
+      integration.hasCredentials.v2,
+    [integration]
+  );
 
   return (
     <>
