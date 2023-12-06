@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Auth\Controllers;
 
 use Auth0\SDK\Contract\Auth0Interface;
+use GuzzleHttp\Client;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -13,16 +14,21 @@ use Symfony\Component\HttpFoundation\Response;
 final class LogoutController
 {
     public function __construct(
-        private readonly Auth0Interface $auth0
+        private readonly Auth0Interface $auth0,
+        private readonly Client $client
     ) {
     }
 
-    private function logout(): void
+    private function logout(): bool
     {
         if (Auth::check()) {
             $this->auth0->logout();
             Auth::guard(config('nova.guard'))->logout();
         }
+
+        $response = $this->client->get(config('project_aanvraag.base_uri') . 'platform/logout/');
+
+        return $response->getStatusCode() === 204;
     }
 
     private function getLogoutLink(): string
