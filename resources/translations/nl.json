@@ -251,7 +251,8 @@
       "description": "Heb je na het lezen van onze documentatie toch nog vragen? We horen ze graag. Via ons support kanaal op slack spelen we kort op de bal.",
       "img_url": "#",
       "action_title": "Naar het slack kanaal",
-      "action_url": "#"
+      "action_url": "https://cultuurnet.slack.com/channels/udb-json-api",
+      "invitation": "Toegang vragen"
     },
     "customized_support": {
       "title": "Ondersteuning op maat",
@@ -265,7 +266,7 @@
     "confirm": "Bevestigen",
     "cancel": "Annuleren",
     "close": "Sluiten",
-    "invite_success": "Wij hebben een uitnodiging gestuurd naar {{email}}",
+    "invite_success": "We hebben een uitnodiging verstuurd naar {{email}}",
     "invite_error": "Er is iets fout gegaan. Probeer het later opnieuw."
     
   },
