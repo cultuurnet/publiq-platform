@@ -73,7 +73,6 @@ final class StoreIntegrationMapperTest extends TestCase
             'lastNameTechnicalContact' => 'Doe',
             'emailTechnicalContact' => 'jane.doe@test.com',
             'agreement' => 'true',
-            'privacy' => 'true',
         ];
     }
 
