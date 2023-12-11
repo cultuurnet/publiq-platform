@@ -252,7 +252,7 @@ export const UrlList = ({
                       inputId={`${type + option.env}`}
                       name="url"
                       className="md:min-w-[40rem]"
-                    disabled={disabled}
+                      disabled={disabled}
                       onBlur={(e) =>
                         onChangeNewUrl({
                           environment: option.env,
