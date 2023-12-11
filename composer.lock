@@ -44,23 +44,23 @@
         },
         {
             "name": "auth0/auth0-php",
-            "version": "8.9.3",
+            "version": "8.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/auth0/auth0-PHP.git",
-                "reference": "c0720c2abb8af15449e7cca4b89a302369553c11"
+                "reference": "4bb6c60ac8abdaf58fc5014470f544987ca64a17"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/auth0/auth0-PHP/zipball/c0720c2abb8af15449e7cca4b89a302369553c11",
-                "reference": "c0720c2abb8af15449e7cca4b89a302369553c11",
+                "url": "https://api.github.com/repos/auth0/auth0-PHP/zipball/4bb6c60ac8abdaf58fc5014470f544987ca64a17",
+                "reference": "4bb6c60ac8abdaf58fc5014470f544987ca64a17",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "ext-mbstring": "*",
                 "ext-openssl": "*",
-                "php": "^8.0",
+                "php": "^8.1",
                 "php-http/multipart-stream-builder": "^1",
                 "psr-discovery/all": "^1",
                 "psr/http-client-implementation": "^1",
@@ -137,9 +137,9 @@
             ],
             "support": {
                 "issues": "https://github.com/auth0/auth0-PHP/issues",
-                "source": "https://github.com/auth0/auth0-PHP/tree/8.9.3"
+                "source": "https://github.com/auth0/auth0-PHP/tree/8.10.0"
             },
-            "time": "2023-11-30T15:18:01+00:00"
+            "time": "2023-12-05T21:58:44+00:00"
         },
         {
             "name": "brick/math",
