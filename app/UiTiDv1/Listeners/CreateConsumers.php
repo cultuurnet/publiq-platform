@@ -6,10 +6,12 @@ namespace App\UiTiDv1\Listeners;
 
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\UiTiDv1\Events\ConsumerCreated;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use App\UiTiDv1\UiTiDv1ClusterSDK;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Event;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -32,6 +34,8 @@ final class CreateConsumers implements ShouldQueue
         $this->consumerRepository->save(...$consumers);
 
         foreach ($consumers as $consumer) {
+            Event::dispatch(new ConsumerCreated($consumer->id));
+
             $this->logger->info('UiTiD v1 consumer created', [
                 'integration_id' => $integrationCreated->integrationId->toString(),
                 'tenant' => $consumer->environment->value,

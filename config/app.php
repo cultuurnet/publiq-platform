@@ -193,6 +193,7 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         App\Auth0\Auth0ServiceProvider::class,
+        App\Domain\Auth\AuthServiceProvider::class,
         App\Domain\Integrations\IntegrationServiceProvider::class,
         App\Insightly\InsightlyServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
@@ -200,7 +201,7 @@ return [
         App\Providers\NovaServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\UiTiDv1\UiTiDv1ServiceProvider::class,
-
+        App\ProjectAanvraag\ProjectAanvraagServiceProvider::class,
     ],
 
     /*

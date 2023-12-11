@@ -7,6 +7,7 @@ import { IntegrationUrlType } from "../../../types/IntegrationUrlType";
 import { NewIntegrationUrl, UrlList } from "./UrlList";
 import { IntegrationUrl } from "../../../Pages/Integrations/Index";
 import { BasicInfo } from "./BasicInfo";
+import { IntegrationType } from "../../../types/IntegrationType";
 
 type Props = {
   isMobile: boolean;
@@ -109,6 +110,13 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
     logoutUrls: data.logoutUrls.filter((url) => url.changed),
   }));
 
+  const hasIntegrationUrls = useMemo(
+    () =>
+      integration.type !== IntegrationType.Widgets &&
+      integration.hasCredentials.v2,
+    [integration]
+  );
+
   return (
     <>
       <BasicInfo
@@ -128,6 +136,7 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
         onChangeData={(data) => setData("loginUrls", data)}
         errors={errors}
         className="border-b border-b-gray-300 pb-10"
+        disabled={!hasIntegrationUrls}
       />
       <UrlList
         type={IntegrationUrlType.Callback}
@@ -141,6 +150,7 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
         }}
         errors={errors}
         className="border-b border-b-gray-300 pb-10"
+        disabled={!hasIntegrationUrls}
       />
       <UrlList
         type={IntegrationUrlType.Logout}
@@ -149,6 +159,7 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
         onChangeData={(data) => setData("logoutUrls", data)}
         onDelete={(urlId) => handleDeleteUrl(urlId)}
         onChangeNewUrl={handleChangeNewUrl}
+        disabled={!hasIntegrationUrls}
         onDeleteNewUrl={handleDeleteNewUrl}
         errors={errors}
       />

@@ -11,10 +11,10 @@ use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 
-final class Login
+final readonly class LoginController
 {
     /** @param array<string> $loginParams */
-    public function __construct(private readonly array $loginParams)
+    public function __construct(private array $loginParams)
     {
     }
 

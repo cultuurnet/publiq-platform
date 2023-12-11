@@ -1,8 +1,8 @@
 @php
-$gtmId = env('GTM_ID');
+$gtmId = config('gtm.gtmId');
 @endphp
 
-@if ($gtmId)
+@if ($gtmId && !empty($part))
     @if ($part === 'head')
         <script>
             (function (w, d, s, l, i) {

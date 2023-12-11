@@ -13,6 +13,7 @@ use App\Domain\Organizations\Repositories\OrganizationRepository;
 use App\Nova\Actions\ActivateIntegrationWithCoupon;
 use App\Nova\Actions\ActivateIntegrationWithOrganization;
 use App\Nova\Actions\BlockIntegration;
+use App\Nova\Actions\OpenWidgetBeheer;
 use App\Nova\Resource;
 use Illuminate\Support\Facades\App;
 use Laravel\Nova\Fields\BelongsTo;
@@ -175,6 +176,17 @@ final class Integration extends Resource
                     }
 
                     return $model->status === IntegrationStatus::Draft->value;
+                }),
+
+            (new OpenWidgetBeheer())
+                ->showOnDetail()
+                ->showInline()
+                ->withoutConfirmation()
+                ->canRun(function ($request, $model) {
+                    if ($request instanceof ActionRequest) {
+                        return true;
+                    }
+                    return $model->type === IntegrationType::Widgets->value;
                 }),
 
             (new BlockIntegration())

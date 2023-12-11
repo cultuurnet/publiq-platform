@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Domain\Auth\Controllers\AccessController;
+use App\Domain\Auth\Controllers\TokenController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,7 +16,9 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
 Route::get('ping', function () {
     return 'pong';
 });
+
+Route::get('token/{idToken}', [TokenController::class, 'handle']);
+Route::get('token/{idToken}/integration/{id}', [AccessController::class, 'handle']);

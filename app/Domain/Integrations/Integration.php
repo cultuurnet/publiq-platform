@@ -78,6 +78,11 @@ final class Integration
         return $this->contacts;
     }
 
+    public function contactHasAccess(string $email): bool
+    {
+        return collect($this->contacts)->contains(fn (Contact $contact) => $contact->email === $email);
+    }
+
     public function organization(): ?Organization
     {
         return $this->organization;
@@ -121,6 +126,17 @@ final class Integration
         );
     }
 
+    public function hasV1Credentials(): bool
+    {
+        return !empty($this->uiTiDv1Consumers);
+    }
+
+    public function hasV2Credentials(): bool
+    {
+        return !empty($this->auth0Clients);
+    }
+
+
     public function toArray(): array
     {
         return [
@@ -131,6 +147,10 @@ final class Integration
             'subscriptionId' => $this->subscriptionId,
             'status' => $this->status,
             'partnerStatus' => $this->partnerStatus,
+            'hasCredentials' => [
+                'v1' => $this->hasV1Credentials(),
+                'v2' => $this->hasV2Credentials(),
+            ],
         ];
     }
 }
