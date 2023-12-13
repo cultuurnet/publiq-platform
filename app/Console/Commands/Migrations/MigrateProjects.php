@@ -11,9 +11,12 @@ use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
+use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
+use App\Domain\Subscriptions\Subscription;
 use App\Domain\Subscriptions\SubscriptionPlan;
 use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
@@ -81,8 +84,8 @@ final class MigrateProjects extends Command
 
         CauserResolver::setCauser(UserModel::createSystemUser());
 
-        $rows = $this->readCsvFile('database/project-aanvraag/projects.csv');
-        $migrationProjects = array_map(fn (array $row) => new MigrationProject($row), $rows);
+        $rows = $this->readCsvFile('database/project-aanvraag/projects_with_subscriptions.csv');
+        $migrationProjects = array_map(fn(array $row) => new MigrationProject($row), array_filter($rows));
 
         $projectsCount = count($migrationProjects);
         if ($projectsCount <= 0) {
