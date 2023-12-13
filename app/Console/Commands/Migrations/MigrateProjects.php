@@ -13,6 +13,7 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Domain\Subscriptions\SubscriptionPlan;
 use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
@@ -29,6 +30,7 @@ use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -46,11 +48,14 @@ final class MigrateProjects extends Command
     private ClientInterface $oauthClientTest;
     private ClientInterface $oauthClientProduction;
 
+    private Collection $subscriptions;
+
     public function __construct(
         private readonly IntegrationRepository $integrationRepository,
         private readonly ContactRepository $contactRepository,
         private readonly InsightlyMappingRepository $insightlyMappingRepository,
         private readonly UiTiDv1ConsumerRepository $uiTiDv1ConsumerRepository,
+        private readonly SubscriptionRepository $subscriptionRepository,
         private readonly InsightlyClient $insightlyClient
     ) {
         parent::__construct();
@@ -65,6 +70,8 @@ final class MigrateProjects extends Command
             config('uitidv1.environments.prod.consumerKey'),
             config('uitidv1.environments.prod.consumerSecret')
         );
+
+        $this->subscriptions = $this->subscriptionRepository->all();
     }
 
     public function handle(): int
@@ -137,6 +144,15 @@ final class MigrateProjects extends Command
         IntegrationModel::query()->where('id', '=', $integrationId)->update([
             'migrated_at' => Carbon::now(),
         ]);
+    }
+
+    private function getSubscription(IntegrationType $integrationType, string $category): Subscription
+    {
+        /** @var SubscriptionModel $subscriptionModel */
+        $subscriptionModel = $this->subscriptions->where('integration_type', $integrationType->value)
+            ->where('category', $category)
+            ->first();
+        return $subscriptionModel->toDomain();
     }
 
     private function migrateCoupon(UuidInterface $integrationId, string $couponCode): void
