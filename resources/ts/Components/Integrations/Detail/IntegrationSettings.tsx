@@ -52,6 +52,7 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
 
   const {
     data,
+    reset,
     setData,
     patch,
     transform,
@@ -66,11 +67,20 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
     });
   };
 
-  const handleSave = () =>
+  const handleSave = () => {
     patch(`/integrations/${id}`, {
       preserveScroll: true,
-      preserveState: false,
+      preserveState: true,
     });
+    reset(
+      "integrationName",
+      "description",
+      "callbackUrls",
+      "loginUrls",
+      "logoutUrls",
+      "newIntegrationUrls"
+    );
+  };
 
   const handleChangeNewUrl = (newUrl: NewIntegrationUrl & { id: string }) => {
     let found = false;
