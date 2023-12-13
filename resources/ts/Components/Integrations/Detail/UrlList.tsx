@@ -27,7 +27,7 @@ type UrlListProps = {
   onChangeData: (value: ChangedIntegrationUrl[]) => void;
   onChangeNewUrl: (value: NewIntegrationUrl & { id: string }) => void;
   onDeleteNewUrl: (fields?: string[], id?: string) => void;
-  onDelete: (urlId: IntegrationUrl["id"]) => void;
+  onDeleteExistingUrl: (urlId: IntegrationUrl["id"]) => void;
   disabled?: boolean;
 } & ComponentProps<"div">;
 
@@ -38,14 +38,15 @@ export const UrlList = ({
   onChangeData,
   onChangeNewUrl,
   onDeleteNewUrl,
-  onDelete,
+  onDeleteExistingUrl,
   className,
   disabled,
 }: UrlListProps) => {
   const { t } = useTranslation();
 
   const [toBeDeletedId, setToBeDeletedId] = useState("");
-  const [toBeDeletedClass, setToBeDeletedClass] = useState("");
+  const [toBeDeletedExistingUrlFieldId, setToBeDeletedExistingUrlFieldId] =
+    useState("");
 
   const [toBeDeletedField, setToBeDeletedField] = useState("");
   const [toBeDeletedUrlId, setToBeDeletedUrlId] = useState("");
@@ -64,15 +65,15 @@ export const UrlList = ({
     [urls]
   );
 
-  const [fields, setFields] = useState<string[]>([]);
+  const [newUrlFields, setNewUrlFields] = useState<string[]>([]);
 
-  const deleteField = (field?: string, id?: string) => {
-    const updatedFields = fields.filter((item) => item !== field);
-    setFields(updatedFields);
+  const handleDeleteNewUrl = (field?: string, id?: string) => {
+    const updatedFields = newUrlFields.filter((item) => item !== field);
+    setNewUrlFields(updatedFields);
     onDeleteNewUrl(updatedFields, id);
   };
 
-  const cleanField = (fieldId: string) => {
+  const handleClearField = (fieldId: string) => {
     const element = document.getElementById(fieldId) as HTMLInputElement | null;
     if (element) {
       element.value = "";
@@ -80,14 +81,15 @@ export const UrlList = ({
     }
   };
 
-  const deleteExistingUrlFieldsVisually = (
+  // as we preserve the state
+  const handleDeleteExistingUrlVisually = (
     fieldId: string,
     classId: string
   ) => {
     const elementExists = document.querySelectorAll(`.${classId}`).length <= 1;
 
     if (elementExists) {
-      cleanField(classId);
+      handleClearField(classId);
     } else {
       const element = document.getElementById(
         fieldId
@@ -102,15 +104,15 @@ export const UrlList = ({
     {
       urls: testUrls,
       env: Environment.Test,
-      changeVisibility(param: string) {
-        setFields([...fields, param]);
+      addNewUrlField(newUrlFieldId: string) {
+        setNewUrlFields([...newUrlFields, newUrlFieldId]);
       },
     },
     {
       urls: prodUrls,
       env: Environment.Prod,
-      changeVisibility(param: string) {
-        setFields([...fields, param]);
+      addNewUrlField(newUrlFieldId: string) {
+        setNewUrlFields([...newUrlFields, newUrlFieldId]);
       },
     },
   ];
@@ -151,7 +153,7 @@ export const UrlList = ({
                         inputId={type + option.env}
                         onChange={(e) => {
                           if (
-                            // if it's a visually cleared field
+                            // if it's a cleared field
                             document
                               .getElementById(type + option.env)
                               ?.getAttribute("changed")
@@ -182,7 +184,7 @@ export const UrlList = ({
                         icon={faTrash}
                         onClick={() => {
                           setToBeDeletedId(url.id);
-                          setToBeDeletedClass(type + option.env);
+                          setToBeDeletedExistingUrlFieldId(type + option.env);
                           setIsDialogVisible(true);
                         }}
                         className="text-icon-gray"
@@ -192,7 +194,7 @@ export const UrlList = ({
                 />
               ))}
               <div className="flex flex-col gap-2">
-                {fields.map(
+                {newUrlFields.map(
                   (field) =>
                     field.startsWith(option.env) && (
                       <FormElement
@@ -204,7 +206,7 @@ export const UrlList = ({
                               type="text"
                               name="newUrl"
                               className="md:min-w-[40rem]"
-                              onBlur={(e) =>
+                              onChange={(e) =>
                                 onChangeNewUrl({
                                   environment: option.env,
                                   url: e.target.value,
@@ -230,7 +232,7 @@ export const UrlList = ({
               {type !== IntegrationUrlType.Login && (
                 <ButtonSecondary
                   onClick={() => {
-                    option.changeVisibility(`${option.env + randomNumber}`);
+                    option.addNewUrlField(`${option.env + randomNumber}`);
                   }}
                   className="self-start"
                 >
@@ -252,8 +254,8 @@ export const UrlList = ({
                       inputId={`${type + option.env}`}
                       name="url"
                       className="md:min-w-[40rem]"
-                      disabled={disabled}
-                      onBlur={(e) =>
+                      //disabled={disabled}
+                      onChange={(e) =>
                         onChangeNewUrl({
                           environment: option.env,
                           url: e.target.value,
@@ -267,14 +269,14 @@ export const UrlList = ({
                       className="text-icon-gray"
                       onClick={() => {
                         setToBeDeletedUrlId(`${type + option.env}`);
-                        cleanField(`${type + option.env}`);
+                        handleClearField(`${type + option.env}`);
                         setIsDialogVisible(true);
                       }}
                     />
                   </div>
                 }
               />
-              {fields.map(
+              {newUrlFields.map(
                 (field) =>
                   field.startsWith(option.env) && (
                     <FormElement
@@ -285,7 +287,7 @@ export const UrlList = ({
                             type="text"
                             name="newUrl"
                             className="md:min-w-[40rem]"
-                            onBlur={(e) =>
+                            onChange={(e) =>
                               onChangeNewUrl({
                                 environment: option.env,
                                 url: e.target.value,
@@ -310,7 +312,7 @@ export const UrlList = ({
               {type !== IntegrationUrlType.Login && (
                 <ButtonSecondary
                   onClick={() => {
-                    option.changeVisibility(`${option.env + randomNumber}`);
+                    option.addNewUrlField(`${option.env + randomNumber}`);
                   }}
                   className="self-start"
                 >
@@ -331,12 +333,15 @@ export const UrlList = ({
         question={t("details.integration_settings.delete.question")}
         onConfirm={() => {
           if (toBeDeletedId) {
-            onDelete(toBeDeletedId);
+            onDeleteExistingUrl(toBeDeletedId);
             setToBeDeletedId("");
-            deleteExistingUrlFieldsVisually(toBeDeletedId, toBeDeletedClass);
+            handleDeleteExistingUrlVisually(
+              toBeDeletedId,
+              toBeDeletedExistingUrlFieldId
+            );
           }
           setIsDialogVisible(false);
-          deleteField(toBeDeletedField, toBeDeletedUrlId);
+          handleDeleteNewUrl(toBeDeletedField, toBeDeletedUrlId);
         }}
         onCancel={() => {
           setToBeDeletedId("");

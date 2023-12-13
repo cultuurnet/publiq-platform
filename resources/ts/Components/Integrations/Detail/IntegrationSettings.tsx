@@ -59,7 +59,7 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
     errors,
   } = useForm(initialFormValues);
 
-  const handleDeleteUrl = (urlId: IntegrationUrl["id"]) => {
+  const handleDeleteExistingUrl = (urlId: IntegrationUrl["id"]) => {
     destroy(`/integrations/${id}/urls/${urlId}`, {
       preserveScroll: true,
       preserveState: true,
@@ -130,7 +130,7 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
         type={IntegrationUrlType.Login}
         urls={data.loginUrls}
         newUrls={data.newIntegrationUrls}
-        onDelete={(urlId) => handleDeleteUrl(urlId)}
+        onDeleteExistingUrl={(urlId) => handleDeleteExistingUrl(urlId)}
         onChangeNewUrl={handleChangeNewUrl}
         onDeleteNewUrl={handleDeleteNewUrl}
         onChangeData={(data) => setData("loginUrls", data)}
@@ -142,7 +142,7 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
         type={IntegrationUrlType.Callback}
         urls={data.callbackUrls}
         newUrls={data.newIntegrationUrls}
-        onDelete={(urlId) => handleDeleteUrl(urlId)}
+        onDeleteExistingUrl={(urlId) => handleDeleteExistingUrl(urlId)}
         onChangeNewUrl={handleChangeNewUrl}
         onDeleteNewUrl={handleDeleteNewUrl}
         onChangeData={(data) => {
@@ -157,7 +157,7 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
         urls={data.logoutUrls}
         newUrls={data.newIntegrationUrls}
         onChangeData={(data) => setData("logoutUrls", data)}
-        onDelete={(urlId) => handleDeleteUrl(urlId)}
+        onDeleteExistingUrl={(urlId) => handleDeleteExistingUrl(urlId)}
         onChangeNewUrl={handleChangeNewUrl}
         disabled={!hasIntegrationUrls}
         onDeleteNewUrl={handleDeleteNewUrl}
