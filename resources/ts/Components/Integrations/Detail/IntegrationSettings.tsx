@@ -92,15 +92,11 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
   };
 
   const handleDeleteNewUrl = (fields?: string[], id?: string) => {
-    const updatedUrls = data.newIntegrationUrls.filter(
-      (url) => fields?.includes(url.id)
-    );
+    const updatedUrls = data.newIntegrationUrls
+      .filter((url) => fields?.includes(url.id))
+      .filter((url) => url.id !== id);
 
-    const updatedNewUrls = data.newIntegrationUrls.filter(
-      (url) => url.id !== id
-    );
-
-    setData("newIntegrationUrls", [...updatedUrls, ...updatedNewUrls]);
+    setData("newIntegrationUrls", updatedUrls);
   };
 
   transform((data) => ({
