@@ -72,8 +72,6 @@ final class MigrateProjects extends Command
             config('uitidv1.environments.prod.consumerKey'),
             config('uitidv1.environments.prod.consumerSecret')
         );
-
-        $this->subscriptions = $this->subscriptionRepository->all();
     }
 
     public function handle(): int
@@ -82,6 +80,8 @@ final class MigrateProjects extends Command
         Event::forget(IntegrationActivatedWithCoupon::class);
 
         CauserResolver::setCauser(UserModel::createSystemUser());
+
+        $this->subscriptions = $this->subscriptionRepository->all();
 
         $rows = $this->readCsvFile('database/project-aanvraag/projects_with_subscriptions.csv');
         $migrationProjects = array_map(fn (array $row) => new MigrationProject($row), array_filter($rows));
