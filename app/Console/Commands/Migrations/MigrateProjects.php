@@ -138,7 +138,7 @@ final class MigrateProjects extends Command
             $migrationProject->type(),
             $migrationProject->name(),
             $migrationProject->description() !== null ? $migrationProject->description() : '',
-            Uuid::fromString(SubscriptionPlan::BASIC_SEARCH_API_PLAN->value),
+            $this->getSubscription($migrationProject->type(), $migrationProject->subscriptionCategory())->id,
             $migrationProject->status(),
             IntegrationPartnerStatus::THIRD_PARTY,
         );
