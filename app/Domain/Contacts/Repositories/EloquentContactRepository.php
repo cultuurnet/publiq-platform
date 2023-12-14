@@ -63,4 +63,13 @@ final class EloquentContactRepository implements ContactRepository
 
         return $contactModel->toDomain();
     }
+
+    public function getByIntegrationIdAndEmail(UuidInterface $integrationId, string $email): Collection
+    {
+        return ContactModel::query()
+            ->where('integration_id', '=', $integrationId)
+            ->where('email', '=', $email)
+            ->get()
+            ->map(fn (ContactModel $contactModel) => $contactModel->toDomain());
+    }
 }
