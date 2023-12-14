@@ -47,7 +47,7 @@ final class BlockAuth0ClientGuardTest extends TestCase
         $this->assertEquals($expectedValue, $this->blockAuth0ClientGuard->canDo($client));
     }
 
-    public function dataprovider(): array
+    public static function dataProvider(): array
     {
         return [
             [json_encode(['grant_types' => ['test']]), true],

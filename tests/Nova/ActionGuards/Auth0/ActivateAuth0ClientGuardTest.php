@@ -47,7 +47,7 @@ final class ActivateAuth0ClientGuardTest extends TestCase
         $this->assertEquals($expectedValue, $this->activateAuth0ClientGuard->canDo($client));
     }
 
-    public function dataprovider(): array
+    public static function dataProvider(): array
     {
         return [
             [json_encode(['grant_types' => ['test']]), false],

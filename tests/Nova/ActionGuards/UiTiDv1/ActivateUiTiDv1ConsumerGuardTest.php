@@ -54,7 +54,7 @@ final class ActivateUiTiDv1ConsumerGuardTest extends TestCase
         $this->assertEquals($expectedValue, $this->guard->canDo($client), $message);
     }
 
-    public function dataProvider(): array
+    public static function dataProvider(): array
     {
         $activeXmlResponse = new SimpleXMLElement('<root></root>');
         $activeXmlResponse->addChild('status', UiTiDv1ConsumerStatus::Active->value);
