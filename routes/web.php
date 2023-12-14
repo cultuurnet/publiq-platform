@@ -84,15 +84,17 @@ Route::group(['middleware' => 'auth'], static function () {
 
     Route::post('/integrations', [IntegrationController::class, 'store']);
 
-    Route::delete('/integrations/{id}', [IntegrationController::class, 'destroy']);
-    Route::patch('/integrations/{id}', [IntegrationController::class, 'update']);
+    Route::group(['middleware' => 'can:access-integration,id'], static function () {
+        Route::delete('/integrations/{id}', [IntegrationController::class, 'destroy']);
+        Route::patch('/integrations/{id}', [IntegrationController::class, 'update']);
 
-    Route::patch('/integrations/{id}/urls', [IntegrationController::class, 'updateUrls']);
-    Route::post('/integrations/{id}/urls', [IntegrationController::class, 'storeUrl']);
-    Route::delete('/integrations/{id}/urls/{urlId}', [IntegrationController::class, 'destroyUrl']);
+        Route::patch('/integrations/{id}/urls', [IntegrationController::class, 'updateUrls']);
+        Route::post('/integrations/{id}/urls', [IntegrationController::class, 'storeUrl']);
+        Route::delete('/integrations/{id}/urls/{urlId}', [IntegrationController::class, 'destroyUrl']);
 
-    Route::patch('/integrations/{id}/contacts', [IntegrationController::class, 'updateContacts']);
-    Route::delete('/integrations/{id}/contacts/{contactId}', [IntegrationController::class, 'deleteContact']);
+        Route::patch('/integrations/{id}/contacts', [IntegrationController::class, 'updateContacts']);
+        Route::delete('/integrations/{id}/contacts/{contactId}', [IntegrationController::class, 'deleteContact']);
 
-    Route::patch('/integrations/{id}/billing', [IntegrationController::class, 'updateBilling']);
+        Route::patch('/integrations/{id}/billing', [IntegrationController::class, 'updateBilling']);
+    });
 });
