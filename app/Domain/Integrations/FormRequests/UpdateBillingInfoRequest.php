@@ -13,15 +13,11 @@ final class UpdateBillingInfoRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'organisation.id' => ['required', 'string'],
-            'organisation.name' => ['required', 'string', 'max:255'],
-            'organisation.invoiceEmail' => ['required', 'string', 'email', 'min:2', 'max:255'],
-            'organisation.vat' => ['required', 'string', 'max:255'],
-            'organisation.address.street' => ['required', 'string', 'max:255'],
-            'organisation.address.zip' => ['required', 'string', 'max:255'],
-            'organisation.address.city' => ['required', 'string', 'max:255'],
-            'organisation.address.country' => ['required', 'string', 'max:255'],
-        ];
+        return array_merge(
+            (new CreateBillingInfoRequest())->rules(),
+            [
+                'organisation.id' => ['required', 'string'],
+            ]
+        );
     }
 }
