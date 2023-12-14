@@ -36,7 +36,7 @@ final class IntegrationControllerTest extends TestCase
                 'coupon' => $coupon->code,
             ]
         );
-
+        dump($response->dump());
         $response->assertRedirect('/nl/integraties/' . $integration->id->toString());
 
         $this->assertDatabaseHas('integrations', [
