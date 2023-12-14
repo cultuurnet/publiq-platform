@@ -15,15 +15,6 @@ use Ramsey\Uuid\Uuid;
 
 final class AuthServiceProvider extends ServiceProvider
 {
-    private ContactRepository $contactRepository;
-
-    public function __construct($app)
-    {
-        parent::__construct($app);
-
-        $this->contactRepository = app(ContactRepository::class);
-    }
-
     public function register(): void
     {
         $this->app->bind(Auth0Interface::class, Auth0::class);
@@ -33,7 +24,12 @@ final class AuthServiceProvider extends ServiceProvider
             ->give(config('nova.users'));
 
         Gate::define('access-integration', function (UserModel $user, string $integrationId): bool {
-            $contacts = $this->contactRepository->getByIntegrationIdAndEmail(Uuid::fromString($integrationId), $user->email);
+            /**
+             * @var ContactRepository  $contactRepository
+             */
+            $contactRepository = $this->app->get(ContactRepository::class);
+
+            $contacts = $contactRepository->getByIntegrationIdAndEmail(Uuid::fromString($integrationId), $user->email);
 
             return $contacts->count() > 0;
         });
