@@ -4,17 +4,29 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Mappers;
 
+use App\Domain\Integrations\FormRequests\CreateBillingInfoRequest;
 use App\Domain\Integrations\FormRequests\UpdateBillingInfoRequest;
 use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Organization;
+use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
 
-final class UpdateBillingInfoMapper
+final class BillingInfoMapper
 {
-    public static function map(UpdateBillingInfoRequest $request): Organization
+    public static function mapCreate(CreateBillingInfoRequest $request): Organization
+    {
+        return self::map($request);
+    }
+
+    public static function mapUpdate(UpdateBillingInfoRequest $request): Organization
+    {
+        return self::map($request);
+    }
+
+    private static function map(Request $request): Organization
     {
         return new Organization(
-            Uuid::fromString($request->input('organisation.id')),
+            $request->input('organisation.id') ? Uuid::fromString($request->input('organisation.id')) : Uuid::uuid4(),
             $request->input('organisation.name'),
             $request->input('organisation.invoiceEmail'),
             $request->input('organisation.vat'),
