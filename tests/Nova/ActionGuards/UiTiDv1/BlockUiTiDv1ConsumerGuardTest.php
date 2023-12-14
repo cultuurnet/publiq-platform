@@ -9,6 +9,7 @@ use App\UiTiDv1\UiTiDv1Consumer;
 use App\UiTiDv1\UiTiDv1ConsumerStatus;
 use App\UiTiDv1\UiTiDv1Environment;
 use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use GuzzleHttp\ClientInterface;
@@ -34,7 +35,7 @@ final class BlockUiTiDv1ConsumerGuardTest extends TestCase
         );
     }
 
-    /** @dataProvider dataProvider */
+    #[DataProvider('dataProvider')]
     public function test_can_do(Response $response, bool $expectedValue, string $message): void
     {
         $client = new UiTiDv1Consumer(
