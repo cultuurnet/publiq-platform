@@ -48,10 +48,7 @@ final class CreateClientsTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
-    public function it_creates_a_new_client_in_every_configured_tenant(): void
+    public function test_it_creates_a_new_client_in_every_configured_tenant(): void
     {
         $integrationId = Uuid::uuid4();
         $integration = new Integration(
