@@ -23,10 +23,7 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
         $this->repository = new EloquentUiTiDv1ConsumerRepository();
     }
 
-    /**
-     * @test
-     */
-    public function it_can_save_one_or_more_consumers(): void
+    public function test_it_can_save_one_or_more_consumers(): void
     {
         $integrationId = Uuid::uuid4();
 
@@ -86,10 +83,7 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
-    public function it_can_get_all_consumers_for_an_integration_id(): void
+    public function test_it_can_get_all_consumers_for_an_integration_id(): void
     {
         $integrationId = Uuid::uuid4();
 
@@ -132,10 +126,7 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @test
-     */
-    public function it_can_get_all_consumers_for_multiple_integration_ids(): void
+    public function test_it_can_get_all_consumers_for_multiple_integration_ids(): void
     {
         $firstIntegrationId = Uuid::uuid4();
         $secondIntegrationId = Uuid::uuid4();
@@ -173,10 +164,7 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @test
-     */
-    public function it_doesnt_get_consumers_for_unasked_integration_ids(): void
+    public function test_it_doesnt_get_consumers_for_unasked_integration_ids(): void
     {
         $firstIntegrationId = Uuid::uuid4();
         $secondIntegrationId = Uuid::uuid4();
