@@ -56,7 +56,7 @@ final class BillingInfoMapperTest extends TestCase
         );
     }
 
-    public function test_it_creates_an_organisation_with_updated_billing_info_from_request(): void
+    public function test_it_creates_an_organization_with_updated_billing_info_from_request(): void
     {
         $request = new UpdateBillingInfoRequest($this->inputs);
 
