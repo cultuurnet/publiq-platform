@@ -16,7 +16,7 @@ use Tests\UuidTestFactory;
 
 final class BillingInfoMapperTest extends TestCase
 {
-    private const ORGANISATION_ID = 'a8ab2245-17b4-44e3-9920-fab075effbdc';
+    private const ORGANIZATION_ID = 'a8ab2245-17b4-44e3-9920-fab075effbdc';
 
     private array $inputs;
 
@@ -26,7 +26,7 @@ final class BillingInfoMapperTest extends TestCase
 
         $this->inputs = [
             'organisation' => [
-                'id' => self::ORGANISATION_ID,
+                'id' => self::ORGANIZATION_ID,
                 'name' => 'publiq vzw',
                 'invoiceEmail' => 'info@publiqtest.be',
                 'vat' => 'BE 0475 250 609',
@@ -43,7 +43,7 @@ final class BillingInfoMapperTest extends TestCase
     private function getExpectedOrganization(): Organization
     {
         return new Organization(
-            Uuid::fromString(self::ORGANISATION_ID),
+            Uuid::fromString(self::ORGANIZATION_ID),
             $this->inputs['organisation']['name'],
             $this->inputs['organisation']['invoiceEmail'],
             $this->inputs['organisation']['vat'],
@@ -67,7 +67,7 @@ final class BillingInfoMapperTest extends TestCase
 
     public function test_it_creates_organization_from_create_billing_info_form_request(): void
     {
-        Uuid::setFactory(new UuidTestFactory(['uuid4' => [self::ORGANISATION_ID]]));
+        Uuid::setFactory(new UuidTestFactory(['uuid4' => [self::ORGANIZATION_ID]]));
 
         unset($this->inputs['organisation']['id']);
         $request = new CreateBillingInfoRequest($this->inputs);
