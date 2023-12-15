@@ -9,11 +9,11 @@ import { useForm } from "@inertiajs/react";
 
 type Props = Integration;
 
-export const BillingInfo = ({ id, organisation, subscription }: Props) => {
+export const BillingInfo = ({ id, organization, subscription }: Props) => {
   const { t } = useTranslation();
 
   const initialFormValues = {
-    organisation,
+    organization,
   };
 
   const { data, setData, patch, errors: err } = useForm(initialFormValues);
@@ -41,7 +41,7 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
           }
         />
       </div>
-      {data.organisation && (
+      {data.organization && (
         <>
           <div className="w-full max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-6">
             <Heading level={3} className="font-semibold">
@@ -58,12 +58,12 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
                     type="text"
                     name="organization.name"
                     className="md:min-w-[40rem]"
-                    value={data.organisation.name}
+                    value={data.organization.name}
                     onChange={(e) =>
                       setData("organization", {
-                        // We know organisation exists
+                        // We know organization exists
                         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        ...data.organisation!,
+                        ...data.organization!,
                         name: e.target.value,
                       })
                     }
@@ -79,15 +79,15 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
                     <Input
                       type="text"
                       name="organization.address.street"
-                      value={data.organisation.address.street}
+                      value={data.organization.address.street}
                       onChange={(e) =>
                         setData("organization", {
-                          // We know organisation exists
+                          // We know organization exists
                           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                          ...data.organisation!,
+                          ...data.organization!,
                           address: {
                             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                            ...data.organisation!.address,
+                            ...data.organization!.address,
                             street: e.target.value,
                           },
                         })
@@ -103,15 +103,15 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
                     <Input
                       type="text"
                       name="organization.address.zip"
-                      value={data.organisation.address.zip}
+                      value={data.organization.address.zip}
                       onChange={(e) =>
                         setData("organization", {
-                          // We know organisation exists
+                          // We know organization exists
                           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                          ...data.organisation!,
+                          ...data.organization!,
                           address: {
                             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                            ...data.organisation!.address,
+                            ...data.organization!.address,
                             zip: e.target.value,
                           },
                         })
@@ -127,15 +127,15 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
                     <Input
                       type="text"
                       name="organization.address.city"
-                      value={data.organisation?.address.city}
+                      value={data.organization?.address.city}
                       onChange={(e) =>
                         setData("organization", {
-                          // We know organisation exists
+                          // We know organization exists
                           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                          ...data.organisation!,
+                          ...data.organization!,
                           address: {
                             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                            ...data.organisation!.address,
+                            ...data.organization!.address,
                             city: e.target.value,
                           },
                         })
@@ -152,13 +152,13 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
                   <Input
                     type="text"
                     name="organization.vat"
-                    value={data.organisation?.vat}
+                    value={data.organization?.vat}
                     className="md:min-w-[40rem]"
                     onChange={(e) =>
                       setData("organization", {
-                        // We know organisation exists
+                        // We know organization exists
                         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        ...data.organisation!,
+                        ...data.organization!,
                         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         vat: e.target.value,
                       })
