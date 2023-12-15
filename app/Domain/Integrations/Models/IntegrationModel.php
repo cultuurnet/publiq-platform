@@ -218,7 +218,7 @@ final class IntegrationModel extends UuidModel
         );
 
         if ($foundOrganisation !== null) {
-            $integration = $integration->withOrganisation($foundOrganisation->toDomain());
+            $integration = $integration->withOrganization($foundOrganisation->toDomain());
         }
 
         return $integration;

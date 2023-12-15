@@ -49,7 +49,7 @@ final class Integration
         return $clone;
     }
 
-    public function withOrganisation(Organization $organization): self
+    public function withOrganization(Organization $organization): self
     {
         $clone = clone $this;
         $clone->organization = $organization;
