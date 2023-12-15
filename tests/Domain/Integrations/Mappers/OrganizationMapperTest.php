@@ -14,7 +14,7 @@ use Ramsey\Uuid\UuidFactory;
 use Tests\TestCase;
 use Tests\UuidTestFactory;
 
-final class BillingInfoMapperTest extends TestCase
+final class OrganizationMapperTest extends TestCase
 {
     private const ORGANIZATION_ID = 'a8ab2245-17b4-44e3-9920-fab075effbdc';
 
