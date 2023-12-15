@@ -6,7 +6,7 @@ namespace App\Domain\Integrations\FormRequests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-final class UpdateBillingInfoRequest extends FormRequest
+final class UpdateOrganizationRequest extends FormRequest
 {
     /**
      * @return array<string, mixed>
@@ -14,7 +14,7 @@ final class UpdateBillingInfoRequest extends FormRequest
     public function rules(): array
     {
         return array_merge(
-            (new CreateBillingInfoRequest())->rules(),
+            (new CreateOrganizationRequest())->rules(),
             [
                 'organization.id' => ['required', 'string'],
             ]

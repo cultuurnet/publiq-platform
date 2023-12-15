@@ -9,11 +9,11 @@ use App\Domain\Auth\CurrentUser;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Coupons\Repositories\CouponRepository;
 use App\Domain\Integrations\FormRequests\ActivateWithCouponRequest;
-use App\Domain\Integrations\FormRequests\CreateBillingInfoRequest;
+use App\Domain\Integrations\FormRequests\CreateOrganizationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationUrlRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationRequest;
-use App\Domain\Integrations\FormRequests\UpdateBillingInfoRequest;
+use App\Domain\Integrations\FormRequests\UpdateOrganizationRequest;
 use App\Domain\Integrations\FormRequests\UpdateContactInfoRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationUrlsRequest;
 use App\Domain\Integrations\IntegrationType;
@@ -207,7 +207,7 @@ final class IntegrationController extends Controller
         return Redirect::back();
     }
 
-    public function updateBilling(string $id, UpdateBillingInfoRequest $request): RedirectResponse
+    public function updateBilling(string $id, UpdateOrganizationRequest $request): RedirectResponse
     {
         $organization = BillingInfoMapper::mapUpdate($request);
 
@@ -238,7 +238,7 @@ final class IntegrationController extends Controller
         );
     }
 
-    public function activateWithOrganization(string $id, CreateBillingInfoRequest $request): RedirectResponse
+    public function activateWithOrganization(string $id, CreateOrganizationRequest $request): RedirectResponse
     {
         $organization = BillingInfoMapper::mapCreate($request);
 

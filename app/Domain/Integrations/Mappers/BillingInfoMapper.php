@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Mappers;
 
-use App\Domain\Integrations\FormRequests\CreateBillingInfoRequest;
-use App\Domain\Integrations\FormRequests\UpdateBillingInfoRequest;
+use App\Domain\Integrations\FormRequests\CreateOrganizationRequest;
+use App\Domain\Integrations\FormRequests\UpdateOrganizationRequest;
 use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Organization;
 use Illuminate\Http\Request;
@@ -13,12 +13,12 @@ use Ramsey\Uuid\Uuid;
 
 final class BillingInfoMapper
 {
-    public static function mapCreate(CreateBillingInfoRequest $request): Organization
+    public static function mapCreate(CreateOrganizationRequest $request): Organization
     {
         return self::map($request);
     }
 
-    public static function mapUpdate(UpdateBillingInfoRequest $request): Organization
+    public static function mapUpdate(UpdateOrganizationRequest $request): Organization
     {
         return self::map($request);
     }
