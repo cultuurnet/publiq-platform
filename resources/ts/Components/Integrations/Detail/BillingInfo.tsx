@@ -27,7 +27,7 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
           {t("details.billing_info.title.subscription")}
         </Heading>
         <FormElement
-          error={errors["organisation.address.street"]}
+          error={errors["organization.address.street"]}
           component={
             <Input
               type="text"
@@ -51,16 +51,16 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
             <div className="flex flex-col gap-5">
               <FormElement
                 label={`${t("details.billing_info.name")}`}
-                error={errors["organisation.name"]}
+                error={errors["organization.name"]}
                 className="w-full"
                 component={
                   <Input
                     type="text"
-                    name="organisation.name"
+                    name="organization.name"
                     className="md:min-w-[40rem]"
                     value={data.organisation.name}
                     onChange={(e) =>
-                      setData("organisation", {
+                      setData("organization", {
                         // We know organisation exists
                         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         ...data.organisation!,
@@ -73,15 +73,15 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
               <div className="max-md:flex max-md:flex-col md:grid md:grid-cols-5 gap-3 md:min-w-[40rem]">
                 <FormElement
                   label={`${t("details.billing_info.address.street")}`}
-                  error={errors["organisation.address.street"]}
+                  error={errors["organization.address.street"]}
                   className="col-span-2"
                   component={
                     <Input
                       type="text"
-                      name="organisation.address.street"
+                      name="organization.address.street"
                       value={data.organisation.address.street}
                       onChange={(e) =>
-                        setData("organisation", {
+                        setData("organization", {
                           // We know organisation exists
                           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                           ...data.organisation!,
@@ -97,15 +97,15 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
                 />
                 <FormElement
                   label={`${t("details.billing_info.address.postcode")}`}
-                  error={errors["organisation.address.zip"]}
+                  error={errors["organization.address.zip"]}
                   className="col-span-1"
                   component={
                     <Input
                       type="text"
-                      name="organisation.address.zip"
+                      name="organization.address.zip"
                       value={data.organisation.address.zip}
                       onChange={(e) =>
-                        setData("organisation", {
+                        setData("organization", {
                           // We know organisation exists
                           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                           ...data.organisation!,
@@ -121,15 +121,15 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
                 />
                 <FormElement
                   label={`${t("details.billing_info.address.city")}`}
-                  error={errors["organisation.address.city"]}
+                  error={errors["organization.address.city"]}
                   className="col-span-2"
                   component={
                     <Input
                       type="text"
-                      name="organisation.address.city"
+                      name="organization.address.city"
                       value={data.organisation?.address.city}
                       onChange={(e) =>
-                        setData("organisation", {
+                        setData("organization", {
                           // We know organisation exists
                           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                           ...data.organisation!,
@@ -146,16 +146,16 @@ export const BillingInfo = ({ id, organisation, subscription }: Props) => {
               </div>
               <FormElement
                 label={`${t("details.billing_info.vat")}`}
-                error={errors["organisation.vat"]}
+                error={errors["organization.vat"]}
                 className="w-full"
                 component={
                   <Input
                     type="text"
-                    name="organisation.vat"
+                    name="organization.vat"
                     value={data.organisation?.vat}
                     className="md:min-w-[40rem]"
                     onChange={(e) =>
-                      setData("organisation", {
+                      setData("organization", {
                         // We know organisation exists
                         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         ...data.organisation!,
