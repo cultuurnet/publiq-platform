@@ -6,7 +6,7 @@ namespace Tests\Domain\Integrations\Mappers;
 
 use App\Domain\Integrations\FormRequests\CreateOrganizationRequest;
 use App\Domain\Integrations\FormRequests\UpdateOrganizationRequest;
-use App\Domain\Integrations\Mappers\BillingInfoMapper;
+use App\Domain\Integrations\Mappers\OrganizationMapper;
 use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Organization;
 use Ramsey\Uuid\Uuid;
@@ -60,7 +60,7 @@ final class BillingInfoMapperTest extends TestCase
     {
         $request = new UpdateOrganizationRequest($this->inputs);
 
-        $actual = BillingInfoMapper::mapUpdate($request);
+        $actual = OrganizationMapper::mapUpdate($request);
 
         $this->assertEquals($this->getExpectedOrganization(), $actual);
     }
@@ -72,7 +72,7 @@ final class BillingInfoMapperTest extends TestCase
         unset($this->inputs['organization']['id']);
         $request = new CreateOrganizationRequest($this->inputs);
 
-        $actual = BillingInfoMapper::mapCreate($request);
+        $actual = OrganizationMapper::mapCreate($request);
 
         $this->assertEquals($this->getExpectedOrganization(), $actual);
 

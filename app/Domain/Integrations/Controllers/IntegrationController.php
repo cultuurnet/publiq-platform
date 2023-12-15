@@ -19,7 +19,7 @@ use App\Domain\Integrations\FormRequests\UpdateIntegrationUrlsRequest;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationUrlMapper;
-use App\Domain\Integrations\Mappers\BillingInfoMapper;
+use App\Domain\Integrations\Mappers\OrganizationMapper;
 use App\Domain\Integrations\Mappers\UpdateContactInfoMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationUrlsMapper;
@@ -209,7 +209,7 @@ final class IntegrationController extends Controller
 
     public function updateBilling(string $id, UpdateOrganizationRequest $request): RedirectResponse
     {
-        $organization = BillingInfoMapper::mapUpdate($request);
+        $organization = OrganizationMapper::mapUpdate($request);
 
         $this->organizationRepository->save($organization);
 
@@ -240,7 +240,7 @@ final class IntegrationController extends Controller
 
     public function activateWithOrganization(string $id, CreateOrganizationRequest $request): RedirectResponse
     {
-        $organization = BillingInfoMapper::mapCreate($request);
+        $organization = OrganizationMapper::mapCreate($request);
 
         $this->organizationRepository->save($organization);
 

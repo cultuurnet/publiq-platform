@@ -11,7 +11,7 @@ use App\Domain\Organizations\Organization;
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
 
-final class BillingInfoMapper
+final class OrganizationMapper
 {
     public static function mapCreate(CreateOrganizationRequest $request): Organization
     {
