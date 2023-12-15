@@ -14,13 +14,13 @@ final class CreateBillingInfoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'organisation.name' => ['required', 'string', 'max:255'],
-            'organisation.invoiceEmail' => ['required', 'string', 'email', 'min:2', 'max:255'],
-            'organisation.vat' => ['required', 'string', 'max:255'],
-            'organisation.address.street' => ['required', 'string', 'max:255'],
-            'organisation.address.zip' => ['required', 'string', 'max:255'],
-            'organisation.address.city' => ['required', 'string', 'max:255'],
-            'organisation.address.country' => ['required', 'string', 'max:255'],
+            'organization.name' => ['required', 'string', 'max:255'],
+            'organization.invoiceEmail' => ['required', 'string', 'email', 'min:2', 'max:255'],
+            'organization.vat' => ['required', 'string', 'max:255'],
+            'organization.address.street' => ['required', 'string', 'max:255'],
+            'organization.address.zip' => ['required', 'string', 'max:255'],
+            'organization.address.city' => ['required', 'string', 'max:255'],
+            'organization.address.country' => ['required', 'string', 'max:255'],
         ];
     }
 }

@@ -25,7 +25,7 @@ final class BillingInfoMapperTest extends TestCase
         parent::setUp();
 
         $this->inputs = [
-            'organisation' => [
+            'organization' => [
                 'id' => self::ORGANIZATION_ID,
                 'name' => 'publiq vzw',
                 'invoiceEmail' => 'info@publiqtest.be',
@@ -44,14 +44,14 @@ final class BillingInfoMapperTest extends TestCase
     {
         return new Organization(
             Uuid::fromString(self::ORGANIZATION_ID),
-            $this->inputs['organisation']['name'],
-            $this->inputs['organisation']['invoiceEmail'],
-            $this->inputs['organisation']['vat'],
+            $this->inputs['organization']['name'],
+            $this->inputs['organization']['invoiceEmail'],
+            $this->inputs['organization']['vat'],
             new Address(
-                $this->inputs['organisation']['address']['street'],
-                $this->inputs['organisation']['address']['zip'],
-                $this->inputs['organisation']['address']['city'],
-                $this->inputs['organisation']['address']['country'],
+                $this->inputs['organization']['address']['street'],
+                $this->inputs['organization']['address']['zip'],
+                $this->inputs['organization']['address']['city'],
+                $this->inputs['organization']['address']['country'],
             )
         );
     }
@@ -69,7 +69,7 @@ final class BillingInfoMapperTest extends TestCase
     {
         Uuid::setFactory(new UuidTestFactory(['uuid4' => [self::ORGANIZATION_ID]]));
 
-        unset($this->inputs['organisation']['id']);
+        unset($this->inputs['organization']['id']);
         $request = new CreateBillingInfoRequest($this->inputs);
 
         $actual = BillingInfoMapper::mapCreate($request);

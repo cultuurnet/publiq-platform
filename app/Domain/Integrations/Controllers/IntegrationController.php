@@ -269,7 +269,7 @@ final class IntegrationController extends Controller
                 ...$integration->toArray(),
                 'contacts' => $contacts->toArray(),
                 'urls' => $integration->urls(),
-                'organisation' => $integration->organization(),
+                'organization' => $integration->organization(),
                 'subscription' => $subscription,
             ],
         ]);

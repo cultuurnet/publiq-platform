@@ -36,7 +36,7 @@ final class InsightlyOrganizationResourceTest extends TestCase
     {
         $insightlyId = 42;
         $expectedRequest = new Request('POST', 'Organizations/', [], $expectedRequest);
-        $expectedResponse = new Response(200, [], Json::encode(['ORGANISATION_ID' => $insightlyId]));
+        $expectedResponse = new Response(200, [], Json::encode(['ORGANIZATION_ID' => $insightlyId]));
 
         $this->insightlyClient->expects($this->once())
             ->method('sendRequest')
@@ -136,7 +136,7 @@ final class InsightlyOrganizationResourceTest extends TestCase
                         'FIELD_VALUE' => 'facturatie@madewithlove.be',
                     ],
                 ],
-                'ORGANISATION_ID' => 42,
+                'ORGANIZATION_ID' => 42,
             ]),
         ];
 
@@ -166,7 +166,7 @@ final class InsightlyOrganizationResourceTest extends TestCase
                         'FIELD_VALUE' => 'BE1234567890',
                     ],
                 ],
-                'ORGANISATION_ID' => 42,
+                'ORGANIZATION_ID' => 42,
             ]),
         ];
     }

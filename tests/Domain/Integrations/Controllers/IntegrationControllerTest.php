@@ -60,7 +60,7 @@ final class IntegrationControllerTest extends TestCase
         $response = $this->post(
             '/integrations/' . $integration->id . '/organization',
             [
-                'organisation' => [
+                'organization' => [
                     'id' => $organization->id->toString(),
                     'name' => $organization->name,
                     'vat' => $organization->vat,
