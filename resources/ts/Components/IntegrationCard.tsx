@@ -70,7 +70,7 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
           </div>
           {type === "widgets" && (
             <ButtonLinkSecondary
-              href={"/integrations/" + id + "/widget"}
+              href={`/integrations/${id}/widget`}
               target="_blank"
             >
               {t("integrations.open_widget")}
