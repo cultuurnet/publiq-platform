@@ -8,16 +8,13 @@ import { Link } from "../../Link";
 
 type Props = Integration;
 
-export const Credentials = ({ id, status }: Props) => {
+export const Credentials = ({ id, status, hasCredentials }: Props) => {
   const { t } = useTranslation();
-
-  const v1 = true;
-  const v2 = true;
 
   return (
     <>
       <div>
-        {v2 && (
+        {hasCredentials.v2 && (
           <div className="w-full max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-6 border-b pb-10 border-gray-300">
             <Heading className="font-semibold" level={3}>
               {t("details.credentials.uitid_v1")}
@@ -63,7 +60,7 @@ export const Credentials = ({ id, status }: Props) => {
         <Heading className="font-semibold" level={3}>
           {t("details.credentials.uitid_v2")}
         </Heading>
-        {v1 ? (
+        {hasCredentials.v1 ? (
           <div className="flex flex-col gap-4">
             <p>{t("details.credentials.uitid_alert")}</p>
             <ButtonPrimary className="self-start">

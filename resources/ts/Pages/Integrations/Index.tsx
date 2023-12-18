@@ -72,6 +72,7 @@ export type Integration = {
   organisation?: Organisation;
   subscription: Subscription;
   urls: IntegrationUrl[];
+  hasCredentials: { v1: boolean; v2: boolean };
 };
 
 type Props = {
