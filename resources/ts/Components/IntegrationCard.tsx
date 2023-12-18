@@ -68,9 +68,14 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
               <ButtonIconCopy onClick={handleCopyToClipboard} />
             </Tooltip>
           </div>
-            {type === "widgets" && (
-                <ButtonLinkSecondary href={'/integrations/' + id + '/widget'} target="_blank"> {t("integrations.open_widget")} </ButtonLinkSecondary>
-            )}
+          {type === "widgets" && (
+            <ButtonLinkSecondary
+              href={"/integrations/" + id + "/widget"}
+              target="_blank"
+            >
+              {t("integrations.open_widget")}
+            </ButtonLinkSecondary>
+          )}
         </section>
         <section className="inline-flex gap-3 max-md:flex-col max-md:items-start md:items-start">
           <Heading className="font-semibold min-w-[10rem]" level={5}>
