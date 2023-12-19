@@ -184,7 +184,7 @@ final class IntegrationModel extends UuidModel
 
     public function toDomain(): Integration
     {
-        $foundOrganisation = $this->organization()->first();
+        $foundOrganization = $this->organization()->first();
 
         /** @var Integration */
         $integration = (new Integration(
@@ -217,8 +217,8 @@ final class IntegrationModel extends UuidModel
             ->toArray()
         );
 
-        if ($foundOrganisation !== null) {
-            $integration = $integration->withOrganisation($foundOrganisation->toDomain());
+        if ($foundOrganization !== null) {
+            $integration = $integration->withOrganization($foundOrganization->toDomain());
         }
 
         return $integration;

@@ -26,15 +26,15 @@ final class BillingInfoMapper
     private static function map(Request $request): Organization
     {
         return new Organization(
-            $request->input('organisation.id') ? Uuid::fromString($request->input('organisation.id')) : Uuid::uuid4(),
-            $request->input('organisation.name'),
-            $request->input('organisation.invoiceEmail'),
-            $request->input('organisation.vat'),
+            $request->input('organization.id') ? Uuid::fromString($request->input('organization.id')) : Uuid::uuid4(),
+            $request->input('organization.name'),
+            $request->input('organization.invoiceEmail'),
+            $request->input('organization.vat'),
             new Address(
-                $request->input('organisation.address.street'),
-                $request->input('organisation.address.zip'),
-                $request->input('organisation.address.city'),
-                $request->input('organisation.address.country'),
+                $request->input('organization.address.street'),
+                $request->input('organization.address.zip'),
+                $request->input('organization.address.city'),
+                $request->input('organization.address.country'),
             )
         );
     }

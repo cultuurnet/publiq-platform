@@ -16,7 +16,7 @@ final class UpdateBillingInfoRequest extends FormRequest
         return array_merge(
             (new CreateBillingInfoRequest())->rules(),
             [
-                'organisation.id' => ['required', 'string'],
+                'organization.id' => ['required', 'string'],
             ]
         );
     }

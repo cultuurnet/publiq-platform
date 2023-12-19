@@ -16,7 +16,7 @@ use Tests\UuidTestFactory;
 
 final class BillingInfoMapperTest extends TestCase
 {
-    private const ORGANISATION_ID = 'a8ab2245-17b4-44e3-9920-fab075effbdc';
+    private const ORGANIZATION_ID = 'a8ab2245-17b4-44e3-9920-fab075effbdc';
 
     private array $inputs;
 
@@ -25,8 +25,8 @@ final class BillingInfoMapperTest extends TestCase
         parent::setUp();
 
         $this->inputs = [
-            'organisation' => [
-                'id' => self::ORGANISATION_ID,
+            'organization' => [
+                'id' => self::ORGANIZATION_ID,
                 'name' => 'publiq vzw',
                 'invoiceEmail' => 'info@publiqtest.be',
                 'vat' => 'BE 0475 250 609',
@@ -43,20 +43,20 @@ final class BillingInfoMapperTest extends TestCase
     private function getExpectedOrganization(): Organization
     {
         return new Organization(
-            Uuid::fromString(self::ORGANISATION_ID),
-            $this->inputs['organisation']['name'],
-            $this->inputs['organisation']['invoiceEmail'],
-            $this->inputs['organisation']['vat'],
+            Uuid::fromString(self::ORGANIZATION_ID),
+            $this->inputs['organization']['name'],
+            $this->inputs['organization']['invoiceEmail'],
+            $this->inputs['organization']['vat'],
             new Address(
-                $this->inputs['organisation']['address']['street'],
-                $this->inputs['organisation']['address']['zip'],
-                $this->inputs['organisation']['address']['city'],
-                $this->inputs['organisation']['address']['country'],
+                $this->inputs['organization']['address']['street'],
+                $this->inputs['organization']['address']['zip'],
+                $this->inputs['organization']['address']['city'],
+                $this->inputs['organization']['address']['country'],
             )
         );
     }
 
-    public function test_it_creates_an_organisation_with_updated_billing_info_from_request(): void
+    public function test_it_creates_an_organization_with_updated_billing_info_from_request(): void
     {
         $request = new UpdateBillingInfoRequest($this->inputs);
 
@@ -67,9 +67,9 @@ final class BillingInfoMapperTest extends TestCase
 
     public function test_it_creates_organization_from_create_billing_info_form_request(): void
     {
-        Uuid::setFactory(new UuidTestFactory(['uuid4' => [self::ORGANISATION_ID]]));
+        Uuid::setFactory(new UuidTestFactory(['uuid4' => [self::ORGANIZATION_ID]]));
 
-        unset($this->inputs['organisation']['id']);
+        unset($this->inputs['organization']['id']);
         $request = new CreateBillingInfoRequest($this->inputs);
 
         $actual = BillingInfoMapper::mapCreate($request);
