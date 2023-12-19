@@ -98,4 +98,6 @@ Route::group(['middleware' => 'auth'], static function () {
 
     Route::post('/integrations/{id}/coupon', [IntegrationController::class, 'activateWithCoupon']);
     Route::post('/integrations/{id}/organization', [IntegrationController::class, 'activateWithOrganization']);
+
+    Route::get('/integrations/{id}/widget', [IntegrationController::class, 'showWidget']);
 });
