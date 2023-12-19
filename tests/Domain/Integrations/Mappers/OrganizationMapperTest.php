@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Domain\Integrations\Mappers;
 
-use App\Domain\Integrations\FormRequests\CreateBillingInfoRequest;
-use App\Domain\Integrations\FormRequests\UpdateBillingInfoRequest;
-use App\Domain\Integrations\Mappers\BillingInfoMapper;
+use App\Domain\Integrations\FormRequests\CreateOrganizationRequest;
+use App\Domain\Integrations\FormRequests\UpdateOrganizationRequest;
+use App\Domain\Integrations\Mappers\OrganizationMapper;
 use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Organization;
 use Ramsey\Uuid\Uuid;
@@ -14,7 +14,7 @@ use Ramsey\Uuid\UuidFactory;
 use Tests\TestCase;
 use Tests\UuidTestFactory;
 
-final class BillingInfoMapperTest extends TestCase
+final class OrganizationMapperTest extends TestCase
 {
     private const ORGANIZATION_ID = 'a8ab2245-17b4-44e3-9920-fab075effbdc';
 
@@ -58,9 +58,9 @@ final class BillingInfoMapperTest extends TestCase
 
     public function test_it_creates_an_organization_with_updated_billing_info_from_request(): void
     {
-        $request = new UpdateBillingInfoRequest($this->inputs);
+        $request = new UpdateOrganizationRequest($this->inputs);
 
-        $actual = BillingInfoMapper::mapUpdate($request);
+        $actual = OrganizationMapper::mapUpdate($request);
 
         $this->assertEquals($this->getExpectedOrganization(), $actual);
     }
@@ -70,9 +70,9 @@ final class BillingInfoMapperTest extends TestCase
         Uuid::setFactory(new UuidTestFactory(['uuid4' => [self::ORGANIZATION_ID]]));
 
         unset($this->inputs['organization']['id']);
-        $request = new CreateBillingInfoRequest($this->inputs);
+        $request = new CreateOrganizationRequest($this->inputs);
 
-        $actual = BillingInfoMapper::mapCreate($request);
+        $actual = OrganizationMapper::mapCreate($request);
 
         $this->assertEquals($this->getExpectedOrganization(), $actual);
 
