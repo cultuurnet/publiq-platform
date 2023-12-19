@@ -7,6 +7,9 @@ namespace App\Domain\Integrations\Controllers;
 use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Domain\Auth\CurrentUser;
 use App\Domain\Contacts\Repositories\ContactRepository;
+use App\Domain\Coupons\Repositories\CouponRepository;
+use App\Domain\Integrations\FormRequests\ActivateWithCouponRequest;
+use App\Domain\Integrations\FormRequests\CreateBillingInfoRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationUrlRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationRequest;
@@ -16,7 +19,7 @@ use App\Domain\Integrations\FormRequests\UpdateIntegrationUrlsRequest;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationUrlMapper;
-use App\Domain\Integrations\Mappers\UpdateBillingInfoMapper;
+use App\Domain\Integrations\Mappers\BillingInfoMapper;
 use App\Domain\Integrations\Mappers\UpdateContactInfoMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationUrlsMapper;
@@ -46,6 +49,7 @@ final class IntegrationController extends Controller
         private readonly IntegrationUrlRepository $integrationUrlRepository,
         private readonly ContactRepository $contactRepository,
         private readonly OrganizationRepository $organizationRepository,
+        private readonly CouponRepository $couponRepository,
         private readonly Auth0ClientRepository $auth0ClientRepository,
         private readonly UiTiDv1ConsumerRepository $uitidV1ConsumerRepository,
         private readonly CurrentUser $currentUser
@@ -206,9 +210,42 @@ final class IntegrationController extends Controller
 
     public function updateBilling(string $id, UpdateBillingInfoRequest $request): RedirectResponse
     {
-        $organisation = UpdateBillingInfoMapper::map($request);
+        $organization = BillingInfoMapper::mapUpdate($request);
 
-        $this->organizationRepository->save($organisation);
+        $this->organizationRepository->save($organization);
+
+        return Redirect::route(
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
+            [
+                'id' => $id,
+            ]
+        );
+    }
+
+    public function activateWithCoupon(string $id, ActivateWithCouponRequest $request): RedirectResponse
+    {
+        $coupon = $this->couponRepository->getByCode($request->input('coupon'));
+        if ($coupon->isDistributed) {
+            return Redirect::back()->withErrors(['coupon' => 'Coupon is already used']);
+        }
+
+        $this->integrationRepository->activateWithCouponCode(Uuid::fromString($id), $request->input('coupon'));
+
+        return Redirect::route(
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
+            [
+                'id' => $id,
+            ]
+        );
+    }
+
+    public function activateWithOrganization(string $id, CreateBillingInfoRequest $request): RedirectResponse
+    {
+        $organization = BillingInfoMapper::mapCreate($request);
+
+        $this->organizationRepository->save($organization);
+
+        $this->integrationRepository->activateWithOrganization(Uuid::fromString($id), $organization->id);
 
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
