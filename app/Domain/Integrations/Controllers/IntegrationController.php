@@ -32,6 +32,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Inertia\Response;
 use Ramsey\Uuid\Uuid;
@@ -236,5 +237,11 @@ final class IntegrationController extends Controller
                 'subscription' => $subscription,
             ],
         ]);
+    }
+
+    public function showWidget(Request $request, string $id): RedirectResponse
+    {
+        $idToken = Session::get('id_token');
+        return redirect()->away(config('project_aanvraag.base_uri') . 'project/' . $id . '/widget/?idToken=' . $idToken);
     }
 }
