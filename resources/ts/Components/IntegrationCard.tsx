@@ -9,7 +9,7 @@ import { Link } from "./Link";
 import { StatusLight } from "./StatusLight";
 import { ButtonIconCopy } from "./ButtonIconCopy";
 import { Tooltip } from "./Tooltip";
-import { ButtonLinkSecondary } from "./ButtonLinkSecondary";
+import { ButtonSecondary } from "./ButtonSecondary";
 type Props = Integration & {
   onEdit: (id: string) => void;
 };
@@ -69,12 +69,15 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
             </Tooltip>
           </div>
           {type === "widgets" && (
-            <ButtonLinkSecondary
-              href={`/integrations/${id}/widget`}
-              target="_blank"
-            >
-              {t("integrations.open_widget")}
-            </ButtonLinkSecondary>
+            <ButtonSecondary>
+              <a
+                href={`/integrations/${id}/widget`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t("integrations.open_widget")}
+              </a>
+            </ButtonSecondary>
           )}
         </section>
         <section className="inline-flex gap-3 max-md:flex-col max-md:items-start md:items-start">
