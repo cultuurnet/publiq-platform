@@ -23,7 +23,10 @@ export const Hero = () => {
         >
           {t("home.hero.intro")}
         </Heading>
-        <ButtonLink href={translateRoute("/integrations/new")}>
+        <ButtonLink
+          href={translateRoute("/integrations/new")}
+          className={"rounded-none text-xl"}
+        >
           {t("home.hero.start_here")}
         </ButtonLink>
       </div>
