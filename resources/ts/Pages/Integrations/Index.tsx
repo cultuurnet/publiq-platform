@@ -120,7 +120,6 @@ const Index = ({ integrations, paginationInfo }: Props) => {
         <Input
           type="text"
           name="search"
-          placeholder={t("integrations.searching") as string}
           className="max-w-[30rem] max-lg:max-w-[20rem]"
           iconBack={faSearch}
           defaultValue={searchFromUrl ?? ""}
