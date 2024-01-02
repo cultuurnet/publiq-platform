@@ -46,7 +46,6 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
       iconButton={
         <ButtonIcon
           icon={faPencil}
-          size="lg"
           className="text-icon-gray"
           onClick={() => onEdit(id)}
         />
