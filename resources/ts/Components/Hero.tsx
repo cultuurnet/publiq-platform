@@ -10,7 +10,7 @@ export const Hero = () => {
 
   return (
     <section className="w-full flex flex-col items-center">
-      <div className="flex flex-col gap-7 items-center py-8 px-12">
+      <div className="flex flex-col gap-7 items-center py-0 px-6">
         <Heading
           level={1}
           className="text-center font-bold text-publiq-gray-dark"

@@ -46,7 +46,7 @@ export const IntegrationTypes = () => {
 
   return (
     <div>
-      <ul className="w-full flex gap-5 mt-[2rem] max-md:flex-col">
+      <ul className="w-full flex gap-5 max-md:flex-col">
         {translatedIntegrationTypes.map((integration) => (
           <IntegrationTypeCard key={integration.title} {...integration} />
         ))}
