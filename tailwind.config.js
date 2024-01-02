@@ -8,7 +8,7 @@ module.exports = {
         pulse: "pulse 0.4s",
       },
       dropShadow: {
-        'triangle': [
+        triangle: [
           "0 4px 1px rgb(0 0 0 / 0.07)",
           "0 2px 1px rgb(0 0 0 / 0.06)",
         ],
@@ -33,6 +33,7 @@ module.exports = {
         "publiq-blue-dark": "#0076a5",
         "publiq-blue-light": "#1ebeff",
         "publiq-gray-dark": "#3b3b3b",
+        "publiq-gray-medium-dark": "hsl(0,0%,64%)",
         "publiq-gray-medium": "#efefef",
         "publiq-gray-light": "#fcfcfc",
         "uitid-widget": "#F8F8F8",

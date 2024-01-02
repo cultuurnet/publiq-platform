@@ -107,8 +107,8 @@ export const Card = ({
             )}
 
             {!!badge && (
-              <span className="bg-white text-publiq-blue border border-publiq-blue text-xs font-medium  mr-2 px-2.5 py-0.5 rounded">
-                {badge}
+              <span className=" text-publiq-gray-medium-dark bg-publiq-gray-light uppercase border border-publiq-gray-medium-dark text-xs font-medium  mr-2 px-2.5 py-0.5 rounded">
+                {badge.replace("-", " ")}
               </span>
             )}
           </div>
