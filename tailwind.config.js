@@ -8,9 +8,10 @@ module.exports = {
         pulse: "pulse 0.4s",
       },
       dropShadow: {
+        card: "0 0 35px -10px rgba(0,0,0,.14)",
         triangle: [
-          "0 4px 1px rgb(0 0 0 / 0.07)",
-          "0 2px 1px rgb(0 0 0 / 0.06)",
+          "0 4px 1px rgba(0, 0, 0, 0.07)",
+          "0 2px 1px rgba(0, 0, 0, 0.06)",
         ],
       },
       keyframes: {

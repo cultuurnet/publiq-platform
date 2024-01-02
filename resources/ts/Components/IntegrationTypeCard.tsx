@@ -38,7 +38,7 @@ export const IntegrationTypeCard = ({
       title={title}
       description={description}
       className={classNames(
-        "md:max-w-sm md:hover:translate-y-[-2rem] md:overflow-visible md:transition-transform md:duration-500 hover:shadow-md group",
+        "drop-shadow-card md:max-w-sm md:hover:translate-y-[-2rem] md:overflow-visible md:transition-transform md:duration-500 group",
         afterStyles
       )}
       role="button"
