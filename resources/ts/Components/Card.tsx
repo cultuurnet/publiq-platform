@@ -64,10 +64,9 @@ export const Card = ({
             className={classNames(
               img && "h-full w-auto aspect-square max-h-[12rem] object-contain"
             )}
-          ></img>
+          />
         )}
       </div>
-
       <div
         className={classNames(
           "flex flex-col",
@@ -78,7 +77,7 @@ export const Card = ({
         <div
           className={classNames(
             "flex justify-between",
-            border && "border-b border-publiq-gray-300 max-sm:px-2 px-6 py-2"
+            border && "border-b border-publiq-gray-300 max-sm:px-2 px-7 py-2"
           )}
         >
           <div className="flex items-center gap-3">
