@@ -153,7 +153,6 @@ const Index = ({ integrations, paginationInfo }: Props) => {
       )}
 
       <Pagination links={paginationInfo.links} />
-
       <QuestionDialog
         isVisible={isDeleteDialogVisible}
         onClose={() => {
@@ -166,7 +165,7 @@ const Index = ({ integrations, paginationInfo }: Props) => {
           setIsDeleteDialogVisible(false);
           setToBeDeletedId("");
         }}
-      ></QuestionDialog>
+      />
     </Page>
   );
 };

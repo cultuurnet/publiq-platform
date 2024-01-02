@@ -51,7 +51,7 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
         />
       }
     >
-      <div className="flex flex-col gap-4 mx-10 my-6">
+      <div className="flex flex-col gap-4 mx-6 my-4">
         <section className="flex max-md:flex-col max-md:items-start gap-3 md:items-center">
           <Heading level={5} className="font-semibold min-w-[10rem]">
             {t("integrations.test")}
