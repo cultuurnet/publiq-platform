@@ -108,7 +108,7 @@ const Index = ({ integrations, paginationInfo }: Props) => {
 
   return (
     <Page>
-      <div className="flex max-md:flex-col w-full md:justify-between max-md:gap-3 items-center">
+      <div className="flex max-md:flex-col w-full md:justify-between max-md:gap-3 items-stretch">
         <div className="inline-flex gap-3">
           <Heading level={2}>{t("integrations.title")}</Heading>
           <IconLink
