@@ -2,7 +2,11 @@ import React from "react";
 import { Card } from "./Card";
 import { IntegrationType } from "./IntegrationTypes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheck,
+  faChevronRight,
+  faCheckSquare,
+} from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
 import { classNames } from "../utils/classNames";
 import { router } from "@inertiajs/core";
@@ -45,7 +49,11 @@ export const IntegrationTypeCard = ({
         <ul className="flex flex-col gap-3">
           {features.map((feature) => (
             <li key={feature} className="flex items-center gap-2">
-              <FontAwesomeIcon icon={faCheck} className="text-green-500" />
+              <FontAwesomeIcon
+                icon={faCheckSquare}
+                className="text-green-500"
+                size={"lg"}
+              />
               {feature}
             </li>
           ))}

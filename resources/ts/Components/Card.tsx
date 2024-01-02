@@ -104,7 +104,6 @@ export const Card = ({
                 {title}
               </Heading>
             )}
-
             {!!badge && (
               <span className=" text-publiq-gray-medium-dark bg-publiq-gray-light uppercase border border-publiq-gray-medium-dark text-xs font-medium  mr-2 px-2.5 py-0.5 rounded">
                 {badge.replace("-", " ")}
@@ -113,7 +112,6 @@ export const Card = ({
           </div>
           {iconButton && <div className="justify-self-end">{iconButton}</div>}
         </div>
-
         {description && (
           <p className="text-gray-700 text-base min-h-[5rem] break-words">
             {description}
