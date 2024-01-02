@@ -98,10 +98,10 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         }
     }
 
-
     public function test_it_can_update_an_integration(): void
     {
         $integrationId = Uuid::uuid4();
+        $secondIntegrationId = Uuid::uuid4();
         $subscriptionId = Uuid::uuid4();
 
         $initialIntegration = new Integration(
@@ -115,6 +115,19 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         );
 
         $this->integrationRepository->save($initialIntegration);
+
+        // @see https://jira.publiq.be/browse/PPF-246
+        $secondIntegration = new Integration(
+            $secondIntegrationId,
+            IntegrationType::SearchApi,
+            'Second Integration',
+            'Second Integration description',
+            $subscriptionId,
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
+        );
+
+        $this->integrationRepository->save($secondIntegration);
 
         $updatedIntegration = new Integration(
             $initialIntegration->id,
