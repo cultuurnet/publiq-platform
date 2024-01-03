@@ -20,6 +20,35 @@ const productTypeToPath = {
   widgets: "/widgets/aan-de-slag",
 };
 
+const OpenWidgetBuilderButton = ({ id, type }: any) => {
+  const { t } = useTranslation();
+  if (type !== "widgets") {
+    return null;
+  }
+
+  let url;
+  const widgetBuilderAppUrl = "";
+  if (ctrl.project.totalWidgets > 0) {
+    ctrl.actionButtonLinkLive = `${widgetBuilderAppUrl}/project/${id}`;
+    ctrl.actionButtonLinkTest = `${widgetBuilderAppUrl}/project/${id}`;
+  } else {
+    ctrl.actionButtonLinkLive = `${widgetBuilderAppUrl}/project/${id}/page/add`;
+    ctrl.actionButtonLinkTest = `${widgetBuilderAppUrl}/project/${id}/page/add`;
+  }
+
+  return (
+    <ButtonSecondary>
+      <a
+        href={`/integrations/${id}/widget`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {t("integrations.open_widget")}
+      </a>
+    </ButtonSecondary>
+  );
+};
+
 export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
   const { t } = useTranslation();
 
@@ -68,17 +97,7 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
               <ButtonIconCopy onClick={handleCopyToClipboard} />
             </Tooltip>
           </div>
-          {type === "widgets" && (
-            <ButtonSecondary>
-              <a
-                href={`/integrations/${id}/widget`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {t("integrations.open_widget")}
-              </a>
-            </ButtonSecondary>
-          )}
+          <OpenWidgetBuilderButton id={id} type={type} />
         </section>
         <section className="inline-flex gap-3 max-md:flex-col max-md:items-start md:items-start">
           <Heading className="font-semibold min-w-[10rem]" level={5}>
@@ -86,6 +105,7 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
           </Heading>
           <div className="flex align-center gap-1">
             <StatusLight status={status} id={id} />
+            <OpenWidgetBuilderButton id={id} type={type} />
           </div>
         </section>
         <section className="inline-flex gap-3 max-md:flex-col items-start">
