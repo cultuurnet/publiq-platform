@@ -29,7 +29,7 @@ final class EloquentContactRepository implements ContactRepository
     }
     public function delete(UuidInterface $id): void
     {
-        ContactModel::query()->where('id', $id->toString())->delete();
+        ContactModel::query()->where('id', $id->toString())->forceDelete();
     }
 
     public function getById(UuidInterface $id): Contact
