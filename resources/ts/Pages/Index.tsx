@@ -7,7 +7,7 @@ import HomePageLayout from "../layouts/HomePageLayout";
 const Index = () => {
   return (
     <>
-      <div className="w-full bg-gray-600 h-32"></div>
+      <div className="w-full bg-gray-600 h-44"></div>
       <Page>
         <Hero />
         <IntegrationTypes />
