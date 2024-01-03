@@ -39,13 +39,16 @@ export const Card = ({
   ...props
 }: Props) => {
   const translateRoute = useTranslateRoute();
+
   return (
     <div
       className={classNames(
-        "w-full flex flex-col overflow-hidden shadow-lg",
+        "w-full flex flex-col overflow-hidden drop-shadow-card",
         img && "px-0 py-0 gap-10 max-lg:gap-3 p-0",
-        active ? "bg-status-green-medium bg-opacity-10" : "bg-white",
-        border ? "border border-gray-300" : "px-6 py-6",
+        active
+          ? "bg-status-green-medium bg-opacity-10"
+          : "bg-publiq-gray-light",
+        border ? "" : "px-6 py-6",
         className
       )}
       {...props}
