@@ -17,7 +17,7 @@ export default function Layout({ children }: { children: ReactNode }) {
   }>().props;
 
   return (
-    <div className="flex flex-col flex-1 items-center text-publiq-gray-dark bg-publiq-gray-light">
+    <div className="flex flex-col flex-1 items-center text-publiq-gray-dark bg-publiq-gray-medium">
       <Head>
         <script
           type="module"
