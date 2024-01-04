@@ -3,9 +3,8 @@ import { Card } from "./Card";
 import { IntegrationType } from "./IntegrationTypes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faCheck,
-  faChevronRight,
   faCheckSquare,
+  faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
 import { classNames } from "../utils/classNames";
