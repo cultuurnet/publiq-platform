@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\ProjectAanvraag;
 
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
 use Illuminate\Support\Facades\Session;
 
-class ProjectAanvraagUrl
+final class ProjectAanvraagUrl
 {
     public static function getForIntegration(Integration $integration): string
     {
