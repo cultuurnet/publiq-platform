@@ -26,16 +26,6 @@ const OpenWidgetBuilderButton = ({ id, type }: any) => {
     return null;
   }
 
-  let url;
-  const widgetBuilderAppUrl = "";
-  if (ctrl.project.totalWidgets > 0) {
-    ctrl.actionButtonLinkLive = `${widgetBuilderAppUrl}/project/${id}`;
-    ctrl.actionButtonLinkTest = `${widgetBuilderAppUrl}/project/${id}`;
-  } else {
-    ctrl.actionButtonLinkLive = `${widgetBuilderAppUrl}/project/${id}/page/add`;
-    ctrl.actionButtonLinkTest = `${widgetBuilderAppUrl}/project/${id}/page/add`;
-  }
-
   return (
     <ButtonSecondary>
       <a
