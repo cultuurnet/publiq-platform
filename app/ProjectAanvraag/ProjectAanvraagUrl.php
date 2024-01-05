@@ -12,7 +12,7 @@ class ProjectAanvraagUrl
     {
         $idToken = Session::get('id_token');
         $stage = $integration->status === IntegrationStatus::Active ? 'live' : 'test';
-        $base = config('project_aanvraag.base_uri_' . $stage);
+        $base = config('project_aanvraag.base_uri.' . $stage);
 
         return $base . 'project/' . $integration->id . '/widget/?idToken=' . $idToken;
     }

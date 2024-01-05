@@ -25,7 +25,7 @@ final class ProjectAanvraagServiceProvider extends ServiceProvider
             return new ProjectAanvraagClient(
                 new Client(
                     [
-                        'base_uri' => config('project_aanvraag.base_uri'),
+                        'base_uri' => config('project_aanvraag.base_uri.live'),
                         'http_errors' => false,
                     ]
                 ),

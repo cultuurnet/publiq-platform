@@ -279,6 +279,6 @@ final class IntegrationController extends Controller
     public function showWidget(Request $request, string $id): RedirectResponse
     {
         $idToken = Session::get('id_token');
-        return redirect()->away(config('project_aanvraag.base_uri') . 'project/' . $id . '/widget/?idToken=' . $idToken);
+        return redirect()->away(config('project_aanvraag.base_uri.live') . 'project/' . $id . '/widget/?idToken=' . $idToken);
     }
 }
