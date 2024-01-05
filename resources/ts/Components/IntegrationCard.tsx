@@ -10,6 +10,7 @@ import { StatusLight } from "./StatusLight";
 import { ButtonIconCopy } from "./ButtonIconCopy";
 import { Tooltip } from "./Tooltip";
 import { ButtonSecondary } from "./ButtonSecondary";
+import { IntegrationStatus } from "../types/IntegrationStatus";
 type Props = Integration & {
   onEdit: (id: string) => void;
 };
@@ -87,7 +88,9 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
               <ButtonIconCopy onClick={handleCopyToClipboard} />
             </Tooltip>
           </div>
-          <OpenWidgetBuilderButton id={id} type={type} />
+          {status !== IntegrationStatus.Active && (
+            <OpenWidgetBuilderButton id={id} type={type} />
+          )}
         </section>
         <section className="inline-flex gap-3 max-md:flex-col max-md:items-start md:items-start">
           <Heading className="font-semibold min-w-[10rem]" level={5}>
@@ -95,7 +98,9 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
           </Heading>
           <div className="flex align-center gap-1">
             <StatusLight status={status} id={id} />
-            <OpenWidgetBuilderButton id={id} type={type} />
+            {status === IntegrationStatus.Active && (
+              <OpenWidgetBuilderButton id={id} type={type} />
+            )}
           </div>
         </section>
         <section className="inline-flex gap-3 max-md:flex-col items-start">
