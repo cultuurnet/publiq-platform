@@ -11,8 +11,10 @@ use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Actions\ActionResponse;
 use Laravel\Nova\Fields\ActionFields;
 
-final class OpenWidgetBeheer extends Action
+final class OpenWidgetManager extends Action
 {
+    public $name = 'Open Widget Beheer';
+
     public function handle(ActionFields $fields, Collection $integrations): ActionResponse|Action
     {
         /** @var IntegrationModel $integration */
