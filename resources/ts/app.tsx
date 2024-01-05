@@ -9,6 +9,7 @@ import * as Sentry from "@sentry/browser";
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
   environment: import.meta.env.VITE_APP_ENV,
+  enabled: import.meta.env.VITE_SENTRY_ENABLED === "true",
 });
 
 createInertiaApp({
