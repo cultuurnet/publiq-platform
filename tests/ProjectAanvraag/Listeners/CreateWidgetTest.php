@@ -33,7 +33,7 @@ final class CreateWidgetTest extends TestCase
 {
     use AssertRequest;
 
-    private ClientInterface&MockObject $client;
+    private ClientInterface & MockObject $client;
 
     private IntegrationRepository&MockObject $integrationRepository;
 
@@ -58,8 +58,8 @@ final class CreateWidgetTest extends TestCase
 
         $this->createWidget = new CreateWidget(
             new ProjectAanvraagClient(
-                $this->client,
-                $logger
+                $logger,
+                $this->client
             ),
             $this->integrationRepository,
             $this->contactRepository,
