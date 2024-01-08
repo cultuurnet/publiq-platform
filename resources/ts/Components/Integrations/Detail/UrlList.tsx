@@ -46,9 +46,6 @@ export const UrlList = ({
   const { t } = useTranslation();
 
   const [toBeDeletedId, setToBeDeletedId] = useState("");
-  // const [toBeDeletedExistingUrlFieldId, setToBeDeletedExistingUrlFieldId] =
-  useState("");
-
   const [toBeDeletedField, setToBeDeletedField] = useState("");
   const [toBeDeletedUrlId, setToBeDeletedUrlId] = useState("");
   const [isDialogVisible, setIsDialogVisible] = useState(false);
