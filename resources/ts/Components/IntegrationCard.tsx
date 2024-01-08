@@ -9,9 +9,9 @@ import { Link } from "./Link";
 import { StatusLight } from "./StatusLight";
 import { ButtonIconCopy } from "./ButtonIconCopy";
 import { Tooltip } from "./Tooltip";
-import { ButtonSecondary } from "./ButtonSecondary";
 import { IntegrationStatus } from "../types/IntegrationStatus";
 import { ButtonLinkSecondary } from "./ButtonLinkSecondary";
+
 type Props = Integration & {
   onEdit: (id: string) => void;
 };
