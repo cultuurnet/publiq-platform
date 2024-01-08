@@ -11,6 +11,7 @@ import { ButtonIconCopy } from "./ButtonIconCopy";
 import { Tooltip } from "./Tooltip";
 import { ButtonSecondary } from "./ButtonSecondary";
 import { IntegrationStatus } from "../types/IntegrationStatus";
+import { ButtonLinkSecondary } from "./ButtonLinkSecondary";
 type Props = Integration & {
   onEdit: (id: string) => void;
 };
@@ -28,15 +29,9 @@ const OpenWidgetBuilderButton = ({ id, type }: Pick<Props, "id" | "type">) => {
   }
 
   return (
-    <ButtonSecondary>
-      <a
-        href={`/integrations/${id}/widget`}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {t("integrations.open_widget")}
-      </a>
-    </ButtonSecondary>
+    <ButtonLinkSecondary href={`/integrations/${id}/widget`} target={"_blank"}>
+      {t("integrations.open_widget")}
+    </ButtonLinkSecondary>
   );
 };
 
