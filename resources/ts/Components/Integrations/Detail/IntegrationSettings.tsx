@@ -73,11 +73,6 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
       preserveState: true,
     });
     reset(
-      "integrationName",
-      "description",
-      "callbackUrls",
-      "loginUrls",
-      "logoutUrls",
       "newIntegrationUrls"
     );
   };
