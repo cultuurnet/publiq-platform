@@ -33,7 +33,7 @@ final class CreateWidgetTest extends TestCase
 {
     use AssertRequest;
 
-    private ClientInterface & MockObject $client;
+    private ClientInterface&MockObject $client;
 
     private IntegrationRepository&MockObject $integrationRepository;
 
