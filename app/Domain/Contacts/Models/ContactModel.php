@@ -43,7 +43,7 @@ final class ContactModel extends UuidModel
     protected static function booted(): void
     {
         self::creating(
-            static fn (ContactModel $contactModel) => ContactModel::withTrashed()->where('email', $contactModel->email)->where('integration_id', $contactModel->integration_id)->first()?->forceDelete()
+            static fn (ContactModel $contactModel) => ContactModel::onlyTrashed()->where('email', $contactModel->email)->where('integration_id', $contactModel->integration_id)->first()?->forceDelete()
         );
         self::created(
             static fn (ContactModel $contactModel) => ContactCreated::dispatch($contactModel->toDomain()->id)
