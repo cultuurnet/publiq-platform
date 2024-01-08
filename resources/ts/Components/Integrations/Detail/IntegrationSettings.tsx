@@ -134,8 +134,8 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
       />
       <UrlList
         type={IntegrationUrlType.Login}
-        urls={data.loginUrls}
-        newUrls={data.newIntegrationUrls}
+        urls={loginUrls}
+        newIntegrationUrls={data.newIntegrationUrls}
         onDeleteExistingUrl={(urlId) => handleDeleteExistingUrl(urlId)}
         onChangeNewUrl={handleChangeNewUrl}
         onDeleteNewUrl={handleDeleteNewUrl}
@@ -146,8 +146,8 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
       />
       <UrlList
         type={IntegrationUrlType.Callback}
-        urls={data.callbackUrls}
-        newUrls={data.newIntegrationUrls}
+        urls={callbackUrls}
+        newIntegrationUrls={data.newIntegrationUrls}
         onDeleteExistingUrl={(urlId) => handleDeleteExistingUrl(urlId)}
         onChangeNewUrl={handleChangeNewUrl}
         onDeleteNewUrl={handleDeleteNewUrl}
@@ -160,8 +160,8 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
       />
       <UrlList
         type={IntegrationUrlType.Logout}
-        urls={data.logoutUrls}
-        newUrls={data.newIntegrationUrls}
+        urls={logoutUrls}
+        newIntegrationUrls={data.newIntegrationUrls}
         onChangeData={(data) => setData("logoutUrls", data)}
         onDeleteExistingUrl={(urlId) => handleDeleteExistingUrl(urlId)}
         onChangeNewUrl={handleChangeNewUrl}

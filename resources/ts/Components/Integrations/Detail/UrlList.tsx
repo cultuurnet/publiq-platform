@@ -1,4 +1,4 @@
-import React, { ComponentProps, useMemo, useState } from "react";
+import React, { ComponentProps, useEffect, useMemo, useState } from "react";
 import { Heading } from "../../Heading";
 import { useTranslation } from "react-i18next";
 import { FormElement } from "../../FormElement";
@@ -22,7 +22,7 @@ export type NewIntegrationUrl = IntegrationUrl;
 type UrlListProps = {
   type: IntegrationUrlType;
   urls: ChangedIntegrationUrl[];
-  newUrls: NewIntegrationUrl[];
+  newIntegrationUrls: NewIntegrationUrl[];
   errors: Record<string, string | undefined>;
   onChangeData: (value: ChangedIntegrationUrl[]) => void;
   onChangeNewUrl: (value: NewIntegrationUrl & { id: string }) => void;
@@ -34,6 +34,7 @@ type UrlListProps = {
 export const UrlList = ({
   type,
   urls,
+  newIntegrationUrls,
   errors,
   onChangeData,
   onChangeNewUrl,
@@ -45,12 +46,11 @@ export const UrlList = ({
   const { t } = useTranslation();
 
   const [toBeDeletedId, setToBeDeletedId] = useState("");
-  const [toBeDeletedExistingUrlFieldId, setToBeDeletedExistingUrlFieldId] =
-    useState("");
+  // const [toBeDeletedExistingUrlFieldId, setToBeDeletedExistingUrlFieldId] =
+  useState("");
 
   const [toBeDeletedField, setToBeDeletedField] = useState("");
   const [toBeDeletedUrlId, setToBeDeletedUrlId] = useState("");
-
   const [isDialogVisible, setIsDialogVisible] = useState(false);
 
   const randomNumber = random(0, 1000);
@@ -81,41 +81,31 @@ export const UrlList = ({
     }
   };
 
-  // as we preserve the state
-  const handleDeleteExistingUrlVisually = (
-    fieldId: string,
-    classId: string
-  ) => {
-    const elementExists = document.querySelectorAll(`.${classId}`).length <= 1;
+  const modifiedUrls = useMemo(
+    () => [
+      {
+        urls: testUrls,
+        env: Environment.Test,
+        addNewUrlField(newUrlFieldId: string) {
+          setNewUrlFields([...newUrlFields, newUrlFieldId]);
+        },
+      },
+      {
+        urls: prodUrls,
+        env: Environment.Prod,
+        addNewUrlField(newUrlFieldId: string) {
+          setNewUrlFields([...newUrlFields, newUrlFieldId]);
+        },
+      },
+    ],
+    [testUrls, prodUrls, newUrlFields]
+  );
 
-    if (elementExists) {
-      handleClearField(classId);
-    } else {
-      const element = document.getElementById(
-        fieldId
-      ) as HTMLInputElement | null;
-      if (element) {
-        element.remove();
-      }
+  useEffect(() => {
+    if (newIntegrationUrls.length === 0) {
+      setNewUrlFields([]);
     }
-  };
-
-  const modifiedUrls = [
-    {
-      urls: testUrls,
-      env: Environment.Test,
-      addNewUrlField(newUrlFieldId: string) {
-        setNewUrlFields([...newUrlFields, newUrlFieldId]);
-      },
-    },
-    {
-      urls: prodUrls,
-      env: Environment.Prod,
-      addNewUrlField(newUrlFieldId: string) {
-        setNewUrlFields([...newUrlFields, newUrlFieldId]);
-      },
-    },
-  ];
+  }, [newIntegrationUrls]);
 
   return (
     <div
@@ -184,7 +174,6 @@ export const UrlList = ({
                         icon={faTrash}
                         onClick={() => {
                           setToBeDeletedId(url.id);
-                          setToBeDeletedExistingUrlFieldId(type + option.env);
                           setIsDialogVisible(true);
                         }}
                         className="text-icon-gray"
@@ -335,10 +324,6 @@ export const UrlList = ({
           if (toBeDeletedId) {
             onDeleteExistingUrl(toBeDeletedId);
             setToBeDeletedId("");
-            handleDeleteExistingUrlVisually(
-              toBeDeletedId,
-              toBeDeletedExistingUrlFieldId
-            );
           }
           setIsDialogVisible(false);
           handleDeleteNewUrl(toBeDeletedField, toBeDeletedUrlId);
