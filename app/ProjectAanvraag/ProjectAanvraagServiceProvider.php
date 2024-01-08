@@ -12,7 +12,6 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\ProjectAanvraag\Listeners\CreateWidget;
 use App\UiTiDv1\Events\ConsumerCreated;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
-use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Psr\Log\LoggerInterface;
@@ -23,12 +22,6 @@ final class ProjectAanvraagServiceProvider extends ServiceProvider
     {
         $this->app->singleton(ProjectAanvraagClient::class, function () {
             return new ProjectAanvraagClient(
-                new Client(
-                    [
-                        'base_uri' => config('project_aanvraag.base_uri.live'),
-                        'http_errors' => false,
-                    ]
-                ),
                 $this->app->get(LoggerInterface::class)
             );
         });

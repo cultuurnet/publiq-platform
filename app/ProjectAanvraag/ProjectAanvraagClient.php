@@ -6,16 +6,16 @@ namespace App\ProjectAanvraag;
 
 use App\Json;
 use App\ProjectAanvraag\Requests\CreateWidgetRequest;
+use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
-use Psr\Http\Client\ClientInterface;
 use Psr\Log\LoggerInterface;
 
 final readonly class ProjectAanvraagClient
 {
     public function __construct(
-        private ClientInterface $httpClient,
         private LoggerInterface $logger
-    ) {
+    )
+    {
     }
 
     public function createWidget(CreateWidgetRequest $createWidgetRequest): void
@@ -34,7 +34,12 @@ final readonly class ProjectAanvraagClient
             ])
         );
 
-        $response = $this->httpClient->sendRequest($request);
+        $httpClient = new Client([
+            'base_uri' => ProjectAanvraagUrl::getStatusBaseUri($createWidgetRequest->status),
+            'http_errors' => false,
+        ]);
+
+        $response = $httpClient->sendRequest($request);
 
         if ($response->getStatusCode() !== 200) {
             $this->logger->error(

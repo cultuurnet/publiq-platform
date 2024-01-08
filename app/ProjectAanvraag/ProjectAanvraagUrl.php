@@ -13,9 +13,14 @@ final class ProjectAanvraagUrl
     public static function getForIntegration(Integration $integration): string
     {
         $idToken = Session::get('id_token');
-        $stage = $integration->status === IntegrationStatus::Active ? 'live' : 'test';
-        $base = config('project_aanvraag.base_uri.' . $stage);
 
-        return $base . 'project/' . $integration->id . '/widget/?idToken=' . $idToken;
+        return self::getStatusBaseUri($integration->status) . 'project/' . $integration->id . '/widget/?idToken=' . $idToken;
+    }
+
+    public static function getStatusBaseUri(IntegrationStatus $integrationStatus): mixed
+    {
+        $stage = $integrationStatus === IntegrationStatus::Active ? 'live' : 'test';
+
+        return config('project_aanvraag.base_uri.' . $stage);
     }
 }
