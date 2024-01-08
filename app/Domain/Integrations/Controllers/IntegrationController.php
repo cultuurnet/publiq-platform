@@ -7,16 +7,19 @@ namespace App\Domain\Integrations\Controllers;
 use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Domain\Auth\CurrentUser;
 use App\Domain\Contacts\Repositories\ContactRepository;
+use App\Domain\Coupons\Repositories\CouponRepository;
+use App\Domain\Integrations\FormRequests\ActivateWithCouponRequest;
+use App\Domain\Integrations\FormRequests\CreateOrganizationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationUrlRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationRequest;
-use App\Domain\Integrations\FormRequests\UpdateBillingInfoRequest;
+use App\Domain\Integrations\FormRequests\UpdateOrganizationRequest;
 use App\Domain\Integrations\FormRequests\UpdateContactInfoRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationUrlsRequest;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationUrlMapper;
-use App\Domain\Integrations\Mappers\UpdateBillingInfoMapper;
+use App\Domain\Integrations\Mappers\OrganizationMapper;
 use App\Domain\Integrations\Mappers\UpdateContactInfoMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationUrlsMapper;
@@ -32,6 +35,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Inertia\Response;
 use Ramsey\Uuid\Uuid;
@@ -45,6 +49,7 @@ final class IntegrationController extends Controller
         private readonly IntegrationUrlRepository $integrationUrlRepository,
         private readonly ContactRepository $contactRepository,
         private readonly OrganizationRepository $organizationRepository,
+        private readonly CouponRepository $couponRepository,
         private readonly Auth0ClientRepository $auth0ClientRepository,
         private readonly UiTiDv1ConsumerRepository $uitidV1ConsumerRepository,
         private readonly CurrentUser $currentUser
@@ -216,11 +221,44 @@ final class IntegrationController extends Controller
         return Redirect::back();
     }
 
-    public function updateBilling(string $id, UpdateBillingInfoRequest $request): RedirectResponse
+    public function updateBilling(string $id, UpdateOrganizationRequest $request): RedirectResponse
     {
-        $organisation = UpdateBillingInfoMapper::map($request);
+        $organization = OrganizationMapper::mapUpdate($request);
 
-        $this->organizationRepository->save($organisation);
+        $this->organizationRepository->save($organization);
+
+        return Redirect::route(
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
+            [
+                'id' => $id,
+            ]
+        );
+    }
+
+    public function activateWithCoupon(string $id, ActivateWithCouponRequest $request): RedirectResponse
+    {
+        $coupon = $this->couponRepository->getByCode($request->input('coupon'));
+        if ($coupon->isDistributed) {
+            return Redirect::back()->withErrors(['coupon' => 'Coupon is already used']);
+        }
+
+        $this->integrationRepository->activateWithCouponCode(Uuid::fromString($id), $request->input('coupon'));
+
+        return Redirect::route(
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
+            [
+                'id' => $id,
+            ]
+        );
+    }
+
+    public function activateWithOrganization(string $id, CreateOrganizationRequest $request): RedirectResponse
+    {
+        $organization = OrganizationMapper::mapCreate($request);
+
+        $this->organizationRepository->save($organization);
+
+        $this->integrationRepository->activateWithOrganization(Uuid::fromString($id), $organization->id);
 
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
@@ -245,9 +283,15 @@ final class IntegrationController extends Controller
                 ...$integration->toArray(),
                 'contacts' => $contacts->toArray(),
                 'urls' => $integration->urls(),
-                'organisation' => $integration->organization(),
+                'organization' => $integration->organization(),
                 'subscription' => $subscription,
             ],
         ]);
+    }
+
+    public function showWidget(Request $request, string $id): RedirectResponse
+    {
+        $idToken = Session::get('id_token');
+        return redirect()->away(config('project_aanvraag.base_uri') . 'project/' . $id . '/widget/?idToken=' . $idToken);
     }
 }

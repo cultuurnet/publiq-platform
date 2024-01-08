@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Domain\Coupons\Repositories;
 
 use App\Domain\Coupons\Coupon;
+use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Coupons\Repositories\EloquentCouponRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -103,6 +104,27 @@ final class EloquentCouponRepositoryTest extends TestCase
         $this->couponRepository->save($unrelatedCoupon);
 
         $foundCoupon = $this->couponRepository->getByIntegrationId($integrationId);
+        $this->assertEquals($coupon, $foundCoupon);
+    }
+
+    public function test_it_can_get_a_coupon_by_code(): void
+    {
+        $coupon = new Coupon(
+            Uuid::uuid4(),
+            false,
+            null,
+            '12345678901'
+        );
+
+        CouponModel::query()->insert([
+            'id' => $coupon->id,
+            'is_distributed' => $coupon->isDistributed,
+            'integration_id' => $coupon->integrationId,
+            'code' => $coupon->code,
+        ]);
+
+        $foundCoupon = $this->couponRepository->getByCode($coupon->code);
+
         $this->assertEquals($coupon, $foundCoupon);
     }
 }

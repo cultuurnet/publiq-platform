@@ -172,9 +172,9 @@ return [
     'attributes' => [
         'integrationType' => 'integration type',
         'subscriptionId' => 'subscription',
-        'firstNameOrganisation' => 'first name',
-        'lastNameOrganisation' => 'last name',
-        'emailOrganisation' => 'email',
+        'firstNameOrganization' => 'first name',
+        'lastNameOrganization' => 'last name',
+        'emailOrganization' => 'email',
         'firstNamePartner' => 'first name',
         'lastNamePartner' => 'last name',
         'emailPartner' => 'email',

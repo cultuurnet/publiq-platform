@@ -61,8 +61,8 @@ final class EloquentOrganizationRepositoryTest extends TestCase
         $organization = new Organization(
             Uuid::uuid4(),
             'Test Organization',
-            'BE 0475 250 609',
             'facturatie@publiq.be',
+            'BE 0475 250 609',
             new Address(
                 'Henegouwenkaai 41-43',
                 '1080',

@@ -47,10 +47,7 @@ final class CreateConsumersTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
-    public function it_creates_a_new_consumer_in_every_configured_environment(): void
+    public function test_it_creates_a_new_consumer_in_every_configured_environment(): void
     {
         $integrationId = Uuid::uuid4();
         $integration = new Integration(

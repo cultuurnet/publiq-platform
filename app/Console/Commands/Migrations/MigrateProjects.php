@@ -11,9 +11,12 @@ use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
+use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Domain\Subscriptions\SubscriptionPlan;
+use App\Domain\Subscriptions\Models\SubscriptionModel;
+use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
+use App\Domain\Subscriptions\Subscription;
 use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Repositories\InsightlyMappingRepository;
@@ -29,6 +32,7 @@ use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -46,11 +50,14 @@ final class MigrateProjects extends Command
     private ClientInterface $oauthClientTest;
     private ClientInterface $oauthClientProduction;
 
+    private Collection $subscriptions;
+
     public function __construct(
         private readonly IntegrationRepository $integrationRepository,
         private readonly ContactRepository $contactRepository,
         private readonly InsightlyMappingRepository $insightlyMappingRepository,
         private readonly UiTiDv1ConsumerRepository $uiTiDv1ConsumerRepository,
+        private readonly SubscriptionRepository $subscriptionRepository,
         private readonly InsightlyClient $insightlyClient
     ) {
         parent::__construct();
@@ -74,8 +81,10 @@ final class MigrateProjects extends Command
 
         CauserResolver::setCauser(UserModel::createSystemUser());
 
-        $rows = $this->readCsvFile('database/project-aanvraag/projects.csv');
-        $migrationProjects = array_map(fn (array $row) => new MigrationProject($row), $rows);
+        $this->subscriptions = $this->subscriptionRepository->all();
+
+        $rows = $this->readCsvFile('database/project-aanvraag/projects_with_subscriptions.csv');
+        $migrationProjects = array_map(fn (array $row) => new MigrationProject($row), array_filter($rows));
 
         $projectsCount = count($migrationProjects);
         if ($projectsCount <= 0) {
@@ -128,7 +137,7 @@ final class MigrateProjects extends Command
             $migrationProject->type(),
             $migrationProject->name(),
             $migrationProject->description() !== null ? $migrationProject->description() : '',
-            Uuid::fromString(SubscriptionPlan::BASIC_SEARCH_API_PLAN->value),
+            $this->getSubscription($migrationProject->type(), $migrationProject->subscriptionCategory())->id,
             $migrationProject->status(),
             IntegrationPartnerStatus::THIRD_PARTY,
         );
@@ -137,6 +146,15 @@ final class MigrateProjects extends Command
         IntegrationModel::query()->where('id', '=', $integrationId)->update([
             'migrated_at' => Carbon::now(),
         ]);
+    }
+
+    private function getSubscription(IntegrationType $integrationType, string $category): Subscription
+    {
+        /** @var SubscriptionModel $subscriptionModel */
+        $subscriptionModel = $this->subscriptions->where('integration_type', $integrationType->value)
+            ->where('category', $category)
+            ->first();
+        return $subscriptionModel->toDomain();
     }
 
     private function migrateCoupon(UuidInterface $integrationId, string $couponCode): void

@@ -93,4 +93,9 @@ Route::group(['middleware' => 'auth'], static function () {
     Route::delete('/integrations/{id}/contacts/{contactId}', [IntegrationController::class, 'deleteContact']);
 
     Route::patch('/integrations/{id}/billing', [IntegrationController::class, 'updateBilling']);
+
+    Route::post('/integrations/{id}/coupon', [IntegrationController::class, 'activateWithCoupon']);
+    Route::post('/integrations/{id}/organization', [IntegrationController::class, 'activateWithOrganization']);
+
+    Route::get('/integrations/{id}/widget', [IntegrationController::class, 'showWidget']);
 });
