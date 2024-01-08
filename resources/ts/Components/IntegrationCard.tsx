@@ -21,7 +21,7 @@ const productTypeToPath = {
   widgets: "/widgets/aan-de-slag",
 };
 
-const OpenWidgetBuilderButton = ({ id, type }: Props) => {
+const OpenWidgetBuilderButton = ({ id, type }: Pick<Props, "id" | "type">) => {
   const { t } = useTranslation();
   if (type !== "widgets") {
     return null;
