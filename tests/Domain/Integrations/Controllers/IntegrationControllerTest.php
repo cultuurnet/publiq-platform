@@ -85,7 +85,7 @@ final class IntegrationControllerTest extends TestCase
         $integration = $this->givenThereIsAnIntegration();
         $this->givenTheActingUserIsAContactOnIntegration($integration);
 
-        $response = $this->delete('/integrations/' . $integration->id->toString());
+        $response = $this->delete("/integrations/{$integration->id}");
 
         $response->assertRedirect('/nl/integraties/');
 
@@ -100,7 +100,7 @@ final class IntegrationControllerTest extends TestCase
 
         $integration = $this->givenThereIsAnIntegration();
 
-        $response = $this->delete('/integrations/' . $integration->id->toString());
+        $response = $this->delete("/integrations/{$integration->id}");
 
         $response->assertForbidden();
     }
@@ -114,13 +114,13 @@ final class IntegrationControllerTest extends TestCase
         $coupon = $this->givenThereIsACoupon();
 
         $response = $this->post(
-            '/integrations/' . $integration->id . '/coupon',
+            "/integrations/{$integration->id}/coupon",
             [
                 'coupon' => $coupon->code,
             ]
         );
 
-        $response->assertRedirect('/nl/integraties/' . $integration->id->toString());
+        $response->assertRedirect("/nl/integraties/{$integration->id}");
 
         $this->assertDatabaseHas('integrations', [
             'id' => $integration->id->toString(),
@@ -141,7 +141,7 @@ final class IntegrationControllerTest extends TestCase
         $coupon = $this->givenThereIsACoupon();
 
         $response = $this->post(
-            '/integrations/' . $integration->id . '/coupon',
+            "/integrations/{$integration->id}/coupon",
             [
                 'coupon' => $coupon->code,
             ]
@@ -159,7 +159,7 @@ final class IntegrationControllerTest extends TestCase
         $this->givenTheActingUserIsAContactOnIntegration($integration);
 
         $response = $this->post(
-            '/integrations/' . $integration->id . '/organization',
+            "/integrations/{$integration->id}/organization",
             [
                 'organization' => [
                     'id' => $organization->id->toString(),
@@ -176,7 +176,7 @@ final class IntegrationControllerTest extends TestCase
             ]
         );
 
-        $response->assertRedirect('/nl/integraties/' . $integration->id->toString());
+        $response->assertRedirect("/nl/integraties/{$integration->id}");
 
         $this->assertDatabaseHas('organizations', [
             'id' => $organization->id,
@@ -197,10 +197,10 @@ final class IntegrationControllerTest extends TestCase
         $integration = $this->givenThereIsAnIntegration();
 
         $response = $this->post(
-            '/integrations/' . $integration->id . '/organization',
+            "/integrations/{$integration->id}/organization",
             [
                 'organization' => [
-                    'id' => $organization->id->toString(),
+                    'id' => $organization->id,
                     'name' => $organization->name,
                     'vat' => $organization->vat,
                     'invoiceEmail' => $organization->invoiceEmail,
@@ -224,12 +224,12 @@ final class IntegrationControllerTest extends TestCase
         $integration = $this->givenThereIsAnIntegration();
         $this->givenTheActingUserIsAContactOnIntegration($integration);
 
-        $response = $this->patch('/integrations/' . $integration->id->toString(), [
+        $response = $this->patch("/integrations/{$integration->id}", [
             'integrationName' => 'updated name',
             'description' => 'updated description',
         ]);
 
-        $response->assertRedirect('/nl/integraties/' . $integration->id->toString());
+        $response->assertRedirect("/nl/integraties/{$integration->id}");
 
         $this->assertDatabaseHas('integrations', [
             'id' => $integration->id->toString(),
@@ -244,7 +244,7 @@ final class IntegrationControllerTest extends TestCase
 
         $integration = $this->givenThereIsAnIntegration();
 
-        $response = $this->patch('/integrations/' . $integration->id->toString(), [
+        $response = $this->patch("/integrations/{$integration->id}", [
             'integrationName' => 'updated name',
             'description' => 'updated description',
         ]);
@@ -259,13 +259,13 @@ final class IntegrationControllerTest extends TestCase
         $integration = $this->givenThereIsAnIntegration();
         $this->givenTheActingUserIsAContactOnIntegration($integration);
 
-        $response = $this->post('/integrations/' . $integration->id->toString() . '/urls', [
+        $response = $this->post("/integrations/{$integration->id}/urls", [
             'environment' => Environment::Testing->value,
             'type' => IntegrationUrlType::Callback->value,
             'url' => 'https://localhost:3000',
         ]);
 
-        $response->assertRedirect('/nl/integraties/' . $integration->id->toString());
+        $response->assertRedirect("/nl/integraties/{$integration->id}");
 
         $this->assertDatabaseHas('integrations_urls', [
             'environment' => Environment::Testing->value,
@@ -280,7 +280,7 @@ final class IntegrationControllerTest extends TestCase
 
         $integration = $this->givenThereIsAnIntegration();
 
-        $response = $this->post('/integrations/' . $integration->id->toString() . '/urls', [
+        $response = $this->post("/integrations/{$integration->id}/urls", [
             'environment' => Environment::Testing->value,
             'type' => IntegrationUrlType::Callback->value,
             'url' => 'https://localhost:3000',
