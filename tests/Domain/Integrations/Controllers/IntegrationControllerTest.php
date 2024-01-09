@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Tests\Domain\Integrations\Controllers;
 
 use App\Domain\Auth\Models\UserModel;
+use App\Domain\Contacts\Contact;
+use App\Domain\Contacts\ContactType;
+use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Coupon;
 use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Integration;
@@ -16,6 +19,8 @@ use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\Organizations\Organization;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\UnauthorizedException;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
@@ -25,9 +30,11 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_activate_an_integration_with_a_coupon(): void
     {
-        $this->actingAs(UserModel::createSystemUser(), 'web');
+        $user = UserModel::createSystemUser();
+        $this->actingAs($user, 'web');
 
         $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
         $coupon = $this->givenThereIsACoupon();
 
         $response = $this->post(
@@ -52,10 +59,12 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_active_an_integration_with_an_organization(): void
     {
-        $this->actingAs(UserModel::createSystemUser(), 'web');
+        $user = UserModel::createSystemUser();
+        $this->actingAs($user, 'web');
 
         $organization = $this->givenThereIsAnOrganization();
         $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
 
         $response = $this->post(
             '/integrations/' . $integration->id . '/organization',
@@ -111,6 +120,35 @@ final class IntegrationControllerTest extends TestCase
         ]);
 
         return $integration;
+    }
+
+    private function givenTheActingUserIsAContactOnIntegration(Integration $integration): Contact
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            throw new UnauthorizedException();
+        }
+
+        $contact = new Contact(
+            Uuid::uuid4(),
+            $integration->id,
+            $user->email,
+            ContactType::Contributor,
+            $user->first_name,
+            $user->last_name,
+        );
+
+        ContactModel::query()->insert([
+            'id' => $contact->id,
+            'integration_id' => $contact->integrationId,
+            'email' => $contact->email,
+            'type' => $contact->type,
+            'first_name' => $contact->firstName,
+            'last_name' => $contact->lastName,
+        ]);
+
+        return $contact;
     }
 
     private function givenThereIsACoupon(): Coupon
