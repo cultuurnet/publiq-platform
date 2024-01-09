@@ -10,10 +10,12 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Coupon;
 use App\Domain\Coupons\Models\CouponModel;
+use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\IntegrationUrlType;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Models\OrganizationModel;
@@ -271,6 +273,22 @@ final class IntegrationControllerTest extends TestCase
             'url' => 'https://localhost:3000',
         ]);
     }
+
+    public function test_it_cant_store_an_integration_url_if_unauthorized(): void
+    {
+        $this->actingAs(UserModel::createSystemUser(), 'web');
+
+        $integration = $this->givenThereIsAnIntegration();
+
+        $response = $this->post('/integrations/' . $integration->id->toString() . '/urls', [
+            'environment' => Environment::Testing->value,
+            'type' => IntegrationUrlType::Callback->value,
+            'url' => 'https://localhost:3000',
+        ]);
+
+        $response->assertForbidden();
+    }
+
     private function givenThereIsAnIntegration(): Integration
     {
         $integration = new Integration(
