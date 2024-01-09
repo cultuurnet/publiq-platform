@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { ButtonPrimary } from "../../ButtonPrimary";
 import { useForm } from "@inertiajs/react";
@@ -58,6 +58,7 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
     transform,
     delete: destroy,
     errors,
+    wasSuccessful,
   } = useForm(initialFormValues);
 
   const handleDeleteExistingUrl = (urlId: IntegrationUrl["id"]) => {
@@ -72,8 +73,13 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
       preserveScroll: true,
       preserveState: true,
     });
-    reset("newIntegrationUrls");
   };
+
+  useEffect(() => {
+    if (wasSuccessful) {
+      reset("newIntegrationUrls");
+    }
+  });
 
   const handleChangeNewUrl = (newUrl: NewIntegrationUrl & { id: string }) => {
     let found = false;

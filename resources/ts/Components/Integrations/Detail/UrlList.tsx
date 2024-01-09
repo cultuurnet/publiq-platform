@@ -125,6 +125,7 @@ export const UrlList = ({
                   key={url.id}
                   elementId={url.id}
                   className={`${type + option.env}`}
+                  error={errors[`${type}Urls.${`${url.id}`}.url`]}
                   label={
                     index === 0
                       ? `${t(

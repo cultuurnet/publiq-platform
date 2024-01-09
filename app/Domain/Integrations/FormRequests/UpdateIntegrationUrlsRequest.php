@@ -37,15 +37,19 @@ final class UpdateIntegrationUrlsRequest extends FormRequest
     {
         return [
             function (Validator $validator) {
-                $failing = $validator->errors()->get('newIntegrationUrls.*');
-                $values = $validator->getData()['newIntegrationUrls'];
+                $urlTypes = ['loginUrls', 'callbackUrls', 'logoutUrls', 'newIntegrationUrls'];
+
+                foreach($urlTypes as $type) {
+                    $failing = $validator->errors()->get("$type.*");
+                    $values = $validator->getData()[$type];
 
 
-                foreach (array_keys($failing) as $errorMessage) {
-                    $index = (int) explode('.', $errorMessage)[1];
-                    $failingValue = $values[$index];
+                    foreach (array_keys($failing) as $errorMessage) {
+                        $index = (int) explode('.', $errorMessage)[1];
+                        $failingValue = $values[$index];
 
-                    $validator->errors()->add('newIntegrationUrls' . '.' . $failingValue['id'] . '.url', 'validation.url');
+                        $validator->errors()->add($type . '.' . $failingValue['id'] . '.url', 'Requested URL is not valid');
+                    }
                 }
             },
         ];
