@@ -23,6 +23,7 @@ type UrlListProps = {
   type: IntegrationUrlType;
   urls: ChangedIntegrationUrl[];
   newIntegrationUrls: NewIntegrationUrl[];
+  urlsFormValues: ChangedIntegrationUrl[];
   errors: Record<string, string | undefined>;
   onChangeData: (value: ChangedIntegrationUrl[]) => void;
   onChangeNewUrl: (value: NewIntegrationUrl & { id: string }) => void;
@@ -34,6 +35,7 @@ type UrlListProps = {
 export const UrlList = ({
   type,
   urls,
+  urlsFormValues,
   newIntegrationUrls,
   errors,
   onChangeData,
@@ -153,7 +155,7 @@ export const UrlList = ({
                             });
                           } else {
                             onChangeData(
-                              urls.map((urlItem) => {
+                              urlsFormValues.map((urlItem) => {
                                 if (urlItem.id === url.id) {
                                   return {
                                     ...urlItem,
@@ -240,7 +242,7 @@ export const UrlList = ({
                       inputId={`${type + option.env}`}
                       name="url"
                       className="md:min-w-[40rem]"
-                      //disabled={disabled}
+                      disabled={disabled}
                       onChange={(e) =>
                         onChangeNewUrl({
                           environment: option.env,
