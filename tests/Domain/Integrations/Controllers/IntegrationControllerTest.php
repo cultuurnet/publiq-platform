@@ -235,6 +235,21 @@ final class IntegrationControllerTest extends TestCase
             'description' => 'updated description'
         ]);
     }
+
+    public function test_it_cant_update_an_integration_if_unauthorized(): void
+    {
+        $this->actingAs(UserModel::createSystemUser(), 'web');
+
+        $integration = $this->givenThereIsAnIntegration();
+
+        $response = $this->patch('/integrations/' . $integration->id->toString(), [
+            'integrationName' => 'updated name',
+            'description' => 'updated description',
+        ]);
+
+        $response->assertForbidden();
+    }
+
     private function givenThereIsAnIntegration(): Integration
     {
         $integration = new Integration(
