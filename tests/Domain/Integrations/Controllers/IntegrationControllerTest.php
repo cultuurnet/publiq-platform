@@ -314,6 +314,27 @@ final class IntegrationControllerTest extends TestCase
         return $integration;
     }
 
+    private function givenThereIsAnIntegrationUrlForIntegration(Integration $integration): IntegrationUrl
+    {
+        $integrationUrl = new IntegrationUrl(
+            Uuid::uuid4(),
+            $integration->id,
+            Environment::Testing,
+            IntegrationUrlType::Login,
+            'https://localhost:3000'
+        );
+
+        IntegrationUrlModel::query()->insert([
+            'id' => $integrationUrl->id,
+            'integration_id' => $integrationUrl->integrationId->toString(),
+            'environment' => $integrationUrl->environment->value,
+            'type' => $integrationUrl->type->value,
+            'url' => 'https://localhost:3000'
+        ]);
+
+        return $integrationUrl;
+    }
+
     private function givenTheActingUserIsAContactOnIntegration(Integration $integration): Contact
     {
         $user = Auth::user();
