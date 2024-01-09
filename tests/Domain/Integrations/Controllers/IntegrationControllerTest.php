@@ -105,6 +105,10 @@ final class IntegrationControllerTest extends TestCase
         $response = $this->delete("/integrations/{$integration->id}");
 
         $response->assertForbidden();
+
+        $this->assertNotSoftDeleted('integrations', [
+            'id' => $integration->id->toString()
+        ]);
     }
 
     public function test_it_can_activate_an_integration_with_a_coupon(): void
@@ -150,6 +154,16 @@ final class IntegrationControllerTest extends TestCase
         );
 
         $response->assertForbidden();
+
+        $this->assertDatabaseMissing('integrations', [
+            'id' => $integration->id->toString(),
+            'status' => IntegrationStatus::Active,
+        ]);
+
+        $this->assertDatabaseMissing('coupons', [
+            'id' => $coupon->id,
+            'integration_id' => $integration->id->toString(),
+        ]);
     }
 
     public function test_it_can_activate_an_integration_with_an_organization(): void
@@ -217,6 +231,12 @@ final class IntegrationControllerTest extends TestCase
         );
 
         $response->assertForbidden();
+
+        $this->assertDatabaseHas('integrations', [
+            'id' => $integration->id->toString(),
+            'organization_id' => null,
+            'status' => IntegrationStatus::Draft,
+        ]);
     }
 
     public function test_it_can_update_an_integration(): void
@@ -252,6 +272,12 @@ final class IntegrationControllerTest extends TestCase
         ]);
 
         $response->assertForbidden();
+
+        $this->assertDatabaseMissing('integrations', [
+            'id' => $integration->id->toString(),
+            'name' => 'updated name',
+            'description' => 'updated description'
+        ]);
     }
 
     public function test_it_can_store_an_integration_url(): void
@@ -289,6 +315,12 @@ final class IntegrationControllerTest extends TestCase
         ]);
 
         $response->assertForbidden();
+
+        $this->assertDatabaseMissing('integrations_urls', [
+            'environment' => Environment::Testing->value,
+            'type' => IntegrationUrlType::Callback->value,
+            'url' => 'https://localhost:3000',
+        ]);
     }
 
     public function test_it_can_destroy_an_integration_url(): void
@@ -318,6 +350,10 @@ final class IntegrationControllerTest extends TestCase
         $response = $this->delete("/integrations/{$integration->id}/urls/{$integrationUrl->id}");
 
         $response->assertForbidden();
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'id' => $integrationUrl->id
+        ]);
     }
 
     private function givenThereIsAnIntegration(): Integration
