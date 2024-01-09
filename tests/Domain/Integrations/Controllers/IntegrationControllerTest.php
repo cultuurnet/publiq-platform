@@ -91,6 +91,18 @@ final class IntegrationControllerTest extends TestCase
             'id' => $integration->id->toString()
         ]);
     }
+
+    public function test_it_cant_destroy_an_integration_if_user_is_not_a_contact(): void
+    {
+        $this->actingAs(UserModel::createSystemUser(), 'web');
+
+        $integration = $this->givenThereIsAnIntegration();
+
+        $response = $this->delete('/integrations/' . $integration->id->toString());
+
+        $response->assertForbidden();
+    }
+
     public function test_it_can_activate_an_integration_with_a_coupon(): void
     {
         $this->actingAs(UserModel::createSystemUser(), 'web');
