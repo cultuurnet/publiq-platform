@@ -15,8 +15,10 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\IntegrationUrlType;
 use App\Domain\Integrations\Models\IntegrationModel;
+use App\Domain\Integrations\Models\IntegrationUrlModel;
 use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\Organizations\Organization;
@@ -305,6 +307,19 @@ final class IntegrationControllerTest extends TestCase
             'id' => $integrationUrl->id
         ]);
     }
+
+    public function test_it_cant_destroy_an_integration_url_if_unauthorized(): void
+    {
+        $this->actingAs(UserModel::createSystemUser(), 'web');
+
+        $integration = $this->givenThereIsAnIntegration();
+        $integrationUrl = $this->givenThereIsAnIntegrationUrlForIntegration($integration);
+
+        $response = $this->delete("/integrations/{$integration->id}/urls/{$integrationUrl->id}");
+
+        $response->assertForbidden();
+    }
+
     private function givenThereIsAnIntegration(): Integration
     {
         $integration = new Integration(
