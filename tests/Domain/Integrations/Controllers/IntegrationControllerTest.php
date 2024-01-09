@@ -289,6 +289,22 @@ final class IntegrationControllerTest extends TestCase
         $response->assertForbidden();
     }
 
+    public function test_it_can_destroy_an_integration_url(): void
+    {
+        $this->actingAs(UserModel::createSystemUser(), 'web');
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $integrationUrl = $this->givenThereIsAnIntegrationUrlForIntegration($integration);
+
+        $response = $this->delete("/integrations/{$integration->id}/urls/{$integrationUrl->id}");
+
+        $response->assertRedirect("/nl/integraties/{$integration->id}");
+
+        $this->assertDatabaseMissing('integrations_urls', [
+            'id' => $integrationUrl->id
+        ]);
+    }
     private function givenThereIsAnIntegration(): Integration
     {
         $integration = new Integration(
