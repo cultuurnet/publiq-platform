@@ -28,6 +28,54 @@ final class IntegrationControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_it_can_store_an_integration()
+    {
+        $this->actingAs(UserModel::createSystemUser(), 'web');
+
+        $subscriptionId = Uuid::uuid4();
+
+        $response = $this->post(
+            '/integrations',
+            [
+                'integrationType' => IntegrationType::SearchApi->value,
+                'subscriptionId' => $subscriptionId->toString(),
+                'integrationName' => 'Test Integration',
+                'description' => 'Test Integration description',
+                'firstNameFunctionalContact' => 'John',
+                'lastNameFunctionalContact' => 'Doe',
+                'emailFunctionalContact' => 'john.doe@test.com',
+                'firstNameTechnicalContact' => 'John',
+                'lastNameTechnicalContact' => 'Doe',
+                'emailTechnicalContact' => 'john.doe@test.com',
+                'agreement' => 'true',
+                'privacy' => 'some privacy',
+            ]
+        );
+
+        $response->assertRedirect('/nl/integraties');
+
+        $this->assertDatabaseHas('integrations', [
+            'type' => IntegrationType::SearchApi->value,
+            'subscription_id' => $subscriptionId->toString(),
+            'name' => 'Test Integration',
+            'description' => 'Test Integration description',
+            'status' => IntegrationStatus::Draft->value,
+            'partner_status' => IntegrationPartnerStatus::THIRD_PARTY->value,
+        ]);
+
+        $this->assertDatabaseHas('contacts', [
+            'type' => ContactType::Functional,
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+        ]);
+
+        $this->assertDatabaseHas('contacts', [
+            'type' => ContactType::Technical,
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+        ]);
+    }
+
     public function test_it_can_activate_an_integration_with_a_coupon(): void
     {
         $this->actingAs(UserModel::createSystemUser(), 'web');
