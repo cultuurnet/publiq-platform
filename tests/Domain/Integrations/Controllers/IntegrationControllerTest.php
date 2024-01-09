@@ -250,6 +250,27 @@ final class IntegrationControllerTest extends TestCase
         $response->assertForbidden();
     }
 
+    public function test_it_can_store_an_integration_url(): void
+    {
+        $this->actingAs(UserModel::createSystemUser(), 'web');
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+
+        $response = $this->post('/integrations/' . $integration->id->toString() . '/urls', [
+            'environment' => Environment::Testing->value,
+            'type' => IntegrationUrlType::Callback->value,
+            'url' => 'https://localhost:3000',
+        ]);
+
+        $response->assertRedirect('/nl/integraties/' . $integration->id->toString());
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'environment' => Environment::Testing->value,
+            'type' => IntegrationUrlType::Callback->value,
+            'url' => 'https://localhost:3000',
+        ]);
+    }
     private function givenThereIsAnIntegration(): Integration
     {
         $integration = new Integration(
