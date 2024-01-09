@@ -35,4 +35,12 @@ final class EloquentCouponRepository implements CouponRepository
 
         return $couponModel->toDomain();
     }
+
+    public function getByCode(string $code): Coupon
+    {
+        /** @var CouponModel $couponModel */
+        $couponModel = CouponModel::query()->where('code', $code)->firstOrFail();
+
+        return $couponModel->toDomain();
+    }
 }

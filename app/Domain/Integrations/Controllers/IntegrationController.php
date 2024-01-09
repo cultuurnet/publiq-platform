@@ -7,24 +7,29 @@ namespace App\Domain\Integrations\Controllers;
 use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Domain\Auth\CurrentUser;
 use App\Domain\Contacts\Repositories\ContactRepository;
+use App\Domain\Coupons\Repositories\CouponRepository;
+use App\Domain\Integrations\FormRequests\ActivateWithCouponRequest;
+use App\Domain\Integrations\FormRequests\CreateOrganizationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationUrlRequest;
-use App\Domain\Integrations\FormRequests\UpdateIntegrationRequest;
-use App\Domain\Integrations\FormRequests\UpdateBillingInfoRequest;
 use App\Domain\Integrations\FormRequests\UpdateContactInfoRequest;
+use App\Domain\Integrations\FormRequests\UpdateIntegrationRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationUrlsRequest;
+use App\Domain\Integrations\FormRequests\UpdateOrganizationRequest;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\Mappers\OrganizationMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationUrlMapper;
-use App\Domain\Integrations\Mappers\UpdateBillingInfoMapper;
 use App\Domain\Integrations\Mappers\UpdateContactInfoMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationUrlsMapper;
+use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\IntegrationUrlRepository;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Http\Controllers\Controller;
+use App\ProjectAanvraag\ProjectAanvraagUrl;
 use App\Router\TranslatedRoute;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -45,6 +50,7 @@ final class IntegrationController extends Controller
         private readonly IntegrationUrlRepository $integrationUrlRepository,
         private readonly ContactRepository $contactRepository,
         private readonly OrganizationRepository $organizationRepository,
+        private readonly CouponRepository $couponRepository,
         private readonly Auth0ClientRepository $auth0ClientRepository,
         private readonly UiTiDv1ConsumerRepository $uitidV1ConsumerRepository,
         private readonly CurrentUser $currentUser
@@ -92,6 +98,7 @@ final class IntegrationController extends Controller
             TranslatedRoute::getTranslatedRouteName($request, 'integrations.index')
         );
     }
+
     public function storeUrl(StoreIntegrationUrlRequest $request, string $id): RedirectResponse
     {
         $integrationUrl = StoreIntegrationUrlMapper::map($request, $id);
@@ -203,11 +210,44 @@ final class IntegrationController extends Controller
         return Redirect::back();
     }
 
-    public function updateBilling(string $id, UpdateBillingInfoRequest $request): RedirectResponse
+    public function updateBilling(string $id, UpdateOrganizationRequest $request): RedirectResponse
     {
-        $organisation = UpdateBillingInfoMapper::map($request);
+        $organization = OrganizationMapper::mapUpdate($request);
 
-        $this->organizationRepository->save($organisation);
+        $this->organizationRepository->save($organization);
+
+        return Redirect::route(
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
+            [
+                'id' => $id,
+            ]
+        );
+    }
+
+    public function activateWithCoupon(string $id, ActivateWithCouponRequest $request): RedirectResponse
+    {
+        $coupon = $this->couponRepository->getByCode($request->input('coupon'));
+        if ($coupon->isDistributed) {
+            return Redirect::back()->withErrors(['coupon' => 'Coupon is already used']);
+        }
+
+        $this->integrationRepository->activateWithCouponCode(Uuid::fromString($id), $request->input('coupon'));
+
+        return Redirect::route(
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
+            [
+                'id' => $id,
+            ]
+        );
+    }
+
+    public function activateWithOrganization(string $id, CreateOrganizationRequest $request): RedirectResponse
+    {
+        $organization = OrganizationMapper::mapCreate($request);
+
+        $this->organizationRepository->save($organization);
+
+        $this->integrationRepository->activateWithOrganization(Uuid::fromString($id), $organization->id);
 
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
@@ -232,9 +272,14 @@ final class IntegrationController extends Controller
                 ...$integration->toArray(),
                 'contacts' => $contacts->toArray(),
                 'urls' => $integration->urls(),
-                'organisation' => $integration->organization(),
+                'organization' => $integration->organization(),
                 'subscription' => $subscription,
             ],
         ]);
+    }
+
+    public function showWidget(IntegrationModel $integration): RedirectResponse
+    {
+        return redirect()->away(ProjectAanvraagUrl::getForIntegration($integration->toDomain()));
     }
 }

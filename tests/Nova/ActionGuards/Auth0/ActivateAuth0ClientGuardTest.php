@@ -9,6 +9,7 @@ use App\Auth0\Auth0Tenant;
 use App\Auth0\CachedAuth0ClientGrants;
 use App\Nova\ActionGuards\Auth0\ActivateAuth0ClientGuard;
 use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Tests\TestCase;
 use Psr\Http\Client\ClientInterface;
@@ -33,7 +34,7 @@ final class ActivateAuth0ClientGuardTest extends TestCase
         );
     }
 
-    /** @dataProvider dataProvider */
+    #[DataProvider('dataProvider')]
     public function test_can_do(string $body, bool $expectedValue): void
     {
         $client = new Auth0Client(Uuid::uuid4(), Uuid::uuid4(), 'client-id-1', 'client-secret-1', Auth0Tenant::Acceptance);
@@ -47,7 +48,7 @@ final class ActivateAuth0ClientGuardTest extends TestCase
         $this->assertEquals($expectedValue, $this->activateAuth0ClientGuard->canDo($client));
     }
 
-    public function dataprovider(): array
+    public static function dataProvider(): array
     {
         return [
             [json_encode(['grant_types' => ['test']]), false],
