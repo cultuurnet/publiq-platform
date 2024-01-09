@@ -56,7 +56,24 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
-    public function test_it_can_active_an_integration_with_an_organization(): void
+    public function test_it_cant_activate_an_integration_with_a_coupon_if_user_is_not_a_contact(): void
+    {
+        $this->actingAs(UserModel::createSystemUser(), 'web');
+
+        $integration = $this->givenThereIsAnIntegration();
+        $coupon = $this->givenThereIsACoupon();
+
+        $response = $this->post(
+            '/integrations/' . $integration->id . '/coupon',
+            [
+                'coupon' => $coupon->code,
+            ]
+        );
+
+        $response->assertForbidden();
+    }
+
+    public function test_it_can_activate_an_integration_with_an_organization(): void
     {
         $this->actingAs(UserModel::createSystemUser(), 'web');
 
@@ -93,6 +110,34 @@ final class IntegrationControllerTest extends TestCase
             'organization_id' => $organization->id,
             'status' => IntegrationStatus::Active,
         ]);
+    }
+
+    public function test_it_cant_activate_an_integration_with_an_organization_if_user_is_not_a_contact(): void
+    {
+        $this->actingAs(UserModel::createSystemUser(), 'web');
+
+        $organization = $this->givenThereIsAnOrganization();
+        $integration = $this->givenThereIsAnIntegration();
+
+        $response = $this->post(
+            '/integrations/' . $integration->id . '/organization',
+            [
+                'organization' => [
+                    'id' => $organization->id->toString(),
+                    'name' => $organization->name,
+                    'vat' => $organization->vat,
+                    'invoiceEmail' => $organization->invoiceEmail,
+                    'address' => [
+                        'street' => $organization->address->street,
+                        'zip' => $organization->address->zip,
+                        'city' => $organization->address->city,
+                        'country' => $organization->address->country,
+                    ],
+                ],
+            ]
+        );
+
+        $response->assertForbidden();
     }
 
     private function givenThereIsAnIntegration(): Integration
