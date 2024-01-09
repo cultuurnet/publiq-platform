@@ -215,6 +215,26 @@ final class IntegrationControllerTest extends TestCase
         $response->assertForbidden();
     }
 
+    public function test_it_can_update_an_integration(): void
+    {
+        $this->actingAs(UserModel::createSystemUser(), 'web');
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+
+        $response = $this->patch('/integrations/' . $integration->id->toString(), [
+            'integrationName' => 'updated name',
+            'description' => 'updated description',
+        ]);
+
+        $response->assertRedirect('/nl/integraties/' . $integration->id->toString());
+
+        $this->assertDatabaseHas('integrations', [
+            'id' => $integration->id->toString(),
+            'name' => 'updated name',
+            'description' => 'updated description'
+        ]);
+    }
     private function givenThereIsAnIntegration(): Integration
     {
         $integration = new Integration(
