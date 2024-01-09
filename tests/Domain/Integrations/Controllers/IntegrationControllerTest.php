@@ -76,6 +76,21 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
+    public function test_it_can_destroy_an_integration(): void
+    {
+        $this->actingAs(UserModel::createSystemUser(), 'web');
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+
+        $response = $this->delete('/integrations/' . $integration->id->toString());
+
+        $response->assertRedirect('/nl/integraties/');
+
+        $this->assertSoftDeleted('integrations', [
+            'id' => $integration->id->toString()
+        ]);
+    }
     public function test_it_can_activate_an_integration_with_a_coupon(): void
     {
         $this->actingAs(UserModel::createSystemUser(), 'web');
