@@ -92,7 +92,7 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
-    public function test_it_cant_destroy_an_integration_if_user_is_not_a_contact(): void
+    public function test_it_cant_destroy_an_integration_if_not_authorized(): void
     {
         $this->actingAs(UserModel::createSystemUser(), 'web');
 
@@ -131,7 +131,7 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
-    public function test_it_cant_activate_an_integration_with_a_coupon_if_user_is_not_a_contact(): void
+    public function test_it_cant_activate_an_integration_with_a_coupon_if_not_authorized(): void
     {
         $this->actingAs(UserModel::createSystemUser(), 'web');
 
@@ -187,7 +187,7 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
-    public function test_it_cant_activate_an_integration_with_an_organization_if_user_is_not_a_contact(): void
+    public function test_it_cant_activate_an_integration_with_an_organization_if_not_authorized(): void
     {
         $this->actingAs(UserModel::createSystemUser(), 'web');
 
