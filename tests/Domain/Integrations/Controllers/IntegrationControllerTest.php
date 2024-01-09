@@ -28,7 +28,7 @@ final class IntegrationControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_it_can_store_an_integration()
+    public function test_it_can_store_an_integration(): void
     {
         $this->actingAs(UserModel::createSystemUser(), 'web');
 
