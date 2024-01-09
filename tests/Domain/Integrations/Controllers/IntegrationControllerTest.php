@@ -30,8 +30,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_activate_an_integration_with_a_coupon(): void
     {
-        $user = UserModel::createSystemUser();
-        $this->actingAs($user, 'web');
+        $this->actingAs(UserModel::createSystemUser(), 'web');
 
         $integration = $this->givenThereIsAnIntegration();
         $this->givenTheActingUserIsAContactOnIntegration($integration);
@@ -59,8 +58,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_active_an_integration_with_an_organization(): void
     {
-        $user = UserModel::createSystemUser();
-        $this->actingAs($user, 'web');
+        $this->actingAs(UserModel::createSystemUser(), 'web');
 
         $organization = $this->givenThereIsAnOrganization();
         $integration = $this->givenThereIsAnIntegration();
