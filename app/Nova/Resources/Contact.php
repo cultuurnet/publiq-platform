@@ -58,8 +58,10 @@ final class Contact extends Resource
                 ->sortable()
                 ->rules('required', 'email', 'max:255'),
 
-            Select::make('Type', 'contacts.type')
-                ->filterable()
+            Select::make('Type')
+                ->filterable(function ($request, $query, $value) {
+                    $query->where('contacts.type', 'LIKE', $value);
+                })
                 ->sortable()
                 ->options([
                     ContactType::Functional->value => ContactType::Functional->name,
