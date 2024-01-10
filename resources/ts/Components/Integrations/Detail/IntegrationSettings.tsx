@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ButtonPrimary } from "../../ButtonPrimary";
 import { useForm } from "@inertiajs/react";
@@ -58,15 +58,18 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
     transform,
     delete: destroy,
     errors,
-    wasSuccessful,
+    processing,
     hasErrors,
   } = useForm(initialFormValues);
+
+  const [isDeleteFunction, setIsDeleteFunction] = useState(false);
 
   const handleDeleteExistingUrl = (urlId: IntegrationUrl["id"]) => {
     destroy(`/integrations/${id}/urls/${urlId}`, {
       preserveScroll: true,
       preserveState: true,
     });
+    setIsDeleteFunction(true);
   };
 
   const handleSave = () => {
@@ -74,14 +77,15 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
       preserveScroll: true,
       preserveState: true,
     });
+    setIsDeleteFunction(false);
   };
 
   useEffect(() => {
-    if (!hasErrors && wasSuccessful) {
+    if (!processing && !isDeleteFunction && !hasErrors) {
       reset("newIntegrationUrls");
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wasSuccessful, hasErrors]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDeleteFunction, hasErrors, processing]);
 
   const handleChangeNewUrl = (newUrl: NewIntegrationUrl & { id: string }) => {
     let found = false;
