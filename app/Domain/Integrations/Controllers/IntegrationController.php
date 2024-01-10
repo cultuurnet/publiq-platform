@@ -23,7 +23,6 @@ use App\Domain\Integrations\Mappers\StoreIntegrationUrlMapper;
 use App\Domain\Integrations\Mappers\UpdateContactInfoMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationUrlsMapper;
-use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\IntegrationUrlRepository;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
@@ -280,8 +279,9 @@ final class IntegrationController extends Controller
         );
     }
 
-    public function showWidget(IntegrationModel $integration): RedirectResponse
+    public function showWidget(string $id): RedirectResponse
     {
-        return redirect()->away(ProjectAanvraagUrl::getForIntegration($integration->toDomain()));
+        $integration = $this->integrationRepository->getById(Uuid::fromString($id));
+        return redirect()->away(ProjectAanvraagUrl::getForIntegration($integration));
     }
 }
