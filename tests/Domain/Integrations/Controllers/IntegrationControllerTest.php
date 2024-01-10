@@ -24,9 +24,25 @@ use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\Organizations\Organization;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\UnauthorizedException;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
+
+final readonly class TestIntegrationUrls
+{
+    /**
+     * @param IntegrationUrl $loginUrl
+     * @param array<IntegrationUrl> $callbackUrls
+     * @param array<IntegrationUrl> $logoutUrls
+     */
+    public function __construct(
+        public IntegrationUrl $loginUrl,
+        public array $callbackUrls,
+        public array $logoutUrls,
+    ) {
+    }
+}
 
 final class IntegrationControllerTest extends TestCase
 {
@@ -92,7 +108,7 @@ final class IntegrationControllerTest extends TestCase
         $response->assertRedirect('/nl/integraties/');
 
         $this->assertSoftDeleted('integrations', [
-            'id' => $integration->id->toString()
+            'id' => $integration->id->toString(),
         ]);
     }
 
@@ -107,7 +123,7 @@ final class IntegrationControllerTest extends TestCase
         $response->assertForbidden();
 
         $this->assertNotSoftDeleted('integrations', [
-            'id' => $integration->id->toString()
+            'id' => $integration->id->toString(),
         ]);
     }
 
@@ -256,7 +272,7 @@ final class IntegrationControllerTest extends TestCase
         $this->assertDatabaseHas('integrations', [
             'id' => $integration->id->toString(),
             'name' => 'updated name',
-            'description' => 'updated description'
+            'description' => 'updated description',
         ]);
     }
 
@@ -276,7 +292,7 @@ final class IntegrationControllerTest extends TestCase
         $this->assertDatabaseMissing('integrations', [
             'id' => $integration->id->toString(),
             'name' => 'updated name',
-            'description' => 'updated description'
+            'description' => 'updated description',
         ]);
     }
 
@@ -329,14 +345,14 @@ final class IntegrationControllerTest extends TestCase
 
         $integration = $this->givenThereIsAnIntegration();
         $this->givenTheActingUserIsAContactOnIntegration($integration);
-        $integrationUrl = $this->givenThereIsAnIntegrationUrlForIntegration($integration);
+        $integrationUrl = $this->givenThereIsALoginUrlForIntegration($integration);
 
         $response = $this->delete("/integrations/{$integration->id}/urls/{$integrationUrl->id}");
 
         $response->assertRedirect("/nl/integraties/{$integration->id}");
 
         $this->assertDatabaseMissing('integrations_urls', [
-            'id' => $integrationUrl->id
+            'id' => $integrationUrl->id,
         ]);
     }
 
@@ -345,15 +361,111 @@ final class IntegrationControllerTest extends TestCase
         $this->actingAs(UserModel::createSystemUser(), 'web');
 
         $integration = $this->givenThereIsAnIntegration();
-        $integrationUrl = $this->givenThereIsAnIntegrationUrlForIntegration($integration);
+        $integrationUrl = $this->givenThereIsALoginUrlForIntegration($integration);
 
         $response = $this->delete("/integrations/{$integration->id}/urls/{$integrationUrl->id}");
 
         $response->assertForbidden();
 
         $this->assertDatabaseHas('integrations_urls', [
-            'id' => $integrationUrl->id
+            'id' => $integrationUrl->id,
         ]);
+    }
+
+    public function test_it_can_update_integration_urls(): void
+    {
+        $this->actingAs(UserModel::createSystemUser(), 'web');
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $urls = $this->givenThereAreMultipleUrlsForIntegration($integration);
+
+        $response = $this->patch("/integrations/{$integration->id}/urls", [
+            'loginUrl' => [
+                'id' => $urls->loginUrl->id->toString(),
+                'url' => 'https://updated.test',
+            ],
+            'callbackUrls' => [
+                [
+                    'id' => $urls->callbackUrls[0]->id->toString(),
+                    'url' => 'https://updated.test',
+                ]
+            ],
+            'logoutUrls' => [
+                [
+                    'id' => $urls->logoutUrls[0]->id->toString(),
+                    'url' => 'https://updated.test',
+                ]
+            ],
+        ]);
+
+        $response->assertRedirect("/nl/integraties/{$integration->id}");
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'id' => $urls->loginUrl->id->toString(),
+            'type' => IntegrationUrlType::Login->value,
+            'url' => 'https://updated.test',
+        ]);
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'id' => $urls->callbackUrls[0]->id->toString(),
+            'type' => IntegrationUrlType::Callback->value,
+            'url' => 'https://updated.test',
+        ]);
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'id' => $urls->logoutUrls[0]->id->toString(),
+            'type' => IntegrationUrlType::Logout->value,
+            'url' => 'https://updated.test',
+        ]);
+    }
+
+    public function test_it_cant_update_integration_urls_if_unauthorized(): void
+    {
+        $this->actingAs(UserModel::createSystemUser(), 'web');
+
+        $integration = $this->givenThereIsAnIntegration();
+        $urls = $this->givenThereAreMultipleUrlsForIntegration($integration);
+
+        $response = $this->patch("/integrations/{$integration->id}/urls", [
+            'loginUrl' => [
+                'id' => $urls->loginUrl->id->toString(),
+                'url' => 'https://updated.test',
+            ],
+            'callbackUrl' => [
+                'id' => $urls->callbackUrls[0]->id->toString(),
+                'url' => 'https://updated.test',
+            ],
+            'logoutUrl' => [
+                'id' => $urls->logoutUrls[0]->id->toString(),
+                'url' => 'https://updated.test',
+            ],
+        ]);
+
+        $response->assertForbidden();
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'id' => $urls->loginUrl->id->toString(),
+            'type' => IntegrationUrlType::Login->value,
+            'url' => $urls->loginUrl->url,
+        ]);
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'id' => $urls->callbackUrls[0]->id->toString(),
+            'type' => IntegrationUrlType::Callback->value,
+            'url' => $urls->callbackUrls[0]->url,
+        ]);
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'id' => $urls->logoutUrls[0]->id->toString(),
+            'type' => IntegrationUrlType::Logout->value,
+            'url' => $urls->logoutUrls[0]->url,
+        ]);
+    }
+
+    public function test_it_can_update_contacts()
+    {
+
     }
 
     private function givenThereIsAnIntegration(): Integration
@@ -381,7 +493,7 @@ final class IntegrationControllerTest extends TestCase
         return $integration;
     }
 
-    private function givenThereIsAnIntegrationUrlForIntegration(Integration $integration): IntegrationUrl
+    private function givenThereIsALoginUrlForIntegration(Integration $integration): IntegrationUrl
     {
         $integrationUrl = new IntegrationUrl(
             Uuid::uuid4(),
@@ -396,10 +508,70 @@ final class IntegrationControllerTest extends TestCase
             'integration_id' => $integrationUrl->integrationId->toString(),
             'environment' => $integrationUrl->environment->value,
             'type' => $integrationUrl->type->value,
-            'url' => 'https://localhost:3000'
+            'url' => 'https://localhost:3000',
         ]);
 
         return $integrationUrl;
+    }
+
+    private function givenThereAreMultipleUrlsForIntegration(Integration $integration): TestIntegrationUrls
+    {
+        $callbackUrl = new IntegrationUrl(
+            Uuid::uuid4(),
+            $integration->id,
+            Environment::Production,
+            IntegrationUrlType::Callback,
+            'https://localhost:3000/callback'
+        );
+
+        $loginUrl = new IntegrationUrl(
+            Uuid::uuid4(),
+            $integration->id,
+            Environment::Testing,
+            IntegrationUrlType::Login,
+            'https://localhost:3000/login'
+        );
+
+        $logoutUrl = new IntegrationUrl(
+            Uuid::uuid4(),
+            $integration->id,
+            Environment::Acceptance,
+            IntegrationUrlType::Logout,
+            'https://localhost:3000/logout'
+        );
+
+        DB::transaction(function () use ($callbackUrl, $loginUrl, $logoutUrl) {
+            IntegrationUrlModel::query()->insert([
+                'id' => $callbackUrl->id,
+                'integration_id' => $callbackUrl->integrationId->toString(),
+                'environment' => $callbackUrl->environment->value,
+                'type' => $callbackUrl->type->value,
+                'url' => $callbackUrl->url,
+            ]);
+
+            IntegrationUrlModel::query()->insert([
+                'id' => $loginUrl->id,
+                'integration_id' => $loginUrl->integrationId->toString(),
+                'environment' => $loginUrl->environment->value,
+                'type' => $loginUrl->type->value,
+                'url' => $loginUrl->url,
+            ]);
+
+            IntegrationUrlModel::query()->insert([
+                'id' => $logoutUrl->id,
+                'integration_id' => $logoutUrl->integrationId->toString(),
+                'environment' => $logoutUrl->environment->value,
+                'type' => $logoutUrl->type->value,
+                'url' => $logoutUrl->url,
+            ]);
+
+        });
+
+        return new TestIntegrationUrls(
+            $loginUrl,
+            [$callbackUrl],
+            [$logoutUrl],
+        );
     }
 
     private function givenTheActingUserIsAContactOnIntegration(Integration $integration): Contact
