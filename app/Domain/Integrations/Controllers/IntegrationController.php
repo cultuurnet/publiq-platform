@@ -12,22 +12,24 @@ use App\Domain\Integrations\FormRequests\ActivateWithCouponRequest;
 use App\Domain\Integrations\FormRequests\CreateOrganizationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationUrlRequest;
-use App\Domain\Integrations\FormRequests\UpdateIntegrationRequest;
-use App\Domain\Integrations\FormRequests\UpdateOrganizationRequest;
 use App\Domain\Integrations\FormRequests\UpdateContactInfoRequest;
+use App\Domain\Integrations\FormRequests\UpdateIntegrationRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationUrlsRequest;
+use App\Domain\Integrations\FormRequests\UpdateOrganizationRequest;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\Mappers\OrganizationMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationUrlMapper;
-use App\Domain\Integrations\Mappers\OrganizationMapper;
 use App\Domain\Integrations\Mappers\UpdateContactInfoMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationUrlsMapper;
+use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\IntegrationUrlRepository;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Http\Controllers\Controller;
+use App\ProjectAanvraag\ProjectAanvraagUrl;
 use App\Router\TranslatedRoute;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -35,7 +37,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Inertia\Response;
 use Ramsey\Uuid\Uuid;
@@ -97,6 +98,7 @@ final class IntegrationController extends Controller
             TranslatedRoute::getTranslatedRouteName($request, 'integrations.index')
         );
     }
+
     public function storeUrl(StoreIntegrationUrlRequest $request, string $id): RedirectResponse
     {
         $integrationUrl = StoreIntegrationUrlMapper::map($request, $id);
@@ -276,9 +278,8 @@ final class IntegrationController extends Controller
         ]);
     }
 
-    public function showWidget(Request $request, string $id): RedirectResponse
+    public function showWidget(IntegrationModel $integration): RedirectResponse
     {
-        $idToken = Session::get('id_token');
-        return redirect()->away(config('project_aanvraag.base_uri') . 'project/' . $id . '/widget/?idToken=' . $idToken);
+        return redirect()->away(ProjectAanvraagUrl::getForIntegration($integration->toDomain()));
     }
 }
