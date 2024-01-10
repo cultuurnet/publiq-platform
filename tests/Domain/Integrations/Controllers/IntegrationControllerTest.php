@@ -487,7 +487,6 @@ final class IntegrationControllerTest extends TestCase
         $this->actingAs(UserModel::createSystemUser(), 'web');
 
         $integration = $this->givenThereIsAnIntegration();
-        $this->givenTheActingUserIsAContactOnIntegration($integration);
         $functionalContact = $this->givenThereIsAFunctionalContactOnIntegration($integration);
 
         $response = $this->patch(
