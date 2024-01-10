@@ -22,6 +22,7 @@ use App\Domain\Integrations\Models\IntegrationUrlModel;
 use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\Organizations\Organization;
+use App\ProjectAanvraag\ProjectAanvraagUrl;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -374,13 +375,13 @@ final class IntegrationControllerTest extends TestCase
                 [
                     'id' => $urls->callbackUrls[0]->id->toString(),
                     'url' => 'https://updated.test',
-                ]
+                ],
             ],
             'logoutUrls' => [
                 [
                     'id' => $urls->logoutUrls[0]->id->toString(),
                     'url' => 'https://updated.test',
-                ]
+                ],
             ],
         ]);
 
@@ -466,11 +467,11 @@ final class IntegrationControllerTest extends TestCase
                     'type' => $functionalContact->type->value,
                     'firstName' => $functionalContact->firstName,
                     'lastName' => $functionalContact->lastName,
-                ]
+                ],
             ]
         );
 
-        $response->assertRedirect("/");
+        $response->assertRedirect('/');
 
         $this->assertDatabaseHas('contacts', [
             'id' => $functionalContact->id->toString(),
@@ -499,7 +500,7 @@ final class IntegrationControllerTest extends TestCase
                     'type' => $functionalContact->type->value,
                     'firstName' => $functionalContact->firstName,
                     'lastName' => $functionalContact->lastName,
-                ]
+                ],
             ]
         );
 
@@ -526,7 +527,7 @@ final class IntegrationControllerTest extends TestCase
         $this->delete("/integrations/{$integration->id}/contacts/{$functionalContact->id}");
 
         $this->assertSoftDeleted('contacts', [
-            'id' => $functionalContact->id->toString()
+            'id' => $functionalContact->id->toString(),
         ]);
     }
 
@@ -542,11 +543,10 @@ final class IntegrationControllerTest extends TestCase
         $response->assertForbidden();
 
         $this->assertNotSoftDeleted('contacts', [
-            'id' => $functionalContact->id->toString()
+            'id' => $functionalContact->id->toString(),
         ]);
     }
 
-    private function givenThereIsAnIntegration(): Integration
     public function test_it_can_update_billing_info_of_organization(): void
     {
         $this->actingAs(UserModel::createSystemUser(), 'web');
@@ -631,10 +631,23 @@ final class IntegrationControllerTest extends TestCase
 
         $response->assertRedirect(ProjectAanvraagUrl::getForIntegration($widgetIntegration));
     }
+
+    public function test_it_cant_show_widget_if_not_authenticated(): void
+    {
+        $this->actingAs(UserModel::createSystemUser(), 'web');
+
+        $widgetIntegration = $this->givenThereIsAnIntegration(IntegrationType::Widgets);
+
+        $response = $this->get("/integrations/{$widgetIntegration->id}/widget");
+
+        $response->assertForbidden();
+    }
+
+    private function givenThereIsAnIntegration(IntegrationType $integrationType = null): Integration
     {
         $integration = new Integration(
             Uuid::uuid4(),
-            IntegrationType::SearchApi,
+            $integrationType ?? IntegrationType::SearchApi,
             'Test Integration',
             'Test Integration description',
             Uuid::uuid4(),
@@ -644,12 +657,12 @@ final class IntegrationControllerTest extends TestCase
 
         IntegrationModel::query()->insert([
             'id' => $integration->id->toString(),
-            'type' => $integration->type,
+            'type' => $integration->type->value,
             'name' => $integration->name,
             'description' => $integration->description,
-            'subscription_id' => $integration->subscriptionId,
-            'status' => $integration->status,
-            'partner_status' => IntegrationPartnerStatus::THIRD_PARTY,
+            'subscription_id' => $integration->subscriptionId->toString(),
+            'status' => $integration->status->value,
+            'partner_status' => $integration->partnerStatus->value,
         ]);
 
         return $integration;
