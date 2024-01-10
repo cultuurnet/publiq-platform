@@ -59,6 +59,7 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
     delete: destroy,
     errors,
     wasSuccessful,
+    hasErrors,
   } = useForm(initialFormValues);
 
   const handleDeleteExistingUrl = (urlId: IntegrationUrl["id"]) => {
@@ -76,10 +77,11 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
   };
 
   useEffect(() => {
-    if (wasSuccessful) {
+    if (!hasErrors && wasSuccessful) {
       reset("newIntegrationUrls");
     }
-  });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wasSuccessful, hasErrors]);
 
   const handleChangeNewUrl = (newUrl: NewIntegrationUrl & { id: string }) => {
     let found = false;
