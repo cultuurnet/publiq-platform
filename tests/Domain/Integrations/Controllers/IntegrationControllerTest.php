@@ -29,21 +29,6 @@ use Illuminate\Validation\UnauthorizedException;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
-final readonly class TestIntegrationUrls
-{
-    /**
-     * @param IntegrationUrl $loginUrl
-     * @param array<IntegrationUrl> $callbackUrls
-     * @param array<IntegrationUrl> $logoutUrls
-     */
-    public function __construct(
-        public IntegrationUrl $loginUrl,
-        public array $callbackUrls,
-        public array $logoutUrls,
-    ) {
-    }
-}
-
 final class IntegrationControllerTest extends TestCase
 {
     use RefreshDatabase;
@@ -463,9 +448,72 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
-    public function test_it_can_update_contacts()
+    public function test_it_can_update_contacts(): void
     {
+        $this->actingAs(UserModel::createSystemUser(), 'web');
 
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $functionalContact = $this->givenThereIsAFunctionalContactOnIntegration($integration);
+
+        $response = $this->patch(
+            "/integrations/{$integration->id}/contacts",
+            [
+                'functional' => [
+                    'id' => $functionalContact->id->toString(),
+                    'integrationId' => $integration->id->toString(),
+                    'email' => 'other@test.com',
+                    'type' => $functionalContact->type->value,
+                    'firstName' => $functionalContact->firstName,
+                    'lastName' => $functionalContact->lastName,
+                ]
+            ]
+        );
+
+        $response->assertRedirect("/");
+
+        $this->assertDatabaseHas('contacts', [
+            'id' => $functionalContact->id->toString(),
+            'integration_id' => $integration->id->toString(),
+            'email' => 'other@test.com',
+            'type' => $functionalContact->type->value,
+            'first_name' => $functionalContact->firstName,
+            'last_name' => $functionalContact->lastName,
+        ]);
+    }
+
+    public function test_it_cant_update_contacts_if_unauthorized(): void
+    {
+        $this->actingAs(UserModel::createSystemUser(), 'web');
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $functionalContact = $this->givenThereIsAFunctionalContactOnIntegration($integration);
+
+        $response = $this->patch(
+            "/integrations/{$integration->id}/contacts",
+            [
+                'functional' => [
+                    'id' => $functionalContact->id->toString(),
+                    'integrationId' => $integration->id->toString(),
+                    'email' => 'other@test.com',
+                    'type' => $functionalContact->type->value,
+                    'firstName' => $functionalContact->firstName,
+                    'lastName' => $functionalContact->lastName,
+                ]
+            ]
+        );
+
+        $response->assertForbidden();
+
+        $this->assertDatabaseHas('contacts', [
+            'id' => $functionalContact->id->toString(),
+            'integration_id' => $integration->id->toString(),
+            'email' => $functionalContact->email,
+            'type' => $functionalContact->type->value,
+            'first_name' => $functionalContact->firstName,
+            'last_name' => $functionalContact->lastName,
+        ]);
     }
 
     private function givenThereIsAnIntegration(): Integration
@@ -514,7 +562,7 @@ final class IntegrationControllerTest extends TestCase
         return $integrationUrl;
     }
 
-    private function givenThereAreMultipleUrlsForIntegration(Integration $integration): TestIntegrationUrls
+    private function givenThereAreMultipleUrlsForIntegration(Integration $integration): IntegrationUrlsContainer
     {
         $callbackUrl = new IntegrationUrl(
             Uuid::uuid4(),
@@ -567,7 +615,7 @@ final class IntegrationControllerTest extends TestCase
 
         });
 
-        return new TestIntegrationUrls(
+        return new IntegrationUrlsContainer(
             $loginUrl,
             [$callbackUrl],
             [$logoutUrl],
@@ -589,6 +637,29 @@ final class IntegrationControllerTest extends TestCase
             ContactType::Contributor,
             $user->first_name,
             $user->last_name,
+        );
+
+        ContactModel::query()->insert([
+            'id' => $contact->id,
+            'integration_id' => $contact->integrationId,
+            'email' => $contact->email,
+            'type' => $contact->type,
+            'first_name' => $contact->firstName,
+            'last_name' => $contact->lastName,
+        ]);
+
+        return $contact;
+    }
+
+    private function givenThereIsAFunctionalContactOnIntegration(Integration $integration): Contact
+    {
+        $contact = new Contact(
+            Uuid::uuid4(),
+            $integration->id,
+            'jane.doe@test.com',
+            ContactType::Functional,
+            'Jane',
+            'Doe',
         );
 
         ContactModel::query()->insert([
