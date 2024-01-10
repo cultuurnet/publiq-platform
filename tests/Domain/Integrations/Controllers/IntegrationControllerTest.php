@@ -547,6 +547,41 @@ final class IntegrationControllerTest extends TestCase
     }
 
     private function givenThereIsAnIntegration(): Integration
+    public function test_it_can_update_billing_info_of_organization(): void
+    {
+        $this->actingAs(UserModel::createSystemUser(), 'web');
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $organization = $this->givenThereIsAnOrganization();
+        $this->givenTheIntegrationIsActivatedWithOrganisation($integration, $organization);
+
+        $this->patch("/integrations/{$integration->id}/billing", [
+            'organization' => [
+                'id' => $organization->id->toString(),
+                'name' => 'updated',
+                'vat' => 'updated',
+                'invoiceEmail' => 'updated@test.com',
+                'address' => [
+                    'street' => 'updated',
+                    'zip' => '0000',
+                    'city' => 'updated',
+                    'country' => 'updated',
+                ],
+            ],
+        ]);
+
+        $this->assertDatabaseHas('organizations', [
+            'id' => $organization->id->toString(),
+            'name' => 'updated',
+            'vat' => 'updated',
+            'invoice_email' => 'updated@test.com',
+            'street' => 'updated',
+            'zip' => '0000',
+            'city' => 'updated',
+            'country' => 'updated',
+        ]);
+    }
     {
         $integration = new Integration(
             Uuid::uuid4(),
