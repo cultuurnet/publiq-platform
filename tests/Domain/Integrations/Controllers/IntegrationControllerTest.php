@@ -619,6 +619,18 @@ final class IntegrationControllerTest extends TestCase
             'country' => $organization->address->country,
         ]);
     }
+
+    public function test_it_can_show_widget(): void
+    {
+        $this->actingAs(UserModel::createSystemUser(), 'web');
+
+        $widgetIntegration = $this->givenThereIsAnIntegration(IntegrationType::Widgets);
+        $this->givenTheActingUserIsAContactOnIntegration($widgetIntegration);
+
+        $response = $this->get("/integrations/{$widgetIntegration->id}/widget");
+
+        $response->assertRedirect(ProjectAanvraagUrl::getForIntegration($widgetIntegration));
+    }
     {
         $integration = new Integration(
             Uuid::uuid4(),
