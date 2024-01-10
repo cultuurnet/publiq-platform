@@ -582,6 +582,43 @@ final class IntegrationControllerTest extends TestCase
             'country' => 'updated',
         ]);
     }
+
+    public function test_it_cant_update_billing_info_of_organization_if_unauthorized(): void
+    {
+        $this->actingAs(UserModel::createSystemUser(), 'web');
+
+        $integration = $this->givenThereIsAnIntegration();
+        $organization = $this->givenThereIsAnOrganization();
+        $this->givenTheIntegrationIsActivatedWithOrganisation($integration, $organization);
+
+        $response = $this->patch("/integrations/{$integration->id}/billing", [
+            'organization' => [
+                'id' => $organization->id->toString(),
+                'name' => 'updated',
+                'vat' => 'updated',
+                'invoiceEmail' => 'updated@test.com',
+                'address' => [
+                    'street' => 'updated',
+                    'zip' => '0000',
+                    'city' => 'updated',
+                    'country' => 'updated',
+                ],
+            ],
+        ]);
+
+        $response->assertForbidden();
+
+        $this->assertDatabaseHas('organizations', [
+            'id' => $organization->id->toString(),
+            'name' => $organization->name,
+            'vat' => $organization->vat,
+            'invoice_email' => $organization->invoiceEmail,
+            'street' => $organization->address->street,
+            'zip' => $organization->address->zip,
+            'city' => $organization->address->city,
+            'country' => $organization->address->country,
+        ]);
+    }
     {
         $integration = new Integration(
             Uuid::uuid4(),
