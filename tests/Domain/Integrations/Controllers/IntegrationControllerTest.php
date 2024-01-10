@@ -751,4 +751,25 @@ final class IntegrationControllerTest extends TestCase
 
         return $organization;
     }
+
+    private function givenTheIntegrationIsActivatedWithOrganisation(Integration $integration, Organization $organization): void
+    {
+        $response = $this->post(
+            "/integrations/{$integration->id}/organization",
+            [
+                'organization' => [
+                    'id' => $organization->id->toString(),
+                    'name' => $organization->name,
+                    'vat' => $organization->vat,
+                    'invoiceEmail' => $organization->invoiceEmail,
+                    'address' => [
+                        'street' => $organization->address->street,
+                        'zip' => $organization->address->zip,
+                        'city' => $organization->address->city,
+                        'country' => $organization->address->country,
+                    ],
+                ],
+            ]
+        );
+    }
 }
