@@ -515,6 +515,20 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
+    public function test_it_can_destroy_a_contact(): void
+    {
+        $this->actingAs(UserModel::createSystemUser(), 'web');
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $functionalContact = $this->givenThereIsAFunctionalContactOnIntegration($integration);
+
+        $this->delete("/integrations/{$integration->id}/contacts/{$functionalContact->id}");
+
+        $this->assertSoftDeleted('contacts', [
+            'id' => $functionalContact->id->toString()
+        ]);
+    }
     private function givenThereIsAnIntegration(): Integration
     {
         $integration = new Integration(
