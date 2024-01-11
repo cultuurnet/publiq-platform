@@ -6,6 +6,8 @@ namespace App\UiTiDv1\Repositories;
 
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use App\UiTiDv1\UiTiDv1Consumer;
+use App\UiTiDv1\UiTiDv1Environment;
+use DateTime;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
@@ -21,11 +23,12 @@ final class EloquentUiTiDv1ConsumerRepository implements UiTiDv1ConsumerReposito
 
         DB::transaction(static function () use ($uitidv1Consumers) {
             foreach ($uitidv1Consumers as $uitidv1Consumer) {
+                $environment = $uitidv1Consumer->environment->value;
                 UiTiDv1ConsumerModel::query()
                     ->updateOrCreate(
                         [
                             'consumer_id' => $uitidv1Consumer->consumerId,
-                            'environment' => $uitidv1Consumer->environment->value,
+                            'environment' => $environment,
                         ],
                         [
                             'id' => $uitidv1Consumer->id,
@@ -34,7 +37,8 @@ final class EloquentUiTiDv1ConsumerRepository implements UiTiDv1ConsumerReposito
                             'consumer_key' => $uitidv1Consumer->consumerKey,
                             'consumer_secret' => $uitidv1Consumer->consumerSecret,
                             'api_key' => $uitidv1Consumer->apiKey,
-                            'environment' => $uitidv1Consumer->environment->value,
+                            'environment' => $environment,
+                            'distributed_at' => ($environment === UiTiDv1Environment::Production->value) ? null : new DateTime()
                         ]
                     );
             }
@@ -46,7 +50,7 @@ final class EloquentUiTiDv1ConsumerRepository implements UiTiDv1ConsumerReposito
         return UiTiDv1ConsumerModel::query()
             ->where('integration_id', $integrationId->toString())
             ->get()
-            ->map(static fn (UiTiDv1ConsumerModel $model) => $model->toDomain())
+            ->map(static fn(UiTiDv1ConsumerModel $model) => $model->toDomain())
             ->toArray();
     }
 
@@ -67,7 +71,7 @@ final class EloquentUiTiDv1ConsumerRepository implements UiTiDv1ConsumerReposito
     public function getByIntegrationIds(array $integrationIds): array
     {
         $ids = array_map(
-            fn ($integrationId) => $integrationId->toString(),
+            fn($integrationId) => $integrationId->toString(),
             $integrationIds
         );
 
@@ -75,7 +79,7 @@ final class EloquentUiTiDv1ConsumerRepository implements UiTiDv1ConsumerReposito
             ->whereIn('integration_id', $ids)
             ->orderBy('created_at')
             ->get()
-            ->map(static fn (UiTiDv1ConsumerModel $model) => $model->toDomain())
+            ->map(static fn(UiTiDv1ConsumerModel $model) => $model->toDomain())
             ->toArray();
     }
 }
