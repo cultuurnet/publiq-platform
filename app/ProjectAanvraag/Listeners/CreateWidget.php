@@ -132,6 +132,7 @@ final class CreateWidget implements ShouldQueue
                 $userId,
                 $integration->name,
                 $integration->description,
+                $integration->status,
                 $this->groupId,
                 $testKey,
                 $liveKey

@@ -14,4 +14,6 @@ interface CouponRepository
     public function getById(UuidInterface $id): Coupon;
 
     public function getByIntegrationId(UuidInterface $integrationId): Coupon;
+
+    public function getByCode(string $code): Coupon;
 }

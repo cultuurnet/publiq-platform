@@ -45,8 +45,9 @@ final class EloquentIntegrationRepository implements IntegrationRepository
 
     public function update(Integration $integration): void
     {
-        IntegrationModel::query()->update([
-                'id' => $integration->id->toString(),
+        IntegrationModel::query()
+            ->findOrFail($integration->id->toString())
+            ->update([
                 'type' => $integration->type,
                 'name' => $integration->name,
                 'description' => $integration->description,

@@ -33,7 +33,7 @@ final class InsightlyOrganizationResource implements OrganizationResource
 
         $organizationAsArray = Json::decodeAssociatively($response->getBody()->getContents());
 
-        return $organizationAsArray['ORGANISATION_ID'];
+        return $organizationAsArray['ORGANIZATION_ID'];
     }
 
     public function update(Organization $organization, int $id): void
@@ -70,7 +70,7 @@ final class InsightlyOrganizationResource implements OrganizationResource
             return null;
         }
 
-        return $organizationsAsArray[0]['ORGANISATION_ID'];
+        return $organizationsAsArray[0]['ORGANIZATION_ID'];
     }
 
     public function findIdByVat(string $vat): ?int
@@ -85,7 +85,7 @@ final class InsightlyOrganizationResource implements OrganizationResource
             return null;
         }
 
-        return $organizationsAsArray[0]['ORGANISATION_ID'];
+        return $organizationsAsArray[0]['ORGANIZATION_ID'];
     }
 
     private function createSearchRequest(string $fieldName, string $fieldValue): Request

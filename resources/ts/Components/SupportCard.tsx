@@ -45,14 +45,19 @@ export const SupportCard = ({
           </div>
           <div className="flex max-sm:self-center">
             {type === "slack" ? (
-              <>
+              <div className="flex gap-3">
+                <ButtonLinkSecondary href={actionUrl}>
+                  {actionTitle}
+                  <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+                </ButtonLinkSecondary>
                 <ButtonSecondary
                   onClick={() => {
                     handleSlackInvitation();
                   }}
                 >
-                  {actionTitle}
+                  {t("support.support_via_slack.invitation")}
                 </ButtonSecondary>
+
                 <InformationDialog
                   isVisible={!!slackStatus}
                   title={title}
@@ -64,7 +69,7 @@ export const SupportCard = ({
                   onConfirm={() => handleRedirect()}
                   onClose={() => handleRedirect()}
                 ></InformationDialog>
-              </>
+              </div>
             ) : (
               <ButtonLinkSecondary
                 className="min-w-[15rem] max-sm:min-w-[10rem] max-sm:px-3"

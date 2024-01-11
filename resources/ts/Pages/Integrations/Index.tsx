@@ -21,7 +21,7 @@ import { IntegrationUrlType } from "../../types/IntegrationUrlType";
 import { IntegrationType } from "../../types/IntegrationType";
 import { Values } from "../../types/Values";
 
-type Organisation = {
+type Organization = {
   id: string;
   name: string;
   invoiceMail: string;
@@ -69,7 +69,7 @@ export type Integration = {
   subscriptionId: string;
   status: IntegrationStatus;
   contacts: Contact[];
-  organisation?: Organisation;
+  organization?: Organization;
   subscription: Subscription;
   urls: IntegrationUrl[];
   hasCredentials: { v1: boolean; v2: boolean };
@@ -91,10 +91,12 @@ const Index = ({ integrations, paginationInfo }: Props) => {
 
   const handleChangeSearchInput = debounce(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      router.get(translateRoute("/integrations"), {
+      router.get(
+        translateRoute("/integrations"),
         // Don't append search query param to url if empty
-        search: e.target.value || undefined,
-      });
+        { search: e.target.value || undefined },
+        { preserveScroll: true, preserveState: true }
+      );
     },
     250
   );
