@@ -6,6 +6,8 @@ up:
 down:
 	vendor/bin/sail down
 
+restart: down up
+
 destroy:
 	vendor/bin/sail down -v
 

@@ -9,7 +9,9 @@ import { Link } from "./Link";
 import { StatusLight } from "./StatusLight";
 import { ButtonIconCopy } from "./ButtonIconCopy";
 import { Tooltip } from "./Tooltip";
-import { ButtonSecondary } from "./ButtonSecondary";
+import { IntegrationStatus } from "../types/IntegrationStatus";
+import { ButtonLinkSecondary } from "./ButtonLinkSecondary";
+
 type Props = Integration & {
   onEdit: (id: string) => void;
 };
@@ -18,6 +20,19 @@ const productTypeToPath = {
   "entry-api": "/uitdatabank/entry-api/introduction",
   "search-api": "/uitdatabank/search-api/introduction",
   widgets: "/widgets/aan-de-slag",
+};
+
+const OpenWidgetBuilderButton = ({ id, type }: Pick<Props, "id" | "type">) => {
+  const { t } = useTranslation();
+  if (type !== "widgets") {
+    return null;
+  }
+
+  return (
+    <ButtonLinkSecondary href={`/integrations/${id}/widget`} target={"_blank"}>
+      {t("integrations.open_widget")}
+    </ButtonLinkSecondary>
+  );
 };
 
 export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
@@ -68,16 +83,8 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
               <ButtonIconCopy onClick={handleCopyToClipboard} />
             </Tooltip>
           </div>
-          {type === "widgets" && (
-            <ButtonSecondary>
-              <a
-                href={`/integrations/${id}/widget`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {t("integrations.open_widget")}
-              </a>
-            </ButtonSecondary>
+          {status !== IntegrationStatus.Active && (
+            <OpenWidgetBuilderButton id={id} type={type} />
           )}
         </section>
         <section className="inline-flex gap-3 max-md:flex-col max-md:items-start md:items-start">
@@ -86,6 +93,9 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
           </Heading>
           <div className="flex align-center gap-1">
             <StatusLight status={status} id={id} />
+            {status === IntegrationStatus.Active && (
+              <OpenWidgetBuilderButton id={id} type={type} />
+            )}
           </div>
         </section>
         <section className="inline-flex gap-3 max-md:flex-col items-start">
