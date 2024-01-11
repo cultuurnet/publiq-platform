@@ -8,6 +8,7 @@ import { NewIntegrationUrl, UrlList } from "./UrlList";
 import { IntegrationUrl } from "../../../Pages/Integrations/Index";
 import { BasicInfo } from "./BasicInfo";
 import { IntegrationType } from "../../../types/IntegrationType";
+import { Alert } from "../../Alert";
 
 type Props = {
   isMobile: boolean;
@@ -60,9 +61,12 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
     errors,
     processing,
     hasErrors,
+    wasSuccessful,
   } = useForm(initialFormValues);
 
   const [isDeleteFunction, setIsDeleteFunction] = useState(false);
+  const [isErrorMessageVisible, setIsErrorMessageVisible] = useState(false);
+  const [isSuccessMessageVisible, setIsSuccessMessageVisible] = useState(false);
 
   const handleDeleteExistingUrl = (urlId: IntegrationUrl["id"]) => {
     destroy(`/integrations/${id}/urls/${urlId}`, {
@@ -128,8 +132,46 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
     [integration]
   );
 
+  useEffect(() => {
+    if (!processing && hasErrors) {
+      {
+        window.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: "smooth",
+        });
+
+        setIsErrorMessageVisible(true);
+        setIsSuccessMessageVisible(false);
+      }
+    }
+  }, [processing, hasErrors]);
+
+  useEffect(() => {
+    if (!processing && !hasErrors && wasSuccessful && !isDeleteFunction) {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "smooth",
+      });
+
+      setIsSuccessMessageVisible(true);
+      setIsErrorMessageVisible(false);
+    }
+  }, [processing, hasErrors, wasSuccessful, isDeleteFunction]);
+
   return (
     <>
+      <Alert
+        variant="error"
+        visible={isErrorMessageVisible}
+        title={t("details.integration_settings.error")}
+      />
+      <Alert
+        variant="success"
+        visible={isSuccessMessageVisible}
+        title={t("details.integration_settings.success")}
+      />
       <BasicInfo
         name={data.integrationName}
         description={data.description}
@@ -178,7 +220,6 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
         errors={errors}
       />
       <div className="lg:grid lg:grid-cols-3 gap-6">
-        <div></div>
         <ButtonPrimary
           onClick={() => {
             handleSave();
