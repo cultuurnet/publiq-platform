@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Nova\Actions\Auth0;
 
 use App\Auth0\Jobs\ActivateClient;
-use App\Auth0\Jobs\ActivateClientListener;
+use App\Auth0\Jobs\ActivateClientHandler;
 use App\Auth0\Models\Auth0ClientModel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Bus\Dispatcher;
@@ -22,7 +22,7 @@ final class ActivateAuth0Client extends Action
 
     public $name = 'Activate Auth0 client';
 
-    public function __construct(private readonly Dispatcher $dispatcher, private readonly ActivateClientListener $listener)
+    public function __construct(private readonly Dispatcher $dispatcher, private readonly ActivateClientHandler $listener)
     {
     }
 
