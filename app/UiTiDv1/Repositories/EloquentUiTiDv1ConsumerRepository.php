@@ -45,6 +45,18 @@ final class EloquentUiTiDv1ConsumerRepository implements UiTiDv1ConsumerReposito
         });
     }
 
+    public function distribute(UiTiDv1Consumer ...$uitidv1Consumers): void
+    {
+        $ids = array_map(
+            fn(UiTiDv1Consumer $consumer) => $consumer->id->toString(),
+            $uitidv1Consumers
+        );
+
+        UiTiDv1ConsumerModel::query()
+            ->whereIn('id', $ids)
+            ->touch('distributed_at');
+    }
+
     public function getByIntegrationId(UuidInterface $integrationId): array
     {
         return UiTiDv1ConsumerModel::query()
