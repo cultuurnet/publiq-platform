@@ -35,22 +35,22 @@ export const UitIdWidget = ({
         actions: [
           {
             url: {
-              nl: "/nl/integrations"
+              nl: "/nl/integrations",
             },
             label: {
-              nl: "Integraties"
+              nl: "Integraties",
             },
           },
           "seperator",
           {
             url: {
-              nl: "/nl/subscriptions"
+              nl: "/nl/subscriptions",
             },
             label: {
-              nl: "Subscriptions"
+              nl: "Subscriptions",
             },
           },
-        ]
+        ],
       }),
     [auth0Domain, profileUrl, registerUrl]
   );
