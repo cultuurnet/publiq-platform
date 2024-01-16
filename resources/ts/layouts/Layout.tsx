@@ -21,7 +21,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       <Head>
         <script
           type="module"
-          src={`${import.meta.env.VITE_UITID}index.js`}
+          src={`${import.meta.env.VITE_UITID_WIDGET_URL}index.js`}
           async
         ></script>
       </Head>
