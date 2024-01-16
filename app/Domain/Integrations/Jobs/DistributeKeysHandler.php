@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Integrations\Jobs;
 
 use App\Auth0\Auth0Client;
@@ -26,15 +28,14 @@ final class DistributeKeysHandler implements ShouldQueue
         private readonly IntegrationRepository     $integrationRepository,
         private readonly Auth0ClientRepository     $auth0ClientRepository,
         private readonly UiTiDv1ConsumerRepository $uiTiDv1ConsumerRepository,
-    )
-    {
+    ) {
     }
 
     public function handle(DistributeKeys $job): void
     {
         $integration = $this->integrationRepository->getById($job->id);
-        $clients = array_filter($integration->auth0Clients(), fn(Auth0Client $client) => $client->tenant === Auth0Tenant::Production);
-        $consumers = array_filter($integration->uiTiDv1Consumers(), fn(UiTiDv1Consumer $consumer) => $consumer->environment === UiTiDv1Environment::Production);
+        $clients = array_filter($integration->auth0Clients(), fn (Auth0Client $client) => $client->tenant === Auth0Tenant::Production);
+        $consumers = array_filter($integration->uiTiDv1Consumers(), fn (UiTiDv1Consumer $consumer) => $consumer->environment === UiTiDv1Environment::Production);
 
         $this->auth0ClientRepository->distribute(...$clients);
         $this->uiTiDv1ConsumerRepository->distribute(...$consumers);

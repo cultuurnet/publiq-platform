@@ -38,7 +38,7 @@ final class EloquentUiTiDv1ConsumerRepository implements UiTiDv1ConsumerReposito
                             'consumer_secret' => $uitidv1Consumer->consumerSecret,
                             'api_key' => $uitidv1Consumer->apiKey,
                             'environment' => $environment,
-                            'distributed_at' => ($environment === UiTiDv1Environment::Production->value) ? null : new DateTime()
+                            'distributed_at' => ($environment === UiTiDv1Environment::Production->value) ? null : new DateTime(),
                         ]
                     );
             }
@@ -48,7 +48,7 @@ final class EloquentUiTiDv1ConsumerRepository implements UiTiDv1ConsumerReposito
     public function distribute(UiTiDv1Consumer ...$uitidv1Consumers): void
     {
         $ids = array_map(
-            fn(UiTiDv1Consumer $consumer) => $consumer->id->toString(),
+            fn (UiTiDv1Consumer $consumer) => $consumer->id->toString(),
             $uitidv1Consumers
         );
 
@@ -62,7 +62,7 @@ final class EloquentUiTiDv1ConsumerRepository implements UiTiDv1ConsumerReposito
         return UiTiDv1ConsumerModel::query()
             ->where('integration_id', $integrationId->toString())
             ->get()
-            ->map(static fn(UiTiDv1ConsumerModel $model) => $model->toDomain())
+            ->map(static fn (UiTiDv1ConsumerModel $model) => $model->toDomain())
             ->toArray();
     }
 
@@ -83,7 +83,7 @@ final class EloquentUiTiDv1ConsumerRepository implements UiTiDv1ConsumerReposito
     public function getByIntegrationIds(array $integrationIds): array
     {
         $ids = array_map(
-            fn($integrationId) => $integrationId->toString(),
+            fn ($integrationId) => $integrationId->toString(),
             $integrationIds
         );
 
@@ -91,7 +91,7 @@ final class EloquentUiTiDv1ConsumerRepository implements UiTiDv1ConsumerReposito
             ->whereIn('integration_id', $ids)
             ->orderBy('created_at')
             ->get()
-            ->map(static fn(UiTiDv1ConsumerModel $model) => $model->toDomain())
+            ->map(static fn (UiTiDv1ConsumerModel $model) => $model->toDomain())
             ->toArray();
     }
 }

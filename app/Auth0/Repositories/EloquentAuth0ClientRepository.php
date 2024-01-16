@@ -7,7 +7,6 @@ namespace App\Auth0\Repositories;
 use App\Auth0\Auth0Client;
 use App\Auth0\Auth0Tenant;
 use App\Auth0\Models\Auth0ClientModel;
-use App\UiTiDv1\UiTiDv1Environment;
 use DateTime;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -37,7 +36,7 @@ final class EloquentAuth0ClientRepository implements Auth0ClientRepository
                             'auth0_client_id' => $auth0Client->clientId,
                             'auth0_client_secret' => $auth0Client->clientSecret,
                             'auth0_tenant' => $tenant,
-                            'distributed_at' => ($tenant === Auth0Tenant::Production->value) ? null : new DateTime()
+                            'distributed_at' => ($tenant === Auth0Tenant::Production->value) ? null : new DateTime(),
                         ]
                     );
             }
@@ -47,7 +46,7 @@ final class EloquentAuth0ClientRepository implements Auth0ClientRepository
     public function distribute(Auth0Client ...$auth0Clients): void
     {
         $ids = array_map(
-            fn(Auth0Client $client) => $client->id->toString(),
+            fn (Auth0Client $client) => $client->id->toString(),
             $auth0Clients
         );
 
@@ -61,7 +60,7 @@ final class EloquentAuth0ClientRepository implements Auth0ClientRepository
         return Auth0ClientModel::query()
             ->where('integration_id', $integrationId->toString())
             ->get()
-            ->map(static fn(Auth0ClientModel $auth0ClientModel) => $auth0ClientModel->toDomain())
+            ->map(static fn (Auth0ClientModel $auth0ClientModel) => $auth0ClientModel->toDomain())
             ->toArray();
     }
 
