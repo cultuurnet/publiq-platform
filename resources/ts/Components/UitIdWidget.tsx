@@ -22,7 +22,7 @@ export const UitIdWidget = ({
   const widgetConfig = useMemo(
     () =>
       JSON.stringify({
-        $schema: "https://assets-acc.uit.be/uitid-widget/config-schema.json",
+        $schema: `${import.meta.env.VITE_UITID_WIDGET_URL}config-schema.json`,
         applicationName: "Publiq platform",
         uitidProfileUrl: profileUrl,
         uitidRegisterUrl: registerUrl,
