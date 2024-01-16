@@ -18,11 +18,12 @@ export const UitIdWidget = ({
   const { i18n } = useTranslation();
   const translateRoute = useTranslateRoute();
   const { component } = usePage();
+  const widgetUrl = import.meta.env.VITE_UITID_WIDGET_URL;
 
   const widgetConfig = useMemo(
     () =>
       JSON.stringify({
-        $schema: `${import.meta.env.VITE_UITID_WIDGET_URL}config-schema.json`,
+        $schema: `${widgetUrl}config-schema.json`,
         applicationName: "Publiq platform",
         uitidProfileUrl: profileUrl,
         uitidRegisterUrl: registerUrl,

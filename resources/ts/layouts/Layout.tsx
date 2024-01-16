@@ -16,12 +16,14 @@ export default function Layout({ children }: { children: ReactNode }) {
     widgetConfig: WidgetConfigVariables;
   }>().props;
 
+  const widgetUrl = import.meta.env.VITE_UITID_WIDGET_URL;
+
   return (
     <div className="flex flex-col flex-1 items-center text-publiq-gray-dark bg-publiq-gray-light">
       <Head>
         <script
           type="module"
-          src={`${import.meta.env.VITE_UITID_WIDGET_URL}index.js`}
+          src={`${widgetUrl}index.js`}
           async
         ></script>
       </Head>
