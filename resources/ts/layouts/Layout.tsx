@@ -21,11 +21,7 @@ export default function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="flex flex-col flex-1 items-center text-publiq-gray-dark bg-publiq-gray-light">
       <Head>
-        <script
-          type="module"
-          src={`${widgetUrl}index.js`}
-          async
-        ></script>
+        <script type="module" src={`${widgetUrl}index.js`} async></script>
       </Head>
 
       <UitIdWidget {...widgetConfig} />
