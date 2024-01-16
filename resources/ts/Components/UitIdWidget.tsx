@@ -22,7 +22,7 @@ export const UitIdWidget = ({
   const widgetConfig = useMemo(
     () =>
       JSON.stringify({
-        $schema: "https://assets.uit.be/uitid-widget/config-schema.json",
+        $schema: `${import.meta.env.VITE_UITID_WIDGET_URL}config-schema.json`,
         applicationName: "Publiq platform",
         uitidProfileUrl: profileUrl,
         uitidRegisterUrl: registerUrl,
@@ -32,6 +32,25 @@ export const UitIdWidget = ({
         logoutUrl: "/logout",
         accessTokenCookieName: "",
         idTokenCookieName: "auth.token.idToken",
+        actions: [
+          {
+            url: {
+              nl: "/nl/integrations",
+            },
+            label: {
+              nl: "Integraties",
+            },
+          },
+          "seperator",
+          {
+            url: {
+              nl: "/nl/subscriptions",
+            },
+            label: {
+              nl: "Subscriptions",
+            },
+          },
+        ],
       }),
     [auth0Domain, profileUrl, registerUrl]
   );
