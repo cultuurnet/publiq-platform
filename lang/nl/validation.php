@@ -193,7 +193,6 @@ return [
         'lastNameTechnicalContact' => 'achternaam',
         'emailTechnicalContact' => 'email',
         'agreement' => 'gebruikersvoorwaarden',
-        'privacy' => 'privacyverklaring'
     ],
 
 ];
