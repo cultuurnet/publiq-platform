@@ -6,7 +6,7 @@ namespace Tests\UiTiDv1\Jobs;
 
 use App\UiTiDv1\Events\ConsumerBlocked;
 use App\UiTiDv1\Jobs\BlockConsumer;
-use App\UiTiDv1\Jobs\BlockConsumerListener;
+use App\UiTiDv1\Jobs\BlockConsumerHandler;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
@@ -20,7 +20,7 @@ use Tests\TestCase;
 use Tests\UiTiDv1\CreatesMockUiTiDv1ClusterSDK;
 use Tests\UiTiDv1\CreatesMockUiTiDv1Consumer;
 
-final class BlockConsumerListenerTest extends TestCase
+final class BlockConsumerHandlerTest extends TestCase
 {
     use CreatesMockUiTiDv1ClusterSDK;
     use CreatesMockUiTiDv1Consumer;
@@ -29,7 +29,7 @@ final class BlockConsumerListenerTest extends TestCase
 
     private UiTiDv1ConsumerRepository&MockObject $clientRepository;
 
-    private BlockConsumerListener $blockClient;
+    private BlockConsumerHandler $blockClient;
 
 
     protected function setUp(): void
@@ -40,7 +40,7 @@ final class BlockConsumerListenerTest extends TestCase
 
         $this->clientRepository = $this->createMock(UiTiDv1ConsumerRepository::class);
 
-        $this->blockClient = new BlockConsumerListener(
+        $this->blockClient = new BlockConsumerHandler(
             $this->createMockUiTiDv1ClusterSDK($this->httpClient),
             $this->clientRepository,
             new NullLogger()
