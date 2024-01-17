@@ -6,7 +6,7 @@ namespace Tests\UiTiDv1\Jobs;
 
 use App\UiTiDv1\Events\ConsumerActivated;
 use App\UiTiDv1\Jobs\ActivateConsumer;
-use App\UiTiDv1\Jobs\ActivateConsumerListener;
+use App\UiTiDv1\Jobs\ActivateConsumerHandler;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
@@ -20,7 +20,7 @@ use Tests\TestCase;
 use Tests\UiTiDv1\CreatesMockUiTiDv1ClusterSDK;
 use Tests\UiTiDv1\CreatesMockUiTiDv1Consumer;
 
-final class ActivateConsumerListenerTest extends TestCase
+final class ActivateConsumerHandlerTest extends TestCase
 {
     use CreatesMockUiTiDv1ClusterSDK;
     use CreatesMockUiTiDv1Consumer;
@@ -29,7 +29,7 @@ final class ActivateConsumerListenerTest extends TestCase
 
     private UiTiDv1ConsumerRepository&MockObject $clientRepository;
 
-    private ActivateConsumerListener $activateClient;
+    private ActivateConsumerHandler $activateClient;
 
     protected function setUp(): void
     {
@@ -39,7 +39,7 @@ final class ActivateConsumerListenerTest extends TestCase
 
         $this->clientRepository = $this->createMock(UiTiDv1ConsumerRepository::class);
 
-        $this->activateClient = new ActivateConsumerListener(
+        $this->activateClient = new ActivateConsumerHandler(
             $this->createMockUiTiDv1ClusterSDK($this->httpClient),
             $this->clientRepository,
             new NullLogger()
