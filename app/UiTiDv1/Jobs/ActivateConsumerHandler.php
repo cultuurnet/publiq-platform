@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Event;
 use Psr\Log\LoggerInterface;
 
-final class ActivateConsumerListener implements ShouldQueue
+final class ActivateConsumerHandler implements ShouldQueue
 {
     use Queueable;
 
