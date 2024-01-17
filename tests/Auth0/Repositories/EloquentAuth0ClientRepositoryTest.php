@@ -173,7 +173,7 @@ final class EloquentAuth0ClientRepositoryTest extends TestCase
 
         $noSecondIntegrationClients = array_filter(
             $clients,
-            fn (Auth0Client $client) => !$client->integrationId->equals($secondIntegrationId)
+            fn(Auth0Client $client) => !$client->integrationId->equals($secondIntegrationId)
         );
 
         $expected = $noSecondIntegrationClients;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\UiTiDv1\Repositories;
 
+use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use App\UiTiDv1\Repositories\EloquentUiTiDv1ConsumerRepository;
 use App\UiTiDv1\UiTiDv1Consumer;
 use App\UiTiDv1\UiTiDv1Environment;
@@ -194,7 +195,7 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
 
         $noSecondIntegrationConsumers = array_filter(
             $consumers,
-            fn (UiTiDv1Consumer $consumer) => !$consumer->integrationId->equals($secondIntegrationId)
+            fn(UiTiDv1Consumer $consumer) => !$consumer->integrationId->equals($secondIntegrationId)
         );
 
         $expected = $noSecondIntegrationConsumers;
@@ -205,5 +206,64 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
         sort($actual);
 
         $this->assertEquals($expected, $actual);
+    }
+
+    public function test_it_can_predistribute_non_production_keys(): void
+    {
+        $integrationId = Uuid::uuid4();
+
+
+        $consumer1 = new UiTiDv1Consumer(
+            Uuid::uuid4(),
+            $integrationId,
+            '1',
+            'consumer-key-1',
+            'consumer-secret-1',
+            'api-key-1',
+            UiTiDv1Environment::Acceptance
+        );
+        $consumer2 = new UiTiDv1Consumer(
+            Uuid::uuid4(),
+            $integrationId,
+            '2',
+            'consumer-key-2',
+            'consumer-secret-2',
+            'api-key-2',
+            UiTiDv1Environment::Testing
+        );
+        $consumer3 = new UiTiDv1Consumer(
+            Uuid::uuid4(),
+            $integrationId,
+            '3',
+            'consumer-key-3',
+            'consumer-secret-3',
+            'api-key-3',
+            UiTiDv1Environment::Production
+        );
+
+        $this->repository->save($consumer1, $consumer2, $consumer3);
+
+        $this->assertNotNull(UiTiDv1ConsumerModel::find($consumer1->id)?->distributed_at);
+        $this->assertNotNull(UiTiDv1ConsumerModel::find($consumer2->id)?->distributed_at);
+        $this->assertNull(UiTiDv1ConsumerModel::find($consumer3->id)?->distributed_at);
+    }
+
+    public function test_it_can_distribute_keys()
+    {
+        $integrationId = Uuid::uuid4();
+        $consumer = new UiTiDv1Consumer(
+            Uuid::uuid4(),
+            $integrationId,
+            '3',
+            'consumer-key',
+            'consumer-secret',
+            'api-key',
+            UiTiDv1Environment::Production
+        );
+
+        $this->repository->save($consumer);
+        $this->assertNull(UiTiDv1ConsumerModel::find($consumer->id)?->distributed_at);
+        $this->repository->distribute($consumer);
+        $this->assertNotNull(UiTiDv1ConsumerModel::find($consumer->id)?->distributed_at);
     }
 }
