@@ -67,7 +67,16 @@ final class Contact extends Resource
                     ContactType::Contributor->value => ContactType::Contributor->name,
                 ])
                 ->readonly(fn (NovaRequest $request) => $request->isUpdateOrUpdateAttachedRequest())
-                ->rules('required'),
+                ->rules(['required', function ($attribute, $value, $fail) use ($request) {
+                    if ($value !== ContactType::Contributor->value) {
+                        $integrationId = $request->input('integration');
+                        if (ContactModel::where('type', $value)
+                            ->where('integration_id', $integrationId)
+                            ->count() > 0) {
+                            $fail('Only 1 ' . $value . ' contact per integration is allowed.');
+                        }
+                    }
+                }]),
 
             Text::make('First Name', 'first_name')
                 ->rules('required', 'max:255')

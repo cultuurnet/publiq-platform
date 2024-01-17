@@ -1,11 +1,11 @@
 import React, { FormEvent, ReactNode, useMemo } from "react";
-import { useForm } from "@inertiajs/react";
+import { Link, useForm } from "@inertiajs/react";
 import Layout from "../../layouts/Layout";
 import { Heading } from "../../Components/Heading";
 import { FormElement } from "../../Components/FormElement";
 import { Input } from "../../Components/Input";
 import { TFunction } from "i18next";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { Card } from "../../Components/Card";
 import { ButtonPrimary } from "../../Components/ButtonPrimary";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -126,7 +126,6 @@ const New = ({ subscriptions }: Props) => {
     lastNameTechnicalContact: "",
     emailTechnicalContact: "",
     agreement: "",
-    privacy: "",
     coupon: "",
     couponCode: "",
   };
@@ -351,9 +350,26 @@ const New = ({ subscriptions }: Props) => {
 
           <div className="flex flex-col gap-5">
             <FormElement
-              label={t("integration_form.agree")}
-              clickableLabel={t("integration_form.terms_of_use")}
-              clickableLabelLink={t("integration_form.terms_of_use_link")}
+              label={
+                <Trans
+                  i18nKey="integration_form.agree"
+                  t={t}
+                  components={{
+                    1: (
+                      <Link
+                        href={t("integration_form.terms_of_use_link")}
+                        className="text-publiq-blue-dark hover:underline"
+                      />
+                    ),
+                    2: (
+                      <Link
+                        href={t("integration_form.privacy_link")}
+                        className="text-publiq-blue-dark hover:underline"
+                      />
+                    ),
+                  }}
+                />
+              }
               labelPosition="right"
               className=""
               component={
@@ -371,26 +387,6 @@ const New = ({ subscriptions }: Props) => {
                 />
               }
               error={errors.agreement}
-            />
-
-            <FormElement
-              label={t("integration_form.agree")}
-              clickableLabel={t("integration_form.privacy_statement")}
-              clickableLabelLink={t("integration_form.privacy_link")}
-              labelPosition="right"
-              className=""
-              component={
-                <input
-                  type="checkbox"
-                  name="privacy"
-                  className="text-publiq-blue-dark focus:ring-publiq-blue-dark rounded-sm"
-                  checked={data.privacy === "true"}
-                  onChange={() =>
-                    setData("privacy", data.privacy === "true" ? "" : "true")
-                  }
-                />
-              }
-              error={errors.privacy}
             />
             <FormElement
               label={t("integration_form.coupon")}
