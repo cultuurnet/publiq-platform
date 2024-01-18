@@ -195,7 +195,7 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
 
         $noSecondIntegrationConsumers = array_filter(
             $consumers,
-            fn(UiTiDv1Consumer $consumer) => !$consumer->integrationId->equals($secondIntegrationId)
+            fn (UiTiDv1Consumer $consumer) => !$consumer->integrationId->equals($secondIntegrationId)
         );
 
         $expected = $noSecondIntegrationConsumers;
@@ -248,7 +248,7 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
         $this->assertNull(UiTiDv1ConsumerModel::find($consumer3->id)?->distributed_at);
     }
 
-    public function test_it_can_distribute_keys()
+    public function test_it_can_distribute_keys(): void
     {
         $integrationId = Uuid::uuid4();
         $consumer = new UiTiDv1Consumer(

@@ -173,7 +173,7 @@ final class EloquentAuth0ClientRepositoryTest extends TestCase
 
         $noSecondIntegrationClients = array_filter(
             $clients,
-            fn(Auth0Client $client) => !$client->integrationId->equals($secondIntegrationId)
+            fn (Auth0Client $client) => !$client->integrationId->equals($secondIntegrationId)
         );
 
         $expected = $noSecondIntegrationClients;
@@ -219,7 +219,7 @@ final class EloquentAuth0ClientRepositoryTest extends TestCase
         $this->assertNull(Auth0ClientModel::find($client3->id)?->distributed_at);
     }
 
-    public function test_it_can_distribute_keys()
+    public function test_it_can_distribute_keys(): void
     {
         $integrationId = Uuid::uuid4();
         $client = new Auth0Client(
