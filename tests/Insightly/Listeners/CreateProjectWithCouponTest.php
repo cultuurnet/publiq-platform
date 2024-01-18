@@ -30,11 +30,11 @@ use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use Illuminate\Support\Collection;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Tests\MockInsightlyClient;
+use Tests\TestCase;
 
 final class CreateProjectWithCouponTest extends TestCase
 {
@@ -91,6 +91,8 @@ final class CreateProjectWithCouponTest extends TestCase
             $this->couponRepository,
             $this->createMock(LoggerInterface::class),
         );
+
+        parent::setUp();
     }
 
     public function test_it_creates_a_project_when_activating_with_a_coupon(): void
