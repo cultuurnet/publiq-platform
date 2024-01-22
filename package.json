@@ -16,7 +16,7 @@
         "@fortawesome/free-solid-svg-icons": "^6.5.1",
         "@fortawesome/react-fontawesome": "^0.2.0",
         "@inertiajs/react": "^1.0.14",
-        "@sentry/browser": "^7.93.0",
+        "@sentry/browser": "^7.94.1",
         "i18next": "^23.7.18",
         "i18next-browser-languagedetector": "^7.2.0",
         "react": "^18.2.0",
