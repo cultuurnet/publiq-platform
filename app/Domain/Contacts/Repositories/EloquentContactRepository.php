@@ -56,6 +56,18 @@ final class EloquentContactRepository implements ContactRepository
         return $contacts;
     }
 
+    /**
+     * @return Collection<int, Contact>
+     */
+    public function getByIntegrationIdAndEmail(UuidInterface $integrationId, string $email): Collection
+    {
+        return ContactModel::query()
+            ->where('integration_id', '=', $integrationId)
+            ->where('email', '=', $email)
+            ->get()
+            ->map(fn (ContactModel $contactModel) => $contactModel->toDomain());
+    }
+
     public function getDeletedById(UuidInterface $id): Contact
     {
         /** @var ContactModel $contactModel */
@@ -63,4 +75,5 @@ final class EloquentContactRepository implements ContactRepository
 
         return $contactModel->toDomain();
     }
+
 }

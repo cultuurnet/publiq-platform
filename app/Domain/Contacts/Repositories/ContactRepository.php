@@ -22,4 +22,9 @@ interface ContactRepository
      * @return Collection<int, Contact>
      */
     public function getByIntegrationId(UuidInterface $integrationId): Collection;
+
+    /**
+     * @return Collection<int, Contact>
+     */
+    public function getByIntegrationIdAndEmail(UuidInterface $integrationId, string $email): Collection;
 }

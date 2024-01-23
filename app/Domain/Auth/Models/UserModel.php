@@ -57,6 +57,8 @@ final class UserModel extends Model implements AuthenticatableContract
             'id' => '00000000-0000-0000-0000-000000000000',
             'name' => 'SystemUser',
             'email' => 'noreply@publiq.be',
+            'first_name' => 'System',
+            'last_name' => 'User',
         ]);
     }
 }
