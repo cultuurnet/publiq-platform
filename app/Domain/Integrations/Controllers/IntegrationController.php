@@ -232,7 +232,7 @@ final class IntegrationController extends Controller
         return Redirect::back();
     }
 
-    public function updateBilling(string $id, UpdateOrganizationRequest $request): RedirectResponse
+    public function updateOrganization(string $id, UpdateOrganizationRequest $request): RedirectResponse
     {
         $organization = OrganizationMapper::mapUpdate($request);
 

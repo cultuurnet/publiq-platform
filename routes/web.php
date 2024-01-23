@@ -95,7 +95,7 @@ Route::group(['middleware' => 'auth'], static function () {
         Route::patch('/integrations/{id}/contacts', [IntegrationController::class, 'updateContacts']);
         Route::delete('/integrations/{id}/contacts/{contactId}', [IntegrationController::class, 'deleteContact']);
 
-        Route::patch('/integrations/{id}/billing', [IntegrationController::class, 'updateBilling']);
+        Route::patch('/integrations/{id}/organization', [IntegrationController::class, 'updateOrganization']);
 
         Route::post('/integrations/{id}/coupon', [IntegrationController::class, 'activateWithCoupon']);
         Route::post('/integrations/{id}/organization', [IntegrationController::class, 'activateWithOrganization']);

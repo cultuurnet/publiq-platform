@@ -552,7 +552,7 @@ final class IntegrationControllerTest extends TestCase
         $organization = $this->givenThereIsAnOrganization();
         $this->givenTheIntegrationIsActivatedWithOrganisation($integration, $organization);
 
-        $this->patch("/integrations/{$integration->id}/billing", [
+        $this->patch("/integrations/{$integration->id}/organization", [
             'organization' => [
                 'id' => $organization->id->toString(),
                 'name' => 'updated',
@@ -587,7 +587,7 @@ final class IntegrationControllerTest extends TestCase
         $organization = $this->givenThereIsAnOrganization();
         $this->givenTheIntegrationIsActivatedWithOrganisation($integration, $organization);
 
-        $response = $this->patch("/integrations/{$integration->id}/billing", [
+        $response = $this->patch("/integrations/{$integration->id}/organization", [
             'organization' => [
                 'id' => $organization->id->toString(),
                 'name' => 'updated',
