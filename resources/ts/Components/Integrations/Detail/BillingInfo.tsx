@@ -173,7 +173,7 @@ export const BillingInfo = ({ id, organization, subscription }: Props) => {
             <ButtonPrimary
               className="col-span-2 justify-self-start"
               onClick={() => {
-                patch(`/integrations/${id}/billing`, {
+                patch(`/integrations/${id}/organization`, {
                   preserveScroll: true,
                 });
               }}
