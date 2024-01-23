@@ -356,14 +356,16 @@ const New = ({ subscriptions }: Props) => {
                   t={t}
                   components={{
                     1: (
-                      <Link
+                      <a
                         href={t("integration_form.terms_of_use_link")}
+                        target="_blank"
                         className="text-publiq-blue-dark hover:underline"
                       />
                     ),
                     2: (
-                      <Link
+                      <a
                         href={t("integration_form.privacy_link")}
+                        target="_blank"
                         className="text-publiq-blue-dark hover:underline"
                       />
                     ),
