@@ -98,7 +98,7 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
-    public function test_it_cant_destroy_an_integration_if_not_authorized(): void
+    public function test_it_can_not_destroy_an_integration_if_not_authorized(): void
     {
         $this->actingAs(UserModel::createSystemUser(), 'web');
 
@@ -141,7 +141,7 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
-    public function test_it_cant_activate_an_integration_with_a_coupon_if_not_authorized(): void
+    public function test_it_can_not_activate_an_integration_with_a_coupon_if_not_authorized(): void
     {
         $this->actingAs(UserModel::createSystemUser(), 'web');
 
@@ -207,7 +207,7 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
-    public function test_it_cant_activate_an_integration_with_an_organization_if_not_authorized(): void
+    public function test_it_can_not_activate_an_integration_with_an_organization_if_not_authorized(): void
     {
         $this->actingAs(UserModel::createSystemUser(), 'web');
 
@@ -262,7 +262,7 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
-    public function test_it_cant_update_an_integration_if_unauthorized(): void
+    public function test_it_can_not_update_an_integration_if_unauthorized(): void
     {
         $this->actingAs(UserModel::createSystemUser(), 'web');
 
@@ -304,7 +304,7 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
-    public function test_it_cant_store_an_integration_url_if_unauthorized(): void
+    public function test_it_can_not_store_an_integration_url_if_unauthorized(): void
     {
         $this->actingAs(UserModel::createSystemUser(), 'web');
 
@@ -342,7 +342,7 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
-    public function test_it_cant_destroy_an_integration_url_if_unauthorized(): void
+    public function test_it_can_not_destroy_an_integration_url_if_unauthorized(): void
     {
         $this->actingAs(UserModel::createSystemUser(), 'web');
 
@@ -406,7 +406,7 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
-    public function test_it_cant_update_integration_urls_if_unauthorized(): void
+    public function test_it_can_not_update_integration_urls_if_unauthorized(): void
     {
         $this->actingAs(UserModel::createSystemUser(), 'web');
 
@@ -483,7 +483,7 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
-    public function test_it_cant_update_contacts_if_unauthorized(): void
+    public function test_it_can_not_update_contacts_if_unauthorized(): void
     {
         $this->actingAs(UserModel::createSystemUser(), 'web');
 
@@ -531,7 +531,7 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
-    public function test_it_cant_destroy_a_contact_if_unauthorized(): void
+    public function test_it_can_not_destroy_a_contact_if_unauthorized(): void
     {
         $this->actingAs(UserModel::createSystemUser(), 'web');
 
@@ -583,7 +583,7 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
-    public function test_it_cant_update_billing_info_of_organization_if_unauthorized(): void
+    public function test_it_can_not_update_billing_info_of_organization_if_unauthorized(): void
     {
         $this->actingAs(UserModel::createSystemUser(), 'web');
 
@@ -632,7 +632,7 @@ final class IntegrationControllerTest extends TestCase
         $response->assertRedirect(ProjectAanvraagUrl::getForIntegration($widgetIntegration));
     }
 
-    public function test_it_cant_show_widget_if_not_authenticated(): void
+    public function test_it_can_not_show_widget_if_not_authenticated(): void
     {
         $this->actingAs(UserModel::createSystemUser(), 'web');
 
