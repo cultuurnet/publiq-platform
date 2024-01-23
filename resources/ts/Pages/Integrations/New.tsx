@@ -1,5 +1,5 @@
 import React, { FormEvent, ReactNode, useMemo } from "react";
-import { Link, useForm } from "@inertiajs/react";
+import { useForm } from "@inertiajs/react";
 import Layout from "../../layouts/Layout";
 import { Heading } from "../../Components/Heading";
 import { FormElement } from "../../Components/FormElement";
@@ -14,6 +14,7 @@ import { Page } from "../../Components/Page";
 import { ButtonLinkSecondary } from "../../Components/ButtonLinkSecondary";
 import { IntegrationType } from "../../types/IntegrationType";
 import { useTranslateRoute } from "../../hooks/useTranslateRoute";
+import { Link } from "../../Components/Link";
 
 const integrationTypes = (t: TFunction) => [
   {
@@ -356,16 +357,14 @@ const New = ({ subscriptions }: Props) => {
                   t={t}
                   components={{
                     1: (
-                      <a
+                      <Link
                         href={t("integration_form.terms_of_use_link")}
-                        target="_blank"
                         className="text-publiq-blue-dark hover:underline"
                       />
                     ),
                     2: (
-                      <a
+                      <Link
                         href={t("integration_form.privacy_link")}
-                        target="_blank"
                         className="text-publiq-blue-dark hover:underline"
                       />
                     ),
