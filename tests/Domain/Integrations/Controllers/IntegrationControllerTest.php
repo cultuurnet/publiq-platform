@@ -47,9 +47,9 @@ final class IntegrationControllerTest extends TestCase
                 'subscriptionId' => $subscriptionId->toString(),
                 'integrationName' => 'Test Integration',
                 'description' => 'Test Integration description',
-                'firstNameFunctionalContact' => 'John',
-                'lastNameFunctionalContact' => 'Doe',
-                'emailFunctionalContact' => 'john.doe@test.com',
+                'firstNameFunctionalContact' => 'Jack',
+                'lastNameFunctionalContact' => 'Bauer',
+                'emailFunctionalContact' => 'jack.bauer@test.com',
                 'firstNameTechnicalContact' => 'John',
                 'lastNameTechnicalContact' => 'Doe',
                 'emailTechnicalContact' => 'john.doe@test.com',
@@ -71,8 +71,8 @@ final class IntegrationControllerTest extends TestCase
 
         $this->assertDatabaseHas('contacts', [
             'type' => ContactType::Functional,
-            'first_name' => 'John',
-            'last_name' => 'Doe',
+            'first_name' => 'Jack',
+            'last_name' => 'Bauer',
         ]);
 
         $this->assertDatabaseHas('contacts', [
