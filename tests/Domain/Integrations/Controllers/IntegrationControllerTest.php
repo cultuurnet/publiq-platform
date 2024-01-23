@@ -36,7 +36,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_store_an_integration(): void
     {
-        $this->actingAs(UserModel::createSystemUser(), 'web');
+        $this->actingAs(UserModel::createSystemUser());
 
         $subscriptionId = Uuid::uuid4();
 
@@ -84,7 +84,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_destroy_an_integration(): void
     {
-        $this->actingAs(UserModel::createSystemUser(), 'web');
+        $this->actingAs(UserModel::createSystemUser());
 
         $integration = $this->givenThereIsAnIntegration();
         $this->givenTheActingUserIsAContactOnIntegration($integration);
@@ -100,7 +100,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_not_destroy_an_integration_if_not_authorized(): void
     {
-        $this->actingAs(UserModel::createSystemUser(), 'web');
+        $this->actingAs(UserModel::createSystemUser());
 
         $integration = $this->givenThereIsAnIntegration();
 
@@ -115,7 +115,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_activate_an_integration_with_a_coupon(): void
     {
-        $this->actingAs(UserModel::createSystemUser(), 'web');
+        $this->actingAs(UserModel::createSystemUser());
 
         $integration = $this->givenThereIsAnIntegration();
         $this->givenTheActingUserIsAContactOnIntegration($integration);
@@ -143,7 +143,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_not_activate_an_integration_with_a_coupon_if_not_authorized(): void
     {
-        $this->actingAs(UserModel::createSystemUser(), 'web');
+        $this->actingAs(UserModel::createSystemUser());
 
         $integration = $this->givenThereIsAnIntegration();
         $coupon = $this->givenThereIsACoupon();
@@ -170,7 +170,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_activate_an_integration_with_an_organization(): void
     {
-        $this->actingAs(UserModel::createSystemUser(), 'web');
+        $this->actingAs(UserModel::createSystemUser());
 
         $organization = $this->givenThereIsAnOrganization();
         $integration = $this->givenThereIsAnIntegration();
@@ -205,7 +205,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_not_activate_an_integration_with_an_organization_if_not_authorized(): void
     {
-        $this->actingAs(UserModel::createSystemUser(), 'web');
+        $this->actingAs(UserModel::createSystemUser());
 
         $organization = $this->givenThereIsAnOrganization();
         $integration = $this->givenThereIsAnIntegration();
@@ -239,7 +239,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_update_an_integration(): void
     {
-        $this->actingAs(UserModel::createSystemUser(), 'web');
+        $this->actingAs(UserModel::createSystemUser());
 
         $integration = $this->givenThereIsAnIntegration();
         $this->givenTheActingUserIsAContactOnIntegration($integration);
@@ -260,7 +260,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_not_update_an_integration_if_unauthorized(): void
     {
-        $this->actingAs(UserModel::createSystemUser(), 'web');
+        $this->actingAs(UserModel::createSystemUser());
 
         $integration = $this->givenThereIsAnIntegration();
 
@@ -280,7 +280,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_store_an_integration_url(): void
     {
-        $this->actingAs(UserModel::createSystemUser(), 'web');
+        $this->actingAs(UserModel::createSystemUser());
 
         $integration = $this->givenThereIsAnIntegration();
         $this->givenTheActingUserIsAContactOnIntegration($integration);
@@ -302,7 +302,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_not_store_an_integration_url_if_unauthorized(): void
     {
-        $this->actingAs(UserModel::createSystemUser(), 'web');
+        $this->actingAs(UserModel::createSystemUser());
 
         $integration = $this->givenThereIsAnIntegration();
 
@@ -323,7 +323,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_destroy_an_integration_url(): void
     {
-        $this->actingAs(UserModel::createSystemUser(), 'web');
+        $this->actingAs(UserModel::createSystemUser());
 
         $integration = $this->givenThereIsAnIntegration();
         $this->givenTheActingUserIsAContactOnIntegration($integration);
@@ -340,7 +340,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_not_destroy_an_integration_url_if_unauthorized(): void
     {
-        $this->actingAs(UserModel::createSystemUser(), 'web');
+        $this->actingAs(UserModel::createSystemUser());
 
         $integration = $this->givenThereIsAnIntegration();
         $integrationUrl = $this->givenThereIsALoginUrlForIntegration($integration);
@@ -356,7 +356,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_update_integration_urls(): void
     {
-        $this->actingAs(UserModel::createSystemUser(), 'web');
+        $this->actingAs(UserModel::createSystemUser());
 
         $integration = $this->givenThereIsAnIntegration();
         $this->givenTheActingUserIsAContactOnIntegration($integration);
@@ -404,7 +404,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_not_update_integration_urls_if_unauthorized(): void
     {
-        $this->actingAs(UserModel::createSystemUser(), 'web');
+        $this->actingAs(UserModel::createSystemUser());
 
         $integration = $this->givenThereIsAnIntegration();
         $urls = $this->givenThereAreMultipleUrlsForIntegration($integration);
@@ -447,7 +447,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_update_contacts(): void
     {
-        $this->actingAs(UserModel::createSystemUser(), 'web');
+        $this->actingAs(UserModel::createSystemUser());
 
         $integration = $this->givenThereIsAnIntegration();
         $this->givenTheActingUserIsAContactOnIntegration($integration);
@@ -481,7 +481,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_not_update_contacts_if_unauthorized(): void
     {
-        $this->actingAs(UserModel::createSystemUser(), 'web');
+        $this->actingAs(UserModel::createSystemUser());
 
         $integration = $this->givenThereIsAnIntegration();
         $functionalContact = $this->givenThereIsAFunctionalContactOnIntegration($integration);
@@ -514,7 +514,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_destroy_a_contact(): void
     {
-        $this->actingAs(UserModel::createSystemUser(), 'web');
+        $this->actingAs(UserModel::createSystemUser());
 
         $integration = $this->givenThereIsAnIntegration();
         $this->givenTheActingUserIsAContactOnIntegration($integration);
@@ -529,7 +529,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_not_destroy_a_contact_if_unauthorized(): void
     {
-        $this->actingAs(UserModel::createSystemUser(), 'web');
+        $this->actingAs(UserModel::createSystemUser());
 
         $integration = $this->givenThereIsAnIntegration();
         $functionalContact = $this->givenThereIsAFunctionalContactOnIntegration($integration);
@@ -545,7 +545,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_update_billing_info_of_organization(): void
     {
-        $this->actingAs(UserModel::createSystemUser(), 'web');
+        $this->actingAs(UserModel::createSystemUser());
 
         $integration = $this->givenThereIsAnIntegration();
         $this->givenTheActingUserIsAContactOnIntegration($integration);
@@ -581,7 +581,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_not_update_billing_info_of_organization_if_unauthorized(): void
     {
-        $this->actingAs(UserModel::createSystemUser(), 'web');
+        $this->actingAs(UserModel::createSystemUser());
 
         $integration = $this->givenThereIsAnIntegration();
         $organization = $this->givenThereIsAnOrganization();
@@ -618,7 +618,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_show_widget(): void
     {
-        $this->actingAs(UserModel::createSystemUser(), 'web');
+        $this->actingAs(UserModel::createSystemUser());
 
         $widgetIntegration = $this->givenThereIsAnIntegration(IntegrationType::Widgets);
         $this->givenTheActingUserIsAContactOnIntegration($widgetIntegration);
@@ -630,7 +630,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_not_show_widget_if_not_authenticated(): void
     {
-        $this->actingAs(UserModel::createSystemUser(), 'web');
+        $this->actingAs(UserModel::createSystemUser());
 
         $widgetIntegration = $this->givenThereIsAnIntegration(IntegrationType::Widgets);
 
