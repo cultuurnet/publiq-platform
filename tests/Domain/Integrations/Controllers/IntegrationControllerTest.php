@@ -369,18 +369,18 @@ final class IntegrationControllerTest extends TestCase
         $response = $this->patch("/integrations/{$integration->id}/urls", [
             'loginUrl' => [
                 'id' => $urls->loginUrl->id->toString(),
-                'url' => 'https://updated.test',
+                'url' => 'https://updated.login',
             ],
             'callbackUrls' => [
                 [
                     'id' => $urls->callbackUrls[0]->id->toString(),
-                    'url' => 'https://updated.test',
+                    'url' => 'https://updated.callback',
                 ],
             ],
             'logoutUrls' => [
                 [
                     'id' => $urls->logoutUrls[0]->id->toString(),
-                    'url' => 'https://updated.test',
+                    'url' => 'https://updated.logout',
                 ],
             ],
         ]);
@@ -390,19 +390,19 @@ final class IntegrationControllerTest extends TestCase
         $this->assertDatabaseHas('integrations_urls', [
             'id' => $urls->loginUrl->id->toString(),
             'type' => IntegrationUrlType::Login->value,
-            'url' => 'https://updated.test',
+            'url' => 'https://updated.login',
         ]);
 
         $this->assertDatabaseHas('integrations_urls', [
             'id' => $urls->callbackUrls[0]->id->toString(),
             'type' => IntegrationUrlType::Callback->value,
-            'url' => 'https://updated.test',
+            'url' => 'https://updated.callback',
         ]);
 
         $this->assertDatabaseHas('integrations_urls', [
             'id' => $urls->logoutUrls[0]->id->toString(),
             'type' => IntegrationUrlType::Logout->value,
-            'url' => 'https://updated.test',
+            'url' => 'https://updated.logout',
         ]);
     }
 
@@ -416,15 +416,15 @@ final class IntegrationControllerTest extends TestCase
         $response = $this->patch("/integrations/{$integration->id}/urls", [
             'loginUrl' => [
                 'id' => $urls->loginUrl->id->toString(),
-                'url' => 'https://updated.test',
+                'url' => 'https://updated.login',
             ],
             'callbackUrl' => [
                 'id' => $urls->callbackUrls[0]->id->toString(),
-                'url' => 'https://updated.test',
+                'url' => 'https://updated.callback',
             ],
             'logoutUrl' => [
                 'id' => $urls->logoutUrls[0]->id->toString(),
-                'url' => 'https://updated.test',
+                'url' => 'https://updated.logout',
             ],
         ]);
 
