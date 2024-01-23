@@ -23,7 +23,6 @@ use App\Domain\Integrations\Mappers\StoreIntegrationUrlMapper;
 use App\Domain\Integrations\Mappers\UpdateContactInfoMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationUrlsMapper;
-use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\IntegrationUrlRepository;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
@@ -99,6 +98,56 @@ final class IntegrationController extends Controller
         );
     }
 
+    public function destroy(Request $request, string $id): RedirectResponse
+    {
+        try {
+            $this->integrationRepository->deleteById(Uuid::fromString($id));
+        } catch (ModelNotFoundException) {
+            // We can redirect back to integrations, even if not successful
+        }
+
+        return Redirect::route(
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.index')
+        );
+    }
+
+    public function update(UpdateIntegrationRequest $request, string $id): RedirectResponse
+    {
+        $currentIntegration = $this->integrationRepository->getById(Uuid::fromString($id));
+
+        $updatedIntegration = UpdateIntegrationMapper::map($request, $currentIntegration);
+
+        $this->integrationRepository->update($updatedIntegration);
+
+        return Redirect::route(
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
+            [
+                'id' => $id,
+            ]
+        );
+    }
+
+    public function show(string $id): Response
+    {
+        try {
+            $integration = $this->integrationRepository->getById(Uuid::fromString($id));
+            $subscription = $this->subscriptionRepository->getById($integration->subscriptionId);
+            $contacts = $this->contactRepository->getByIntegrationId(UUid::fromString($id));
+        } catch (Throwable) {
+            abort(404);
+        }
+
+        return Inertia::render('Integrations/Detail', [
+            'integration' => [
+                ...$integration->toArray(),
+                'contacts' => $contacts->toArray(),
+                'urls' => $integration->urls(),
+                'organization' => $integration->organization(),
+                'subscription' => $subscription,
+            ],
+        ]);
+    }
+
     public function storeUrl(StoreIntegrationUrlRequest $request, string $id): RedirectResponse
     {
         $integrationUrl = StoreIntegrationUrlMapper::map($request, $id);
@@ -110,19 +159,6 @@ final class IntegrationController extends Controller
             [
                 'id' => $id,
             ]
-        );
-    }
-
-    public function destroy(Request $request, string $id): RedirectResponse
-    {
-        try {
-            $this->integrationRepository->deleteById(Uuid::fromString($id));
-        } catch (ModelNotFoundException) {
-            // We can redirect back to integrations, even if not successful
-        }
-
-        return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName($request, 'integrations.index')
         );
     }
 
@@ -142,21 +178,7 @@ final class IntegrationController extends Controller
         );
     }
 
-    public function update(UpdateIntegrationRequest $request, string $id): RedirectResponse
-    {
-        $currentIntegration = $this->integrationRepository->getById(Uuid::fromString($id));
 
-        $updatedIntegration = UpdateIntegrationMapper::map($request, $currentIntegration);
-
-        $this->integrationRepository->update($updatedIntegration);
-
-        return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
-            [
-                'id' => $id,
-            ]
-        );
-    }
 
     public function updateUrls(UpdateIntegrationUrlsRequest $request, string $id): RedirectResponse
     {
@@ -210,7 +232,7 @@ final class IntegrationController extends Controller
         return Redirect::back();
     }
 
-    public function updateBilling(string $id, UpdateOrganizationRequest $request): RedirectResponse
+    public function updateOrganization(string $id, UpdateOrganizationRequest $request): RedirectResponse
     {
         $organization = OrganizationMapper::mapUpdate($request);
 
@@ -257,29 +279,9 @@ final class IntegrationController extends Controller
         );
     }
 
-    public function show(string $id): Response
+    public function showWidget(string $id): RedirectResponse
     {
-        try {
-            $integration = $this->integrationRepository->getById(Uuid::fromString($id));
-            $subscription = $this->subscriptionRepository->getById($integration->subscriptionId);
-            $contacts = $this->contactRepository->getByIntegrationId(UUid::fromString($id));
-        } catch (Throwable) {
-            abort(404);
-        }
-
-        return Inertia::render('Integrations/Detail', [
-            'integration' => [
-                ...$integration->toArray(),
-                'contacts' => $contacts->toArray(),
-                'urls' => $integration->urls(),
-                'organization' => $integration->organization(),
-                'subscription' => $subscription,
-            ],
-        ]);
-    }
-
-    public function showWidget(IntegrationModel $integration): RedirectResponse
-    {
-        return redirect()->away(ProjectAanvraagUrl::getForIntegration($integration->toDomain()));
+        $integration = $this->integrationRepository->getById(Uuid::fromString($id));
+        return redirect()->away(ProjectAanvraagUrl::getForIntegration($integration));
     }
 }
