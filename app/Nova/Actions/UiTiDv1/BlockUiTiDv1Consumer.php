@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Nova\Actions\UiTiDv1;
 
 use App\UiTiDv1\Jobs\BlockConsumer;
-use App\UiTiDv1\Jobs\BlockConsumerListener;
+use App\UiTiDv1\Jobs\BlockConsumerHandler;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Bus\Dispatcher;
@@ -22,7 +22,7 @@ final class BlockUiTiDv1Consumer extends Action
 
     public $name = 'Block UiTiD v1 consumer';
 
-    public function __construct(private readonly Dispatcher $dispatcher, private readonly BlockConsumerListener $listener)
+    public function __construct(private readonly Dispatcher $dispatcher, private readonly BlockConsumerHandler $listener)
     {
     }
 

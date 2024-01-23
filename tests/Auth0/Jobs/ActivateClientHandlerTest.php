@@ -6,9 +6,9 @@ namespace Tests\Auth0\Jobs;
 
 use App\Auth0\Auth0Client;
 use App\Auth0\Auth0Tenant;
-use App\Auth0\Events\ClientBlocked;
-use App\Auth0\Jobs\BlockClient;
-use App\Auth0\Jobs\BlockClientListener;
+use App\Auth0\Events\ClientActivated;
+use App\Auth0\Jobs\ActivateClient;
+use App\Auth0\Jobs\ActivateClientHandler;
 use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Json;
 use GuzzleHttp\Psr7\Response;
@@ -16,14 +16,14 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Event;
 use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
+use Tests\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
 use Tests\Auth0\CreatesMockAuth0ClusterSDK;
-use Tests\TestCase;
 
-final class BlockClientListenerTest extends TestCase
+final class ActivateClientHandlerTest extends TestCase
 {
     use CreatesMockAuth0ClusterSDK;
 
@@ -31,7 +31,7 @@ final class BlockClientListenerTest extends TestCase
 
     private Auth0ClientRepository&MockObject $clientRepository;
 
-    private BlockClientListener $blockClients;
+    private ActivateClientHandler $activateClient;
 
     protected function setUp(): void
     {
@@ -41,14 +41,14 @@ final class BlockClientListenerTest extends TestCase
 
         $this->clientRepository = $this->createMock(Auth0ClientRepository::class);
 
-        $this->blockClients = new BlockClientListener(
+        $this->activateClient = new ActivateClientHandler(
             $this->createMockAuth0ClusterSDK($this->httpClient),
             $this->clientRepository,
             new NullLogger()
         );
     }
 
-    public function test_does_it_sent_a_block_request(): void
+    public function test_does_it_sent_an_activate_request(): void
     {
         $id = Uuid::uuid4();
         $client = new Auth0Client($id, Uuid::uuid4(), 'client-id-1', 'client-secret-1', Auth0Tenant::Acceptance);
@@ -65,16 +65,23 @@ final class BlockClientListenerTest extends TestCase
                     [
                         'PATCH',
                         '/api/v2/clients/client-id-1',
-                        Json::encode(['grant_types' => []]),
+                        Json::encode([
+                            'grant_types' => [
+                                'authorization_code',
+                                'refresh_token',
+                                'client_credentials',
+                            ],
+                        ]),
                     ]
                     => new Response(200, [], ''),
                     default => throw new LogicException('Invalid arguments received'),
                 }
             );
 
-        $this->blockClients->handle(new BlockClient($id));
+        $this->activateClient->handle(new ActivateClient($id));
 
-        Event::assertDispatched(ClientBlocked::class);
+        Event::assertDispatched(ClientActivated::class);
+
     }
 
     public function test_it_does_not_try_to_block_an_invalid_client(): void
@@ -89,6 +96,6 @@ final class BlockClientListenerTest extends TestCase
         $this->httpClient->expects($this->exactly(0))
             ->method('sendRequest');
 
-        $this->blockClients->handle(new BlockClient($id));
+        $this->activateClient->handle(new ActivateClient($id));
     }
 }
