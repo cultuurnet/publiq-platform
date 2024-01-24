@@ -10,7 +10,6 @@ import { InformationDialog } from "./InformationDialog";
 import { useTranslation } from "react-i18next";
 import { SupportProps } from "../Pages/Support/Index";
 import { useTranslateRoute } from "../hooks/useTranslateRoute";
-import { IconDocumentation } from "./icons/IconDocumentation";
 
 type Props = SupportType & SupportProps;
 
