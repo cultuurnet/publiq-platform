@@ -10,6 +10,7 @@ import { InformationDialog } from "./InformationDialog";
 import { useTranslation } from "react-i18next";
 import { SupportProps } from "../Pages/Support/Index";
 import { useTranslateRoute } from "../hooks/useTranslateRoute";
+import { IconDocumentation } from "./icons/IconDocumentation";
 
 type Props = SupportType & SupportProps;
 
@@ -30,16 +31,10 @@ export const SupportCard = ({
 
   return (
     <div className="w-full flex flex-col bg-white shadow hover:bg-publiq-blue-light hover:bg-opacity-5">
-      <div className="flex flex-1 max-sm:flex-col ">
-        <div className="flex flex-shrink-0">
-          <img
-            src={imgUrl}
-            alt={title}
-            className="h-full w-auto aspect-square max-sm:max-h-[12rem] max-sm:w-full object-cover"
-          />
-        </div>
-        <div className="flex flex-col p-4 max-sm:gap-5">
-          <div className="flex flex-col gap-3 md:min-h-[10rem]">
+      <div className="flex flex-1 max-sm:flex-col md:gap-5 ">
+        <div className="flex flex-shrink-1">{imgUrl}</div>
+        <div className="flex flex-col max-sm:pb-4 max-sm:px-4 md:p-4 gap-5">
+          <div className="flex flex-col gap-3 ">
             <Heading level={3}>{title}</Heading>
             <p className="max-md:text-sm">{description}</p>
           </div>
