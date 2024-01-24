@@ -48,7 +48,7 @@ export const Card = ({
         active
           ? "bg-status-green-medium bg-opacity-10"
           : "bg-publiq-gray-light",
-        border ? "" : "px-6 py-6",
+        !border && "px-6 py-6",
         className
       )}
       {...props}

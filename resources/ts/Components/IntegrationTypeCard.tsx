@@ -51,7 +51,7 @@ export const IntegrationTypeCard = ({
               <FontAwesomeIcon
                 icon={faCheckSquare}
                 className="text-green-500"
-                size={"lg"}
+                size="lg"
               />
               {feature}
             </li>
