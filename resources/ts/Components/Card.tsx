@@ -109,7 +109,7 @@ export const Card = ({
             )}
             {!!badge && (
               <span className=" text-publiq-gray-medium-dark bg-publiq-gray-light uppercase border border-publiq-gray-medium-dark text-xs font-medium  mr-2 px-2.5 py-0.5 rounded">
-                {badge.replace("-", " ")}
+                {badge.replaceAll("-", " ")}
               </span>
             )}
           </div>
