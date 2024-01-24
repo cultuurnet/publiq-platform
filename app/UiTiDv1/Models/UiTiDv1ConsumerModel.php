@@ -26,6 +26,7 @@ final class UiTiDv1ConsumerModel extends UuidModel
         'consumer_secret',
         'api_key',
         'environment',
+        'distributed_at',
     ];
 
     public function toDomain(): UiTiDv1Consumer
