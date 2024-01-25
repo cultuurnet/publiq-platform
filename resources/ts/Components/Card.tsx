@@ -58,7 +58,7 @@ export const Card = ({
             className="text-green-500 absolute top-0 left-0"
           />
         )}
-        {img && img}
+        {img}
       </div>
 
       <div
