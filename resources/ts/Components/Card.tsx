@@ -9,7 +9,7 @@ import { Link } from "@inertiajs/react";
 type Props = {
   title: ReactElement | string;
   description?: string;
-  img?: string;
+  img?: ReactElement | string;
   badge?: string;
   active?: boolean;
   contentStyles?: string;
@@ -44,7 +44,7 @@ export const Card = ({
     <div
       className={classNames(
         "w-full flex flex-col overflow-hidden drop-shadow-card",
-        img && "px-0 py-0 gap-10 max-lg:gap-3 p-0",
+        img && "px-0 py-0 max-lg:gap-3 p-0",
         active
           ? "bg-status-green-medium bg-opacity-10"
           : "bg-publiq-gray-light",
@@ -61,14 +61,7 @@ export const Card = ({
             className="text-green-500 absolute top-0 left-0"
           />
         )}
-        {img && (
-          <img
-            src={img}
-            className={classNames(
-              img && "h-full w-auto aspect-square max-h-[12rem] object-contain"
-            )}
-          />
-        )}
+        {img}
       </div>
       <div
         className={classNames(

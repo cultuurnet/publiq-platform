@@ -15,6 +15,7 @@ type Props = IntegrationType;
 
 export const IntegrationTypeCard = ({
   title,
+  image,
   description,
   features,
   type,
@@ -35,6 +36,7 @@ export const IntegrationTypeCard = ({
     <Card
       key={title}
       title={title}
+      img={image}
       description={description}
       className={classNames(
         "md:max-w-sm md:hover:translate-y-[-2rem] md:overflow-visible md:transition-transform md:duration-500 group",
