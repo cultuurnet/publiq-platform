@@ -24,6 +24,7 @@ final class Auth0ClientModel extends UuidModel
         'auth0_client_id',
         'auth0_client_secret',
         'auth0_tenant',
+        'distributed_at',
     ];
 
     public function toDomain(): Auth0Client

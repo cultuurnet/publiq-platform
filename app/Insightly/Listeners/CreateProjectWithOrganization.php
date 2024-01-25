@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Insightly\Listeners;
 
 use App\Domain\Integrations\Events\IntegrationActivatedWithOrganization;
+use App\Domain\Integrations\Jobs\DistributeKeys;
 use App\Domain\Organizations\Organization;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
 use App\Insightly\InsightlyClient;
@@ -65,6 +66,7 @@ final class CreateProjectWithOrganization implements ShouldQueue
             $organizationInsightlyId
         );
 
+        DistributeKeys::dispatch($integrationActivatedWithOrganization->id);
         $this->logger->info(
             'Project created for integration activated for with',
             [

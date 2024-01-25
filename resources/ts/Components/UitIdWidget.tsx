@@ -53,7 +53,7 @@ export const UitIdWidget = ({
           },
         ],
       }),
-    [auth0Domain, profileUrl, registerUrl]
+    [auth0Domain, profileUrl, registerUrl, widgetUrl]
   );
 
   const currentPage = useMemo(
