@@ -116,7 +116,7 @@
       "widgets": "Widgets"
     },
     "status": {
-      "draft": "Voorlopige versie",
+      "draft": "Niet actief",
       "blocked": "Geblokeerd",
       "active": "Actief",
       "deleted": "Verwijderd",
@@ -267,7 +267,6 @@
     "close": "Sluiten",
     "invite_success": "We hebben een uitnodiging verstuurd naar {{email}}",
     "invite_error": "Er is iets fout gegaan. Probeer het later opnieuw."
-    
   },
   "tooltip": {
     "copy": "Gekopieerd!"

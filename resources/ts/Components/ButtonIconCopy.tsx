@@ -22,7 +22,7 @@ export const ButtonIconCopy = ({ onClick, className, ...props }: Props) => {
       icon={isEnabled ? faCheck : faCopy}
       onClick={handleClick}
       className={classNames(
-        "text-gray-600 transition-all ease-linear",
+        "text-gray-600 transition-all ease-linear p-0 h-auto w-auto",
         isEnabled ? "text-green-600" : "",
         className
       )}

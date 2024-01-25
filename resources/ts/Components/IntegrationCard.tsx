@@ -61,26 +61,32 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
       iconButton={
         <ButtonIcon
           icon={faPencil}
-          size="lg"
           className="text-icon-gray"
           onClick={() => onEdit(id)}
         />
       }
     >
-      <div className="flex flex-col gap-4 mx-10 my-6">
+      <div className="flex flex-col gap-4 mx-8 my-6">
         <section className="flex max-md:flex-col max-md:items-start gap-3 md:items-center">
           <Heading level={5} className="font-semibold min-w-[10rem]">
             {t("integrations.test")}
           </Heading>
-          <div className="flex gap-2 items-center bg-status-green rounded px-3">
+          <div className="flex gap-2 items-center bg-publiq-blue rounded px-2 p-1">
             <span
-              className=" overflow-hidden text-ellipsis text-status-green-dark"
+              className="overflow-hidden text-ellipsis text-white"
               ref={codeFieldRef}
             >
               {id}
             </span>
-            <Tooltip visible={isVisible} text={t("tooltip.copy")}>
-              <ButtonIconCopy onClick={handleCopyToClipboard} />
+            <Tooltip
+              visible={isVisible}
+              text={t("tooltip.copy")}
+              className={"w-auto"}
+            >
+              <ButtonIconCopy
+                onClick={handleCopyToClipboard}
+                className={"text-white"}
+              />
             </Tooltip>
           </div>
           {status !== IntegrationStatus.Active && (

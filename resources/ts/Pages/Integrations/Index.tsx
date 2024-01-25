@@ -110,7 +110,7 @@ const Index = ({ integrations, paginationInfo }: Props) => {
 
   return (
     <Page>
-      <div className="flex max-md:flex-col w-full md:justify-between max-md:gap-3 items-center">
+      <div className="flex max-md:flex-col w-full md:justify-between max-md:gap-3 items-stretch">
         <div className="inline-flex gap-3">
           <Heading level={2}>{t("integrations.title")}</Heading>
           <IconLink
@@ -122,7 +122,6 @@ const Index = ({ integrations, paginationInfo }: Props) => {
         <Input
           type="text"
           name="search"
-          placeholder={t("integrations.searching") as string}
           className="max-w-[30rem] max-lg:max-w-[20rem]"
           iconBack={faSearch}
           defaultValue={searchFromUrl ?? ""}
@@ -156,7 +155,6 @@ const Index = ({ integrations, paginationInfo }: Props) => {
       )}
 
       <Pagination links={paginationInfo.links} />
-
       <QuestionDialog
         isVisible={isDeleteDialogVisible}
         onClose={() => {
@@ -169,7 +167,7 @@ const Index = ({ integrations, paginationInfo }: Props) => {
           setIsDeleteDialogVisible(false);
           setToBeDeletedId("");
         }}
-      ></QuestionDialog>
+      />
     </Page>
   );
 };

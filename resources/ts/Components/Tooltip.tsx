@@ -1,14 +1,15 @@
 import React, { ComponentProps } from "react";
 import { classNames } from "../utils/classNames";
+import { twMerge } from "tailwind-merge";
 
 type Props = ComponentProps<"div"> & {
   visible: boolean;
   text: string;
 };
 
-export const Tooltip = ({ visible, text, children }: Props) => {
+export const Tooltip = ({ visible, text, children, className }: Props) => {
   return (
-    <div className="w-[2.5rem]">
+    <div className={twMerge("w-[2.5rem]", className)}>
       <div>
         <div className="group relative inline-block">
           {children}
