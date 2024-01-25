@@ -7,9 +7,16 @@ import { classNames } from "../utils/classNames";
 export type LinkProps = InertiaLinkProps &
   ComponentPropsWithoutRef<"a"> & {
     ref?: Ref<HTMLAnchorElement>;
+    hasExternalIcon?: boolean;
   };
 
-export const Link = ({ children, href, className, ...props }: LinkProps) => {
+export const Link = ({
+  children,
+  href,
+  className,
+  hasExternalIcon = false,
+  ...props
+}: LinkProps) => {
   const isExternal = !href.startsWith("/") && !href.startsWith("#");
 
   return (
@@ -26,7 +33,9 @@ export const Link = ({ children, href, className, ...props }: LinkProps) => {
           {...props}
         >
           <span className="hover:underline">{children}</span>
-          <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+          {hasExternalIcon && (
+            <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+          )}
         </a>
       ) : (
         <InertiaLink
