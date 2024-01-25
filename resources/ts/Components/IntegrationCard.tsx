@@ -24,7 +24,7 @@ const productTypeToPath = {
 
 const OpenWidgetBuilderButton = ({ id, type }: Pick<Props, "id" | "type">) => {
   const { t } = useTranslation();
-  if (type !== "widgets") {
+  if (type === "widgets") {
     return null;
   }
 
