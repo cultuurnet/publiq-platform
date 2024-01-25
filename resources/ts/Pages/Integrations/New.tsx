@@ -15,21 +15,29 @@ import { ButtonLinkSecondary } from "../../Components/ButtonLinkSecondary";
 import { IntegrationType } from "../../types/IntegrationType";
 import { useTranslateRoute } from "../../hooks/useTranslateRoute";
 import { Link } from "../../Components/Link";
+import { IconEntryApi } from "../../Components/icons/IconEntryApi";
+import { classNames } from "../../utils/classNames";
+import { imageStyle } from "../../Components/IntegrationTypes";
+import { IconSearchApi } from "../../Components/icons/IconSearchApi";
+import { IconWidgets } from "../../Components/icons/IconWidgets";
 
 const integrationTypes = (t: TFunction) => [
   {
+    image: <IconEntryApi className={classNames(imageStyle, "pr-4")} />,
     type: IntegrationType.EntryApi,
     title: t("home.integration_types.entry_api.title"),
     description: t("home.integration_types.entry_api.description"),
     img: "",
   },
   {
+    image: <IconSearchApi className={classNames(imageStyle, "pl-2")} />,
     type: IntegrationType.SearchApi,
     title: t("home.integration_types.search_api.title"),
     description: t("home.integration_types.search_api.description"),
     img: "",
   },
   {
+    image: <IconWidgets className={classNames(imageStyle, "pr-6")} />,
     type: IntegrationType.Widgets,
     title: t("home.integration_types.widgets.title"),
     description: t("home.integration_types.widgets.description"),
@@ -175,6 +183,7 @@ const New = ({ subscriptions }: Props) => {
                     className="rounded-lg"
                     role="button"
                     key={integration.type}
+                    img={integration.image}
                     onClick={() => {
                       setData("integrationType", integration.type);
                     }}
