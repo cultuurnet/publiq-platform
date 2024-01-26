@@ -33,7 +33,7 @@ final class InsightlyOrganizationResource implements OrganizationResource
 
         $organizationAsArray = Json::decodeAssociatively($response->getBody()->getContents());
 
-        return $organizationAsArray['ORGANIZATION_ID'];
+        return $organizationAsArray['ORGANISATION_ID'];
     }
 
     public function update(Organization $organization, int $id): void
