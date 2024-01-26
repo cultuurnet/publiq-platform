@@ -36,7 +36,7 @@ final class InsightlyOrganizationResourceTest extends TestCase
     {
         $insightlyId = 42;
         $expectedRequest = new Request('POST', 'Organizations/', [], $expectedRequest);
-        $expectedResponse = new Response(200, [], Json::encode(['ORGANIZATION_ID' => $insightlyId]));
+        $expectedResponse = new Response(200, [], Json::encode(['ORGANISATION_ID' => $insightlyId]));
 
         $this->insightlyClient->expects($this->once())
             ->method('sendRequest')
