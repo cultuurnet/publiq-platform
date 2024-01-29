@@ -39,13 +39,16 @@ export const Card = ({
   ...props
 }: Props) => {
   const translateRoute = useTranslateRoute();
+
   return (
     <div
       className={classNames(
-        "w-full flex flex-col overflow-hidden shadow-lg",
+        "w-full flex flex-col overflow-hidden drop-shadow-card",
         img && "px-0 py-0 max-lg:gap-3 p-0",
-        active ? "bg-status-green-medium bg-opacity-10" : "bg-white",
-        border ? "border border-gray-300" : "px-6 py-6",
+        active
+          ? "bg-status-green-medium bg-opacity-10"
+          : "bg-publiq-gray-light",
+        !border && "px-6 py-6",
         className
       )}
       {...props}
@@ -60,7 +63,6 @@ export const Card = ({
         )}
         {img}
       </div>
-
       <div
         className={classNames(
           "flex flex-col",
@@ -71,7 +73,7 @@ export const Card = ({
         <div
           className={classNames(
             "flex justify-between",
-            border && "border-b border-publiq-gray-300 max-sm:px-2 px-6 py-2"
+            border && "border-b border-publiq-gray-300 max-sm:px-2 px-7 py-2"
           )}
         >
           <div className="flex items-center gap-3">
@@ -98,16 +100,14 @@ export const Card = ({
                 {title}
               </Heading>
             )}
-
             {!!badge && (
-              <span className="bg-white text-publiq-blue border border-publiq-blue text-xs font-medium  mr-2 px-2.5 py-0.5 rounded">
-                {badge}
+              <span className=" text-publiq-gray-medium-dark bg-publiq-gray-light uppercase border border-publiq-gray-medium-dark text-xs font-medium  mr-2 px-2.5 py-0.5 rounded">
+                {badge.replaceAll("-", " ")}
               </span>
             )}
           </div>
           {iconButton && <div className="justify-self-end">{iconButton}</div>}
         </div>
-
         {description && (
           <p className="text-gray-700 text-base min-h-[5rem] break-words">
             {description}

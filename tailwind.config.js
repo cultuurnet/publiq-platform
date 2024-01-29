@@ -8,9 +8,10 @@ module.exports = {
         pulse: "pulse 0.4s",
       },
       dropShadow: {
-        'triangle': [
-          "0 4px 1px rgb(0 0 0 / 0.07)",
-          "0 2px 1px rgb(0 0 0 / 0.06)",
+        card: "0 0 35px -10px rgba(0, 0, 0, 0.14)",
+        triangle: [
+          "0 4px 1px rgba(0, 0, 0, 0.07)",
+          "0 2px 1px rgba(0, 0, 0, 0.06)",
         ],
       },
       keyframes: {
@@ -20,7 +21,6 @@ module.exports = {
             opacity: "0.7",
             borderRadius: "50%",
           },
-
           "100%": {
             transform: "scale(2)",
             opacity: "0.3",
@@ -32,9 +32,10 @@ module.exports = {
         "publiq-blue": "#009fdf",
         "publiq-blue-dark": "#0076a5",
         "publiq-blue-light": "#1ebeff",
-        "publiq-gray-dark": "#3b3b3b",
-        "publiq-gray-medium": "#efefef",
-        "publiq-gray-light": "#fcfcfc",
+        "publiq-gray-dark": "hsl(0,0%,23%)",
+        "publiq-gray-medium-dark": "hsl(0,0%,64%)",
+        "publiq-gray-medium": "hsl(0,0%,94%)",
+        "publiq-gray-light": "hsl(0,0%,99%)",
         "uitid-widget": "#F8F8F8",
         "icon-gray": "#5f6368",
         "icon-gray-light": "#F2F2F2",

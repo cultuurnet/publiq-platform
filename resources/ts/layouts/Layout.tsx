@@ -19,7 +19,7 @@ export default function Layout({ children }: { children: ReactNode }) {
   const widgetUrl = import.meta.env.VITE_UITID_WIDGET_URL;
 
   return (
-    <div className="flex flex-col flex-1 items-center text-publiq-gray-dark bg-publiq-gray-light">
+    <div className="flex flex-col flex-1 items-center text-publiq-gray-dark bg-publiq-gray-medium">
       <Head>
         <script type="module" src={`${widgetUrl}index.js`} async></script>
       </Head>

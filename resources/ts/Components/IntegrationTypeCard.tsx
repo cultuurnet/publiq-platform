@@ -2,7 +2,10 @@ import React from "react";
 import { Card } from "./Card";
 import { IntegrationType } from "./IntegrationTypes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheckSquare,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
 import { classNames } from "../utils/classNames";
 import { router } from "@inertiajs/core";
@@ -36,7 +39,7 @@ export const IntegrationTypeCard = ({
       img={image}
       description={description}
       className={classNames(
-        "md:max-w-sm md:hover:translate-y-[-2rem] md:overflow-visible md:transition-transform md:duration-500 hover:shadow-md group",
+        "md:max-w-sm md:hover:translate-y-[-2rem] md:overflow-visible md:transition-transform md:duration-500 group",
         afterStyles
       )}
       role="button"
@@ -47,7 +50,11 @@ export const IntegrationTypeCard = ({
         <ul className="flex flex-col gap-3">
           {features.map((feature) => (
             <li key={feature} className="flex items-center gap-2">
-              <FontAwesomeIcon icon={faCheck} className="text-green-500" />
+              <FontAwesomeIcon
+                icon={faCheckSquare}
+                className="text-green-500"
+                size="lg"
+              />
               {feature}
             </li>
           ))}
