@@ -19,7 +19,7 @@ export const Hero = () => {
         </Heading>
         <Heading
           level={2}
-          className="text-center font-light text-publiq-gray-dark max-w-[37rem]"
+          className="text-center font-extralight text-publiq-gray-dark max-w-[37rem]"
         >
           {t("home.hero.intro")}
         </Heading>
