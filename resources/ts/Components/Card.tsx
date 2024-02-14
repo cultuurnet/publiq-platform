@@ -11,6 +11,7 @@ type Props = {
   description?: string;
   img?: ReactElement | string;
   badge?: string;
+  icon?: ReactElement | string;
   active?: boolean;
   contentStyles?: string;
   textCenter?: boolean;
@@ -26,6 +27,7 @@ export const Card = ({
   description,
   img,
   badge = "",
+  icon,
   iconButton,
   active,
   children,
@@ -76,7 +78,8 @@ export const Card = ({
             border && "border-b border-publiq-gray-300 max-sm:px-2 px-7 py-2"
           )}
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 h-20">
+            {icon}
             {clickableHeading ? (
               <Link href={`${translateRoute("/integrations")}/${id}`}>
                 <Heading

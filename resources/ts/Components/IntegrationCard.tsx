@@ -11,6 +11,7 @@ import { ButtonIconCopy } from "./ButtonIconCopy";
 import { Tooltip } from "./Tooltip";
 import { IntegrationStatus } from "../types/IntegrationStatus";
 import { ButtonLinkSecondary } from "./ButtonLinkSecondary";
+import { useIntegrationTypes } from "./IntegrationTypes";
 
 type Props = Integration & {
   onEdit: (id: string) => void;
@@ -38,6 +39,7 @@ const OpenWidgetBuilderButton = ({ id, type }: Pick<Props, "id" | "type">) => {
 export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
   const { t } = useTranslation();
 
+  const integrationTypes = useIntegrationTypes();
   const codeFieldRef = useRef<HTMLSpanElement>(null);
 
   const [isVisible, setIsVisible] = useState(false);
@@ -55,7 +57,7 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
     <Card
       title={name}
       border
-      badge={type}
+      icon={integrationTypes.find((i) => i.type === type)?.image}
       clickableHeading
       id={id}
       iconButton={
