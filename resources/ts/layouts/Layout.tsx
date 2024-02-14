@@ -5,11 +5,9 @@ import Footer from "../Components/Footer";
 import { usePage, Head } from "@inertiajs/react";
 import { UitIdWidget, WidgetConfigVariables } from "../Components/UitIdWidget";
 
-const Main = ({ children }: { children: ReactNode }) => {
-  const classes = "flex flex-col items-center w-full";
-
-  return <main className={classes}>{children}</main>;
-};
+const Main = ({ children }: { children: ReactNode }) => (
+  <main className={"flex flex-col items-center w-full pt-6"}>{children}</main>
+);
 
 export default function Layout({ children }: { children: ReactNode }) {
   const { widgetConfig } = usePage<{
