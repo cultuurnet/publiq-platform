@@ -14,7 +14,7 @@ import { Page } from "../../Components/Page";
 import { ButtonLinkSecondary } from "../../Components/ButtonLinkSecondary";
 import { useTranslateRoute } from "../../hooks/useTranslateRoute";
 import { Link } from "../../Components/Link";
-import { getIntegrationTypes } from "../../Components/IntegrationTypes";
+import { useIntegrationTypes } from "../../Components/IntegrationTypes";
 
 const pricing = (t: TFunction, subscriptions: Subscription[]) => {
   const getInfoForType = (type: string) => {
@@ -122,7 +122,7 @@ const New = ({ subscriptions }: Props) => {
     });
   }
 
-  const translatedIntegrations = useMemo(() => getIntegrationTypes(t), [t]);
+  const translatedIntegrations = useIntegrationTypes();
   const translatedPricing = useMemo(
     () => pricing(t, subscriptions),
     [t, subscriptions]

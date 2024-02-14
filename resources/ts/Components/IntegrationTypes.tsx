@@ -47,15 +47,19 @@ export const getIntegrationTypes = (t: TFunction) => [
   },
 ];
 
+export const useIntegrationTypes = () => {
+  const { t } = useTranslation();
+
+  return useMemo(() => getIntegrationTypes(t), [t]);
+};
+
 export const imageStyle =
   "h-full w-auto aspect-square max-h-[10rem] object-contain";
 
 export type IntegrationType = ReturnType<typeof getIntegrationTypes>[number];
 
 export const IntegrationTypes = () => {
-  const { t } = useTranslation();
-
-  const translatedIntegrationTypes = useMemo(() => getIntegrationTypes(t), [t]);
+  const translatedIntegrationTypes = useIntegrationTypes();
 
   return (
     <div>
