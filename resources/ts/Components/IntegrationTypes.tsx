@@ -8,7 +8,7 @@ import { IconSearchApi } from "./icons/IconSearchApi";
 import { IconWidgets } from "./icons/IconWidgets";
 import { classNames } from "../utils/classNames";
 
-const getIntegrationTypes = (t: TFunction) => [
+export const getIntegrationTypes = (t: TFunction) => [
   {
     image: <IconEntryApi className={classNames(imageStyle, "pr-4")} />,
     title: t("home.integration_types.entry_api.title"),
@@ -19,6 +19,7 @@ const getIntegrationTypes = (t: TFunction) => [
       t("home.integration_types.entry_api.features.2"),
     ],
     type: IntegrationType.EntryApi,
+    img: "",
   },
   {
     image: <IconSearchApi className={classNames(imageStyle, "pl-2")} />,
@@ -30,6 +31,7 @@ const getIntegrationTypes = (t: TFunction) => [
       t("home.integration_types.search_api.features.2"),
     ],
     type: IntegrationType.SearchApi,
+    img: "",
   },
   {
     image: <IconWidgets className={classNames(imageStyle, "pr-6")} />,
@@ -41,6 +43,7 @@ const getIntegrationTypes = (t: TFunction) => [
       t("home.integration_types.widgets.features.2"),
     ],
     type: IntegrationType.Widgets,
+    img: "",
   },
 ];
 
