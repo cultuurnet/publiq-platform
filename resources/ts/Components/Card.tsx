@@ -75,7 +75,7 @@ export const Card = ({
         <div
           className={classNames(
             "flex justify-between",
-            border && "border-b border-publiq-gray-300 max-sm:px-2 px-7 py-5"
+            border && "border-b border-publiq-gray-300 max-sm:px-2 p-5"
           )}
         >
           <div className="flex items-center gap-3 h-16">
