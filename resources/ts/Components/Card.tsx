@@ -63,7 +63,7 @@ export const Card = ({
             className="text-green-500 absolute top-0 left-0"
           />
         )}
-        {img}
+        {img && <span className={"h-28"}>{img}</span>}
       </div>
       <div
         className={classNames(
@@ -75,10 +75,10 @@ export const Card = ({
         <div
           className={classNames(
             "flex justify-between",
-            border && "border-b border-publiq-gray-300 max-sm:px-2 px-7 py-2"
+            border && "border-b border-publiq-gray-300 max-sm:px-2 px-7 py-5"
           )}
         >
-          <div className="flex items-center gap-3 h-20">
+          <div className="flex items-center gap-3 h-16">
             {icon}
             {clickableHeading ? (
               <Link href={`${translateRoute("/integrations")}/${id}`}>

@@ -11,7 +11,10 @@ import { ButtonIconCopy } from "./ButtonIconCopy";
 import { Tooltip } from "./Tooltip";
 import { IntegrationStatus } from "../types/IntegrationStatus";
 import { ButtonLinkSecondary } from "./ButtonLinkSecondary";
-import { useIntegrationTypes } from "./IntegrationTypes";
+import {
+  integrationIconClasses,
+  useIntegrationTypes,
+} from "./IntegrationTypes";
 
 type Props = Integration & {
   onEdit: (id: string) => void;
@@ -53,11 +56,13 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
     }, 1000);
   }
 
+  const CardIcon = integrationTypes.find((i) => i.type === type)?.Icon;
+
   return (
     <Card
       title={name}
       border
-      icon={integrationTypes.find((i) => i.type === type)?.image}
+      icon={<CardIcon className={integrationIconClasses} />}
       clickableHeading
       id={id}
       iconButton={
