@@ -1,19 +1,14 @@
-name: Dependabot auto-merge
-on: pull_request_target
-permissions:
-  pull-requests: write
-  contents: write
+name: Enable automerge on dependabot PRs
+
+on:
+  pull_request_target:
+
 jobs:
-  dependabot:
+  automerge:
+    name: Enable automerge on dependabot PRs
     runs-on: ubuntu-latest
-    if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
     steps:
-      - name: Dependabot metadata
-        id: dependabot-metadata
-        uses: dependabot/fetch-metadata@v1
-      - name: Enable auto-merge for Dependabot PRs
-        if: ${{contains(steps.dependabot-metadata.outputs.dependency-names, 'rails') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'}}
-        run: gh pr merge --auto --merge "$PR_URL"
-        env:
-          PR_URL: ${{github.event.pull_request.html_url}}
-          GH_TOKEN: ${{secrets.DEPENDABOT_AUTO_MERGE_PERSONAL_ACCESS_TOKEN}}
+      - name: Enable automerge on dependabot PRs
+        uses: daneden/enable-automerge-action@v1
+        with:
+          github-token: ${{ secrets.DEPENDABOT_AUTO_MERGE_PERSONAL_ACCESS_TOKEN }}
