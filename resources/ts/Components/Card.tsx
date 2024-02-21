@@ -78,10 +78,13 @@ export const Card = ({
         <div
           className={classNames(
             "flex justify-between",
-            border && "border-b border-publiq-gray-300 max-sm:px-2 p-5"
+            border &&
+              `${!headless && "border-b border-publiq-gray-300"} max-sm:px-2 p-5`
           )}
         >
-          <div className="flex items-center gap-3 h-16">
+          <div
+            className={`flex items-center gap-3 ${headless ? "h-16" : "h-11"}`}
+          >
             {icon}
             {clickableHeading ? (
               <Link href={`${translateRoute("/integrations")}/${id}`}>

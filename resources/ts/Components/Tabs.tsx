@@ -68,7 +68,7 @@ export const Tabs = ({ children, active, onChange, ...props }: Props) => {
   );
 
   return (
-    <div className="flex flex-col gap-3 px-3" {...props}>
+    <div className="flex flex-col gap-3 px-4" {...props}>
       <ul className="flex flex-wrap text-sm text-center text-gray-500 border-b border-gray-300">
         {styledTabItems}
       </ul>
