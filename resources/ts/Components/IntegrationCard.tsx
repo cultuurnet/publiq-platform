@@ -1,4 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, {
+  ReactComponentElement,
+  ReactElement,
+  ReactNode,
+  useRef,
+  useState,
+} from "react";
 import type { Integration } from "../Pages/Integrations/Index";
 import { ButtonIcon } from "./ButtonIcon";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
@@ -15,6 +21,7 @@ import {
   integrationIconClasses,
   useIntegrationTypes,
 } from "./IntegrationTypes";
+import { IconSearchApi } from "./icons/IconSearchApi";
 
 type Props = Integration & {
   onEdit: (id: string) => void;
@@ -56,13 +63,15 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
     }, 1000);
   }
 
-  const CardIcon = integrationTypes.find((i) => i.type === type)?.Icon;
+  const CardIcon = integrationTypes.find((i) => i.type === type)?.Icon as
+    | typeof IconSearchApi
+    | undefined;
 
   return (
     <Card
       title={name}
       border
-      icon={<CardIcon className={integrationIconClasses} />}
+      icon={CardIcon && <CardIcon className={integrationIconClasses} />}
       clickableHeading
       id={id}
       iconButton={

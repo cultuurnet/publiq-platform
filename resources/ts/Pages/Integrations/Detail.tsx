@@ -53,7 +53,7 @@ const Detail = ({ integration }: Props) => {
             <small>{integration.type}</small>
           </div>
         }
-        icon={integrationType.image}
+        icon={integrationType?.image}
         border
         headless
       >
