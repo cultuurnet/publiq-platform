@@ -78,9 +78,9 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
           <Heading level={5} className="font-semibold min-w-[10rem]">
             {t("integrations.test")}
           </Heading>
-          <div className="flex gap-2 items-center bg-publiq-orange rounded px-3 p-1">
+          <div className="flex gap-2 items-center bg-[#fdf3ef] rounded px-3 p-1">
             <span
-              className="overflow-hidden text-ellipsis text-white"
+              className="overflow-hidden text-ellipsis text-publiq-orange"
               ref={codeFieldRef}
             >
               {id}
@@ -92,7 +92,7 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
             >
               <ButtonIconCopy
                 onClick={handleCopyToClipboard}
-                className={"text-white"}
+                className={"text-publiq-orange"}
               />
             </Tooltip>
           </div>
