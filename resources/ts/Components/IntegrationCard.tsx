@@ -1,10 +1,4 @@
-import React, {
-  ReactComponentElement,
-  ReactElement,
-  ReactNode,
-  useRef,
-  useState,
-} from "react";
+import React, { useRef, useState } from "react";
 import type { Integration } from "../Pages/Integrations/Index";
 import { ButtonIcon } from "./ButtonIcon";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";

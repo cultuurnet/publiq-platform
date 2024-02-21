@@ -1,4 +1,4 @@
-import React, { ComponentProps, ReactElement, ReactNode } from "react";
+import React, { ComponentProps, ReactElement } from "react";
 import { classNames } from "../utils/classNames";
 import { Heading } from "./Heading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
