@@ -46,7 +46,7 @@ const Label = memo(({ id, labelSize, label, className }: LabelProps) => (
   <label
     htmlFor={id}
     className={classNames(
-      "font-semibold",
+      "font-medium",
       labelSize ? `text-${labelSize}` : "",
       className
     )}

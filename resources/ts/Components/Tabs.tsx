@@ -18,7 +18,7 @@ const Item = ({ type, label, className, onChange }: ItemProps) => {
     <button
       onClick={() => onChange!(type)}
       aria-current="page"
-      className={classNames("inline-block p-3 grow", className)}
+      className={classNames("inline-block p-3", className)}
     >
       <li className="mr-2">{label}</li>
     </button>
@@ -39,6 +39,7 @@ export const Tabs = ({ children, active, onChange, ...props }: Props) => {
       ) as ReactElement[],
     [children]
   );
+
   const styledTabItems = useMemo(
     () =>
       tabItems.map((item) => {
@@ -52,7 +53,7 @@ export const Tabs = ({ children, active, onChange, ...props }: Props) => {
           ...item.props,
           className: classNames(
             item.props.className,
-            "text-publiq-blue-dark bg-slate-100"
+            "text-publiq-blue-light border-publiq-blue border-b-[3px]"
           ),
           onChange,
         });
@@ -67,8 +68,8 @@ export const Tabs = ({ children, active, onChange, ...props }: Props) => {
   );
 
   return (
-    <div className="flex flex-col gap-3" {...props}>
-      <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-300">
+    <div className="flex flex-col gap-3 px-3" {...props}>
+      <ul className="flex flex-wrap text-sm text-center text-gray-500 border-b border-gray-300">
         {styledTabItems}
       </ul>
       <div className="flex flex-col gap-10 max-md:px-5 px-12 py-5">
