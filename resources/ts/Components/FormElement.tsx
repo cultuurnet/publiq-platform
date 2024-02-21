@@ -9,7 +9,7 @@ import { classNames } from "../utils/classNames";
 
 export type LabelPosition = "top" | "left" | "right";
 
-type LabelSize = "base" | "lg" | "xl";
+type LabelSize = "sm" | "base" | "lg" | "xl";
 
 type WrapperProps = {
   labelPosition?: LabelPosition;
@@ -76,7 +76,7 @@ type Props = {
 export const FormElement = ({
   label,
   labelPosition = "top",
-  labelSize = "base",
+  labelSize = "sm",
   component,
   error,
   info,
