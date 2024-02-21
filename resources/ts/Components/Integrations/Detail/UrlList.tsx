@@ -79,7 +79,7 @@ export const UrlList = ({
         className
       )}
     >
-      <Heading className="font-semibold" level={3}>
+      <Heading className="font-semibold" level={4}>
         {t(`details.integration_settings.${type}`)}
       </Heading>
       <div className="flex flex-col gap-5">

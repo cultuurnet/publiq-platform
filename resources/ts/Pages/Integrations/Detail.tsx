@@ -12,6 +12,7 @@ import { Tabs } from "../../Components/Tabs";
 import { DeleteIntegration } from "../../Components/Integrations/Detail/DeleteIntegration";
 import { Card } from "../../Components/Card";
 import { useIntegrationTypes } from "../../Components/IntegrationTypes";
+import { Heading } from "../../Components/Heading";
 
 type Props = { integration: Integration };
 
@@ -44,7 +45,14 @@ const Detail = ({ integration }: Props) => {
   return (
     <Page>
       <Card
-        title={integration.name}
+        title={
+          <div className={"flex flex-col"}>
+            <Heading className={"font-semibold"} level={2}>
+              {integration.name}
+            </Heading>
+            <small>{integration.type}</small>
+          </div>
+        }
         icon={integrationType.image}
         border
         headless

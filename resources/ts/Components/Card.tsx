@@ -47,6 +47,22 @@ export const Card = ({
     ? "bg-status-green-medium bg-opacity-10"
     : "bg-publiq-gray-light";
 
+  const heading =
+    typeof title !== "string" ? (
+      title
+    ) : (
+      <Heading
+        level={2}
+        className={classNames(
+          "font-medium max-sm:text-basis",
+          clickableHeading && "text-publiq-blue-dark hover:underline",
+          headingStyles
+        )}
+      >
+        {title}
+      </Heading>
+    );
+
   return (
     <div
       className={classNames(
@@ -79,7 +95,7 @@ export const Card = ({
           className={classNames(
             "flex justify-between",
             border &&
-              `${!headless && "border-b border-publiq-gray-300"} max-sm:px-2 p-5`
+              `${!headless ? "border-b border-publiq-gray-300 max-sm:px-2 p-5" : "py-3"}`
           )}
         >
           <div
@@ -88,26 +104,10 @@ export const Card = ({
             {icon}
             {clickableHeading ? (
               <Link href={`${translateRoute("/integrations")}/${id}`}>
-                <Heading
-                  level={2}
-                  className={classNames(
-                    "font-medium text-publiq-blue-dark hover:underline max-sm:text-basis",
-                    headingStyles
-                  )}
-                >
-                  {title}
-                </Heading>
+                {heading}
               </Link>
             ) : (
-              <Heading
-                level={2}
-                className={classNames(
-                  "font-medium max-sm:text-basis",
-                  headingStyles
-                )}
-              >
-                {title}
-              </Heading>
+              heading
             )}
             {!!badge && (
               <span className=" text-publiq-gray-medium-dark bg-publiq-gray-light uppercase border border-publiq-gray-medium-dark text-xs font-medium  mr-2 px-2.5 py-0.5 rounded">
