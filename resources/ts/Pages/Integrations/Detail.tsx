@@ -11,6 +11,7 @@ import { router } from "@inertiajs/react";
 import { Tabs } from "../../Components/Tabs";
 import { DeleteIntegration } from "../../Components/Integrations/Detail/DeleteIntegration";
 import { Card } from "../../Components/Card";
+import { useIntegrationTypes } from "../../Components/IntegrationTypes";
 
 type Props = { integration: Integration };
 
@@ -31,6 +32,10 @@ const Detail = ({ integration }: Props) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const integrationTypes = useIntegrationTypes();
+  const integrationType = integrationTypes.find(
+    (i) => i.type === integration.type
+  );
   const changeTabInUrl = (tab: string) => {
     url.searchParams.set("tab", tab);
     router.get(url.toString());
@@ -38,7 +43,12 @@ const Detail = ({ integration }: Props) => {
 
   return (
     <Page>
-      <Card title={integration.name} badge={integration.type} border>
+      <Card
+        title={integration.name}
+        icon={integrationType.image}
+        border
+        headless
+      >
         <div className="w-full flex flex-col gap-5">
           <Tabs active={activeTab} onChange={changeTabInUrl}>
             <Tabs.Item

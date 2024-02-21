@@ -1,4 +1,4 @@
-import React, { ComponentProps, ReactElement } from "react";
+import React, { ComponentProps, ReactElement, ReactNode } from "react";
 import { classNames } from "../utils/classNames";
 import { Heading } from "./Heading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,8 +11,9 @@ type Props = {
   description?: string;
   img?: ReactElement | string;
   badge?: string;
-  icon?: ReactElement | string;
+  icon?: ReactElement;
   active?: boolean;
+  headless?: boolean;
   contentStyles?: string;
   textCenter?: boolean;
   border?: boolean;
@@ -34,6 +35,7 @@ export const Card = ({
   className,
   contentStyles,
   border = false,
+  headless = false,
   textCenter,
   clickableHeading = false,
   headingStyles,
