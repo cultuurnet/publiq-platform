@@ -43,15 +43,16 @@ export const Card = ({
   ...props
 }: Props) => {
   const translateRoute = useTranslateRoute();
+  const backgroundColor = active
+    ? "bg-status-green-medium bg-opacity-10"
+    : "bg-publiq-gray-light";
 
   return (
     <div
       className={classNames(
         "w-full flex flex-col overflow-hidden drop-shadow-card",
         img && "px-0 py-0 max-lg:gap-3 p-0",
-        active
-          ? "bg-status-green-medium bg-opacity-10"
-          : "bg-publiq-gray-light",
+        !headless ? backgroundColor : "",
         !border && "px-6 py-6",
         className
       )}
@@ -114,11 +115,20 @@ export const Card = ({
           {iconButton && <div className="justify-self-end">{iconButton}</div>}
         </div>
         {description && (
-          <p className="text-gray-700 text-base min-h-[5rem] break-words">
+          <p
+            className={classNames(
+              "text-gray-700 text-base min-h-[5rem] break-words",
+              backgroundColor
+            )}
+          >
             {description}
           </p>
         )}
-        {children && <div className={contentStyles}>{children}</div>}
+        {children && (
+          <div className={classNames(backgroundColor, contentStyles)}>
+            {children}
+          </div>
+        )}
       </div>
     </div>
   );
