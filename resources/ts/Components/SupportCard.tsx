@@ -34,7 +34,7 @@ export const SupportCard = ({
         <div className="flex flex-shrink-1">{imgUrl}</div>
         <div className="flex flex-col max-sm:pb-4 max-sm:px-4 md:p-4 gap-5">
           <div className="flex flex-col gap-3">
-            <Heading level={3} className={"font-semibold"}>
+            <Heading level={3} className="font-semibold">
               {title}
             </Heading>
             <p className="max-md:text-sm">{description}</p>

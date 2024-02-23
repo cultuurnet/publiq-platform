@@ -46,8 +46,8 @@ const Detail = ({ integration }: Props) => {
     <Page>
       <Card
         title={
-          <div className={"flex flex-col"}>
-            <Heading className={"font-semibold"} level={2}>
+          <div className="flex flex-col">
+            <Heading className="font-semibold" level={2}>
               {integration.name}
             </Heading>
             <small>{integration.type}</small>
