@@ -25,7 +25,6 @@ export const getIntegrationTypes = (t: TFunction) => [
       t("home.integration_types.entry_api.features.2"),
     ],
     type: IntegrationType.EntryApi,
-    img: "",
   },
   {
     Icon: IconSearchApi,
@@ -40,7 +39,6 @@ export const getIntegrationTypes = (t: TFunction) => [
       t("home.integration_types.search_api.features.2"),
     ],
     type: IntegrationType.SearchApi,
-    img: "",
   },
   {
     Icon: IconWidgets,
@@ -55,7 +53,6 @@ export const getIntegrationTypes = (t: TFunction) => [
       t("home.integration_types.widgets.features.2"),
     ],
     type: IntegrationType.Widgets,
-    img: "",
   },
 ];
 
