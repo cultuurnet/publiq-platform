@@ -16,7 +16,7 @@ export const Credentials = ({ id, status, hasCredentials }: Props) => {
       <div>
         {hasCredentials.v2 && (
           <div className="w-full max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-6 border-b pb-10 border-gray-300">
-            <Heading className="font-semibold" level={3}>
+            <Heading className="font-semibold" level={4}>
               {t("details.credentials.uitid_v1")}
             </Heading>
             <div className="flex flex-col gap-6 min-w-[40rem]">
@@ -57,7 +57,7 @@ export const Credentials = ({ id, status, hasCredentials }: Props) => {
         )}
       </div>
       <div className="w-full max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-6">
-        <Heading className="font-semibold" level={3}>
+        <Heading className="font-semibold" level={4}>
           {t("details.credentials.uitid_v2")}
         </Heading>
         {hasCredentials.v1 ? (

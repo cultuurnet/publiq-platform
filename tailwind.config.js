@@ -36,6 +36,7 @@ module.exports = {
         "publiq-gray-medium-dark": "hsl(0,0%,64%)",
         "publiq-gray-medium": "hsl(0,0%,94%)",
         "publiq-gray-light": "hsl(0,0%,99%)",
+        "publiq-orange": "#EC865F",
         "uitid-widget": "#F8F8F8",
         "icon-gray": "#5f6368",
         "icon-gray-light": "#F2F2F2",

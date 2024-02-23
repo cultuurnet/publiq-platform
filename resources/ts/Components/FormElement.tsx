@@ -9,7 +9,7 @@ import { classNames } from "../utils/classNames";
 
 export type LabelPosition = "top" | "left" | "right";
 
-type LabelSize = "base" | "lg" | "xl";
+type LabelSize = "sm" | "base" | "lg" | "xl";
 
 type WrapperProps = {
   labelPosition?: LabelPosition;
@@ -46,7 +46,7 @@ const Label = memo(({ id, labelSize, label, className }: LabelProps) => (
   <label
     htmlFor={id}
     className={classNames(
-      "font-semibold",
+      "font-medium",
       labelSize ? `text-${labelSize}` : "",
       className
     )}
@@ -76,7 +76,7 @@ type Props = {
 export const FormElement = ({
   label,
   labelPosition = "top",
-  labelSize = "base",
+  labelSize = "sm",
   component,
   error,
   info,
