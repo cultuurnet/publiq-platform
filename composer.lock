@@ -2139,17 +2139,17 @@
         },
         {
             "name": "laravel/nova",
-            "version": "4.32.13",
+            "version": "4.32.14",
             "source": {
                 "type": "git",
                 "url": "git@github.com:laravel/nova.git",
-                "reference": "f3932760323c8f3dbcfe4ff675530bf31b07e94f"
+                "reference": "a96f1bbdb1291ba0c4ba694fac37273c7e9637cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://nova.laravel.com/dist/laravel/nova/laravel-nova-f3932760323c8f3dbcfe4ff675530bf31b07e94f-zip-ca60a3.zip",
-                "reference": "f3932760323c8f3dbcfe4ff675530bf31b07e94f",
-                "shasum": "bd974c01b5fa4a0c9ff7c1c8a2a1a202c720d06f"
+                "url": "https://nova.laravel.com/dist/laravel/nova/laravel-nova-a96f1bbdb1291ba0c4ba694fac37273c7e9637cb-zip-39938b.zip",
+                "reference": "a96f1bbdb1291ba0c4ba694fac37273c7e9637cb",
+                "shasum": "844bc09ea58a13e42391aa63ff72933132b0ab4a"
             },
             "require": {
                 "brick/money": "^0.5.0|^0.6.0|^0.7.0|^0.8.0",
@@ -2259,9 +2259,9 @@
                 "laravel"
             ],
             "support": {
-                "source": "https://github.com/laravel/nova/tree/v4.32.13"
+                "source": "https://github.com/laravel/nova/tree/v4.32.14"
             },
-            "time": "2024-02-17T20:13:55+00:00"
+            "time": "2024-02-21T22:32:34+00:00"
         },
         {
             "name": "laravel/prompts",
