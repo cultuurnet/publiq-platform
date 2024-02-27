@@ -363,9 +363,11 @@ final class IntegrationControllerTest extends TestCase
         $urls = $this->givenThereAreMultipleUrlsForIntegration($integration);
 
         $response = $this->patch("/integrations/{$integration->id}/urls", [
-            'loginUrl' => [
-                'id' => $urls->loginUrl->id->toString(),
-                'url' => 'https://updated.login',
+            'loginUrls' => [
+                [
+                    'id' => $urls->loginUrl->id->toString(),
+                    'url' => 'https://updated.login',
+                ],
             ],
             'callbackUrls' => [
                 [
@@ -373,12 +375,7 @@ final class IntegrationControllerTest extends TestCase
                     'url' => 'https://updated.callback',
                 ],
             ],
-            'logoutUrls' => [
-                [
-                    'id' => $urls->logoutUrls[0]->id->toString(),
-                    'url' => 'https://updated.logout',
-                ],
-            ],
+            'logoutUrls' => [],
         ]);
 
         $response->assertRedirect("/nl/integraties/{$integration->id}");
@@ -395,10 +392,8 @@ final class IntegrationControllerTest extends TestCase
             'url' => 'https://updated.callback',
         ]);
 
-        $this->assertDatabaseHas('integrations_urls', [
+        $this->assertDatabaseMissing('integrations_urls', [
             'id' => $urls->logoutUrls[0]->id->toString(),
-            'type' => IntegrationUrlType::Logout->value,
-            'url' => 'https://updated.logout',
         ]);
     }
 
@@ -410,7 +405,7 @@ final class IntegrationControllerTest extends TestCase
         $urls = $this->givenThereAreMultipleUrlsForIntegration($integration);
 
         $response = $this->patch("/integrations/{$integration->id}/urls", [
-            'loginUrl' => [
+            'loginUrls' => [
                 'id' => $urls->loginUrl->id->toString(),
                 'url' => 'https://updated.login',
             ],
