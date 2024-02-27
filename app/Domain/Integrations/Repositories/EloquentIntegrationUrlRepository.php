@@ -14,8 +14,8 @@ final class EloquentIntegrationUrlRepository implements IntegrationUrlRepository
     public function save(IntegrationUrl $integrationUrl): void
     {
         IntegrationUrlModel::query()->create([
-            'id' => $integrationUrl->id,
-            'integration_id' => $integrationUrl->integrationId,
+            'id' => $integrationUrl->id->toString(),
+            'integration_id' => $integrationUrl->integrationId->toString(),
             'type' => $integrationUrl->type,
             'environment' => $integrationUrl->environment,
             'url' => $integrationUrl->url,
@@ -75,7 +75,7 @@ final class EloquentIntegrationUrlRepository implements IntegrationUrlRepository
         IntegrationUrlModel::query()
             ->where('id', $integrationUrl->id->toString())
             ->update([
-                'integration_id' => $integrationUrl->integrationId,
+                'integration_id' => $integrationUrl->integrationId->toString(),
                 'type' => $integrationUrl->type,
                 'environment' => $integrationUrl->environment,
                 'url' => $integrationUrl->url,
