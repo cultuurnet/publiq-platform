@@ -11,6 +11,11 @@ import { ButtonIconCopy } from "./ButtonIconCopy";
 import { Tooltip } from "./Tooltip";
 import { IntegrationStatus } from "../types/IntegrationStatus";
 import { ButtonLinkSecondary } from "./ButtonLinkSecondary";
+import {
+  integrationIconClasses,
+  useIntegrationTypes,
+} from "./IntegrationTypes";
+import { IconSearchApi } from "./icons/IconSearchApi";
 
 type Props = Integration & {
   onEdit: (id: string) => void;
@@ -38,6 +43,7 @@ const OpenWidgetBuilderButton = ({ id, type }: Pick<Props, "id" | "type">) => {
 export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
   const { t } = useTranslation();
 
+  const integrationTypes = useIntegrationTypes();
   const codeFieldRef = useRef<HTMLSpanElement>(null);
 
   const [isVisible, setIsVisible] = useState(false);
@@ -51,36 +57,46 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
     }, 1000);
   }
 
+  const CardIcon = integrationTypes.find((i) => i.type === type)?.Icon as
+    | typeof IconSearchApi
+    | undefined;
+
   return (
     <Card
       title={name}
       border
-      badge={type}
+      icon={CardIcon && <CardIcon className={integrationIconClasses} />}
       clickableHeading
       id={id}
       iconButton={
         <ButtonIcon
           icon={faPencil}
-          size="lg"
           className="text-icon-gray"
           onClick={() => onEdit(id)}
         />
       }
     >
-      <div className="flex flex-col gap-4 mx-10 my-6">
+      <div className="flex flex-col gap-4 mx-8 my-6">
         <section className="flex max-md:flex-col max-md:items-start gap-3 md:items-center">
           <Heading level={5} className="font-semibold min-w-[10rem]">
             {t("integrations.test")}
           </Heading>
-          <div className="flex gap-2 items-center bg-status-green rounded px-3">
+          <div className="flex gap-2 items-center bg-[#fdf3ef] rounded px-3 p-1">
             <span
-              className=" overflow-hidden text-ellipsis text-status-green-dark"
+              className="overflow-hidden text-ellipsis text-publiq-orange"
               ref={codeFieldRef}
             >
               {id}
             </span>
-            <Tooltip visible={isVisible} text={t("tooltip.copy")}>
-              <ButtonIconCopy onClick={handleCopyToClipboard} />
+            <Tooltip
+              visible={isVisible}
+              text={t("tooltip.copy")}
+              className={"w-auto"}
+            >
+              <ButtonIconCopy
+                onClick={handleCopyToClipboard}
+                className={"text-publiq-orange"}
+              />
             </Tooltip>
           </div>
           {status !== IntegrationStatus.Active && (

@@ -10,14 +10,23 @@ export const Hero = () => {
 
   return (
     <section className="w-full flex flex-col items-center">
-      <div className="flex flex-col gap-7 items-center py-8 px-12">
-        <Heading level={1} className="text-center font-bold">
+      <div className="flex flex-col gap-7 items-center py-0 px-6">
+        <Heading
+          level={1}
+          className="text-center font-bold text-publiq-gray-dark"
+        >
           {t("home.hero.title")}
         </Heading>
-        <Heading level={2} className="text-center font-light max-w-[37rem]">
+        <Heading
+          level={2}
+          className="text-center font-extralight text-publiq-gray-dark max-w-[37rem]"
+        >
           {t("home.hero.intro")}
         </Heading>
-        <ButtonLink href={translateRoute("/integrations/new")}>
+        <ButtonLink
+          href={translateRoute("/integrations/new")}
+          className={"rounded-none text-xl mb-6"}
+        >
           {t("home.hero.start_here")}
         </ButtonLink>
       </div>

@@ -23,7 +23,7 @@ export const BillingInfo = ({ id, organization, subscription }: Props) => {
   return (
     <>
       <div className="w-full max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-6">
-        <Heading level={3} className="font-semibold">
+        <Heading level={4} className="font-semibold">
           {t("details.billing_info.title.subscription")}
         </Heading>
         <FormElement
@@ -44,7 +44,7 @@ export const BillingInfo = ({ id, organization, subscription }: Props) => {
       {data.organization && (
         <>
           <div className="w-full max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-6">
-            <Heading level={3} className="font-semibold">
+            <Heading level={4} className="font-semibold">
               {t("details.billing_info.title.organization")}
             </Heading>
 

@@ -23,7 +23,7 @@ export const BasicInfo = ({
 
   return (
     <div className="max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-6 border-b pb-10 border-gray-300">
-      <Heading level={3} className="font-semibold">
+      <Heading level={4} className="font-medium">
         {t("details.basic_info.title")}
       </Heading>
       <div className="grid-cols-2 flex flex-col gap-5">

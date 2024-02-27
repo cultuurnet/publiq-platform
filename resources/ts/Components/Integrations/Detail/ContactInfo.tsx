@@ -157,7 +157,7 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
   return (
     <>
       <div className="w-full flex flex-col gap-6">
-        <Heading level={3} className="font-semibold col-span-1">
+        <Heading level={4} className="font-semibold col-span-1">
           {t("details.contact_info.title")}
         </Heading>
         <ContactsTable

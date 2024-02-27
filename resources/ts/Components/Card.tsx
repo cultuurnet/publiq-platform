@@ -9,9 +9,11 @@ import { Link } from "@inertiajs/react";
 type Props = {
   title: ReactElement | string;
   description?: string;
-  img?: string;
+  img?: ReactElement | string;
   badge?: string;
+  icon?: ReactElement;
   active?: boolean;
+  headless?: boolean;
   contentStyles?: string;
   textCenter?: boolean;
   border?: boolean;
@@ -26,12 +28,14 @@ export const Card = ({
   description,
   img,
   badge = "",
+  icon,
   iconButton,
   active,
   children,
   className,
   contentStyles,
   border = false,
+  headless = false,
   textCenter,
   clickableHeading = false,
   headingStyles,
@@ -39,13 +43,33 @@ export const Card = ({
   ...props
 }: Props) => {
   const translateRoute = useTranslateRoute();
+  const backgroundColor = active
+    ? "bg-status-green-medium bg-opacity-10"
+    : "bg-publiq-gray-light";
+
+  const heading =
+    typeof title !== "string" ? (
+      title
+    ) : (
+      <Heading
+        level={2}
+        className={classNames(
+          "font-medium max-sm:text-basis",
+          clickableHeading && "text-publiq-blue-dark hover:underline",
+          headingStyles
+        )}
+      >
+        {title}
+      </Heading>
+    );
+
   return (
     <div
       className={classNames(
-        "w-full flex flex-col overflow-hidden shadow-lg",
-        img && "px-0 py-0 gap-10 max-lg:gap-3 p-0",
-        active ? "bg-status-green-medium bg-opacity-10" : "bg-white",
-        border ? "border border-gray-300" : "px-6 py-6",
+        "w-full flex flex-col overflow-hidden drop-shadow-card",
+        img && "px-0 py-0 max-lg:gap-3 p-0",
+        !headless ? backgroundColor : "",
+        !border && "px-6 py-6",
         className
       )}
       {...props}
@@ -58,16 +82,8 @@ export const Card = ({
             className="text-green-500 absolute top-0 left-0"
           />
         )}
-        {img && (
-          <img
-            src={img}
-            className={classNames(
-              img && "h-full w-auto aspect-square max-h-[12rem] object-contain"
-            )}
-          ></img>
-        )}
+        {img && <span className={"h-28"}>{img}</span>}
       </div>
-
       <div
         className={classNames(
           "flex flex-col",
@@ -78,49 +94,44 @@ export const Card = ({
         <div
           className={classNames(
             "flex justify-between",
-            border && "border-b border-publiq-gray-300 max-sm:px-2 px-6 py-2"
+            border &&
+              `${!headless ? "border-b border-publiq-gray-300 max-sm:px-2 p-5" : "py-3"}`
           )}
         >
-          <div className="flex items-center gap-3">
+          <div
+            className={`flex items-center gap-3 ${headless ? "h-16" : "h-11"}`}
+          >
+            {icon}
             {clickableHeading ? (
               <Link href={`${translateRoute("/integrations")}/${id}`}>
-                <Heading
-                  level={2}
-                  className={classNames(
-                    "font-medium text-publiq-blue-dark hover:underline max-sm:text-basis",
-                    headingStyles
-                  )}
-                >
-                  {title}
-                </Heading>
+                {heading}
               </Link>
             ) : (
-              <Heading
-                level={2}
-                className={classNames(
-                  "font-medium max-sm:text-basis",
-                  headingStyles
-                )}
-              >
-                {title}
-              </Heading>
+              heading
             )}
-
             {!!badge && (
-              <span className="bg-white text-publiq-blue border border-publiq-blue text-xs font-medium  mr-2 px-2.5 py-0.5 rounded">
-                {badge}
+              <span className=" text-publiq-gray-medium-dark bg-publiq-gray-light uppercase border border-publiq-gray-medium-dark text-xs font-medium  mr-2 px-2.5 py-0.5 rounded">
+                {badge.replaceAll("-", " ")}
               </span>
             )}
           </div>
           {iconButton && <div className="justify-self-end">{iconButton}</div>}
         </div>
-
         {description && (
-          <p className="text-gray-700 text-base min-h-[5rem] break-words">
+          <p
+            className={classNames(
+              "text-gray-700 text-base min-h-[5rem] break-words",
+              backgroundColor
+            )}
+          >
             {description}
           </p>
         )}
-        {children && <div className={contentStyles}>{children}</div>}
+        {children && (
+          <div className={classNames(backgroundColor, contentStyles)}>
+            {children}
+          </div>
+        )}
       </div>
     </div>
   );
