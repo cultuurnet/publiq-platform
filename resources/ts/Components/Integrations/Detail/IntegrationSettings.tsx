@@ -77,7 +77,7 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
   };
 
   const handleSave = () => {
-    patch(`/integrations/${id}`, {
+    patch(`/integrations/${id}/urls`, {
       preserveScroll: true,
       preserveState: true,
     });
