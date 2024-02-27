@@ -21,37 +21,9 @@ final class UpdateIntegrationUrlsRequest extends FormRequest
         ];
 
         return [
-            'integrationName' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string', 'max:255'],
             'loginUrls.*' => Rule::forEach(fn () => $urlValidation),
             'callbackUrls.*' => Rule::forEach(fn () => $urlValidation),
             'logoutUrls.*' => Rule::forEach(fn () => $urlValidation),
-            'newIntegrationUrls.*' => Rule::forEach(fn () => [
-                'id' => ['required', 'string'],
-                'url' => ['required', 'url:https'],
-            ]),
-            ];
-    }
-
-    public function after(): array
-    {
-        return [
-            function (Validator $validator) {
-                $urlTypes = ['loginUrls', 'callbackUrls', 'logoutUrls', 'newIntegrationUrls'];
-
-                foreach($urlTypes as $type) {
-                    $failing = $validator->errors()->get("$type.*");
-                    $values = $validator->getData()[$type];
-
-
-                    foreach (array_keys($failing) as $errorMessage) {
-                        $index = (int) explode('.', $errorMessage)[1];
-                        $failingValue = $values[$index];
-
-                        $validator->errors()->add($type . '.' . $failingValue['id'] . '.url', 'Requested URL is not valid');
-                    }
-                }
-            },
         ];
     }
 }
