@@ -17,6 +17,8 @@ interface IntegrationUrlRepository
      */
     public function updateUrls(Collection $integrationUrls): void;
     public function getById(UuidInterface $id): IntegrationUrl;
+
+    public function getByIntegrationId(UuidInterface $integrationId): Collection;
     /**
     * @param array<UuidInterface> $ids
     * @return array<IntegrationUrl>

@@ -19,9 +19,7 @@ final class UpdateIntegrationUrlsMapper
      */
     public static function map(UpdateIntegrationUrlsRequest $request, Collection $currentIntegrationUrls): Collection
     {
-        $currentUrlsCollection = Collection::make($currentIntegrationUrls);
-
-        $changedUrlsCollection = Collection::make(
+        $changedUrls = Collection::make(
             [
                 ...($request->input('loginUrls') ?? []),
                 ...($request->input('callbackUrls') ?? []),
@@ -29,13 +27,13 @@ final class UpdateIntegrationUrlsMapper
             ]
         )->filter(fn ($val) => $val !== null)->values();
 
-        return $changedUrlsCollection->map(
-            function (array $changedUrl) use ($currentUrlsCollection) {
+        return $changedUrls->map(
+            function (array $changedUrl) use ($currentIntegrationUrls) {
                 /** @var ?IntegrationUrl $currentUrl */
                 $currentUrl = null;
 
                 if ($changedUrl['id']) {
-                    $currentUrl = $currentUrlsCollection->first(
+                    $currentUrl = $currentIntegrationUrls->first(
                         fn (IntegrationUrl $currentUrl) => $currentUrl->id->equals(
                             Uuid::fromString($changedUrl['id'])
                         )
