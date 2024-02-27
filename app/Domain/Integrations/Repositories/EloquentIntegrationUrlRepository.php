@@ -46,13 +46,34 @@ final class EloquentIntegrationUrlRepository implements IntegrationUrlRepository
            ->toArray();
     }
 
-    public function deleteById(UuidInterface $id): ?bool
+    public function getByIntegrationId(UuidInterface $integrationId): Collection
     {
-        /**
-         * @var IntegrationUrlModel $integrationUrlModel
-         */
-        $integrationUrlModel = IntegrationUrlModel::query()->findOrFail($id->toString());
-        return $integrationUrlModel->delete();
+        return IntegrationUrlModel::query()
+            ->where('integration_id', '=', $integrationId->toString())
+            ->orderBy('created_at')
+            ->get()
+            ->map(static fn (IntegrationUrlModel $model) => $model->toDomain());
+    }
+
+    public function deleteById(UuidInterface $id): void
+    {
+        IntegrationUrlModel::query()->where('id', '=', $id->toString())->delete();
+    }
+
+    /**
+     * @param Collection<UuidInterface> $ids
+     */
+    public function deleteByIds(Collection $ids): void
+    {
+        if (count($ids) === 0) {
+            return;
+        }
+
+        DB::transaction(function () use ($ids) {
+            foreach ($ids as $id) {
+                $this->deleteById($id);
+            }
+        });
     }
 
     /**

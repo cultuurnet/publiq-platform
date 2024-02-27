@@ -18,11 +18,18 @@ interface IntegrationUrlRepository
     public function updateUrls(Collection $integrationUrls): void;
     public function getById(UuidInterface $id): IntegrationUrl;
 
+    /**
+     * @return Collection<IntegrationUrl>
+     */
     public function getByIntegrationId(UuidInterface $integrationId): Collection;
     /**
     * @param array<UuidInterface> $ids
     * @return array<IntegrationUrl>
      */
     public function getByIds(array $ids): array;
-    public function deleteById(UuidInterface $id): ?bool;
+    public function deleteById(UuidInterface $id): void;
+    /**
+     * @param Collection<UuidInterface> $ids
+     */
+    public function deleteByIds(Collection $ids): void;
 }
