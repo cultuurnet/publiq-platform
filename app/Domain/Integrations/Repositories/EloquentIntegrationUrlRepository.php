@@ -6,6 +6,7 @@ namespace App\Domain\Integrations\Repositories;
 
 use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\Models\IntegrationUrlModel;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\UuidInterface;
 
@@ -55,9 +56,9 @@ final class EloquentIntegrationUrlRepository implements IntegrationUrlRepository
     }
 
     /**
-     * @param array<IntegrationUrl> $integrationUrls
+     * @param Collection<IntegrationUrl> $integrationUrls
      */
-    public function updateUrls(array $integrationUrls): void
+    public function updateUrls(Collection $integrationUrls): void
     {
         if (count($integrationUrls) === 0) {
             return;

@@ -17,6 +17,7 @@ use App\Domain\Integrations\FormRequests\UpdateIntegrationRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationUrlsRequest;
 use App\Domain\Integrations\FormRequests\UpdateOrganizationRequest;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\Mappers\OrganizationMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationUrlMapper;
@@ -34,6 +35,7 @@ use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -173,12 +175,6 @@ final class IntegrationController extends Controller
 
     public function updateUrls(UpdateIntegrationUrlsRequest $request, string $id): RedirectResponse
     {
-        $integrationRequest = ['integrationName' => $request->input('integrationName'), 'description' => $request->input('description')];
-
-        $integrationUpdateRequest = new UpdateIntegrationRequest($integrationRequest);
-
-        $this->update($integrationUpdateRequest, $id);
-
         $ids = array_map(
             fn ($url) => Uuid::fromString($url['id']),
             array_filter(
@@ -192,28 +188,12 @@ final class IntegrationController extends Controller
         );
 
         if (count($ids) > 0) {
-            $currentUrls = $this->integrationUrlRepository->getByIds($ids);
+            /** @var Collection<IntegrationUrl> $currentUrls */
+            $currentUrls = collect($this->integrationUrlRepository->getByIds($ids));
 
             $updatedUrls = UpdateIntegrationUrlsMapper::map($request, $currentUrls);
 
             $this->integrationUrlRepository->updateUrls($updatedUrls);
-        }
-
-        $newUrls =
-            array_filter(
-                [
-                    ...($request->input('newIntegrationUrls') ?? []),
-                ],
-                fn ($val) => $val !== null
-            );
-
-        if (count($newUrls) > 0) {
-
-            foreach ($newUrls as $url) {
-                $storeRequest = new StoreIntegrationUrlRequest($url);
-
-                $this->storeUrl($storeRequest, $id);
-            }
         }
 
         return Redirect::route(
