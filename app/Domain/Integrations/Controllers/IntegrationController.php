@@ -150,11 +150,18 @@ final class IntegrationController extends Controller
         ]);
     }
 
-    public function storeUrl(StoreIntegrationUrlRequest $request, string $id): void
+    public function storeUrl(StoreIntegrationUrlRequest $request, string $id): RedirectResponse
     {
         $integrationUrl = StoreIntegrationUrlMapper::map($request, $id);
 
         $this->integrationUrlRepository->save($integrationUrl);
+
+        return Redirect::route(
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
+            [
+                'id' => $id,
+            ]
+        );
     }
 
     public function destroyUrl(Request $request, string $id, string $urlId): RedirectResponse
