@@ -6,7 +6,6 @@ namespace App\Domain\Integrations\FormRequests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Validator;
 
 final class UpdateIntegrationUrlsRequest extends FormRequest
 {
