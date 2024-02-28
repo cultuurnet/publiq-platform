@@ -63,11 +63,7 @@ const Detail = ({ integration }: Props) => {
               type="settings"
               label={t("details.integration_settings.title")}
             >
-              <IntegrationSettings
-                integration={integration}
-                {...integration}
-                isMobile={isMobile}
-              />
+              <IntegrationSettings {...integration} isMobile={isMobile} />
             </Tabs.Item>
             <Tabs.Item
               type="credentials"

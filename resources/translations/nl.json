@@ -185,7 +185,6 @@
       "prod": "productieomgeving",
       "login": "Login URL",
       "callback": "Callback URL's",
-      "add": "URL toevoegen",
       "new": "Nieuwe URL",
       "environment": "Omgeving",
       "logout": "Logout URL's",

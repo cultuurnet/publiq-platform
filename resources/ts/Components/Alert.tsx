@@ -82,7 +82,14 @@ export const Alert = ({
           </div>
         </section>
       </div>
-      {closable && <ButtonIcon icon={faXmark} size="xl" onClick={onClose} />}
+      {closable && (
+        <ButtonIcon
+          icon={faXmark}
+          size="lg"
+          className="hover:bg-opacity-40"
+          onClick={onClose}
+        />
+      )}
     </div>
   );
 };
