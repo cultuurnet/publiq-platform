@@ -435,6 +435,23 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
+    public function test_it_can_delete_integration_urls_via_update(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $this->givenThereAreMultipleUrlsForIntegration($integration);
+
+        $response = $this->put("/integrations/{$integration->id}/urls", [
+            'urls' => [],
+        ]);
+
+        $response->assertRedirect("/nl/integraties/{$integration->id}");
+
+        $this->assertDatabaseCount('integrations_urls', 0);
+    }
+
     public function test_it_can_not_update_integration_urls_if_unauthorized(): void
     {
         $this->actingAs(UserModel::createSystemUser());
