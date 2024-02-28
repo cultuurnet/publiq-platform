@@ -26,17 +26,15 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
     private function getInputsForFullUpdate(): array
     {
         return [
-            'loginUrls' => [
-            [
-                'id' => self::FIRST_LOGIN_URL_ID,
-                'url' => 'https://publiqtest.be/login-1-new',
-            ],
-            [
-                'id' => self::SECOND_LOGIN_URL_ID,
-                'url' => 'https://publiqtest.be/login-2-new',
-            ],
-            ],
-            'callbackUrls' => [
+            'urls' => [
+                [
+                    'id' => self::FIRST_LOGIN_URL_ID,
+                    'url' => 'https://publiqtest.be/login-1-new',
+                ],
+                [
+                    'id' => self::SECOND_LOGIN_URL_ID,
+                    'url' => 'https://publiqtest.be/login-2-new',
+                ],
                 [
                     'id' => self::FIRST_CALLBACK_URL_ID,
                     'url' => 'https://publiqtest.be/callback-1-new',
@@ -45,8 +43,6 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
                     'id' => self::SECOND_CALLBACK_URL_ID,
                     'url' => 'https://publiqtest.be/callback-2-new',
                 ],
-            ],
-            'logoutUrls' => [
                 [
                     'id' => self::FIRST_LOGOUT_URL_ID,
                     'url' => 'https://publiqtest.be/logout-1-new',
@@ -170,7 +166,7 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
 
         $currentUrls = $this->getCurrentIntegrationUrls();
 
-        $actual = UpdateIntegrationUrlsMapper::map($request, $currentUrls);
+        $actual = UpdateIntegrationUrlsMapper::map($request, $currentUrls, Uuid::fromString(self::INTEGRATION_ID));
 
         $expected = $this->getExpectedIntegrationUrlForFullUpdate();
 
@@ -180,7 +176,7 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
     public function test_it_only_creates_updated_login_integration_url_from_request(): void
     {
         $inputs = [
-            'loginUrls' => [
+            'urls' => [
                 ['id' => self::FIRST_LOGIN_URL_ID,
                 'url' => 'https://publiqtest.be/login-1-new'],
                 ['id' => self::SECOND_LOGIN_URL_ID,
@@ -193,7 +189,7 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
 
         $currentUrls = $this->getCurrentIntegrationUrls();
 
-        $actual = UpdateIntegrationUrlsMapper::map($request, $currentUrls);
+        $actual = UpdateIntegrationUrlsMapper::map($request, $currentUrls, Uuid::fromString(self::INTEGRATION_ID));
 
         $expected = collect([
             new IntegrationUrl(
@@ -218,7 +214,7 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
     public function test_it_only_creates_updated_callback_urls_from_request(): void
     {
         $inputs = [
-            'callbackUrls' => [
+            'urls' => [
                 [
                     'id' => self::FIRST_CALLBACK_URL_ID,
                     'url' => 'https://publiqtest.be/callback-1-new',
@@ -235,7 +231,7 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
 
         $currentUrls = $this->getCurrentIntegrationUrls();
 
-        $actual = UpdateIntegrationUrlsMapper::map($request, $currentUrls);
+        $actual = UpdateIntegrationUrlsMapper::map($request, $currentUrls, Uuid::fromString(self::INTEGRATION_ID));
 
         $expected = collect([
             new IntegrationUrl(
@@ -260,7 +256,7 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
     public function test_it_only_creates_updated_logout_urls_from_request(): void
     {
         $inputs = [
-            'logoutUrls' => [
+            'urls' => [
                 [
                     'id' => self::FIRST_LOGOUT_URL_ID,
                     'url' => 'https://publiqtest.be/logout-1-new',
@@ -277,7 +273,7 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
 
         $currentUrls = $this->getCurrentIntegrationUrls();
 
-        $actual = UpdateIntegrationUrlsMapper::map($request, $currentUrls);
+        $actual = UpdateIntegrationUrlsMapper::map($request, $currentUrls, Uuid::fromString(self::INTEGRATION_ID));
 
         $expected = collect([
             new IntegrationUrl(

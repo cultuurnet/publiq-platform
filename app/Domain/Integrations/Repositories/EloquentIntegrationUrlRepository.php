@@ -14,13 +14,18 @@ final class EloquentIntegrationUrlRepository implements IntegrationUrlRepository
 {
     public function save(IntegrationUrl $integrationUrl): void
     {
-        IntegrationUrlModel::query()->create([
+        IntegrationUrlModel::query()->updateOrCreate(
+            [
+                'id' => $integrationUrl->id->toString(),
+            ],
+            [
             'id' => $integrationUrl->id->toString(),
             'integration_id' => $integrationUrl->integrationId->toString(),
             'type' => $integrationUrl->type,
             'environment' => $integrationUrl->environment,
             'url' => $integrationUrl->url,
-         ]);
+         ]
+        );
     }
 
     public function getById(UuidInterface $id): IntegrationUrl
@@ -87,7 +92,7 @@ final class EloquentIntegrationUrlRepository implements IntegrationUrlRepository
 
         DB::transaction(function () use ($integrationUrls) {
             foreach ($integrationUrls as $integrationUrl) {
-                $this->update($integrationUrl);
+                $this->save($integrationUrl);
             }
         });
     }

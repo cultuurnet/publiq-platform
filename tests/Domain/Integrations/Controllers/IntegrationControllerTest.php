@@ -363,19 +363,23 @@ final class IntegrationControllerTest extends TestCase
         $urls = $this->givenThereAreMultipleUrlsForIntegration($integration);
 
         $response = $this->patch("/integrations/{$integration->id}/urls", [
-            'loginUrls' => [
+            'urls' => [
                 [
                     'id' => $urls->loginUrl->id->toString(),
                     'url' => 'https://updated.login',
                 ],
-            ],
-            'callbackUrls' => [
                 [
                     'id' => $urls->callbackUrls[0]->id->toString(),
+                    'environment' => $urls->callbackUrls[0]->environment->value,
+                    'type' => $urls->callbackUrls[0]->type->value,
                     'url' => 'https://updated.callback',
                 ],
+                [
+                    'environment' => Environment::Acceptance->value,
+                    'type' => IntegrationUrlType::Callback->value,
+                    'url' => 'https://new.callback',
+                ],
             ],
-            'logoutUrls' => [],
         ]);
 
         $response->assertRedirect("/nl/integraties/{$integration->id}");
@@ -390,6 +394,12 @@ final class IntegrationControllerTest extends TestCase
             'id' => $urls->callbackUrls[0]->id->toString(),
             'type' => IntegrationUrlType::Callback->value,
             'url' => 'https://updated.callback',
+        ]);
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'environment' => Environment::Acceptance->value,
+            'type' => IntegrationUrlType::Callback->value,
+            'url' => 'https://new.callback',
         ]);
 
         $this->assertDatabaseMissing('integrations_urls', [

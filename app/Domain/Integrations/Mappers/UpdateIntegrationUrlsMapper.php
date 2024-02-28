@@ -10,6 +10,7 @@ use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\IntegrationUrlType;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 final class UpdateIntegrationUrlsMapper
 {
@@ -17,22 +18,17 @@ final class UpdateIntegrationUrlsMapper
      * @param Collection<IntegrationUrl> $currentIntegrationUrls
      * @return Collection<IntegrationUrl>
      */
-    public static function map(UpdateIntegrationUrlsRequest $request, Collection $currentIntegrationUrls): Collection
+    public static function map(UpdateIntegrationUrlsRequest $request, Collection $currentIntegrationUrls, UuidInterface $integrationId): Collection
     {
-        $changedUrls = Collection::make(
-            [
-                ...($request->input('loginUrls') ?? []),
-                ...($request->input('callbackUrls') ?? []),
-                ...($request->input('logoutUrls') ?? []),
-            ]
-        )->filter(fn ($val) => $val !== null)->values();
+        /** @var array<array> $changedUrls */
+        $changedUrls = $request->input('urls') ?? [];
 
-        return $changedUrls->map(
-            function (array $changedUrl) use ($currentIntegrationUrls) {
+        return collect($changedUrls)->map(
+            function (array $changedUrl) use ($integrationId, $currentIntegrationUrls) {
                 /** @var ?IntegrationUrl $currentUrl */
                 $currentUrl = null;
 
-                if ($changedUrl['id']) {
+                if (isset($changedUrl['id'])) {
                     $currentUrl = $currentIntegrationUrls->first(
                         fn (IntegrationUrl $currentUrl) => $currentUrl->id->equals(
                             Uuid::fromString($changedUrl['id'])
@@ -43,7 +39,7 @@ final class UpdateIntegrationUrlsMapper
                 if ($currentUrl === null) {
                     return new IntegrationUrl(
                         Uuid::uuid4(),
-                        Uuid::fromString($changedUrl['integrationId']),
+                        $integrationId,
                         Environment::from($changedUrl['environment']),
                         IntegrationUrlType::from($changedUrl['type']),
                         $changedUrl['url']

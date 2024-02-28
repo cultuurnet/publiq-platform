@@ -182,14 +182,16 @@ final class IntegrationController extends Controller
     public function updateUrls(UpdateIntegrationUrlsRequest $request, string $id): RedirectResponse
     {
         $currentUrls = $this->integrationUrlRepository->getByIntegrationId(Uuid::fromString($id));
-        $updatedUrls = UpdateIntegrationUrlsMapper::map($request, $currentUrls);
+        $updatedUrls = UpdateIntegrationUrlsMapper::map($request, $currentUrls, Uuid::fromString($id));
+
+        $this->integrationUrlRepository->updateUrls($updatedUrls);
+
         $toDeleteUrlIds = $currentUrls
             ->filter(
                 fn (IntegrationUrl $url) => $updatedUrls->doesntContain('id', '=', $url->id)
             )
             ->map(fn (IntegrationUrl $url) => $url->id);
 
-        $this->integrationUrlRepository->updateUrls($updatedUrls);
         $this->integrationUrlRepository->deleteByIds($toDeleteUrlIds);
 
         return Redirect::route(
