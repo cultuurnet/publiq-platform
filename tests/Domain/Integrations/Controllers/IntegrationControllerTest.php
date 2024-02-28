@@ -362,7 +362,7 @@ final class IntegrationControllerTest extends TestCase
         $this->givenTheActingUserIsAContactOnIntegration($integration);
         $urls = $this->givenThereAreMultipleUrlsForIntegration($integration);
 
-        $response = $this->patch("/integrations/{$integration->id}/urls", [
+        $response = $this->put("/integrations/{$integration->id}/urls", [
             'urls' => [
                 [
                     'id' => $urls->loginUrl->id->toString(),
@@ -414,18 +414,20 @@ final class IntegrationControllerTest extends TestCase
         $integration = $this->givenThereIsAnIntegration();
         $urls = $this->givenThereAreMultipleUrlsForIntegration($integration);
 
-        $response = $this->patch("/integrations/{$integration->id}/urls", [
-            'loginUrls' => [
-                'id' => $urls->loginUrl->id->toString(),
-                'url' => 'https://updated.login',
-            ],
-            'callbackUrl' => [
-                'id' => $urls->callbackUrls[0]->id->toString(),
-                'url' => 'https://updated.callback',
-            ],
-            'logoutUrl' => [
-                'id' => $urls->logoutUrls[0]->id->toString(),
-                'url' => 'https://updated.logout',
+        $response = $this->put("/integrations/{$integration->id}/urls", [
+            'urls' => [
+                [
+                    'id' => $urls->loginUrl->id->toString(),
+                    'url' => 'https://updated.login',
+                ],
+                'callbackUrl' => [
+                    'id' => $urls->callbackUrls[0]->id->toString(),
+                    'url' => 'https://updated.callback',
+                ],
+                'logoutUrl' => [
+                    'id' => $urls->logoutUrls[0]->id->toString(),
+                    'url' => 'https://updated.logout',
+                ]
             ],
         ]);
 
