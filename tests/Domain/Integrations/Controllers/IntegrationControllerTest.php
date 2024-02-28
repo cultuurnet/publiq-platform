@@ -407,6 +407,34 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
+    public function test_it_can_add_integration_urls_via_update(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+
+        $response = $this->put("/integrations/{$integration->id}/urls", [
+            'urls' => [
+                [
+                    'environment' => Environment::Testing->value,
+                    'type' => IntegrationUrlType::Login->value,
+                    'url' => 'https://new.login',
+                ],
+            ],
+        ]);
+
+        $response->assertRedirect("/nl/integraties/{$integration->id}");
+
+        $this->assertDatabaseCount('integrations_urls', 1);
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'environment' => Environment::Testing->value,
+            'type' => IntegrationUrlType::Login->value,
+            'url' => 'https://new.login',
+        ]);
+    }
+
     public function test_it_can_not_update_integration_urls_if_unauthorized(): void
     {
         $this->actingAs(UserModel::createSystemUser());
@@ -427,7 +455,7 @@ final class IntegrationControllerTest extends TestCase
                 'logoutUrl' => [
                     'id' => $urls->logoutUrls[0]->id->toString(),
                     'url' => 'https://updated.logout',
-                ]
+                ],
             ],
         ]);
 
