@@ -8,9 +8,13 @@ import { Link } from "../../Link";
 
 type Props = Integration;
 
-export const Credentials = ({ id, status, hasCredentials }: Props) => {
+export const Credentials = ({
+  id,
+  status,
+  hasCredentials,
+  subscription,
+}: Props) => {
   const { t } = useTranslation();
-
   return (
     <>
       <div>
@@ -31,7 +35,11 @@ export const Credentials = ({ id, status, hasCredentials }: Props) => {
                   {t("details.credentials.live")}
                 </Heading>
                 <div className="flex gap-1 align-center">
-                  <StatusLight status={status} />
+                  <StatusLight
+                    status={status}
+                    id={id}
+                    subscription={subscription}
+                  />
                 </div>
               </div>
             </div>
@@ -80,7 +88,11 @@ export const Credentials = ({ id, status, hasCredentials }: Props) => {
                 {t("details.credentials.live")}
               </Heading>
               <div className="flex gap-1 align-center">
-                <StatusLight status={status} />
+                <StatusLight
+                  status={status}
+                  id={id}
+                  subscription={subscription}
+                />
                 <Heading level={5}>
                   {t(`integrations.status.${status}`)}
                 </Heading>

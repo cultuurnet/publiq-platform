@@ -109,8 +109,8 @@ export const FormElement = ({
           </div>
         </>
       </Wrapper>
-      {error && <span className="text-red-500 mt-1">{error}</span>}
-      {info && <span className="text-gray-500 mt-1">{info}</span>}
+      {error && <span className="text-red-500 mt-1 text-sm">{error}</span>}
+      {info && <span className="text-gray-500 mt-1 text-sm">{info}</span>}
     </div>
   );
 };

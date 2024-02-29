@@ -1,12 +1,17 @@
-import React, { ComponentProps } from "react";
+import React, { ComponentProps, useState } from "react";
 import { IntegrationStatus } from "../types/IntegrationStatus";
 import { classNames } from "../utils/classNames";
 import { useTranslation } from "react-i18next";
 import { ButtonPrimary } from "./ButtonPrimary";
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
+import { ActivationDialog } from "./ActivationDialog";
+import { useTranslateRoute } from "../hooks/useTranslateRoute";
+import { Subscription } from "../Pages/Integrations/Index";
 
 type Props = ComponentProps<"div"> & {
   status: IntegrationStatus;
+  id: string;
+  subscription?: Subscription;
 };
 
 const StatusToColor: Record<IntegrationStatus, string> = {
@@ -18,8 +23,22 @@ const StatusToColor: Record<IntegrationStatus, string> = {
   pending_approval_payment: "bg-status-yellow text-status-yellow-dark",
 };
 
-export const StatusLight = ({ status }: Props) => {
+export const StatusLight = ({ status, id, subscription }: Props) => {
   const { t } = useTranslation();
+
+  const url = new URL(document.location.href);
+  const activeTab = url.searchParams.get("isDialogVisible");
+  const [isActivationDialogVisible, setIsActivationDialogVisible] = useState(
+    !!activeTab ?? false
+  );
+
+  const translateRoute = useTranslateRoute();
+
+  const handleRedirect = () =>
+    router.get(
+      `${translateRoute("/integrations")}/${id}?tab=credentials&isDialogVisible=true`
+    );
+
   return (
     <div className="flex flex-col gap-3">
       <div
@@ -54,9 +73,15 @@ export const StatusLight = ({ status }: Props) => {
               </>
             )}
           </div>
-          <ButtonPrimary className="self-start">
+          <ButtonPrimary className="self-start" onClick={handleRedirect}>
             {t("integrations.status.activate")}
           </ButtonPrimary>
+          <ActivationDialog
+            isVisible={isActivationDialogVisible}
+            onClose={() => setIsActivationDialogVisible(false)}
+            id={id}
+            subscription={subscription}
+          />
         </div>
       )}
     </div>
