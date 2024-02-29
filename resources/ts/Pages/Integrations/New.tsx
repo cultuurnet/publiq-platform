@@ -16,13 +16,23 @@ import { useTranslateRoute } from "../../hooks/useTranslateRoute";
 import { Link } from "../../Components/Link";
 import { useIntegrationTypes } from "../../Components/IntegrationTypes";
 
-const pricing = (t: TFunction, subscriptions: Subscription[]) => {
+const pricing = (
+  t: TFunction,
+  integrationType: string,
+  subscriptions: Subscription[]
+) => {
   const getInfoForType = (type: string) => {
     // All types should match with a category
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const data = subscriptions.find(
-      (sub) => sub.category.toLowerCase() === type
+      (sub) =>
+        sub.category.toLowerCase() === type &&
+        sub.integration_type === integrationType
     )!;
+
+    if (!data) {
+      return {};
+    }
 
     return {
       id: data.id,
@@ -121,11 +131,10 @@ const New = ({ subscriptions }: Props) => {
       },
     });
   }
-
   const translatedIntegrations = useIntegrationTypes();
   const translatedPricing = useMemo(
-    () => pricing(t, subscriptions),
-    [t, subscriptions]
+    () => pricing(t, data.integrationType, subscriptions),
+    [t, data.integrationType, subscriptions]
   );
 
   return (
