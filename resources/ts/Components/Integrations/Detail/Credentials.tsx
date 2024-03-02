@@ -5,20 +5,32 @@ import type { Integration } from "../../../Pages/Integrations/Index";
 import { StatusLight } from "../../StatusLight";
 import { ButtonPrimary } from "../../ButtonPrimary";
 import { Link } from "../../Link";
+import { router } from "@inertiajs/react";
 
 type Props = Integration;
 
 export const Credentials = ({
   id,
   status,
-  hasCredentials,
+
   subscription,
+  type,
+  uiTiDv1Consumers,
+  auth0Clients,
 }: Props) => {
   const { t } = useTranslation();
+
+  console.log(uiTiDv1Consumers, "uitidv1",
+    auth0Clients, "auth0Clients");
+
+  const handleDistributeAuth0Clients = () => {
+    router.post(`/integrations/${id}/auth0-clients`)
+  }
+
   return (
     <>
       <div>
-        {hasCredentials.v2 && (
+        {auth0Clients.length > 0 && (
           <div className="w-full max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-6 border-b pb-10 border-gray-300">
             <Heading className="font-semibold" level={4}>
               {t("details.credentials.uitid_v1")}
@@ -39,6 +51,8 @@ export const Credentials = ({
                     status={status}
                     id={id}
                     subscription={subscription}
+
+                    type={type}
                   />
                 </div>
               </div>
@@ -56,7 +70,7 @@ export const Credentials = ({
                     {t("details.integration_info.link")}
                   </Link>
                 </p>
-                <ButtonPrimary className="ml-[5rem] self-start">
+                <ButtonPrimary className="ml-[5rem] self-start" >
                   {t("details.credentials.action_status")}
                 </ButtonPrimary>
               </div>
@@ -68,10 +82,10 @@ export const Credentials = ({
         <Heading className="font-semibold" level={4}>
           {t("details.credentials.uitid_v2")}
         </Heading>
-        {hasCredentials.v1 ? (
+        {auth0Clients.length === 0 ? (
           <div className="flex flex-col gap-4">
             <p>{t("details.credentials.uitid_alert")}</p>
-            <ButtonPrimary className="self-start">
+            <ButtonPrimary className="self-start" onClick={handleDistributeAuth0Clients}>
               {t("details.credentials.action_uitid")}
             </ButtonPrimary>
           </div>
@@ -92,6 +106,8 @@ export const Credentials = ({
                   status={status}
                   id={id}
                   subscription={subscription}
+                  type={type}
+          
                 />
                 <Heading level={5}>
                   {t(`integrations.status.${status}`)}

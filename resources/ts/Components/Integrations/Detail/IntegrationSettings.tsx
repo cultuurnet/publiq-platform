@@ -99,8 +99,7 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
 
   const hasIntegrationUrls = useMemo(
     () =>
-      integration.type !== IntegrationType.Widgets &&
-      integration.hasCredentials.v2,
+      integration.type !== IntegrationType.Widgets,
     [integration]
   );
 
