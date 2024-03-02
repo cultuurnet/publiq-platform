@@ -7,11 +7,14 @@ import { Link, router } from "@inertiajs/react";
 import { ActivationDialog } from "./ActivationDialog";
 import { useTranslateRoute } from "../hooks/useTranslateRoute";
 import { Subscription } from "../Pages/Integrations/Index";
+import { Values } from "../types/Values";
+import { IntegrationType } from "../types/IntegrationType";
 
 type Props = ComponentProps<"div"> & {
   status: IntegrationStatus;
   id: string;
   subscription?: Subscription;
+  type: Values<typeof IntegrationType>;
 };
 
 const StatusToColor: Record<IntegrationStatus, string> = {
@@ -23,7 +26,7 @@ const StatusToColor: Record<IntegrationStatus, string> = {
   pending_approval_payment: "bg-status-yellow text-status-yellow-dark",
 };
 
-export const StatusLight = ({ status, id, subscription }: Props) => {
+export const StatusLight = ({ status, id, subscription, type }: Props) => {
   const { t } = useTranslation();
 
   const url = new URL(document.location.href);
@@ -81,6 +84,7 @@ export const StatusLight = ({ status, id, subscription }: Props) => {
             onClose={() => setIsActivationDialogVisible(false)}
             id={id}
             subscription={subscription}
+            type={type}
           />
         </div>
       )}
