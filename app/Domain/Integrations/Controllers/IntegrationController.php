@@ -249,19 +249,21 @@ final class IntegrationController extends Controller
 
     public function activateWithCoupon(string $id, ActivateWithCouponRequest $request): RedirectResponse
     {
-        $coupon = $this->couponRepository->getByCode($request->input('coupon'));
-        if ($coupon->isDistributed) {
-            return Redirect::back()->withErrors(['coupon' => 'Coupon is already used']);
+        try {
+            $coupon = $this->couponRepository->getByCode($request->input('coupon'));
+            if ($coupon->isDistributed) {
+                return Redirect::back()->withErrors(['coupon' => 'Coupon is already used']);
+            }
+
+            $this->integrationRepository->activateWithCouponCode(Uuid::fromString($id), $request->input('coupon'));
+
+            return Redirect::back();
+
+        } catch (ModelNotFoundException $exception) {
+            return Redirect::back()->withErrors([
+                'coupon' => 'Invalid coupon',
+            ]);
         }
-
-        $this->integrationRepository->activateWithCouponCode(Uuid::fromString($id), $request->input('coupon'));
-
-        return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
-            [
-                'id' => $id,
-            ]
-        );
     }
 
     public function activateWithOrganization(string $id, CreateOrganizationRequest $request): RedirectResponse
