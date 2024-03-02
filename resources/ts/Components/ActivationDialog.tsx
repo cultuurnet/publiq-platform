@@ -50,8 +50,6 @@ export const ActivationDialog = ({
   const organizationForm = useForm(initialValuesOrganization);
   const couponForm = useForm(initialValuesCoupon);
 
-  const url = new URL(document.location.href);
-
   const handleSubmit = () => {
     organizationForm.post(`/integrations/${id}/organization`, {
       onFinish: () => {
