@@ -181,6 +181,7 @@
       "uitid_v2": "UITID v2",
       "test": "Test",
       "live": "Live",
+      "in_progress": "Je aanvraag tot activatie is in behandeling.",
       "status_alert": "Voor de live-integratie van dit project is goedkeuring van publiq noodzakelijk. Alle informatie om vlot live te kunnen gaan vind je",
       "link": "here",
       "uitid_alert": "Voor deze integratie zijn nog geen UiTIDv2 credentials aangevraagd.",
