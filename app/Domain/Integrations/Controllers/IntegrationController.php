@@ -145,7 +145,7 @@ final class IntegrationController extends Controller
                 'organization' => $integration->organization(),
                 'subscription' => $subscription,
             ],
-            'email' => Auth::user()?->email
+            'email' => Auth::user()?->email,
         ]);
     }
 
