@@ -61,6 +61,24 @@ export type IntegrationUrl = {
   url: string;
 };
 
+export type uiTiDv1Consumers = {
+  apiKey: string;
+  consumerId: string;
+  consumerKey: string;
+  consumerSecret: string;
+  environment: string;
+  id: string;
+  integrationId: string;
+};
+
+export type auth0Clients = {
+  clientId: string;
+  clientSecret: string;
+  id: string;
+  integrationId: string;
+  tenant: string;
+};
+
 export type Integration = {
   id: string;
   type: Values<typeof IntegrationType>;
@@ -72,6 +90,8 @@ export type Integration = {
   organization?: Organization;
   subscription: Subscription;
   urls: IntegrationUrl[];
+  auth0Clients: auth0Clients[];
+  uiTiDv1Consumers: uiTiDv1Consumers[];
 };
 
 type Props = {
