@@ -72,7 +72,7 @@ export const Credentials = ({
                     {t("details.integration_info.link")}
                   </Link>
                 </p>
-                <ButtonPrimary className="ml-[5rem] self-start" >
+                <ButtonPrimary className="ml-[5rem] self-start">
                   {t("details.credentials.action_status")}
                 </ButtonPrimary>
               </div>
@@ -92,7 +92,7 @@ export const Credentials = ({
             </ButtonPrimary>
           </div>
         ) : (
-          <div>
+          <div className="flex flex-col gap-4">
             <div className="flex">
               <Heading className="font-semibold flex min-w-[5rem]" level={4}>
                 {t("details.credentials.test")}
