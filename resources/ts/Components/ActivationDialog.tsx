@@ -4,7 +4,6 @@ import { ButtonSecondary } from "./ButtonSecondary";
 import { ButtonPrimary } from "./ButtonPrimary";
 import { FormElement } from "./FormElement";
 import { Input } from "./Input";
-
 import { useForm } from "@inertiajs/react";
 import { useTranslation } from "react-i18next";
 import { Subscription } from "../Pages/Integrations/Index";
@@ -19,21 +18,7 @@ type Props = {
   id: string;
   subscription?: Subscription;
   type: Values<typeof IntegrationType>;
-};
-
-const initialValuesCoupon = { coupon: "" };
-const initialValuesOrganization = {
-  organization: {
-    name: "",
-    invoiceEmail: "",
-    vat: "",
-    address: {
-      street: "",
-      zip: "",
-      city: "",
-      country: "Belgium",
-    },
-  },
+  email: string;
 };
 
 export const ActivationDialog = ({
@@ -42,13 +27,30 @@ export const ActivationDialog = ({
   id,
   subscription,
   type,
+  email,
 }: Props) => {
   const { t } = useTranslation();
   const isMobile = window.innerWidth < 768;
 
+  const initialValuesCoupon = { coupon: "" };
+  const initialValuesOrganization = {
+    organization: {
+      name: "",
+      invoiceEmail: type === "entry-api" ? email : "",
+      vat: "",
+      address: {
+        street: "",
+        zip: "",
+        city: "",
+        country: "Belgium",
+      },
+    },
+  };
+
   const organizationForm = useForm(initialValuesOrganization);
   const couponForm = useForm(initialValuesCoupon);
 
+  const url = new URL(document.location.href);
   const handleSubmit = () => {
     organizationForm.post(`/integrations/${id}/organization`, {
       onFinish: () => {

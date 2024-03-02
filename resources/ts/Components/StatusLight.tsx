@@ -15,6 +15,7 @@ type Props = ComponentProps<"div"> & {
   id: string;
   subscription?: Subscription;
   type: Values<typeof IntegrationType>;
+  email: string;
 };
 
 const StatusToColor: Record<IntegrationStatus, string> = {
@@ -26,7 +27,13 @@ const StatusToColor: Record<IntegrationStatus, string> = {
   pending_approval_payment: "bg-status-yellow text-status-yellow-dark",
 };
 
-export const StatusLight = ({ status, id, subscription, type }: Props) => {
+export const StatusLight = ({
+  status,
+  id,
+  subscription,
+  type,
+  email,
+}: Props) => {
   const { t } = useTranslation();
 
   const url = new URL(document.location.href);
@@ -82,6 +89,7 @@ export const StatusLight = ({ status, id, subscription, type }: Props) => {
             id={id}
             subscription={subscription}
             type={type}
+            email={email}
           />
         </div>
       )}

@@ -7,12 +7,14 @@ import { ButtonPrimary } from "../../ButtonPrimary";
 import { Link } from "../../Link";
 import { router } from "@inertiajs/react";
 
-type Props = Integration;
+type Props = Integration & {
+  email: string;
+};
 
 export const Credentials = ({
   id,
   status,
-
+  email,
   subscription,
   type,
   uiTiDv1Consumers,
@@ -51,8 +53,8 @@ export const Credentials = ({
                     status={status}
                     id={id}
                     subscription={subscription}
-
                     type={type}
+                    email={email}
                   />
                 </div>
               </div>
@@ -107,23 +109,10 @@ export const Credentials = ({
                   id={id}
                   subscription={subscription}
                   type={type}
-          
+                  email={email}
                 />
-                <Heading level={5}>
-                  {t(`integrations.status.${status}`)}
-                </Heading>
               </div>
             </div>
-            {status === "draft" && (
-              <div className="flex flex-col gap-4">
-                <p className="ml-[5rem] max-w-[25rem]">
-                  {t("details.credentials.status_alert")}
-                </p>
-                <ButtonPrimary className="ml-[5rem] self-start">
-                  {t("details.credentials.action_status")}
-                </ButtonPrimary>
-              </div>
-            )}
           </div>
         )}
       </div>

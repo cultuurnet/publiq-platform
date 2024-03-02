@@ -19,6 +19,7 @@ import { IconSearchApi } from "./icons/IconSearchApi";
 
 type Props = Integration & {
   onEdit: (id: string) => void;
+  email: string;
 };
 
 const productTypeToPath = {
@@ -40,7 +41,14 @@ const OpenWidgetBuilderButton = ({ id, type }: Pick<Props, "id" | "type">) => {
   );
 };
 
-export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
+export const IntegrationCard = ({
+  id,
+  name,
+  type,
+  status,
+  email,
+  onEdit,
+}: Props) => {
   const { t } = useTranslation();
 
   const integrationTypes = useIntegrationTypes();
@@ -108,7 +116,7 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
             {t("integrations.live")}
           </Heading>
           <div className="flex align-center gap-1">
-            <StatusLight type={type} status={status} id={id} />
+            <StatusLight type={type} status={status} id={id} email={email} />
             {status === IntegrationStatus.Active && (
               <OpenWidgetBuilderButton id={id} type={type} />
             )}
