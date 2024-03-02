@@ -108,7 +108,7 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
             {t("integrations.live")}
           </Heading>
           <div className="flex align-center gap-1">
-            <StatusLight status={status} id={id} />
+            <StatusLight type={type} status={status} id={id} />
             {status === IntegrationStatus.Active && (
               <OpenWidgetBuilderButton id={id} type={type} />
             )}
