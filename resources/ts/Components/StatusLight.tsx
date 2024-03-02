@@ -37,9 +37,10 @@ export const StatusLight = ({
   const { t } = useTranslation();
 
   const url = new URL(document.location.href);
-  const activeTab = url.searchParams.get("isDialogVisible");
+  const isDialogVisible = url.searchParams.get("isDialogVisible");
+
   const [isActivationDialogVisible, setIsActivationDialogVisible] = useState(
-    !!activeTab ?? false
+    !!isDialogVisible ?? false
   );
 
   const translateRoute = useTranslateRoute();
@@ -85,7 +86,12 @@ export const StatusLight = ({
           </ButtonPrimary>
           <ActivationDialog
             isVisible={isActivationDialogVisible}
-            onClose={() => setIsActivationDialogVisible(false)}
+            onClose={() => {
+              router.get(url.toString(), {
+                isDialogVisible: undefined,
+              });
+              setIsActivationDialogVisible(false);
+            }}
             id={id}
             subscription={subscription}
             type={type}

@@ -51,11 +51,14 @@ export const ActivationDialog = ({
   const couponForm = useForm(initialValuesCoupon);
 
   const url = new URL(document.location.href);
+
   const handleSubmit = () => {
     organizationForm.post(`/integrations/${id}/organization`, {
       onFinish: () => {
-        couponForm.post(`/integrations/${id}/coupon`);
-        if (!organizationForm.errors && !couponForm.errors) {
+        if (couponForm.data.coupon !== "") {
+          couponForm.post(`/integrations/${id}/coupon`);
+        }
+        if (!organizationForm.hasErrors && !couponForm.hasErrors) {
           onClose();
         }
       },
