@@ -64,6 +64,17 @@ final class EloquentAuth0ClientRepository implements Auth0ClientRepository
             ->toArray();
     }
 
+    public function getDistributedByIntegrationId(UuidInterface $integrationId): array
+    {
+        return Auth0ClientModel::query()
+            ->where('integration_id', $integrationId->toString())
+            ->whereNotNull('distributed_at')
+            ->get()
+            ->map(static fn (Auth0ClientModel $auth0ClientModel) => $auth0ClientModel->toDomain())
+            ->toArray();
+    }
+
+
     /**
      * @throws ModelNotFoundException<Model>
      */
