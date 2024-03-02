@@ -53,7 +53,8 @@ export const StatusLight = ({ status, id, subscription, type }: Props) => {
         {t(`integrations.status.${status}`)}
       </div>
       {(status === "pending_approval_payment" ||
-        status === "pending_approval_integration") && (
+        status === "pending_approval_integration" ||
+        status === "draft") && (
         <div className="flex flex-col gap-3">
           <div>
             {status === "pending_approval_integration" ? (
@@ -64,11 +65,7 @@ export const StatusLight = ({ status, id, subscription, type }: Props) => {
               </span>
             ) : (
               <>
-                <span>
-                  {t(
-                    "integrations.status.pending_approval_payment_description"
-                  )}
-                </span>
+                <span>{t("details.credentials.status_alert")}</span>
                 <Link className="text-publiq-blue-dark" href="#">
                   {" "}
                   {t("integrations.status.here")}
