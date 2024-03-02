@@ -98,8 +98,7 @@ export const IntegrationSettings = ({ integration, id, urls }: Props) => {
   }));
 
   const hasIntegrationUrls = useMemo(
-    () =>
-      integration.type !== IntegrationType.Widgets,
+    () => integration.type !== IntegrationType.Widgets,
     [integration]
   );
 
