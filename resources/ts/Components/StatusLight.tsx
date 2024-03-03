@@ -60,26 +60,19 @@ export const StatusLight = ({
       >
         {t(`integrations.status.${status}`)}
       </div>
-      {(status === "pending_approval_payment" ||
-        status === "pending_approval_integration" ||
-        status === "draft") && (
+      {status === "pending_approval_integration" && (
+        <span>{t("details.credentials.in_progress")}</span>
+      )}
+      {status === "draft" && (
         <div className="flex flex-col gap-3">
           <div>
-            {status === "pending_approval_integration" ? (
-              <span>
-                {t(
-                  "integrations.status.pending_approval_integration_description"
-                )}
-              </span>
-            ) : (
-              <>
-                <span>{t("details.credentials.status_alert")}</span>
-                <Link className="text-publiq-blue-dark" href="#">
-                  {" "}
-                  {t("integrations.status.here")}
-                </Link>
-              </>
-            )}
+            <>
+              <span>{t("details.credentials.status_alert")}</span>
+              <Link className="text-publiq-blue-dark" href="#">
+                {" "}
+                {t("integrations.status.here")}
+              </Link>
+            </>
           </div>
           <ButtonPrimary className="self-start" onClick={handleRedirect}>
             {t("integrations.status.activate")}
