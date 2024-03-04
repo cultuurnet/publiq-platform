@@ -574,16 +574,16 @@
         },
         {
             "name": "doctrine/dbal",
-            "version": "3.8.2",
+            "version": "3.8.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/dbal.git",
-                "reference": "a19a1d05ca211f41089dffcc387733a6875196cb"
+                "reference": "db922ba9436b7b18a23d1653a0b41ff2369ca41c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/a19a1d05ca211f41089dffcc387733a6875196cb",
-                "reference": "a19a1d05ca211f41089dffcc387733a6875196cb",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/db922ba9436b7b18a23d1653a0b41ff2369ca41c",
+                "reference": "db922ba9436b7b18a23d1653a0b41ff2369ca41c",
                 "shasum": ""
             },
             "require": {
@@ -599,12 +599,12 @@
                 "doctrine/coding-standard": "12.0.0",
                 "fig/log-test": "^1",
                 "jetbrains/phpstorm-stubs": "2023.1",
-                "phpstan/phpstan": "1.10.57",
+                "phpstan/phpstan": "1.10.58",
                 "phpstan/phpstan-strict-rules": "^1.5",
                 "phpunit/phpunit": "9.6.16",
                 "psalm/plugin-phpunit": "0.18.4",
                 "slevomat/coding-standard": "8.13.1",
-                "squizlabs/php_codesniffer": "3.8.1",
+                "squizlabs/php_codesniffer": "3.9.0",
                 "symfony/cache": "^5.4|^6.0|^7.0",
                 "symfony/console": "^4.4|^5.4|^6.0|^7.0",
                 "vimeo/psalm": "4.30.0"
@@ -667,7 +667,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/dbal/issues",
-                "source": "https://github.com/doctrine/dbal/tree/3.8.2"
+                "source": "https://github.com/doctrine/dbal/tree/3.8.3"
             },
             "funding": [
                 {
@@ -683,7 +683,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-02-12T18:36:36+00:00"
+            "time": "2024-03-03T15:55:06+00:00"
         },
         {
             "name": "doctrine/deprecations",
@@ -2139,17 +2139,17 @@
         },
         {
             "name": "laravel/nova",
-            "version": "4.32.14",
+            "version": "4.32.15",
             "source": {
                 "type": "git",
                 "url": "git@github.com:laravel/nova.git",
-                "reference": "a96f1bbdb1291ba0c4ba694fac37273c7e9637cb"
+                "reference": "ffff3bc46d1a6c2eeda423d2d8169ea508e98888"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://nova.laravel.com/dist/laravel/nova/laravel-nova-a96f1bbdb1291ba0c4ba694fac37273c7e9637cb-zip-39938b.zip",
-                "reference": "a96f1bbdb1291ba0c4ba694fac37273c7e9637cb",
-                "shasum": "844bc09ea58a13e42391aa63ff72933132b0ab4a"
+                "url": "https://nova.laravel.com/dist/laravel/nova/laravel-nova-ffff3bc46d1a6c2eeda423d2d8169ea508e98888-zip-9f69bc.zip",
+                "reference": "ffff3bc46d1a6c2eeda423d2d8169ea508e98888",
+                "shasum": "1d874b90f2c4a2a3fa0b3aa0c2486ac7b7d57b5b"
             },
             "require": {
                 "brick/money": "^0.5.0|^0.6.0|^0.7.0|^0.8.0",
@@ -2259,9 +2259,9 @@
                 "laravel"
             ],
             "support": {
-                "source": "https://github.com/laravel/nova/tree/v4.32.14"
+                "source": "https://github.com/laravel/nova/tree/v4.32.15"
             },
-            "time": "2024-02-21T22:32:34+00:00"
+            "time": "2024-02-26T19:38:20+00:00"
         },
         {
             "name": "laravel/prompts",
