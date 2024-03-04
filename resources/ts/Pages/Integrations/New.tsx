@@ -41,11 +41,22 @@ const pricing = (
     };
   };
 
+  const free = getInfoForType("free");
   const basic = getInfoForType("basic");
   const plus = getInfoForType("plus");
   const custom = getInfoForType("custom");
 
   return [
+    {
+      id: free.id,
+      title: t("integration_form.pricing.free.title"),
+      description:
+        free.description ?? t("integration_form.pricing.free.description"),
+      price: t("integration_form.pricing.free.price", {
+        price: free.price,
+        currency: free.currency,
+      }),
+    },
     {
       id: basic.id,
       title: t("integration_form.pricing.basic.title"),
