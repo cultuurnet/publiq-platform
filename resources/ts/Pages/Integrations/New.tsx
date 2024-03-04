@@ -84,7 +84,7 @@ const pricing = (
         currency: custom.currency,
       }),
     },
-  ];
+  ].filter((pricing) => pricing.id);
 };
 
 type Subscription = {
@@ -186,14 +186,13 @@ const New = ({ subscriptions }: Props) => {
             error={errors.integrationType}
           />
 
+          {translatedPricing.length > 0 && (
           <FormElement
             label={t("integration_form.pricing_plan")}
             labelSize="xl"
             component={
               <div className="md:grid md:grid-cols-3 gap-5 max-md:flex max-md:flex-col max-md:items-center pb-3">
-                {translatedPricing
-                  .filter((pricing) => pricing.id)
-                  .map((pricing) => (
+                  {translatedPricing.map((pricing) => (
                   <Card
                     role="button"
                     key={pricing.title}
@@ -213,6 +212,7 @@ const New = ({ subscriptions }: Props) => {
             }
             error={errors.subscriptionId}
           />
+          )}
           <FormElement
             label={t("integration_form.integration_name")}
             labelSize="xl"
