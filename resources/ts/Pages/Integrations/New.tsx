@@ -180,7 +180,9 @@ const New = ({ subscriptions }: Props) => {
             labelSize="xl"
             component={
               <div className="md:grid md:grid-cols-3 gap-5 max-md:flex max-md:flex-col max-md:items-center pb-3">
-                {translatedPricing.map((pricing) => (
+                {translatedPricing
+                  .filter((pricing) => pricing.id)
+                  .map((pricing) => (
                   <Card
                     role="button"
                     key={pricing.title}
