@@ -9,7 +9,7 @@ const Main = ({ children }: { children: ReactNode }) => {
 
 export default function HomePageLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="flex flex-col flex-1 items-center text-publiq-gray-dark bg-publiq-gray-medium">
+    <div className="flex flex-col flex-1 items-center text-publiq-gray-dark bg-publiq-gray-light">
       <Main>{children}</Main>
       <Footer />
     </div>
