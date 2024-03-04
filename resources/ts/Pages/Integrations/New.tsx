@@ -37,6 +37,7 @@ const pricing = (
     return {
       id: data.id,
       price: data.price,
+      description: data.description,
       currency: data.currency,
     };
   };
@@ -60,7 +61,8 @@ const pricing = (
     {
       id: basic.id,
       title: t("integration_form.pricing.basic.title"),
-      description: t("integration_form.pricing.basic.description"),
+      description:
+        basic.description ?? t("integration_form.pricing.basic.description"),
       price: t("integration_form.pricing.basic.price", {
         price: basic.price,
         currency: basic.currency,
@@ -69,7 +71,8 @@ const pricing = (
     {
       id: plus.id,
       title: t("integration_form.pricing.plus.title"),
-      description: t("integration_form.pricing.plus.description"),
+      description:
+        plus.description ?? t("integration_form.pricing.plus.description"),
       price: t("integration_form.pricing.plus.price", {
         price: plus.price,
         currency: plus.currency,
@@ -78,7 +81,8 @@ const pricing = (
     {
       id: custom.id,
       title: t("integration_form.pricing.custom.title"),
-      description: t("integration_form.pricing.custom.description"),
+      description:
+        custom.description ?? t("integration_form.pricing.custom.description"),
       price: t("integration_form.pricing.custom.price", {
         price: custom.price,
         currency: custom.currency,
@@ -187,31 +191,31 @@ const New = ({ subscriptions }: Props) => {
           />
 
           {translatedPricing.length > 0 && (
-          <FormElement
-            label={t("integration_form.pricing_plan")}
-            labelSize="xl"
-            component={
-              <div className="md:grid md:grid-cols-3 gap-5 max-md:flex max-md:flex-col max-md:items-center pb-3">
+            <FormElement
+              label={t("integration_form.pricing_plan")}
+              labelSize="xl"
+              component={
+                <div className="md:grid md:grid-cols-3 gap-5 max-md:flex max-md:flex-col max-md:items-center pb-3">
                   {translatedPricing.map((pricing) => (
-                  <Card
-                    role="button"
-                    key={pricing.title}
-                    onClick={() => {
-                      setData("subscriptionId", pricing.id);
-                    }}
-                    {...pricing}
-                    active={data.subscriptionId === pricing.id}
-                    className="rounded-lg"
-                    contentStyles="font-bold"
-                    textCenter
-                  >
-                    {pricing.price}
-                  </Card>
-                ))}
-              </div>
-            }
-            error={errors.subscriptionId}
-          />
+                    <Card
+                      role="button"
+                      key={pricing.title}
+                      onClick={() => {
+                        setData("subscriptionId", pricing.id);
+                      }}
+                      {...pricing}
+                      active={data.subscriptionId === pricing.id}
+                      className="rounded-lg"
+                      contentStyles="font-bold"
+                      textCenter
+                    >
+                      {pricing.price}
+                    </Card>
+                  ))}
+                </div>
+              }
+              error={errors.subscriptionId}
+            />
           )}
           <FormElement
             label={t("integration_form.integration_name")}
