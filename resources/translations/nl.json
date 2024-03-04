@@ -82,6 +82,11 @@
     "submit": "Integratie aanmaken",
     "back": "Terug naar integratieoverzicht",
     "pricing": {
+      "free": {
+        "title": "Free",
+        "description": "Je configureert de widget zelf met behulp van onze documentatie.",
+        "price": "Gratis"
+      },
       "basic": {
         "title": "Basic",
         "description": "Je configureert de widget zelf met behulp van onze documentatie.",
