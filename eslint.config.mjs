@@ -5,7 +5,6 @@ import typescriptPlugin from "@typescript-eslint/eslint-plugin";
 import typescriptParser from "@typescript-eslint/parser";
 
 export default [
-  javascriptPlugin.configs.recommended,
   {
     plugins: {
       react: reactPlugin,
@@ -13,6 +12,8 @@ export default [
       "@typescript-eslint": typescriptPlugin,
     },
     rules: {
+      ...javascriptPlugin.configs.recommended.rules,
+
       ...reactPlugin.configs.recommended.rules,
       "react/prop-types": "off",
 
@@ -21,8 +22,6 @@ export default [
 
       ...typescriptPlugin.configs.recommended.rules,
     },
-  },
-  {
     languageOptions: {
       globals: {
         browser: true,
