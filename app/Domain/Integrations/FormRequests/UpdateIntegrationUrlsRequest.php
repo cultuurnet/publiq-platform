@@ -31,24 +31,23 @@ final class UpdateIntegrationUrlsRequest extends FormRequest
     public function after(): array
     {
         return [
-            function (Validator $validator): void
-            {
+            function (Validator $validator): void {
                 $errors = $validator->errors()->get('urls.*');
                 $data = $validator->getData()['urls'];
 
                 foreach ($errors as $originalKey => $originalMessage) {
                     $index = explode('.', $originalKey)[1];
                     $url = $data[$index];
-                    $errorKey = sprintf("%s.%s.%s", $url['type'], $url['environment'], $url['url']);
+                    $errorKey = sprintf('%s.%s.%s', $url['type'], $url['environment'], $url['url']);
                     $errorMessage = str_replace(
                         ucfirst($originalKey),
-                        "Url",
+                        'Url',
                         $originalMessage
                     );
                     $validator->errors()->add($errorKey, $errorMessage);
                     $validator->errors()->forget($originalKey);
                 }
-            }
+            },
         ];
     }
 }
