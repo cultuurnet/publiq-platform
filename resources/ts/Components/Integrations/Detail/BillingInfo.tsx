@@ -151,7 +151,6 @@ export const BillingInfo = ({ id, organization, subscription }: Props) => {
                       setData("organization", {
                         // We know organization exists
                         ...data.organization!,
-
                         vat: e.target.value,
                       })
                     }
