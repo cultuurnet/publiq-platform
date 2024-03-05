@@ -121,7 +121,13 @@ export const IntegrationSettings = ({
           id: undefined,
         };
       })
-      .filter((url) => !(typeof url.id === "undefined" && url.url === "")),
+      .filter((url) => {
+        const isEmptyNewUrl = typeof url.id === "undefined" && url.url === "";
+        const isEmptyLoginUrl =
+          url.type === IntegrationUrlType.Login && url.url === "";
+
+        return !(isEmptyNewUrl || isEmptyLoginUrl);
+      }),
   }));
 
   const handleConfirmDeleteUrl = (toDeleteUrlId: string) => {
