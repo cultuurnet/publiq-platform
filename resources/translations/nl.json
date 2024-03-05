@@ -84,22 +84,18 @@
     "pricing": {
       "free": {
         "title": "Free",
-        "description": "Je configureert de widget zelf met behulp van onze documentatie.",
         "price": "Gratis"
       },
       "basic": {
         "title": "Basic",
-        "description": "Je configureert de widget zelf met behulp van onze documentatie.",
         "price": "{{currency}} {{price}} / jaar"
       },
       "plus": {
         "title": "Plus",
-        "description": "Na een intakegesprek configureren we de widget van A tot Z voor jou.",
         "price": "eerste jaar: € 600 nadien: € 280 / jaar"
       },
       "custom": {
         "title": "Custom",
-        "description": "We helpen je waar jij ons nodig hebt.",
         "price": "voorstel op maat"
       }
     }
