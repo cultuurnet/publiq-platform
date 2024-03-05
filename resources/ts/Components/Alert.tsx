@@ -68,7 +68,7 @@ export const Alert = ({
         <FontAwesomeIcon
           icon={variantToIcon[variant]}
           className={variantToIconColor[variant]}
-          size={"xl"}
+          size="xl"
         />
         <section className={"flex flex-col"}>
           <Heading
