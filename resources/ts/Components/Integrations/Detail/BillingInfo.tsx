@@ -62,7 +62,7 @@ export const BillingInfo = ({ id, organization, subscription }: Props) => {
                     onChange={(e) =>
                       setData("organization", {
                         // We know organization exists
-                         
+
                         ...data.organization!,
                         name: e.target.value,
                       })
@@ -83,10 +83,9 @@ export const BillingInfo = ({ id, organization, subscription }: Props) => {
                       onChange={(e) =>
                         setData("organization", {
                           // We know organization exists
-                           
+
                           ...data.organization!,
                           address: {
-                             
                             ...data.organization!.address,
                             street: e.target.value,
                           },
@@ -107,10 +106,9 @@ export const BillingInfo = ({ id, organization, subscription }: Props) => {
                       onChange={(e) =>
                         setData("organization", {
                           // We know organization exists
-                           
+
                           ...data.organization!,
                           address: {
-                             
                             ...data.organization!.address,
                             zip: e.target.value,
                           },
@@ -131,10 +129,9 @@ export const BillingInfo = ({ id, organization, subscription }: Props) => {
                       onChange={(e) =>
                         setData("organization", {
                           // We know organization exists
-                           
+
                           ...data.organization!,
                           address: {
-                             
                             ...data.organization!.address,
                             city: e.target.value,
                           },
@@ -157,9 +154,9 @@ export const BillingInfo = ({ id, organization, subscription }: Props) => {
                     onChange={(e) =>
                       setData("organization", {
                         // We know organization exists
-                         
+
                         ...data.organization!,
-                         
+
                         vat: e.target.value,
                       })
                     }
