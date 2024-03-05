@@ -68,8 +68,7 @@ const getPricingPlansForType = (
     {
       id: free.id,
       title: t("integration_form.pricing.free.title"),
-      description:
-        free.description ?? t("integration_form.pricing.free.description"),
+      description: free.description,
       price: t("integration_form.pricing.free.price", {
         price: free.price,
         currency: free.currency,
@@ -78,8 +77,7 @@ const getPricingPlansForType = (
     {
       id: basic.id,
       title: t("integration_form.pricing.basic.title"),
-      description:
-        basic.description ?? t("integration_form.pricing.basic.description"),
+      description: basic.description,
       price: t("integration_form.pricing.basic.price", {
         price: basic.price,
         currency: basic.currency,
@@ -88,8 +86,7 @@ const getPricingPlansForType = (
     {
       id: plus.id,
       title: t("integration_form.pricing.plus.title"),
-      description:
-        plus.description ?? t("integration_form.pricing.plus.description"),
+      description: plus.description,
       price: t("integration_form.pricing.plus.price", {
         price: plus.price,
         currency: plus.currency,
@@ -98,8 +95,7 @@ const getPricingPlansForType = (
     {
       id: custom.id,
       title: t("integration_form.pricing.custom.title"),
-      description:
-        custom.description ?? t("integration_form.pricing.custom.description"),
+      description: custom.description,
       price: t("integration_form.pricing.custom.price", {
         price: custom.price,
         currency: custom.currency,
