@@ -43,7 +43,6 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
 
   const technicalContact = useMemo(
     // We know for sure there is a technical contact
-
     () => contacts.find((contact) => contact.type === ContactType.Technical)!,
     [contacts]
   );
