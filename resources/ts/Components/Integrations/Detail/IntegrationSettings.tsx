@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ButtonPrimary } from "../../ButtonPrimary";
-import { useForm } from "@inertiajs/react";
+import { useForm, usePage } from "@inertiajs/react";
 import { Integration } from "../../../Pages/Integrations/Index";
 import { IntegrationUrlType } from "../../../types/IntegrationUrlType";
 import { UrlList } from "./UrlList";
@@ -23,8 +23,26 @@ export const createEmptyIntegrationUrl = (
   environment,
 });
 
-const useBasicInfoForm = <T extends object>(initialFormValues: T) =>
-  useForm<T>(initialFormValues);
+const useBasicInfoForm = <T extends object>(initialFormValues: T) => {
+  const form = useForm<T>(initialFormValues);
+  const page = usePage();
+
+  const save = useCallback(
+    () =>
+      new Promise((resolve, reject) => {
+        form.patch(`/integrations/${page.props.id}`, {
+          onError: (error) => reject(error),
+          onSuccess: () => resolve(undefined),
+          only: ["name", "description", "errors"],
+        });
+      }),
+    // form is not a stable reference and triggers whenever a field value changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [page.props.id]
+  );
+
+  return { ...form, save };
+};
 const useUrlsForm = (initialFormValues: { urls: IntegrationUrl[] }) => {
   const urlsWithDefaultEmptyValues = useMemo(() => {
     // foreach type and environment
@@ -81,7 +99,23 @@ const useUrlsForm = (initialFormValues: { urls: IntegrationUrl[] }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.hasErrors, urlsWithDefaultEmptyValues]);
 
-  return form;
+  const page = usePage();
+
+  const save = useCallback(
+    () =>
+      new Promise((resolve, reject) => {
+        form.put(`/integrations/${page.props.id}/urls`, {
+          onError: (error) => reject(error),
+          onSuccess: () => resolve(undefined),
+          only: ["urls", "errors"],
+        });
+      }),
+    // form is not a stable reference and triggers whenever a field value changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [page.props.id]
+  );
+
+  return { ...form, save };
 };
 
 type Props = {
@@ -89,7 +123,6 @@ type Props = {
 } & Integration;
 
 export const IntegrationSettings = ({
-  id,
   name,
   type,
   description,
@@ -160,35 +193,15 @@ export const IntegrationSettings = ({
     }));
   };
 
-  const saveBasicInfo = () => {
-    return new Promise((resolve, reject) => {
-      basicInfoForm.patch(`/integrations/${id}`, {
-        onError: (error) => reject(error),
-        onSuccess: () => resolve(undefined),
-        only: ["name", "description", "errors"],
-      });
-    });
-  };
-
-  const saveUrls = () => {
-    return new Promise((resolve, reject) => {
-      urlsForm.put(`/integrations/${id}/urls`, {
-        onError: (error) => reject(error),
-        onSuccess: () => resolve(undefined),
-        only: ["urls", "errors"],
-      });
-    });
-  };
-
   const handleSave = async () => {
     setStatus("idle");
 
     try {
       if (basicInfoForm.isDirty) {
-        await saveBasicInfo();
+        await basicInfoForm.save();
       }
       if (urlsForm.isDirty) {
-        await saveUrls();
+        await urlsForm.save();
       }
 
       setStatus("success");
