@@ -62,7 +62,6 @@ export const BillingInfo = ({ id, organization, subscription }: Props) => {
                     onChange={(e) =>
                       setData("organization", {
                         // We know organization exists
-
                         ...data.organization!,
                         name: e.target.value,
                       })
