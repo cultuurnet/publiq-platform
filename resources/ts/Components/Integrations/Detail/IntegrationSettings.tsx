@@ -181,6 +181,8 @@ export const IntegrationSettings = ({
   };
 
   const handleSave = async () => {
+    setStatus("idle");
+
     try {
       if (basicInfoForm.isDirty) {
         await saveBasicInfo();
