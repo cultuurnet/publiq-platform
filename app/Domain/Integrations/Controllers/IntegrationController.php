@@ -139,13 +139,11 @@ final class IntegrationController extends Controller
         }
 
         return Inertia::render('Integrations/Detail', [
-            'integration' => [
-                ...$integration->toArray(),
-                'contacts' => $contacts->toArray(),
-                'urls' => $integration->urls(),
-                'organization' => $integration->organization(),
-                'subscription' => $subscription,
-            ],
+            ...$integration->toArray(),
+            'contacts' => $contacts->toArray(),
+            'urls' => $integration->urls(),
+            'organization' => $integration->organization(),
+            'subscription' => $subscription,
         ]);
     }
 

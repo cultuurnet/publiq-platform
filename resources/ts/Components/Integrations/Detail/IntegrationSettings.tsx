@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ButtonPrimary } from "../../ButtonPrimary";
 import { useForm } from "@inertiajs/react";
@@ -13,10 +13,76 @@ import { Environment } from "../../../types/Environment";
 
 export const NEW_URL_ID_PREFIX = "new-";
 
+export const createEmptyIntegrationUrl = (
+  type: IntegrationUrlType,
+  environment: Environment
+): IntegrationUrl => ({
+  id: `${NEW_URL_ID_PREFIX}${crypto.randomUUID()}`,
+  url: "",
+  type,
+  environment,
+});
+
 const useBasicInfoForm = <T extends object>(initialFormValues: T) =>
   useForm<T>(initialFormValues);
-const useUrlsForm = <T extends object>(initialFormValues: T) =>
-  useForm<T>(initialFormValues);
+const useUrlsForm = (initialFormValues: { urls: IntegrationUrl[] }) => {
+  const urlsWithDefaultEmptyValues = useMemo(() => {
+    // foreach type and environment
+    // there should be at least 1 field
+    const hasValues: Record<
+      IntegrationUrlType,
+      Record<Environment, boolean>
+    > = {
+      [IntegrationUrlType.Login]: {
+        [Environment.Test]: false,
+        [Environment.Prod]: false,
+      },
+      [IntegrationUrlType.Logout]: {
+        [Environment.Test]: false,
+        [Environment.Prod]: false,
+      },
+      [IntegrationUrlType.Callback]: {
+        [Environment.Test]: false,
+        [Environment.Prod]: false,
+      },
+    };
+
+    // find the missing values
+    initialFormValues.urls.forEach((url) => {
+      hasValues[url.type][url.environment] = !!url.url;
+    });
+
+    const withEmptyValues: IntegrationUrl[] = [...initialFormValues.urls];
+
+    (Object.keys(hasValues) as IntegrationUrlType[]).forEach((type) => {
+      (Object.keys(hasValues[type]) as Environment[]).forEach((environment) => {
+        if (!hasValues[type][environment as Environment]) {
+          withEmptyValues.push(createEmptyIntegrationUrl(type, environment));
+        }
+      });
+    });
+
+    return withEmptyValues;
+  }, [initialFormValues.urls]);
+
+  const form = useForm({
+    ...initialFormValues,
+    urls: urlsWithDefaultEmptyValues,
+  });
+
+  useEffect(() => {
+    if (form.hasErrors) return;
+    // if (Object.keys(page.props.errors).length > 0) return;
+    form.setData((previousData) => ({
+      ...previousData,
+      urls: urlsWithDefaultEmptyValues,
+    }));
+    // form is not a stable reference and triggers whenever a field value changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.hasErrors, urlsWithDefaultEmptyValues]);
+
+  return form;
+};
 
 type Props = {
   isMobile: boolean;
@@ -44,16 +110,18 @@ export const IntegrationSettings = ({
   urlsForm.transform((data) => ({
     ...data,
     // @ts-expect-error strip out frontend generated ids
-    urls: data.urls.map((url) => {
-      if (!url.id.startsWith(NEW_URL_ID_PREFIX)) {
-        return url;
-      }
+    urls: data.urls
+      .map((url) => {
+        if (!url.id.startsWith(NEW_URL_ID_PREFIX)) {
+          return url;
+        }
 
-      return {
-        ...url,
-        id: undefined,
-      };
-    }),
+        return {
+          ...url,
+          id: undefined,
+        };
+      })
+      .filter((url) => !(typeof url.id === "undefined" && url.url === "")),
   }));
 
   const handleConfirmDeleteUrl = (toDeleteUrlId: string) => {
@@ -71,12 +139,7 @@ export const IntegrationSettings = ({
       ...previousData,
       urls: [
         ...previousData.urls,
-        {
-          url: "",
-          id: `${NEW_URL_ID_PREFIX}${crypto.randomUUID()}`,
-          type,
-          environment,
-        } satisfies IntegrationUrl,
+        createEmptyIntegrationUrl(type, environment),
       ],
     }));
   };
@@ -102,6 +165,7 @@ export const IntegrationSettings = ({
       basicInfoForm.patch(`/integrations/${id}`, {
         onError: (error) => reject(error),
         onSuccess: () => resolve(undefined),
+        only: ["name", "description", "errors"],
       });
     });
   };
@@ -111,14 +175,19 @@ export const IntegrationSettings = ({
       urlsForm.put(`/integrations/${id}/urls`, {
         onError: (error) => reject(error),
         onSuccess: () => resolve(undefined),
+        only: ["urls", "errors"],
       });
     });
   };
 
   const handleSave = async () => {
     try {
-      await saveBasicInfo();
-      await saveUrls();
+      if (basicInfoForm.isDirty) {
+        await saveBasicInfo();
+      }
+      if (urlsForm.isDirty) {
+        await saveUrls();
+      }
 
       setStatus("success");
     } catch {

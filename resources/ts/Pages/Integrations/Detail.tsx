@@ -14,9 +14,9 @@ import { Card } from "../../Components/Card";
 import { useIntegrationTypes } from "../../Components/IntegrationTypes";
 import { Heading } from "../../Components/Heading";
 
-type Props = { integration: Integration };
+type Props = Integration;
 
-const Detail = ({ integration }: Props) => {
+const Detail = ({ ...integration }: Props) => {
   const { t } = useTranslation();
 
   const [isMobile, setIsMobile] = useState(false);
