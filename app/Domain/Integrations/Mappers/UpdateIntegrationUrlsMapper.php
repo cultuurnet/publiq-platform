@@ -4,36 +4,47 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Mappers;
 
+use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationUrlsRequest;
 use App\Domain\Integrations\IntegrationUrl;
+use App\Domain\Integrations\IntegrationUrlType;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 final class UpdateIntegrationUrlsMapper
 {
     /**
-     * @param array<IntegrationUrl> $currentIntegrationUrls
-     * @return array<IntegrationUrl>
+     * @param Collection<IntegrationUrl> $currentIntegrationUrls
+     * @return Collection<IntegrationUrl>
      */
-    public static function map(UpdateIntegrationUrlsRequest $request, array $currentIntegrationUrls): array
+    public static function map(UpdateIntegrationUrlsRequest $request, Collection $currentIntegrationUrls, UuidInterface $integrationId): Collection
     {
-        $currentUrlsCollection = Collection::make($currentIntegrationUrls);
+        /** @var array<array> $changedUrls */
+        $changedUrls = $request->input('urls') ?? [];
 
-        $changedUrlsCollection = Collection::make(
-            [
-                $request->input('loginUrl'),
-                ...($request->input('callbackUrls') ?? []),
-                ...($request->input('logoutUrls') ?? []),
-            ]
-        )->filter(fn ($val) => $val !== null)->values();
+        return collect($changedUrls)->map(
+            function (array $changedUrl) use ($integrationId, $currentIntegrationUrls) {
+                /** @var ?IntegrationUrl $currentUrl */
+                $currentUrl = null;
 
-        return $changedUrlsCollection->map(
-            function (array $changedUrl) use ($currentUrlsCollection) {
-                $currentUrl = $currentUrlsCollection->firstOrFail(
-                    fn (IntegrationUrl $currentUrl) => $currentUrl->id->equals(
-                        Uuid::fromString($changedUrl['id'])
-                    )
-                );
+                if (isset($changedUrl['id'])) {
+                    $currentUrl = $currentIntegrationUrls->first(
+                        fn (IntegrationUrl $currentUrl) => $currentUrl->id->equals(
+                            Uuid::fromString($changedUrl['id'])
+                        )
+                    );
+                }
+
+                if ($currentUrl === null) {
+                    return new IntegrationUrl(
+                        Uuid::uuid4(),
+                        $integrationId,
+                        Environment::from($changedUrl['environment']),
+                        IntegrationUrlType::from($changedUrl['type']),
+                        $changedUrl['url']
+                    );
+                }
 
                 return new IntegrationUrl(
                     $currentUrl->id,
@@ -43,6 +54,6 @@ final class UpdateIntegrationUrlsMapper
                     $changedUrl['url']
                 );
             }
-        )->toArray();
+        );
     }
 }

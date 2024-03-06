@@ -173,10 +173,10 @@ final class EloquentIntegrationUrlRepositoryTest extends TestCase
             'https://publiqtest.be/logout-new'
         );
 
-        $this->integrationUrlRepository->updateUrls([
+        $this->integrationUrlRepository->updateUrls(collect([
             $firstUpdatedIntegrationUrl,
             $thirdUpdatedIntegrationUrl,
-        ]);
+        ]));
 
         $expected = [
             $firstUpdatedIntegrationUrl,
