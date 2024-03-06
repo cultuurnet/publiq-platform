@@ -185,14 +185,15 @@
       "prod": "productieomgeving",
       "login": "Login URL",
       "callback": "Callback URL's",
-      "add": "URL toevoegen",
       "new": "Nieuwe URL",
       "environment": "Omgeving",
       "logout": "Logout URL's",
       "delete": {
         "title": "URL verwijderen",
         "question": "Wil je deze URL echt verwijderen?"
-      }
+      },
+      "error":"Er is een fout opgetreden bij het indienen van het formulier. Controleer uw invoer en probeer het opnieuw.",
+      "success": "De wijzigingen zijn succesvol opgeslagen."
     },
     "delete_integration": {
       "title": "Verwijderen",

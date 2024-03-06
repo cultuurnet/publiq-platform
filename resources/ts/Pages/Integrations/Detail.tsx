@@ -14,9 +14,9 @@ import { Card } from "../../Components/Card";
 import { useIntegrationTypes } from "../../Components/IntegrationTypes";
 import { Heading } from "../../Components/Heading";
 
-type Props = { integration: Integration };
+type Props = Integration;
 
-const Detail = ({ integration }: Props) => {
+const Detail = ({ ...integration }: Props) => {
   const { t } = useTranslation();
 
   const [isMobile, setIsMobile] = useState(false);
@@ -63,11 +63,7 @@ const Detail = ({ integration }: Props) => {
               type="settings"
               label={t("details.integration_settings.title")}
             >
-              <IntegrationSettings
-                integration={integration}
-                {...integration}
-                isMobile={isMobile}
-              />
+              <IntegrationSettings {...integration} isMobile={isMobile} />
             </Tabs.Item>
             <Tabs.Item
               type="credentials"

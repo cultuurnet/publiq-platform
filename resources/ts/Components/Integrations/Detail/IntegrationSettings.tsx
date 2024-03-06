@@ -1,154 +1,246 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ButtonPrimary } from "../../ButtonPrimary";
 import { useForm } from "@inertiajs/react";
 import { Integration } from "../../../Pages/Integrations/Index";
 import { IntegrationUrlType } from "../../../types/IntegrationUrlType";
-import { NewIntegrationUrl, UrlList } from "./UrlList";
+import { UrlList } from "./UrlList";
 import { IntegrationUrl } from "../../../Pages/Integrations/Index";
 import { BasicInfo } from "./BasicInfo";
 import { IntegrationType } from "../../../types/IntegrationType";
+import { Alert } from "../../Alert";
+import { Environment } from "../../../types/Environment";
+
+export const NEW_URL_ID_PREFIX = "new-";
+
+export const createEmptyIntegrationUrl = (
+  type: IntegrationUrlType,
+  environment: Environment
+): IntegrationUrl => ({
+  id: `${NEW_URL_ID_PREFIX}${crypto.randomUUID()}`,
+  url: "",
+  type,
+  environment,
+});
+
+const useBasicInfoForm = <T extends object>(initialFormValues: T) =>
+  useForm<T>(initialFormValues);
+const useUrlsForm = (initialFormValues: { urls: IntegrationUrl[] }) => {
+  const urlsWithDefaultEmptyValues = useMemo(() => {
+    // foreach type and environment
+    // there should be at least 1 field
+    const hasValues: Record<
+      IntegrationUrlType,
+      Record<Environment, boolean>
+    > = {
+      [IntegrationUrlType.Login]: {
+        [Environment.Test]: false,
+        [Environment.Prod]: false,
+      },
+      [IntegrationUrlType.Logout]: {
+        [Environment.Test]: false,
+        [Environment.Prod]: false,
+      },
+      [IntegrationUrlType.Callback]: {
+        [Environment.Test]: false,
+        [Environment.Prod]: false,
+      },
+    };
+
+    // find the missing values
+    initialFormValues.urls.forEach((url) => {
+      hasValues[url.type][url.environment] = !!url.url;
+    });
+
+    const withEmptyValues: IntegrationUrl[] = [...initialFormValues.urls];
+
+    (Object.keys(hasValues) as IntegrationUrlType[]).forEach((type) => {
+      (Object.keys(hasValues[type]) as Environment[]).forEach((environment) => {
+        if (!hasValues[type][environment as Environment]) {
+          withEmptyValues.push(createEmptyIntegrationUrl(type, environment));
+        }
+      });
+    });
+
+    return withEmptyValues;
+  }, [initialFormValues.urls]);
+
+  const form = useForm({
+    ...initialFormValues,
+    urls: urlsWithDefaultEmptyValues,
+  });
+
+  useEffect(() => {
+    if (form.hasErrors) return;
+    // if (Object.keys(page.props.errors).length > 0) return;
+    form.setData((previousData) => ({
+      ...previousData,
+      urls: urlsWithDefaultEmptyValues,
+    }));
+    // form is not a stable reference and triggers whenever a field value changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.hasErrors, urlsWithDefaultEmptyValues]);
+
+  return form;
+};
 
 type Props = {
   isMobile: boolean;
-  integration: Integration;
 } & Integration;
 
-export const IntegrationSettings = ({ integration, id, urls }: Props) => {
+export const IntegrationSettings = ({
+  id,
+  name,
+  type,
+  description,
+  urls,
+}: Props) => {
   const { t } = useTranslation();
 
-  const callbackUrls = useMemo(
-    () =>
-      urls
-        .filter((url) => url.type === IntegrationUrlType.Callback)
-        .map((url) => ({ ...url, changed: false })),
-    [urls]
-  );
+  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
 
-  const loginUrls = useMemo(
-    () =>
-      urls
-        .filter((url) => url.type === IntegrationUrlType.Login)
-        .map((url) => ({ ...url, changed: false })),
-    [urls]
-  );
+  const basicInfoForm = useBasicInfoForm({
+    integrationName: name,
+    description,
+  });
+  const urlsForm = useUrlsForm({
+    urls,
+  });
 
-  const logoutUrls = useMemo(
-    () =>
-      urls
-        .filter((url) => url.type === IntegrationUrlType.Logout)
-        .map((url) => ({ ...url, changed: false })),
-    [urls]
-  );
-
-  const initialFormValues = {
-    integrationName: integration.name,
-    description: integration.description,
-    callbackUrls,
-    loginUrls,
-    logoutUrls,
-    newIntegrationUrls: [] as NewIntegrationUrl[],
-  };
-
-  const {
-    data,
-    setData,
-    patch,
-    transform,
-    delete: destroy,
-  } = useForm(initialFormValues);
-
-  const handleDeleteUrl = (urlId: IntegrationUrl["id"]) => {
-    destroy(`/integrations/${id}/urls/${urlId}`, {
-      preserveScroll: true,
-      preserveState: false,
-    });
-  };
-
-  const handleSave = () =>
-    patch(`/integrations/${id}`, {
-      preserveScroll: true,
-      preserveState: false,
-    });
-
-  const handleChangeNewUrl = (newUrl: NewIntegrationUrl) => {
-    let found = false;
-
-    const updated = data.newIntegrationUrls.map((url) => {
-      if (url.type === newUrl.type && url.environment === newUrl.environment) {
-        found = true;
-        return newUrl;
-      }
-
-      return url;
-    });
-
-    if (!found) {
-      updated.push(newUrl);
-    }
-
-    setData("newIntegrationUrls", updated);
-  };
-
-  transform((data) => ({
+  urlsForm.transform((data) => ({
     ...data,
-    callbackUrls: data.callbackUrls.filter((url) => url.changed),
-    loginUrls: data.loginUrls.filter((url) => url.changed),
-    logoutUrls: data.logoutUrls.filter((url) => url.changed),
+    // @ts-expect-error strip out frontend generated ids
+    urls: data.urls
+      .map((url) => {
+        if (!url.id.startsWith(NEW_URL_ID_PREFIX)) {
+          return url;
+        }
+
+        return {
+          ...url,
+          id: undefined,
+        };
+      })
+      .filter((url) => {
+        const isEmptyNewUrl = typeof url.id === "undefined" && url.url === "";
+        const isEmptyLoginUrl =
+          url.type === IntegrationUrlType.Login && url.url === "";
+
+        return !(isEmptyNewUrl || isEmptyLoginUrl);
+      }),
   }));
 
-  const hasIntegrationUrls = useMemo(
-    () =>
-      integration.type !== IntegrationType.Widgets &&
-      integration.hasCredentials.v2,
-    [integration]
-  );
+  const handleConfirmDeleteUrl = (toDeleteUrlId: string) => {
+    urlsForm.setData((previousData) => ({
+      ...previousData,
+      urls: previousData.urls.filter((url) => url.id !== toDeleteUrlId),
+    }));
+  };
+
+  const handleAddNewUrl = (
+    type: IntegrationUrlType,
+    environment: Environment
+  ) => {
+    urlsForm.setData((previousData) => ({
+      ...previousData,
+      urls: [
+        ...previousData.urls,
+        createEmptyIntegrationUrl(type, environment),
+      ],
+    }));
+  };
+
+  const handleChangeUrlValue = (id: string, urlValue: string) => {
+    urlsForm.setData((previousData) => ({
+      ...previousData,
+      urls: previousData.urls.map((url) => {
+        if (url.id !== id) {
+          return url;
+        }
+
+        return {
+          ...url,
+          url: urlValue,
+        };
+      }),
+    }));
+  };
+
+  const saveBasicInfo = () => {
+    return new Promise((resolve, reject) => {
+      basicInfoForm.patch(`/integrations/${id}`, {
+        onError: (error) => reject(error),
+        onSuccess: () => resolve(undefined),
+        only: ["name", "description", "errors"],
+      });
+    });
+  };
+
+  const saveUrls = () => {
+    return new Promise((resolve, reject) => {
+      urlsForm.put(`/integrations/${id}/urls`, {
+        onError: (error) => reject(error),
+        onSuccess: () => resolve(undefined),
+        only: ["urls", "errors"],
+      });
+    });
+  };
+
+  const handleSave = async () => {
+    setStatus("idle");
+
+    try {
+      if (basicInfoForm.isDirty) {
+        await saveBasicInfo();
+      }
+      if (urlsForm.isDirty) {
+        await saveUrls();
+      }
+
+      setStatus("success");
+    } catch {
+      setStatus("error");
+    }
+  };
 
   return (
     <>
+      {status !== "idle" && (
+        <Alert
+          visible
+          variant={status}
+          title={t(`details.integration_settings.${status}`)}
+          closable
+          onClose={() => setStatus("idle")}
+        />
+      )}
+
       <BasicInfo
-        name={data.integrationName}
-        description={data.description}
-        onChangeName={(data) => setData("integrationName", data)}
-        onChangeDescription={(data) => setData("description", data)}
+        name={basicInfoForm.data.integrationName}
+        description={basicInfoForm.data.description}
+        onChangeName={(name) => basicInfoForm.setData("integrationName", name)}
+        onChangeDescription={(description) =>
+          basicInfoForm.setData("description", description)
+        }
+        errors={basicInfoForm.errors}
       />
-      <UrlList
-        type={IntegrationUrlType.Login}
-        urls={data.loginUrls}
-        newUrls={data.newIntegrationUrls}
-        onDelete={(urlId) => handleDeleteUrl(urlId)}
-        onChangeNewUrl={handleChangeNewUrl}
-        onChangeData={(data) => setData("loginUrls", data)}
-        className="border-b border-b-gray-300 pb-10"
-        disabled={!hasIntegrationUrls}
-      />
-      <UrlList
-        type={IntegrationUrlType.Callback}
-        urls={data.callbackUrls}
-        newUrls={data.newIntegrationUrls}
-        onDelete={(urlId) => handleDeleteUrl(urlId)}
-        onChangeNewUrl={handleChangeNewUrl}
-        onChangeData={(data) => {
-          setData("callbackUrls", data);
-        }}
-        className="border-b border-b-gray-300 pb-10"
-        disabled={!hasIntegrationUrls}
-      />
-      <UrlList
-        type={IntegrationUrlType.Logout}
-        urls={data.logoutUrls}
-        newUrls={data.newIntegrationUrls}
-        onChangeData={(data) => setData("logoutUrls", data)}
-        onDelete={(urlId) => handleDeleteUrl(urlId)}
-        onChangeNewUrl={handleChangeNewUrl}
-        disabled={!hasIntegrationUrls}
-      />
+
+      {type !== IntegrationType.Widgets &&
+        Object.values(IntegrationUrlType).map((type) => (
+          <UrlList
+            key={type}
+            type={type}
+            urls={urlsForm.data.urls.filter((url) => url.type === type)}
+            errors={urlsForm.errors}
+            onConfirmDeleteUrl={handleConfirmDeleteUrl}
+            onAddNewUrl={handleAddNewUrl}
+            onChangeUrlValue={handleChangeUrlValue}
+          />
+        ))}
+
       <div className="lg:grid lg:grid-cols-3 gap-6">
-        <div></div>
         <ButtonPrimary
-          onClick={() => {
-            handleSave();
-          }}
+          onClick={handleSave}
           className="col-span-2 justify-self-start"
         >
           {t("details.save")}
