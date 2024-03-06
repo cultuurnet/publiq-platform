@@ -46,7 +46,7 @@ export const DeleteIntegration = ({ id }: Props) => {
         onCancel={() => {
           setIsModalVisible(false);
         }}
-      ></QuestionDialog>
+      />
     </>
   );
 };

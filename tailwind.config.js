@@ -42,7 +42,7 @@ module.exports = {
         "icon-gray-light": "#F2F2F2",
         "icon-gray-dark": "#E3E3E3",
         "status-red": "#F9CED6",
-        "status-red-dark": "#FB2047",
+        "status-red-dark": "rgb(221, 82, 66)",
         "status-yellow": "#FBDBAA80",
         "status-yellow-dark": "#896B24",
         "status-green": "#C8FFC7",
