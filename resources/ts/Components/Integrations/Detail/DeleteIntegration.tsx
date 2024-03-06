@@ -18,12 +18,9 @@ export const DeleteIntegration = ({ id }: Props) => {
   return (
     <>
       <div className="flex flex-col gap-5">
-        <Heading level={2} className="font-semibold">
+        <Heading level={4} className="font-semibold">
           {t("details.delete_integration.title")}
         </Heading>
-        <p className="font-semibold">
-          {t("details.delete_integration.delete.description.part1")}
-        </p>
         <p>{t("details.delete_integration.delete.description.part2")}</p>
         <p> {t("details.delete_integration.delete.description.part3")}</p>
         <ButtonSecondary
