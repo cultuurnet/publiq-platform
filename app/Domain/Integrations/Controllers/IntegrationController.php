@@ -35,6 +35,7 @@ use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -134,6 +135,9 @@ final class IntegrationController extends Controller
             $integration = $this->integrationRepository->getById(Uuid::fromString($id));
             $subscription = $this->subscriptionRepository->getById($integration->subscriptionId);
             $contacts = $this->contactRepository->getByIntegrationId(UUid::fromString($id));
+            $auth0Clients = $this->auth0ClientRepository->getByIntegrationId(UUid::fromString($id));
+            $uiTiDv1Consumers = $this->uitidV1ConsumerRepository->getDistributedByIntegrationId(UUid::fromString($id));
+
         } catch (Throwable) {
             abort(404);
         }
@@ -145,6 +149,8 @@ final class IntegrationController extends Controller
                 'urls' => $integration->urls(),
                 'organization' => $integration->organization(),
                 'subscription' => $subscription,
+                'auth0Clients' => $this->getFilteredAuth0Clients($auth0Clients),
+                'uiTiDv1Consumers' => $uiTiDv1Consumers,
             ],
             'email' => Auth::user()?->email,
         ]);
@@ -268,12 +274,16 @@ final class IntegrationController extends Controller
 
         $this->integrationRepository->activateWithOrganization(Uuid::fromString($id), $organization->id);
 
-        return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
-            [
-                'id' => $id,
-            ]
-        );
+        return Redirect::back();
+    }
+
+    public function distributeAuth0Clients(string $id): RedirectResponse
+    {
+
+        $clients = $this->auth0ClientRepository->getByIntegrationId(Uuid::fromString($id));
+        $this->auth0ClientRepository->distribute(...$clients);
+
+        return Redirect::back();
     }
 
     public function showWidget(string $id): RedirectResponse
