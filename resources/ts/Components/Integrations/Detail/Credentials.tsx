@@ -22,12 +22,9 @@ export const Credentials = ({
 }: Props) => {
   const { t } = useTranslation();
 
-  console.log(uiTiDv1Consumers, "uitidv1",
-    auth0Clients, "auth0Clients");
-
   const handleDistributeAuth0Clients = () => {
-    router.post(`/integrations/${id}/auth0-clients`)
-  }
+    router.post(`/integrations/${id}/auth0-clients`);
+  };
 
   return (
     <>
@@ -59,24 +56,6 @@ export const Credentials = ({
                 </div>
               </div>
             </div>
-            {status === "pending_approval_payment" && (
-              <div className="flex flex-col gap-4">
-                <p className="ml-[5rem] max-w-[25rem]">
-                  {t("details.credentials.status_alert")}
-                  <Link
-                    className="pl-1"
-                    href={
-                      "https://docs.publiq.be/docs/uitdatabank/entry-api/requirements-before-going-live"
-                    }
-                  >
-                    {t("details.integration_info.link")}
-                  </Link>
-                </p>
-                <ButtonPrimary className="ml-[5rem] self-start">
-                  {t("details.credentials.action_status")}
-                </ButtonPrimary>
-              </div>
-            )}
           </div>
         )}
       </div>
@@ -87,7 +66,10 @@ export const Credentials = ({
         {auth0Clients.length === 0 ? (
           <div className="flex flex-col gap-4">
             <p>{t("details.credentials.uitid_alert")}</p>
-            <ButtonPrimary className="self-start" onClick={handleDistributeAuth0Clients}>
+            <ButtonPrimary
+              className="self-start"
+              onClick={handleDistributeAuth0Clients}
+            >
               {t("details.credentials.action_uitid")}
             </ButtonPrimary>
           </div>
