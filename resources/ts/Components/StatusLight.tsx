@@ -60,7 +60,8 @@ export const StatusLight = ({
       >
         {t(`integrations.status.${status}`)}
       </div>
-      {status === "pending_approval_integration" && (
+      {(status === "pending_approval_integration" ||
+        status === "pending_approval_payment") && (
         <span>{t("details.credentials.in_progress")}</span>
       )}
       {status === "draft" && (
