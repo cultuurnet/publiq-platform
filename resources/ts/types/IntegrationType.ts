@@ -8,6 +8,9 @@ export const IntegrationType = {
 
 export type IntegrationType = Values<typeof IntegrationType>;
 
-export const isIntegrationType = (val: unknown): val is IntegrationType => {
-  return Object.values(IntegrationType).includes(val as IntegrationType);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const isIntegrationType = (val: any): val is IntegrationType => {
+  return (
+    typeof val === "object" && Object.values(IntegrationType).includes(val)
+  );
 };
