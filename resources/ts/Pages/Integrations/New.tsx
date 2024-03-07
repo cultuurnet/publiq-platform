@@ -44,7 +44,6 @@ const getPricingPlansForType = (
 ) => {
   const getInfoForCategory = (category: string): PricingPlan => {
     // All types should match with a category
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const data = subscriptions.find(
       (sub) =>
         sub.category.toLowerCase() === category &&
