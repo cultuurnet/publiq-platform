@@ -19,7 +19,6 @@ import { IconSearchApi } from "./icons/IconSearchApi";
 
 type Props = Integration & {
   onEdit: (id: string) => void;
-  email: string;
 };
 
 const productTypeToPath = {
@@ -41,14 +40,7 @@ const OpenWidgetBuilderButton = ({ id, type }: Pick<Props, "id" | "type">) => {
   );
 };
 
-export const IntegrationCard = ({
-  id,
-  name,
-  type,
-  status,
-  email,
-  onEdit,
-}: Props) => {
+export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
   const { t } = useTranslation();
 
   const integrationTypes = useIntegrationTypes();
@@ -116,7 +108,7 @@ export const IntegrationCard = ({
             {t("integrations.live")}
           </Heading>
           <div className="flex align-center gap-1">
-            <StatusLight type={type} status={status} id={id} email={email} />
+            <StatusLight type={type} status={status} id={id} />
             {status === IntegrationStatus.Active && (
               <OpenWidgetBuilderButton id={id} type={type} />
             )}
@@ -136,11 +128,6 @@ export const IntegrationCard = ({
                 product: t(`integrations.products.${type}`),
               })}
             </Link>
-            {type === "entry-api" && (
-              <Link href="https://docs.publiq.be/docs/uitdatabank/entry-api%2Frequirements-before-going-live">
-                {t("integrations.documentation.requirements")}
-              </Link>
-            )}
           </div>
         </section>
       </div>

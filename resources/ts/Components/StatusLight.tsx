@@ -16,7 +16,7 @@ type Props = ComponentProps<"div"> & {
   id: string;
   subscription?: Subscription;
   type: Values<typeof IntegrationType>;
-  email: string;
+  email?: string;
 };
 
 const StatusToColor: Record<IntegrationStatus, string> = {
@@ -95,7 +95,7 @@ export const StatusLight = ({
             id={id}
             subscription={subscription}
             type={type}
-            email={email}
+            email={email!}
           />
         </div>
       )}
