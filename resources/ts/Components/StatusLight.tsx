@@ -1,14 +1,15 @@
 import React, { ComponentProps, useState } from "react";
 import { IntegrationStatus } from "../types/IntegrationStatus";
 import { classNames } from "../utils/classNames";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { ButtonPrimary } from "./ButtonPrimary";
-import { Link, router } from "@inertiajs/react";
+import { router } from "@inertiajs/react";
 import { ActivationDialog } from "./ActivationDialog";
 import { useTranslateRoute } from "../hooks/useTranslateRoute";
 import { Subscription } from "../Pages/Integrations/Index";
 import { Values } from "../types/Values";
 import { IntegrationType } from "../types/IntegrationType";
+import { Link } from "./Link";
 
 type Props = ComponentProps<"div"> & {
   status: IntegrationStatus;
@@ -67,13 +68,18 @@ export const StatusLight = ({
       {status === "draft" && (
         <div className="flex flex-col gap-3">
           <div>
-            <>
-              <span>{t("details.credentials.status_alert")}</span>
-              <Link className="text-publiq-blue-dark" href="#">
-                {" "}
-                {t("integrations.status.here")}
-              </Link>
-            </>
+            <Trans
+              i18nKey="integrations.status.pending_approval_integration_description"
+              t={t}
+              components={{
+                1: (
+                  <Link
+                    href={t("integrations.status.before_going_live_link")}
+                    className="text-publiq-blue-dark hover:underline"
+                  />
+                ),
+              }}
+            />
           </div>
           <ButtonPrimary className="self-start" onClick={handleRedirect}>
             {t("integrations.status.activate")}
