@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import type { Integration } from "../../../Pages/Integrations/Index";
 import { StatusLight } from "../../StatusLight";
 import { ButtonPrimary } from "../../ButtonPrimary";
-import { Link } from "../../Link";
 import { router } from "@inertiajs/react";
 
 type Props = Integration & {
