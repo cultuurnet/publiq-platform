@@ -128,7 +128,7 @@ final class IntegrationControllerTest extends TestCase
             ]
         );
 
-        $response->assertRedirect("/nl/integraties/{$integration->id}");
+        $response->assertRedirect('/');
 
         $this->assertDatabaseHas('integrations', [
             'id' => $integration->id->toString(),
