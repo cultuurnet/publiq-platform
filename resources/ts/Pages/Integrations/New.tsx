@@ -16,53 +16,11 @@ import { useTranslateRoute } from "../../hooks/useTranslateRoute";
 import { Link } from "../../Components/Link";
 import { useIntegrationTypes } from "../../Components/IntegrationTypes";
 
-const pricing = (t: TFunction, subscriptions: Subscription[]) => {
-  const getInfoForType = (type: string) => {
-    // All types should match with a category
-    const data = subscriptions.find(
-      (sub) => sub.category.toLowerCase() === type
-    )!;
-
-    return {
-      id: data.id,
-      price: data.price,
-      currency: data.currency,
-    };
-  };
-
-  const basic = getInfoForType("basic");
-  const plus = getInfoForType("plus");
-  const custom = getInfoForType("custom");
-
-  return [
-    {
-      id: basic.id,
-      title: t("integration_form.pricing.basic.title"),
-      description: t("integration_form.pricing.basic.description"),
-      price: t("integration_form.pricing.basic.price", {
-        price: basic.price,
-        currency: basic.currency,
-      }),
-    },
-    {
-      id: plus.id,
-      title: t("integration_form.pricing.plus.title"),
-      description: t("integration_form.pricing.plus.description"),
-      price: t("integration_form.pricing.plus.price", {
-        price: plus.price,
-        currency: plus.currency,
-      }),
-    },
-    {
-      id: custom.id,
-      title: t("integration_form.pricing.custom.title"),
-      description: t("integration_form.pricing.custom.description"),
-      price: t("integration_form.pricing.custom.price", {
-        price: custom.price,
-        currency: custom.currency,
-      }),
-    },
-  ];
+type PricingPlan = {
+  id: string;
+  price: number;
+  description: string;
+  currency: string;
 };
 
 type Subscription = {
@@ -77,6 +35,72 @@ type Subscription = {
   deleted_at: string | null;
   created_at: string;
   updated_at: string;
+};
+
+const getPricingPlansForType = (
+  t: TFunction,
+  integrationType: string,
+  subscriptions: Subscription[]
+) => {
+  const getInfoForCategory = (category: string): PricingPlan => {
+    // All types should match with a category
+    const data = subscriptions.find(
+      (sub) =>
+        sub.category.toLowerCase() === category &&
+        sub.integration_type === integrationType
+    )!;
+
+    return {
+      id: data.id,
+      price: data.price,
+      description: data.description,
+      currency: data.currency,
+    };
+  };
+
+  const free = getInfoForCategory("free");
+  const basic = getInfoForCategory("basic");
+  const plus = getInfoForCategory("plus");
+  const custom = getInfoForCategory("custom");
+
+  return [
+    {
+      id: free.id,
+      title: t("integration_form.pricing.free.title"),
+      description: free.description,
+      price: t("integration_form.pricing.free.price", {
+        price: free.price,
+        currency: free.currency,
+      }),
+    },
+    {
+      id: basic.id,
+      title: t("integration_form.pricing.basic.title"),
+      description: basic.description,
+      price: t("integration_form.pricing.basic.price", {
+        price: basic.price,
+        currency: basic.currency,
+      }),
+    },
+    {
+      id: plus.id,
+      title: t("integration_form.pricing.plus.title"),
+      description: plus.description,
+      price: t("integration_form.pricing.plus.price", {
+        price: plus.price,
+        currency: plus.currency,
+      }),
+    },
+    {
+      id: custom.id,
+      title: t("integration_form.pricing.custom.title"),
+      description: custom.description,
+      price: t("integration_form.pricing.custom.price", {
+        price: custom.price,
+        currency: custom.currency,
+      }),
+    },
+  ].filter((pricing) => pricing.id);
 };
 
 type Props = {
@@ -122,9 +146,9 @@ const New = ({ subscriptions }: Props) => {
   }
 
   const translatedIntegrations = useIntegrationTypes();
-  const translatedPricing = useMemo(
-    () => pricing(t, subscriptions),
-    [t, subscriptions]
+  const translatedPricingPlans = useMemo(
+    () => getPricingPlansForType(t, data.integrationType, subscriptions),
+    [t, data.integrationType, subscriptions]
   );
 
   return (
@@ -165,31 +189,33 @@ const New = ({ subscriptions }: Props) => {
             error={errors.integrationType}
           />
 
-          <FormElement
-            label={t("integration_form.pricing_plan")}
-            labelSize="xl"
-            component={
-              <div className="md:grid md:grid-cols-3 gap-5 max-md:flex max-md:flex-col max-md:items-center pb-3">
-                {translatedPricing.map((pricing) => (
-                  <Card
-                    role="button"
-                    key={pricing.title}
-                    onClick={() => {
-                      setData("subscriptionId", pricing.id);
-                    }}
-                    {...pricing}
-                    active={data.subscriptionId === pricing.id}
-                    className="rounded-lg"
-                    contentStyles="font-bold"
-                    textCenter
-                  >
-                    {pricing.price}
-                  </Card>
-                ))}
-              </div>
-            }
-            error={errors.subscriptionId}
-          />
+          {translatedPricingPlans.length > 0 && (
+            <FormElement
+              label={t("integration_form.pricing_plan")}
+              labelSize="xl"
+              component={
+                <div className="md:grid md:grid-cols-3 gap-5 max-md:flex max-md:flex-col max-md:items-center pb-3">
+                  {translatedPricingPlans.map((pricingPlan) => (
+                    <Card
+                      role="button"
+                      key={pricingPlan.title}
+                      onClick={() => {
+                        setData("subscriptionId", pricingPlan.id);
+                      }}
+                      {...pricingPlan}
+                      active={data.subscriptionId === pricingPlan.id}
+                      className="rounded-lg"
+                      contentStyles="font-bold"
+                      textCenter
+                    >
+                      {pricingPlan.price}
+                    </Card>
+                  ))}
+                </div>
+              }
+              error={errors.subscriptionId}
+            />
+          )}
           <FormElement
             label={t("integration_form.integration_name")}
             labelSize="xl"
