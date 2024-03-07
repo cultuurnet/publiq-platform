@@ -86,7 +86,7 @@ export const Credentials = ({
         <Heading className="font-semibold lg:min-w-60" level={4}>
           {t("details.credentials.uitid_v2")}
         </Heading>
-        {!auth0ProdClient ? (
+        {uiTiDv1TestConsumer && !auth0ProdClient ? (
           <div className="flex flex-col flex-1 gap-4">
             <p>{t("details.credentials.uitid_alert")}</p>
             <ButtonPrimary
