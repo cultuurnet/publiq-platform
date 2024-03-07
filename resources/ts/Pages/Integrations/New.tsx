@@ -15,6 +15,11 @@ import { ButtonLinkSecondary } from "../../Components/ButtonLinkSecondary";
 import { useTranslateRoute } from "../../hooks/useTranslateRoute";
 import { Link } from "../../Components/Link";
 import { useIntegrationTypes } from "../../Components/IntegrationTypes";
+import {
+  IntegrationType,
+  isIntegrationType,
+} from "../../types/IntegrationType";
+import { IntegrationUrlType } from "../../types/IntegrationUrlType";
 
 type PricingPlan = {
   id: string;
@@ -39,16 +44,19 @@ type Subscription = {
 
 const getPricingPlansForType = (
   t: TFunction,
-  integrationType: string,
+  integrationType: IntegrationType,
   subscriptions: Subscription[]
 ) => {
-  const getInfoForCategory = (category: string): PricingPlan => {
-    // All types should match with a category
+  const getInfoForCategory = (category: string): PricingPlan | undefined => {
     const data = subscriptions.find(
       (sub) =>
         sub.category.toLowerCase() === category &&
         sub.integration_type === integrationType
-    )!;
+    );
+
+    if (!data) {
+      return undefined;
+    }
 
     return {
       id: data.id,
@@ -63,8 +71,8 @@ const getPricingPlansForType = (
   const plus = getInfoForCategory("plus");
   const custom = getInfoForCategory("custom");
 
-  return [
-    {
+  const infos = [
+    free && {
       id: free.id,
       title: t("integration_form.pricing.free.title"),
       description: free.description,
@@ -73,7 +81,7 @@ const getPricingPlansForType = (
         currency: free.currency,
       }),
     },
-    {
+    basic && {
       id: basic.id,
       title: t("integration_form.pricing.basic.title"),
       description: basic.description,
@@ -82,7 +90,7 @@ const getPricingPlansForType = (
         currency: basic.currency,
       }),
     },
-    {
+    plus && {
       id: plus.id,
       title: t("integration_form.pricing.plus.title"),
       description: plus.description,
@@ -91,7 +99,7 @@ const getPricingPlansForType = (
         currency: plus.currency,
       }),
     },
-    {
+    custom && {
       id: custom.id,
       title: t("integration_form.pricing.custom.title"),
       description: custom.description,
@@ -100,7 +108,11 @@ const getPricingPlansForType = (
         currency: custom.currency,
       }),
     },
-  ].filter((pricing) => pricing.id);
+  ];
+
+  return infos.filter((info) => !!info?.id) as NonNullable<
+    (typeof infos)[number]
+  >[];
 };
 
 type Props = {
@@ -113,7 +125,10 @@ const New = ({ subscriptions }: Props) => {
   const translateRoute = useTranslateRoute();
 
   const url = new URL(document.location.href);
-  const activeType = url.searchParams.get("type") ?? "";
+  const activeTypeFromUrl = url.searchParams.get("type") ?? "";
+  const activeType: IntegrationType = isIntegrationType(activeTypeFromUrl)
+    ? activeTypeFromUrl
+    : IntegrationType.EntryApi;
 
   const initialFormValues = {
     integrationType: activeType,
