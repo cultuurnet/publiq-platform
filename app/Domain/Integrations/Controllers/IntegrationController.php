@@ -149,7 +149,7 @@ final class IntegrationController extends Controller
                 'urls' => $integration->urls(),
                 'organization' => $integration->organization(),
                 'subscription' => $subscription,
-                'auth0Clients' => $this->getFilteredAuth0Clients($auth0Clients),
+                'auth0Clients' => $auth0Clients,
                 'uiTiDv1Consumers' => $uiTiDv1Consumers,
             ],
             'email' => Auth::user()?->email,
