@@ -113,12 +113,16 @@ export const Credentials = ({
               <Heading className="font-semibold min-w-[5rem]" level={4}>
                 {t("details.credentials.live")}
               </Heading>
-              <div className="flex w-full">
-                Client id: {auth0ProdClient?.clientId}
-              </div>
-              <div className="flex w-full">
-                Client secret: {auth0ProdClient?.clientSecret}
-              </div>
+              {status === "active" && (
+                <>
+                  <div className="flex w-full">
+                    Client id: {auth0ProdClient?.clientId}
+                  </div>
+                  <div className="flex w-full">
+                    Client secret: {auth0ProdClient?.clientSecret}
+                  </div>
+                </>
+              )}
               <div className="flex gap-1 align-center">
                 {status !== "active" && (
                   <StatusLight
