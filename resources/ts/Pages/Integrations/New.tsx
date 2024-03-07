@@ -154,13 +154,6 @@ const New = ({ subscriptions }: Props) => {
   return (
     <Page>
       <div className="inline-flex flex-col gap-5">
-        <ButtonLinkSecondary
-          href={translateRoute("/integrations")}
-          className="w-fit"
-        >
-          <FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>
-          <span>{t("integration_form.back")}</span>
-        </ButtonLinkSecondary>
         <Heading level={2}>{t("integration_form.title")}</Heading>
         <p className="mb-5">{t("integration_form.description")}</p>
 
