@@ -62,7 +62,6 @@ export const BillingInfo = ({ id, organization, subscription }: Props) => {
                     onChange={(e) =>
                       setData("organization", {
                         // We know organization exists
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         ...data.organization!,
                         name: e.target.value,
                       })
@@ -83,10 +82,8 @@ export const BillingInfo = ({ id, organization, subscription }: Props) => {
                       onChange={(e) =>
                         setData("organization", {
                           // We know organization exists
-                          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                           ...data.organization!,
                           address: {
-                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                             ...data.organization!.address,
                             street: e.target.value,
                           },
@@ -107,10 +104,8 @@ export const BillingInfo = ({ id, organization, subscription }: Props) => {
                       onChange={(e) =>
                         setData("organization", {
                           // We know organization exists
-                          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                           ...data.organization!,
                           address: {
-                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                             ...data.organization!.address,
                             zip: e.target.value,
                           },
@@ -131,10 +126,8 @@ export const BillingInfo = ({ id, organization, subscription }: Props) => {
                       onChange={(e) =>
                         setData("organization", {
                           // We know organization exists
-                          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                           ...data.organization!,
                           address: {
-                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                             ...data.organization!.address,
                             city: e.target.value,
                           },
@@ -157,9 +150,7 @@ export const BillingInfo = ({ id, organization, subscription }: Props) => {
                     onChange={(e) =>
                       setData("organization", {
                         // We know organization exists
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         ...data.organization!,
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         vat: e.target.value,
                       })
                     }

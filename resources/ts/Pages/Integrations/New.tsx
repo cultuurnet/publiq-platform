@@ -19,7 +19,6 @@ import { useIntegrationTypes } from "../../Components/IntegrationTypes";
 const pricing = (t: TFunction, subscriptions: Subscription[]) => {
   const getInfoForType = (type: string) => {
     // All types should match with a category
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const data = subscriptions.find(
       (sub) => sub.category.toLowerCase() === type
     )!;
