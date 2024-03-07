@@ -135,7 +135,7 @@ final class IntegrationController extends Controller
             $integration = $this->integrationRepository->getById(Uuid::fromString($id));
             $subscription = $this->subscriptionRepository->getById($integration->subscriptionId);
             $contacts = $this->contactRepository->getByIntegrationId(UUid::fromString($id));
-            $auth0Clients = $this->auth0ClientRepository->getByIntegrationId(UUid::fromString($id));
+            $auth0Clients = $this->auth0ClientRepository->getDistributedByIntegrationId(UUid::fromString($id));
             $uiTiDv1Consumers = $this->uitidV1ConsumerRepository->getDistributedByIntegrationId(UUid::fromString($id));
 
         } catch (Throwable) {
