@@ -366,6 +366,8 @@ final class IntegrationControllerTest extends TestCase
             'urls' => [
                 [
                     'id' => $urls->loginUrl->id->toString(),
+                    'environment' => $urls->loginUrl->environment->value,
+                    'type' => $urls->loginUrl->type->value,
                     'url' => 'https://updated.login',
                 ],
                 [

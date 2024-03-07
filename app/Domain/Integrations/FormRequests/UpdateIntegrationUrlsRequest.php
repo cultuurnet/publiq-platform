@@ -6,6 +6,7 @@ namespace App\Domain\Integrations\FormRequests;
 
 use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\IntegrationUrlType;
+use App\Domain\Integrations\Rules\UniqueIntegrationUrl;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
@@ -19,11 +20,11 @@ final class UpdateIntegrationUrlsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'urls.*' => Rule::forEach(fn (array $value, string $attribute) => [
+            'urls.*' => Rule::forEach(fn () => [
                 'id' => ['string'],
-                'environment' => ["required_without:$attribute.id", new Enum(Environment::class)],
-                'type' => ["required_without:$attribute.id", new Enum(IntegrationUrlType::class)],
-                'url' => ['required', 'url:https', 'max:255'],
+                'environment' => ['required', new Enum(Environment::class)],
+                'type' => ['required', new Enum(IntegrationUrlType::class)],
+                'url' => ['required', 'url:https', 'max:255', new UniqueIntegrationUrl($this->input('urls'))],
             ]),
         ];
     }
