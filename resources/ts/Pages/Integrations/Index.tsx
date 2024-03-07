@@ -96,9 +96,9 @@ export type Integration = {
 
 type Props = {
   integrations: Integration[];
-} & PaginationInfo & { email: string };
+} & PaginationInfo;
 
-const Index = ({ integrations, paginationInfo, email }: Props) => {
+const Index = ({ integrations, paginationInfo }: Props) => {
   const { t } = useTranslation();
   const translateRoute = useTranslateRoute();
 
@@ -126,8 +126,6 @@ const Index = ({ integrations, paginationInfo, email }: Props) => {
       preserveScroll: true,
     });
   };
-
-  console.log(email);
 
   return (
     <Page>
@@ -166,7 +164,6 @@ const Index = ({ integrations, paginationInfo, email }: Props) => {
             <li className="flex w-full" key={integration.id}>
               <IntegrationCard
                 {...integration}
-                email={email}
                 onEdit={(id) =>
                   router.get(`${translateRoute("/integrations")}/${id}`)
                 }
