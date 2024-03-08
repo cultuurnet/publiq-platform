@@ -38,7 +38,7 @@ final class SubscriptionsSeeder extends Seeder
                 SubscriptionCategory::Basic,
                 IntegrationType::SearchApi,
                 Currency::EUR,
-                12500,
+                125,
                 0
             ),
             SubscriptionPlan::CUSTOM_SEARCH_API_PLAN => new Subscription(
@@ -58,7 +58,7 @@ final class SubscriptionsSeeder extends Seeder
                 SubscriptionCategory::Basic,
                 IntegrationType::Widgets,
                 Currency::EUR,
-                12500,
+                125,
                 0
             ),
             SubscriptionPlan::PLUS_WIDGETS_PLAN => new Subscription(
@@ -66,10 +66,10 @@ final class SubscriptionsSeeder extends Seeder
                 'Plus Plan - Widgets - Monthly',
                 'Plus Plan for integrating with Widgets, billed monthly and with a onetime fee.',
                 SubscriptionCategory::Plus,
-                IntegrationType::SearchApi,
+                IntegrationType::Widgets,
                 Currency::EUR,
-                28000,
-                60000
+                280,
+                600
             ),
             SubscriptionPlan::CUSTOM_WIDGETS_PLAN => new Subscription(
                 $subscriptionId,
