@@ -62,11 +62,7 @@ export const CredentialsUitidv1Consumers = ({
             <CopyText>{uiTiDv1ProdConsumer?.apiKey}</CopyText>
           )}
           <div className="flex flex-col gap-3 align-center">
-            {status !== "active" && (
-              <StatusLight
-                status={status}
-              />
-            )}
+            {status !== "active" && <StatusLight status={status} />}
             {status === "draft" && auth0Clients.length === 0 && (
               <ActivationFlow
                 status={status}

@@ -16,9 +16,7 @@ const StatusToColor: Record<IntegrationStatus, string> = {
   [IntegrationStatus.PendingApprovalPayment]: "bg-[#e69336]",
 };
 
-export const StatusLight = ({
-  status,
-}: Props) => {
+export const StatusLight = ({ status }: Props) => {
   const { t } = useTranslation();
 
   return (
