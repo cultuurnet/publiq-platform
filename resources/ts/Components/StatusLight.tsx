@@ -1,15 +1,13 @@
 import React, { ComponentProps, useState } from "react";
 import { IntegrationStatus } from "../types/IntegrationStatus";
 import { classNames } from "../utils/classNames";
-import { Trans, useTranslation } from "react-i18next";
-import { ButtonPrimary } from "./ButtonPrimary";
+import { useTranslation } from "react-i18next";
 import { router } from "@inertiajs/react";
 import { ActivationDialog } from "./ActivationDialog";
-import { useTranslateRoute } from "../hooks/useTranslateRoute";
 import { Subscription } from "../Pages/Integrations/Index";
 import { Values } from "../types/Values";
 import { IntegrationType } from "../types/IntegrationType";
-import { Link } from "./Link";
+import { ActivationRequest } from "./ActivationRequest";
 
 type Props = ComponentProps<"div"> & {
   status: IntegrationStatus;
@@ -44,13 +42,6 @@ export const StatusLight = ({
     !!isDialogVisible ?? false
   );
 
-  const translateRoute = useTranslateRoute();
-
-  const handleRedirect = () =>
-    router.get(
-      `${translateRoute("/integrations")}/${id}?tab=credentials&isDialogVisible=true`
-    );
-
   return (
     <div className="flex flex-col gap-3">
       <div
@@ -64,40 +55,6 @@ export const StatusLight = ({
       {(status === "pending_approval_integration" ||
         status === "pending_approval_payment") && (
         <span>{t("details.credentials.in_progress")}</span>
-      )}
-      {status === "draft" && (
-        <div className="flex flex-col gap-3">
-          <div>
-            <Trans
-              i18nKey="integrations.status.pending_approval_integration_description"
-              t={t}
-              components={{
-                1: (
-                  <Link
-                    href={t("integrations.status.before_going_live_link")}
-                    className="text-publiq-blue-dark hover:underline"
-                  />
-                ),
-              }}
-            />
-          </div>
-          <ButtonPrimary className="self-start" onClick={handleRedirect}>
-            {t("integrations.status.activate")}
-          </ButtonPrimary>
-          <ActivationDialog
-            isVisible={isActivationDialogVisible}
-            onClose={() => {
-              router.get(url.toString(), {
-                isDialogVisible: undefined,
-              });
-              setIsActivationDialogVisible(false);
-            }}
-            id={id}
-            subscription={subscription}
-            type={type}
-            email={email!}
-          />
-        </div>
       )}
     </div>
   );
