@@ -66,7 +66,7 @@ final class SubscriptionsSeeder extends Seeder
                 'Plus Plan - Widgets - Monthly',
                 'Plus Plan for integrating with Widgets, billed monthly and with a onetime fee.',
                 SubscriptionCategory::Plus,
-                IntegrationType::SearchApi,
+                IntegrationType::Widgets,
                 Currency::EUR,
                 280,
                 600
