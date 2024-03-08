@@ -6,6 +6,7 @@ namespace App\Domain\Integrations\Repositories;
 
 use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\Models\IntegrationUrlModel;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\UuidInterface;
 
@@ -13,13 +14,18 @@ final class EloquentIntegrationUrlRepository implements IntegrationUrlRepository
 {
     public function save(IntegrationUrl $integrationUrl): void
     {
-        IntegrationUrlModel::query()->create([
-            'id' => $integrationUrl->id,
-            'integration_id' => $integrationUrl->integrationId,
+        IntegrationUrlModel::query()->updateOrCreate(
+            [
+                'id' => $integrationUrl->id->toString(),
+            ],
+            [
+            'id' => $integrationUrl->id->toString(),
+            'integration_id' => $integrationUrl->integrationId->toString(),
             'type' => $integrationUrl->type,
             'environment' => $integrationUrl->environment,
             'url' => $integrationUrl->url,
-         ]);
+         ]
+        );
     }
 
     public function getById(UuidInterface $id): IntegrationUrl
@@ -45,19 +51,40 @@ final class EloquentIntegrationUrlRepository implements IntegrationUrlRepository
            ->toArray();
     }
 
-    public function deleteById(UuidInterface $id): ?bool
+    public function getByIntegrationId(UuidInterface $integrationId): Collection
     {
-        /**
-         * @var IntegrationUrlModel $integrationUrlModel
-         */
-        $integrationUrlModel = IntegrationUrlModel::query()->findOrFail($id->toString());
-        return $integrationUrlModel->delete();
+        return IntegrationUrlModel::query()
+            ->where('integration_id', '=', $integrationId->toString())
+            ->orderBy('created_at')
+            ->get()
+            ->map(static fn (IntegrationUrlModel $model) => $model->toDomain());
+    }
+
+    public function deleteById(UuidInterface $id): void
+    {
+        IntegrationUrlModel::query()->where('id', '=', $id->toString())->delete();
     }
 
     /**
-     * @param array<IntegrationUrl> $integrationUrls
+     * @param Collection<UuidInterface> $ids
      */
-    public function updateUrls(array $integrationUrls): void
+    public function deleteByIds(Collection $ids): void
+    {
+        if (count($ids) === 0) {
+            return;
+        }
+
+        DB::transaction(function () use ($ids) {
+            foreach ($ids as $id) {
+                $this->deleteById($id);
+            }
+        });
+    }
+
+    /**
+     * @param Collection<IntegrationUrl> $integrationUrls
+     */
+    public function updateUrls(Collection $integrationUrls): void
     {
         if (count($integrationUrls) === 0) {
             return;
@@ -65,7 +92,7 @@ final class EloquentIntegrationUrlRepository implements IntegrationUrlRepository
 
         DB::transaction(function () use ($integrationUrls) {
             foreach ($integrationUrls as $integrationUrl) {
-                $this->update($integrationUrl);
+                $this->save($integrationUrl);
             }
         });
     }
@@ -75,7 +102,7 @@ final class EloquentIntegrationUrlRepository implements IntegrationUrlRepository
         IntegrationUrlModel::query()
             ->where('id', $integrationUrl->id->toString())
             ->update([
-                'integration_id' => $integrationUrl->integrationId,
+                'integration_id' => $integrationUrl->integrationId->toString(),
                 'type' => $integrationUrl->type,
                 'environment' => $integrationUrl->environment,
                 'url' => $integrationUrl->url,

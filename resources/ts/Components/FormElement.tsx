@@ -9,7 +9,7 @@ import { classNames } from "../utils/classNames";
 
 export type LabelPosition = "top" | "left" | "right";
 
-type LabelSize = "base" | "lg" | "xl";
+type LabelSize = "sm" | "base" | "lg" | "xl";
 
 type WrapperProps = {
   labelPosition?: LabelPosition;
@@ -46,7 +46,7 @@ const Label = memo(({ id, labelSize, label, className }: LabelProps) => (
   <label
     htmlFor={id}
     className={classNames(
-      "font-semibold",
+      "font-medium",
       labelSize ? `text-${labelSize}` : "",
       className
     )}
@@ -71,15 +71,17 @@ type Props = {
   error?: string;
   info?: string;
   component: ReactElement;
+  elementId?: string;
 } & ComponentProps<"div">;
 
 export const FormElement = ({
   label,
   labelPosition = "top",
-  labelSize = "base",
+  labelSize = "sm",
   component,
   error,
   info,
+  elementId,
   className,
 }: Props) => {
   const id = useId();
@@ -87,7 +89,10 @@ export const FormElement = ({
   const clonedComponent = cloneElement(component, { ...component.props, id });
 
   return (
-    <div className={classNames("inline-flex flex-col ", className)}>
+    <div
+      id={elementId}
+      className={classNames("inline-flex flex-col ", className)}
+    >
       <Wrapper labelPosition={labelPosition}>
         <>
           <div

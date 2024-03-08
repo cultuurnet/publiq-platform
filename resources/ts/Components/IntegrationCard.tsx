@@ -11,6 +11,11 @@ import { ButtonIconCopy } from "./ButtonIconCopy";
 import { Tooltip } from "./Tooltip";
 import { IntegrationStatus } from "../types/IntegrationStatus";
 import { ButtonLinkSecondary } from "./ButtonLinkSecondary";
+import {
+  integrationIconClasses,
+  useIntegrationTypesInfo,
+} from "./IntegrationTypes";
+import { IconSearchApi } from "./icons/IconSearchApi";
 
 type Props = Integration & {
   onEdit: (id: string) => void;
@@ -38,6 +43,7 @@ const OpenWidgetBuilderButton = ({ id, type }: Pick<Props, "id" | "type">) => {
 export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
   const { t } = useTranslation();
 
+  const integrationTypesInfo = useIntegrationTypesInfo();
   const codeFieldRef = useRef<HTMLSpanElement>(null);
 
   const [isVisible, setIsVisible] = useState(false);
@@ -51,11 +57,15 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
     }, 1000);
   }
 
+  const CardIcon = integrationTypesInfo.find((i) => i.type === type)?.Icon as
+    | typeof IconSearchApi
+    | undefined;
+
   return (
     <Card
       title={name}
       border
-      badge={type}
+      icon={CardIcon && <CardIcon className={integrationIconClasses} />}
       clickableHeading
       id={id}
       iconButton={
@@ -66,14 +76,14 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
         />
       }
     >
-      <div className="flex flex-col gap-4 mx-8 my-6">
-        <section className="flex max-md:flex-col max-md:items-start gap-3 md:items-center">
+      <div className="flex flex-col gap-4 mx-8 my-6 items-stretch min-h-[10rem]">
+        <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center gap-3">
           <Heading level={5} className="font-semibold min-w-[10rem]">
             {t("integrations.test")}
           </Heading>
-          <div className="flex gap-2 items-center bg-publiq-blue rounded px-2 p-1">
+          <div className="flex gap-2 items-center bg-[#fdf3ef] rounded px-3 p-1">
             <span
-              className="overflow-hidden text-ellipsis text-white"
+              className="overflow-hidden text-ellipsis text-publiq-orange"
               ref={codeFieldRef}
             >
               {id}
@@ -85,7 +95,7 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
             >
               <ButtonIconCopy
                 onClick={handleCopyToClipboard}
-                className={"text-white"}
+                className={"text-publiq-orange"}
               />
             </Tooltip>
           </div>
@@ -93,7 +103,7 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
             <OpenWidgetBuilderButton id={id} type={type} />
           )}
         </section>
-        <section className="inline-flex gap-3 max-md:flex-col max-md:items-start md:items-start">
+        <section className="flex-1 inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">
           <Heading className="font-semibold min-w-[10rem]" level={5}>
             {t("integrations.live")}
           </Heading>
@@ -104,7 +114,7 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
             )}
           </div>
         </section>
-        <section className="inline-flex gap-3 max-md:flex-col items-start">
+        <section className="flex-1 inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">
           <Heading className="font-semibold min-w-[10rem]" level={5}>
             {t("integrations.documentation.title")}
           </Heading>

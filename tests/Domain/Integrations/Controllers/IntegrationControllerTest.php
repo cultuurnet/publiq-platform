@@ -362,21 +362,24 @@ final class IntegrationControllerTest extends TestCase
         $this->givenTheActingUserIsAContactOnIntegration($integration);
         $urls = $this->givenThereAreMultipleUrlsForIntegration($integration);
 
-        $response = $this->patch("/integrations/{$integration->id}/urls", [
-            'loginUrl' => [
-                'id' => $urls->loginUrl->id->toString(),
-                'url' => 'https://updated.login',
-            ],
-            'callbackUrls' => [
+        $response = $this->put("/integrations/{$integration->id}/urls", [
+            'urls' => [
+                [
+                    'id' => $urls->loginUrl->id->toString(),
+                    'environment' => $urls->loginUrl->environment->value,
+                    'type' => $urls->loginUrl->type->value,
+                    'url' => 'https://updated.login',
+                ],
                 [
                     'id' => $urls->callbackUrls[0]->id->toString(),
+                    'environment' => $urls->callbackUrls[0]->environment->value,
+                    'type' => $urls->callbackUrls[0]->type->value,
                     'url' => 'https://updated.callback',
                 ],
-            ],
-            'logoutUrls' => [
                 [
-                    'id' => $urls->logoutUrls[0]->id->toString(),
-                    'url' => 'https://updated.logout',
+                    'environment' => Environment::Acceptance->value,
+                    'type' => IntegrationUrlType::Callback->value,
+                    'url' => 'https://new.callback',
                 ],
             ],
         ]);
@@ -396,10 +399,59 @@ final class IntegrationControllerTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('integrations_urls', [
-            'id' => $urls->logoutUrls[0]->id->toString(),
-            'type' => IntegrationUrlType::Logout->value,
-            'url' => 'https://updated.logout',
+            'environment' => Environment::Acceptance->value,
+            'type' => IntegrationUrlType::Callback->value,
+            'url' => 'https://new.callback',
         ]);
+
+        $this->assertDatabaseMissing('integrations_urls', [
+            'id' => $urls->logoutUrls[0]->id->toString(),
+        ]);
+    }
+
+    public function test_it_can_add_integration_urls_via_update(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+
+        $response = $this->put("/integrations/{$integration->id}/urls", [
+            'urls' => [
+                [
+                    'environment' => Environment::Testing->value,
+                    'type' => IntegrationUrlType::Login->value,
+                    'url' => 'https://new.login',
+                ],
+            ],
+        ]);
+
+        $response->assertRedirect("/nl/integraties/{$integration->id}");
+
+        $this->assertDatabaseCount('integrations_urls', 1);
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'environment' => Environment::Testing->value,
+            'type' => IntegrationUrlType::Login->value,
+            'url' => 'https://new.login',
+        ]);
+    }
+
+    public function test_it_can_delete_integration_urls_via_update(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $this->givenThereAreMultipleUrlsForIntegration($integration);
+
+        $response = $this->put("/integrations/{$integration->id}/urls", [
+            'urls' => [],
+        ]);
+
+        $response->assertRedirect("/nl/integraties/{$integration->id}");
+
+        $this->assertDatabaseCount('integrations_urls', 0);
     }
 
     public function test_it_can_not_update_integration_urls_if_unauthorized(): void
@@ -409,18 +461,20 @@ final class IntegrationControllerTest extends TestCase
         $integration = $this->givenThereIsAnIntegration();
         $urls = $this->givenThereAreMultipleUrlsForIntegration($integration);
 
-        $response = $this->patch("/integrations/{$integration->id}/urls", [
-            'loginUrl' => [
-                'id' => $urls->loginUrl->id->toString(),
-                'url' => 'https://updated.login',
-            ],
-            'callbackUrl' => [
-                'id' => $urls->callbackUrls[0]->id->toString(),
-                'url' => 'https://updated.callback',
-            ],
-            'logoutUrl' => [
-                'id' => $urls->logoutUrls[0]->id->toString(),
-                'url' => 'https://updated.logout',
+        $response = $this->put("/integrations/{$integration->id}/urls", [
+            'urls' => [
+                [
+                    'id' => $urls->loginUrl->id->toString(),
+                    'url' => 'https://updated.login',
+                ],
+                'callbackUrl' => [
+                    'id' => $urls->callbackUrls[0]->id->toString(),
+                    'url' => 'https://updated.callback',
+                ],
+                'logoutUrl' => [
+                    'id' => $urls->logoutUrls[0]->id->toString(),
+                    'url' => 'https://updated.logout',
+                ],
             ],
         ]);
 

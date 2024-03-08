@@ -8,9 +8,15 @@ import { IconSearchApi } from "./icons/IconSearchApi";
 import { IconWidgets } from "./icons/IconWidgets";
 import { classNames } from "../utils/classNames";
 
-const getIntegrationTypes = (t: TFunction) => [
+export const integrationIconClasses =
+  "h-full w-auto aspect-square max-h-[10rem] object-contain";
+
+export const getIntegrationTypesInfo = (t: TFunction) => [
   {
-    image: <IconEntryApi className={classNames(imageStyle, "pr-4")} />,
+    Icon: IconEntryApi,
+    image: (
+      <IconEntryApi className={classNames(integrationIconClasses, "pr-4")} />
+    ),
     title: t("home.integration_types.entry_api.title"),
     description: t("home.integration_types.entry_api.description"),
     features: [
@@ -21,7 +27,10 @@ const getIntegrationTypes = (t: TFunction) => [
     type: IntegrationType.EntryApi,
   },
   {
-    image: <IconSearchApi className={classNames(imageStyle, "pl-2")} />,
+    Icon: IconSearchApi,
+    image: (
+      <IconSearchApi className={classNames(integrationIconClasses, "pl-2")} />
+    ),
     title: t("home.integration_types.search_api.title"),
     description: t("home.integration_types.search_api.description"),
     features: [
@@ -32,7 +41,10 @@ const getIntegrationTypes = (t: TFunction) => [
     type: IntegrationType.SearchApi,
   },
   {
-    image: <IconWidgets className={classNames(imageStyle, "pr-6")} />,
+    Icon: IconWidgets,
+    image: (
+      <IconWidgets className={classNames(integrationIconClasses, "pr-6")} />
+    ),
     title: t("home.integration_types.widgets.title"),
     description: t("home.integration_types.widgets.description"),
     features: [
@@ -44,21 +56,27 @@ const getIntegrationTypes = (t: TFunction) => [
   },
 ];
 
-export const imageStyle =
-  "h-full w-auto aspect-square max-h-[10rem] object-contain";
-
-export type IntegrationType = ReturnType<typeof getIntegrationTypes>[number];
-
-export const IntegrationTypes = () => {
+export const useIntegrationTypesInfo = () => {
   const { t } = useTranslation();
 
-  const translatedIntegrationTypes = useMemo(() => getIntegrationTypes(t), [t]);
+  return useMemo(() => getIntegrationTypesInfo(t), [t]);
+};
+
+export type IntegrationTypesInfo = ReturnType<
+  typeof getIntegrationTypesInfo
+>[number];
+
+export const IntegrationTypes = () => {
+  const integrationTypesInfo = useIntegrationTypesInfo();
 
   return (
     <div>
       <ul className="w-full flex gap-5 max-md:flex-col">
-        {translatedIntegrationTypes.map((integration) => (
-          <IntegrationTypeCard key={integration.title} {...integration} />
+        {integrationTypesInfo.map((integrationTypeInfo) => (
+          <IntegrationTypeCard
+            key={integrationTypeInfo.title}
+            {...integrationTypeInfo}
+          />
         ))}
       </ul>
     </div>

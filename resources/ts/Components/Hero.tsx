@@ -19,13 +19,13 @@ export const Hero = () => {
         </Heading>
         <Heading
           level={2}
-          className="text-center font-light text-publiq-gray-dark max-w-[37rem]"
+          className="text-center font-extralight text-publiq-gray-dark max-w-[37rem]"
         >
           {t("home.hero.intro")}
         </Heading>
         <ButtonLink
-          href={translateRoute("/integrations/new")}
-          className={"rounded-none text-xl"}
+          href={translateRoute("/integrations")}
+          className={"rounded-none text-xl mb-6"}
         >
           {t("home.hero.start_here")}
         </ButtonLink>

@@ -9,13 +9,15 @@ use App\Domain\Integrations\FormRequests\UpdateIntegrationUrlsRequest;
 use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\IntegrationUrlType;
 use App\Domain\Integrations\Mappers\UpdateIntegrationUrlsMapper;
+use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
 final class UpdateIntegrationUrlsMapperTest extends TestCase
 {
     private const INTEGRATION_ID = '965a5b22-bcb6-4b93-a78b-229e4667a52d';
-    private const LOGIN_URL_ID = 'e9bcfca2-f6ee-404f-aca3-372eacf72b7f';
+    private const FIRST_LOGIN_URL_ID = 'e9bcfca2-f6ee-404f-aca3-372eacf72b7f';
+    private const SECOND_LOGIN_URL_ID = '7d6488d5-6390-4da5-9ab0-7f50939c9c32';
     private const FIRST_CALLBACK_URL_ID = '0d92e499-1ead-44f1-9bec-9901d638626e';
     private const SECOND_CALLBACK_URL_ID = '044683b8-d689-4900-a135-9873161e145f';
     private const FIRST_LOGOUT_URL_ID = '9ca543c3-a695-4403-adc1-a1159e6ae0a5';
@@ -24,11 +26,15 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
     private function getInputsForFullUpdate(): array
     {
         return [
-            'loginUrl' => [
-                'id' => self::LOGIN_URL_ID,
-                'url' => 'https://publiqtest.be/login-new',
-            ],
-            'callbackUrls' => [
+            'urls' => [
+                [
+                    'id' => self::FIRST_LOGIN_URL_ID,
+                    'url' => 'https://publiqtest.be/login-1-new',
+                ],
+                [
+                    'id' => self::SECOND_LOGIN_URL_ID,
+                    'url' => 'https://publiqtest.be/login-2-new',
+                ],
                 [
                     'id' => self::FIRST_CALLBACK_URL_ID,
                     'url' => 'https://publiqtest.be/callback-1-new',
@@ -37,8 +43,6 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
                     'id' => self::SECOND_CALLBACK_URL_ID,
                     'url' => 'https://publiqtest.be/callback-2-new',
                 ],
-            ],
-            'logoutUrls' => [
                 [
                     'id' => self::FIRST_LOGOUT_URL_ID,
                     'url' => 'https://publiqtest.be/logout-1-new',
@@ -52,30 +56,37 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
     }
 
     /**
-     * @return array<IntegrationUrl>
+     * @return Collection<IntegrationUrl>
      */
-    private function getCurrentIntegrationUrls(): array
+    private function getCurrentIntegrationUrls(): Collection
     {
-        return [
+        return collect([
             new IntegrationUrl(
-                Uuid::fromString(self::LOGIN_URL_ID),
+                Uuid::fromString(self::FIRST_LOGIN_URL_ID),
+                Uuid::fromString(self::INTEGRATION_ID),
+                Environment::Testing,
+                IntegrationUrlType::Login,
+                'https://publiqtest.be/login-1-new'
+            ),
+            new IntegrationUrl(
+                Uuid::fromString(self::SECOND_LOGIN_URL_ID),
                 Uuid::fromString(self::INTEGRATION_ID),
                 Environment::Production,
-                IntegrationUrlType::Callback,
-                'https://publiqtest.be/login'
+                IntegrationUrlType::Login,
+                'https://publiqtest.be/login-2-new'
             ),
             new IntegrationUrl(
                 Uuid::fromString(self::FIRST_CALLBACK_URL_ID),
                 Uuid::fromString(self::INTEGRATION_ID),
                 Environment::Testing,
-                IntegrationUrlType::Login,
+                IntegrationUrlType::Callback,
                 'https://publiqtest.be/callback-1'
             ),
             new IntegrationUrl(
                 Uuid::fromString(self::SECOND_CALLBACK_URL_ID),
                 Uuid::fromString(self::INTEGRATION_ID),
-                Environment::Testing,
-                IntegrationUrlType::Login,
+                Environment::Production,
+                IntegrationUrlType::Callback,
                 'https://publiqtest.be/callback-2'
             ),
             new IntegrationUrl(
@@ -88,38 +99,45 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
             new IntegrationUrl(
                 Uuid::fromString(self::SECOND_LOGOUT_URL_ID),
                 Uuid::fromString(self::INTEGRATION_ID),
-                Environment::Testing,
+                Environment::Production,
                 IntegrationUrlType::Logout,
                 'https://publiqtest.be/logout-2'
             ),
-        ];
+        ]);
     }
 
     /**
-     * @return array<IntegrationUrl>
+     * @return Collection<IntegrationUrl>
      */
-    private function getExpectedIntegrationUrlForFullUpdate(): array
+    private function getExpectedIntegrationUrlForFullUpdate(): Collection
     {
-        return [
+        return collect([
             new IntegrationUrl(
-                Uuid::fromString(self::LOGIN_URL_ID),
+                Uuid::fromString(self::FIRST_LOGIN_URL_ID),
+                Uuid::fromString(self::INTEGRATION_ID),
+                Environment::Testing,
+                IntegrationUrlType::Login,
+                'https://publiqtest.be/login-1-new'
+            ),
+            new IntegrationUrl(
+                Uuid::fromString(self::SECOND_LOGIN_URL_ID),
                 Uuid::fromString(self::INTEGRATION_ID),
                 Environment::Production,
-                IntegrationUrlType::Callback,
-                'https://publiqtest.be/login-new'
+                IntegrationUrlType::Login,
+                'https://publiqtest.be/login-2-new'
             ),
             new IntegrationUrl(
                 Uuid::fromString(self::FIRST_CALLBACK_URL_ID),
                 Uuid::fromString(self::INTEGRATION_ID),
                 Environment::Testing,
-                IntegrationUrlType::Login,
+                IntegrationUrlType::Callback,
                 'https://publiqtest.be/callback-1-new'
             ),
             new IntegrationUrl(
                 Uuid::fromString(self::SECOND_CALLBACK_URL_ID),
                 Uuid::fromString(self::INTEGRATION_ID),
-                Environment::Testing,
-                IntegrationUrlType::Login,
+                Environment::Production,
+                IntegrationUrlType::Callback,
                 'https://publiqtest.be/callback-2-new'
             ),
             new IntegrationUrl(
@@ -132,11 +150,11 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
             new IntegrationUrl(
                 Uuid::fromString(self::SECOND_LOGOUT_URL_ID),
                 Uuid::fromString(self::INTEGRATION_ID),
-                Environment::Testing,
+                Environment::Production,
                 IntegrationUrlType::Logout,
                 'https://publiqtest.be/logout-2-new'
             ),
-        ];
+        ]);
     }
 
     public function test_it_creates_updated_urls_from_request(): void
@@ -148,7 +166,7 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
 
         $currentUrls = $this->getCurrentIntegrationUrls();
 
-        $actual = UpdateIntegrationUrlsMapper::map($request, $currentUrls);
+        $actual = UpdateIntegrationUrlsMapper::map($request, $currentUrls, Uuid::fromString(self::INTEGRATION_ID));
 
         $expected = $this->getExpectedIntegrationUrlForFullUpdate();
 
@@ -158,9 +176,11 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
     public function test_it_only_creates_updated_login_integration_url_from_request(): void
     {
         $inputs = [
-            'loginUrl' => [
-                'id' => self::LOGIN_URL_ID,
-                'url' => 'https://publiqtest.be/login-new',
+            'urls' => [
+                ['id' => self::FIRST_LOGIN_URL_ID,
+                'url' => 'https://publiqtest.be/login-1-new'],
+                ['id' => self::SECOND_LOGIN_URL_ID,
+                'url' => 'https://publiqtest.be/login-2-new'],
             ],
         ];
 
@@ -169,17 +189,24 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
 
         $currentUrls = $this->getCurrentIntegrationUrls();
 
-        $actual = UpdateIntegrationUrlsMapper::map($request, $currentUrls);
+        $actual = UpdateIntegrationUrlsMapper::map($request, $currentUrls, Uuid::fromString(self::INTEGRATION_ID));
 
-        $expected = [
+        $expected = collect([
             new IntegrationUrl(
-                Uuid::fromString(self::LOGIN_URL_ID),
+                Uuid::fromString(self::FIRST_LOGIN_URL_ID),
+                Uuid::fromString(self::INTEGRATION_ID),
+                Environment::Testing,
+                IntegrationUrlType::Login,
+                'https://publiqtest.be/login-1-new'
+            ),
+            new IntegrationUrl(
+                Uuid::fromString(self::SECOND_LOGIN_URL_ID),
                 Uuid::fromString(self::INTEGRATION_ID),
                 Environment::Production,
-                IntegrationUrlType::Callback,
-                'https://publiqtest.be/login-new'
+                IntegrationUrlType::Login,
+                'https://publiqtest.be/login-2-new'
             ),
-        ];
+        ]);
 
         $this->assertEquals($expected, $actual);
     }
@@ -187,7 +214,7 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
     public function test_it_only_creates_updated_callback_urls_from_request(): void
     {
         $inputs = [
-            'callbackUrls' => [
+            'urls' => [
                 [
                     'id' => self::FIRST_CALLBACK_URL_ID,
                     'url' => 'https://publiqtest.be/callback-1-new',
@@ -204,24 +231,24 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
 
         $currentUrls = $this->getCurrentIntegrationUrls();
 
-        $actual = UpdateIntegrationUrlsMapper::map($request, $currentUrls);
+        $actual = UpdateIntegrationUrlsMapper::map($request, $currentUrls, Uuid::fromString(self::INTEGRATION_ID));
 
-        $expected = [
+        $expected = collect([
             new IntegrationUrl(
                 Uuid::fromString(self::FIRST_CALLBACK_URL_ID),
                 Uuid::fromString(self::INTEGRATION_ID),
                 Environment::Testing,
-                IntegrationUrlType::Login,
+                IntegrationUrlType::Callback,
                 'https://publiqtest.be/callback-1-new'
             ),
             new IntegrationUrl(
                 Uuid::fromString(self::SECOND_CALLBACK_URL_ID),
                 Uuid::fromString(self::INTEGRATION_ID),
-                Environment::Testing,
-                IntegrationUrlType::Login,
+                Environment::Production,
+                IntegrationUrlType::Callback,
                 'https://publiqtest.be/callback-2-new'
             ),
-        ];
+        ]);
 
         $this->assertEquals($expected, $actual);
     }
@@ -229,7 +256,7 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
     public function test_it_only_creates_updated_logout_urls_from_request(): void
     {
         $inputs = [
-            'logoutUrls' => [
+            'urls' => [
                 [
                     'id' => self::FIRST_LOGOUT_URL_ID,
                     'url' => 'https://publiqtest.be/logout-1-new',
@@ -246,9 +273,9 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
 
         $currentUrls = $this->getCurrentIntegrationUrls();
 
-        $actual = UpdateIntegrationUrlsMapper::map($request, $currentUrls);
+        $actual = UpdateIntegrationUrlsMapper::map($request, $currentUrls, Uuid::fromString(self::INTEGRATION_ID));
 
-        $expected = [
+        $expected = collect([
             new IntegrationUrl(
                 Uuid::fromString(self::FIRST_LOGOUT_URL_ID),
                 Uuid::fromString(self::INTEGRATION_ID),
@@ -259,11 +286,11 @@ final class UpdateIntegrationUrlsMapperTest extends TestCase
             new IntegrationUrl(
                 Uuid::fromString(self::SECOND_LOGOUT_URL_ID),
                 Uuid::fromString(self::INTEGRATION_ID),
-                Environment::Testing,
+                Environment::Production,
                 IntegrationUrlType::Logout,
                 'https://publiqtest.be/logout-2-new'
             ),
-        ];
+        ]);
 
         $this->assertEquals($expected, $actual);
     }

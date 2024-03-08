@@ -17,6 +17,7 @@ use App\Domain\Integrations\FormRequests\UpdateIntegrationRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationUrlsRequest;
 use App\Domain\Integrations\FormRequests\UpdateOrganizationRequest;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\Mappers\OrganizationMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationUrlMapper;
@@ -138,13 +139,11 @@ final class IntegrationController extends Controller
         }
 
         return Inertia::render('Integrations/Detail', [
-            'integration' => [
-                ...$integration->toArray(),
-                'contacts' => $contacts->toArray(),
-                'urls' => $integration->urls(),
-                'organization' => $integration->organization(),
-                'subscription' => $subscription,
-            ],
+            ...$integration->toArray(),
+            'contacts' => $contacts->toArray(),
+            'urls' => $integration->urls(),
+            'organization' => $integration->organization(),
+            'subscription' => $subscription,
         ]);
     }
 
@@ -178,27 +177,20 @@ final class IntegrationController extends Controller
         );
     }
 
-
-
     public function updateUrls(UpdateIntegrationUrlsRequest $request, string $id): RedirectResponse
     {
-        $ids = array_map(
-            fn ($url) => Uuid::fromString($url['id']),
-            array_filter(
-                [
-                    $request->input('loginUrl'),
-                    ...($request->input('callbackUrls') ?? []),
-                    ...($request->input('logoutUrls') ?? []),
-                ],
-                fn ($val) => $val !== null
-            )
-        );
-
-        $currentUrls = $this->integrationUrlRepository->getByIds($ids);
-
-        $updatedUrls = UpdateIntegrationUrlsMapper::map($request, $currentUrls);
+        $currentUrls = $this->integrationUrlRepository->getByIntegrationId(Uuid::fromString($id));
+        $updatedUrls = UpdateIntegrationUrlsMapper::map($request, $currentUrls, Uuid::fromString($id));
 
         $this->integrationUrlRepository->updateUrls($updatedUrls);
+
+        $toDeleteUrlIds = $currentUrls
+            ->filter(
+                fn (IntegrationUrl $url) => $updatedUrls->doesntContain('id', '=', $url->id)
+            )
+            ->map(fn (IntegrationUrl $url) => $url->id);
+
+        $this->integrationUrlRepository->deleteByIds($toDeleteUrlIds);
 
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),

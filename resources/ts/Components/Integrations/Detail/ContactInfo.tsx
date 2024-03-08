@@ -37,14 +37,12 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
 
   const functionalContact = useMemo(
     // We know for sure there is a functional contact
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     () => contacts.find((contact) => contact.type === ContactType.Functional)!,
     [contacts]
   );
 
   const technicalContact = useMemo(
     // We know for sure there is a technical contact
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     () => contacts.find((contact) => contact.type === ContactType.Technical)!,
     [contacts]
   );
@@ -157,7 +155,7 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
   return (
     <>
       <div className="w-full flex flex-col gap-6">
-        <Heading level={3} className="font-semibold col-span-1">
+        <Heading level={4} className="font-semibold col-span-1">
           {t("details.contact_info.title")}
         </Heading>
         <ContactsTable

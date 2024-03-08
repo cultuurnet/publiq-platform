@@ -17,13 +17,10 @@ export const DeleteIntegration = ({ id }: Props) => {
   };
   return (
     <>
-      <div className="max-w-[30rem] flex flex-col gap-5">
-        <Heading level={2} className="font-semibold">
+      <div className="flex flex-col gap-5">
+        <Heading level={4} className="font-semibold">
           {t("details.delete_integration.title")}
         </Heading>
-        <p className="font-semibold">
-          {t("details.delete_integration.delete.description.part1")}
-        </p>
         <p>{t("details.delete_integration.delete.description.part2")}</p>
         <p> {t("details.delete_integration.delete.description.part3")}</p>
         <ButtonSecondary
@@ -46,7 +43,7 @@ export const DeleteIntegration = ({ id }: Props) => {
         onCancel={() => {
           setIsModalVisible(false);
         }}
-      ></QuestionDialog>
+      />
     </>
   );
 };

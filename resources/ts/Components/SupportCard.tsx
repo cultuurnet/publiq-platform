@@ -29,12 +29,14 @@ export const SupportCard = ({
   const handleRedirect = () => router.get(translateRoute("/support"));
 
   return (
-    <div className="w-full flex flex-col bg-white shadow hover:bg-publiq-blue-light hover:bg-opacity-5">
-      <div className="flex flex-1 max-sm:flex-col md:gap-5 ">
+    <div className="w-full flex flex-col bg-white drop-shadow-card">
+      <div className="flex flex-1 max-sm:flex-col md:gap-5">
         <div className="flex flex-shrink-1">{imgUrl}</div>
         <div className="flex flex-col max-sm:pb-4 max-sm:px-4 md:p-4 gap-5">
-          <div className="flex flex-col gap-3 ">
-            <Heading level={3}>{title}</Heading>
+          <div className="flex flex-col gap-3 md:max-w-[90%]">
+            <Heading level={3} className="font-semibold">
+              {title}
+            </Heading>
             <p className="max-md:text-sm">{description}</p>
           </div>
           <div className="flex max-sm:self-center">

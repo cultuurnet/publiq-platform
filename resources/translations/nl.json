@@ -82,19 +82,20 @@
     "submit": "Integratie aanmaken",
     "back": "Terug naar integratieoverzicht",
     "pricing": {
+      "free": {
+        "title": "Free",
+        "price": "Gratis"
+      },
       "basic": {
         "title": "Basic",
-        "description": "Je configureert de widget zelf met behulp van onze documentatie.",
         "price": "{{currency}} {{price}} / jaar"
       },
       "plus": {
         "title": "Plus",
-        "description": "Na een intakegesprek configureren we de widget van A tot Z voor jou.",
         "price": "eerste jaar: € 600 nadien: € 280 / jaar"
       },
       "custom": {
         "title": "Custom",
-        "description": "We helpen je waar jij ons nodig hebt.",
         "price": "voorstel op maat"
       }
     }
@@ -185,14 +186,15 @@
       "prod": "productieomgeving",
       "login": "Login URL",
       "callback": "Callback URL's",
-      "add": "URL toevoegen",
       "new": "Nieuwe URL",
       "environment": "Omgeving",
       "logout": "Logout URL's",
       "delete": {
         "title": "URL verwijderen",
         "question": "Wil je deze URL echt verwijderen?"
-      }
+      },
+      "error":"Er is een fout opgetreden bij het indienen van het formulier. Controleer uw invoer en probeer het opnieuw.",
+      "success": "De wijzigingen zijn succesvol opgeslagen."
     },
     "delete_integration": {
       "title": "Verwijderen",

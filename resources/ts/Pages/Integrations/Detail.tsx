@@ -1,4 +1,4 @@
-import React, { ReactNode, useState, useEffect } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import Layout from "../../layouts/Layout";
 import { Page } from "../../Components/Page";
 import { Integration } from "./Index";
@@ -11,10 +11,12 @@ import { router } from "@inertiajs/react";
 import { Tabs } from "../../Components/Tabs";
 import { DeleteIntegration } from "../../Components/Integrations/Detail/DeleteIntegration";
 import { Card } from "../../Components/Card";
+import { useIntegrationTypesInfo } from "../../Components/IntegrationTypes";
+import { Heading } from "../../Components/Heading";
 
-type Props = { integration: Integration };
+type Props = Integration;
 
-const Detail = ({ integration }: Props) => {
+const Detail = ({ ...integration }: Props) => {
   const { t } = useTranslation();
 
   const [isMobile, setIsMobile] = useState(false);
@@ -31,6 +33,10 @@ const Detail = ({ integration }: Props) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const integrationTypesInfo = useIntegrationTypesInfo();
+  const integrationTypeInfo = integrationTypesInfo.find(
+    (i) => i.type === integration.type
+  );
   const changeTabInUrl = (tab: string) => {
     url.searchParams.set("tab", tab);
     router.get(url.toString());
@@ -38,18 +44,26 @@ const Detail = ({ integration }: Props) => {
 
   return (
     <Page>
-      <Card title={integration.name} badge={integration.type} border>
+      <Card
+        title={
+          <div className="flex flex-col">
+            <Heading className="font-semibold" level={2}>
+              {integration.name}
+            </Heading>
+            <small>{integration.type}</small>
+          </div>
+        }
+        icon={integrationTypeInfo?.image}
+        border
+        headless
+      >
         <div className="w-full flex flex-col gap-5">
           <Tabs active={activeTab} onChange={changeTabInUrl}>
             <Tabs.Item
               type="settings"
               label={t("details.integration_settings.title")}
             >
-              <IntegrationSettings
-                integration={integration}
-                {...integration}
-                isMobile={isMobile}
-              />
+              <IntegrationSettings {...integration} isMobile={isMobile} />
             </Tabs.Item>
             <Tabs.Item
               type="credentials"
