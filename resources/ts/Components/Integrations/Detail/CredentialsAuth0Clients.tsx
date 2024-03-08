@@ -90,7 +90,10 @@ export const CredentialsAuth0Clients = ({
             </Heading>
             <div className="flex flex-col gap-3">
               {auth0TestClientWithLabels.map((client) => (
-                <div className="flex gap-1 max-md:flex-col max-md:items-start">
+                <div
+                  key={`${client.label}-${client.value}`}
+                  className="flex gap-1 max-md:flex-col max-md:items-start"
+                >
                   <span className="flex items-center whitespace-nowrap">
                     {t(client.label)}
                   </span>
@@ -106,7 +109,10 @@ export const CredentialsAuth0Clients = ({
             {status === "active" && (
               <div className="flex flex-col gap-3">
                 {auth0ProdClientWithLabels.map((client) => (
-                  <div className="flex gap-1 max-md:flex-col max-md:items-start">
+                  <div
+                    key={`${client.label}-${client.value}`}
+                    className="flex gap-1 max-md:flex-col max-md:items-start"
+                  >
                     <span className="flex items-center whitespace-nowrap">
                       {t(client.label)}
                     </span>
@@ -116,11 +122,7 @@ export const CredentialsAuth0Clients = ({
               </div>
             )}
             <div className="flex flex-col gap-3 align-center">
-              {status !== "active" && (
-                <StatusLight
-                  status={status}
-                />
-              )}
+              {status !== "active" && <StatusLight status={status} />}
               {status === "draft" && (
                 <ActivationFlow
                   status={status}
