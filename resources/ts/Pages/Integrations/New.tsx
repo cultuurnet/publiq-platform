@@ -1,4 +1,4 @@
-import React, { FormEvent, ReactNode, useEffect, useMemo } from "react";
+import React, { FormEvent, ReactNode, useMemo } from "react";
 import { router, useForm } from "@inertiajs/react";
 import Layout from "../../layouts/Layout";
 import { Heading } from "../../Components/Heading";
@@ -19,7 +19,6 @@ import {
   IntegrationType,
   isIntegrationType,
 } from "../../types/IntegrationType";
-import { IntegrationUrlType } from "../../types/IntegrationUrlType";
 
 type PricingPlan = {
   id: string;
