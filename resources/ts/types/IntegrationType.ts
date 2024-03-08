@@ -10,7 +10,5 @@ export type IntegrationType = Values<typeof IntegrationType>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isIntegrationType = (val: any): val is IntegrationType => {
-  return (
-    typeof val === "object" && Object.values(IntegrationType).includes(val)
-  );
+  return Object.values(IntegrationType).includes(val);
 };
