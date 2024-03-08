@@ -18,12 +18,12 @@ type Props = ComponentProps<"div"> & {
 };
 
 const StatusToColor: Record<IntegrationStatus, string> = {
-  active: "bg-status-green text-status-green-dark",
-  blocked: "bg-status-red text-status-red-dark",
-  deleted: "bg-status-red text-status-red-dark",
-  draft: "bg-status-yellow text-status-pending-dark",
-  pending_approval_integration: "bg-status-yellow text-status-yellow-dark",
-  pending_approval_payment: "bg-status-yellow text-status-yellow-dark",
+  [IntegrationStatus.Active]: "bg-[#6bcd69]",
+  [IntegrationStatus.Blocked]: "bg-[#3b3b3b]",
+  [IntegrationStatus.Deleted]: "bg-[#dd5242]",
+  [IntegrationStatus.Draft]: "bg-[#dcdcdc]",
+  [IntegrationStatus.PendingApprovalIntegration]: "bg-[#e69336]",
+  [IntegrationStatus.PendingApprovalPayment]: "bg-[#e69336]",
 };
 
 export const StatusLight = ({
@@ -44,13 +44,16 @@ export const StatusLight = ({
 
   return (
     <div className="flex flex-col gap-3">
-      <div
-        className={classNames(
-          "bg-publiq-blue-dark text-xs font-medium mr-2 px-2.5 py-0.5 rounded uppercase self-start",
-          StatusToColor[status]
-        )}
-      >
-        {t(`integrations.status.${status}`)}
+      <div className="flex flex-row items-center">
+        <div
+          className={classNames(
+            "h-3 w-3 rounded-full mr-2",
+            StatusToColor[status]
+          )}
+        />
+        <div className={"mr-2 self-start"}>
+          {t(`integrations.status.${status}`)}
+        </div>
       </div>
       {(status === "pending_approval_integration" ||
         status === "pending_approval_payment") && (

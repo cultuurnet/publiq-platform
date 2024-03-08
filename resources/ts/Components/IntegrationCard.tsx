@@ -11,7 +11,7 @@ import { IntegrationStatus } from "../types/IntegrationStatus";
 import { ButtonLinkSecondary } from "./ButtonLinkSecondary";
 import {
   integrationIconClasses,
-  useIntegrationTypes,
+  useIntegrationTypesInfo,
 } from "./IntegrationTypes";
 import { IconSearchApi } from "./icons/IconSearchApi";
 import { CopyText } from "./CopyText";
@@ -45,7 +45,7 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
 
   const integrationTypes = useIntegrationTypes();
 
-  const CardIcon = integrationTypes.find((i) => i.type === type)?.Icon as
+  const CardIcon = integrationTypesInfo.find((i) => i.type === type)?.Icon as
     | typeof IconSearchApi
     | undefined;
 
@@ -64,8 +64,8 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
         />
       }
     >
-      <div className="flex flex-col gap-4 mx-8 my-6">
-        <section className="flex max-md:flex-col max-md:items-start gap-3 md:items-center">
+      <div className="flex flex-col gap-4 mx-8 my-6 items-stretch min-h-[10rem]">
+        <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center gap-3">
           <Heading level={5} className="font-semibold min-w-[10rem]">
             {t("integrations.test")}
           </Heading>
@@ -74,7 +74,7 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
             <OpenWidgetBuilderButton id={id} type={type} />
           )}
         </section>
-        <section className="inline-flex gap-3 max-md:flex-col max-md:items-start md:items-start">
+        <section className="flex-1 inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">
           <Heading className="font-semibold min-w-[10rem]" level={5}>
             {t("integrations.live")}
           </Heading>
@@ -86,7 +86,7 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
             )}
           </div>
         </section>
-        <section className="inline-flex gap-3 max-md:flex-col items-start">
+        <section className="flex-1 inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">
           <Heading className="font-semibold min-w-[10rem]" level={5}>
             {t("integrations.documentation.title")}
           </Heading>

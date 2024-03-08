@@ -161,7 +161,7 @@ const Index = ({ integrations, paginationInfo }: Props) => {
         })}
       </div>
       {integrations.length > 0 && (
-        <ul className="flex flex-col w-full gap-5">
+        <ul className="flex flex-col w-full gap-9">
           {integrations.map((integration) => (
             <li className="flex w-full" key={integration.id}>
               <IntegrationCard
