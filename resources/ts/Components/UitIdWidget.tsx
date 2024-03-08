@@ -39,8 +39,6 @@ export const UitIdWidget = ({
               nl: "/nl/integrations",
             },
             label: {
-              nl: "Integraties",
-            },
           },
           "seperator",
           {
@@ -49,6 +47,8 @@ export const UitIdWidget = ({
             },
             label: {
               nl: "Subscriptions",
+              nl: "Mijn integraties",
+              en: "My integrations",
             },
           },
         ],
