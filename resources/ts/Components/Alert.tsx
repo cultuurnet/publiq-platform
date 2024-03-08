@@ -7,30 +7,35 @@ import {
   faXmark,
   faTriangleExclamation,
   faCircleCheck,
+  faBell,
   IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-type Variant = "error" | "success";
+type Variant = "error" | "success" | "info";
 
 const variantToAlertStyle: Record<Variant, string> = {
   error: "bg-status-red border border-status-red-dark",
   success: "bg-status-green border border-status-green-medium",
+  info: "bg-[#d1defb]",
 };
 
 const variantToIcon: Record<Variant, IconDefinition> = {
   error: faTriangleExclamation,
   success: faCircleCheck,
+  info: faBell,
 };
 
 const variantToIconColor: Record<Variant, string> = {
   error: "text-status-red-dark",
   success: "text-status-green-dark",
+  info: "text-[#416fed]",
 };
 
 const variantToHeadingStyle: Record<Variant, string> = {
   error: "text-status-red-dark",
   success: "text-status-green-dark",
+  info: "text-publiq-gray",
 };
 
 type Props = ComponentProps<"div"> & {
@@ -38,7 +43,7 @@ type Props = ComponentProps<"div"> & {
   closable?: boolean;
   onClose?: () => void;
   variant?: Variant;
-  title: string;
+  title?: string;
 };
 
 export const Alert = ({
@@ -64,19 +69,24 @@ export const Alert = ({
         className
       )}
     >
-      <div className={"flex gap-3 items-center"}>
+      <div className={"flex gap-3 items-start"}>
         <FontAwesomeIcon
           icon={variantToIcon[variant]}
           className={variantToIconColor[variant]}
-          size="xl"
+          size="lg"
         />
         <section className={"flex flex-col"}>
-          <Heading
-            level={5}
-            className={classNames("text-base", variantToHeadingStyle[variant])}
-          >
-            {title}
-          </Heading>
+          {title && (
+            <Heading
+              level={5}
+              className={classNames(
+                "text-base",
+                variantToHeadingStyle[variant]
+              )}
+            >
+              {title}
+            </Heading>
+          )}
           <div className={`flex flex-col items-start text-sm max-w-2xl`}>
             {children}
           </div>
