@@ -40,14 +40,6 @@ export const UitIdWidget = ({
               en: "/en/integrations",
             },
             label: {
-          },
-          "seperator",
-          {
-            url: {
-              nl: "/nl/subscriptions",
-            },
-            label: {
-              nl: "Subscriptions",
               nl: "Mijn integraties",
               en: "My integrations",
             },
