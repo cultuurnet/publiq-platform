@@ -13,7 +13,7 @@ import { IntegrationStatus } from "../types/IntegrationStatus";
 import { ButtonLinkSecondary } from "./ButtonLinkSecondary";
 import {
   integrationIconClasses,
-  useIntegrationTypes,
+  useIntegrationTypesInfo,
 } from "./IntegrationTypes";
 import { IconSearchApi } from "./icons/IconSearchApi";
 
@@ -43,7 +43,7 @@ const OpenWidgetBuilderButton = ({ id, type }: Pick<Props, "id" | "type">) => {
 export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
   const { t } = useTranslation();
 
-  const integrationTypes = useIntegrationTypes();
+  const integrationTypesInfo = useIntegrationTypesInfo();
   const codeFieldRef = useRef<HTMLSpanElement>(null);
 
   const [isVisible, setIsVisible] = useState(false);
@@ -57,7 +57,7 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
     }, 1000);
   }
 
-  const CardIcon = integrationTypes.find((i) => i.type === type)?.Icon as
+  const CardIcon = integrationTypesInfo.find((i) => i.type === type)?.Icon as
     | typeof IconSearchApi
     | undefined;
 

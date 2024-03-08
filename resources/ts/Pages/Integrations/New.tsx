@@ -14,7 +14,7 @@ import { Page } from "../../Components/Page";
 import { ButtonLinkSecondary } from "../../Components/ButtonLinkSecondary";
 import { useTranslateRoute } from "../../hooks/useTranslateRoute";
 import { Link } from "../../Components/Link";
-import { useIntegrationTypes } from "../../Components/IntegrationTypes";
+import { useIntegrationTypesInfo } from "../../Components/IntegrationTypes";
 import {
   IntegrationType,
   isIntegrationType,
@@ -159,7 +159,7 @@ const New = ({ subscriptions }: Props) => {
     });
   }
 
-  const translatedIntegrations = useIntegrationTypes();
+  const integrationTypesInfo = useIntegrationTypesInfo();
   const translatedPricingPlans = useMemo(
     () => getPricingPlansForType(t, data.integrationType, subscriptions),
     [t, data.integrationType, subscriptions]
@@ -184,19 +184,19 @@ const New = ({ subscriptions }: Props) => {
             labelSize="xl"
             component={
               <div className="md:grid md:grid-cols-3 gap-5 max-md:flex max-md:flex-col max-md:items-center pb-3">
-                {translatedIntegrations.map((integration) => (
+                {integrationTypesInfo.map((integrationTypeInfo) => (
                   <Card
-                    active={data.integrationType === integration.type}
-                    {...integration}
+                    active={data.integrationType === integrationTypeInfo.type}
+                    {...integrationTypeInfo}
                     className="rounded-lg"
                     role="button"
-                    key={integration.type}
-                    img={integration.image}
+                    key={integrationTypeInfo.type}
+                    img={integrationTypeInfo.image}
                     onClick={() => {
-                      setData("integrationType", integration.type);
+                      setData("integrationType", integrationTypeInfo.type);
                       router.get(
                         url.pathname,
-                        { type: integration.type },
+                        { type: integrationTypeInfo.type },
                         { preserveScroll: true }
                       );
                     }}

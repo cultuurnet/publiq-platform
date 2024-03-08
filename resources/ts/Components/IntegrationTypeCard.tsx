@@ -1,6 +1,6 @@
 import React from "react";
 import { Card } from "./Card";
-import { IntegrationType } from "./IntegrationTypes";
+import { IntegrationTypesInfo } from "./IntegrationTypes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheckSquare,
@@ -11,7 +11,7 @@ import { classNames } from "../utils/classNames";
 import { router } from "@inertiajs/core";
 import { useTranslateRoute } from "../hooks/useTranslateRoute";
 
-type Props = IntegrationType;
+type Props = IntegrationTypesInfo;
 
 export const IntegrationTypeCard = ({
   title,
