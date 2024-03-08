@@ -55,11 +55,15 @@ export const CredentialsUitidv1Consumers = ({
           <CopyText>{uiTiDv1TestConsumer?.apiKey}</CopyText>
         </div>
         <div>
-          <Heading className="font-semibold" level={4}>
-            {t("details.credentials.live")}
-          </Heading>
-          {status === "active" && (
-            <CopyText>{uiTiDv1ProdConsumer?.apiKey}</CopyText>
+          {uiTiDv1ProdConsumer && (
+            <>
+              <Heading className="font-semibold" level={4}>
+                {t("details.credentials.live")}
+              </Heading>
+              {status === "active" && (
+                <CopyText>{uiTiDv1ProdConsumer?.apiKey}</CopyText>
+              )}
+            </>
           )}
           <div className="flex flex-col gap-3 align-center">
             {status !== "active" && <StatusLight status={status} />}
