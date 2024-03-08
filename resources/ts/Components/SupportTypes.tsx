@@ -84,7 +84,7 @@ export const SupportTypes = (props: Props) => {
 
   return (
     <div>
-      <ul className="flex justify-center gap-4 flex-wrap">
+      <ul className="flex justify-center gap-9 flex-wrap">
         {translatedSupportTypes.map((support) => (
           <SupportCard key={support.title} {...support} {...props} />
         ))}

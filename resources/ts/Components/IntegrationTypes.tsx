@@ -11,7 +11,7 @@ import { classNames } from "../utils/classNames";
 export const integrationIconClasses =
   "h-full w-auto aspect-square max-h-[10rem] object-contain";
 
-export const getIntegrationTypes = (t: TFunction) => [
+export const getIntegrationTypesInfo = (t: TFunction) => [
   {
     Icon: IconEntryApi,
     image: (
@@ -56,22 +56,27 @@ export const getIntegrationTypes = (t: TFunction) => [
   },
 ];
 
-export const useIntegrationTypes = () => {
+export const useIntegrationTypesInfo = () => {
   const { t } = useTranslation();
 
-  return useMemo(() => getIntegrationTypes(t), [t]);
+  return useMemo(() => getIntegrationTypesInfo(t), [t]);
 };
 
-export type IntegrationType = ReturnType<typeof getIntegrationTypes>[number];
+export type IntegrationTypesInfo = ReturnType<
+  typeof getIntegrationTypesInfo
+>[number];
 
 export const IntegrationTypes = () => {
-  const translatedIntegrationTypes = useIntegrationTypes();
+  const integrationTypesInfo = useIntegrationTypesInfo();
 
   return (
     <div>
       <ul className="w-full flex gap-5 max-md:flex-col">
-        {translatedIntegrationTypes.map((integration) => (
-          <IntegrationTypeCard key={integration.title} {...integration} />
+        {integrationTypesInfo.map((integrationTypeInfo) => (
+          <IntegrationTypeCard
+            key={integrationTypeInfo.title}
+            {...integrationTypeInfo}
+          />
         ))}
       </ul>
     </div>
