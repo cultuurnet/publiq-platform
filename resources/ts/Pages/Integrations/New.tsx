@@ -110,9 +110,9 @@ const getPricingPlansForType = (
     },
   ];
 
-  return infos.filter((info) => !!info?.id) as NonNullable<
-    (typeof infos)[number]
-  >[];
+  type PriceInfo = NonNullable<(typeof infos)[number]>;
+
+  return infos.filter((info) => !!info?.id) as PriceInfo[];
 };
 
 type Props = {
