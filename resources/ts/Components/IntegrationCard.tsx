@@ -43,7 +43,7 @@ const OpenWidgetBuilderButton = ({ id, type }: Pick<Props, "id" | "type">) => {
 export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
   const { t } = useTranslation();
 
-  const integrationTypes = useIntegrationTypes();
+  const integrationTypesInfo = useIntegrationTypesInfo();
 
   const CardIcon = integrationTypesInfo.find((i) => i.type === type)?.Icon as
     | typeof IconSearchApi
