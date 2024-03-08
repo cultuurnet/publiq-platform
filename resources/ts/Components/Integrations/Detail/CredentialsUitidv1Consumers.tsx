@@ -65,10 +65,6 @@ export const CredentialsUitidv1Consumers = ({
             {status !== "active" && (
               <StatusLight
                 status={status}
-                id={id}
-                subscription={subscription}
-                type={type}
-                email={email}
               />
             )}
             {status === "draft" && auth0Clients.length === 0 && (

@@ -119,10 +119,6 @@ export const CredentialsAuth0Clients = ({
               {status !== "active" && (
                 <StatusLight
                   status={status}
-                  id={id}
-                  subscription={subscription}
-                  type={type}
-                  email={email}
                 />
               )}
               {status === "draft" && (

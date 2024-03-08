@@ -1,20 +1,10 @@
-import React, { ComponentProps, useState } from "react";
+import React, { ComponentProps } from "react";
 import { IntegrationStatus } from "../types/IntegrationStatus";
 import { classNames } from "../utils/classNames";
 import { useTranslation } from "react-i18next";
-import { router } from "@inertiajs/react";
-import { ActivationDialog } from "./ActivationDialog";
-import { Subscription } from "../Pages/Integrations/Index";
-import { Values } from "../types/Values";
-import { IntegrationType } from "../types/IntegrationType";
-import { ActivationRequest } from "./ActivationRequest";
 
 type Props = ComponentProps<"div"> & {
   status: IntegrationStatus;
-  id: string;
-  subscription?: Subscription;
-  type: Values<typeof IntegrationType>;
-  email?: string;
 };
 
 const StatusToColor: Record<IntegrationStatus, string> = {
@@ -28,19 +18,8 @@ const StatusToColor: Record<IntegrationStatus, string> = {
 
 export const StatusLight = ({
   status,
-  id,
-  subscription,
-  type,
-  email,
 }: Props) => {
   const { t } = useTranslation();
-
-  const url = new URL(document.location.href);
-  const isDialogVisible = url.searchParams.get("isDialogVisible");
-
-  const [isActivationDialogVisible, setIsActivationDialogVisible] = useState(
-    !!isDialogVisible ?? false
-  );
 
   return (
     <div className="flex flex-col gap-3">
