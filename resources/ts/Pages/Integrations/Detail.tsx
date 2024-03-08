@@ -11,7 +11,7 @@ import { router } from "@inertiajs/react";
 import { Tabs } from "../../Components/Tabs";
 import { DeleteIntegration } from "../../Components/Integrations/Detail/DeleteIntegration";
 import { Card } from "../../Components/Card";
-import { useIntegrationTypes } from "../../Components/IntegrationTypes";
+import { useIntegrationTypesInfo } from "../../Components/IntegrationTypes";
 import { Heading } from "../../Components/Heading";
 
 type Props = Integration;
@@ -33,8 +33,8 @@ const Detail = ({ ...integration }: Props) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const integrationTypes = useIntegrationTypes();
-  const integrationType = integrationTypes.find(
+  const integrationTypesInfo = useIntegrationTypesInfo();
+  const integrationTypeInfo = integrationTypesInfo.find(
     (i) => i.type === integration.type
   );
   const changeTabInUrl = (tab: string) => {
@@ -53,7 +53,7 @@ const Detail = ({ ...integration }: Props) => {
             <small>{integration.type}</small>
           </div>
         }
-        icon={integrationType?.image}
+        icon={integrationTypeInfo?.image}
         border
         headless
       >
