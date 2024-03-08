@@ -184,7 +184,10 @@
       "in_progress": "Je aanvraag tot activatie is in behandeling.",
       "link": "here",
       "uitid_alert": "Voor deze integratie zijn nog geen UiTIDv2 credentials aangevraagd.",
-      "action_uitid": "UiTIDv2 credentials aanvragen"
+      "action_uitid": "UiTIDv2 credentials aanvragen",
+      "client_id": "Client id",
+      "client_secret": "Client secret",
+      "info": "Deze credentials blijven nog 3 maanden geldig en worden definitief verwijdered op {{datum + 3 maanden}}"
     },
     "integration_settings": {
       "title": "Instellingen",
@@ -199,7 +202,7 @@
         "title": "URL verwijderen",
         "question": "Wil je deze URL echt verwijderen?"
       },
-      "error":"Er is een fout opgetreden bij het indienen van het formulier. Controleer uw invoer en probeer het opnieuw.",
+      "error": "Er is een fout opgetreden bij het indienen van het formulier. Controleer uw invoer en probeer het opnieuw.",
       "success": "De wijzigingen zijn succesvol opgeslagen."
     },
     "delete_integration": {
