@@ -246,19 +246,21 @@ export const ActivationDialog = ({
                 />
               </>
             )}
-            <FormElement
-              label={`${t("integrations.activation_dialog.price")}`}
-              component={
-                <p className="text-sm">
-                  {subscription &&
-                    `${
-                      subscription.currency === "EUR"
-                        ? "€"
-                        : subscription.currency
-                    } ${subscription.fee / 100}`}
-                </p>
-              }
-            />
+            {!!subscription && (
+              <FormElement
+                label={`${t("integrations.activation_dialog.price")}`}
+                component={
+                  <p className="text-sm">
+                    {subscription &&
+                      `${
+                        subscription.currency === "EUR"
+                          ? "€"
+                          : subscription.currency
+                      } ${subscription.fee / 100}`}
+                  </p>
+                }
+              />
+            )}
           </>
         </Dialog>
       )}
