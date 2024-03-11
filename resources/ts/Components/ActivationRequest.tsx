@@ -25,7 +25,9 @@ export const ActivationRequest = ({ id }: Props) => {
           t={t}
           components={[
             <Link
-              key={t('integrations.status.pending_approval_integration_description')}
+              key={t(
+                "integrations.status.pending_approval_integration_description"
+              )}
               href={t("integrations.status.before_going_live_link")}
               className="text-publiq-blue-dark hover:underline"
             />,
