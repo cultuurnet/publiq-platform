@@ -32,10 +32,9 @@ export const StatusLight = ({ status }: Props) => {
           {t(`integrations.status.${status}`)}
         </div>
       </div>
-      {(status === "pending_approval_integration" ||
-        status === "pending_approval_payment") && (
-        <span>{t("details.credentials.in_progress")}</span>
-      )}
+      {["pending_approval_integration", "pending_approval_payment"].includes(
+        status
+      ) && <span>{t("details.credentials.in_progress")}</span>}
     </div>
   );
 };
