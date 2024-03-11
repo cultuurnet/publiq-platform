@@ -56,7 +56,12 @@ export const ActivationDialog = ({
         if (couponForm.data.coupon !== "") {
           couponForm.post(`/integrations/${id}/coupon`);
         }
-        if (!organizationForm.hasErrors && !couponForm.hasErrors) {
+        if (
+          !organizationForm.hasErrors &&
+          organizationForm.wasSuccessful &&
+          !couponForm.hasErrors &&
+          couponForm.wasSuccessful
+        ) {
           onClose();
         }
       },
