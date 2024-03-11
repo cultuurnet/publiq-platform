@@ -68,202 +68,198 @@ export const ActivationDialog = ({
     string | undefined
   >;
 
+  if (!isVisible) {
+    return null;
+  }
+
   return (
-    <>
-      {isVisible && (
-        <Dialog
-          title={t("integrations.activation_dialog.title")}
-          actions={
-            <>
-              <ButtonSecondary onClick={onClose}>
-                {t("dialog.cancel")}
-              </ButtonSecondary>
-              <ButtonPrimary onClick={handleSubmit}>
-                {t("dialog.confirm")}
-              </ButtonPrimary>
-            </>
+    <Dialog
+      title={t("integrations.activation_dialog.title")}
+      actions={
+        <>
+          <ButtonSecondary onClick={onClose}>
+            {t("dialog.cancel")}
+          </ButtonSecondary>
+          <ButtonPrimary onClick={handleSubmit}>
+            {t("dialog.confirm")}
+          </ButtonPrimary>
+        </>
+      }
+      isVisible
+      onClose={onClose}
+      isFullscreen={isMobile}
+      contentStyles="gap-3"
+    >
+      <>
+        <FormElement
+          label={`${t("integrations.activation_dialog.subscription_plan")}`}
+          component={
+            <p className="text-sm">
+              {subscription &&
+                `${subscription.category} ${
+                  subscription.currency === "EUR" ? "€" : subscription.currency
+                } ${subscription.fee / 100}`}
+            </p>
           }
-          isVisible
-          onClose={onClose}
-          isFullscreen={isMobile}
-          contentStyles="gap-3"
-        >
+        />
+        <FormElement
+          label={`${t("details.billing_info.name")}`}
+          error={organizationFormErrors["organization.name"]}
+          className="w-full"
+          component={
+            <Input
+              type="text"
+              name="organization.name"
+              onChange={(e) => {
+                if (!organizationForm.data.organization) return;
+
+                organizationForm.setData("organization", {
+                  ...organizationForm.data.organization,
+                  name: e.target.value,
+                });
+              }}
+            />
+          }
+        />
+        <div className="max-md:flex max-md:flex-col md:grid md:grid-cols-5 gap-3">
+          <FormElement
+            label={`${t("details.billing_info.address.street")}`}
+            error={organizationFormErrors["organization.address.street"]}
+            className="col-span-2"
+            component={
+              <Input
+                type="text"
+                name="organization.address.street"
+                onChange={(e) => {
+                  if (!organizationForm.data.organization) return;
+
+                  organizationForm.setData("organization", {
+                    ...organizationForm.data.organization,
+                    address: {
+                      ...organizationForm.data.organization.address,
+                      street: e.target.value,
+                    },
+                  });
+                }}
+              />
+            }
+          />
+          <FormElement
+            label={`${t("details.billing_info.address.postcode")}`}
+            error={organizationFormErrors["organization.address.zip"]}
+            className="col-span-1"
+            component={
+              <Input
+                type="text"
+                name="organization.address.zip"
+                onChange={(e) => {
+                  if (!organizationForm.data.organization) return;
+
+                  organizationForm.setData("organization", {
+                    ...organizationForm.data.organization,
+                    address: {
+                      ...organizationForm.data.organization.address,
+                      zip: e.target.value,
+                    },
+                  });
+                }}
+              />
+            }
+          />
+          <FormElement
+            label={`${t("details.billing_info.address.city")}`}
+            error={organizationFormErrors["organization.address.city"]}
+            className="col-span-2"
+            component={
+              <Input
+                type="text"
+                name="organization.address.city"
+                onChange={(e) => {
+                  if (!organizationForm.data.organization) return;
+
+                  organizationForm.setData("organization", {
+                    ...organizationForm.data.organization,
+                    address: {
+                      ...organizationForm.data.organization.address,
+                      city: e.target.value,
+                    },
+                  });
+                }}
+              />
+            }
+          />
+        </div>
+        {type !== "entry-api" && (
           <>
             <FormElement
-              label={`${t("integrations.activation_dialog.subscription_plan")}`}
-              component={
-                <p className="text-sm">
-                  {subscription &&
-                    `${subscription.category} ${
-                      subscription.currency === "EUR"
-                        ? "€"
-                        : subscription.currency
-                    } ${subscription.fee / 100}`}
-                </p>
-              }
-            />
-            <FormElement
-              label={`${t("details.billing_info.name")}`}
-              error={organizationFormErrors["organization.name"]}
+              label={`${t("details.billing_info.vat")}`}
+              error={organizationFormErrors["organization.vat"]}
               className="w-full"
               component={
                 <Input
                   type="text"
-                  name="organization.name"
+                  name="organization.vat"
                   onChange={(e) => {
                     if (!organizationForm.data.organization) return;
 
                     organizationForm.setData("organization", {
                       ...organizationForm.data.organization,
-                      name: e.target.value,
+                      vat: e.target.value,
                     });
                   }}
                 />
               }
             />
-            <div className="max-md:flex max-md:flex-col md:grid md:grid-cols-5 gap-3">
-              <FormElement
-                label={`${t("details.billing_info.address.street")}`}
-                error={organizationFormErrors["organization.address.street"]}
-                className="col-span-2"
-                component={
-                  <Input
-                    type="text"
-                    name="organization.address.street"
-                    onChange={(e) => {
-                      if (!organizationForm.data.organization) return;
+            <FormElement
+              label={`${t("integrations.activation_dialog.contact")}`}
+              error={organizationFormErrors["organization.invoiceEmail"]}
+              info={`${t("integrations.activation_dialog.contact_description")}`}
+              component={
+                <Input
+                  type="text"
+                  name="invoiceEmail"
+                  onChange={(e) => {
+                    if (!organizationForm.data.organization) return;
 
-                      organizationForm.setData("organization", {
-                        ...organizationForm.data.organization!,
-                        address: {
-                          ...organizationForm.data.organization.address,
-                          street: e.target.value,
-                        },
-                      });
-                    }}
-                  />
-                }
-              />
-              <FormElement
-                label={`${t("details.billing_info.address.postcode")}`}
-                error={organizationFormErrors["organization.address.zip"]}
-                className="col-span-1"
-                component={
-                  <Input
-                    type="text"
-                    name="organization.address.zip"
-                    onChange={(e) => {
-                      if (!organizationForm.data.organization) return;
-
-                      organizationForm.setData("organization", {
-                        ...organizationForm.data.organization,
-                        address: {
-                          ...organizationForm.data.organization.address,
-                          zip: e.target.value,
-                        },
-                      });
-                    }}
-                  />
-                }
-              />
-              <FormElement
-                label={`${t("details.billing_info.address.city")}`}
-                error={organizationFormErrors["organization.address.city"]}
-                className="col-span-2"
-                component={
-                  <Input
-                    type="text"
-                    name="organization.address.city"
-                    onChange={(e) => {
-                      if (!organizationForm.data.organization) return;
-
-                      organizationForm.setData("organization", {
-                        ...organizationForm.data.organization,
-                        address: {
-                          ...organizationForm.data.organization.address,
-                          city: e.target.value,
-                        },
-                      });
-                    }}
-                  />
-                }
-              />
-            </div>
-            {type !== "entry-api" && (
-              <>
-                <FormElement
-                  label={`${t("details.billing_info.vat")}`}
-                  error={organizationFormErrors["organization.vat"]}
-                  className="w-full"
-                  component={
-                    <Input
-                      type="text"
-                      name="organization.vat"
-                      onChange={(e) => {
-                        if (!organizationForm.data.organization) return;
-
-                        organizationForm.setData("organization", {
-                          ...organizationForm.data.organization,
-                          vat: e.target.value,
-                        });
-                      }}
-                    />
-                  }
+                    organizationForm.setData("organization", {
+                      ...organizationForm.data.organization,
+                      invoiceEmail: e.target.value,
+                    });
+                  }}
                 />
-                <FormElement
-                  label={`${t("integrations.activation_dialog.contact")}`}
-                  error={organizationFormErrors["organization.invoiceEmail"]}
-                  info={`${t("integrations.activation_dialog.contact_description")}`}
-                  component={
-                    <Input
-                      type="text"
-                      name="invoiceEmail"
-                      onChange={(e) => {
-                        if (!organizationForm.data.organization) return;
-
-                        organizationForm.setData("organization", {
-                          ...organizationForm.data.organization,
-                          invoiceEmail: e.target.value,
-                        });
-                      }}
-                    />
-                  }
+              }
+            />
+            <FormElement
+              label={`${t("integrations.activation_dialog.coupon")}`}
+              error={couponForm.errors["coupon"]}
+              className="col-span-2"
+              component={
+                <Input
+                  type="text"
+                  name="coupon"
+                  value={couponForm.data.coupon}
+                  onChange={(e) => couponForm.setData("coupon", e.target.value)}
                 />
-                <FormElement
-                  label={`${t("integrations.activation_dialog.coupon")}`}
-                  error={couponForm.errors["coupon"]}
-                  className="col-span-2"
-                  component={
-                    <Input
-                      type="text"
-                      name="coupon"
-                      value={couponForm.data.coupon}
-                      onChange={(e) =>
-                        couponForm.setData("coupon", e.target.value)
-                      }
-                    />
-                  }
-                />
-              </>
-            )}
-            {!!subscription && (
-              <FormElement
-                label={`${t("integrations.activation_dialog.price")}`}
-                component={
-                  <p className="text-sm">
-                    {subscription &&
-                      `${
-                        subscription.currency === "EUR"
-                          ? "€"
-                          : subscription.currency
-                      } ${subscription.fee / 100}`}
-                  </p>
-                }
-              />
-            )}
+              }
+            />
           </>
-        </Dialog>
-      )}
-    </>
+        )}
+        {!!subscription && (
+          <FormElement
+            label={`${t("integrations.activation_dialog.price")}`}
+            component={
+              <p className="text-sm">
+                {subscription &&
+                  `${
+                    subscription.currency === "EUR"
+                      ? "€"
+                      : subscription.currency
+                  } ${subscription.fee / 100}`}
+              </p>
+            }
+          />
+        )}
+      </>
+    </Dialog>
   );
 };
