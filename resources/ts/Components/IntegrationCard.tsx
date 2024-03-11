@@ -16,6 +16,7 @@ import {
 import { IconSearchApi } from "./icons/IconSearchApi";
 import { CopyText } from "./CopyText";
 import { ActivationRequest } from "./ActivationRequest";
+import { IntegrationType } from "../types/IntegrationType";
 
 type Props = Integration & {
   onEdit: (id: string) => void;
@@ -65,15 +66,18 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
       }
     >
       <div className="flex flex-col gap-4 mx-8 my-6 items-stretch min-h-[10rem]">
-        <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center gap-3">
-          <Heading level={5} className="font-semibold min-w-[10rem]">
-            {t("integrations.test")}
-          </Heading>
-          <CopyText>{id}</CopyText>
-          {status !== IntegrationStatus.Active && (
-            <OpenWidgetBuilderButton id={id} type={type} />
-          )}
-        </section>
+        {(type !== IntegrationType.Widgets ||
+          status !== IntegrationStatus.Active) && (
+          <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center gap-3">
+            <Heading level={5} className="font-semibold min-w-[10rem]">
+              {t("integrations.test")}
+            </Heading>
+            {type !== IntegrationType.Widgets && <CopyText>{id}</CopyText>}
+            {status !== IntegrationStatus.Active && (
+              <OpenWidgetBuilderButton id={id} type={type} />
+            )}
+          </section>
+        )}
         <section className="flex-1 inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">
           <Heading className="font-semibold min-w-[10rem]" level={5}>
             {t("integrations.live")}
