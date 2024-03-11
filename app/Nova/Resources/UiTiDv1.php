@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Nova\Resources;
 
+use App\Nova\ActionGuards\ActionGuard;
 use App\Nova\ActionGuards\UiTiDv1\ActivateUiTiDv1ConsumerGuard;
 use App\Nova\ActionGuards\UiTiDv1\BlockUiTiDv1ConsumerGuard;
 use App\Nova\Actions\UiTiDv1\ActivateUiTiDv1Consumer;
@@ -120,49 +121,40 @@ final class UiTiDv1 extends Resource
                 ->confirmText('Are you sure you want to activate this consumer?')
                 ->confirmButtonText('Activate')
                 ->cancelButtonText("Don't activate")
-                ->canSee(function (Request $request) {
-                    if ($request instanceof ActionRequest) {
-                        return true;
-                    }
-                    return $this->canActivate($this->resource);
-                })
-                ->canRun(fn ($request, $model) => $this->canActivate($model)),
+                ->canSee(fn(Request $request) => $this->canActivate($request, $this->resource))
+                ->canRun(fn ($request, $model) => $this->canActivate($request, $model)),
 
             App::make(BlockUiTiDv1Consumer::class)
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to block this consumer?')
                 ->confirmButtonText('Block')
                 ->cancelButtonText("Don't block")
-                ->canSee(function (Request $request) {
-                    if ($request instanceof ActionRequest) {
-                        return true;
-                    }
-                    return $this->canBlock($this->resource);
-                })
-                ->canRun(fn ($request, $model) => $this->canBlock($model)),
+                ->canSee(fn(Request $request) => $this->canBlock($request, $this->resource))
+                ->canRun(fn ($request, $model) => $this->canBlock($request, $model)),
 
         ];
     }
 
-    private function canActivate(?UiTiDv1ConsumerModel $model): bool
+    private function canActivate(Request $request, ?UiTiDv1ConsumerModel $model): bool
     {
-        if ($model === null) {
-            return false;
-        }
-
-        /** @var ActivateUiTiDv1ConsumerGuard $guard */
-        $guard = App::make(ActivateUiTiDv1ConsumerGuard::class);
-        return $guard->canDo($model->toDomain());
+        return $this->can($request, $model, App::make(ActivateUiTiDv1ConsumerGuard::class));
     }
 
-    private function canBlock(?UiTiDv1ConsumerModel $model): bool
+    private function canBlock(Request $request, ?UiTiDv1ConsumerModel $model): bool
     {
+        return $this->can($request, $model, App::make(BlockUiTiDv1ConsumerGuard::class));
+    }
+
+    private function can(Request $request, ?UiTiDv1ConsumerModel $model, ActionGuard $guard): bool
+    {
+        if ($request instanceof ActionRequest) {
+            return true;
+        }
+
         if ($model === null) {
             return false;
         }
 
-        /** @var BlockUiTiDv1ConsumerGuard $guard */
-        $guard = App::make(BlockUiTiDv1ConsumerGuard::class);
         return $guard->canDo($model->toDomain());
     }
 }
