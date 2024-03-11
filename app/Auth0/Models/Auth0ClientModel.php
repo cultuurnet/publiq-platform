@@ -27,6 +27,10 @@ final class Auth0ClientModel extends UuidModel
         'distributed_at',
     ];
 
+    protected $casts = [
+        'distributed_at' => 'datetime',
+    ];
+
     public function toDomain(): Auth0Client
     {
         return new Auth0Client(
