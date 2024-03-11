@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Nova\Resources;
 
-use App\Domain\Contacts\Models\ContactModel;
 use App\Nova\ActionGuards\UiTiDv1\ActivateUiTiDv1ConsumerGuard;
 use App\Nova\ActionGuards\UiTiDv1\BlockUiTiDv1ConsumerGuard;
 use App\Nova\Actions\UiTiDv1\ActivateUiTiDv1Consumer;
@@ -14,16 +13,19 @@ use App\UiTiDv1\CachedUiTiDv1Status;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use App\UiTiDv1\UiTiDv1ConsumerStatus;
 use App\UiTiDv1\UiTiDv1Environment;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Http\Requests\ActionRequest;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 /**
- * @mixin ContactModel
+ * @mixin UiTiDv1ConsumerModel
+ * @property UiTiDv1ConsumerModel $resource
  */
 final class UiTiDv1 extends Resource
 {
@@ -114,27 +116,53 @@ final class UiTiDv1 extends Resource
     {
         return [
             App::make(ActivateUiTiDv1Consumer::class)
-                ->showOnDetail()
-                ->showInline()
+                ->exceptOnIndex()
                 ->confirmText('Are you sure you want to activate this consumer?')
                 ->confirmButtonText('Activate')
                 ->cancelButtonText("Don't activate")
-                ->canRun(function ($request, $model) {
-                    /** @var ActivateUiTiDv1ConsumerGuard $guard */
-                    $guard = App::make(ActivateUiTiDv1ConsumerGuard::class);
-                    return $guard->canDo($model->toDomain());
-                }),
+                ->canSee(function (Request $request) {
+                    if ($request instanceof ActionRequest) {
+                        return true;
+                    }
+                    return $this->canActivate($this->resource);
+                })
+                ->canRun(fn ($request, $model) => $this->canActivate($model)),
+
             App::make(BlockUiTiDv1Consumer::class)
-                ->showOnDetail()
-                ->showInline()
+                ->exceptOnIndex()
                 ->confirmText('Are you sure you want to block this consumer?')
                 ->confirmButtonText('Block')
                 ->cancelButtonText("Don't block")
-                ->canRun(function ($request, $model) {
-                    /** @var BlockUiTiDv1ConsumerGuard $guard */
-                    $guard = App::make(BlockUiTiDv1ConsumerGuard::class);
-                    return $guard->canDo($model->toDomain());
-                }),
+                ->canSee(function (Request $request) {
+                    if ($request instanceof ActionRequest) {
+                        return true;
+                    }
+                    return $this->canBlock($this->resource);
+                })
+                ->canRun(fn ($request, $model) => $this->canBlock($model)),
+
         ];
+    }
+
+    private function canActivate(?UiTiDv1ConsumerModel $model): bool
+    {
+        if ($model === null) {
+            return false;
+        }
+
+        /** @var ActivateUiTiDv1ConsumerGuard $guard */
+        $guard = App::make(ActivateUiTiDv1ConsumerGuard::class);
+        return $guard->canDo($model->toDomain());
+    }
+
+    private function canBlock(?UiTiDv1ConsumerModel $model): bool
+    {
+        if ($model === null) {
+            return false;
+        }
+
+        /** @var BlockUiTiDv1ConsumerGuard $guard */
+        $guard = App::make(BlockUiTiDv1ConsumerGuard::class);
+        return $guard->canDo($model->toDomain());
     }
 }
