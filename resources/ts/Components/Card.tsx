@@ -87,7 +87,7 @@ export const Card = ({
       <div
         className={classNames(
           "flex flex-col",
-          textCenter && "text-center",
+          textCenter && "text-center items-center",
           !border && "gap-5"
         )}
       >
