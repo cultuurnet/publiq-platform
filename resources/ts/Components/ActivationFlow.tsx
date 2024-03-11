@@ -19,9 +19,8 @@ export const ActivationFlow = ({ id, subscription, type, email }: Props) => {
   const url = new URL(document.location.href);
   const isDialogVisible = url.searchParams.get("isDialogVisible");
 
-  const [isActivationDialogVisible, setIsActivationDialogVisible] = useState(
-    !!isDialogVisible ?? false
-  );
+  const [isActivationDialogVisible, setIsActivationDialogVisible] =
+    useState(!!isDialogVisible);
 
   return (
     <>
