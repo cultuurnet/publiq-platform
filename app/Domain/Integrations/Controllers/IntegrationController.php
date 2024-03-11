@@ -279,7 +279,6 @@ final class IntegrationController extends Controller
 
     public function distributeAuth0Clients(string $id): RedirectResponse
     {
-
         $clients = $this->auth0ClientRepository->getByIntegrationId(Uuid::fromString($id));
         $this->auth0ClientRepository->distribute(...$clients);
 
