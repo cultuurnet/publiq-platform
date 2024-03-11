@@ -1,7 +1,7 @@
 {
   "global": {
     "publiq": "publiq vzw",
-    "btw": "BTW",
+    "btw": "VAT",
     "iban": "IBAN"
   },
   "pages": {
@@ -13,101 +13,101 @@
   },
   "title": "publiq platform",
   "nav": {
-    "integrations": "Mijn integraties",
-    "opportunities": "Mogelijkheden",
-    "support": "Ondersteuning",
-    "hello": "Hallo",
-    "integrations/new": "Integratie toevoegen"
+    "integrations": "My integrations",
+    "opportunities": "Solutions",
+    "support": "Support",
+    "hello": "Hello",
+    "integrations/new": "Add integration"
   },
   "home": {
     "hero": {
-      "title": "Bereik een groter publiek met UiT",
-      "intro": "publiq biedt een waaier van toepassingen om eigen activiteiten te promoten en agenda-informatie in je website of app te integreren.",
-      "start_here": "Probeer gratis"
+      "title": "Reach a broader audience with UiT",
+      "intro": "publiq offers a range of solutions to promote your own activities and integrate agenda information into your website or app.",
+      "start_here": "Try for free"
     },
     "integration_types": {
-      "action": "Probeer {{type}}",
+      "action": "Try {{type}}",
       "entry_api": {
         "title": "Entry API",
-        "description": "Via Entry API kan je items in de UiTdatabank aanmaken, aanpassen en verwijderen.",
+        "description": "Via Entry API, you can create, modify, and delete items in the UiTdatabank.",
         "features": [
-          "JSON-standaard",
+          "JSON standard",
           "Award-winning API",
-          "Activatie op live-omgeving op aanvraag"
+          "Activation on live environment upon request"
         ]
       },
       "search_api": {
         "title": "Search API",
-        "description": "Haal evenementinformatie op uit de UiTdatabank via onze nieuwste zoekengine.",
+        "description": "Retrieve event information from the UiTdatabank via our latest search engine.",
         "features": [
-          "JSON-standaard",
-          "Robuuste performantie",
-          "Uitgebreide filtermogelijkheden"
+          "JSON standard",
+          "Robust performance",
+          "Extensive filtering options"
         ]
       },
       "widgets": {
         "title": "Widgets",
-        "description": "Kant en klare html-modules die je in je website kan inpassen.",
+        "description": "Ready-made HTML modules that you can integrate into your website.",
         "features": [
-          "Zelf of door publiq in te stellen",
-          "Plug & play oplossing",
-          "Uitgebreide configuratiemogelijkheden"
+          "Customizable by publiq or yourself",
+          "Plug & play solution",
+          "Extensive configuration options"
         ]
       }
     }
   },
   "integration_form": {
-    "title": "Integratie toevoegen",
-    "description": "Je betaalt pas wanneer je gebruik wilt maken van echte data. Je probeert eerst alle mogelijkheden met testevenementen.",
-    "type": "Type integratie",
-    "pricing_plan": "Prijsplan",
-    "integration_name": "Naam integratie",
-    "description_name": "Geef een duidelijk titel aan je integratie en vermeld de naam van de organisatie of gemeente waarvoor de integratie gebouwd wordt",
-    "aim": "Doel van de integratie",
-    "description_aim": "Geef een duidelijke, gemotiveerde beschrijving van de integraite die je met het publiq platform wil opzetten (max. 200 karakters)",
-    "contact_label_functional": "Inhoudelijk contact",
-    "contact_label_technical": "Technisch contact",
-    "contact_label_contributor": "Medewerker",
-    "add": "Medewerker toevoegen",
+    "title": "Add integration",
+    "description": "You only pay when you want to use real data. You can explore all possibilities with test events first.",
+    "type": "Integration type",
+    "pricing_plan": "Pricing plan",
+    "integration_name": "Integration name",
+    "description_name": "Give a clear title to your integration and mention the name of the organization or municipality for which the integration is built",
+    "aim": "Integration purpose",
+    "description_aim": "Provide a clear, motivated description of the integration you want to set up with the publiq platform (max. 200 characters)",
+    "contact_label_functional": "Functional contact",
+    "contact_label_technical": "Technical contact",
+    "contact_label_contributor": "Employee",
+    "add": "Add employee",
     "contact": {
-      "first_name": "Voornaam",
-      "last_name": "Achternaam",
-      "email": "E-mailadres"
+      "first_name": "First name",
+      "last_name": "Last name",
+      "email": "Email address"
     },
-    "agree": "Ik ga akkoord met de <1>gebruiksvoorwaarden</1> en de <2>privacyverklaring</2>",
+    "agree": "I agree to the <1>terms of use</1> and the <2>privacy policy</2>",
     "terms_of_use_link": "https://www.publiq.be/en/gebruiksvoorwaarden",
     "privacy_link": "https://www.publiq.be/en/privacy",
-    "coupon": "Ik heb een coupon",
-    "code": "Couponcode",
-    "submit": "Integratie aanmaken",
-    "back": "Terug naar integratieoverzicht",
+    "coupon": "I have a coupon",
+    "code": "Coupon code",
+    "submit": "Create integration",
+    "back": "Back to integration overview",
     "pricing": {
       "free": {
         "title": "Free",
-        "price": "Gratis"
+        "price": "Free"
       },
       "basic": {
         "title": "Basic",
-        "price": "{{currency}} {{price}} / jaar"
+        "price": "{{currency}} {{price}} / year"
       },
       "plus": {
         "title": "Plus",
-        "price": "eerste jaar: € 600 nadien: € 280 / jaar"
+        "price": "first year: € 600, thereafter: € 280 / year"
       },
       "custom": {
         "title": "Custom",
-        "price": "voorstel op maat"
+        "price": "custom proposal"
       }
     }
   },
   "integrations": {
-    "title": "Mijn integraties",
-    "add": "Integratie toevoegen",
-    "results_found_zero": "Geen integraties gevonden",
-    "results_found_one": "{{count}} integratie gevonden",
-    "results_found_other": "{{count}} integraties gevonden",
-    "no_results_found": "Geen integraties gevonden",
-    "searching": "Zoeken ...",
+    "title": "My integrations",
+    "add": "Add integration",
+    "results_found_zero": "No integrations found",
+    "results_found_one": "{{count}} integration found",
+    "results_found_other": "{{count}} integrations found",
+    "no_results_found": "No integrations found",
+    "searching": "Searching...",
     "test": "Test",
     "live": "Live",
     "open_widget": "Widgets bouwen",
@@ -117,56 +117,56 @@
       "widgets": "Widgets"
     },
     "status": {
-      "draft": "Niet actief",
-      "blocked": "Geblokeerd",
-      "active": "Actief",
-      "deleted": "Verwijderd",
-      "pending_approval_integration": "In Aanvraag",
-      "pending_approval_payment": "In Aanvraag",
-      "pending_approval_integration_description": "Voor de live-integratie is goedkeuring van publiq noodzakelijk. Alle informatie om vlot live te kunnen gaan vind je",
-      "pending_approval_payment_description": "Aan de slag met echte data en evenementen? Activeer je Search API integratie (vanaf 125 euro per jaar)",
-      "here": "hier.",
-      "activate": "Activeren"
+      "draft": "Not active",
+      "blocked": "Blocked",
+      "active": "Active",
+      "deleted": "Deleted",
+      "pending_approval_integration": "Pending approval",
+      "pending_approval_payment": "Pending approval",
+      "pending_approval_integration_description": "Approval from publiq is necessary for the live integration. All information to smoothly go live can be found",
+      "pending_approval_payment_description": "Ready to work with real data and events? Activate your Search API integration (from €125 per year)",
+      "here": "here.",
+      "activate": "Activate"
     },
     "documentation": {
-      "title": "Documentatie",
-      "action_title": "Aan de slag met {{product}}",
+      "title": "Documentation",
+      "action_title": "Get started with {{product}}",
       "action_url": "https://docs.publiq.be/docs{{product}}",
       "requirements": "Requirements before going live"
     }
   },
   "details": {
-    "save": "Aanpassingen bewaren",
+    "save": "Save changes",
     "basic_info": {
-      "title": "Basisgegevens",
-      "name": "Integratienaam",
-      "description": "Beschrijving"
+      "title": "Basic information",
+      "name": "Integration name",
+      "description": "Description"
     },
     "contact_info": {
-      "title": "Contacten",
-      "employees": "Andere medewerkers",
-      "delete": "Verwijder medewerker",
-      "new": "Nieuwe medewerker",
+      "title": "Contacts",
+      "employees": "Other employees",
+      "delete": "Delete employee",
+      "new": "New employee",
       "delete_dialog": {
-        "title": "Contact verwijderen",
-        "question": "Ben je zeker dat je het contact met e-mailadres {{email}} wilt verwijderen?"
+        "title": "Delete contact",
+        "question": "Are you sure you want to delete the contact with email address {{email}}?"
       },
-      "edit_dialog": "Contact bewerken"
+      "edit_dialog": "Edit contact"
     },
     "billing_info": {
       "title": {
-        "billing": "Facturatiegegevens",
-        "subscription": "Prijsplan",
-        "organization": "Organisatiegegevens"
+        "billing": "Billing information",
+        "subscription": "Pricing plan",
+        "organization": "Organization details"
       },
-      "subscription": "Prijsplan",
-      "name": "Naam bedrijf, organisatie of gemeente",
+      "subscription": "Pricing plan",
+      "name": "Name of company, organization or municipality",
       "address": {
-        "street": "Straat en nummer",
+        "street": "Street and number",
         "postcode": "Postcode",
-        "city": "Gemeente"
+        "city": "City"
       },
-      "vat": "BTW of ondernemingsnummer"
+      "vat": "VAT or company number"
     },
     "credentials": {
       "title": "Credentials",
@@ -174,128 +174,128 @@
       "uitid_v2": "UITID v2",
       "test": "Test",
       "live": "Live",
-      "status_alert": "Voor de live-integratie van dit project is goedkeuring van publiq noodzakelijk. Alle informatie om vlot live te kunnen gaan vind je",
+      "status_alert": "Approval from publiq is necessary for the live integration of this project. All information to smoothly go live can be found",
       "link": "here",
-      "uitid_alert": "Voor deze integratie zijn nog geen UiTIDv2 credentials aangevraagd.",
-      "action_status": "Activatie aanvragen",
-      "action_uitid": "UiTIDv2 credentials aanvragen"
+      "uitid_alert": "UiTIDv2 credentials have not yet been requested for this integration.",
+      "action_status": "Request activation",
+      "action_uitid": "Request UiTIDv2 credentials"
     },
     "integration_settings": {
-      "title": "Instellingen",
-      "test": "testomgeving",
-      "prod": "productieomgeving",
+      "title": "Settings",
+      "test": "test environment",
+      "prod": "production environment",
       "login": "Login URL",
-      "callback": "Callback URL's",
-      "add": "URL toevoegen",
-      "new": "Nieuwe URL",
-      "environment": "Omgeving",
-      "logout": "Logout URL's",
+      "callback": "Callback URLs",
+      "add": "Add URL",
+      "new": "New URL",
+      "environment": "Environment",
+      "logout": "Logout URLs",
       "delete": {
-        "title": "URL verwijderen",
-        "question": "Wil je deze URL echt verwijderen?"
+        "title": "Delete URL",
+        "question": "Do you really want to delete this URL?"
       }
     },
     "delete_integration": {
-      "title": "Verwijderen",
+      "title": "Delete",
       "delete": {
-        "title": "Integratie verwijderen",
-        "question": "Wil je deze integratie echt verwijderen?",
+        "title": "Delete integration",
+        "question": "Are you sure you want to delete this integration?",
         "description": {
-          "part1": "Ben je zeker dat je je integratie definitief wil verwijderen?",
-          "part2": "Wanneer je je integratie verwijdert wordt de toegang tot de API's onmiddellijk stopgezet. Na het verwijderen van je integratie ontvang je van ons nog een factuur voor het laatste jaar.",
-          "part3": "Het verwijderen van een integratie kan niet ongedaan gemaakt worden."
+          "part1": "Are you sure you want to permanently delete your integration?",
+          "part2": "When you delete your integration, access to the APIs will be immediately terminated. After deleting your integration, you will receive a final year's invoice from us.",
+          "part3": "Deleting an integration cannot be undone."
         }
       }
     }
   },
   "support": {
-    "title": "Ondersteuning",
-    "description": "We ondersteunen je op verschillende manieren, zodat jij vlot een integratie met het publiq ecosysteem kan opzetten.",
+    "title": "Support",
+    "description": "We support you in various ways so you can easily set up an integration with the publiq ecosystem.",
     "documentation": {
-      "title": "Documentatie",
-      "description": "Met onze uitgebreide documentatie zetten we je op weg bij elke integratie.",
+      "title": "Documentation",
+      "description": "With our extensive documentation, we guide you through every integration.",
       "img_url": "#",
-      "action_title": "Naar de documentatie",
+      "action_title": "Go to documentation",
       "action_url": "https://docs.publiq.be"
     },
     "styleguide": {
-      "title": "Stijlgids",
-      "description": "Alle iconen, logo's en kleuren voor jou op een rijtje gezet. Een must wanneer je een UiT-agenda bouwt.",
+      "title": "Style guide",
+      "description": "All icons, logos, and colours compiled for you. A must when building a UiT agenda.",
       "img_url": "#",
-      "action_title": "Naar de stijlgids",
+      "action_title": "Go to style guide",
       "action_url": "#"
     },
     "statuspage": {
-      "title": "Statuspagina",
-      "description": "We bieden een overzicht van de status van de applicaties & services binnen het publiq platform. Je kan je inschrijven om op de hoogte te blijven van belangrijke updates.",
+      "title": "Status page",
+      "description": "We provide an overview of the status of applications & services within the publiq platform. You can subscribe to stay informed of important updates.",
       "img_url": "#",
-      "action_title": "Naar de statuspagina",
+      "action_title": "Go to status page",
       "action_url": "https://status.publiq.be"
     },
     "roadmap": {
       "title": "Roadmap",
-      "description": "Neem een kijkje in onze plannen en deel jouw briljante ideeën om onze producten nog beter te maken.",
+      "description": "Take a look at our plans and share your brilliant ideas to make our products even better (Dutch only).",
       "img_url": "#",
-      "action_title": "Naar de roadmap",
+      "action_title": "Go to roadmap",
       "action_url": "#"
     },
     "release_notes": {
-      "title": "Relase notes",
-      "description": "Een overzicht van alle nieuwe mogelijkheden, technische aanpassingen en verbeteringen binnen het publiq platform.",
+      "title": "Release notes",
+      "description": "An overview of all new features, technical changes, and improvements within the publiq platform.",
       "img_url": "#",
-      "action_title": "Naar de relase notes",
+      "action_title": "Go to release notes",
       "action_url": "#"
     },
     "support_via_slack": {
-      "title": "Support via slack",
-      "description": "Heb je na het lezen van onze documentatie toch nog vragen? We horen ze graag. Via ons support kanaal op slack spelen we kort op de bal.",
+      "title": "Support via Slack",
+      "description": "Have questions after reading our documentation? We're here to help. Reach us quickly through our support channel on Slack.",
       "img_url": "#",
-      "action_title": "Naar het slack kanaal",
+      "action_title": "Go to Slack channel",
       "action_url": "https://cultuurnet.slack.com/channels/udb-json-api",
-      "invitation": "Toegang vragen"
+      "invitation": "Request access"
     },
     "customized_support": {
-      "title": "Ondersteuning op maat",
-      "description": "Een organisatie met een hart voor cultuur en vrije tijd? Dan werken we graag een voorstel op maat uit!",
+      "title": "Customised support",
+      "description": "An organization with a passion for culture and leisure? We'd love to tailor a proposal for you!",
       "img_url": "#",
-      "action_title": "Contacteer ons",
+      "action_title": "Contact us",
       "action_url": "mailto:partnerships@publiq.be"
     }
   },
   "dialog": {
-    "confirm": "Bevestigen",
-    "cancel": "Annuleren",
-    "close": "Sluiten",
-    "invite_success": "We hebben een uitnodiging verstuurd naar {{email}}",
-    "invite_error": "Er is iets fout gegaan. Probeer het later opnieuw."
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "close": "Close",
+    "invite_success": "We've sent an invitation to {{email}}",
+    "invite_error": "Something went wrong. Please try again later."
   },
   "tooltip": {
-    "copy": "Gekopieerd!"
+    "copy": "Copied!"
   },
   "footer": {
     "legal": "Legal",
-    "support": "Ondersteuning",
+    "support": "Support",
     "address": {
       "part1": "Henegouwenkaai 41-43",
       "part2": "1080 Brussel"
     },
     "links": {
-      "what": "Wat?",
-      "opportunities": "Mogelijkheden",
-      "price": "Prijs",
-      "start": "Aan de slag",
-      "terms_of_use": "Gebruiksvoorwaarden",
-      "privacy": "Privacyverklaring",
-      "cookie": "Cookieverklaring",
-      "documentation": "Documentatie",
-      "status_page": "Statuspagina",
-      "help": "Helpcentrum",
-      "slack": "Support via slack"
+      "what": "What?",
+      "opportunities": "Solutions",
+      "price": "Pricing",
+      "start": "Get started",
+      "terms_of_use": "Terms of Use",
+      "privacy": "Privacy Policy",
+      "cookie": "Cookie Policy",
+      "documentation": "Documentation",
+      "status_page": "Status Page",
+      "help": "Help Centre",
+      "slack": "Support via Slack"
     },
     "newsletter": {
-      "title": "Blijf op de hoogte",
-      "description": "Schrijf je in op onze nieuwsbrief en blijf op de hoogte van het laatste publiq-nieuws.",
-      "action": "Inschrijven"
+      "title": "Stay informed",
+      "description": "Subscribe to our newsletter and stay up to date with the latest publiq news.",
+      "action": "Subscribe"
     }
   }
 }
