@@ -1,4 +1,4 @@
-import React, { ComponentProps, useState } from "react";
+import React, { useState } from "react";
 import { IntegrationStatus } from "../types/IntegrationStatus";
 import { router } from "@inertiajs/react";
 import { ActivationDialog } from "./ActivationDialog";
