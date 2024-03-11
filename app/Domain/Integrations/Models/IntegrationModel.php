@@ -51,6 +51,21 @@ final class IntegrationModel extends UuidModel
         'partner_status' => IntegrationPartnerStatus::THIRD_PARTY,
     ];
 
+    public function canBeActivated(): bool
+    {
+        return $this->status !== IntegrationStatus::Active->value;
+    }
+
+    public function canBeBlocked(): bool
+    {
+        return $this->status !== IntegrationStatus::Blocked->value;
+    }
+
+    public function isWidgets(): bool
+    {
+        return $this->type === IntegrationType::Widgets->value;
+    }
+
     protected static function booted(): void
     {
         self::created(
