@@ -171,18 +171,18 @@ const New = ({ subscriptions }: Props) => {
           <Card title={t("integration_form.type")}>
             <RadioButtonGroup
               vertical
-              name={"integrationType"}
+              name="integrationType"
               value={data.integrationType}
               options={integrationTypesInfo.map(
                 ({ Icon, ...integrationTypeInfo }) => ({
                   value: integrationTypeInfo.type,
                   label: (
-                    <div className={"flex flex-row justify-between gap-2"}>
-                      <span className={"flex flex-row gap-2 justify-between"}>
+                    <div className="flex flex-row justify-between gap-2">
+                      <span className="flex flex-row gap-2 justify-between">
                         <Icon className="h-7 w-7" />
                         <span>{integrationTypeInfo.title}</span>
                       </span>
-                      <span className={"text-gray-400 font-thin"}>
+                      <span className="text-gray-400 font-thin">
                         {integrationTypeInfo.description}
                       </span>
                     </div>
@@ -209,17 +209,17 @@ const New = ({ subscriptions }: Props) => {
             <Card title={t("integration_form.pricing_plan")}>
               <RadioButtonGroup
                 vertical
-                name={"subscriptionId"}
+                name="subscriptionId"
                 value={data.subscriptionId}
                 onChange={(value) => setData("subscriptionId", value)}
                 options={translatedPricingPlans.map((pricingPlan) => ({
                   value: pricingPlan.id,
                   label: (
-                    <div className={"flex flex-row justify-between gap-2"}>
+                    <div className="flex flex-row justify-between gap-2">
                       <span>
                         {pricingPlan.title} ({pricingPlan.price})
                       </span>
-                      <span className={"text-gray-400 font-thin"}>
+                      <span className="text-gray-400 font-thin">
                         {pricingPlan.description}
                       </span>
                     </div>
