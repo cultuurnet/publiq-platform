@@ -14,7 +14,11 @@ final class EloquentSubscriptionRepository implements SubscriptionRepository
 {
     public function save(Subscription $subscription): void
     {
-        SubscriptionModel::query()->create([
+        SubscriptionModel::query()->updateOrCreate(
+            [
+                'id' => $subscription->id->toString(),
+            ],
+            [
             'id' => $subscription->id->toString(),
             'name' => $subscription->name,
             'description' => $subscription->description,
@@ -23,7 +27,8 @@ final class EloquentSubscriptionRepository implements SubscriptionRepository
             'currency' => $subscription->currency,
             'price' => $subscription->price,
             'fee' => $subscription->fee,
-        ]);
+        ]
+        );
     }
 
     /**
