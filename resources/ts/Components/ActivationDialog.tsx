@@ -94,11 +94,11 @@ export const ActivationDialog = ({
               component={
                 <p className="text-sm">
                   {subscription &&
-                    `${subscription.category} (${
+                    `${subscription.category} ${
                       subscription.currency === "EUR"
                         ? "€"
                         : subscription.currency
-                    } ${subscription.fee / 100})`}
+                    } ${subscription.fee / 100}`}
                 </p>
               }
             />
