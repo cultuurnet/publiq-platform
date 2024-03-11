@@ -23,14 +23,12 @@ export const ActivationRequest = ({ id }: Props) => {
         <Trans
           i18nKey="integrations.status.pending_approval_integration_description"
           t={t}
-          components={{
-            1: (
-              <Link
-                href={t("integrations.status.before_going_live_link")}
-                className="text-publiq-blue-dark hover:underline"
-              />
-            ),
-          }}
+          components={[
+            <Link
+              href={t("integrations.status.before_going_live_link")}
+              className="text-publiq-blue-dark hover:underline"
+            />,
+          ]}
         />
       </div>
       <ButtonPrimary className="self-start" onClick={handleRedirect}>
