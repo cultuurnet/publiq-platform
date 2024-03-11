@@ -7,11 +7,13 @@ namespace App\Nova\Resources;
 use App\Auth0\Auth0Tenant;
 use App\Auth0\CachedAuth0ClientGrants;
 use App\Auth0\Models\Auth0ClientModel;
+use App\Nova\ActionGuards\ActionGuard;
 use App\Nova\ActionGuards\Auth0\ActivateAuth0ClientGuard;
 use App\Nova\ActionGuards\Auth0\BlockAuth0ClientGuard;
 use App\Nova\Actions\Auth0\ActivateAuth0Client;
 use App\Nova\Actions\Auth0\BlockAuth0Client;
 use App\Nova\Resource;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Laravel\Nova\Fields\DateTime;
@@ -19,10 +21,12 @@ use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Http\Requests\ActionRequest;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 /**
  * @mixin Auth0ClientModel
+ * @property Auth0ClientModel $resource
  */
 final class Auth0Client extends Resource
 {
@@ -110,27 +114,42 @@ final class Auth0Client extends Resource
     {
         return [
             App::make(ActivateAuth0Client::class)
-                ->showOnDetail()
-                ->showInline()
+                ->exceptOnIndex()
                 ->confirmText('Are you sure you want to activate this client?')
                 ->confirmButtonText('Activate')
                 ->cancelButtonText("Don't activate")
-                ->canRun(function ($request, $model) {
-                    /** @var ActivateAuth0ClientGuard $guard */
-                    $guard = App::make(ActivateAuth0ClientGuard::class);
-                    return $guard->canDo($model->toDomain());
-                }),
+                ->canSee(fn(Request $request) => $this->canActivate($request, $this->resource))
+                ->canRun(fn($request, $model) => $this->canActivate($request, $model)),
             App::make(BlockAuth0Client::class)
-                ->showOnDetail()
-                ->showInline()
+                ->exceptOnIndex()
                 ->confirmText('Are you sure you want to block this client?')
                 ->confirmButtonText('Block')
                 ->cancelButtonText("Don't block")
-                ->canRun(function ($request, $model) {
-                    /** @var BlockAuth0ClientGuard $guard */
-                    $guard = App::make(BlockAuth0ClientGuard::class);
-                    return $guard->canDo($model->toDomain());
-                }),
+                ->canSee(fn(Request $request) => $this->canBlock($request, $this->resource))
+                ->canRun(fn($request, $model) => $this->canBlock($request, $model)),
         ];
+    }
+
+    private function canActivate(Request $request, ?Auth0ClientModel $model): bool
+    {
+        return $this->can($request, $model, App::make(ActivateAuth0ClientGuard::class));
+    }
+
+    private function canBlock(Request $request, ?Auth0ClientModel $model): bool
+    {
+        return $this->can($request, $model, App::make(BlockAuth0ClientGuard::class));
+    }
+
+    private function can(Request $request, ?Auth0ClientModel $model, ActionGuard $guard): bool
+    {
+        if ($request instanceof ActionRequest) {
+            return true;
+        }
+
+        if ($model === null) {
+            return false;
+        }
+
+        return $guard->canDo($model->toDomain());
     }
 }
