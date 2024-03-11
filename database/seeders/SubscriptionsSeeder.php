@@ -10,7 +10,6 @@ use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Domain\Subscriptions\Subscription;
 use App\Domain\Subscriptions\SubscriptionCategory;
 use App\Domain\Subscriptions\SubscriptionPlan;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Seeder;
 use Ramsey\Uuid\Uuid;
 
@@ -38,7 +37,7 @@ final class SubscriptionsSeeder extends Seeder
                 SubscriptionCategory::Basic,
                 IntegrationType::SearchApi,
                 Currency::EUR,
-                12500,
+                125,
                 0
             ),
             SubscriptionPlan::CUSTOM_SEARCH_API_PLAN => new Subscription(
@@ -58,7 +57,7 @@ final class SubscriptionsSeeder extends Seeder
                 SubscriptionCategory::Basic,
                 IntegrationType::Widgets,
                 Currency::EUR,
-                12500,
+                125,
                 0
             ),
             SubscriptionPlan::PLUS_WIDGETS_PLAN => new Subscription(
@@ -66,10 +65,10 @@ final class SubscriptionsSeeder extends Seeder
                 'Plus Plan - Widgets - Monthly',
                 'Plus Plan for integrating with Widgets, billed monthly and with a onetime fee.',
                 SubscriptionCategory::Plus,
-                IntegrationType::SearchApi,
+                IntegrationType::Widgets,
                 Currency::EUR,
-                28000,
-                60000
+                280,
+                600
             ),
             SubscriptionPlan::CUSTOM_WIDGETS_PLAN => new Subscription(
                 $subscriptionId,
@@ -87,15 +86,6 @@ final class SubscriptionsSeeder extends Seeder
     public function run(SubscriptionRepository $subscriptionRepository): void
     {
         foreach (SubscriptionPlan::cases() as $subscriptionPlan) {
-            $subscriptionId = Uuid::fromString($subscriptionPlan->value);
-
-            try {
-                $subscriptionRepository->getById($subscriptionId);
-                $this->command->info('Subscription already exists');
-                continue;
-            } catch (ModelNotFoundException) {
-            }
-
             $subscription = $this->getSubscription($subscriptionPlan);
             $subscriptionRepository->save($subscription);
         }

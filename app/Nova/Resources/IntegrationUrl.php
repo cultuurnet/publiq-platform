@@ -55,7 +55,11 @@ final class IntegrationUrl extends Resource
 
             Text::make('Url')
                 ->sortable()
-                ->rules('required', 'url'),
+                ->rules('required', 'url:https', 'max:255', Rule::unique('integrations_urls')->where(function ($query) use ($request) {
+                    return $query->where('integration_id', $request->integration)
+                        ->where('environment', $request->environment)
+                        ->where('type', $request->type);
+                })->ignore($request->id)),
         ];
     }
 }
