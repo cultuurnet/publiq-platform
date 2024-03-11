@@ -366,7 +366,7 @@ const New = ({ subscriptions }: Props) => {
             </div>
           </div>
 
-          <div className="flex flex-col gap-5">
+          <Card contentStyles="flex flex-col gap-5">
             <FormElement
               label={
                 <Trans
@@ -436,7 +436,7 @@ const New = ({ subscriptions }: Props) => {
                 error={errors.couponCode}
               />
             )}
-          </div>
+          </Card>
 
           <ButtonPrimary type="submit" disabled={processing} className="w-fit">
             {t("integration_form.submit")}

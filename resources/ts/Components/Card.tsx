@@ -7,7 +7,7 @@ import { useTranslateRoute } from "../hooks/useTranslateRoute";
 import { Link } from "@inertiajs/react";
 
 type Props = {
-  title: ReactElement | string;
+  title?: ReactElement | string;
   description?: string;
   img?: ReactElement | string;
   badge?: string;
@@ -88,35 +88,37 @@ export const Card = ({
         className={classNames(
           "flex flex-col",
           textCenter && "text-center",
-          !border && "gap-5 items-center"
+          !border && "gap-5"
         )}
       >
-        <div
-          className={classNames(
-            "flex justify-between",
-            border &&
-              `${!headless ? "border-b border-publiq-gray-300 max-sm:px-2 p-5" : "py-3"}`
-          )}
-        >
+        {(title || icon || badge || iconButton) && (
           <div
-            className={`flex items-center gap-3 ${headless ? "h-16" : "h-11"}`}
+            className={classNames(
+              "flex justify-between",
+              border &&
+                `${!headless ? "border-b border-publiq-gray-300 max-sm:px-2 p-5" : "py-3"}`
+            )}
           >
-            {icon}
-            {clickableHeading ? (
-              <Link href={`${translateRoute("/integrations")}/${id}`}>
-                {heading}
-              </Link>
-            ) : (
-              heading
-            )}
-            {!!badge && (
-              <span className=" text-publiq-gray-medium-dark bg-publiq-gray-light uppercase border border-publiq-gray-medium-dark text-xs font-medium  mr-2 px-2.5 py-0.5 rounded">
-                {badge.replaceAll("-", " ")}
-              </span>
-            )}
+            <div
+              className={`flex items-center gap-3 ${headless ? "h-16" : "h-11"}`}
+            >
+              {icon}
+              {clickableHeading ? (
+                <Link href={`${translateRoute("/integrations")}/${id}`}>
+                  {heading}
+                </Link>
+              ) : (
+                heading
+              )}
+              {!!badge && (
+                <span className=" text-publiq-gray-medium-dark bg-publiq-gray-light uppercase border border-publiq-gray-medium-dark text-xs font-medium  mr-2 px-2.5 py-0.5 rounded">
+                  {badge.replaceAll("-", " ")}
+                </span>
+              )}
+            </div>
+            {iconButton && <div className="justify-self-end">{iconButton}</div>}
           </div>
-          {iconButton && <div className="justify-self-end">{iconButton}</div>}
-        </div>
+        )}
         {description && (
           <p
             className={classNames(
