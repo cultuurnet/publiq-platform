@@ -12,7 +12,7 @@ export const ActivationRequest = ({ id }: Props) => {
   const { t } = useTranslation();
 
   const translateRoute = useTranslateRoute();
-  const handleRedirect = () =>
+  const handleActivate = () =>
     router.get(
       `${translateRoute("/integrations")}/${id}?tab=credentials&isDialogVisible=true`
     );
@@ -31,7 +31,7 @@ export const ActivationRequest = ({ id }: Props) => {
           ]}
         />
       </div>
-      <ButtonPrimary className="self-start" onClick={handleRedirect}>
+      <ButtonPrimary className="self-start" onClick={handleActivate}>
         {t("integrations.status.activate")}
       </ButtonPrimary>
     </div>
