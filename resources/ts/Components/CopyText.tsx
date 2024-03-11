@@ -12,14 +12,14 @@ export const CopyText = ({ children }: Props) => {
 
   const [isVisible, setIsVisible] = useState(false);
 
-  function handleCopyToClipboard() {
+  const handleCopyToClipboard = () => {
     navigator.clipboard.writeText(codeFieldRef.current?.innerText ?? "");
     setIsVisible(true);
     const timeoutId = setTimeout(() => {
       setIsVisible(false);
       clearTimeout(timeoutId);
     }, 1000);
-  }
+  };
 
   return (
     <div className="inline-flex gap-2 items-center bg-[#fdf3ef] rounded px-3 p-1">
