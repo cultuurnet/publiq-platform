@@ -7,7 +7,7 @@ import { Values } from "../types/Values";
 import { IntegrationType } from "../types/IntegrationType";
 import { ActivationRequest } from "./ActivationRequest";
 
-type Props = ComponentProps<"div"> & {
+type Props = {
   status: IntegrationStatus;
   id: string;
   subscription?: Subscription;
