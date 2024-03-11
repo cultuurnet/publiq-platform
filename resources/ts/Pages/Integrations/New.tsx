@@ -9,7 +9,6 @@ import { Trans, useTranslation } from "react-i18next";
 import { Card } from "../../Components/Card";
 import { ButtonPrimary } from "../../Components/ButtonPrimary";
 import { Page } from "../../Components/Page";
-import { useTranslateRoute } from "../../hooks/useTranslateRoute";
 import { Link } from "../../Components/Link";
 import { useIntegrationTypesInfo } from "../../Components/IntegrationTypes";
 import {
@@ -119,7 +118,6 @@ type Props = {
 const New = ({ subscriptions }: Props) => {
   const { t } = useTranslation();
   const { i18n } = useTranslation();
-  const translateRoute = useTranslateRoute();
 
   const url = new URL(document.location.href);
   const activeTypeFromUrl = url.searchParams.get("type");
@@ -192,7 +190,7 @@ const New = ({ subscriptions }: Props) => {
                 })
               )}
               onChange={(value) => {
-                setData("integrationType", value);
+                setData("integrationType", value as IntegrationType);
                 router.get(
                   url.pathname,
                   { type: value },
