@@ -48,6 +48,8 @@ module.exports = {
         "status-green": "#C8FFC7",
         "status-green-medium": "#66CA8E",
         "status-green-dark": "#2A7D4B",
+        "alert-info": "#d1defb",
+        "alert-info-icon": "#416fed"
       },
       textColor: ({ theme }) => theme("colors.publiq-gray-dark"),
       fontFamily: {
