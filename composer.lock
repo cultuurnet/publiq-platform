@@ -2139,17 +2139,17 @@
         },
         {
             "name": "laravel/nova",
-            "version": "4.32.15",
+            "version": "4.32.16",
             "source": {
                 "type": "git",
                 "url": "git@github.com:laravel/nova.git",
-                "reference": "ffff3bc46d1a6c2eeda423d2d8169ea508e98888"
+                "reference": "026c1d3a2184ecf1fd8b0a141400fe6a40cbf895"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://nova.laravel.com/dist/laravel/nova/laravel-nova-ffff3bc46d1a6c2eeda423d2d8169ea508e98888-zip-9f69bc.zip",
-                "reference": "ffff3bc46d1a6c2eeda423d2d8169ea508e98888",
-                "shasum": "1d874b90f2c4a2a3fa0b3aa0c2486ac7b7d57b5b"
+                "url": "https://nova.laravel.com/dist/laravel/nova/laravel-nova-026c1d3a2184ecf1fd8b0a141400fe6a40cbf895-zip-a8fba1.zip",
+                "reference": "026c1d3a2184ecf1fd8b0a141400fe6a40cbf895",
+                "shasum": "e972c18f539d0c3a495fa0ea980ec45bcc167cd1"
             },
             "require": {
                 "brick/money": "^0.5.0|^0.6.0|^0.7.0|^0.8.0",
@@ -2259,9 +2259,9 @@
                 "laravel"
             ],
             "support": {
-                "source": "https://github.com/laravel/nova/tree/v4.32.15"
+                "source": "https://github.com/laravel/nova/tree/v4.32.16"
             },
-            "time": "2024-02-26T19:38:20+00:00"
+            "time": "2024-03-05T18:37:46+00:00"
         },
         {
             "name": "laravel/prompts",
@@ -2448,16 +2448,16 @@
         },
         {
             "name": "laravel/ui",
-            "version": "v4.4.0",
+            "version": "v4.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/ui.git",
-                "reference": "7335d7049b2cde345c029e9d2de839b80af62bc0"
+                "reference": "da3811f409297d13feccd5858ce748e7474b3d11"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/ui/zipball/7335d7049b2cde345c029e9d2de839b80af62bc0",
-                "reference": "7335d7049b2cde345c029e9d2de839b80af62bc0",
+                "url": "https://api.github.com/repos/laravel/ui/zipball/da3811f409297d13feccd5858ce748e7474b3d11",
+                "reference": "da3811f409297d13feccd5858ce748e7474b3d11",
                 "shasum": ""
             },
             "require": {
@@ -2468,8 +2468,8 @@
                 "php": "^8.0"
             },
             "require-dev": {
-                "orchestra/testbench": "^7.0|^8.0|^9.0",
-                "phpunit/phpunit": "^9.3|^10.4"
+                "orchestra/testbench": "^7.35|^8.15|^9.0",
+                "phpunit/phpunit": "^9.3|^10.4|^11.0"
             },
             "type": "library",
             "extra": {
@@ -2504,9 +2504,9 @@
                 "ui"
             ],
             "support": {
-                "source": "https://github.com/laravel/ui/tree/v4.4.0"
+                "source": "https://github.com/laravel/ui/tree/v4.5.0"
             },
-            "time": "2024-01-12T15:56:45+00:00"
+            "time": "2024-03-04T13:58:27+00:00"
         },
         {
             "name": "league/commonmark",
@@ -5146,26 +5146,26 @@
         },
         {
             "name": "rap2hpoutre/fast-excel",
-            "version": "v5.3.0",
+            "version": "v5.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rap2hpoutre/fast-excel.git",
-                "reference": "97987c4f3d09e9ef8d9480b46116387e8bf6e3a4"
+                "reference": "27c346ca2a4de448f856d0926b05d7e2511e43b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rap2hpoutre/fast-excel/zipball/97987c4f3d09e9ef8d9480b46116387e8bf6e3a4",
-                "reference": "97987c4f3d09e9ef8d9480b46116387e8bf6e3a4",
+                "url": "https://api.github.com/repos/rap2hpoutre/fast-excel/zipball/27c346ca2a4de448f856d0926b05d7e2511e43b8",
+                "reference": "27c346ca2a4de448f856d0926b05d7e2511e43b8",
                 "shasum": ""
             },
             "require": {
-                "illuminate/support": "^6.0 || ^7.0 || ^8.0 || ^9.0|^10.0",
+                "illuminate/support": "^6.0 || ^7.0 || ^8.0 || ^9.0 || ^10.0 || ^11.0",
                 "openspout/openspout": "^4.1.1",
                 "php": "^8.0"
             },
             "require-dev": {
-                "illuminate/database": "^6.20.12 || ^7.30.4 || ^8.24.0 || ^9.0|^10.0",
-                "phpunit/phpunit": "^9.5",
+                "illuminate/database": "^6.20.12 || ^7.30.4 || ^8.24.0 || ^9.0 || ^10.0 || ^11.0",
+                "phpunit/phpunit": "^9.5 || ^10.1",
                 "squizlabs/php_codesniffer": "3.*"
             },
             "type": "library",
@@ -5204,7 +5204,7 @@
             ],
             "support": {
                 "issues": "https://github.com/rap2hpoutre/fast-excel/issues",
-                "source": "https://github.com/rap2hpoutre/fast-excel/tree/v5.3.0"
+                "source": "https://github.com/rap2hpoutre/fast-excel/tree/v5.4.0"
             },
             "funding": [
                 {
@@ -5212,7 +5212,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-09-01T06:07:32+00:00"
+            "time": "2024-03-06T16:03:49+00:00"
         },
         {
             "name": "sentry/sentry",
