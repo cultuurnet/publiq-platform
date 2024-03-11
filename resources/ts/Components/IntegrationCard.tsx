@@ -95,11 +95,11 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
                 <Tooltip
                   visible={isVisible}
                   text={t("tooltip.copy")}
-                  className={"w-auto"}
+                  className="w-auto"
                 >
                   <ButtonIconCopy
                     onClick={handleCopyToClipboard}
-                    className={"text-publiq-orange"}
+                    className="text-publiq-orange"
                   />
                 </Tooltip>
               </div>
