@@ -118,15 +118,15 @@ final class Auth0Client extends Resource
                 ->confirmText('Are you sure you want to activate this client?')
                 ->confirmButtonText('Activate')
                 ->cancelButtonText("Don't activate")
-                ->canSee(fn(Request $request) => $this->canActivate($request, $this->resource))
-                ->canRun(fn($request, $model) => $this->canActivate($request, $model)),
+                ->canSee(fn (Request $request) => $this->canActivate($request, $this->resource))
+                ->canRun(fn ($request, $model) => $this->canActivate($request, $model)),
             App::make(BlockAuth0Client::class)
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to block this client?')
                 ->confirmButtonText('Block')
                 ->cancelButtonText("Don't block")
-                ->canSee(fn(Request $request) => $this->canBlock($request, $this->resource))
-                ->canRun(fn($request, $model) => $this->canBlock($request, $model)),
+                ->canSee(fn (Request $request) => $this->canBlock($request, $this->resource))
+                ->canRun(fn ($request, $model) => $this->canBlock($request, $model)),
         ];
     }
 

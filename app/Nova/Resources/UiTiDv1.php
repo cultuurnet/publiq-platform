@@ -121,7 +121,7 @@ final class UiTiDv1 extends Resource
                 ->confirmText('Are you sure you want to activate this consumer?')
                 ->confirmButtonText('Activate')
                 ->cancelButtonText("Don't activate")
-                ->canSee(fn(Request $request) => $this->canActivate($request, $this->resource))
+                ->canSee(fn (Request $request) => $this->canActivate($request, $this->resource))
                 ->canRun(fn ($request, $model) => $this->canActivate($request, $model)),
 
             App::make(BlockUiTiDv1Consumer::class)
@@ -129,7 +129,7 @@ final class UiTiDv1 extends Resource
                 ->confirmText('Are you sure you want to block this consumer?')
                 ->confirmButtonText('Block')
                 ->cancelButtonText("Don't block")
-                ->canSee(fn(Request $request) => $this->canBlock($request, $this->resource))
+                ->canSee(fn (Request $request) => $this->canBlock($request, $this->resource))
                 ->canRun(fn ($request, $model) => $this->canBlock($request, $model)),
 
         ];
