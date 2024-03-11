@@ -19,8 +19,8 @@ final class DistributeClients implements ShouldQueue
     use Queueable;
 
     public function __construct(
-        readonly private IntegrationRepository $integrationRepository,
-        readonly private Auth0ClientRepository $auth0ClientRepository
+        private readonly IntegrationRepository $integrationRepository,
+        private readonly Auth0ClientRepository $auth0ClientRepository
     ) {
     }
 
