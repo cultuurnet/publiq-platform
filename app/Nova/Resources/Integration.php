@@ -15,6 +15,7 @@ use App\Nova\Actions\ActivateIntegrationWithOrganization;
 use App\Nova\Actions\BlockIntegration;
 use App\Nova\Actions\OpenWidgetManager;
 use App\Nova\Resource;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\DateTime;
@@ -148,60 +149,37 @@ final class Integration extends Resource
     {
         return [
             (new ActivateIntegrationWithCoupon(App::make(IntegrationRepository::class)))
-                ->showOnDetail()
-                ->showInline()
+                ->exceptOnIndex()
                 ->confirmText('Are you sure you want to activate this integration with a coupon?')
                 ->confirmButtonText('Activate')
                 ->cancelButtonText("Don't activate")
-                ->canRun(function ($request, $model) {
-                    if ($request instanceof ActionRequest) {
-                        return true;
-                    }
-
-                    return $model->status === IntegrationStatus::Draft->value;
-                }),
+                ->canSee(fn () => $this->canBeActivated())
+                ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeActivated()),
 
             (new ActivateIntegrationWithOrganization(
                 App::make(IntegrationRepository::class),
                 App::make(OrganizationRepository::class)
             ))
-                ->showOnDetail()
-                ->showInline()
+                ->exceptOnIndex()
                 ->confirmText('Are you sure you want to activate this integration with an organization?')
                 ->confirmButtonText('Activate')
                 ->cancelButtonText("Don't activate")
-                ->canRun(function ($request, $model) {
-                    if ($request instanceof ActionRequest) {
-                        return true;
-                    }
-
-                    return $model->status === IntegrationStatus::Draft->value;
-                }),
+                ->canSee(fn () => $this->canBeActivated())
+                ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeActivated()),
 
             (new OpenWidgetManager())
-                ->showOnDetail()
-                ->showInline()
+                ->exceptOnIndex()
                 ->withoutConfirmation()
-                ->canRun(function ($request, $model) {
-                    if ($request instanceof ActionRequest) {
-                        return true;
-                    }
-                    return $model->type === IntegrationType::Widgets->value;
-                }),
+                ->canSee(fn () => $this->isWidgets())
+                ->canRun(fn (Request $request, IntegrationModel $model) => $model->isWidgets()),
 
             (new BlockIntegration())
-                ->showOnDetail()
-                ->showInline()
+                ->exceptOnIndex()
                 ->confirmText('Are you sure you want to block this integration?')
                 ->confirmButtonText('Block')
                 ->cancelButtonText("Don't block")
-                ->canRun(function ($request, $model) {
-                    if ($request instanceof ActionRequest) {
-                        return true;
-                    }
-
-                    return $model->status !== IntegrationStatus::Blocked->value;
-                }),
+                ->canSee(fn () => $this->canBeBlocked())
+                ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeBlocked()),
         ];
     }
 }
