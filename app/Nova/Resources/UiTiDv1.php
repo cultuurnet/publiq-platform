@@ -15,6 +15,7 @@ use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use App\UiTiDv1\UiTiDv1ConsumerStatus;
 use App\UiTiDv1\UiTiDv1Environment;
 use Illuminate\Support\Facades\App;
+use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
@@ -72,6 +73,8 @@ final class UiTiDv1 extends Resource
                     $status->name
                 );
             })->asHtml(),
+            DateTime::make('distributed_at')
+                ->readonly(),
             Text::make('consumer_key')
                 ->readonly(),
             Text::make('consumer_secret')

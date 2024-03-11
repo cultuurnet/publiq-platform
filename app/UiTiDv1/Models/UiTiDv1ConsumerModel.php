@@ -29,6 +29,10 @@ final class UiTiDv1ConsumerModel extends UuidModel
         'distributed_at',
     ];
 
+    protected $casts = [
+        'distributed_at' => 'datetime',
+    ];
+
     public function toDomain(): UiTiDv1Consumer
     {
         return new UiTiDv1Consumer(
