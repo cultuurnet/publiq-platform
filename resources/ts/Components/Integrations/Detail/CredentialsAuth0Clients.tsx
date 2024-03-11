@@ -63,6 +63,11 @@ export const CredentialsAuth0Clients = ({
     },
   ];
 
+  const shouldShowDistributeAuth0 = useMemo(
+    () => uiTiDv1Consumers.length > 0,
+    [uiTiDv1Consumers]
+  );
+
   const handleDistributeAuth0Clients = () => {
     router.post(`/integrations/${id}/auth0-clients`);
   };
@@ -72,7 +77,7 @@ export const CredentialsAuth0Clients = ({
       <Heading className="font-semibold lg:min-w-60" level={4}>
         {t("details.credentials.uitid_v2")}
       </Heading>
-      {uiTiDv1Consumers.length > 0 && !auth0ProdClient ? (
+      {shouldShowDistributeAuth0 && !auth0ProdClient ? (
         <div className="flex flex-col flex-1 gap-4">
           <p>{t("details.credentials.uitid_alert")}</p>
           <ButtonPrimary
