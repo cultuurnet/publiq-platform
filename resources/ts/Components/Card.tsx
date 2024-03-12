@@ -45,7 +45,7 @@ export const Card = ({
   const translateRoute = useTranslateRoute();
   const backgroundColor = active
     ? "bg-status-green-medium bg-opacity-10"
-    : "bg-publiq-gray-light";
+    : "bg-white";
 
   const heading =
     typeof title !== "string" ? (
