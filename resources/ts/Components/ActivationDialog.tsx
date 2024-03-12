@@ -77,7 +77,7 @@ export const ActivationDialog = ({
           return t("integrations.activation_dialog.invalid_coupon");
       }
     }
-  }, [couponForm.errors]);
+  }, [couponForm.errors, t]);
 
   const organizationFormErrors = organizationForm.errors as Record<
     string,
