@@ -161,6 +161,7 @@
       },
       "subscription": "Pricing plan",
       "name": "Name of company, organization or municipality",
+      "free_until_live": "This integration is currently running on a test environment. You only pay when your integration is active in the live environment",
       "address": {
         "street": "Street and number",
         "postcode": "Postcode",
