@@ -11,6 +11,7 @@ use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
+use Spatie\Activitylog\LogOptions;
 
 final class Auth0ClientModel extends UuidModel
 {
@@ -30,6 +31,11 @@ final class Auth0ClientModel extends UuidModel
     protected $casts = [
         'distributed_at' => 'datetime',
     ];
+
+    public function isDistributed(): bool
+    {
+        return $this->distributed_at !== null;
+    }
 
     public function toDomain(): Auth0Client
     {
