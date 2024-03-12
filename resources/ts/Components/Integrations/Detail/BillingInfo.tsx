@@ -50,10 +50,13 @@ export const BillingInfo = ({
       </div>
       {subscription.integrationType !== IntegrationType.EntryApi &&
         status !== IntegrationStatus.Active && (
-          <Alert
-            variant="info"
-            title="Deze integratie draait momenteel op een testomgeving. Je betaalt pas wanneer je integratie actief is op de live-omgeving"
-          />
+          <div className={"grid grid-cols-3 gap-10"}>
+            <Alert
+              className={"col-span-2 col-start-2"}
+              variant="info"
+              title="Deze integratie draait momenteel op een testomgeving. Je betaalt pas wanneer je integratie actief is op de live-omgeving"
+            />
+          </div>
         )}
       {data.organization && (
         <>
