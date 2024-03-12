@@ -7,7 +7,6 @@ namespace App\Nova\Resources;
 use App\Nova\ActionGuards\ActionGuard;
 use App\Nova\ActionGuards\UiTiDv1\ActivateUiTiDv1ConsumerGuard;
 use App\Nova\ActionGuards\UiTiDv1\BlockUiTiDv1ConsumerGuard;
-use App\Nova\Actions\Auth0\DistributeAuth0Client;
 use App\Nova\Actions\UiTiDv1\ActivateUiTiDv1Consumer;
 use App\Nova\Actions\UiTiDv1\BlockUiTiDv1Consumer;
 use App\Nova\Actions\UiTiDv1\DistributeUiTiDv1Consumer;

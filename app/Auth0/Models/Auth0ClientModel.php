@@ -11,7 +11,6 @@ use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
-use Spatie\Activitylog\LogOptions;
 
 final class Auth0ClientModel extends UuidModel
 {
