@@ -33,6 +33,11 @@ final class UiTiDv1ConsumerModel extends UuidModel
         'distributed_at' => 'datetime',
     ];
 
+    public function isDistributed(): bool
+    {
+        return $this->distributed_at !== null;
+    }
+
     public function toDomain(): UiTiDv1Consumer
     {
         return new UiTiDv1Consumer(

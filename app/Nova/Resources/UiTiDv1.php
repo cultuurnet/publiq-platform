@@ -7,8 +7,10 @@ namespace App\Nova\Resources;
 use App\Nova\ActionGuards\ActionGuard;
 use App\Nova\ActionGuards\UiTiDv1\ActivateUiTiDv1ConsumerGuard;
 use App\Nova\ActionGuards\UiTiDv1\BlockUiTiDv1ConsumerGuard;
+use App\Nova\Actions\Auth0\DistributeAuth0Client;
 use App\Nova\Actions\UiTiDv1\ActivateUiTiDv1Consumer;
 use App\Nova\Actions\UiTiDv1\BlockUiTiDv1Consumer;
+use App\Nova\Actions\UiTiDv1\DistributeUiTiDv1Consumer;
 use App\Nova\Resource;
 use App\UiTiDv1\CachedUiTiDv1Status;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
@@ -132,6 +134,13 @@ final class UiTiDv1 extends Resource
                 ->canSee(fn (Request $request) => $this->canBlock($request, $this->resource))
                 ->canRun(fn ($request, $model) => $this->canBlock($request, $model)),
 
+            App::make(DistributeUiTiDv1Consumer::class)
+                ->exceptOnIndex()
+                ->confirmText('Are you sure you want to distribute this consumer?')
+                ->confirmButtonText('Distribute')
+                ->cancelButtonText("Don't distribute")
+                ->canSee(fn (Request $request) => !$this->resource->isDistributed())
+                ->canRun(fn ($request, $model) => !$this->resource->isDistributed()),
         ];
     }
 
