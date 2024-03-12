@@ -145,6 +145,7 @@ return [
     'string' => ':Attribute moet een string zijn.',
     'timezone' => ':Attribute moet een geldige tijdszone zijn.',
     'unique' => ':Attribute is al bezet.',
+    'unique_url' => 'Deze :Type is al in gebruik voor :Environment. Kies een unieke URL.',
     'uploaded' => 'Het uploaden van :attribute is mislukt.',
     'uppercase' => ':Attribuut moet in hoofdletters zijn.',
     'url' => ':Attribute formaat is ongeldig.',

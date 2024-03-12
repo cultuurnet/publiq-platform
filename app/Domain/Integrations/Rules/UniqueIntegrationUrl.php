@@ -36,7 +36,10 @@ final readonly class UniqueIntegrationUrl implements ValidationRule
                 continue;
             }
 
-            $fail('validation.distinct')->translate();
+            $fail('validation.unique_url')->translate([
+                'Type' => $currentUrl['type'],
+                'Environment' => $currentUrl['environment']
+            ]);
         }
     }
 }
