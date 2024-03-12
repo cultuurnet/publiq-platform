@@ -39,7 +39,7 @@ const Detail = ({ ...integration }: Props) => {
   const integrationTypesInfo = useIntegrationTypesInfo();
   const { Icon } = integrationTypesInfo.find(
     (i) => i.type === integration.type
-  );
+  )!;
   const changeTabInUrl = (tab: string) => {
     url.searchParams.set("tab", tab);
     router.get(url.toString());
