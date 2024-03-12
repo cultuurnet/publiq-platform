@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Dialog } from "./Dialog";
 import { ButtonSecondary } from "./ButtonSecondary";
 import { ButtonPrimary } from "./ButtonPrimary";
@@ -67,6 +67,17 @@ export const ActivationDialog = ({
       },
     });
   };
+
+  const setErrorMessage = useMemo(() => {
+    if (couponForm.errors.coupon) {
+      switch (couponForm.errors.coupon) {
+        case "Coupon is already used":
+          return t("integrations.activation_dialog.alredy_used_coupon");
+        default:
+          return t("integrations.activation_dialog.invalid_coupon");
+      }
+    }
+  }, [couponForm.errors]);
 
   const organizationFormErrors = organizationForm.errors as Record<
     string,
@@ -236,7 +247,7 @@ export const ActivationDialog = ({
             />
             <FormElement
               label={`${t("integrations.activation_dialog.coupon")}`}
-              error={couponForm.errors["coupon"]}
+              error={setErrorMessage}
               className="col-span-2"
               component={
                 <Input
