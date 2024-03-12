@@ -65,6 +65,13 @@ const getPricingPlansForType = (
     };
   };
 
+  const formatPlanPrice = (plan: PricingPlan) =>
+    Intl.NumberFormat("nl-BE", {
+      currency: plan.currency,
+      style: "currency",
+      maximumFractionDigits: 0,
+    }).format(plan.price);
+
   const free = getInfoForCategory("free");
   const basic = getInfoForCategory("basic");
   const plus = getInfoForCategory("plus");
@@ -76,8 +83,7 @@ const getPricingPlansForType = (
       title: t("integration_form.pricing.free.title"),
       description: free.description,
       price: t("integration_form.pricing.free.price", {
-        price: free.price,
-        currency: free.currency,
+        price: formatPlanPrice(free),
       }),
     },
     basic && {
@@ -85,8 +91,7 @@ const getPricingPlansForType = (
       title: t("integration_form.pricing.basic.title"),
       description: basic.description,
       price: t("integration_form.pricing.basic.price", {
-        price: basic.price,
-        currency: basic.currency,
+        price: formatPlanPrice(basic),
       }),
     },
     plus && {
@@ -94,8 +99,7 @@ const getPricingPlansForType = (
       title: t("integration_form.pricing.plus.title"),
       description: plus.description,
       price: t("integration_form.pricing.plus.price", {
-        price: plus.price,
-        currency: plus.currency,
+        price: formatPlanPrice(plus),
       }),
     },
     custom && {
@@ -103,8 +107,7 @@ const getPricingPlansForType = (
       title: t("integration_form.pricing.custom.title"),
       description: custom.description,
       price: t("integration_form.pricing.custom.price", {
-        price: custom.price,
-        currency: custom.currency,
+        price: formatPlanPrice(custom),
       }),
     },
   ];
