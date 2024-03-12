@@ -161,6 +161,7 @@
       },
       "subscription": "Prijsplan",
       "name": "Naam bedrijf, organisatie of gemeente",
+      "free_until_live": "Deze integratie draait momenteel op een testomgeving. Je betaalt pas wanneer je integratie actief is op de live-omgeving",
       "address": {
         "street": "Straat en nummer",
         "postcode": "Postcode",
@@ -193,7 +194,7 @@
         "title": "URL verwijderen",
         "question": "Wil je deze URL echt verwijderen?"
       },
-      "error":"Er is een fout opgetreden bij het indienen van het formulier. Controleer uw invoer en probeer het opnieuw.",
+      "error": "Er is een fout opgetreden bij het indienen van het formulier. Controleer uw invoer en probeer het opnieuw.",
       "success": "De wijzigingen zijn succesvol opgeslagen."
     },
     "delete_integration": {

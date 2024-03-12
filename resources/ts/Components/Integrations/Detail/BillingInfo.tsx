@@ -54,7 +54,7 @@ export const BillingInfo = ({
             <Alert
               className={"col-span-2 col-start-2"}
               variant="info"
-              title="Deze integratie draait momenteel op een testomgeving. Je betaalt pas wanneer je integratie actief is op de live-omgeving"
+              title={t("details.billing_info.free_until_live")}
             />
           </div>
         )}
