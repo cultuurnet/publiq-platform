@@ -6,7 +6,7 @@ type Props = ComponentProps<"div">;
 export const ContactsTableDesktop = ({ className, children }: Props) => {
   return (
     <div className={classNames("relative", className)}>
-      <table className="w-full text-left border border-publiq-gray-light text-gray-500 min-w-[40rem]">
+      <table className="w-full text-left border border-publiq-gray-lighter text-gray-500 min-w-[40rem]">
         {children}
       </table>
     </div>
