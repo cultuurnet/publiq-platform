@@ -120,7 +120,7 @@ final class Auth0Client extends Resource
                 ->confirmButtonText('Activate')
                 ->cancelButtonText("Don't activate")
                 ->canSee(fn (Request $request) => $this->canActivate($request, $this->resource))
-                ->canRun(fn ($request, $model) => $this->canActivate($request, $model)),
+                ->canRun(fn (Request $request, Auth0ClientModel $model) => $this->canActivate($request, $model)),
 
             App::make(BlockAuth0Client::class)
                 ->exceptOnIndex()
@@ -128,7 +128,7 @@ final class Auth0Client extends Resource
                 ->confirmButtonText('Block')
                 ->cancelButtonText("Don't block")
                 ->canSee(fn (Request $request) => $this->canBlock($request, $this->resource))
-                ->canRun(fn ($request, $model) => $this->canBlock($request, $model)),
+                ->canRun(fn (Request $request, Auth0ClientModel $model) => $this->canBlock($request, $model)),
 
             App::make(DistributeAuth0Client::class)
                 ->exceptOnIndex()
@@ -136,7 +136,7 @@ final class Auth0Client extends Resource
                 ->confirmButtonText('Distribute')
                 ->cancelButtonText("Don't distribute")
                 ->canSee(fn (Request $request) => !$this->resource->isDistributed())
-                ->canRun(fn ($request, $model) => !$this->resource->isDistributed()),
+                ->canRun(fn (Request $request, Auth0ClientModel $model) => !$this->resource->isDistributed()),
         ];
     }
 

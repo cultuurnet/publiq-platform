@@ -123,7 +123,7 @@ final class UiTiDv1 extends Resource
                 ->confirmButtonText('Activate')
                 ->cancelButtonText("Don't activate")
                 ->canSee(fn (Request $request) => $this->canActivate($request, $this->resource))
-                ->canRun(fn ($request, $model) => $this->canActivate($request, $model)),
+                ->canRun(fn (Request $request, UiTiDv1ConsumerModel $model) => $this->canActivate($request, $model)),
 
             App::make(BlockUiTiDv1Consumer::class)
                 ->exceptOnIndex()
@@ -131,7 +131,7 @@ final class UiTiDv1 extends Resource
                 ->confirmButtonText('Block')
                 ->cancelButtonText("Don't block")
                 ->canSee(fn (Request $request) => $this->canBlock($request, $this->resource))
-                ->canRun(fn ($request, $model) => $this->canBlock($request, $model)),
+                ->canRun(fn (Request $request, UiTiDv1ConsumerModel $model) => $this->canBlock($request, $model)),
 
             App::make(DistributeUiTiDv1Consumer::class)
                 ->exceptOnIndex()
@@ -139,7 +139,7 @@ final class UiTiDv1 extends Resource
                 ->confirmButtonText('Distribute')
                 ->cancelButtonText("Don't distribute")
                 ->canSee(fn (Request $request) => !$this->resource->isDistributed())
-                ->canRun(fn ($request, $model) => !$this->resource->isDistributed()),
+                ->canRun(fn (Request $request, UiTiDv1ConsumerModel $model) => !$this->resource->isDistributed()),
         ];
     }
 
