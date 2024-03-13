@@ -70,6 +70,7 @@
     "contact_label_contributor": "Employee",
     "add": "Add employee",
     "contact": {
+      "description": "Contacts can manage, activate, and delete the integration.",
       "first_name": "First name",
       "last_name": "Last name",
       "email": "Email address"
