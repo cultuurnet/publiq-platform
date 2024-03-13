@@ -19,9 +19,9 @@ import { RadioButtonGroup } from "../../Components/RadioButtonGroup";
 
 type PricingPlan = {
   id: string;
-  price: number;
+  title: string;
+  price: string;
   description: string;
-  currency: string;
 };
 
 type Subscription = {
@@ -56,59 +56,24 @@ const getPricingPlansForType = (
 
     return {
       id: data.id,
-      price: data.price,
-      description: data.description,
-      currency: data.currency,
+      title: t(`integration_form.pricing.${category}.title`),
+      description: t(
+        `integration_form.pricing.${category}.description.${integrationType}`,
+        data.description
+      ),
+      price: t(`integration_form.pricing.${category}.price`, {
+        price: Intl.NumberFormat("nl-BE", {
+          currency: data.currency,
+          style: "currency",
+          maximumFractionDigits: 0,
+        }).format(data.price),
+      }),
     };
   };
 
-  const free = getInfoForCategory("free");
-  const basic = getInfoForCategory("basic");
-  const plus = getInfoForCategory("plus");
-  const custom = getInfoForCategory("custom");
-
-  const infos = [
-    free && {
-      id: free.id,
-      title: t("integration_form.pricing.free.title"),
-      description: free.description,
-      price: t("integration_form.pricing.free.price", {
-        price: free.price,
-        currency: free.currency,
-      }),
-    },
-    basic && {
-      id: basic.id,
-      title: t("integration_form.pricing.basic.title"),
-      description: basic.description,
-      price: t("integration_form.pricing.basic.price", {
-        price: basic.price,
-        currency: basic.currency,
-      }),
-    },
-    plus && {
-      id: plus.id,
-      title: t("integration_form.pricing.plus.title"),
-      description: plus.description,
-      price: t("integration_form.pricing.plus.price", {
-        price: plus.price,
-        currency: plus.currency,
-      }),
-    },
-    custom && {
-      id: custom.id,
-      title: t("integration_form.pricing.custom.title"),
-      description: custom.description,
-      price: t("integration_form.pricing.custom.price", {
-        price: custom.price,
-        currency: custom.currency,
-      }),
-    },
-  ];
-
-  type PriceInfo = NonNullable<(typeof infos)[number]>;
-
-  return infos.filter((info) => !!info?.id) as PriceInfo[];
+  return ["free", "basic", "plus", "custom"]
+    .map(getInfoForCategory)
+    .filter((info) => !!info?.id) as PricingPlan[];
 };
 
 type Props = {
