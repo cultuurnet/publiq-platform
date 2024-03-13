@@ -7,8 +7,7 @@ import {
   UiTiDv1Consumer,
 } from "../../../Pages/Integrations/Index";
 import { StatusLight } from "../../StatusLight";
-import { ButtonPrimary } from "../../ButtonPrimary";
-import { router } from "@inertiajs/react";
+//import { ButtonPrimary } from "../../ButtonPrimary";
 import { CopyText } from "../../CopyText";
 import { ActivationFlow } from "../../ActivationFlow";
 
@@ -24,7 +23,6 @@ type Props = {
 
 export const CredentialsAuth0Clients = ({
   auth0Clients,
-  uiTiDv1Consumers,
   id,
   status,
   email,
@@ -32,6 +30,7 @@ export const CredentialsAuth0Clients = ({
   type,
 }: Props) => {
   const { t } = useTranslation();
+
   const auth0TestClient = useMemo(
     () => auth0Clients.find((client) => client.tenant === "test"),
     [auth0Clients]
@@ -63,33 +62,24 @@ export const CredentialsAuth0Clients = ({
     },
   ];
 
-  const shouldShowDistributeAuth0 = useMemo(
-    () => uiTiDv1Consumers.length > 0,
-    [uiTiDv1Consumers]
-  );
-
-  const handleDistributeAuth0Clients = () => {
-    router.post(`/integrations/${id}/auth0-clients`);
-  };
-
   return (
     <>
       <Heading className="font-semibold lg:min-w-60" level={4}>
         {t("details.credentials.uitid_v2")}
       </Heading>
-      {shouldShowDistributeAuth0 && !auth0ProdClient ? (
+      {/*{!auth0ProdClient ? (
         <div className="flex flex-col flex-1 gap-4">
           <p>{t("details.credentials.uitid_alert")}</p>
           <ButtonPrimary
             className="self-start"
-            onClick={handleDistributeAuth0Clients}
           >
             {t("details.credentials.action_uitid")}
           </ButtonPrimary>
         </div>
-      ) : (
-        <div className="flex flex-col flex-1 gap-4">
-          <div className="flex flex-col">
+      ) : ( */}
+      <div className="flex flex-col flex-1 gap-4">
+        {type !== IntegrationType.Widgets && (
+          <div className="flex flex-col gap-3">
             <Heading className="font-semibold flex min-w-[5rem]" level={4}>
               {t("details.credentials.test")}
             </Heading>
@@ -140,7 +130,8 @@ export const CredentialsAuth0Clients = ({
             </div>
           </div>
         </div>
-      )}
+      </div>
+      {/* )} */}
     </>
   );
 };
