@@ -13,13 +13,13 @@ export const Hero = () => {
       <div className="flex flex-col gap-7 items-center py-0 px-6">
         <Heading
           level={1}
-          className="text-center font-bold text-publiq-gray-dark"
+          className="text-center font-bold text-publiq-gray-900"
         >
           {t("home.hero.title")}
         </Heading>
         <Heading
           level={2}
-          className="text-center font-extralight text-publiq-gray-dark max-w-[37rem]"
+          className="text-center font-extralight text-publiq-gray-900 max-w-[37rem]"
         >
           {t("home.hero.intro")}
         </Heading>

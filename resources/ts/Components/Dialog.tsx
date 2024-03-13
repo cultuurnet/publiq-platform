@@ -3,6 +3,7 @@ import { ButtonIcon } from "./ButtonIcon";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { classNames } from "../utils/classNames";
 import { Heading } from "./Heading";
+import { createPortal } from "react-dom";
 
 type Props = ComponentProps<"div"> & {
   isVisible?: boolean;
@@ -26,7 +27,7 @@ export const Dialog = ({
     return null;
   }
 
-  return (
+  return createPortal(
     <>
       <div
         className={classNames(
@@ -74,7 +75,8 @@ export const Dialog = ({
         className={"fixed top-0 right-0 bg-black w-full h-full opacity-60 z-50"}
         onClick={onClose}
       />
-    </>
+    </>,
+    document.body
   );
 };
 
