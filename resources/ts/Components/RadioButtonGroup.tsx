@@ -11,7 +11,7 @@ type Props = {
   options: Option[];
   value: string;
   onChange: (newValue: string) => void;
-  vertical?: boolean;
+  orientation: "vertical" | "horizontal";
 } & Omit<ComponentProps<"ul">, "onChange">;
 
 export const RadioButtonGroup = ({
@@ -20,15 +20,16 @@ export const RadioButtonGroup = ({
   value,
   onChange,
   className,
-  vertical,
+  orientation = "horizontal",
   ...props
 }: Props) => {
+  const isVertical = orientation === "vertical";
   const getRoundedStyles = (index: number) => {
     switch (index) {
       case 0:
-        return vertical ? "rounded-t-lg" : "rounded-l-lg";
+        return isVertical ? "rounded-t-lg" : "rounded-l-lg";
       case 2:
-        return vertical ? "rounded-b-lg" : "rounded-r-lg";
+        return isVertical ? "rounded-b-lg" : "rounded-r-lg";
     }
   };
 
@@ -44,7 +45,7 @@ export const RadioButtonGroup = ({
     <ul
       className={classNames(
         "flex max-md:gap-1",
-        vertical ? "flex-col" : "flex-row max-md:flex-col",
+        isVertical ? "flex-col" : "flex-row max-md:flex-col",
         className
       )}
       role="group"

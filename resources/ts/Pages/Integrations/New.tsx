@@ -135,7 +135,7 @@ const New = ({ subscriptions }: Props) => {
         <form onSubmit={handleSubmit} className="flex flex-col gap-7">
           <Card title={t("integration_form.type")}>
             <RadioButtonGroup
-              vertical
+              orientation="vertical"
               name="integrationType"
               value={data.integrationType}
               options={integrationTypesInfo.map(
@@ -173,7 +173,7 @@ const New = ({ subscriptions }: Props) => {
           {translatedPricingPlans.length > 0 && (
             <Card title={t("integration_form.pricing_plan")}>
               <RadioButtonGroup
-                vertical
+                orientation="vertical"
                 name="subscriptionId"
                 value={data.subscriptionId}
                 onChange={(value) => setData("subscriptionId", value)}
