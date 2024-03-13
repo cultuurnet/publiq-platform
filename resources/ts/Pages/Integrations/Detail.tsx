@@ -13,7 +13,7 @@ import { DeleteIntegration } from "../../Components/Integrations/Detail/DeleteIn
 import { Card } from "../../Components/Card";
 import {
   integrationIconClasses,
-  useIntegrationTypesInfo,
+  integrationTypesIcons,
 } from "../../Components/IntegrationTypes";
 import { Heading } from "../../Components/Heading";
 
@@ -36,10 +36,8 @@ const Detail = ({ ...integration }: Props) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const integrationTypesInfo = useIntegrationTypesInfo();
-  const { Icon } = integrationTypesInfo.find(
-    (i) => i.type === integration.type
-  )!;
+  const Icon = integrationTypesIcons[integration.type];
+
   const changeTabInUrl = (tab: string) => {
     url.searchParams.set("tab", tab);
     router.get(url.toString());
