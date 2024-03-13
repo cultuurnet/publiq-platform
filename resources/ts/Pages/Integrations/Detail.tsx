@@ -53,7 +53,7 @@ const Detail = ({ ...integration }: Props) => {
             <Heading className="font-semibold" level={2}>
               {integration.name}
             </Heading>
-            <small>{integration.type}</small>
+            <small>{t(`integrations.products.${integration.type}`)}</small>
           </div>
         }
         icon={Icon && <Icon className={integrationIconClasses} />}
