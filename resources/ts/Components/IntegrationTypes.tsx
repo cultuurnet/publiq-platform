@@ -11,6 +11,12 @@ import { classNames } from "../utils/classNames";
 export const integrationIconClasses =
   "h-full w-auto aspect-square max-h-[10rem] object-contain";
 
+export const integrationTypesIcons = {
+  [IntegrationType.EntryApi]: IconEntryApi,
+  [IntegrationType.SearchApi]: IconSearchApi,
+  [IntegrationType.Widgets]: IconWidgets,
+};
+
 export const getIntegrationTypesInfo = (t: TFunction) => [
   {
     Icon: IconEntryApi,
