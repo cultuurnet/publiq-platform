@@ -6,12 +6,19 @@ import { ButtonPrimary } from "../../ButtonPrimary";
 import { Integration } from "../../../Pages/Integrations/Index";
 import { useTranslation } from "react-i18next";
 import { useForm } from "@inertiajs/react";
+import { Alert } from "../../Alert";
+import { IntegrationType } from "../../../types/IntegrationType";
+import { IntegrationStatus } from "../../../types/IntegrationStatus";
 
 type Props = Integration;
 
-export const BillingInfo = ({ id, organization, subscription }: Props) => {
+export const BillingInfo = ({
+  id,
+  organization,
+  subscription,
+  status,
+}: Props) => {
   const { t } = useTranslation();
-
   const initialFormValues = {
     organization,
   };
@@ -41,6 +48,16 @@ export const BillingInfo = ({ id, organization, subscription }: Props) => {
           }
         />
       </div>
+      {subscription.integrationType !== IntegrationType.EntryApi &&
+        status !== IntegrationStatus.Active && (
+          <div className={"grid grid-cols-3 gap-10"}>
+            <Alert
+              className={"col-span-2 col-start-2"}
+              variant="info"
+              title={t("details.billing_info.free_until_live")}
+            />
+          </div>
+        )}
       {data.organization && (
         <>
           <div className="w-full max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-6">
@@ -160,7 +177,6 @@ export const BillingInfo = ({ id, organization, subscription }: Props) => {
             </div>
           </div>
           <div className="lg:grid lg:grid-cols-3 gap-6">
-            <div></div>
             <ButtonPrimary
               className="col-span-2 justify-self-start"
               onClick={() => {

@@ -17,7 +17,7 @@ type Variant = "error" | "success" | "info";
 const variantToAlertStyle: Record<Variant, string> = {
   error: "bg-status-red border border-status-red-dark",
   success: "bg-status-green border border-status-green-medium",
-  info: "bg-alert-info",
+  info: "bg-status-blue border border-status-blue-medium",
 };
 
 const variantToIcon: Record<Variant, IconDefinition> = {
@@ -29,13 +29,13 @@ const variantToIcon: Record<Variant, IconDefinition> = {
 const variantToIconColor: Record<Variant, string> = {
   error: "text-status-red-dark",
   success: "text-status-green-dark",
-  info: "text-alert-info-icon",
+  info: "text-status-blue-dark",
 };
 
 const variantToHeadingStyle: Record<Variant, string> = {
   error: "text-status-red-dark",
   success: "text-status-green-dark",
-  info: "text-publiq-gray",
+  info: "text-status-blue-dark",
 };
 
 type Props = ComponentProps<"div"> & {
