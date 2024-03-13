@@ -6,7 +6,7 @@ type Props = ComponentProps<"div">;
 export const ContactsTableMobile = ({ className, children }: Props) => {
   return (
     <div className={classNames("relative overflow-x-auto", className)}>
-      <table className="w-full text-left border border-publiq-gray-light text-gray-500">
+      <table className="w-full text-left border border-publiq-gray-50 text-gray-500">
         {children}
       </table>
     </div>

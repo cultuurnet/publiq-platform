@@ -94,10 +94,10 @@ export default function Footer() {
       </div>
       <div className="flex flex-col gap-3 max-md:gap-7 ">
         <div className="max-w-[23rem] shadow-lg h-auto bg-white relative md:top-[-5rem] flex flex-col gap-5 p-5 font-medium">
-          <Heading level={3} className="text-publiq-gray-dark font-bold">
+          <Heading level={3} className="text-publiq-gray-900 font-bold">
             {t("footer.newsletter.title")}
           </Heading>
-          <p className="text-publiq-gray-dark text-lg font-light">
+          <p className="text-publiq-gray-900 text-lg font-light">
             {t("footer.newsletter.description")}
           </p>
           <ButtonLink

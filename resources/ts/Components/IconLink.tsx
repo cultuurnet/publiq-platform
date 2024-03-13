@@ -13,7 +13,7 @@ export const IconLink = ({ icon, color, className, ...props }: Props) => {
   return (
     <Link
       className={classNames(
-        "bg-publiq-gray-medium hover:bg-gray-200 group-focus:animate-pulse p-3 rounded-full inline-flex items-center",
+        "bg-publiq-gray-100 hover:bg-gray-200 group-focus:animate-pulse p-3 rounded-full inline-flex items-center",
         className
       )}
       {...props}
