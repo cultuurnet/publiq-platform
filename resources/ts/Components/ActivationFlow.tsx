@@ -12,7 +12,7 @@ type Props = {
   id: string;
   subscription?: Subscription;
   type: Values<typeof IntegrationType>;
-  email?: string;
+  email: string;
 };
 
 export const ActivationFlow = ({ id, subscription, type, email }: Props) => {
@@ -36,7 +36,7 @@ export const ActivationFlow = ({ id, subscription, type, email }: Props) => {
         id={id}
         subscription={subscription}
         type={type}
-        email={email!}
+        email={email}
       />
     </>
   );
