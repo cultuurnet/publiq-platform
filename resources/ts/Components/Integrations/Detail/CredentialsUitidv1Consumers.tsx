@@ -16,7 +16,6 @@ import { IntegrationStatus } from "../../../types/IntegrationStatus";
 
 type Props = {
   uiTiDv1Consumers: UiTiDv1Consumer[];
-  auth0Clients: Auth0Client[];
   email: string;
   id: Integration["id"];
   status: Integration["status"];
@@ -26,7 +25,6 @@ type Props = {
 
 export const CredentialsUitidv1Consumers = ({
   uiTiDv1Consumers,
-  auth0Clients,
   id,
   status,
   email,
