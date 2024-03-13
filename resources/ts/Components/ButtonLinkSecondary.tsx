@@ -26,7 +26,7 @@ export const ButtonLinkSecondary = ({
           rel="noreferrer"
           {...props}
         >
-          <div className="absolute w-[50%] h-[50%] opacity-0 group-focus:animate-pulse bg-publiq-gray-lighter"></div>
+          <div className="absolute w-[50%] h-[50%] opacity-0 group-focus:animate-pulse bg-publiq-gray-50"></div>
           <div className="relative z-10 flex items-center gap-2">
             {children}
           </div>
@@ -40,7 +40,7 @@ export const ButtonLinkSecondary = ({
           href={href}
           {...props}
         >
-          <div className="absolute w-[50%] h-[50%] opacity-0 group-focus:animate-pulse bg-publiq-gray-lighter"></div>
+          <div className="absolute w-[50%] h-[50%] opacity-0 group-focus:animate-pulse bg-publiq-gray-50"></div>
           <div className="relative z-10 flex items-center gap-2">
             {children}
           </div>

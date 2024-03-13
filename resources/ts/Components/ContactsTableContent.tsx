@@ -30,7 +30,7 @@ export const ContactsTableContent = ({
         <tr
           className={classNames(
             "bg-white border-b",
-            desktop && "hover:bg-publiq-gray-lighter"
+            desktop && "hover:bg-publiq-gray-50"
           )}
           key={type.id}
         >
@@ -88,7 +88,7 @@ export const ContactsTableContent = ({
           key={contributor.id}
           className={classNames(
             "bg-white border-b",
-            desktop && "hover:bg-publiq-gray-lighter"
+            desktop && "hover:bg-publiq-gray-50"
           )}
         >
           <td
