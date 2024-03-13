@@ -10,6 +10,9 @@ import { StatusLight } from "../../StatusLight";
 //import { ButtonPrimary } from "../../ButtonPrimary";
 import { CopyText } from "../../CopyText";
 import { ActivationFlow } from "../../ActivationFlow";
+import { OpenWidgetBuilderButton } from "../../IntegrationCard";
+import { IntegrationType } from "../../../types/IntegrationType";
+import { IntegrationStatus } from "../../../types/IntegrationStatus";
 
 type Props = {
   auth0Clients: Auth0Client[];
@@ -83,25 +86,39 @@ export const CredentialsAuth0Clients = ({
             <Heading className="font-semibold flex min-w-[5rem]" level={4}>
               {t("details.credentials.test")}
             </Heading>
-            <div className="flex flex-col gap-3">
-              {auth0TestClientWithLabels.map((client) => (
-                <div
-                  key={`${client.label}-${client.value}`}
-                  className="flex gap-1 max-md:flex-col max-md:items-start"
-                >
-                  <span className="flex items-center whitespace-nowrap">
-                    {t(client.label)}
-                  </span>
-                  <CopyText>{client.value}</CopyText>
-                </div>
-              ))}
-            </div>
+            {auth0TestClientWithLabels.map((client) => (
+              <div
+                key={`${client.label}-${client.value}`}
+                className="flex gap-1 max-md:flex-col max-md:items-start"
+              >
+                <span className="flex items-center whitespace-nowrap">
+                  {t(client.label)}
+                </span>
+                <CopyText>{client.value}</CopyText>
+              </div>
+            ))}
           </div>
-          <div className="flex flex-col">
-            <Heading className="font-semibold min-w-[5rem]" level={4}>
-              {t("details.credentials.live")}
-            </Heading>
-            {status === "active" && (
+        )}
+        {status !== IntegrationStatus.Active &&
+          type === IntegrationType.Widgets && (
+            <>
+              <Heading className="font-semibold flex min-w-[5rem]" level={4}>
+                {t("details.credentials.test")}
+              </Heading>
+              <OpenWidgetBuilderButton
+                type={type}
+                id={auth0TestClient!.clientId}
+              />
+            </>
+          )}
+
+        <div className="flex flex-col gap-2">
+          <Heading className="font-semibold min-w-[5rem]" level={4}>
+            {t("details.credentials.live")}
+          </Heading>
+          <StatusLight status={status} />
+          {status === IntegrationStatus.Active &&
+            type !== IntegrationType.Widgets && (
               <div className="flex flex-col gap-3">
                 {auth0ProdClientWithLabels.map((client) => (
                   <div
@@ -116,18 +133,23 @@ export const CredentialsAuth0Clients = ({
                 ))}
               </div>
             )}
-            <div className="flex flex-col gap-3 align-center">
-              {status !== "active" && <StatusLight status={status} />}
-              {status === "draft" && (
-                <ActivationFlow
-                  status={status}
-                  id={id}
-                  subscription={subscription}
-                  type={type}
-                  email={email}
-                />
-              )}
-            </div>
+          {status === IntegrationStatus.Active &&
+            type === IntegrationType.Widgets && (
+              <OpenWidgetBuilderButton
+                id={auth0ProdClient!.clientId}
+                type={type}
+              />
+            )}
+          <div className="flex flex-col gap-3 align-center">
+            {status === IntegrationStatus.Draft && (
+              <ActivationFlow
+                status={status}
+                id={id}
+                subscription={subscription}
+                type={type}
+                email={email}
+              />
+            )}
           </div>
         </div>
       </div>
