@@ -142,6 +142,16 @@
       "here": "here.",
       "activate": "Activate"
     },
+    "activation_dialog": {
+      "title": "Activatie aanvragen",
+      "subscription_plan": "Prijsplan",
+      "price": "Totaalbedrag",
+      "contact": "E-mail boekhouding",
+      "contact_description": "Dit adres ontvangt de betalinginstructies, -herinneringen en de factuur.",
+      "coupon": "Coupon",
+      "invalid_coupon": "Invalid coupon",
+      "alrady_used_coupon": "Coupon is already used"
+    },
     "documentation": {
       "title": "Documentation",
       "action_title": "Get started with {{product}}",

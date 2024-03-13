@@ -16,7 +16,7 @@ final class CreateOrganizationRequest extends FormRequest
         return [
             'organization.name' => ['required', 'string', 'max:255'],
             'organization.invoiceEmail' => ['required', 'string', 'email', 'min:2', 'max:255'],
-            'organization.vat' => ['required', 'string', 'max:255'],
+            'organization.vat' => ['nullable', 'string', 'max:255'],
             'organization.address.street' => ['required', 'string', 'max:255'],
             'organization.address.zip' => ['required', 'string', 'max:255'],
             'organization.address.city' => ['required', 'string', 'max:255'],

@@ -31,10 +31,10 @@ export const Dialog = ({
     <>
       <div
         className={classNames(
-          "fixed bg-white flex flex-col items-center z-[60] top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%]",
+          "fixed bg-white flex flex-col items-center z-[60] top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] overflow-y-auto",
           isFullscreen
             ? "h-full w-full p-4"
-            : "min-h-[14rem] md:max-w-[40rem] md:min-w-[40rem] top-[30%]"
+            : "min-h-[14rem] max-h-screen md:max-w-[40rem] md:min-w-[40rem] top-[30%]"
         )}
       >
         <div

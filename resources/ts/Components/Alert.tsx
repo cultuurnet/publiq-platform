@@ -43,7 +43,7 @@ type Props = ComponentProps<"div"> & {
   closable?: boolean;
   onClose?: () => void;
   variant?: Variant;
-  title: string;
+  title?: string;
 };
 
 export const Alert = ({
@@ -69,19 +69,24 @@ export const Alert = ({
         className
       )}
     >
-      <div className={"flex gap-3 items-center"}>
+      <div className={"flex gap-3 items-start"}>
         <FontAwesomeIcon
           icon={variantToIcon[variant]}
           className={variantToIconColor[variant]}
-          size="xl"
+          size="lg"
         />
         <section className={"flex flex-col"}>
-          <Heading
-            level={5}
-            className={classNames("text-base", variantToHeadingStyle[variant])}
-          >
-            {title}
-          </Heading>
+          {title && (
+            <Heading
+              level={5}
+              className={classNames(
+                "text-base",
+                variantToHeadingStyle[variant]
+              )}
+            >
+              {title}
+            </Heading>
+          )}
           <div className={`flex flex-col items-start text-sm max-w-2xl`}>
             {children}
           </div>

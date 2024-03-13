@@ -37,7 +37,7 @@ export const RadioButtonGroup = ({
     return classNames(
       "px-4 py-2 text-base font-medium text-center bg-white border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 ring-publiq-blue-dark focus:bg-gray-100 max-sm:rounded-lg",
       getRoundedStyles(index),
-      value === option.value ? "text-publiq-blue-dark" : "text-publiq-gray-dark"
+      value === option.value ? "text-publiq-blue-dark" : "text-publiq-gray-900"
     );
   };
 

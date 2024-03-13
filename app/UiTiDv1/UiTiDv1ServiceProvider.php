@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\UiTiDv1;
 
+use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
+use App\Domain\Integrations\Events\IntegrationActivatedWithOrganization;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationUpdated;
@@ -13,6 +15,7 @@ use App\UiTiDv1\Jobs\BlockConsumer;
 use App\UiTiDv1\Jobs\BlockConsumerHandler;
 use App\UiTiDv1\Listeners\BlockConsumers;
 use App\UiTiDv1\Listeners\CreateConsumers;
+use App\UiTiDv1\Listeners\DistributeConsumers;
 use App\UiTiDv1\Listeners\UpdateConsumers;
 use App\UiTiDv1\Repositories\EloquentUiTiDv1ConsumerRepository;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
@@ -76,6 +79,9 @@ final class UiTiDv1ServiceProvider extends ServiceProvider
 
             Event::listen(ActivateConsumer::class, [ActivateConsumerHandler::class, 'handle']);
             Event::listen(BlockConsumer::class, [BlockConsumerHandler::class, 'handle']);
+
+            Event::listen(IntegrationActivatedWithCoupon::class, [DistributeConsumers::class, 'handleIntegrationActivatedWithCoupon']);
+            Event::listen(IntegrationActivatedWithOrganization::class, [DistributeConsumers::class, 'handleIntegrationActivatedWithOrganization']);
         }
     }
 }

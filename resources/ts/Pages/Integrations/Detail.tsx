@@ -17,9 +17,9 @@ import {
 } from "../../Components/IntegrationTypes";
 import { Heading } from "../../Components/Heading";
 
-type Props = Integration;
+type Props = { integration: Integration; email: string };
 
-const Detail = ({ ...integration }: Props) => {
+const Detail = ({ integration, email }: Props) => {
   const { t } = useTranslation();
 
   const [isMobile, setIsMobile] = useState(false);
@@ -70,7 +70,7 @@ const Detail = ({ ...integration }: Props) => {
               type="credentials"
               label={t("details.credentials.title")}
             >
-              <Credentials {...integration} />
+              <Credentials {...integration} email={email} />
             </Tabs.Item>
             <Tabs.Item type="contacts" label={t("details.contact_info.title")}>
               <ContactInfo {...integration} isMobile={isMobile} />

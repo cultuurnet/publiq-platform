@@ -2,8 +2,6 @@ import React, { ComponentProps } from "react";
 import { IntegrationStatus } from "../types/IntegrationStatus";
 import { classNames } from "../utils/classNames";
 import { useTranslation } from "react-i18next";
-import { ButtonPrimary } from "./ButtonPrimary";
-import { Link } from "@inertiajs/react";
 
 type Props = ComponentProps<"div"> & {
   status: IntegrationStatus;
@@ -20,6 +18,7 @@ const StatusToColor: Record<IntegrationStatus, string> = {
 
 export const StatusLight = ({ status }: Props) => {
   const { t } = useTranslation();
+
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-row items-center">
@@ -33,35 +32,12 @@ export const StatusLight = ({ status }: Props) => {
           {t(`integrations.status.${status}`)}
         </div>
       </div>
-      {(status === "pending_approval_payment" ||
-        status === "pending_approval_integration") && (
-        <div className="flex flex-col gap-3">
-          <div>
-            {status === "pending_approval_integration" ? (
-              <span>
-                {t(
-                  "integrations.status.pending_approval_integration_description"
-                )}
-              </span>
-            ) : (
-              <>
-                <span>
-                  {t(
-                    "integrations.status.pending_approval_payment_description"
-                  )}
-                </span>
-                <Link className="text-publiq-blue-dark" href="#">
-                  {" "}
-                  {t("integrations.status.here")}
-                </Link>
-              </>
-            )}
-          </div>
-          <ButtonPrimary className="self-start">
-            {t("integrations.status.activate")}
-          </ButtonPrimary>
-        </div>
-      )}
+      {(
+        [
+          IntegrationStatus.PendingApprovalIntegration,
+          IntegrationStatus.PendingApprovalPayment,
+        ] as IntegrationStatus[]
+      ).includes(status) && <span>{t("details.credentials.in_progress")}</span>}
     </div>
   );
 };
