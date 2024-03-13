@@ -16,6 +16,7 @@ import { IntegrationStatus } from "../../../types/IntegrationStatus";
 
 type Props = {
   uiTiDv1Consumers: UiTiDv1Consumer[];
+  auth0Clients: Auth0Client[];
   email: string;
   id: Integration["id"];
   status: Integration["status"];
