@@ -11,7 +11,10 @@ import { router } from "@inertiajs/react";
 import { Tabs } from "../../Components/Tabs";
 import { DeleteIntegration } from "../../Components/Integrations/Detail/DeleteIntegration";
 import { Card } from "../../Components/Card";
-import { useIntegrationTypesInfo } from "../../Components/IntegrationTypes";
+import {
+  integrationIconClasses,
+  integrationTypesIcons,
+} from "../../Components/IntegrationTypes";
 import { Heading } from "../../Components/Heading";
 
 type Props = Integration;
@@ -33,10 +36,8 @@ const Detail = ({ ...integration }: Props) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const integrationTypesInfo = useIntegrationTypesInfo();
-  const integrationTypeInfo = integrationTypesInfo.find(
-    (i) => i.type === integration.type
-  );
+  const Icon = integrationTypesIcons[integration.type];
+
   const changeTabInUrl = (tab: string) => {
     url.searchParams.set("tab", tab);
     router.get(url.toString());
@@ -50,10 +51,10 @@ const Detail = ({ ...integration }: Props) => {
             <Heading className="font-semibold" level={2}>
               {integration.name}
             </Heading>
-            <small>{integration.type}</small>
+            <small>{t(`integrations.products.${integration.type}`)}</small>
           </div>
         }
-        icon={integrationTypeInfo?.image}
+        icon={Icon && <Icon className={integrationIconClasses} />}
         border
         headless
       >
