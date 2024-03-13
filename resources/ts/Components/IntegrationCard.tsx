@@ -116,7 +116,7 @@ export const IntegrationCard = ({
       }
     >
       <div className="flex flex-col gap-4 mx-8 my-6 items-stretch min-h-[10rem]">
-        {type !== IntegrationType.Widgets && (
+        {type !== IntegrationType.Widgets && auth0TestClient && (
           <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center gap-3">
             <Heading
               level={5}
@@ -125,25 +125,33 @@ export const IntegrationCard = ({
               {t("integrations.test")}
             </Heading>
             <div className="flex flex-col gap-2">
-              {auth0TestClient && (
-                <div className="flex flex-col gap-2">
-                  {auth0TestClientWithLabels.map((client) => (
-                    <div
-                      key={`${client.label}-${client.value}`}
-                      className="flex gap-1 max-md:flex-col max-md:items-start"
-                    >
-                      <span className="flex items-center whitespace-nowrap">
-                        {t(client.label)}
-                      </span>
-                      <CopyText>{client.value}</CopyText>
-                    </div>
-                  ))}
-                </div>
-              )}
-              {uiTiDv1TestConsumer && (
-                <CopyText>{uiTiDv1TestConsumer.apiKey}</CopyText>
-              )}
+              <div className="flex flex-col gap-2">
+                {auth0TestClientWithLabels.map((client) => (
+                  <div
+                    key={`${client.label}-${client.value}`}
+                    className="flex gap-1 max-md:flex-col max-md:items-start"
+                  >
+                    <span className="flex items-center whitespace-nowrap">
+                      {t(client.label)}
+                    </span>
+                    <CopyText>{client.value}</CopyText>
+                  </div>
+                ))}
+              </div>
             </div>
+          </section>
+        )}
+        {type !== IntegrationType.Widgets && uiTiDv1TestConsumer && (
+          <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center gap-3">
+            <Heading
+              level={5}
+              className="font-semibold min-w-[10rem] self-start"
+            >
+              {t("integrations.test")}
+            </Heading>
+            {uiTiDv1TestConsumer && (
+              <CopyText>{uiTiDv1TestConsumer.apiKey}</CopyText>
+            )}
           </section>
         )}
         {type === IntegrationType.Widgets &&
@@ -171,7 +179,7 @@ export const IntegrationCard = ({
             <StatusLight status={status} />
             <div className="flex flex-col align-center gap-3">
               {status === IntegrationStatus.Draft && (
-                <ActivationRequest id={id} />
+                <ActivationRequest id={id} type={type} />
               )}
               {status === IntegrationStatus.Active && (
                 <OpenWidgetBuilderButton
@@ -200,14 +208,24 @@ export const IntegrationCard = ({
                     ))}
                   </div>
                 )}
-              {uiTiDv1ProdConsumer &&
-                status === IntegrationStatus.Active &&
-                type !== IntegrationType.Widgets && (
-                  <CopyText>{uiTiDv1ProdConsumer.apiKey}</CopyText>
-                )}
             </div>
           </div>
         </section>
+        {uiTiDv1ProdConsumer &&
+          status === IntegrationStatus.Active &&
+          type !== IntegrationType.Widgets && (
+            <section className="flex-1 inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">
+              <Heading
+                className="font-semibold min-w-[10rem] self-start"
+                level={5}
+              >
+                {t("integrations.live")}
+              </Heading>
+              <div className="flex flex-col gap-2">
+                <CopyText>{uiTiDv1ProdConsumer.apiKey}</CopyText>
+              </div>
+            </section>
+          )}
         <section className="flex-1 inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">
           <Heading className="font-semibold min-w-[10rem]" level={5}>
             {t("integrations.documentation.title")}
