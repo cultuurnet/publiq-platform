@@ -20,6 +20,8 @@ import { Environment } from "../../types/Environment";
 import { IntegrationUrlType } from "../../types/IntegrationUrlType";
 import { IntegrationType } from "../../types/IntegrationType";
 import { Values } from "../../types/Values";
+import { Auth0Tenant } from "../../types/Auth0Tenant";
+import { UiTiDv1Environment } from "../../types/UiTiDv1Environment";
 
 type Organization = {
   id: string;
@@ -61,6 +63,24 @@ export type IntegrationUrl = {
   url: string;
 };
 
+export type UiTiDv1Consumer = {
+  apiKey: string;
+  consumerId: string;
+  consumerKey: string;
+  consumerSecret: string;
+  environment: UiTiDv1Environment;
+  id: string;
+  integrationId: string;
+};
+
+export type Auth0Client = {
+  clientId: string;
+  clientSecret: string;
+  id: string;
+  integrationId: string;
+  tenant: Auth0Tenant;
+};
+
 export type Integration = {
   id: string;
   type: Values<typeof IntegrationType>;
@@ -72,7 +92,8 @@ export type Integration = {
   organization?: Organization;
   subscription: Subscription;
   urls: IntegrationUrl[];
-  hasCredentials: { v1: boolean; v2: boolean };
+  auth0Clients: Auth0Client[];
+  uiTiDv1Consumers: UiTiDv1Consumer[];
 };
 
 type Props = {

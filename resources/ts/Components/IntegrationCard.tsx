@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React from "react";
 import type { Integration } from "../Pages/Integrations/Index";
 import { ButtonIcon } from "./ButtonIcon";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
@@ -7,8 +7,6 @@ import { Card } from "./Card";
 import { useTranslation } from "react-i18next";
 import { Link } from "./Link";
 import { StatusLight } from "./StatusLight";
-import { ButtonIconCopy } from "./ButtonIconCopy";
-import { Tooltip } from "./Tooltip";
 import { IntegrationStatus } from "../types/IntegrationStatus";
 import { ButtonLinkSecondary } from "./ButtonLinkSecondary";
 import {
@@ -16,6 +14,8 @@ import {
   useIntegrationTypesInfo,
 } from "./IntegrationTypes";
 import { IconSearchApi } from "./icons/IconSearchApi";
+import { CopyText } from "./CopyText";
+import { ActivationRequest } from "./ActivationRequest";
 import { IntegrationType } from "../types/IntegrationType";
 
 type Props = Integration & {
@@ -28,7 +28,10 @@ const productTypeToPath = {
   widgets: "/widgets/aan-de-slag",
 };
 
-const OpenWidgetBuilderButton = ({ id, type }: Pick<Props, "id" | "type">) => {
+export const OpenWidgetBuilderButton = ({
+  id,
+  type,
+}: Pick<Props, "id" | "type">) => {
   const { t } = useTranslation();
   if (type !== "widgets") {
     return null;
@@ -45,18 +48,6 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
   const { t } = useTranslation();
 
   const integrationTypesInfo = useIntegrationTypesInfo();
-  const codeFieldRef = useRef<HTMLSpanElement>(null);
-
-  const [isVisible, setIsVisible] = useState(false);
-
-  function handleCopyToClipboard() {
-    navigator.clipboard.writeText(codeFieldRef.current?.innerText ?? "");
-    setIsVisible(true);
-    const timeoutId = setTimeout(() => {
-      setIsVisible(false);
-      clearTimeout(timeoutId);
-    }, 1000);
-  }
 
   const CardIcon = integrationTypesInfo.find((i) => i.type === type)?.Icon as
     | typeof IconSearchApi
@@ -84,26 +75,7 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
             <Heading level={5} className="font-semibold min-w-[10rem]">
               {t("integrations.test")}
             </Heading>
-            {type !== IntegrationType.Widgets && (
-              <div className="flex gap-2 items-center bg-[#fdf3ef] rounded px-3 p-1">
-                <span
-                  className="overflow-hidden text-ellipsis text-publiq-orange"
-                  ref={codeFieldRef}
-                >
-                  {id}
-                </span>
-                <Tooltip
-                  visible={isVisible}
-                  text={t("tooltip.copy")}
-                  className="w-auto"
-                >
-                  <ButtonIconCopy
-                    onClick={handleCopyToClipboard}
-                    className="text-publiq-orange"
-                  />
-                </Tooltip>
-              </div>
-            )}
+            {type !== IntegrationType.Widgets && <CopyText>{id}</CopyText>}
             {status !== IntegrationStatus.Active && (
               <OpenWidgetBuilderButton id={id} type={type} />
             )}
@@ -113,8 +85,9 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
           <Heading className="font-semibold min-w-[10rem]" level={5}>
             {t("integrations.live")}
           </Heading>
-          <div className="flex align-center gap-1">
-            <StatusLight status={status} id={id} />
+          <div className="flex flex-col align-center gap-3">
+            <StatusLight status={status} />
+            {status === "draft" && <ActivationRequest id={id} />}
             {status === IntegrationStatus.Active && (
               <OpenWidgetBuilderButton id={id} type={type} />
             )}
@@ -134,11 +107,6 @@ export const IntegrationCard = ({ id, name, type, status, onEdit }: Props) => {
                 product: t(`integrations.products.${type}`),
               })}
             </Link>
-            {type === "entry-api" && (
-              <Link href="https://docs.publiq.be/docs/uitdatabank/entry-api%2Frequirements-before-going-live">
-                {t("integrations.documentation.requirements")}
-              </Link>
-            )}
           </div>
         </section>
       </div>
