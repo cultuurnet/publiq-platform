@@ -68,14 +68,14 @@ export const ActivationDialog = ({
     });
   };
 
-  const setErrorMessage = useMemo(() => {
-    if (couponForm.errors.coupon) {
-      switch (couponForm.errors.coupon) {
-        case "Coupon is already used":
-          return t("integrations.activation_dialog.alredy_used_coupon");
-        default:
-          return t("integrations.activation_dialog.invalid_coupon");
-      }
+  const couponErrorMessage = useMemo(() => {
+    if (!couponForm.errors.coupon) return;
+
+    switch (couponForm.errors.coupon) {
+      case "Coupon is already used":
+        return t("integrations.activation_dialog.already_used_coupon");
+      default:
+        return t("integrations.activation_dialog.invalid_coupon");
     }
   }, [couponForm.errors, t]);
 
@@ -247,7 +247,7 @@ export const ActivationDialog = ({
             />
             <FormElement
               label={`${t("integrations.activation_dialog.coupon")}`}
-              error={setErrorMessage}
+              error={couponErrorMessage}
               className="col-span-2"
               component={
                 <Input
