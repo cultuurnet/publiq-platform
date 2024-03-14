@@ -17,6 +17,8 @@ import { IconSearchApi } from "./icons/IconSearchApi";
 import { ActivationRequest } from "./ActivationRequest";
 import { IntegrationType } from "../types/IntegrationType";
 import { CopyText } from "./CopyText";
+import { Auth0Tenant } from "../types/Auth0Tenant";
+import { UiTiDv1Environment } from "../types/UiTiDv1Environment";
 
 type Props = Integration & {
   credentials: Credentials;
@@ -41,7 +43,7 @@ export const OpenWidgetBuilderButton = ({
   return (
     <ButtonLinkSecondary
       href={`/integrations/${id}/widget`}
-      target={"_blank"}
+      target="_blank"
       className="flex self-start"
     >
       {t("integrations.open_widget")}
@@ -62,16 +64,16 @@ export const IntegrationCard = ({
   const integrationTypesInfo = useIntegrationTypesInfo();
 
   const auth0TestClient = credentials.auth0.find(
-    (client) => client.integrationId === id && client.tenant === "test"
+    (client) => client.integrationId === id && client.tenant === Auth0Tenant.Testing
   );
   const auth0ProdClient = credentials.auth0.find(
-    (client) => client.integrationId === id && client.tenant === "prod"
+    (client) => client.integrationId === id && client.tenant === Auth0Tenant.Production
   );
   const uiTiDv1TestConsumer = credentials.uitidV1.find(
-    (client) => client.integrationId === id && client.environment === "test"
+    (client) => client.integrationId === id && client.environment === UiTiDv1Environment.Testing
   );
   const uiTiDv1ProdConsumer = credentials.uitidV1.find(
-    (client) => client.integrationId === id && client.environment === "prod"
+    (client) => client.integrationId === id && client.environment === UiTiDv1Environment.Production
   );
 
   const auth0TestClientWithLabels = [
