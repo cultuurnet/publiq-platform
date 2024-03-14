@@ -8,17 +8,14 @@ import { TFunction } from "i18next";
 import { Trans, useTranslation } from "react-i18next";
 import { Card } from "../../Components/Card";
 import { ButtonPrimary } from "../../Components/ButtonPrimary";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { Page } from "../../Components/Page";
-import { ButtonLinkSecondary } from "../../Components/ButtonLinkSecondary";
-import { useTranslateRoute } from "../../hooks/useTranslateRoute";
 import { Link } from "../../Components/Link";
 import { useIntegrationTypesInfo } from "../../Components/IntegrationTypes";
 import {
   IntegrationType,
   isIntegrationType,
 } from "../../types/IntegrationType";
+import { RadioButtonGroup } from "../../Components/RadioButtonGroup";
 
 type PricingPlan = {
   id: string;
@@ -86,7 +83,6 @@ type Props = {
 const New = ({ subscriptions }: Props) => {
   const { t } = useTranslation();
   const { i18n } = useTranslation();
-  const translateRoute = useTranslateRoute();
 
   const url = new URL(document.location.href);
   const activeTypeFromUrl = url.searchParams.get("type");
@@ -133,106 +129,112 @@ const New = ({ subscriptions }: Props) => {
   return (
     <Page>
       <div className="inline-flex flex-col gap-5">
-        <ButtonLinkSecondary
-          href={translateRoute("/integrations")}
-          className="w-fit"
-        >
-          <FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>
-          <span>{t("integration_form.back")}</span>
-        </ButtonLinkSecondary>
         <Heading level={2}>{t("integration_form.title")}</Heading>
         <p className="mb-5">{t("integration_form.description")}</p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-7">
-          <FormElement
-            label={t("integration_form.type")}
-            labelSize="xl"
-            component={
-              <div className="md:grid md:grid-cols-3 gap-5 max-md:flex max-md:flex-col max-md:items-center pb-3">
-                {integrationTypesInfo.map((integrationTypeInfo) => (
-                  <Card
-                    active={data.integrationType === integrationTypeInfo.type}
-                    {...integrationTypeInfo}
-                    className="rounded-lg"
-                    role="button"
-                    key={integrationTypeInfo.type}
-                    img={integrationTypeInfo.image}
-                    onClick={() => {
-                      setData("integrationType", integrationTypeInfo.type);
-                      router.get(
-                        url.pathname,
-                        { type: integrationTypeInfo.type },
-                        { preserveScroll: true }
-                      );
-                    }}
-                    textCenter
-                  ></Card>
-                ))}
-              </div>
-            }
-            error={errors.integrationType}
-          />
+          <Card title={t("integration_form.type")}>
+            <RadioButtonGroup
+              orientation="vertical"
+              name="integrationType"
+              value={data.integrationType}
+              options={integrationTypesInfo.map(
+                ({ Icon, ...integrationTypeInfo }) => ({
+                  value: integrationTypeInfo.type,
+                  label: (
+                    <div className="flex flex-row justify-between gap-2">
+                      <span className="flex flex-row gap-2 justify-between">
+                        <Icon className="h-7 w-7" />
+                        <span>{integrationTypeInfo.title}</span>
+                      </span>
+                      <span className="text-gray-400 font-thin">
+                        {integrationTypeInfo.description}
+                      </span>
+                    </div>
+                  ),
+                })
+              )}
+              onChange={(value) => {
+                setData("integrationType", value as IntegrationType);
+                router.get(
+                  url.pathname,
+                  { type: value },
+                  { preserveScroll: true }
+                );
+              }}
+            />
+            {errors.integrationType && (
+              <span className="text-red-500 mt-3 inline-block">
+                {errors.integrationType}
+              </span>
+            )}
+          </Card>
 
           {translatedPricingPlans.length > 0 && (
-            <FormElement
-              label={t("integration_form.pricing_plan")}
-              labelSize="xl"
-              component={
-                <div className="md:grid md:grid-cols-3 gap-5 max-md:flex max-md:flex-col max-md:items-center pb-3">
-                  {translatedPricingPlans.map((pricingPlan) => (
-                    <Card
-                      role="button"
-                      key={pricingPlan.title}
-                      onClick={() => {
-                        setData("subscriptionId", pricingPlan.id);
-                      }}
-                      {...pricingPlan}
-                      active={data.subscriptionId === pricingPlan.id}
-                      className="rounded-lg"
-                      contentStyles="font-bold"
-                      textCenter
-                    >
-                      {pricingPlan.price}
-                    </Card>
-                  ))}
-                </div>
-              }
-              error={errors.subscriptionId}
-            />
+            <Card title={t("integration_form.pricing_plan")}>
+              <RadioButtonGroup
+                orientation="vertical"
+                name="subscriptionId"
+                value={data.subscriptionId}
+                onChange={(value) => setData("subscriptionId", value)}
+                options={translatedPricingPlans.map((pricingPlan) => ({
+                  value: pricingPlan.id,
+                  label: (
+                    <div className="flex flex-row justify-between gap-2">
+                      <span>
+                        {pricingPlan.title} ({pricingPlan.price})
+                      </span>
+                      <span className="text-gray-400 font-thin">
+                        {pricingPlan.description}
+                      </span>
+                    </div>
+                  ),
+                }))}
+              />
+              {errors.subscriptionId && (
+                <span className="text-red-500 mt-3 inline-block">
+                  {errors.subscriptionId}
+                </span>
+              )}
+            </Card>
           )}
-          <FormElement
-            label={t("integration_form.integration_name")}
-            labelSize="xl"
-            info={t("integration_form.description_name")}
-            component={
-              <Input
-                type="text"
-                name="integrationName"
-                value={data.integrationName}
-                onChange={(e) => setData("integrationName", e.target.value)}
-              />
-            }
-            error={errors.integrationName}
-          />
-          <FormElement
-            label={t("integration_form.aim")}
-            labelSize="xl"
-            info={t("integration_form.description_aim")}
-            component={
-              <textarea
-                rows={3}
-                className="appearance-none block w-full rounded-lg bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                name="description"
-                value={data.description}
-                onChange={(e) => setData("description", e.target.value)}
-              />
-            }
-            error={errors.description}
-          />
-          <div className="flex flex-col gap-5">
-            <Heading className="font-semibold" level={3}>
-              {t("integration_form.contact_label_functional")}
-            </Heading>
+          <Card>
+            <FormElement
+              label={t("integration_form.integration_name")}
+              labelSize="xl"
+              info={t("integration_form.description_name")}
+              component={
+                <Input
+                  type="text"
+                  name="integrationName"
+                  value={data.integrationName}
+                  onChange={(e) => setData("integrationName", e.target.value)}
+                />
+              }
+              error={errors.integrationName}
+            />
+          </Card>
+          <Card>
+            <FormElement
+              label={t("integration_form.aim")}
+              labelSize="xl"
+              info={t("integration_form.description_aim")}
+              component={
+                <textarea
+                  rows={3}
+                  className="appearance-none block w-full rounded-lg bg-white text-gray-700 border border-gray-200 py-3 px-4 leading-tight focus:outline-none focus:border-gray-500"
+                  name="description"
+                  value={data.description}
+                  onChange={(e) => setData("description", e.target.value)}
+                />
+              }
+              error={errors.description}
+            />
+          </Card>
+          <Card
+            title={t("integration_form.contact_label_functional")}
+            contentStyles="flex flex-col gap-5"
+          >
             <div className="flex flex-col gap-5">
               <div className="grid grid-cols-3 max-md:flex max-md:flex-col gap-5 ">
                 <FormElement
@@ -282,12 +284,12 @@ const New = ({ subscriptions }: Props) => {
                 />
               </div>
             </div>
-          </div>
+          </Card>
 
-          <div className="flex flex-col gap-5 mb-5">
-            <Heading className="font-semibold" level={3}>
-              {t("integration_form.contact_label_technical")}
-            </Heading>
+          <Card
+            title={t("integration_form.contact_label_technical")}
+            contentStyles="flex flex-col gap-5 mb-5"
+          >
             <div className="grid grid-cols-3 max-md:flex max-md:flex-col gap-5">
               <FormElement
                 label={t("integration_form.contact.last_name")}
@@ -336,9 +338,9 @@ const New = ({ subscriptions }: Props) => {
                 error={errors.emailTechnicalContact}
               />
             </div>
-          </div>
+          </Card>
 
-          <div className="flex flex-col gap-5">
+          <Card contentStyles="flex flex-col gap-5">
             <FormElement
               label={
                 <Trans
@@ -408,7 +410,7 @@ const New = ({ subscriptions }: Props) => {
                 error={errors.couponCode}
               />
             )}
-          </div>
+          </Card>
 
           <ButtonPrimary type="submit" disabled={processing} className="w-fit">
             {t("integration_form.submit")}
