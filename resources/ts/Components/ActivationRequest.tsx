@@ -7,7 +7,7 @@ import { useTranslateRoute } from "../hooks/useTranslateRoute";
 import { Integration } from "../Pages/Integrations/Index";
 import { IntegrationType } from "../types/IntegrationType";
 
-type Props = Integration;
+type Props = Pick<Integration, "id" | "type">;
 
 export const ActivationRequest = ({ id, type }: Props) => {
   const { t } = useTranslation();
