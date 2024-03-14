@@ -248,7 +248,7 @@ export const IntegrationCard = ({
                 product: t(`integrations.products.${type}`),
               })}
             </Link>
-            {type === "entry-api" && (
+            {type === IntegrationType.EntryApi && (
               <Link href="https://docs.publiq.be/docs/uitdatabank/entry-api%2Frequirements-before-going-live">
                 {t("integrations.documentation.requirements")}
               </Link>
