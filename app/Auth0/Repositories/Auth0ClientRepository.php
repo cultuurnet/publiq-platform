@@ -21,6 +21,11 @@ interface Auth0ClientRepository
     public function getByIntegrationId(UuidInterface $integrationId): array;
 
     /**
+     * @return Auth0Client[]
+     */
+    public function getDistributedByIntegrationId(UuidInterface $integrationId): array;
+
+    /**
      * @throws ModelNotFoundException<Model>
      */
     public function getById(UuidInterface $id): Auth0Client;

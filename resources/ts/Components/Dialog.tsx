@@ -3,6 +3,7 @@ import { ButtonIcon } from "./ButtonIcon";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { classNames } from "../utils/classNames";
 import { Heading } from "./Heading";
+import { createPortal } from "react-dom";
 
 type Props = ComponentProps<"div"> & {
   isVisible?: boolean;
@@ -26,14 +27,14 @@ export const Dialog = ({
     return null;
   }
 
-  return (
+  return createPortal(
     <>
       <div
         className={classNames(
-          "fixed bg-white flex flex-col items-center z-[60] top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%]",
+          "fixed bg-white flex flex-col items-center z-[60] top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] overflow-y-auto",
           isFullscreen
             ? "h-full w-full p-4"
-            : "min-h-[14rem] md:max-w-[40rem] md:min-w-[40rem] top-[30%]"
+            : "min-h-[14rem] max-h-screen md:max-w-[40rem] md:min-w-[40rem] top-[30%]"
         )}
       >
         <div
@@ -74,7 +75,8 @@ export const Dialog = ({
         className={"fixed top-0 right-0 bg-black w-full h-full opacity-60 z-50"}
         onClick={onClose}
       />
-    </>
+    </>,
+    document.body
   );
 };
 

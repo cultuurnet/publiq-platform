@@ -35,6 +35,7 @@ use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -134,16 +135,24 @@ final class IntegrationController extends Controller
             $integration = $this->integrationRepository->getById(Uuid::fromString($id));
             $subscription = $this->subscriptionRepository->getById($integration->subscriptionId);
             $contacts = $this->contactRepository->getByIntegrationId(UUid::fromString($id));
+            $auth0Clients = $this->auth0ClientRepository->getDistributedByIntegrationId(UUid::fromString($id));
+            $uiTiDv1Consumers = $this->uitidV1ConsumerRepository->getDistributedByIntegrationId(UUid::fromString($id));
+
         } catch (Throwable) {
             abort(404);
         }
 
         return Inertia::render('Integrations/Detail', [
-            ...$integration->toArray(),
-            'contacts' => $contacts->toArray(),
-            'urls' => $integration->urls(),
-            'organization' => $integration->organization(),
-            'subscription' => $subscription,
+            'integration' => [
+                ...$integration->toArray(),
+                'contacts' => $contacts->toArray(),
+                'urls' => $integration->urls(),
+                'organization' => $integration->organization(),
+                'subscription' => $subscription,
+                'auth0Clients' => $auth0Clients,
+                'uiTiDv1Consumers' => $uiTiDv1Consumers,
+            ],
+            'email' => Auth::user()?->email,
         ]);
     }
 
@@ -240,19 +249,21 @@ final class IntegrationController extends Controller
 
     public function activateWithCoupon(string $id, ActivateWithCouponRequest $request): RedirectResponse
     {
-        $coupon = $this->couponRepository->getByCode($request->input('coupon'));
-        if ($coupon->isDistributed) {
-            return Redirect::back()->withErrors(['coupon' => 'Coupon is already used']);
+        try {
+            $coupon = $this->couponRepository->getByCode($request->input('coupon'));
+            if ($coupon->isDistributed) {
+                return Redirect::back()->withErrors(['coupon' => 'Coupon is already used']);
+            }
+
+            $this->integrationRepository->activateWithCouponCode(Uuid::fromString($id), $request->input('coupon'));
+
+            return Redirect::back();
+
+        } catch (ModelNotFoundException $exception) {
+            return Redirect::back()->withErrors([
+                'coupon' => 'Invalid coupon',
+            ]);
         }
-
-        $this->integrationRepository->activateWithCouponCode(Uuid::fromString($id), $request->input('coupon'));
-
-        return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
-            [
-                'id' => $id,
-            ]
-        );
     }
 
     public function activateWithOrganization(string $id, CreateOrganizationRequest $request): RedirectResponse
@@ -263,12 +274,7 @@ final class IntegrationController extends Controller
 
         $this->integrationRepository->activateWithOrganization(Uuid::fromString($id), $organization->id);
 
-        return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
-            [
-                'id' => $id,
-            ]
-        );
+        return Redirect::back();
     }
 
     public function showWidget(string $id): RedirectResponse

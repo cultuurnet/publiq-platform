@@ -70,6 +70,7 @@
     "contact_label_contributor": "Employee",
     "add": "Add employee",
     "contact": {
+      "description": "Contacts can manage, activate, and delete the integration.",
       "first_name": "First name",
       "last_name": "Last name",
       "email": "Email address"
@@ -84,19 +85,33 @@
     "pricing": {
       "free": {
         "title": "Free",
-        "price": "Free"
+        "price": "Free",
+        "description": {
+          "entry-api": "You are responsible for building the integration yourself, with support from our documentation."
+        }
       },
       "basic": {
         "title": "Basic",
-        "price": "{{currency}} {{price}} / year"
+        "price": "{{price}} / year",
+        "description": {
+          "search-api": "You handle the setup yourself while gaining access to all the functionalities of the Search API.",
+          "widgets": "You handle the setup yourself while gaining access to all the functionalities of the Widgets."
+        }
       },
       "plus": {
         "title": "Plus",
-        "price": "first year: € 600, thereafter: € 280 / year"
+        "price": "first year: € 600, thereafter: € 280 / year",
+        "description": {
+          "widgets": "After an intake meeting, publiq will configure your widget and seamlessly integrate it into your website."
+        }
       },
       "custom": {
         "title": "Custom",
-        "price": "custom proposal"
+        "price": "custom proposal",
+        "description": {
+          "search-api": "We will contact you for a tailored solution that meets your use case and target audience.",
+          "widgets": "We will contact you for a tailored solution that meets your use case and target audience."
+        }
       }
     }
   },
@@ -127,6 +142,16 @@
       "pending_approval_payment_description": "Ready to work with real data and events? Activate your Search API integration (from €125 per year)",
       "here": "here.",
       "activate": "Activate"
+    },
+    "activation_dialog": {
+      "title": "Activatie aanvragen",
+      "subscription_plan": "Prijsplan",
+      "price": "Totaalbedrag",
+      "contact": "E-mail boekhouding",
+      "contact_description": "Dit adres ontvangt de betalinginstructies, -herinneringen en de factuur.",
+      "coupon": "Coupon",
+      "invalid_coupon": "Invalid coupon",
+      "alrady_used_coupon": "Coupon is already used"
     },
     "documentation": {
       "title": "Documentation",

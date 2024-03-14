@@ -179,6 +179,11 @@ return [
         'firstNamePartner' => 'first name',
         'lastNamePartner' => 'last name',
         'emailPartner' => 'email',
+        'organization.name' => 'name',
+        'organization.invoiceEmail' => 'email',
+        'organization.address.street' => 'street',
+        'organization.address.zip' => 'postcode',
+        'organization.address.city' => 'city',
     ],
 
 ];

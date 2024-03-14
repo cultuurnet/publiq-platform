@@ -158,6 +158,7 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
         <Heading level={4} className="font-semibold col-span-1">
           {t("details.contact_info.title")}
         </Heading>
+        <p>{t("integration_form.contact.description")}</p>
         <ContactsTable
           data={data}
           onEdit={(id) => setToBeEditedId(id)}

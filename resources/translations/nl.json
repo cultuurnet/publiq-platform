@@ -70,6 +70,7 @@
     "contact_label_contributor": "Medewerker",
     "add": "Medewerker toevoegen",
     "contact": {
+      "description": "Contacten kunnen de integratie aanpassen, activeren en verwijderen.",
       "first_name": "Voornaam",
       "last_name": "Achternaam",
       "email": "E-mailadres"
@@ -84,19 +85,33 @@
     "pricing": {
       "free": {
         "title": "Free",
-        "price": "Gratis"
+        "price": "Gratis",
+        "description": {
+          "entry-api": "Je staat zelf in voor het bouwen van de de koppeling, met ondersteuning van onze documentatie."
+        }
       },
       "basic": {
         "title": "Basic",
-        "price": "{{currency}} {{price}} / jaar"
+        "price": "{{price}} / jaar",
+        "description": {
+          "search-api": "Je zorgt zelf voor de integratie, terwijl je toegang krijgt tot alle functionaliteiten van de Search API.",
+          "widgets": "Je zorgt zelf voor de setup, terwijl je toegang krijgt tot alle functionaliteiten van de Widgets."
+        }
       },
       "plus": {
         "title": "Plus",
-        "price": "eerste jaar: € 600 nadien: € 280 / jaar"
+        "price": "eerste jaar: € 600 nadien: € 280 / jaar",
+        "description": {
+          "widgets": "Na een intakegesprek zorgt publiq voor de configuratie van je widget en de naadloze integratie ervan in je website."
+        }
       },
       "custom": {
         "title": "Custom",
-        "price": "voorstel op maat"
+        "price": "voorstel op maat",
+        "description": {
+          "search-api": "We nemen contact met je op voor een oplossing op maat, die voldoet aan jouw use case en doelpubliek.",
+          "widgets": "We nemen contact met je op voor een oplossing op maat, die voldoet aan jouw use case en doelpubliek."
+        }
       }
     }
   },
@@ -123,10 +138,20 @@
       "deleted": "Verwijderd",
       "pending_approval_integration": "In Aanvraag",
       "pending_approval_payment": "In Aanvraag",
-      "pending_approval_integration_description": "Voor de live-integratie is goedkeuring van publiq noodzakelijk. Alle informatie om vlot live te kunnen gaan vind je",
+      "pending_approval_integration_description": "Voor de live-integratie is goedkeuring van publiq noodzakelijk. Alle informatie om vlot live te kunnen gaan vind je <0>hier</0>.",
+      "before_going_live_link": "https://docs.publiq.be/docs/uitdatabank/entry-api/requirements-before-going-live",
       "pending_approval_payment_description": "Aan de slag met echte data en evenementen? Activeer je Search API integratie (vanaf 125 euro per jaar)",
-      "here": "hier.",
-      "activate": "Activeren"
+      "activate": "Activatie aanvragen"
+    },
+    "activation_dialog": {
+      "title": "Activatie aanvragen",
+      "subscription_plan": "Prijsplan",
+      "price": "Totaalbedrag",
+      "contact": "E-mail boekhouding",
+      "contact_description": "Dit adres ontvangt de betalinginstructies, -herinneringen en de factuur.",
+      "coupon": "Coupon",
+      "invalid_coupon": "Invalid coupon",
+      "already_used_coupon": "Coupon is already used"
     },
     "documentation": {
       "title": "Documentatie",
@@ -175,11 +200,13 @@
       "uitid_v2": "UITID v2",
       "test": "Test",
       "live": "Live",
-      "status_alert": "Voor de live-integratie van dit project is goedkeuring van publiq noodzakelijk. Alle informatie om vlot live te kunnen gaan vind je",
+      "in_progress": "Je aanvraag tot activatie is in behandeling.",
       "link": "here",
       "uitid_alert": "Voor deze integratie zijn nog geen UiTIDv2 credentials aangevraagd.",
-      "action_status": "Activatie aanvragen",
-      "action_uitid": "UiTIDv2 credentials aanvragen"
+      "action_uitid": "UiTIDv2 credentials aanvragen",
+      "client_id": "Client id",
+      "client_secret": "Client secret",
+      "info": "Deze credentials blijven nog 3 maanden geldig en worden definitief verwijdered op {{datum + 3 maanden}}"
     },
     "integration_settings": {
       "title": "Instellingen",

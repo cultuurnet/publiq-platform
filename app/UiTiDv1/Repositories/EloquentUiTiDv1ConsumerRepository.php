@@ -66,6 +66,16 @@ final class EloquentUiTiDv1ConsumerRepository implements UiTiDv1ConsumerReposito
             ->toArray();
     }
 
+    public function getDistributedByIntegrationId(UuidInterface $integrationId): array
+    {
+        return UiTiDv1ConsumerModel::query()
+            ->where('integration_id', $integrationId->toString())
+            ->whereNotNull('distributed_at')
+            ->get()
+            ->map(static fn (UiTiDv1ConsumerModel $model) => $model->toDomain())
+            ->toArray();
+    }
+
     /**
      * @throws ModelNotFoundException<Model>
      */

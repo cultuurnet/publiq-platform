@@ -6,7 +6,6 @@ namespace App\Insightly\Listeners;
 
 use App\Domain\Coupons\Repositories\CouponRepository;
 use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
-use App\Domain\Integrations\Jobs\DistributeKeys;
 use App\Insightly\InsightlyClient;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -36,7 +35,6 @@ final class CreateProjectWithCoupon implements ShouldQueue
             $this->couponRepository->getByIntegrationId($integrationId)->code
         );
 
-        DistributeKeys::dispatch($integrationActivatedWithCoupon->id);
         $this->logger->info(
             'Project created for integration with coupon',
             [

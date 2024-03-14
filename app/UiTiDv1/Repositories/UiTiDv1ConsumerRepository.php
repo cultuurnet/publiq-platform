@@ -21,6 +21,11 @@ interface UiTiDv1ConsumerRepository
     public function getByIntegrationId(UuidInterface $integrationId): array;
 
     /**
+    * @return UiTiDv1Consumer[]
+    */
+    public function getDistributedByIntegrationId(UuidInterface $integrationId): array;
+
+    /**
      * @throws ModelNotFoundException<Model>
      */
     public function getById(UuidInterface $id): UiTiDv1Consumer;

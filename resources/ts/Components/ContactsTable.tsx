@@ -16,10 +16,10 @@ export type ContactsTableProps = {
 export const ContactsTable = (props: ContactsTableProps) => {
   return (
     <>
-      <ContactsTableDesktop className="max-md:hidden border border-publiq-gray-medium">
+      <ContactsTableDesktop className="max-md:hidden border border-publiq-gray-100">
         <ContactsTableContent {...props} desktop />
       </ContactsTableDesktop>
-      <ContactsTableMobile className="md:hidden border border-publiq-gray-medium">
+      <ContactsTableMobile className="md:hidden border border-publiq-gray-100">
         <ContactsTableContent {...props} mobile />
       </ContactsTableMobile>
     </>
