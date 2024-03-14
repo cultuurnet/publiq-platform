@@ -219,7 +219,13 @@
       "delete": {
         "title": "Delete URL",
         "question": "Do you really want to delete this URL?"
-      }
+      },
+      "leave": {
+        "title": "Tabblad verlaten?",
+        "question": "Wijzigingen die je hebt aangebracht worden niet opgeslagen."
+      },
+      "error": "Er is een fout opgetreden bij het indienen van het formulier. Controleer uw invoer en probeer het opnieuw.",
+      "success": "De wijzigingen zijn succesvol opgeslagen."
     },
     "delete_integration": {
       "title": "Delete",
