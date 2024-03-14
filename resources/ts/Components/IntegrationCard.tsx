@@ -64,16 +64,22 @@ export const IntegrationCard = ({
   const integrationTypesInfo = useIntegrationTypesInfo();
 
   const auth0TestClient = credentials.auth0.find(
-    (client) => client.integrationId === id && client.tenant === Auth0Tenant.Testing
+    (client) =>
+      client.integrationId === id && client.tenant === Auth0Tenant.Testing
   );
   const auth0ProdClient = credentials.auth0.find(
-    (client) => client.integrationId === id && client.tenant === Auth0Tenant.Production
+    (client) =>
+      client.integrationId === id && client.tenant === Auth0Tenant.Production
   );
   const uiTiDv1TestConsumer = credentials.uitidV1.find(
-    (client) => client.integrationId === id && client.environment === UiTiDv1Environment.Testing
+    (client) =>
+      client.integrationId === id &&
+      client.environment === UiTiDv1Environment.Testing
   );
   const uiTiDv1ProdConsumer = credentials.uitidV1.find(
-    (client) => client.integrationId === id && client.environment === UiTiDv1Environment.Production
+    (client) =>
+      client.integrationId === id &&
+      client.environment === UiTiDv1Environment.Production
   );
 
   const auth0TestClientWithLabels = [
