@@ -1,8 +1,8 @@
-import React, { ComponentProps } from "react";
+import React, { ComponentProps, ReactElement } from "react";
 import { classNames } from "../utils/classNames";
 
 type Option = {
-  label: string;
+  label: string | ReactElement;
   value: string;
 };
 
@@ -11,6 +11,7 @@ type Props = {
   options: Option[];
   value: string;
   onChange: (newValue: string) => void;
+  orientation: "vertical" | "horizontal";
 } & Omit<ComponentProps<"ul">, "onChange">;
 
 export const RadioButtonGroup = ({
@@ -19,14 +20,16 @@ export const RadioButtonGroup = ({
   value,
   onChange,
   className,
+  orientation = "horizontal",
   ...props
 }: Props) => {
+  const isVertical = orientation === "vertical";
   const getRoundedStyles = (index: number) => {
     switch (index) {
       case 0:
-        return "rounded-l-lg";
+        return isVertical ? "rounded-t-lg" : "rounded-l-lg";
       case 2:
-        return "rounded-r-lg";
+        return isVertical ? "rounded-b-lg" : "rounded-r-lg";
     }
   };
 
@@ -40,7 +43,11 @@ export const RadioButtonGroup = ({
 
   return (
     <ul
-      className={classNames("flex max-md:flex-col max-md:gap-1", className)}
+      className={classNames(
+        "flex max-md:gap-1",
+        isVertical ? "flex-col" : "flex-row max-md:flex-col",
+        className
+      )}
       role="group"
       {...props}
     >
