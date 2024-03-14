@@ -81,6 +81,11 @@ export type Auth0Client = {
   tenant: Auth0Tenant;
 };
 
+export type Credentials = {
+  auth0: Auth0Client[];
+  uitidV1: UiTiDv1Consumer[];
+};
+
 export type Integration = {
   id: string;
   type: Values<typeof IntegrationType>;
@@ -98,9 +103,10 @@ export type Integration = {
 
 type Props = {
   integrations: Integration[];
+  credentials: Credentials;
 } & PaginationInfo;
 
-const Index = ({ integrations, paginationInfo }: Props) => {
+const Index = ({ integrations, paginationInfo, credentials }: Props) => {
   const { t } = useTranslation();
   const translateRoute = useTranslateRoute();
 
@@ -166,6 +172,7 @@ const Index = ({ integrations, paginationInfo }: Props) => {
             <li className="flex w-full" key={integration.id}>
               <IntegrationCard
                 {...integration}
+                credentials={credentials}
                 onEdit={(id) =>
                   router.get(`${translateRoute("/integrations")}/${id}`)
                 }
