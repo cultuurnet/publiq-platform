@@ -104,8 +104,7 @@ export type Integration = {
 type Props = {
   integrations: Integration[];
   credentials: Credentials;
-} & PaginationInfo &
-  Credentials;
+} & PaginationInfo;
 
 const Index = ({ integrations, paginationInfo, credentials }: Props) => {
   const { t } = useTranslation();
