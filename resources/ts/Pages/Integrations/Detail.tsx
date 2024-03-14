@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
 import Layout from "../../layouts/Layout";
 import { Page } from "../../Components/Page";
 import { Integration } from "./Index";
@@ -16,6 +16,7 @@ import {
   integrationTypesIcons,
 } from "../../Components/IntegrationTypes";
 import { Heading } from "../../Components/Heading";
+import type { PendingVisit } from "@inertiajs/core";
 
 type Props = { integration: Integration; email: string };
 
@@ -36,12 +37,45 @@ const Detail = ({ integration, email }: Props) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const cancelationToken = useRef<any>();
+
+  const [isFormDirty, setIsFormDirty] = useState(false);
+  const [isKeepChangesDialogVisible, setIsKeepChangesDialogVisible] =
+    useState(false);
+  const [visiting, setVisiting] = useState<PendingVisit>();
+
+  const handleChangeIsFormDirty = (newValue: boolean) =>
+    setIsFormDirty(newValue);
+
   const Icon = integrationTypesIcons[integration.type];
 
   const changeTabInUrl = (tab: string) => {
     url.searchParams.set("tab", tab);
-    router.get(url.toString());
+    router.get(url.toString(), undefined, {
+      onCancelToken: (cancelToken) => {
+        cancelationToken.current = cancelToken;
+      },
+      onStart: (visiting) => {
+        const newUrl = new URL(visiting.url);
+        const currentParams = new URLSearchParams(location.search);
+        const hasTabChanged =
+          newUrl.pathname === location.pathname &&
+          newUrl.searchParams.get("tab") !== currentParams.get("tab");
+        if (!hasTabChanged) {
+          return;
+        }
+        if (!isFormDirty) return;
+        setVisiting(visiting);
+
+        cancelationToken.current.cancel();
+
+        setIsKeepChangesDialogVisible(true);
+      },
+    });
   };
+
+  const handleConfirmLeaveTab = () => router.visit(visiting?.url ?? "");
+  const handleCancelLeaveTab = () => setIsKeepChangesDialogVisible(false);
 
   return (
     <Page>
@@ -64,7 +98,14 @@ const Detail = ({ integration, email }: Props) => {
               type="settings"
               label={t("details.integration_settings.title")}
             >
-              <IntegrationSettings {...integration} isMobile={isMobile} />
+              <IntegrationSettings
+                {...integration}
+                isMobile={isMobile}
+                onChangeIsFormDirty={handleChangeIsFormDirty}
+                isKeepChangesDialogVisible={isKeepChangesDialogVisible}
+                onConfirmLeaveTab={handleConfirmLeaveTab}
+                onCancelLeaveTab={handleCancelLeaveTab}
+              />
             </Tabs.Item>
             <Tabs.Item
               type="credentials"
