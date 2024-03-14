@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ButtonPrimary } from "../../ButtonPrimary";
-import { router, useForm } from "@inertiajs/react";
+import { useForm } from "@inertiajs/react";
 import { Integration } from "../../../Pages/Integrations/Index";
 import { IntegrationUrlType } from "../../../types/IntegrationUrlType";
 import { UrlList } from "./UrlList";
@@ -144,7 +144,7 @@ export const IntegrationSettings = ({
 
   useEffect(() => {
     onChangeIsFormDirty(isTotalFormDirty);
-  }, [isTotalFormDirty]);
+  }, [isTotalFormDirty, onChangeIsFormDirty]);
 
   const handleConfirmDeleteUrl = (toDeleteUrlId: string) => {
     urlsForm.setData((previousData) => ({
@@ -264,13 +264,11 @@ export const IntegrationSettings = ({
       </div>
       <QuestionDialog
         isVisible={isKeepChangesDialogVisible}
-        title="test"
-        question={"Are you sure?"}
-        onConfirm={() => onConfirmLeaveTab()}
+        title={t("details.integration_settings.leave.title")}
+        question={t("details.integration_settings.leave.question")}
+        onConfirm={onConfirmLeaveTab}
         onCancel={onCancelLeaveTab}
-      >
-        <div>hello</div>
-      </QuestionDialog>
+      />
     </>
   );
 };

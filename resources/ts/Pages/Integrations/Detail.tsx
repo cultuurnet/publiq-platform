@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useRef, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import Layout from "../../layouts/Layout";
 import { Page } from "../../Components/Page";
 import { Integration } from "./Index";
@@ -16,7 +16,6 @@ import {
   integrationTypesIcons,
 } from "../../Components/IntegrationTypes";
 import { Heading } from "../../Components/Heading";
-import type { PendingVisit } from "@inertiajs/core";
 
 type Props = { integration: Integration; email: string };
 
@@ -24,6 +23,12 @@ const Detail = ({ integration, email }: Props) => {
   const { t } = useTranslation();
 
   const [isMobile, setIsMobile] = useState(false);
+
+  const changeTabInUrl = (tab: string) => {
+    router.get(url, {
+      tab,
+    });
+  };
 
   const url = new URL(document.location.href);
   const activeTab = url.searchParams.get("tab") ?? "settings";
@@ -37,45 +42,53 @@ const Detail = ({ integration, email }: Props) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const cancelationToken = useRef<any>();
-
   const [isFormDirty, setIsFormDirty] = useState(false);
   const [isKeepChangesDialogVisible, setIsKeepChangesDialogVisible] =
     useState(false);
-  const [visiting, setVisiting] = useState<PendingVisit>();
+  const [visiting, setVisiting] = useState<string>();
 
   const handleChangeIsFormDirty = (newValue: boolean) =>
     setIsFormDirty(newValue);
 
   const Icon = integrationTypesIcons[integration.type];
 
-  const changeTabInUrl = (tab: string) => {
-    url.searchParams.set("tab", tab);
-    router.get(url.toString(), undefined, {
-      onCancelToken: (cancelToken) => {
-        cancelationToken.current = cancelToken;
-      },
-      onStart: (visiting) => {
-        const newUrl = new URL(visiting.url);
-        const currentParams = new URLSearchParams(location.search);
-        const hasTabChanged =
-          newUrl.pathname === location.pathname &&
-          newUrl.searchParams.get("tab") !== currentParams.get("tab");
-        if (!hasTabChanged) {
-          return;
-        }
-        if (!isFormDirty) return;
-        setVisiting(visiting);
+  const handleConfirmLeaveTab = () => {
+    if (!visiting) return;
 
-        cancelationToken.current.cancel();
-
-        setIsKeepChangesDialogVisible(true);
-      },
-    });
+    router.get(visiting);
   };
-
-  const handleConfirmLeaveTab = () => router.visit(visiting?.url ?? "");
   const handleCancelLeaveTab = () => setIsKeepChangesDialogVisible(false);
+
+  useEffect(() => {
+    const cleanUp = router.on("before", (e) => {
+      const nextVisit = e.detail.visit;
+      const newUrl = new URL(nextVisit.url);
+
+      if (nextVisit.url.toString() === visiting) {
+        return;
+      }
+
+      if (activeTab !== "settings") {
+        return;
+      }
+
+      const hasPageChange =
+        (newUrl.pathname === location.pathname &&
+          activeTab !== newUrl.searchParams.get("tab")) ||
+        newUrl.pathname !== location.pathname;
+
+      if (!hasPageChange) {
+        return;
+      }
+
+      if (!isFormDirty) return;
+      setVisiting(nextVisit.url.toString());
+      e.preventDefault();
+      setIsKeepChangesDialogVisible(true);
+    });
+
+    return () => cleanUp();
+  }, [isFormDirty, visiting, activeTab]);
 
   return (
     <Page>
