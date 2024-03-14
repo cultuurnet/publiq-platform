@@ -6,9 +6,8 @@ import { router } from "@inertiajs/react";
 import { useTranslateRoute } from "../hooks/useTranslateRoute";
 import { Integration } from "../Pages/Integrations/Index";
 import { IntegrationType } from "../types/IntegrationType";
-import { Values } from "../types/Values";
 
-type Props = { id: Integration["id"]; type: Values<typeof IntegrationType> };
+type Props = Integration;
 
 export const ActivationRequest = ({ id, type }: Props) => {
   const { t } = useTranslation();
