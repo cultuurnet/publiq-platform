@@ -179,7 +179,6 @@ export const IntegrationCard = ({
               />
             </section>
           )}
-          
 
         <section className="flex-1 inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">
           <Heading className="font-semibold min-w-[10rem] self-start" level={5}>
