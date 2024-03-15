@@ -94,6 +94,10 @@ final class MigrationProject
 
     public function subscriptionCategory(): string
     {
+        if ($this->type() === IntegrationType::EntryApi) {
+            return 'Free';
+        }
+
         return $this->projectAsArray[18] ?? 'Basic';
     }
 }
