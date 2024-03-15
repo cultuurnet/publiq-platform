@@ -74,3 +74,12 @@ npm-lint-check:
 
 npm-types-check:
 	vendor/bin/sail npm run types:check
+
+e2e-install:
+	vendor/bin/sail npx playwright install chromium
+
+test-e2e:
+	vendor/bin/sail npx playwright test $(options)
+
+test-e2e-filter:
+	vendor/bin/sail npx playwright test "$(filter)" $(options)
