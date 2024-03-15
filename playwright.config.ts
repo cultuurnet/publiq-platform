@@ -6,11 +6,15 @@ import { defineConfig, devices } from "@playwright/test";
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: "./e2e",
+  testDir: "e2e",
+  timeout: 60 * 1000,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
+  expect: {
+    timeout: 5000,
+  },
   reporter: "html",
   use: {
     baseURL: "https://platform-acc.publiq.be/",
@@ -19,7 +23,8 @@ export default defineConfig({
   projects: [
     {
       name: "setup",
-      testMatch: "e2e/setup/*.setup.ts",
+      testDir: "e2e/setup",
+      testMatch: "setup/**/*.setup.ts",
     },
     {
       name: "chromium",
@@ -28,6 +33,7 @@ export default defineConfig({
         storageState: "playwright/.auth/user.json",
       },
       dependencies: ["setup"],
+      testMatch: "tests/**/*.test.ts",
     },
   ],
 });
