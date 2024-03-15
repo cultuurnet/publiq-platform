@@ -221,8 +221,8 @@
         "question": "Do you really want to delete this URL?"
       },
       "leave": {
-        "title": "Tabblad verlaten?",
-        "question": "Wijzigingen die je hebt aangebracht worden niet opgeslagen."
+        "title": "Leave tab?",
+        "question": "Changes that you made may not be saved."
       },
       "error": "Er is een fout opgetreden bij het indienen van het formulier. Controleer uw invoer en probeer het opnieuw.",
       "success": "De wijzigingen zijn succesvol opgeslagen."
