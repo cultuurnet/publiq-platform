@@ -17,7 +17,7 @@ export default defineConfig({
   },
   reporter: "html",
   use: {
-    baseURL: "https://platform-acc.publiq.be/",
+    baseURL: process.env.E2E_TEST_BASE_URL,
     trace: "on-first-retry",
   },
   projects: [
