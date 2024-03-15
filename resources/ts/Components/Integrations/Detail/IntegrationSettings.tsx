@@ -10,6 +10,7 @@ import { BasicInfo } from "./BasicInfo";
 import { IntegrationType } from "../../../types/IntegrationType";
 import { Alert } from "../../Alert";
 import { Environment } from "../../../types/Environment";
+import { QuestionDialog } from "../../QuestionDialog";
 
 export const NEW_URL_ID_PREFIX = "new-";
 
@@ -86,6 +87,10 @@ const useUrlsForm = (initialFormValues: { urls: IntegrationUrl[] }) => {
 
 type Props = {
   isMobile: boolean;
+  isKeepChangesDialogVisible: boolean;
+  onChangeIsFormDirty: (newValue: boolean) => void;
+  onConfirmLeaveTab: () => void;
+  onCancelLeaveTab: () => void;
 } & Integration;
 
 export const IntegrationSettings = ({
@@ -94,6 +99,10 @@ export const IntegrationSettings = ({
   type,
   description,
   urls,
+  onChangeIsFormDirty,
+  isKeepChangesDialogVisible,
+  onConfirmLeaveTab,
+  onCancelLeaveTab,
 }: Props) => {
   const { t } = useTranslation();
 
@@ -103,6 +112,7 @@ export const IntegrationSettings = ({
     integrationName: name,
     description,
   });
+
   const urlsForm = useUrlsForm({
     urls,
   });
@@ -129,6 +139,12 @@ export const IntegrationSettings = ({
         return !(isEmptyNewUrl || isEmptyLoginUrl);
       }),
   }));
+
+  const isTotalFormDirty = basicInfoForm.isDirty || urlsForm.isDirty;
+
+  useEffect(() => {
+    onChangeIsFormDirty(isTotalFormDirty);
+  }, [isTotalFormDirty, onChangeIsFormDirty]);
 
   const handleConfirmDeleteUrl = (toDeleteUrlId: string) => {
     urlsForm.setData((previousData) => ({
@@ -246,6 +262,13 @@ export const IntegrationSettings = ({
           {t("details.save")}
         </ButtonPrimary>
       </div>
+      <QuestionDialog
+        isVisible={isKeepChangesDialogVisible}
+        title={t("details.integration_settings.leave.title")}
+        question={t("details.integration_settings.leave.question")}
+        onConfirm={onConfirmLeaveTab}
+        onCancel={onCancelLeaveTab}
+      />
     </>
   );
 };
