@@ -114,7 +114,6 @@ export const IntegrationCard = ({
     >
       <div className="flex flex-col gap-4 mx-8 my-6 items-stretch min-h-[10rem]">
         {type !== IntegrationType.Widgets && auth0TestClient && (
-        {type !== IntegrationType.Widgets && auth0TestClient && (
           <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center gap-3">
             <Heading
               level={5}
@@ -180,6 +179,7 @@ export const IntegrationCard = ({
               />
             </section>
           )}
+          
 
         <section className="flex-1 inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">
           <Heading className="font-semibold min-w-[10rem] self-start" level={5}>
