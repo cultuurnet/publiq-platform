@@ -81,7 +81,10 @@ const Detail = ({ integration, email }: Props) => {
         return;
       }
 
-      if (!isFormDirty) return;
+      if (!isFormDirty) {
+        return;
+      }
+
       setOriginalVisitingUrl(nextVisit.url.toString());
       e.preventDefault();
       setIsKeepChangesDialogVisible(true);
