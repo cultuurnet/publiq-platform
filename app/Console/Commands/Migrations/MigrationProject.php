@@ -94,6 +94,6 @@ final class MigrationProject
 
     public function subscriptionCategory(): string
     {
-        return $this->projectAsArray[17] ?: 'Basic';
+        return $this->projectAsArray[18] ?? 'Basic';
     }
 }
