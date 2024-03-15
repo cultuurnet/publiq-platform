@@ -5,9 +5,18 @@ declare(strict_types=1);
 namespace App\Console\Commands\Migrations;
 
 use App\Domain\Auth\Models\UserModel;
+use App\Domain\Contacts\Contact;
+use App\Domain\Contacts\Repositories\ContactRepository;
+use App\Insightly\InsightlyMapping;
+use App\Insightly\Repositories\InsightlyMappingRepository;
+use App\Insightly\Resources\ResourceType;
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use Spatie\Activitylog\Facades\CauserResolver;
 
 final class MigrateContacts extends Command
@@ -17,6 +26,13 @@ final class MigrateContacts extends Command
     protected $signature = 'migrate:contacts';
 
     protected $description = 'Migrate contacts provided in the contacts.csv file (database/project-aanvraag/contacts.csv)';
+
+    public function __construct(
+        private readonly ContactRepository $contactRepository,
+        private readonly InsightlyMappingRepository $insightlyMappingRepository
+    ) {
+        parent::__construct();
+    }
 
     public function handle(): int
     {
@@ -44,10 +60,64 @@ final class MigrateContacts extends Command
 
             $this->info($contactId . ' - Started importing contact ' . $migrationContact->email());
 
+            try {
+                $this->migrateContact($contactId, $migrationContact);
+            } catch (UniqueConstraintViolationException) {
+                $this->warn($contactId . ' - Contact ' . $migrationContact->email() . ' already exists');
+            } catch (Exception $e) {
+                $this->error($contactId . ' - Failed importing contact ' . $migrationContact->email() . ': ' . $e->getMessage());
+            }
+
+            $this->info($contactId . ' - Ended importing contact ' . $migrationContact->email());
+            $this->info('---');
         }
 
-        $this->info('Migrated ' . count($contacts) . ' contacts');
-
         return 1;
+    }
+
+    private function migrateContact(UuidInterface $contactId, MigrationContact $migrationContact): void
+    {
+        $mapping = $this->getInsightlyMapping($migrationContact);
+        if ($mapping === null) {
+            return;
+        }
+
+        $contact = new Contact(
+            $contactId,
+            $mapping->id,
+            $migrationContact->email(),
+            $migrationContact->contactType(),
+            $migrationContact->firstName(),
+            $migrationContact->lastName()
+        );
+
+        $this->contactRepository->save($contact);
+
+        $this->insightlyMappingRepository->save(
+            new InsightlyMapping(
+                $contactId,
+                $migrationContact->insightlyContactId(),
+                ResourceType::Contact,
+            )
+        );
+    }
+
+    private function getInsightlyMapping(MigrationContact $migrationContact): ?InsightlyMapping
+    {
+        if ($migrationContact->insightlyProjectId()) {
+            try {
+                return $this->insightlyMappingRepository->getByInsightlyId($migrationContact->insightlyProjectId());
+            } catch (ModelNotFoundException) {
+                $this->warn('No mapping found for project ' . $migrationContact->insightlyProjectId());
+                return null;
+            }
+        }
+
+        try {
+            return $this->insightlyMappingRepository->getByInsightlyId($migrationContact->insightlyOpportunityId());
+        } catch (ModelNotFoundException) {
+            $this->warn('No mapping found for opportunity ' . $migrationContact->insightlyOpportunityId());
+            return null;
+        }
     }
 }
