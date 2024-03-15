@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useMemo, useState } from "react";
 import { router } from "@inertiajs/react";
 import { Heading } from "../../Components/Heading";
 import Layout from "../../layouts/Layout";
@@ -128,6 +128,36 @@ const Index = ({ integrations, paginationInfo, credentials }: Props) => {
     250
   );
 
+  const integrationsWithCredentials = useMemo(
+    () =>
+      integrations.map((integration) => ({
+        ...integration,
+        credentials: {
+          auth0TestClient: credentials.auth0.find(
+            (client) =>
+              client.integrationId === integration.id &&
+              client.tenant === Auth0Tenant.Testing
+          ),
+          auth0ProdClient: credentials.auth0.find(
+            (client) =>
+              client.integrationId === integration.id &&
+              client.tenant === Auth0Tenant.Production
+          ),
+          uiTiDv1TestConsumer: credentials.uitidV1.find(
+            (client) =>
+              client.integrationId === integration.id &&
+              client.environment === UiTiDv1Environment.Testing
+          ),
+          uiTiDv1ProdConsumer: credentials.uitidV1.find(
+            (client) =>
+              client.integrationId === integration.id &&
+              client.environment === UiTiDv1Environment.Production
+          ),
+        },
+      })),
+    [integrations]
+  );
+
   const handleDeleteIntegration = () => {
     router.delete(`/integrations/${toBeDeletedId}`, {
       onFinish: () => setIsDeleteDialogVisible(false),
@@ -168,17 +198,22 @@ const Index = ({ integrations, paginationInfo, credentials }: Props) => {
       </div>
       {integrations.length > 0 && (
         <ul className="flex flex-col w-full gap-9">
-          {integrations.map((integration) => (
-            <li className="flex w-full" key={integration.id}>
-              <IntegrationCard
-                {...integration}
-                credentials={credentials}
-                onEdit={(id) =>
-                  router.get(`${translateRoute("/integrations")}/${id}`)
-                }
-              />
-            </li>
-          ))}
+          {integrationsWithCredentials.map(
+            ({ credentials, ...integration }) => (
+              <li className="flex w-full" key={integration.id}>
+                <IntegrationCard
+                  {...integration}
+                  auth0TestClient={credentials.auth0TestClient}
+                  auth0ProdClient={credentials.auth0ProdClient}
+                  uiTiDv1TestConsumer={credentials.uiTiDv1TestConsumer}
+                  uiTiDv1ProdConsumer={credentials.uiTiDv1ProdConsumer}
+                  onEdit={(id) =>
+                    router.get(`${translateRoute("/integrations")}/${id}`)
+                  }
+                />
+              </li>
+            )
+          )}
         </ul>
       )}
 

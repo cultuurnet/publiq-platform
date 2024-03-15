@@ -1,5 +1,10 @@
 import React from "react";
-import type { Credentials, Integration } from "../Pages/Integrations/Index";
+import type {
+  Auth0Client,
+  Credentials,
+  Integration,
+  UiTiDv1Consumer,
+} from "../Pages/Integrations/Index";
 import { ButtonIcon } from "./ButtonIcon";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { Heading } from "./Heading";
@@ -17,11 +22,12 @@ import { IconSearchApi } from "./icons/IconSearchApi";
 import { ActivationRequest } from "./ActivationRequest";
 import { IntegrationType } from "../types/IntegrationType";
 import { CopyText } from "./CopyText";
-import { Auth0Tenant } from "../types/Auth0Tenant";
-import { UiTiDv1Environment } from "../types/UiTiDv1Environment";
 
 type Props = Integration & {
-  credentials: Credentials;
+  auth0TestClient?: Auth0Client;
+  auth0ProdClient?: Auth0Client;
+  uiTiDv1TestConsumer?: UiTiDv1Consumer;
+  uiTiDv1ProdConsumer?: UiTiDv1Consumer;
   onEdit: (id: string) => void;
 };
 
@@ -56,31 +62,15 @@ export const IntegrationCard = ({
   name,
   type,
   status,
-  credentials,
+  auth0TestClient,
+  auth0ProdClient,
+  uiTiDv1TestConsumer,
+  uiTiDv1ProdConsumer,
   onEdit,
 }: Props) => {
   const { t } = useTranslation();
 
   const integrationTypesInfo = useIntegrationTypesInfo();
-
-  const auth0TestClient = credentials.auth0.find(
-    (client) =>
-      client.integrationId === id && client.tenant === Auth0Tenant.Testing
-  );
-  const auth0ProdClient = credentials.auth0.find(
-    (client) =>
-      client.integrationId === id && client.tenant === Auth0Tenant.Production
-  );
-  const uiTiDv1TestConsumer = credentials.uitidV1.find(
-    (client) =>
-      client.integrationId === id &&
-      client.environment === UiTiDv1Environment.Testing
-  );
-  const uiTiDv1ProdConsumer = credentials.uitidV1.find(
-    (client) =>
-      client.integrationId === id &&
-      client.environment === UiTiDv1Environment.Production
-  );
 
   const auth0TestClientWithLabels = [
     {
