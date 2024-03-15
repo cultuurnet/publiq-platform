@@ -155,7 +155,7 @@ const Index = ({ integrations, paginationInfo, credentials }: Props) => {
           ),
         },
       })),
-    [integrations]
+    [integrations, credentials.auth0, credentials.uitidV1]
   );
 
   const handleDeleteIntegration = () => {

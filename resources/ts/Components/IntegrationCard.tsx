@@ -1,7 +1,6 @@
 import React from "react";
 import type {
   Auth0Client,
-  Credentials,
   Integration,
   UiTiDv1Consumer,
 } from "../Pages/Integrations/Index";
