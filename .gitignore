@@ -21,4 +21,4 @@ database/project-aanvraag
 /test-results/
 /playwright-report/
 /blob-report/
-/playwright/.cache/
+/playwright
