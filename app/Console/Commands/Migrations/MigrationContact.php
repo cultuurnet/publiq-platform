@@ -18,9 +18,9 @@ final class MigrationContact
         );
     }
 
-    public function insightlyContactId(): ?int
+    public function insightlyContactId(): int
     {
-        return $this->insightlyId(0);
+        return (int) $this->insightlyId(0);
     }
 
     public function insightlyOpportunityId(): ?int

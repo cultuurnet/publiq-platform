@@ -113,11 +113,15 @@ final class MigrateContacts extends Command
             }
         }
 
-        try {
-            return $this->insightlyMappingRepository->getByInsightlyId($migrationContact->insightlyOpportunityId());
-        } catch (ModelNotFoundException) {
-            $this->warn('No mapping found for opportunity ' . $migrationContact->insightlyOpportunityId());
-            return null;
+        if ($migrationContact->insightlyOpportunityId()) {
+            try {
+                return $this->insightlyMappingRepository->getByInsightlyId($migrationContact->insightlyOpportunityId());
+            } catch (ModelNotFoundException) {
+                $this->warn('No mapping found for opportunity ' . $migrationContact->insightlyOpportunityId());
+                return null;
+            }
         }
+
+        return null;
     }
 }
