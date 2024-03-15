@@ -35,7 +35,7 @@ export const RadioButtonGroup = ({
 
   const optionClasses = (index: number, option: Option) => {
     return classNames(
-      "px-4 py-2 text-base font-medium text-center bg-white border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 ring-publiq-blue-dark focus:bg-gray-100 max-sm:rounded-lg",
+      "px-4 py-2 text-base font-medium text-center bg-white border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 ring-publiq-blue-dark focus:bg-gray-100 max-sm:rounded-lg cursor-pointer",
       getRoundedStyles(index),
       value === option.value ? "text-publiq-blue-dark" : "text-publiq-gray-900"
     );
@@ -73,7 +73,9 @@ export const RadioButtonGroup = ({
             value={option.value}
             className="hidden"
           />
-          <label htmlFor={option.value}>{option.label}</label>
+          <label htmlFor={option.value} className="cursor-pointer">
+            {option.label}
+          </label>
         </li>
       ))}
     </ul>
