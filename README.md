@@ -221,12 +221,27 @@ $ make stan
 $ make test
 ```
 
-- Run a test with filtered on file
+- Run a test filtered on file
 ```
 $ make test-filter filter=UpdateClientsTest
 ```
 
-- Run a test with a filtered on test method name
+- Run a test with filtered on test method name
 ```
 $ make test-filter filter=test_it_can_get_an_organization_with_vat
+```
+
+- Run all e2e tests
+```
+$ make test-e2e
+```
+
+- Run an e2e test filtered on file path or parts of file name
+```
+$ make test-e2e-filter filter=view-integrations-in-overview.test.ts
+```
+
+- Run an e2e filtered on the test title
+```
+$ make test-e2e options="-g 'view my integrations in overview'"
 ```
