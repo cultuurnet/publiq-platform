@@ -231,6 +231,11 @@ $ make test-filter filter=UpdateClientsTest
 $ make test-filter filter=test_it_can_get_an_organization_with_vat
 ```
 
+- Install dependencies needed to run e2e tests
+```
+$ make e2e-install
+```
+
 - Run all e2e tests
 ```
 $ make test-e2e
