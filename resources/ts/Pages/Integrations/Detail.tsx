@@ -45,7 +45,7 @@ const Detail = ({ integration, email }: Props) => {
   const [isFormDirty, setIsFormDirty] = useState(false);
   const [isKeepChangesDialogVisible, setIsKeepChangesDialogVisible] =
     useState(false);
-  const [visiting, setVisiting] = useState<string>();
+  const [originalVisitingUrl, setOriginalVisitingUrl] = useState<string>();
 
   const handleChangeIsFormDirty = (newValue: boolean) =>
     setIsFormDirty(newValue);
@@ -53,9 +53,9 @@ const Detail = ({ integration, email }: Props) => {
   const Icon = integrationTypesIcons[integration.type];
 
   const handleConfirmLeaveTab = () => {
-    if (!visiting) return;
+    if (!originalVisitingUrl) return;
 
-    router.get(visiting);
+    router.get(originalVisitingUrl);
   };
   const handleCancelLeaveTab = () => setIsKeepChangesDialogVisible(false);
 
@@ -64,7 +64,7 @@ const Detail = ({ integration, email }: Props) => {
       const nextVisit = e.detail.visit;
       const newUrl = new URL(nextVisit.url);
 
-      if (nextVisit.url.toString() === visiting) {
+      if (nextVisit.url.toString() === originalVisitingUrl) {
         return;
       }
 
@@ -82,13 +82,13 @@ const Detail = ({ integration, email }: Props) => {
       }
 
       if (!isFormDirty) return;
-      setVisiting(nextVisit.url.toString());
+      setOriginalVisitingUrl(nextVisit.url.toString());
       e.preventDefault();
       setIsKeepChangesDialogVisible(true);
     });
 
     return () => cleanUp();
-  }, [isFormDirty, visiting, activeTab]);
+  }, [isFormDirty, originalVisitingUrl, activeTab]);
 
   return (
     <Page>
