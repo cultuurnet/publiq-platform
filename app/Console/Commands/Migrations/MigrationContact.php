@@ -50,7 +50,7 @@ final class MigrationContact
 
     public function contactType(): ContactType
     {
-        return ContactType::from($this->contactAsArray[9]);
+        return ContactType::from(mb_strtolower($this->contactAsArray[9]));
     }
 
     private function insightlyId(int $index): ?int
