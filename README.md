@@ -246,7 +246,7 @@ $ make test-e2e
 $ make test-e2e-filter filter=view-integrations-in-overview.test.ts
 ```
 
-- Run an e2e filtered on the test title
+- Run an e2e test filtered on the test title
 ```
 $ make test-e2e options="-g 'view my integrations in overview'"
 ```
