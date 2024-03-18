@@ -72,7 +72,7 @@ final class MigrateContacts extends Command
             $this->info('---');
         }
 
-        return 1;
+        return 0;
     }
 
     private function migrateContact(UuidInterface $contactId, MigrationContact $migrationContact): void
