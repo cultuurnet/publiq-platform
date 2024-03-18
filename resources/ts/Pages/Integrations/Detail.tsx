@@ -85,6 +85,10 @@ const Detail = ({ integration, email }: Props) => {
         return;
       }
 
+      if (nextVisit.method === 'patch') {
+        return;
+      }
+
       setOriginalVisitingUrl(nextVisit.url.toString());
       e.preventDefault();
       setIsKeepChangesDialogVisible(true);
