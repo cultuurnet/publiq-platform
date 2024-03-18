@@ -72,6 +72,10 @@ const Detail = ({ integration, email }: Props) => {
         return;
       }
 
+      if (nextVisit.method === "patch") {
+        return;
+      }
+
       if (activeTab !== "settings") {
         return;
       }
@@ -86,10 +90,6 @@ const Detail = ({ integration, email }: Props) => {
       }
 
       if (!isFormDirty) {
-        return;
-      }
-
-      if (nextVisit.method === "patch") {
         return;
       }
 
