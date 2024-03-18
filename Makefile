@@ -76,7 +76,7 @@ npm-types-check:
 	vendor/bin/sail npm run types:check
 
 e2e-install:
-	vendor/bin/sail npx playwright install chromium
+	docker-compose exec laravel npx playwright install chromium --with-deps
 
 test-e2e:
 	vendor/bin/sail npx playwright test $(options)
