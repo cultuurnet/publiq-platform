@@ -43,8 +43,7 @@ final class MigrateContacts extends Command
         $this->info('Migrating contacts...');
 
         $contacts = $this->readCsvFile('database/project-aanvraag/contacts.csv');
-        $migrationContacts = array_map(fn (array $contact) => new MigrationContact($contact), $contacts);
-        $contactsCount = count($migrationContacts);
+        $contactsCount = count($contacts);
 
         if ($contactsCount <= 0) {
             $this->warn('No contacts to import');
@@ -55,6 +54,7 @@ final class MigrateContacts extends Command
             return 0;
         }
 
+        $migrationContacts = array_map(fn (array $contact) => new MigrationContact($contact), $contacts);
         foreach ($migrationContacts as $migrationContact) {
             $contactId = Uuid::uuid4();
 
