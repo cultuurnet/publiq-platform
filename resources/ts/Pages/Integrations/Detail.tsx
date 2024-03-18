@@ -72,7 +72,7 @@ const Detail = ({ integration, email }: Props) => {
         return;
       }
 
-      if (nextVisit.method === "patch") {
+      if (nextVisit.method === "patch" || nextVisit.method === "put") {
         return;
       }
 
