@@ -73,7 +73,7 @@ export const RadioButtonGroup = ({
             value={option.value}
             className="hidden"
           />
-          <label htmlFor={option.value} className="cursor-pointer">
+          <label htmlFor={option.value} className="cursor-pointer text-right">
             {option.label}
           </label>
         </li>

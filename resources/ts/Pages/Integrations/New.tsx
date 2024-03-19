@@ -180,11 +180,11 @@ const New = ({ subscriptions }: Props) => {
                 options={translatedPricingPlans.map((pricingPlan) => ({
                   value: pricingPlan.id,
                   label: (
-                    <div className="flex flex-row justify-between gap-2">
-                      <span>
+                    <div className="flex flex-row items-center justify-between gap-2">
+                      <span className={"text-left w-1/2"}>
                         {pricingPlan.title} ({pricingPlan.price})
                       </span>
-                      <span className="text-gray-400 font-thin">
+                      <span className="text-gray-400 font-thin text-right">
                         {pricingPlan.description}
                       </span>
                     </div>
