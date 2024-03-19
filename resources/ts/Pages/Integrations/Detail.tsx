@@ -57,7 +57,11 @@ const Detail = ({ integration, email }: Props) => {
 
     router.get(originalVisitingUrl);
   };
-  const handleCancelLeaveTab = () => setIsKeepChangesDialogVisible(false);
+
+  const handleCancelLeaveTab = () => {
+    setIsKeepChangesDialogVisible(false);
+    setOriginalVisitingUrl("");
+  };
 
   useEffect(() => {
     const cleanUp = router.on("before", (e) => {
@@ -65,6 +69,10 @@ const Detail = ({ integration, email }: Props) => {
       const newUrl = new URL(nextVisit.url);
 
       if (nextVisit.url.toString() === originalVisitingUrl) {
+        return;
+      }
+
+      if (nextVisit.method !== "get") {
         return;
       }
 

@@ -268,6 +268,7 @@ export const IntegrationSettings = ({
         question={t("details.integration_settings.leave.question")}
         onConfirm={onConfirmLeaveTab}
         onCancel={onCancelLeaveTab}
+        onClose={onCancelLeaveTab}
       />
     </>
   );

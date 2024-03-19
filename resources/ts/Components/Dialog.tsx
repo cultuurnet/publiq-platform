@@ -56,7 +56,7 @@ export const Dialog = ({
 
         <div
           className={classNames(
-            "flex flex-col flex-1 w-full p-6 text-base",
+            "flex flex-col flex-1 w-full p-6 text-base font-light",
             contentStyles
           )}
         >

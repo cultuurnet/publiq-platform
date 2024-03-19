@@ -45,6 +45,7 @@ export const IntegrationTypeCard = ({
       role="button"
       onClick={() => changeTypeInUrl(type)}
       headingStyles="group-hover:text-publiq-blue-dark"
+      textCenter
     >
       <div className="flex flex-col flex-1 justify-between min-h-[10rem] gap-7">
         <ul className="flex flex-col gap-3">
