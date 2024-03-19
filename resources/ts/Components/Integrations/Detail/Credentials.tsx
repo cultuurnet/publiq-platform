@@ -1,10 +1,23 @@
 import React, { useMemo } from "react";
-import type { Integration } from "../../../Pages/Integrations/Index";
-import { CredentialsUitidv1Consumers } from "./CredentialsUitidv1Consumers";
-import { CredentialsAuth0Clients } from "./CredentialsAuth0Clients";
+import type {
+  AuthClient,
+  Integration,
+  LegacyAuthConsumer,
+} from "../../../Pages/Integrations/Index";
+import { CredentialsLegacyAuthConsumers } from "./CredentialsLegacyAuthConsumers";
+import { CredentialsAuthClients } from "./CredentialsAuthClients";
+import { IntegrationType } from "../../../types/IntegrationType";
+import { CredentialsWidgets } from "./CredentialsWidgets";
 
 type Props = Integration & {
   email: string;
+};
+
+export type Credentials = {
+  testClient?: AuthClient;
+  prodClient?: AuthClient;
+  legacyTestConsumer?: LegacyAuthConsumer;
+  legacyProdConsumer?: LegacyAuthConsumer;
 };
 
 export const Credentials = ({
@@ -13,40 +26,54 @@ export const Credentials = ({
   email,
   subscription,
   type,
-  uiTiDv1Consumers,
-  auth0Clients,
+  legacyAuthConsumers,
+  authClients,
 }: Props) => {
-  const uiTiDv1TestConsumer = useMemo(
-    () => uiTiDv1Consumers.find((consumer) => consumer.environment === "test"),
-    [uiTiDv1Consumers]
+  const credentials = useMemo(
+    () => ({
+      legacyTestConsumer: legacyAuthConsumers.find(
+        (consumer) => consumer.environment === "test"
+      ),
+      legacyProdConsumer: legacyAuthConsumers.find(
+        (consumer) => consumer.environment === "prod"
+      ),
+      testClient: authClients.find((client) => client.tenant === "test"),
+      prodClient: authClients.find((client) => client.tenant === "prod"),
+    }),
+    [legacyAuthConsumers, authClients]
   );
+
+  if (type === IntegrationType.Widgets) {
+    return (
+      <CredentialsWidgets
+        {...credentials}
+        email={email}
+        status={status}
+        id={id}
+        type={type}
+        subscription={subscription}
+      />
+    );
+  }
 
   return (
     <>
-      {uiTiDv1TestConsumer && (
-        <div className="flex w-full max-lg:flex-col gap-6 border-b pb-10 border-gray-300">
-          <CredentialsUitidv1Consumers
-            uiTiDv1Consumers={uiTiDv1Consumers}
-            auth0Clients={auth0Clients}
-            email={email}
-            status={status}
-            id={id}
-            type={type}
-            subscription={subscription}
-          />
-        </div>
-      )}
-      <div className="flex w-full max-lg:flex-col gap-6">
-        <CredentialsAuth0Clients
-          uiTiDv1Consumers={uiTiDv1Consumers}
-          auth0Clients={auth0Clients}
-          email={email}
-          status={status}
-          id={id}
-          type={type}
-          subscription={subscription}
-        />
-      </div>
+      <CredentialsLegacyAuthConsumers
+        {...credentials}
+        email={email}
+        status={status}
+        id={id}
+        type={type}
+        subscription={subscription}
+      />
+      <CredentialsAuthClients
+        {...credentials}
+        email={email}
+        status={status}
+        id={id}
+        type={type}
+        subscription={subscription}
+      />
     </>
   );
 };
