@@ -19,7 +19,7 @@ export const Pagination = ({ links }: { links: string[] }) => {
           key={link}
           href={link}
           className={classNames(
-            "text-publiq-gray-900 border border-publiq-gray-900 w-10 h-10 m-1 rounded-lg flex justify-center items-center",
+            "text-publiq-gray-900 border border-publiq-gray-900 w-10 h-10 m-1 flex justify-center items-center",
             currentPage - 1 === index
               ? "bg-publiq-blue-dark text-white hover:bg-publiq-blue-dark"
               : "hover:bg-publiq-blue-dark hover:bg-opacity-10"

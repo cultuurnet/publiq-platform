@@ -24,7 +24,7 @@ export const ActivationFlow = ({ id, subscription, type, email }: Props) => {
 
   return (
     <>
-      <ActivationRequest id={id} />
+      <ActivationRequest id={id} type={type} />
       <ActivationDialog
         isVisible={isActivationDialogVisible}
         onClose={() => {

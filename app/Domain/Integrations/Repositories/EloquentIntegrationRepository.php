@@ -82,7 +82,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
             })
             ->distinct('integrations.id')
             ->orderBy('integrations.created_at', 'desc')
-            ->paginate();
+            ->paginate(10);
 
         $integrations = new Collection();
 

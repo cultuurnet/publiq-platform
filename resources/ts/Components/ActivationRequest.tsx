@@ -5,10 +5,11 @@ import { ButtonPrimary } from "./ButtonPrimary";
 import { router } from "@inertiajs/react";
 import { useTranslateRoute } from "../hooks/useTranslateRoute";
 import { Integration } from "../Pages/Integrations/Index";
+import { IntegrationType } from "../types/IntegrationType";
 
-type Props = { id: Integration["id"] };
+type Props = Pick<Integration, "id" | "type">;
 
-export const ActivationRequest = ({ id }: Props) => {
+export const ActivationRequest = ({ id, type }: Props) => {
   const { t } = useTranslation();
 
   const translateRoute = useTranslateRoute();
@@ -20,19 +21,21 @@ export const ActivationRequest = ({ id }: Props) => {
   return (
     <div className="flex flex-col gap-3">
       <div>
-        <Trans
-          i18nKey="integrations.status.pending_approval_integration_description"
-          t={t}
-          components={[
-            <Link
-              key={t(
-                "integrations.status.pending_approval_integration_description"
-              )}
-              href={t("integrations.status.before_going_live_link")}
-              className="text-publiq-blue-dark hover:underline"
-            />,
-          ]}
-        />
+        {type === IntegrationType.EntryApi && (
+          <Trans
+            i18nKey="integrations.status.pending_approval_integration_description"
+            t={t}
+            components={[
+              <Link
+                key={t(
+                  "integrations.status.pending_approval_integration_description"
+                )}
+                href={t("integrations.status.before_going_live_link")}
+                className="text-publiq-blue-dark hover:underline"
+              />,
+            ]}
+          />
+        )}
       </div>
       <ButtonPrimary className="self-start" onClick={handleActivate}>
         {t("integrations.status.activate")}
