@@ -390,7 +390,7 @@ const New = ({ subscriptions }: Props) => {
                 <input
                   type="checkbox"
                   name="coupon"
-                  className="focus:ring-publiq-blue-dark rounded-sm"
+                  className="text-publiq-blue-dark focus:ring-publiq-blue-dark rounded-sm"
                   checked={data.coupon === "true"}
                   onChange={() =>
                     setData("coupon", data.coupon === "true" ? "" : "true")
