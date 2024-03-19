@@ -133,22 +133,22 @@ const Index = ({ integrations, paginationInfo, credentials }: Props) => {
       integrations.map((integration) => ({
         ...integration,
         credentials: {
-          v2TestClient: credentials.auth0.find(
+          testClient: credentials.auth0.find(
             (client) =>
               client.integrationId === integration.id &&
               client.tenant === Auth0Tenant.Testing
           ),
-          v2ProdClient: credentials.auth0.find(
+          prodClient: credentials.auth0.find(
             (client) =>
               client.integrationId === integration.id &&
               client.tenant === Auth0Tenant.Production
           ),
-          v1TestConsumer: credentials.uitidV1.find(
+          legacyTestConsumer: credentials.uitidV1.find(
             (client) =>
               client.integrationId === integration.id &&
               client.environment === UiTiDv1Environment.Testing
           ),
-          v1ProdConsumer: credentials.uitidV1.find(
+          legacyProdConsumer: credentials.uitidV1.find(
             (client) =>
               client.integrationId === integration.id &&
               client.environment === UiTiDv1Environment.Production

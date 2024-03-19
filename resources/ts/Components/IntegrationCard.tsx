@@ -23,10 +23,10 @@ import { IntegrationType } from "../types/IntegrationType";
 import { CopyText } from "./CopyText";
 
 type Credentials = {
-  v2TestClient?: Auth0Client;
-  v2ProdClient?: Auth0Client;
-  v1TestConsumer?: UiTiDv1Consumer;
-  v1ProdConsumer?: UiTiDv1Consumer;
+  testClient?: Auth0Client;
+  prodClient?: Auth0Client;
+  legacyTestConsumer?: UiTiDv1Consumer;
+  legacyProdConsumer?: UiTiDv1Consumer;
 };
 
 type Props = Integration &
@@ -65,10 +65,10 @@ export const IntegrationCard = ({
   name,
   type,
   status,
-  v1TestConsumer,
-  v1ProdConsumer,
-  v2TestClient,
-  v2ProdClient,
+  legacyTestConsumer,
+  legacyProdConsumer,
+  testClient,
+  prodClient,
   onEdit,
 }: Props) => {
   const { t } = useTranslation();
@@ -78,22 +78,22 @@ export const IntegrationCard = ({
   const auth0TestClientWithLabels = [
     {
       label: "details.credentials.client_id",
-      value: v2TestClient?.clientId,
+      value: testClient?.clientId,
     },
     {
       label: "details.credentials.client_secret",
-      value: v2TestClient?.clientSecret,
+      value: testClient?.clientSecret,
     },
   ];
 
   const auth0ProdClientWithLabels = [
     {
       label: "details.credentials.client_id",
-      value: v2ProdClient?.clientId,
+      value: prodClient?.clientId,
     },
     {
       label: "details.credentials.client_secret",
-      value: v2ProdClient?.clientSecret,
+      value: prodClient?.clientSecret,
     },
   ];
 
@@ -117,7 +117,7 @@ export const IntegrationCard = ({
       }
     >
       <div className="flex flex-col gap-4 mx-8 my-6 items-stretch min-h-[10rem]">
-        {type !== IntegrationType.Widgets && v2TestClient && (
+        {type !== IntegrationType.Widgets && testClient && (
           <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center gap-3">
             <Heading
               level={5}
@@ -142,7 +142,7 @@ export const IntegrationCard = ({
             </div>
           </section>
         )}
-        {type !== IntegrationType.Widgets && v1TestConsumer && (
+        {type !== IntegrationType.Widgets && legacyTestConsumer && (
           <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center gap-3">
             <Heading
               level={5}
@@ -151,7 +151,7 @@ export const IntegrationCard = ({
               {t("integrations.test")}
             </Heading>
 
-            <CopyText>{v1TestConsumer.apiKey}</CopyText>
+            <CopyText>{legacyTestConsumer.apiKey}</CopyText>
           </section>
         )}
 
@@ -164,7 +164,7 @@ export const IntegrationCard = ({
               <OpenWidgetBuilderButton
                 type={type}
                 id={
-                  v2TestClient ? v2TestClient.clientId : v1TestConsumer!.apiKey
+                  testClient ? testClient.clientId : legacyTestConsumer!.apiKey
                 }
               />
             </section>
@@ -184,13 +184,13 @@ export const IntegrationCard = ({
                 <OpenWidgetBuilderButton
                   type={type}
                   id={
-                    v2ProdClient
-                      ? v2ProdClient.clientId
-                      : v1ProdConsumer!.apiKey
+                    prodClient
+                      ? prodClient.clientId
+                      : legacyProdConsumer!.apiKey
                   }
                 />
               )}
-              {v2ProdClient &&
+              {prodClient &&
                 status === IntegrationStatus.Active &&
                 type !== IntegrationType.Widgets && (
                   <div className="flex flex-col gap-2">
@@ -210,7 +210,7 @@ export const IntegrationCard = ({
             </div>
           </div>
         </section>
-        {v1ProdConsumer &&
+        {legacyProdConsumer &&
           status === IntegrationStatus.Active &&
           type !== IntegrationType.Widgets && (
             <section className="flex-1 inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">
@@ -221,7 +221,7 @@ export const IntegrationCard = ({
                 {t("integrations.live")}
               </Heading>
               <div className="flex flex-col gap-2">
-                <CopyText>{v1ProdConsumer.apiKey}</CopyText>
+                <CopyText>{legacyProdConsumer.apiKey}</CopyText>
               </div>
             </section>
           )}
