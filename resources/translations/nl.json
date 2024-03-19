@@ -196,6 +196,7 @@
     },
     "credentials": {
       "title": "Credentials",
+      "widgets": "Widgets bouwen",
       "uitid_v1": "UITID v1",
       "uitid_v2": "UITID v2",
       "test": "Test",
