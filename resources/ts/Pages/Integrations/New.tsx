@@ -369,7 +369,7 @@ const New = ({ subscriptions }: Props) => {
                 <input
                   type="checkbox"
                   name="agreement"
-                  className="focus:ring-publiq-blue-dark rounded-sm"
+                  className="text-publiq-blue-dark focus:ring-publiq-blue-dark rounded-sm"
                   checked={data.agreement === "true"}
                   onChange={() =>
                     setData(
