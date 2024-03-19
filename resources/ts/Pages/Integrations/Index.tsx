@@ -203,7 +203,7 @@ const Index = ({ integrations, paginationInfo, credentials }: Props) => {
               <li className="flex w-full" key={integration.id}>
                 <IntegrationCard
                   {...integration}
-                  credentials={credentials}
+                  {...credentials}
                   onEdit={(id) =>
                     router.get(`${translateRoute("/integrations")}/${id}`)
                   }

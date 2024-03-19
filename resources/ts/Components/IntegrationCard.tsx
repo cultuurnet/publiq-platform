@@ -29,10 +29,10 @@ type Credentials = {
   v1ProdConsumer?: UiTiDv1Consumer;
 };
 
-type Props = Integration & {
-  credentials: Credentials;
-  onEdit: (id: string) => void;
-};
+type Props = Integration &
+  Credentials & {
+    onEdit: (id: string) => void;
+  };
 
 const productTypeToPath = {
   "entry-api": "/uitdatabank/entry-api/introduction",
@@ -65,7 +65,10 @@ export const IntegrationCard = ({
   name,
   type,
   status,
-  credentials,
+  v1TestConsumer,
+  v1ProdConsumer,
+  v2TestClient,
+  v2ProdClient,
   onEdit,
 }: Props) => {
   const { t } = useTranslation();
@@ -75,22 +78,22 @@ export const IntegrationCard = ({
   const auth0TestClientWithLabels = [
     {
       label: "details.credentials.client_id",
-      value: credentials.v2TestClient?.clientId,
+      value: v2TestClient?.clientId,
     },
     {
       label: "details.credentials.client_secret",
-      value: credentials.v2TestClient?.clientSecret,
+      value: v2TestClient?.clientSecret,
     },
   ];
 
   const auth0ProdClientWithLabels = [
     {
       label: "details.credentials.client_id",
-      value: credentials.v2ProdClient?.clientId,
+      value: v2ProdClient?.clientId,
     },
     {
       label: "details.credentials.client_secret",
-      value: credentials.v2ProdClient?.clientSecret,
+      value: v2ProdClient?.clientSecret,
     },
   ];
 
@@ -114,7 +117,7 @@ export const IntegrationCard = ({
       }
     >
       <div className="flex flex-col gap-4 mx-8 my-6 items-stretch min-h-[10rem]">
-        {type !== IntegrationType.Widgets && credentials.v2TestClient && (
+        {type !== IntegrationType.Widgets && v2TestClient && (
           <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center gap-3">
             <Heading
               level={5}
@@ -139,7 +142,7 @@ export const IntegrationCard = ({
             </div>
           </section>
         )}
-        {type !== IntegrationType.Widgets && credentials.v1TestConsumer && (
+        {type !== IntegrationType.Widgets && v1TestConsumer && (
           <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center gap-3">
             <Heading
               level={5}
@@ -148,7 +151,7 @@ export const IntegrationCard = ({
               {t("integrations.test")}
             </Heading>
 
-            <CopyText>{credentials.v1TestConsumer.apiKey}</CopyText>
+            <CopyText>{v1TestConsumer.apiKey}</CopyText>
           </section>
         )}
 
@@ -161,9 +164,7 @@ export const IntegrationCard = ({
               <OpenWidgetBuilderButton
                 type={type}
                 id={
-                  credentials.v2TestClient
-                    ? credentials.v2TestClient.clientId
-                    : credentials.v1TestConsumer!.apiKey
+                  v2TestClient ? v2TestClient.clientId : v1TestConsumer!.apiKey
                 }
               />
             </section>
@@ -183,13 +184,13 @@ export const IntegrationCard = ({
                 <OpenWidgetBuilderButton
                   type={type}
                   id={
-                    credentials.v2ProdClient
-                      ? credentials.v2ProdClient.clientId
-                      : credentials.v1ProdConsumer!.apiKey
+                    v2ProdClient
+                      ? v2ProdClient.clientId
+                      : v1ProdConsumer!.apiKey
                   }
                 />
               )}
-              {credentials.v2ProdClient &&
+              {v2ProdClient &&
                 status === IntegrationStatus.Active &&
                 type !== IntegrationType.Widgets && (
                   <div className="flex flex-col gap-2">
@@ -209,7 +210,7 @@ export const IntegrationCard = ({
             </div>
           </div>
         </section>
-        {credentials.v1ProdConsumer &&
+        {v1ProdConsumer &&
           status === IntegrationStatus.Active &&
           type !== IntegrationType.Widgets && (
             <section className="flex-1 inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">
@@ -220,7 +221,7 @@ export const IntegrationCard = ({
                 {t("integrations.live")}
               </Heading>
               <div className="flex flex-col gap-2">
-                <CopyText>{credentials.v1ProdConsumer.apiKey}</CopyText>
+                <CopyText>{v1ProdConsumer.apiKey}</CopyText>
               </div>
             </section>
           )}
