@@ -1,5 +1,9 @@
 import React from "react";
-import type { Credentials, Integration } from "../Pages/Integrations/Index";
+import type {
+  Auth0Client,
+  Integration,
+  UiTiDv1Consumer,
+} from "../Pages/Integrations/Index";
 import { ButtonIcon } from "./ButtonIcon";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { Heading } from "./Heading";
@@ -18,10 +22,17 @@ import { ActivationRequest } from "./ActivationRequest";
 import { IntegrationType } from "../types/IntegrationType";
 import { CopyText } from "./CopyText";
 
-type Props = Integration & {
-  credentials: Credentials;
-  onEdit: (id: string) => void;
+type Credentials = {
+  testClient?: Auth0Client;
+  prodClient?: Auth0Client;
+  legacyTestConsumer?: UiTiDv1Consumer;
+  legacyProdConsumer?: UiTiDv1Consumer;
 };
+
+type Props = Integration &
+  Credentials & {
+    onEdit: (id: string) => void;
+  };
 
 const productTypeToPath = {
   "entry-api": "/uitdatabank/entry-api/introduction",
@@ -41,7 +52,7 @@ export const OpenWidgetBuilderButton = ({
   return (
     <ButtonLinkSecondary
       href={`/integrations/${id}/widget`}
-      target={"_blank"}
+      target="_blank"
       className="flex self-start"
     >
       {t("integrations.open_widget")}
@@ -54,45 +65,35 @@ export const IntegrationCard = ({
   name,
   type,
   status,
-  credentials,
+  legacyTestConsumer,
+  legacyProdConsumer,
+  testClient,
+  prodClient,
   onEdit,
 }: Props) => {
   const { t } = useTranslation();
 
   const integrationTypesInfo = useIntegrationTypesInfo();
 
-  const auth0TestClient = credentials.auth0.find(
-    (client) => client.integrationId === id && client.tenant === "test"
-  );
-  const auth0ProdClient = credentials.auth0.find(
-    (client) => client.integrationId === id && client.tenant === "prod"
-  );
-  const uiTiDv1TestConsumer = credentials.uitidV1.find(
-    (client) => client.integrationId === id && client.environment === "test"
-  );
-  const uiTiDv1ProdConsumer = credentials.uitidV1.find(
-    (client) => client.integrationId === id && client.environment === "prod"
-  );
-
   const auth0TestClientWithLabels = [
     {
       label: "details.credentials.client_id",
-      value: auth0TestClient?.clientId,
+      value: testClient?.clientId,
     },
     {
       label: "details.credentials.client_secret",
-      value: auth0TestClient?.clientSecret,
+      value: testClient?.clientSecret,
     },
   ];
 
   const auth0ProdClientWithLabels = [
     {
       label: "details.credentials.client_id",
-      value: auth0ProdClient?.clientId,
+      value: prodClient?.clientId,
     },
     {
       label: "details.credentials.client_secret",
-      value: auth0ProdClient?.clientSecret,
+      value: prodClient?.clientSecret,
     },
   ];
 
@@ -116,7 +117,7 @@ export const IntegrationCard = ({
       }
     >
       <div className="flex flex-col gap-4 mx-8 my-6 items-stretch min-h-[10rem]">
-        {type !== IntegrationType.Widgets && auth0TestClient && (
+        {type !== IntegrationType.Widgets && testClient && (
           <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center gap-3">
             <Heading
               level={5}
@@ -141,8 +142,7 @@ export const IntegrationCard = ({
             </div>
           </section>
         )}
-
-        {type !== IntegrationType.Widgets && uiTiDv1TestConsumer && (
+        {type !== IntegrationType.Widgets && legacyTestConsumer && (
           <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center gap-3">
             <Heading
               level={5}
@@ -150,9 +150,11 @@ export const IntegrationCard = ({
             >
               {t("integrations.test")}
             </Heading>
-            <CopyText>{uiTiDv1TestConsumer.apiKey}</CopyText>
+
+            <CopyText>{legacyTestConsumer.apiKey}</CopyText>
           </section>
         )}
+
         {type === IntegrationType.Widgets &&
           status !== IntegrationStatus.Active && (
             <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center justify-start gap-3">
@@ -162,9 +164,7 @@ export const IntegrationCard = ({
               <OpenWidgetBuilderButton
                 type={type}
                 id={
-                  auth0TestClient
-                    ? auth0TestClient.clientId
-                    : uiTiDv1TestConsumer!.apiKey
+                  testClient ? testClient.clientId : legacyTestConsumer!.apiKey
                 }
               />
             </section>
@@ -178,19 +178,19 @@ export const IntegrationCard = ({
             <StatusLight status={status} />
             <div className="flex flex-col align-center gap-3">
               {status === IntegrationStatus.Draft && (
-                <ActivationRequest id={id} />
+                <ActivationRequest id={id} type={type} />
               )}
               {status === IntegrationStatus.Active && (
                 <OpenWidgetBuilderButton
                   type={type}
                   id={
-                    auth0ProdClient
-                      ? auth0ProdClient.clientId
-                      : uiTiDv1ProdConsumer!.apiKey
+                    prodClient
+                      ? prodClient.clientId
+                      : legacyProdConsumer!.apiKey
                   }
                 />
               )}
-              {auth0ProdClient &&
+              {prodClient &&
                 status === IntegrationStatus.Active &&
                 type !== IntegrationType.Widgets && (
                   <div className="flex flex-col gap-2">
@@ -210,7 +210,7 @@ export const IntegrationCard = ({
             </div>
           </div>
         </section>
-        {uiTiDv1ProdConsumer &&
+        {legacyProdConsumer &&
           status === IntegrationStatus.Active &&
           type !== IntegrationType.Widgets && (
             <section className="flex-1 inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">
@@ -220,8 +220,9 @@ export const IntegrationCard = ({
               >
                 {t("integrations.live")}
               </Heading>
-
-              <CopyText>{uiTiDv1ProdConsumer.apiKey}</CopyText>
+              <div className="flex flex-col gap-2">
+                <CopyText>{legacyProdConsumer.apiKey}</CopyText>
+              </div>
             </section>
           )}
         <section className="flex-1 inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">
@@ -238,7 +239,7 @@ export const IntegrationCard = ({
                 product: t(`integrations.products.${type}`),
               })}
             </Link>
-            {type === "entry-api" && (
+            {type === IntegrationType.EntryApi && (
               <Link href="https://docs.publiq.be/docs/uitdatabank/entry-api%2Frequirements-before-going-live">
                 {t("integrations.documentation.requirements")}
               </Link>
