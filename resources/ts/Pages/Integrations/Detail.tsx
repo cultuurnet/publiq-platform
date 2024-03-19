@@ -24,6 +24,12 @@ const Detail = ({ integration, email }: Props) => {
 
   const [isMobile, setIsMobile] = useState(false);
 
+  const changeTabInUrl = (tab: string) => {
+    router.get(url, {
+      tab,
+    });
+  };
+
   const url = new URL(document.location.href);
   const activeTab = url.searchParams.get("tab") ?? "settings";
 
@@ -36,12 +42,64 @@ const Detail = ({ integration, email }: Props) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const [isFormDirty, setIsFormDirty] = useState(false);
+  const [isKeepChangesDialogVisible, setIsKeepChangesDialogVisible] =
+    useState(false);
+  const [originalVisitingUrl, setOriginalVisitingUrl] = useState<string>();
+
+  const handleChangeIsFormDirty = (newValue: boolean) =>
+    setIsFormDirty(newValue);
+
   const Icon = integrationTypesIcons[integration.type];
 
-  const changeTabInUrl = (tab: string) => {
-    url.searchParams.set("tab", tab);
-    router.get(url.toString());
+  const handleConfirmLeaveTab = () => {
+    if (!originalVisitingUrl) return;
+
+    router.get(originalVisitingUrl);
   };
+
+  const handleCancelLeaveTab = () => {
+    setIsKeepChangesDialogVisible(false);
+    setOriginalVisitingUrl("");
+  };
+
+  useEffect(() => {
+    const cleanUp = router.on("before", (e) => {
+      const nextVisit = e.detail.visit;
+      const newUrl = new URL(nextVisit.url);
+
+      if (nextVisit.url.toString() === originalVisitingUrl) {
+        return;
+      }
+
+      if (nextVisit.method !== "get") {
+        return;
+      }
+
+      if (activeTab !== "settings") {
+        return;
+      }
+
+      const hasPageChange =
+        (newUrl.pathname === location.pathname &&
+          activeTab !== newUrl.searchParams.get("tab")) ||
+        newUrl.pathname !== location.pathname;
+
+      if (!hasPageChange) {
+        return;
+      }
+
+      if (!isFormDirty) {
+        return;
+      }
+
+      setOriginalVisitingUrl(nextVisit.url.toString());
+      e.preventDefault();
+      setIsKeepChangesDialogVisible(true);
+    });
+
+    return () => cleanUp();
+  }, [isFormDirty, originalVisitingUrl, activeTab]);
 
   return (
     <Page>
@@ -64,7 +122,14 @@ const Detail = ({ integration, email }: Props) => {
               type="settings"
               label={t("details.integration_settings.title")}
             >
-              <IntegrationSettings {...integration} isMobile={isMobile} />
+              <IntegrationSettings
+                {...integration}
+                isMobile={isMobile}
+                onChangeIsFormDirty={handleChangeIsFormDirty}
+                isKeepChangesDialogVisible={isKeepChangesDialogVisible}
+                onConfirmLeaveTab={handleConfirmLeaveTab}
+                onCancelLeaveTab={handleCancelLeaveTab}
+              />
             </Tabs.Item>
             <Tabs.Item
               type="credentials"

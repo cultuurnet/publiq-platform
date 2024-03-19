@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useMemo, useState } from "react";
 import { router } from "@inertiajs/react";
 import { Heading } from "../../Components/Heading";
 import Layout from "../../layouts/Layout";
@@ -81,6 +81,11 @@ export type Auth0Client = {
   tenant: Auth0Tenant;
 };
 
+export type Credentials = {
+  auth0: Auth0Client[];
+  uitidV1: UiTiDv1Consumer[];
+};
+
 export type Integration = {
   id: string;
   type: Values<typeof IntegrationType>;
@@ -98,9 +103,10 @@ export type Integration = {
 
 type Props = {
   integrations: Integration[];
+  credentials: Credentials;
 } & PaginationInfo;
 
-const Index = ({ integrations, paginationInfo }: Props) => {
+const Index = ({ integrations, paginationInfo, credentials }: Props) => {
   const { t } = useTranslation();
   const translateRoute = useTranslateRoute();
 
@@ -120,6 +126,36 @@ const Index = ({ integrations, paginationInfo }: Props) => {
       );
     },
     250
+  );
+
+  const integrationsWithCredentials = useMemo(
+    () =>
+      integrations.map((integration) => ({
+        ...integration,
+        credentials: {
+          testClient: credentials.auth0.find(
+            (client) =>
+              client.integrationId === integration.id &&
+              client.tenant === Auth0Tenant.Testing
+          ),
+          prodClient: credentials.auth0.find(
+            (client) =>
+              client.integrationId === integration.id &&
+              client.tenant === Auth0Tenant.Production
+          ),
+          legacyTestConsumer: credentials.uitidV1.find(
+            (client) =>
+              client.integrationId === integration.id &&
+              client.environment === UiTiDv1Environment.Testing
+          ),
+          legacyProdConsumer: credentials.uitidV1.find(
+            (client) =>
+              client.integrationId === integration.id &&
+              client.environment === UiTiDv1Environment.Production
+          ),
+        },
+      })),
+    [integrations, credentials.auth0, credentials.uitidV1]
   );
 
   const handleDeleteIntegration = () => {
@@ -162,16 +198,19 @@ const Index = ({ integrations, paginationInfo }: Props) => {
       </div>
       {integrations.length > 0 && (
         <ul className="flex flex-col w-full gap-9">
-          {integrations.map((integration) => (
-            <li className="flex w-full" key={integration.id}>
-              <IntegrationCard
-                {...integration}
-                onEdit={(id) =>
-                  router.get(`${translateRoute("/integrations")}/${id}`)
-                }
-              />
-            </li>
-          ))}
+          {integrationsWithCredentials.map(
+            ({ credentials, ...integration }) => (
+              <li className="flex w-full" key={integration.id}>
+                <IntegrationCard
+                  {...integration}
+                  {...credentials}
+                  onEdit={(id) =>
+                    router.get(`${translateRoute("/integrations")}/${id}`)
+                  }
+                />
+              </li>
+            )
+          )}
         </ul>
       )}
 

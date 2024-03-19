@@ -10,6 +10,9 @@ import { StatusLight } from "../../StatusLight";
 import { CopyText } from "../../CopyText";
 import { ActivationFlow } from "../../ActivationFlow";
 import { Alert } from "../../Alert";
+import { OpenWidgetBuilderButton } from "../../IntegrationCard";
+import { IntegrationType } from "../../../types/IntegrationType";
+import { IntegrationStatus } from "../../../types/IntegrationStatus";
 
 type Props = {
   uiTiDv1Consumers: UiTiDv1Consumer[];
@@ -23,7 +26,6 @@ type Props = {
 
 export const CredentialsUitidv1Consumers = ({
   uiTiDv1Consumers,
-  auth0Clients,
   id,
   status,
   email,
@@ -47,37 +49,59 @@ export const CredentialsUitidv1Consumers = ({
       <Heading className="font-semibold lg:min-w-60" level={4}>
         {t("details.credentials.uitid_v1")}
       </Heading>
-      <div className="flex flex-col gap-6 min-w-[40rem]">
-        <div>
-          <Heading className="font-semibold flex" level={4}>
-            {t("details.credentials.test")}
-          </Heading>
-          <CopyText>{uiTiDv1TestConsumer?.apiKey}</CopyText>
-        </div>
-        <div>
-          {uiTiDv1ProdConsumer && (
+      <div className="flex flex-col gap-4 min-w-[40rem]">
+        {type !== IntegrationType.Widgets && (
+          <>
+            <Heading className="font-semibold" level={4}>
+              {t("details.credentials.test")}
+            </Heading>
+            <CopyText>{uiTiDv1TestConsumer?.apiKey}</CopyText>
+          </>
+        )}
+
+        {status !== IntegrationStatus.Active &&
+          type === IntegrationType.Widgets && (
             <>
               <Heading className="font-semibold" level={4}>
-                {t("details.credentials.live")}
+                {t("details.credentials.test")}
               </Heading>
-              {status === "active" && (
-                <CopyText>{uiTiDv1ProdConsumer?.apiKey}</CopyText>
-              )}
+              <OpenWidgetBuilderButton
+                type={type}
+                id={uiTiDv1TestConsumer!.apiKey}
+              />
             </>
           )}
-          <div className="flex flex-col gap-3 align-center">
-            {status !== "active" && <StatusLight status={status} />}
-            {status === "draft" && auth0Clients.length === 0 && (
-              <ActivationFlow
-                status={status}
-                id={id}
-                subscription={subscription}
-                type={type}
-                email={email}
-              />
-            )}
-            <Alert variant="info">{t("details.credentials.info")}</Alert>
-          </div>
+        <div className="flex flex-col gap-2">
+          <Heading className="font-semibold" level={4}>
+            {t("details.credentials.live")}
+          </Heading>
+          <StatusLight status={status} />
+          {uiTiDv1ProdConsumer && (
+            <div className="flex flex-col gap-2">
+              {status === IntegrationStatus.Active &&
+                type !== IntegrationType.Widgets && (
+                  <CopyText>{uiTiDv1ProdConsumer?.apiKey}</CopyText>
+                )}
+              {status === IntegrationStatus.Active &&
+                type === IntegrationType.Widgets && (
+                  <OpenWidgetBuilderButton
+                    type={type}
+                    id={uiTiDv1ProdConsumer.apiKey}
+                  />
+                )}
+
+              <Alert variant="info">{t("details.credentials.info")}</Alert>
+            </div>
+          )}
+          {status === IntegrationStatus.Draft && (
+            <ActivationFlow
+              status={status}
+              id={id}
+              subscription={subscription}
+              type={type}
+              email={email}
+            />
+          )}
         </div>
       </div>
     </>

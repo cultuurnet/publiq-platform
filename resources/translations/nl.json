@@ -221,6 +221,10 @@
         "title": "URL verwijderen",
         "question": "Wil je deze URL echt verwijderen?"
       },
+      "leave": {
+        "title": "Tabblad verlaten?",
+        "question": "Wijzigingen die je hebt aangebracht worden niet opgeslagen."
+      },
       "error": "Er is een fout opgetreden bij het indienen van het formulier. Controleer uw invoer en probeer het opnieuw.",
       "success": "De wijzigingen zijn succesvol opgeslagen."
     },

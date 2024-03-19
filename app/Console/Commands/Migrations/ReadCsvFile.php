@@ -13,7 +13,12 @@ trait ReadCsvFile
         $fileHandle = fopen($csvFile, 'rb');
 
         while (!feof($fileHandle)) {
-            $rows[] = fgetcsv($fileHandle);
+            $row = fgetcsv($fileHandle);
+            if ($row === false) {
+                break;
+            }
+
+            $rows[] = $row;
         }
         fclose($fileHandle);
 
