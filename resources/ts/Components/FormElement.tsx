@@ -41,6 +41,7 @@ type LabelProps = ComponentProps<"label"> & {
   id: string;
   label: string | ReactElement;
   labelSize: LabelSize;
+  labelWeight?: LabelWeight;
 };
 
 const Label = memo(
@@ -48,6 +49,7 @@ const Label = memo(
     <label
       htmlFor={id}
       className={classNames(
+        "cursor-pointer",
         `font-${labelWeight}`,
         labelSize ? `text-${labelSize}` : "",
         className
