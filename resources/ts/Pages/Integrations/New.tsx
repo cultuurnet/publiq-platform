@@ -181,7 +181,7 @@ const New = ({ subscriptions }: Props) => {
                   value: pricingPlan.id,
                   label: (
                     <div className="flex flex-row items-center justify-between gap-2">
-                      <span className={"text-left w-1/2"}>
+                      <span className="text-left w-1/2">
                         {pricingPlan.title} ({pricingPlan.price})
                       </span>
                       <span className="text-gray-400 font-thin text-right">
