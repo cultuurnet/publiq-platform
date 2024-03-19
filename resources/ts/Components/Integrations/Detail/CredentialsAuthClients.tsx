@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { Heading } from "../../Heading";
 import { useTranslation } from "react-i18next";
 import { Integration } from "../../../Pages/Integrations/Index";

@@ -1,7 +1,5 @@
 import React from "react";
-import type {
-  Integration,
-} from "../Pages/Integrations/Index";
+import type { Integration } from "../Pages/Integrations/Index";
 import { ButtonIcon } from "./ButtonIcon";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { Heading } from "./Heading";
