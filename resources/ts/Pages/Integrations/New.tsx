@@ -128,7 +128,7 @@ const New = ({ subscriptions }: Props) => {
 
   return (
     <Page>
-      <div className="inline-flex flex-col gap-5">
+      <div className="inline-flex flex-col gap-5 w-full">
         <Heading level={2}>{t("integration_form.title")}</Heading>
         <p className="mb-5">{t("integration_form.description")}</p>
 
