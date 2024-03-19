@@ -10,6 +10,7 @@ import { classNames } from "../utils/classNames";
 export type LabelPosition = "top" | "left" | "right";
 
 type LabelSize = "sm" | "base" | "lg" | "xl";
+type LabelWeight = "light" | "normal" | "medium" | "bold";
 
 type WrapperProps = {
   labelPosition?: LabelPosition;
@@ -42,18 +43,20 @@ type LabelProps = ComponentProps<"label"> & {
   labelSize: LabelSize;
 };
 
-const Label = memo(({ id, labelSize, label, className }: LabelProps) => (
-  <label
-    htmlFor={id}
-    className={classNames(
-      "font-medium",
-      labelSize ? `text-${labelSize}` : "",
-      className
-    )}
-  >
-    {label}
-  </label>
-));
+const Label = memo(
+  ({ id, labelSize, labelWeight = "medium", label, className }: LabelProps) => (
+    <label
+      htmlFor={id}
+      className={classNames(
+        `font-${labelWeight}`,
+        labelSize ? `text-${labelSize}` : "",
+        className
+      )}
+    >
+      {label}
+    </label>
+  )
+);
 
 Label.displayName = "Label";
 
@@ -68,6 +71,7 @@ type Props = {
   label?: string | ReactElement;
   labelPosition?: LabelPosition;
   labelSize?: LabelSize;
+  labelWeight?: LabelWeight;
   error?: string;
   info?: string;
   component: ReactElement;
@@ -78,6 +82,7 @@ export const FormElement = ({
   label,
   labelPosition = "top",
   labelSize = "sm",
+  labelWeight = "medium",
   component,
   error,
   info,
@@ -107,6 +112,7 @@ export const FormElement = ({
                 id={id}
                 label={label}
                 labelSize={labelSize}
+                labelWeight={labelWeight}
                 className={classNames(labelPosition === "left" ? "w-40" : "")}
               />
             )}

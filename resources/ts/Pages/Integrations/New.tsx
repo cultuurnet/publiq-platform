@@ -363,12 +363,13 @@ const New = ({ subscriptions }: Props) => {
                 />
               }
               labelPosition="right"
-              className=""
+              labelSize="base"
+              labelWeight="normal"
               component={
                 <input
                   type="checkbox"
                   name="agreement"
-                  className="text-publiq-blue-dark focus:ring-publiq-blue-dark rounded-sm"
+                  className="focus:ring-publiq-blue-dark rounded-sm"
                   checked={data.agreement === "true"}
                   onChange={() =>
                     setData(
@@ -382,12 +383,14 @@ const New = ({ subscriptions }: Props) => {
             />
             <FormElement
               label={t("integration_form.coupon")}
+              labelSize="base"
+              labelWeight="normal"
               labelPosition="right"
               component={
                 <input
                   type="checkbox"
                   name="coupon"
-                  className="text-publiq-blue-dark focus:ring-publiq-blue-dark rounded-sm"
+                  className="focus:ring-publiq-blue-dark rounded-sm"
                   checked={data.coupon === "true"}
                   onChange={() =>
                     setData("coupon", data.coupon === "true" ? "" : "true")
