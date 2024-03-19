@@ -22,11 +22,15 @@ import { ActivationRequest } from "./ActivationRequest";
 import { IntegrationType } from "../types/IntegrationType";
 import { CopyText } from "./CopyText";
 
+type Credentials = {
+  v2TestClient?: Auth0Client;
+  v2ProdClient?: Auth0Client;
+  v1TestConsumer?: UiTiDv1Consumer;
+  v1ProdConsumer?: UiTiDv1Consumer;
+};
+
 type Props = Integration & {
-  auth0TestClient?: Auth0Client;
-  auth0ProdClient?: Auth0Client;
-  uiTiDv1TestConsumer?: UiTiDv1Consumer;
-  uiTiDv1ProdConsumer?: UiTiDv1Consumer;
+  credentials: Credentials;
   onEdit: (id: string) => void;
 };
 
@@ -61,10 +65,7 @@ export const IntegrationCard = ({
   name,
   type,
   status,
-  auth0TestClient,
-  auth0ProdClient,
-  uiTiDv1TestConsumer,
-  uiTiDv1ProdConsumer,
+  credentials,
   onEdit,
 }: Props) => {
   const { t } = useTranslation();
@@ -74,22 +75,22 @@ export const IntegrationCard = ({
   const auth0TestClientWithLabels = [
     {
       label: "details.credentials.client_id",
-      value: auth0TestClient?.clientId,
+      value: credentials.v2TestClient?.clientId,
     },
     {
       label: "details.credentials.client_secret",
-      value: auth0TestClient?.clientSecret,
+      value: credentials.v2TestClient?.clientSecret,
     },
   ];
 
   const auth0ProdClientWithLabels = [
     {
       label: "details.credentials.client_id",
-      value: auth0ProdClient?.clientId,
+      value: credentials.v2ProdClient?.clientId,
     },
     {
       label: "details.credentials.client_secret",
-      value: auth0ProdClient?.clientSecret,
+      value: credentials.v2ProdClient?.clientSecret,
     },
   ];
 
@@ -113,7 +114,7 @@ export const IntegrationCard = ({
       }
     >
       <div className="flex flex-col gap-4 mx-8 my-6 items-stretch min-h-[10rem]">
-        {type !== IntegrationType.Widgets && auth0TestClient && (
+        {type !== IntegrationType.Widgets && credentials.v2TestClient && (
           <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center gap-3">
             <Heading
               level={5}
@@ -138,7 +139,7 @@ export const IntegrationCard = ({
             </div>
           </section>
         )}
-        {type !== IntegrationType.Widgets && uiTiDv1TestConsumer && (
+        {type !== IntegrationType.Widgets && credentials.v1TestConsumer && (
           <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center gap-3">
             <Heading
               level={5}
@@ -146,23 +147,11 @@ export const IntegrationCard = ({
             >
               {t("integrations.test")}
             </Heading>
-            {uiTiDv1TestConsumer && (
-              <CopyText>{uiTiDv1TestConsumer.apiKey}</CopyText>
-            )}
+
+            <CopyText>{credentials.v1TestConsumer.apiKey}</CopyText>
           </section>
         )}
 
-        {type !== IntegrationType.Widgets && uiTiDv1TestConsumer && (
-          <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center gap-3">
-            <Heading
-              level={5}
-              className="font-semibold min-w-[10rem] self-start"
-            >
-              {t("integrations.test")}
-            </Heading>
-            <CopyText>{uiTiDv1TestConsumer.apiKey}</CopyText>
-          </section>
-        )}
         {type === IntegrationType.Widgets &&
           status !== IntegrationStatus.Active && (
             <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center justify-start gap-3">
@@ -172,9 +161,9 @@ export const IntegrationCard = ({
               <OpenWidgetBuilderButton
                 type={type}
                 id={
-                  auth0TestClient
-                    ? auth0TestClient.clientId
-                    : uiTiDv1TestConsumer!.apiKey
+                  credentials.v2TestClient
+                    ? credentials.v2TestClient.clientId
+                    : credentials.v1TestConsumer!.apiKey
                 }
               />
             </section>
@@ -194,13 +183,13 @@ export const IntegrationCard = ({
                 <OpenWidgetBuilderButton
                   type={type}
                   id={
-                    auth0ProdClient
-                      ? auth0ProdClient.clientId
-                      : uiTiDv1ProdConsumer!.apiKey
+                    credentials.v2ProdClient
+                      ? credentials.v2ProdClient.clientId
+                      : credentials.v1ProdConsumer!.apiKey
                   }
                 />
               )}
-              {auth0ProdClient &&
+              {credentials.v2ProdClient &&
                 status === IntegrationStatus.Active &&
                 type !== IntegrationType.Widgets && (
                   <div className="flex flex-col gap-2">
@@ -220,7 +209,7 @@ export const IntegrationCard = ({
             </div>
           </div>
         </section>
-        {uiTiDv1ProdConsumer &&
+        {credentials.v1ProdConsumer &&
           status === IntegrationStatus.Active &&
           type !== IntegrationType.Widgets && (
             <section className="flex-1 inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">
@@ -231,7 +220,7 @@ export const IntegrationCard = ({
                 {t("integrations.live")}
               </Heading>
               <div className="flex flex-col gap-2">
-                <CopyText>{uiTiDv1ProdConsumer.apiKey}</CopyText>
+                <CopyText>{credentials.v1ProdConsumer.apiKey}</CopyText>
               </div>
             </section>
           )}

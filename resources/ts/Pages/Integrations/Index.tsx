@@ -133,22 +133,22 @@ const Index = ({ integrations, paginationInfo, credentials }: Props) => {
       integrations.map((integration) => ({
         ...integration,
         credentials: {
-          auth0TestClient: credentials.auth0.find(
+          v2TestClient: credentials.auth0.find(
             (client) =>
               client.integrationId === integration.id &&
               client.tenant === Auth0Tenant.Testing
           ),
-          auth0ProdClient: credentials.auth0.find(
+          v2ProdClient: credentials.auth0.find(
             (client) =>
               client.integrationId === integration.id &&
               client.tenant === Auth0Tenant.Production
           ),
-          uiTiDv1TestConsumer: credentials.uitidV1.find(
+          v1TestConsumer: credentials.uitidV1.find(
             (client) =>
               client.integrationId === integration.id &&
               client.environment === UiTiDv1Environment.Testing
           ),
-          uiTiDv1ProdConsumer: credentials.uitidV1.find(
+          v1ProdConsumer: credentials.uitidV1.find(
             (client) =>
               client.integrationId === integration.id &&
               client.environment === UiTiDv1Environment.Production
@@ -203,10 +203,7 @@ const Index = ({ integrations, paginationInfo, credentials }: Props) => {
               <li className="flex w-full" key={integration.id}>
                 <IntegrationCard
                   {...integration}
-                  auth0TestClient={credentials.auth0TestClient}
-                  auth0ProdClient={credentials.auth0ProdClient}
-                  uiTiDv1TestConsumer={credentials.uiTiDv1TestConsumer}
-                  uiTiDv1ProdConsumer={credentials.uiTiDv1ProdConsumer}
+                  credentials={credentials}
                   onEdit={(id) =>
                     router.get(`${translateRoute("/integrations")}/${id}`)
                   }
