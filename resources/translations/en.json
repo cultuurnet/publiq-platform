@@ -125,7 +125,7 @@
     "searching": "Searching...",
     "test": "Test",
     "live": "Live",
-    "open_widget": "Widgets bouwen",
+    "open_widget": "Build widgets",
     "products": {
       "search-api": "Search API",
       "entry-api": "Entry API",
@@ -196,6 +196,7 @@
     },
     "credentials": {
       "title": "Credentials",
+      "widgets": "Build widgets",
       "uitid_v1": "UITID v1",
       "uitid_v2": "UITID v2",
       "test": "Test",

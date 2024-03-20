@@ -1,9 +1,5 @@
 import React from "react";
-import type {
-  Auth0Client,
-  Integration,
-  UiTiDv1Consumer,
-} from "../Pages/Integrations/Index";
+import type { Integration } from "../Pages/Integrations/Index";
 import { ButtonIcon } from "./ButtonIcon";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { Heading } from "./Heading";
@@ -21,13 +17,7 @@ import { IconSearchApi } from "./icons/IconSearchApi";
 import { ActivationRequest } from "./ActivationRequest";
 import { IntegrationType } from "../types/IntegrationType";
 import { CopyText } from "./CopyText";
-
-type Credentials = {
-  testClient?: Auth0Client;
-  prodClient?: Auth0Client;
-  legacyTestConsumer?: UiTiDv1Consumer;
-  legacyProdConsumer?: UiTiDv1Consumer;
-};
+import { Credentials } from "./Integrations/Detail/Credentials";
 
 type Props = Integration &
   Credentials & {
@@ -161,12 +151,7 @@ export const IntegrationCard = ({
               <Heading level={5} className="font-semibold min-w-[10rem]">
                 {t("integrations.test")}
               </Heading>
-              <OpenWidgetBuilderButton
-                type={type}
-                id={
-                  testClient ? testClient.clientId : legacyTestConsumer!.apiKey
-                }
-              />
+              <OpenWidgetBuilderButton type={type} id={id} />
             </section>
           )}
 
@@ -181,14 +166,7 @@ export const IntegrationCard = ({
                 <ActivationRequest id={id} type={type} />
               )}
               {status === IntegrationStatus.Active && (
-                <OpenWidgetBuilderButton
-                  type={type}
-                  id={
-                    prodClient
-                      ? prodClient.clientId
-                      : legacyProdConsumer!.apiKey
-                  }
-                />
+                <OpenWidgetBuilderButton type={type} id={id} />
               )}
               {prodClient &&
                 status === IntegrationStatus.Active &&

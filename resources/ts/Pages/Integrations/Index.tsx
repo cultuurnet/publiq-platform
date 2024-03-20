@@ -63,7 +63,7 @@ export type IntegrationUrl = {
   url: string;
 };
 
-export type UiTiDv1Consumer = {
+export type LegacyAuthConsumer = {
   apiKey: string;
   consumerId: string;
   consumerKey: string;
@@ -73,7 +73,7 @@ export type UiTiDv1Consumer = {
   integrationId: string;
 };
 
-export type Auth0Client = {
+export type AuthClient = {
   clientId: string;
   clientSecret: string;
   id: string;
@@ -82,8 +82,8 @@ export type Auth0Client = {
 };
 
 export type Credentials = {
-  auth0: Auth0Client[];
-  uitidV1: UiTiDv1Consumer[];
+  auth0: AuthClient[];
+  uitidV1: LegacyAuthConsumer[];
 };
 
 export type Integration = {
@@ -97,8 +97,8 @@ export type Integration = {
   organization?: Organization;
   subscription: Subscription;
   urls: IntegrationUrl[];
-  auth0Clients: Auth0Client[];
-  uiTiDv1Consumers: UiTiDv1Consumer[];
+  authClients: AuthClient[];
+  legacyAuthConsumers: LegacyAuthConsumer[];
 };
 
 type Props = {
