@@ -128,7 +128,7 @@ const New = ({ subscriptions }: Props) => {
 
   return (
     <Page>
-      <div className="inline-flex flex-col gap-5">
+      <div className="inline-flex flex-col gap-5 w-full">
         <Heading level={2}>{t("integration_form.title")}</Heading>
         <p className="mb-5">{t("integration_form.description")}</p>
 
@@ -180,11 +180,11 @@ const New = ({ subscriptions }: Props) => {
                 options={translatedPricingPlans.map((pricingPlan) => ({
                   value: pricingPlan.id,
                   label: (
-                    <div className="flex flex-row justify-between gap-2">
-                      <span>
+                    <div className="flex flex-row items-center justify-between gap-2">
+                      <span className="text-left w-1/2">
                         {pricingPlan.title} ({pricingPlan.price})
                       </span>
-                      <span className="text-gray-400 font-thin">
+                      <span className="text-gray-400 font-thin text-right">
                         {pricingPlan.description}
                       </span>
                     </div>
@@ -363,7 +363,8 @@ const New = ({ subscriptions }: Props) => {
                 />
               }
               labelPosition="right"
-              className=""
+              labelSize="base"
+              labelWeight="normal"
               component={
                 <input
                   type="checkbox"
@@ -382,6 +383,8 @@ const New = ({ subscriptions }: Props) => {
             />
             <FormElement
               label={t("integration_form.coupon")}
+              labelSize="base"
+              labelWeight="normal"
               labelPosition="right"
               component={
                 <input

@@ -33,7 +33,7 @@
         "features": [
           "JSON-standaard",
           "Award-winning API",
-          "Activatie op live-omgeving op aanvraag"
+          "Activatie live-omgeving op aanvraag"
         ]
       },
       "search_api": {
@@ -102,7 +102,7 @@
         "title": "Plus",
         "price": "eerste jaar: € 600 nadien: € 280 / jaar",
         "description": {
-          "widgets": "Na een intakegesprek zorgt publiq voor de configuratie van je widget en de naadloze integratie ervan in je website."
+          "widgets": "Na een intakegesprek zorgt publiq voor de configuratie & integratie van je widget."
         }
       },
       "custom": {
@@ -274,10 +274,10 @@
       "action_url": "#"
     },
     "release_notes": {
-      "title": "Relase notes",
+      "title": "Release notes",
       "description": "Een overzicht van alle nieuwe mogelijkheden, technische aanpassingen en verbeteringen binnen het publiq platform.",
       "img_url": "#",
-      "action_title": "Naar de relase notes",
+      "action_title": "Naar de release notes",
       "action_url": "#"
     },
     "support_via_slack": {
@@ -328,7 +328,7 @@
     },
     "newsletter": {
       "title": "Blijf op de hoogte",
-      "description": "Schrijf je in op onze nieuwsbrief en blijf op de hoogte van het laatste publiq-nieuws.",
+      "description": "Schrijf je in op onze nieuwsbrief en krijg als eerste updates over het publiq platform.",
       "action": "Inschrijven"
     }
   }
