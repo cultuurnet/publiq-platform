@@ -47,16 +47,16 @@ final class UpdateIntegrationUrlsRequest extends FormRequest
             foreach ($errors as $originalKey => $originalMessage) {
                 $index = explode('.', $originalKey)[1];
                 $url = $data[$index];
-                $groupedIndex = $grouped->get("{$url['type']}.{$url['environment']}")?->search($url) ?? $index;
+                $hash = "{$url['type']}.{$url['environment']}";
+                $groupedIndex = $grouped->get($hash)?->search($url) ?? $index;
 
-                $errorKey = "{$url['type']}.{$url['environment']}.$groupedIndex";
                 $errorMessage = str_replace(
                     ucfirst($originalKey),
                     'Url',
                     $originalMessage
                 );
 
-                $validator->errors()->add($errorKey, $errorMessage);
+                $validator->errors()->add($hash . $groupedIndex, $errorMessage);
                 $validator->errors()->forget($originalKey);
             }
         });
