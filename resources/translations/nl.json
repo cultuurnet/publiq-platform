@@ -87,7 +87,7 @@
         "title": "Free",
         "price": "Gratis",
         "description": {
-          "entry-api": "Je staat zelf in voor het bouwen van de de koppeling, met ondersteuning van onze documentatie."
+          "entry-api": "Je staat zelf in voor het bouwen van de koppeling, met ondersteuning van onze documentatie."
         }
       },
       "basic": {
@@ -109,8 +109,8 @@
         "title": "Custom",
         "price": "voorstel op maat",
         "description": {
-          "search-api": "We nemen contact met je op voor een oplossing op maat, die voldoet aan jouw use case en doelpubliek.",
-          "widgets": "We nemen contact met je op voor een oplossing op maat, die voldoet aan jouw use case en doelpubliek."
+          "search-api": "We nemen contact met je op voor een oplossing op maat van jouw use case en doelpubliek.",
+          "widgets": "We nemen contact met je op voor een oplossing op maat van jouw use case en doelpubliek."
         }
       }
     }
