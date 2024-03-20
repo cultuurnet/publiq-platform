@@ -18,7 +18,7 @@ export const ButtonSecondary = ({
   return (
     <button
       className={classNames(
-        "relative inline-flex items-center justify-center px-7 py-2 max-md:px-5 font-medium border hover:bg-opacity-10",
+        "relative inline-flex items-center justify-center px-7 py-2 max-md:px-5 font-light border hover:bg-opacity-10",
         variant === "default" &&
           "border-publiq-blue text-publiq-blue hover:bg-publiq-blue-dark",
         variant === "danger" &&
