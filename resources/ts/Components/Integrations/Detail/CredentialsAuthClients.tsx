@@ -9,13 +9,8 @@ import { ActivationFlow } from "../../ActivationFlow";
 import { IntegrationStatus } from "../../../types/IntegrationStatus";
 import { Credentials } from "./Credentials";
 
-type Props = {
-  email: string;
-  id: Integration["id"];
-  status: Integration["status"];
-  subscription: Integration["subscription"];
-  type: Integration["type"];
-} & Credentials;
+type Props = Pick<Integration, "id" | "status" | "subscription" | "type"> &
+  Credentials & { email: string };
 
 export const CredentialsAuthClients = ({
   testClient,

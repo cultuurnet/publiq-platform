@@ -8,13 +8,8 @@ import { OpenWidgetBuilderButton } from "../../IntegrationCard";
 import { StatusLight } from "../../StatusLight";
 import { ActivationFlow } from "../../ActivationFlow";
 
-type Props = {
-  email: string;
-  id: Integration["id"];
-  status: Integration["status"];
-  subscription: Integration["subscription"];
-  type: Integration["type"];
-} & Credentials;
+type Props = Pick<Integration, "id" | "status" | "subscription" | "type"> &
+  Credentials & { email: string };
 
 export const CredentialsWidgets = ({
   email,
