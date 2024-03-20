@@ -56,7 +56,7 @@ final class UpdateIntegrationUrlsRequest extends FormRequest
                     $originalMessage
                 );
 
-                $validator->errors()->add($hash . $groupedIndex, $errorMessage);
+                $validator->errors()->add("{$hash}.{$groupedIndex}", $errorMessage);
                 $validator->errors()->forget($originalKey);
             }
         });
