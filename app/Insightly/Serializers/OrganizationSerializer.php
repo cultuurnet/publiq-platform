@@ -18,10 +18,11 @@ final class OrganizationSerializer
             'ADDRESS_BILLING_STREET' => $organization->address->street,
             'ADDRESS_BILLING_POSTCODE' => $organization->address->zip,
             'ADDRESS_BILLING_CITY' => $organization->address->city,
-            'CUSTOMFIELDS' => [
-                (new InvoiceEmailSerializer())->toInsightlyArray($organization->invoiceEmail),
-            ],
         ];
+
+        if ($organization->invoiceEmail) {
+            $organizationAsArray['CUSTOMFIELDS'][] = (new InvoiceEmailSerializer())->toInsightlyArray($organization->invoiceEmail);
+        }
 
         if ($organization->vat) {
             $organizationAsArray['CUSTOMFIELDS'][] = (new VatSerializer())->toInsightlyArray($organization->vat);

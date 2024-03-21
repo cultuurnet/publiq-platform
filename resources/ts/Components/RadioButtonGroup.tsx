@@ -28,7 +28,7 @@ export const RadioButtonGroup = ({
     switch (index) {
       case 0:
         return isVertical ? "rounded-t-lg" : "rounded-l-lg";
-      case 2:
+      case options.length - 1:
         return isVertical ? "rounded-b-lg" : "rounded-r-lg";
     }
   };
@@ -73,7 +73,7 @@ export const RadioButtonGroup = ({
             value={option.value}
             className="hidden"
           />
-          <label htmlFor={option.value} className="cursor-pointer">
+          <label htmlFor={option.value} className="cursor-pointer text-right">
             {option.label}
           </label>
         </li>

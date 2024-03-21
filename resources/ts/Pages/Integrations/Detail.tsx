@@ -16,6 +16,7 @@ import {
   integrationTypesIcons,
 } from "../../Components/IntegrationTypes";
 import { Heading } from "../../Components/Heading";
+import { IntegrationType } from "../../types/IntegrationType";
 
 type Props = { integration: Integration; email: string };
 
@@ -133,7 +134,11 @@ const Detail = ({ integration, email }: Props) => {
             </Tabs.Item>
             <Tabs.Item
               type="credentials"
-              label={t("details.credentials.title")}
+              label={
+                integration.type === IntegrationType.Widgets
+                  ? t("details.credentials.widgets")
+                  : t("details.credentials.title")
+              }
             >
               <Credentials {...integration} email={email} />
             </Tabs.Item>

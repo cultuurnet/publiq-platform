@@ -135,8 +135,8 @@ final class IntegrationController extends Controller
             $integration = $this->integrationRepository->getById(Uuid::fromString($id));
             $subscription = $this->subscriptionRepository->getById($integration->subscriptionId);
             $contacts = $this->contactRepository->getByIntegrationId(UUid::fromString($id));
-            $auth0Clients = $this->auth0ClientRepository->getDistributedByIntegrationId(UUid::fromString($id));
-            $uiTiDv1Consumers = $this->uitidV1ConsumerRepository->getDistributedByIntegrationId(UUid::fromString($id));
+            $authClients = $this->auth0ClientRepository->getDistributedByIntegrationId(UUid::fromString($id));
+            $legacyAuthConsumers = $this->uitidV1ConsumerRepository->getDistributedByIntegrationId(UUid::fromString($id));
 
         } catch (Throwable) {
             abort(404);
@@ -149,8 +149,8 @@ final class IntegrationController extends Controller
                 'urls' => $integration->urls(),
                 'organization' => $integration->organization(),
                 'subscription' => $subscription,
-                'auth0Clients' => $auth0Clients,
-                'uiTiDv1Consumers' => $uiTiDv1Consumers,
+                'authClients' => $authClients,
+                'legacyAuthConsumers' => $legacyAuthConsumers,
             ],
             'email' => Auth::user()?->email,
         ]);
