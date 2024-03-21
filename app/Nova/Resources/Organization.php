@@ -52,12 +52,12 @@ final class Organization extends Resource
 
             Text::make('Invoice Email', 'invoice_email')
                 ->sortable()
-                ->rules('required', 'email', 'max:255'),
+                ->rules('email', 'max:255'),
 
             Text::make('Vat')
                 ->hideFromIndex()
                 ->sortable()
-                ->rules('required', 'max:255'),
+                ->rules('max:255'),
 
             Text::make('Street')
                 ->hideFromIndex()
