@@ -8,7 +8,8 @@ use App\Domain\Auth\Models\UserModel;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\ContactRepository;
-use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
+use App\Domain\Coupons\Models\CouponModel;
+use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationType;
@@ -77,7 +78,7 @@ final class MigrateProjects extends Command
     public function handle(): int
     {
         Model::unsetEventDispatcher();
-        Event::forget(IntegrationActivatedWithCoupon::class);
+        Event::forget(IntegrationActivated::class);
 
         CauserResolver::setCauser(UserModel::createSystemUser());
 
@@ -160,7 +161,12 @@ final class MigrateProjects extends Command
     private function migrateCoupon(UuidInterface $integrationId, string $couponCode): void
     {
         try {
-            $this->integrationRepository->activateWithCouponCode($integrationId, $couponCode);
+            /** @var CouponModel $couponModel */
+            $couponModel = CouponModel::query()
+                ->where('code', '=', $couponCode)
+                ->whereNull('integration_id')
+                ->firstOrFail();
+            $couponModel->useOnIntegration($integrationId);
         } catch (ModelNotFoundException) {
             $this->warn($integrationId . ' - Coupon with code ' . $couponCode . ' not found.');
             return;
