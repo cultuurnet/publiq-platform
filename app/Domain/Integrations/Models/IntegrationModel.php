@@ -7,6 +7,7 @@ namespace App\Domain\Integrations\Models;
 use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
+use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
 use App\Domain\Integrations\Events\IntegrationActivatedWithOrganization;
 use App\Domain\Integrations\Events\IntegrationBlocked;
@@ -80,6 +81,15 @@ final class IntegrationModel extends UuidModel
     {
         $this->update(['status' => IntegrationStatus::Deleted]);
         return parent::delete();
+    }
+
+    public function activate(UuidInterface $organizationId): void
+    {
+        $this->update([
+            'organization_id' => $organizationId->toString(),
+            'status' => IntegrationStatus::Active,
+        ]);
+        IntegrationActivated::dispatch(Uuid::fromString($this->id));
     }
 
     public function activateWithCoupon(): void
