@@ -15,7 +15,10 @@ import {
   IntegrationType,
   isIntegrationType,
 } from "../../types/IntegrationType";
-import { RadioButtonGroup } from "../../Components/RadioButtonGroup";
+import {
+  RadioButtonGroup,
+  RichRadioButton,
+} from "../../Components/RadioButtonGroup";
 
 type PricingPlan = {
   id: string;
@@ -142,15 +145,11 @@ const New = ({ subscriptions }: Props) => {
                 ({ Icon, ...integrationTypeInfo }) => ({
                   value: integrationTypeInfo.type,
                   label: (
-                    <div className="flex flex-row justify-between gap-2">
-                      <span className="flex flex-row gap-2 justify-between">
-                        <Icon className="h-7 w-7" />
-                        <span>{integrationTypeInfo.title}</span>
-                      </span>
-                      <span className="text-gray-400 font-thin">
-                        {integrationTypeInfo.description}
-                      </span>
-                    </div>
+                    <RichRadioButton
+                      name={integrationTypeInfo.title}
+                      description={integrationTypeInfo.description}
+                      Icon={Icon}
+                    />
                   ),
                 })
               )}
@@ -180,14 +179,10 @@ const New = ({ subscriptions }: Props) => {
                 options={translatedPricingPlans.map((pricingPlan) => ({
                   value: pricingPlan.id,
                   label: (
-                    <div className="flex flex-row items-center justify-between gap-2">
-                      <span className="text-left w-1/2">
-                        {pricingPlan.title} ({pricingPlan.price})
-                      </span>
-                      <span className="text-gray-400 font-thin text-right">
-                        {pricingPlan.description}
-                      </span>
-                    </div>
+                    <RichRadioButton
+                      name={`${pricingPlan.title} (${pricingPlan.price})`}
+                      description={pricingPlan.description}
+                    />
                   ),
                 }))}
               />

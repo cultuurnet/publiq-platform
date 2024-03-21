@@ -1,4 +1,4 @@
-import React, { ComponentProps, ReactElement } from "react";
+import React, { ComponentProps, ElementType, ReactElement } from "react";
 import { classNames } from "../utils/classNames";
 
 type Option = {
@@ -13,6 +13,26 @@ type Props = {
   onChange: (newValue: string) => void;
   orientation: "vertical" | "horizontal";
 } & Omit<ComponentProps<"ul">, "onChange">;
+
+export const RichRadioButton = ({
+  name,
+  description,
+  Icon,
+}: {
+  name: string | ReactElement;
+  description: string | ReactElement;
+  Icon?: ElementType;
+}) => (
+  <div className="flex flex-col md:flex-row justify-between items-center gap-2">
+    <span className="flex flex-row gap-2 justify-between text-left">
+      {Icon && <Icon className="h-7 w-7" />}
+      <span>{name}</span>
+    </span>
+    <span className="text-gray-400 font-thin max-md:text-center text-sm">
+      {description}
+    </span>
+  </div>
+);
 
 export const RadioButtonGroup = ({
   name,
