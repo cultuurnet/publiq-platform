@@ -6,11 +6,11 @@ import React, {
   useId,
 } from "react";
 import { classNames } from "../utils/classNames";
+import { Theme } from "../types/Theme";
 
-export type LabelPosition = "top" | "left" | "right";
-
-type LabelSize = "sm" | "base" | "lg" | "xl";
-type LabelWeight = "light" | "normal" | "medium" | "bold";
+export type LabelPosition = keyof Theme["objectPosition"];
+type LabelSize = keyof Theme["fontSize"];
+type LabelWeight = keyof Theme["fontWeight"];
 
 type WrapperProps = {
   labelPosition?: LabelPosition;
