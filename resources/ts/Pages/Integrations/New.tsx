@@ -180,29 +180,29 @@ const New = ({ subscriptions }: Props) => {
 
           {translatedPricingPlans.length > 0 &&
             activeType !== IntegrationType.EntryApi && (
-            <Card title={t("integration_form.pricing_plan")}>
-              <RadioButtonGroup
-                orientation="vertical"
-                name="subscriptionId"
-                value={data.subscriptionId}
-                onChange={(value) => setData("subscriptionId", value)}
-                options={translatedPricingPlans.map((pricingPlan) => ({
-                  value: pricingPlan.id,
-                  label: (
-                    <RichRadioButton
-                      name={`${pricingPlan.title} (${pricingPlan.price})`}
-                      description={pricingPlan.description}
-                    />
-                  ),
-                }))}
-              />
-              {errors.subscriptionId && (
-                <span className="text-red-500 mt-3 inline-block">
-                  {errors.subscriptionId}
-                </span>
-              )}
-            </Card>
-          )}
+              <Card title={t("integration_form.pricing_plan")}>
+                <RadioButtonGroup
+                  orientation="vertical"
+                  name="subscriptionId"
+                  value={data.subscriptionId}
+                  onChange={(value) => setData("subscriptionId", value)}
+                  options={translatedPricingPlans.map((pricingPlan) => ({
+                    value: pricingPlan.id,
+                    label: (
+                      <RichRadioButton
+                        name={`${pricingPlan.title} (${pricingPlan.price})`}
+                        description={pricingPlan.description}
+                      />
+                    ),
+                  }))}
+                />
+                {errors.subscriptionId && (
+                  <span className="text-red-500 mt-3 inline-block">
+                    {errors.subscriptionId}
+                  </span>
+                )}
+              </Card>
+            )}
           <Card>
             <FormElement
               label={t("integration_form.integration_name")}
