@@ -196,7 +196,7 @@ const New = ({ subscriptions }: Props) => {
           <Card>
             <FormElement
               label={t("integration_form.integration_name")}
-              labelSize="xl"
+              labelSize="2xl"
               info={t("integration_form.description_name")}
               component={
                 <Input
@@ -212,7 +212,7 @@ const New = ({ subscriptions }: Props) => {
           <Card>
             <FormElement
               label={t("integration_form.aim")}
-              labelSize="xl"
+              labelSize="2xl"
               info={t("integration_form.description_aim")}
               component={
                 <textarea
