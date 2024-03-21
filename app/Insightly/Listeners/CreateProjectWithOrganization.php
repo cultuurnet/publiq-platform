@@ -98,7 +98,7 @@ final class CreateProjectWithOrganization implements ShouldQueue
             );
         }
 
-        if ($organizationInsightlyId === null) {
+        if ($organizationInsightlyId === null && $organization->invoiceEmail !== null) {
             $organizationInsightlyId = $this->insightlyClient->organizations()->findIdByEmail(
                 $organization->invoiceEmail
             );
