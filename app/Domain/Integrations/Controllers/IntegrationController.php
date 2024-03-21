@@ -10,6 +10,7 @@ use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Coupons\Repositories\CouponRepository;
 use App\Domain\Integrations\FormRequests\ActivateWithCouponRequest;
 use App\Domain\Integrations\FormRequests\CreateOrganizationRequest;
+use App\Domain\Integrations\FormRequests\RequestActivationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationUrlRequest;
 use App\Domain\Integrations\FormRequests\UpdateContactInfoRequest;
@@ -245,6 +246,29 @@ final class IntegrationController extends Controller
                 'id' => $id,
             ]
         );
+    }
+
+    public function requestActivation(string $id, RequestActivationRequest $request): RedirectResponse
+    {
+        if ($request->has('coupon')) {
+            try {
+                $coupon = $this->couponRepository->getByCode($request->input('coupon'));
+                if ($coupon->isDistributed) {
+                    return Redirect::back()->withErrors(['coupon' => 'Coupon is already used']);
+                }
+            } catch (ModelNotFoundException) {
+                return Redirect::back()->withErrors([
+                    'coupon' => 'Invalid coupon',
+                ]);
+            }
+        }
+
+        $organization = OrganizationMapper::mapActivationRequest($request);
+        $this->organizationRepository->save($organization);
+
+        $this->integrationRepository->requestActivation(Uuid::fromString($id), $organization->id, $request->input('coupon'));
+
+        return Redirect::back();
     }
 
     public function activateWithCoupon(string $id, ActivateWithCouponRequest $request): RedirectResponse
