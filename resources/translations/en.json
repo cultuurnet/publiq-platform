@@ -313,16 +313,38 @@
       "part2": "1080 Brussel"
     },
     "links": {
-      "what": "What?",
-      "opportunities": "Solutions",
-      "price": "Pricing",
-      "start": "Get started",
-      "terms_of_use": "Terms of Use",
-      "privacy": "Privacy Policy",
-      "cookie": "Cookie Policy",
-      "documentation": "Documentation",
-      "status_page": "Status Page",
-      "help": "Help Centre",
+      "opportunities": {
+        "label": "Solutions",
+        "link": "https://www.publiq.be/nl/projecten/publiq-platform"
+      },
+      "price": {
+        "label": "Pricing",
+        "link": "https://www.publiq.be/nl/projecten/publiq-platform/prijzen"
+      },
+      "terms_of_use": {
+        "label": "Terms of Use",
+        "link": "https://www.publiq.be/nl/gebruikersvoorwaarden-publiq-platform"
+      },
+      "privacy": {
+        "label": "Privacy Policy",
+        "link": "https://www.publiq.be/nl/privacy"
+      },
+      "cookie": {
+        "label": "Cookie Policy",
+        "link": "https://www.publiq.be/nl/cookies"
+      },
+      "documentation": {
+        "label": "Documentation",
+        "link": "https://docs.publiq.be"
+      },
+      "status_page": {
+        "label": "Status Page",
+        "link": "https://status.publiq.be/"
+      },
+      "help": {
+        "label": "Help Centre",
+        "link": "https://helpdesk.publiq.be/hc/nl"
+      },
       "slack": "Support via Slack"
     },
     "newsletter": {
