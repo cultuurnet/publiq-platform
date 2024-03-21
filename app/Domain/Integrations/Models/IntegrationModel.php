@@ -102,6 +102,7 @@ final class IntegrationModel extends UuidModel
         IntegrationActivated::dispatch(Uuid::fromString($this->id));
     }
 
+    // @deprecated
     public function activateWithCoupon(): void
     {
         $this->update([
@@ -110,6 +111,7 @@ final class IntegrationModel extends UuidModel
         IntegrationActivatedWithCoupon::dispatch(Uuid::fromString($this->id));
     }
 
+    // @deprecated
     public function activateWithOrganization(UuidInterface $organizationId): void
     {
         $this->update([

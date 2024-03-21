@@ -271,6 +271,7 @@ final class IntegrationController extends Controller
         return Redirect::back();
     }
 
+    // @deprecated
     public function activateWithCoupon(string $id, ActivateWithCouponRequest $request): RedirectResponse
     {
         try {
@@ -290,6 +291,7 @@ final class IntegrationController extends Controller
         }
     }
 
+    // @deprecated
     public function activateWithOrganization(string $id, CreateOrganizationRequest $request): RedirectResponse
     {
         $organization = OrganizationMapper::mapCreate($request);

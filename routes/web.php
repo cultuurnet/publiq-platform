@@ -99,7 +99,9 @@ Route::group(['middleware' => 'auth'], static function () {
 
         Route::post('/integrations/{id}/activation', [IntegrationController::class, 'requestActivation']);
 
+        // @deprecated
         Route::post('/integrations/{id}/coupon', [IntegrationController::class, 'activateWithCoupon']);
+        // @deprecated
         Route::post('/integrations/{id}/organization', [IntegrationController::class, 'activateWithOrganization']);
 
         Route::post('/integrations/{id}/auth0-clients', [IntegrationController::class, 'distributeAuth0Clients']);
