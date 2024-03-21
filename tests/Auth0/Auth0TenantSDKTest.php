@@ -10,6 +10,7 @@ use App\Auth0\Auth0TenantSDK;
 use App\Json;
 use Auth0\SDK\Configuration\SdkConfiguration;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Support\Facades\Log;
 use PHPUnit\Framework\MockObject\MockObject;
 use Tests\TestCase;
 use Psr\Http\Client\ClientInterface;
@@ -50,6 +51,9 @@ final class Auth0TenantSDKTest extends TestCase
             ->willReturn(
                 new Response(200, [], Json::encode(['grant_types' => $expectedGrants]))
             );
+
+        Log::shouldReceive('info')
+            ->once();
 
         $receivedGrants = $this->auth0TenantSDK->findGrantsOnClient($this->client);
 
