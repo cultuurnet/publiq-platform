@@ -8,7 +8,7 @@ import React, {
 import { classNames } from "../utils/classNames";
 import { Theme } from "../types/Theme";
 
-export type LabelPosition = keyof Theme["objectPosition"];
+export type LabelPosition = keyof typeof InputStyle;
 type LabelSize = keyof Theme["fontSize"];
 type LabelWeight = keyof Theme["fontWeight"];
 
