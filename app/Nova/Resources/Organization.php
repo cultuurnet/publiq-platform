@@ -30,6 +30,7 @@ final class Organization extends Resource
         'id',
         'name',
         'vat',
+        'invoice_email',
         'street',
         'zip',
         'city',
@@ -47,15 +48,6 @@ final class Organization extends Resource
                 ->hideFromIndex(),
 
             Text::make('Name')
-                ->sortable()
-                ->rules('required', 'max:255'),
-
-            Text::make('Invoice Email', 'invoice_email')
-                ->sortable()
-                ->rules('required', 'email', 'max:255'),
-
-            Text::make('Vat')
-                ->hideFromIndex()
                 ->sortable()
                 ->rules('required', 'max:255'),
 
@@ -77,6 +69,15 @@ final class Organization extends Resource
                 ->hideFromIndex()
                 ->sortable()
                 ->rules('required', 'max:255'),
+
+            Text::make('Invoice Email', 'invoice_email')
+                ->sortable()
+                ->rules('required_with:vat', 'nullable', 'email', 'max:255'),
+
+            Text::make('Vat')
+                ->hideFromIndex()
+                ->sortable()
+                ->rules('required_with:invoice_email', 'max:255'),
 
             InsightlyLink::make('Insightly ID', fn () => $this->insightlyId())
                 ->type(InsightlyType::Organization),
