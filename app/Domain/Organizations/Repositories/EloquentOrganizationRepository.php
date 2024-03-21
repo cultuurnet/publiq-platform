@@ -20,15 +20,15 @@ final class EloquentOrganizationRepository implements OrganizationRepository
                 'id' => $organization->id->toString(),
             ],
             [
-            'id' => $organization->id->toString(),
-            'name' => $organization->name,
-            'invoice_email' => $organization->invoiceEmail,
-            'vat' => $organization->vat,
-            'street' => $organization->address->street,
-            'zip' => $organization->address->zip,
-            'city' => $organization->address->city,
-            'country' => $organization->address->country,
-        ]
+                'id' => $organization->id->toString(),
+                'name' => $organization->name,
+                'invoice_email' => $organization->invoiceEmail,
+                'vat' => $organization->vat,
+                'street' => $organization->address->street,
+                'zip' => $organization->address->zip,
+                'city' => $organization->address->city,
+                'country' => $organization->address->country,
+            ]
         );
     }
 

@@ -257,7 +257,7 @@
       "description": "Alle iconen, logo's en kleuren voor jou op een rijtje gezet. Een must wanneer je een UiT-agenda bouwt.",
       "img_url": "#",
       "action_title": "Naar de stijlgids",
-      "action_url": "#"
+      "action_url": "https://www.publiq.be/nl/projecten/publiq-platform/stijlgids"
     },
     "statuspage": {
       "title": "Statuspagina",
@@ -271,14 +271,14 @@
       "description": "Neem een kijkje in onze plannen en deel jouw briljante ideeën om onze producten nog beter te maken.",
       "img_url": "#",
       "action_title": "Naar de roadmap",
-      "action_url": "#"
+      "action_url": "https://trello.com/b/Qa6OxKIC/publiq-platform"
     },
     "release_notes": {
       "title": "Release notes",
       "description": "Een overzicht van alle nieuwe mogelijkheden, technische aanpassingen en verbeteringen binnen het publiq platform.",
       "img_url": "#",
       "action_title": "Naar de release notes",
-      "action_url": "#"
+      "action_url": "https://docs.publiq.be/docs/release-notes/introduction"
     },
     "support_via_slack": {
       "title": "Support via slack",
@@ -314,16 +314,38 @@
       "part2": "1080 Brussel"
     },
     "links": {
-      "what": "Wat?",
-      "opportunities": "Mogelijkheden",
-      "price": "Prijs",
-      "start": "Aan de slag",
-      "terms_of_use": "Gebruiksvoorwaarden",
-      "privacy": "Privacyverklaring",
-      "cookie": "Cookieverklaring",
-      "documentation": "Documentatie",
-      "status_page": "Statuspagina",
-      "help": "Helpcentrum",
+      "opportunities": {
+        "label": "Mogelijkheden",
+        "link": "https://www.publiq.be/nl/projecten/publiq-platform"
+      },
+      "price": {
+        "label": "Prijs",
+        "link": "https://www.publiq.be/nl/projecten/publiq-platform/prijzen"
+      },
+      "terms_of_use": {
+        "label": "Gebruiksvoorwaarden",
+        "link": "https://www.publiq.be/nl/gebruikersvoorwaarden-publiq-platform"
+      },
+      "privacy": {
+        "label": "Privacyverklaring",
+        "link": "https://www.publiq.be/nl/privacy"
+      },
+      "cookie": {
+        "label": "Cookieverklaring",
+        "link": "https://www.publiq.be/nl/cookies"
+      },
+      "documentation": {
+        "label": "Documentatie",
+        "link": "https://docs.publiq.be"
+      },
+      "status_page": {
+        "label": "Statuspagina",
+        "link": "https://status.publiq.be/"
+      },
+      "help": {
+        "label": "Helpcentrum",
+        "link": "https://helpdesk.publiq.be/hc/nl"
+      },
       "slack": "Support via slack"
     },
     "newsletter": {
