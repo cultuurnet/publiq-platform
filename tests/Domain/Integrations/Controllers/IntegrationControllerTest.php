@@ -11,6 +11,7 @@ use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Coupon;
 use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Environment;
+use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
@@ -26,6 +27,7 @@ use App\ProjectAanvraag\ProjectAanvraagUrl;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Validation\UnauthorizedException;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
@@ -180,6 +182,8 @@ final class IntegrationControllerTest extends TestCase
             'organization_id' => $organization->id,
             'status' => IntegrationStatus::PendingApprovalIntegration,
         ]);
+
+        Event::assertDispatched(IntegrationActivationRequested::class);
     }
 
     public function test_it_can_request_activation_with_an_organization_and_coupon(): void
@@ -223,6 +227,8 @@ final class IntegrationControllerTest extends TestCase
             'id' => $coupon->id,
             'integration_id' => $integration->id->toString(),
         ]);
+
+        Event::assertDispatched(IntegrationActivationRequested::class);
     }
 
     // @deprecated
