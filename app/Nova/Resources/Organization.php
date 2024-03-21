@@ -30,6 +30,7 @@ final class Organization extends Resource
         'id',
         'name',
         'vat',
+        'invoice_email',
         'street',
         'zip',
         'city',
