@@ -84,6 +84,12 @@ const New = ({ subscriptions }: Props) => {
   const { t } = useTranslation();
   const { i18n } = useTranslation();
 
+  const entryApiId =
+    subscriptions.find(
+      (subscription) =>
+        subscription.integration_type === IntegrationType.EntryApi
+    )?.id ?? "";
+
   const url = new URL(document.location.href);
   const activeTypeFromUrl = url.searchParams.get("type");
   const activeType = isIntegrationType(activeTypeFromUrl)
@@ -92,7 +98,7 @@ const New = ({ subscriptions }: Props) => {
 
   const initialFormValues = {
     integrationType: activeType,
-    subscriptionId: "",
+    subscriptionId: activeType === IntegrationType.EntryApi ? entryApiId : "",
     integrationName: "",
     description: "",
     organizationFunctionalContact: "",
@@ -170,34 +176,35 @@ const New = ({ subscriptions }: Props) => {
             )}
           </Card>
 
-          {translatedPricingPlans.length > 0 && (
-            <Card title={t("integration_form.pricing_plan")}>
-              <RadioButtonGroup
-                orientation="vertical"
-                name="subscriptionId"
-                value={data.subscriptionId}
-                onChange={(value) => setData("subscriptionId", value)}
-                options={translatedPricingPlans.map((pricingPlan) => ({
-                  value: pricingPlan.id,
-                  label: (
-                    <div className="flex flex-row items-center justify-between gap-2">
-                      <span className="text-left w-1/2">
-                        {pricingPlan.title} ({pricingPlan.price})
-                      </span>
-                      <span className="text-gray-400 font-thin text-right">
-                        {pricingPlan.description}
-                      </span>
-                    </div>
-                  ),
-                }))}
-              />
-              {errors.subscriptionId && (
-                <span className="text-red-500 mt-3 inline-block">
-                  {errors.subscriptionId}
-                </span>
-              )}
-            </Card>
-          )}
+          {translatedPricingPlans.length > 0 &&
+            activeType !== IntegrationType.EntryApi && (
+              <Card title={t("integration_form.pricing_plan")}>
+                <RadioButtonGroup
+                  orientation="vertical"
+                  name="subscriptionId"
+                  value={data.subscriptionId}
+                  onChange={(value) => setData("subscriptionId", value)}
+                  options={translatedPricingPlans.map((pricingPlan) => ({
+                    value: pricingPlan.id,
+                    label: (
+                      <div className="flex flex-row items-center justify-between gap-2">
+                        <span className="text-left w-1/2">
+                          {pricingPlan.title} ({pricingPlan.price})
+                        </span>
+                        <span className="text-gray-400 font-thin text-right">
+                          {pricingPlan.description}
+                        </span>
+                      </div>
+                    ),
+                  }))}
+                />
+                {errors.subscriptionId && (
+                  <span className="text-red-500 mt-3 inline-block">
+                    {errors.subscriptionId}
+                  </span>
+                )}
+              </Card>
+            )}
           <Card>
             <FormElement
               label={t("integration_form.integration_name")}
