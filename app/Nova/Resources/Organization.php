@@ -72,13 +72,13 @@ final class Organization extends Resource
 
             Text::make('Invoice Email', 'invoice_email')
                 ->sortable()
-                ->rules('email', 'max:255'),
+                ->rules('nullable', 'email', 'max:255'),
 
             Text::make('Vat')
                 ->hideFromIndex()
                 ->sortable()
                 ->rules('max:255'),
-            
+
             InsightlyLink::make('Insightly ID', fn () => $this->insightlyId())
                 ->type(InsightlyType::Organization),
 
