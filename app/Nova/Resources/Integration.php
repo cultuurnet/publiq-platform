@@ -117,6 +117,12 @@ final class Integration extends Resource
                 ->filterable()
                 ->sortable(),
 
+            DateTime::make('Distributed at', 'distributed_at')
+                ->readonly()
+                ->onlyOnIndex()
+                ->filterable()
+                ->sortable(),
+
             InsightlyLink::make('Insightly Opportunity Id', fn () => $this->insightlyOpportunityId())
                 ->type(InsightlyType::Opportunity),
 
