@@ -9,9 +9,7 @@ use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Domain\Organizations\Repositories\OrganizationRepository;
-use App\Nova\Actions\ActivateIntegrationWithCoupon;
-use App\Nova\Actions\ActivateIntegrationWithOrganization;
+use App\Nova\Actions\ActivateIntegration;
 use App\Nova\Actions\BlockIntegration;
 use App\Nova\Actions\OpenWidgetManager;
 use App\Nova\Resource;
@@ -147,20 +145,9 @@ final class Integration extends Resource
     public function actions(NovaRequest $request): array
     {
         return [
-            (new ActivateIntegrationWithCoupon(App::make(IntegrationRepository::class)))
+            (new ActivateIntegration(App::make(IntegrationRepository::class)))
                 ->exceptOnIndex()
-                ->confirmText('Are you sure you want to activate this integration with a coupon?')
-                ->confirmButtonText('Activate')
-                ->cancelButtonText("Don't activate")
-                ->canSee(fn () => $this->canBeActivated())
-                ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeActivated()),
-
-            (new ActivateIntegrationWithOrganization(
-                App::make(IntegrationRepository::class),
-                App::make(OrganizationRepository::class)
-            ))
-                ->exceptOnIndex()
-                ->confirmText('Are you sure you want to activate this integration with an organization?')
+                ->confirmText('Are you sure you want to activate this integration?')
                 ->confirmButtonText('Activate')
                 ->cancelButtonText("Don't activate")
                 ->canSee(fn () => $this->canBeActivated())
