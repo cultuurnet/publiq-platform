@@ -84,11 +84,11 @@ const New = ({ subscriptions }: Props) => {
   const { t } = useTranslation();
   const { i18n } = useTranslation();
 
-  const entryApiId =
-    subscriptions.find(
-      (subscription) =>
-        subscription.integration_type === IntegrationType.EntryApi
-    )?.id ?? "";
+  const freeSubscriptionId = subscriptions.find(
+    (subscription) =>
+      subscription.integration_type === IntegrationType.EntryApi &&
+      subscription.price === 0
+  )?.id;
 
   const url = new URL(document.location.href);
   const activeTypeFromUrl = url.searchParams.get("type");
@@ -98,7 +98,10 @@ const New = ({ subscriptions }: Props) => {
 
   const initialFormValues = {
     integrationType: activeType,
-    subscriptionId: activeType === IntegrationType.EntryApi ? entryApiId : "",
+    subscriptionId:
+      activeType === IntegrationType.EntryApi && !!freeSubscriptionId
+        ? freeSubscriptionId
+        : "",
     integrationName: "",
     description: "",
     organizationFunctionalContact: "",
