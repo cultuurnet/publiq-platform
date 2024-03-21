@@ -45,30 +45,36 @@ export default function Footer() {
           <Heading level={3} className="font-medium">
             {t("title")}
           </Heading>
-          <Link href="#" className="hover:underline">
-            {t("footer.links.what")}
-          </Link>
-          <Link href="#" className="hover:underline">
+          <Link
+            href={t("footer.links.opportunities_link")}
+            className="hover:underline"
+          >
             {t("footer.links.opportunities")}
           </Link>
-          <Link href="#" className="hover:underline">
+          <Link href={t("footer.links.price_link")} className="hover:underline">
             {t("footer.links.price")}
-          </Link>
-          <Link href="#" className="hover:underline">
-            {t("footer.links.start")}
           </Link>
         </div>
         <div className="flex flex-col gap-1">
           <Heading level={3} className="font-medium">
             {t("footer.legal")}
           </Heading>
-          <Link href="#" className="hover:underline">
+          <Link
+            href={t("footer.links.terms_of_use_link")}
+            className="hover:underline"
+          >
             {t("footer.links.terms_of_use")}
           </Link>
-          <Link href="#" className="hover:underline">
+          <Link
+            href={t("footer.links.privacy_link")}
+            className="hover:underline"
+          >
             {t("footer.links.privacy")}
           </Link>
-          <Link href="#" className="hover:underline">
+          <Link
+            href={t("footer.links.cookie_link")}
+            className="hover:underline"
+          >
             {t("footer.links.cookie")}
           </Link>
         </div>
@@ -78,13 +84,19 @@ export default function Footer() {
           <Heading level={3} className="font-medium">
             {t("footer.support")}
           </Heading>
-          <Link href="#" className="hover:underline">
+          <Link
+            href={t("footer.links.documentiton_link")}
+            className="hover:underline"
+          >
             {t("footer.links.documentation")}
           </Link>
-          <Link href="#" className="hover:underline">
+          <Link
+            href={t("footer.links.status_page_link")}
+            className="hover:underline"
+          >
             {t("footer.links.status_page")}
           </Link>
-          <Link href="#" className="hover:underline">
+          <Link href={t("footer.links.help_link")} className="hover:underline">
             {t("footer.links.help")}
           </Link>
           <Link href="#" className="hover:underline">
