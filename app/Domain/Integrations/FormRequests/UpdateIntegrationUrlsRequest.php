@@ -48,7 +48,8 @@ final class UpdateIntegrationUrlsRequest extends FormRequest
                 $index = explode('.', $originalKey)[1];
                 $url = $data[$index];
                 $hash = "{$url['type']}.{$url['environment']}";
-                $groupedIndex = $grouped->get($hash)?->search($url) ?? $index;
+                $groupedIndex = $grouped->get($hash)?->search($url);
+                $groupedIndex = $groupedIndex !== false ? $groupedIndex : $index;
 
                 $errorMessage = str_replace(
                     ucfirst($originalKey),
