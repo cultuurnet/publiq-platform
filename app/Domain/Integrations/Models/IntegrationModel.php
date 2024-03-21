@@ -10,6 +10,7 @@ use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
 use App\Domain\Integrations\Events\IntegrationActivatedWithOrganization;
+use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationUpdated;
@@ -81,6 +82,15 @@ final class IntegrationModel extends UuidModel
     {
         $this->update(['status' => IntegrationStatus::Deleted]);
         return parent::delete();
+    }
+
+    public function requestActivation(UuidInterface $organizationId): void
+    {
+        $this->update([
+            'organization_id' => $organizationId->toString(),
+            'status' => IntegrationStatus::PendingApprovalIntegration,
+        ]);
+        IntegrationActivationRequested::dispatch(Uuid::fromString($this->id));
     }
 
     public function activate(UuidInterface $organizationId): void
