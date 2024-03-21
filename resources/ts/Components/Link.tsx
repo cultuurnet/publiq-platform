@@ -23,10 +23,7 @@ export const Link = ({
     <>
       {isExternal ? (
         <a
-          className={classNames(
-            "text-publiq-blue inline-flex gap-2 items-center",
-            className
-          )}
+          className={classNames("inline-flex gap-2 items-center", className)}
           href={href}
           target="_blank"
           rel="noreferrer"
