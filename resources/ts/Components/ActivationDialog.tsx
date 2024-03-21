@@ -32,7 +32,6 @@ export const ActivationDialog = ({
   const { t } = useTranslation();
   const isMobile = window.innerWidth < 768;
 
-  const initialValuesCoupon = { coupon: "" };
   const initialValuesOrganization = {
     organization: {
       name: "",
@@ -45,22 +44,17 @@ export const ActivationDialog = ({
         country: "Belgium",
       },
     },
+    coupon: "",
   };
 
   const organizationForm = useForm(initialValuesOrganization);
-  const couponForm = useForm(initialValuesCoupon);
 
   const handleSubmit = () => {
-    organizationForm.post(`/integrations/${id}/organization`, {
+    organizationForm.post(`/integrations/${id}/activation`, {
       onFinish: () => {
-        if (couponForm.data.coupon !== "") {
-          couponForm.post(`/integrations/${id}/coupon`);
-        }
         if (
           !organizationForm.hasErrors &&
-          organizationForm.wasSuccessful &&
-          !couponForm.hasErrors &&
-          couponForm.wasSuccessful
+          organizationForm.wasSuccessful
         ) {
           onClose();
         }
@@ -69,15 +63,15 @@ export const ActivationDialog = ({
   };
 
   const couponErrorMessage = useMemo(() => {
-    if (!couponForm.errors.coupon) return;
+    if (!organizationForm.errors.coupon) return;
 
-    switch (couponForm.errors.coupon) {
+    switch (organizationForm.errors.coupon) {
       case "Coupon is already used":
         return t("integrations.activation_dialog.already_used_coupon");
       default:
         return t("integrations.activation_dialog.invalid_coupon");
     }
-  }, [couponForm.errors, t]);
+  }, [organizationForm.errors, t]);
 
   const organizationFormErrors = organizationForm.errors as Record<
     string,
@@ -253,8 +247,8 @@ export const ActivationDialog = ({
                 <Input
                   type="text"
                   name="coupon"
-                  value={couponForm.data.coupon}
-                  onChange={(e) => couponForm.setData("coupon", e.target.value)}
+                  value={organizationForm.data.coupon}
+                  onChange={(e) => organizationForm.setData("coupon", e.target.value)}
                 />
               }
             />
