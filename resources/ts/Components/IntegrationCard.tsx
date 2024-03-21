@@ -212,13 +212,17 @@ export const IntegrationCard = ({
               href={t("integrations.documentation.action_url", {
                 product: productTypeToPath[type],
               })}
+              className="text-publiq-blue"
             >
               {t("integrations.documentation.action_title", {
                 product: t(`integrations.products.${type}`),
               })}
             </Link>
             {type === IntegrationType.EntryApi && (
-              <Link href="https://docs.publiq.be/docs/uitdatabank/entry-api%2Frequirements-before-going-live">
+              <Link
+                href="https://docs.publiq.be/docs/uitdatabank/entry-api%2Frequirements-before-going-live"
+                className="text-publiq-blue"
+              >
                 {t("integrations.documentation.requirements")}
               </Link>
             )}

@@ -3,10 +3,10 @@ import { PubliqLogo } from "./logos/PubliqLogo";
 import { VlaanderenLogo } from "./logos/VlaanderenLogo";
 import { Heading } from "./Heading";
 import { ButtonLink } from "./ButtonLink";
-import { Link } from "@inertiajs/react";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "./Link";
 
 export default function Footer() {
   const { t } = useTranslation();
@@ -46,13 +46,13 @@ export default function Footer() {
             {t("title")}
           </Heading>
           <Link
-            href={t("footer.links.opportunities_link")}
+            href={t("footer.links.opportunities.link")}
             className="hover:underline"
           >
-            {t("footer.links.opportunities")}
+            {t("footer.links.opportunities.label")}
           </Link>
-          <Link href={t("footer.links.price_link")} className="hover:underline">
-            {t("footer.links.price")}
+          <Link href={t("footer.links.price.link")} className="hover:underline">
+            {t("footer.links.price.label")}
           </Link>
         </div>
         <div className="flex flex-col gap-1">
@@ -60,22 +60,22 @@ export default function Footer() {
             {t("footer.legal")}
           </Heading>
           <Link
-            href={t("footer.links.terms_of_use_link")}
+            href={t("footer.links.terms_of_use.link")}
             className="hover:underline"
           >
-            {t("footer.links.terms_of_use")}
+            {t("footer.links.terms_of_use.label")}
           </Link>
           <Link
-            href={t("footer.links.privacy_link")}
+            href={t("footer.links.privacy.link")}
             className="hover:underline"
           >
-            {t("footer.links.privacy")}
+            {t("footer.links.privacy.label")}
           </Link>
           <Link
-            href={t("footer.links.cookie_link")}
+            href={t("footer.links.cookie.link")}
             className="hover:underline"
           >
-            {t("footer.links.cookie")}
+            {t("footer.links.cookie.label")}
           </Link>
         </div>
       </div>
@@ -85,19 +85,19 @@ export default function Footer() {
             {t("footer.support")}
           </Heading>
           <Link
-            href={t("footer.links.documentiton_link")}
+            href={t("footer.links.documentation.link")}
             className="hover:underline"
           >
-            {t("footer.links.documentation")}
+            {t("footer.links.documentation.label")}
           </Link>
           <Link
-            href={t("footer.links.status_page_link")}
+            href={t("footer.links.status_page.link")}
             className="hover:underline"
           >
-            {t("footer.links.status_page")}
+            {t("footer.links.status_page.label")}
           </Link>
-          <Link href={t("footer.links.help_link")} className="hover:underline">
-            {t("footer.links.help")}
+          <Link href={t("footer.links.help.link")} className="hover:underline">
+            {t("footer.links.help.label")}
           </Link>
           <Link href="#" className="hover:underline">
             {t("footer.links.slack")}

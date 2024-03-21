@@ -314,22 +314,38 @@
       "part2": "1080 Brussel"
     },
     "links": {
-      "opportunities": "Mogelijkheden",
-      "opportunities_link": "https://www.publiq.be/nl/projecten/publiq-platform",
-      "price": "Prijs",
-      "price_link": "https://www.publiq.be/nl/projecten/publiq-platform/prijzen",
-      "terms_of_use": "Gebruiksvoorwaarden",
-      "terms_of_use_link": "https://www.publiq.be/nl/gebruikersvoorwaarden-publiq-platform",
-      "privacy": "Privacyverklaring",
-      "privacy_link": "https://www.publiq.be/nl/privacy",
-      "cookie": "Cookieverklaring",
-      "cookie_link": "https://www.publiq.be/nl/cookies",
-      "documentation": "Documentatie",
-      "documentiton_link": "https://docs.publiq.be",
-      "status_page": "Statuspagina",
-      "status_page_link": "https://status.publiq.be/",
-      "help": "Helpcentrum",
-      "help_link": "https://helpdesk.publiq.be/hc/nl",
+      "opportunities": {
+        "label": "Mogelijkheden",
+        "link": "https://www.publiq.be/nl/projecten/publiq-platform"
+      },
+      "price": {
+        "label": "Prijs",
+        "link": "https://www.publiq.be/nl/projecten/publiq-platform/prijzen"
+      },
+      "terms_of_use": {
+        "label": "Gebruiksvoorwaarden",
+        "link": "https://www.publiq.be/nl/gebruikersvoorwaarden-publiq-platform"
+      },
+      "privacy": {
+        "label": "Privacyverklaring",
+        "link": "https://www.publiq.be/nl/privacy"
+      },
+      "cookie": {
+        "label": "Cookieverklaring",
+        "link": "https://www.publiq.be/nl/cookies"
+      },
+      "documentation": {
+        "label": "Documentatie",
+        "link": "https://docs.publiq.be"
+      },
+      "status_page": {
+        "label": "Statuspagina",
+        "link": "https://status.publiq.be/"
+      },
+      "help": {
+        "label": "Helpcentrum",
+        "link": "https://helpdesk.publiq.be/hc/nl"
+      },
       "slack": "Support via slack"
     },
     "newsletter": {
