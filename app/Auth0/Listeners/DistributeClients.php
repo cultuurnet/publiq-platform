@@ -7,12 +7,10 @@ namespace App\Auth0\Listeners;
 use App\Auth0\Auth0Client;
 use App\Auth0\Auth0Tenant;
 use App\Auth0\Repositories\Auth0ClientRepository;
-use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
-use App\Domain\Integrations\Events\IntegrationActivatedWithOrganization;
+use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Ramsey\Uuid\UuidInterface;
 
 final class DistributeClients implements ShouldQueue
 {
@@ -24,19 +22,9 @@ final class DistributeClients implements ShouldQueue
     ) {
     }
 
-    public function handleIntegrationActivatedWithCoupon(IntegrationActivatedWithCoupon $integrationActivatedWithCoupon): void
+    public function handle(IntegrationActivated $integrationActivated): void
     {
-        $this->distributeClientsForIntegration($integrationActivatedWithCoupon->id);
-    }
-
-    public function handleIntegrationActivatedWithOrganization(IntegrationActivatedWithOrganization $integrationActivatedWithOrganization): void
-    {
-        $this->distributeClientsForIntegration($integrationActivatedWithOrganization->id);
-    }
-
-    private function distributeClientsForIntegration(UuidInterface $integrationId): void
-    {
-        $integration = $this->integrationRepository->getById($integrationId);
+        $integration = $this->integrationRepository->getById($integrationActivated->id);
         $clients = array_filter($integration->auth0Clients(), fn (Auth0Client $client) => $client->tenant === Auth0Tenant::Production);
 
         $this->auth0ClientRepository->distribute(...$clients);
