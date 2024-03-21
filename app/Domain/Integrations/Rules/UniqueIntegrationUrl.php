@@ -40,9 +40,11 @@ final readonly class UniqueIntegrationUrl implements ValidationRule
                 continue;
             }
 
-            if ($inUse[$hash] === $key) {
-                $fail('validation.distinct')->translate();
+            if ($inUse[$hash] !== $key) {
+                continue;
             }
+            
+            $fail('validation.distinct')->translate();
         }
     }
 }
