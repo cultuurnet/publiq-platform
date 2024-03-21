@@ -96,10 +96,7 @@ export const FormElement = ({
   const clonedComponent = cloneElement(component, { ...component.props, id });
 
   return (
-    <div
-      id={elementId}
-      className={classNames("inline-flex flex-col ", className)}
-    >
+    <div id={elementId} className={classNames("flex flex-col ", className)}>
       <Wrapper labelPosition={labelPosition}>
         <>
           <div
