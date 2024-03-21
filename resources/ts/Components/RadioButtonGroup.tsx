@@ -25,6 +25,8 @@ export const RadioButtonGroup = ({
 }: Props) => {
   const isVertical = orientation === "vertical";
   const getRoundedStyles = (index: number) => {
+    if (options.length === 1) return "rounded-lg";
+
     switch (index) {
       case 0:
         return isVertical ? "rounded-t-lg" : "rounded-l-lg";
