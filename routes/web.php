@@ -104,8 +104,6 @@ Route::group(['middleware' => 'auth'], static function () {
         // @deprecated
         Route::post('/integrations/{id}/organization', [IntegrationController::class, 'activateWithOrganization']);
 
-        Route::post('/integrations/{id}/auth0-clients', [IntegrationController::class, 'distributeAuth0Clients']);
-
         Route::get('/integrations/{id}/widget', [IntegrationController::class, 'showWidget']);
     });
 });
