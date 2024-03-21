@@ -250,7 +250,7 @@ final class IntegrationController extends Controller
 
     public function requestActivation(string $id, RequestActivationRequest $request): RedirectResponse
     {
-        if ($request->has('coupon')) {
+        if ($request->filled('coupon')) {
             try {
                 $coupon = $this->couponRepository->getByCode($request->input('coupon'));
                 if ($coupon->isDistributed) {
