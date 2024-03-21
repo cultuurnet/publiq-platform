@@ -40,20 +40,24 @@ final class UpdateIntegrationUrlsRequest extends FormRequest
     {
         $validator->after(function (Validator $validator): void {
             $errors = $validator->errors()->get('urls.*');
+            /** @var array $data */
             $data = $validator->getData()['urls'];
+            $grouped = collect($data)->groupBy(fn ($url) => "{$url['type']}.{$url['environment']}");
 
             foreach ($errors as $originalKey => $originalMessage) {
                 $index = explode('.', $originalKey)[1];
                 $url = $data[$index];
+                $hash = "{$url['type']}.{$url['environment']}";
+                $groupedIndex = $grouped->get($hash)?->search($url);
+                $groupedIndex = $groupedIndex !== false ? $groupedIndex : $index;
 
-                $errorKey = "{$url['type']}.{$url['environment']}.{$url['url']}";
                 $errorMessage = str_replace(
                     ucfirst($originalKey),
                     'Url',
                     $originalMessage
                 );
 
-                $validator->errors()->add($errorKey, $errorMessage);
+                $validator->errors()->add("{$hash}.{$groupedIndex}", $errorMessage);
                 $validator->errors()->forget($originalKey);
             }
         });

@@ -6,11 +6,11 @@ import React, {
   useId,
 } from "react";
 import { classNames } from "../utils/classNames";
+import { Theme } from "../types/Theme";
 
-export type LabelPosition = "top" | "left" | "right";
-
-type LabelSize = "sm" | "base" | "lg" | "xl";
-type LabelWeight = "light" | "normal" | "medium" | "bold";
+export type LabelPosition = keyof typeof InputStyle;
+type LabelSize = keyof Theme["fontSize"];
+type LabelWeight = keyof Theme["fontWeight"];
 
 type WrapperProps = {
   labelPosition?: LabelPosition;
@@ -96,10 +96,7 @@ export const FormElement = ({
   const clonedComponent = cloneElement(component, { ...component.props, id });
 
   return (
-    <div
-      id={elementId}
-      className={classNames("inline-flex flex-col ", className)}
-    >
+    <div id={elementId} className={classNames("flex flex-col ", className)}>
       <Wrapper labelPosition={labelPosition}>
         <>
           <div
