@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
+// @deprecated
 final class CreateProjectWithOrganization implements ShouldQueue
 {
     use Queueable;
