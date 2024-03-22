@@ -151,7 +151,7 @@ final class Integration extends Resource
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to activate this integration?')
                 ->confirmButtonText('Activate')
-                ->cancelButtonText("Don't activate")
+                ->cancelButtonText("Cancel")
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeActivated())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeActivated()),
 
@@ -159,7 +159,7 @@ final class Integration extends Resource
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to approve this integration?')
                 ->confirmButtonText('Approve')
-                ->cancelButtonText("Don't approve")
+                ->cancelButtonText("Cancel")
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeApproved())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeApproved()),
 
@@ -173,7 +173,7 @@ final class Integration extends Resource
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to block this integration?')
                 ->confirmButtonText('Block')
-                ->cancelButtonText("Don't block")
+                ->cancelButtonText("Cancel")
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeBlocked())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeBlocked()),
         ];
