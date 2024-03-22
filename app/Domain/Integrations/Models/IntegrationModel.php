@@ -54,7 +54,8 @@ final class IntegrationModel extends UuidModel
 
     public function canBeActivated(): bool
     {
-        return $this->status !== IntegrationStatus::Active->value;
+        return $this->status === IntegrationStatus::Draft->value
+            || $this->status === IntegrationStatus::Blocked->value;
     }
 
     public function canBeApproved(): bool
