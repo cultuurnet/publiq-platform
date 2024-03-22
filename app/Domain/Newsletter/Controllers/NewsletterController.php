@@ -14,8 +14,8 @@ final class NewsletterController extends Controller
     public function handle(string $email): Response
     {
         $mailJetClient = new Client(
-            config('newsletter.apiKey'),
-            config('newsletter.apiSecret')
+            config('newsletter.api_key'),
+            config('newsletter.api_secret')
         );
         return $mailJetClient->post(
             Resources::$ContactslistManagecontact,
