@@ -152,7 +152,7 @@ final class Integration extends Resource
                 ->confirmText('Are you sure you want to activate this integration?')
                 ->confirmButtonText('Activate')
                 ->cancelButtonText("Don't activate")
-                ->canSee(fn () => $this->canBeActivated())
+                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeActivated())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeActivated()),
 
             (new ApproveIntegration(App::make(IntegrationRepository::class)))
@@ -166,7 +166,7 @@ final class Integration extends Resource
             (new OpenWidgetManager())
                 ->exceptOnIndex()
                 ->withoutConfirmation()
-                ->canSee(fn () => $this->isWidgets())
+                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->isWidgets())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->isWidgets()),
 
             (new BlockIntegration())
@@ -174,7 +174,7 @@ final class Integration extends Resource
                 ->confirmText('Are you sure you want to block this integration?')
                 ->confirmButtonText('Block')
                 ->cancelButtonText("Don't block")
-                ->canSee(fn () => $this->canBeBlocked())
+                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeBlocked())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeBlocked()),
         ];
     }
