@@ -13,6 +13,9 @@ final class NewsletterController extends Controller
 {
     public function handle(string $email): Response
     {
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new \InvalidArgumentException('Invalid email address');
+        }
         $mailJetClient = new Client(
             config('newsletter.api_key'),
             config('newsletter.api_secret')
