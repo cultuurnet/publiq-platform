@@ -13,17 +13,10 @@ interface Auth0ClientRepository
 {
     public function save(Auth0Client ...$auth0Clients): void;
 
-    public function distribute(Auth0Client ...$auth0Clients): void;
-
     /**
      * @return Auth0Client[]
      */
     public function getByIntegrationId(UuidInterface $integrationId): array;
-
-    /**
-     * @return Auth0Client[]
-     */
-    public function getDistributedByIntegrationId(UuidInterface $integrationId): array;
 
     /**
      * @throws ModelNotFoundException<Model>
