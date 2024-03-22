@@ -119,7 +119,7 @@ const Detail = ({ integration, email }: Props) => {
       >
         <div className="w-full flex flex-col gap-5">
           <Tabs active={activeTab} onChange={changeTabInUrl}>
-          <Tabs.Item
+            <Tabs.Item
               type="credentials"
               label={
                 integration.type === IntegrationType.Widgets
