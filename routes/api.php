@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Domain\Auth\Controllers\AccessController;
 use App\Domain\Auth\Controllers\TokenController;
+use App\Domain\Newsletter\Controllers\NewsletterController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,3 +23,5 @@ Route::get('ping', function () {
 
 Route::get('token/{idToken}', [TokenController::class, 'handle']);
 Route::get('token/{idToken}/integration/{id}', [AccessController::class, 'handle']);
+
+Route::post('newsletter/{email}', [NewsletterController::class, 'handle']);
