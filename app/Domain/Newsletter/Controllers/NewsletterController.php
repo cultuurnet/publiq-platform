@@ -13,15 +13,14 @@ final class NewsletterController extends Controller
 {
     public function handle(string $email): Response
     {
-        $mailingListId = config('newsletter.id');
-        $apiKey = config('newsletter.apiKey');
-        $apiSecret = config('newsletter.apiSecret');
-
-        $mailJetClient = new Client($apiKey, $apiSecret);
+        $mailJetClient = new Client(
+            config('newsletter.apiKey'),
+            config('newsletter.apiSecret')
+        );
         return $mailJetClient->post(
             Resources::$ContactslistManagecontact,
             [
-                'id' => $mailingListId,
+                'id' => config('newsletter.id'),
                 'body' => [
                     'Email' => $email,
                     'Action' => 'addnoforce',
