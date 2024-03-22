@@ -9,6 +9,7 @@ use App\Domain\Contacts\Events\ContactUpdated;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
 use App\Domain\Integrations\Events\IntegrationActivatedWithOrganization;
+use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationUpdated;
@@ -55,9 +56,12 @@ final class InsightlyServiceProvider extends ServiceProvider
         if (config('insightly.enabled')) {
             Event::listen(IntegrationCreated::class, [CreateOpportunity::class, 'handle']);
 
+            // @deprecated
             Event::listen(IntegrationActivatedWithCoupon::class, [CreateProjectWithCoupon::class, 'handle']);
+            // @deprecated
             Event::listen(IntegrationActivatedWithOrganization::class, [CreateProjectWithOrganization::class, 'handle']);
 
+            Event::listen(IntegrationActivationRequested::class, [ActivateProject::class, 'handle']);
             Event::listen(IntegrationActivated::class, [ActivateProject::class, 'handle']);
 
             Event::listen(IntegrationBlocked::class, [BlockProject::class, 'handle']);

@@ -6,6 +6,7 @@ namespace App\Domain\Integrations\FormRequests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+// @deprecated
 final class ActivateWithCouponRequest extends FormRequest
 {
     public function rules(): array
