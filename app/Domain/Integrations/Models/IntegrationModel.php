@@ -109,6 +109,13 @@ final class IntegrationModel extends UuidModel
         IntegrationActivatedWithOrganization::dispatch(Uuid::fromString($this->id));
     }
 
+    public function approve(): void
+    {
+        $this->update([
+            'status' => IntegrationStatus::Active,
+        ]);
+    }
+
     public function block(): void
     {
         $this->update([
