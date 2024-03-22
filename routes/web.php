@@ -97,7 +97,11 @@ Route::group(['middleware' => 'auth'], static function () {
 
         Route::patch('/integrations/{id}/organization', [IntegrationController::class, 'updateOrganization']);
 
+        Route::post('/integrations/{id}/activation', [IntegrationController::class, 'requestActivation']);
+
+        // @deprecated
         Route::post('/integrations/{id}/coupon', [IntegrationController::class, 'activateWithCoupon']);
+        // @deprecated
         Route::post('/integrations/{id}/organization', [IntegrationController::class, 'activateWithOrganization']);
 
         Route::get('/integrations/{id}/widget', [IntegrationController::class, 'showWidget']);

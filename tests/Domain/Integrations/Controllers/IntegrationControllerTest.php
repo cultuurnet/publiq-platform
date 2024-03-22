@@ -116,6 +116,119 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
+    public function test_it_can_not_request_activation_if_not_authorized(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $organization = $this->givenThereIsAnOrganization();
+
+        $response = $this->post(
+            "/integrations/{$integration->id}/activation",
+            [
+                'organization' => [
+                    'id' => $organization->id->toString(),
+                    'name' => $organization->name,
+                    'vat' => $organization->vat,
+                    'invoiceEmail' => $organization->invoiceEmail,
+                    'address' => [
+                        'street' => $organization->address->street,
+                        'zip' => $organization->address->zip,
+                        'city' => $organization->address->city,
+                        'country' => $organization->address->country,
+                    ],
+                ],
+            ]
+        );
+
+        $response->assertForbidden();
+
+        $this->assertDatabaseMissing('integrations', [
+            'id' => $integration->id->toString(),
+            'status' => IntegrationStatus::PendingApprovalIntegration,
+        ]);
+    }
+
+    public function test_it_can_request_activation_with_an_organization(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $organization = $this->givenThereIsAnOrganization();
+        $integration = $this->givenThereIsAnIntegration();
+
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+
+        $response = $this->post(
+            "/integrations/{$integration->id}/activation",
+            [
+                'organization' => [
+                    'id' => $organization->id->toString(),
+                    'name' => $organization->name,
+                    'vat' => $organization->vat,
+                    'invoiceEmail' => $organization->invoiceEmail,
+                    'address' => [
+                        'street' => $organization->address->street,
+                        'zip' => $organization->address->zip,
+                        'city' => $organization->address->city,
+                        'country' => $organization->address->country,
+                    ],
+                ],
+            ]
+        );
+
+        $response->assertRedirect('/');
+
+        $this->assertDatabaseHas('integrations', [
+            'id' => $integration->id->toString(),
+            'organization_id' => $organization->id,
+            'status' => IntegrationStatus::PendingApprovalIntegration,
+        ]);
+    }
+
+    public function test_it_can_request_activation_with_an_organization_and_coupon(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $organization = $this->givenThereIsAnOrganization();
+        $integration = $this->givenThereIsAnIntegration();
+        $coupon = $this->givenThereIsACoupon();
+
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+
+        $response = $this->post(
+            "/integrations/{$integration->id}/activation",
+            [
+                'organization' => [
+                    'id' => $organization->id->toString(),
+                    'name' => $organization->name,
+                    'vat' => $organization->vat,
+                    'invoiceEmail' => $organization->invoiceEmail,
+                    'address' => [
+                        'street' => $organization->address->street,
+                        'zip' => $organization->address->zip,
+                        'city' => $organization->address->city,
+                        'country' => $organization->address->country,
+                    ],
+                ],
+                'coupon' => $coupon->code,
+            ]
+        );
+
+        $response->assertRedirect('/');
+
+        $this->assertDatabaseHas('integrations', [
+            'id' => $integration->id->toString(),
+            'organization_id' => $organization->id,
+            'status' => IntegrationStatus::PendingApprovalIntegration,
+        ]);
+
+        $this->assertDatabaseHas('coupons', [
+            'id' => $coupon->id,
+            'integration_id' => $integration->id->toString(),
+        ]);
+    }
+
+    // @deprecated
     public function test_it_can_activate_an_integration_with_a_coupon(): void
     {
         $this->actingAs(UserModel::createSystemUser());
@@ -144,6 +257,7 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
+    // @deprecated
     public function test_it_can_not_activate_an_integration_with_a_coupon_if_not_authorized(): void
     {
         $this->actingAs(UserModel::createSystemUser());
@@ -171,6 +285,7 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
+    // @deprecated
     public function test_it_can_activate_an_integration_with_an_organization(): void
     {
         $this->actingAs(UserModel::createSystemUser());
@@ -206,6 +321,7 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
+    // @deprecated
     public function test_it_can_not_activate_an_integration_with_an_organization_if_not_authorized(): void
     {
         $this->actingAs(UserModel::createSystemUser());
@@ -904,8 +1020,8 @@ final class IntegrationControllerTest extends TestCase
 
     private function givenTheIntegrationIsActivatedWithOrganisation(Integration $integration, Organization $organization): void
     {
-        $response = $this->post(
-            "/integrations/{$integration->id}/organization",
+        $this->post(
+            "/integrations/{$integration->id}/activation",
             [
                 'organization' => [
                     'id' => $organization->id->toString(),

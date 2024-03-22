@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Integrations\Mappers;
 
 use App\Domain\Integrations\FormRequests\CreateOrganizationRequest;
+use App\Domain\Integrations\FormRequests\RequestActivationRequest;
 use App\Domain\Integrations\FormRequests\UpdateOrganizationRequest;
 use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Organization;
@@ -19,6 +20,11 @@ final class OrganizationMapper
     }
 
     public static function mapUpdate(UpdateOrganizationRequest $request): Organization
+    {
+        return self::map($request);
+    }
+
+    public static function mapActivationRequest(RequestActivationRequest $request): Organization
     {
         return self::map($request);
     }
