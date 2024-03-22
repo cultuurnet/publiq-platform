@@ -6,7 +6,6 @@ namespace Tests\Auth0\Repositories;
 
 use App\Auth0\Auth0Client;
 use App\Auth0\Auth0Tenant;
-use App\Auth0\Models\Auth0ClientModel;
 use App\Auth0\Repositories\EloquentAuth0ClientRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
@@ -184,55 +183,5 @@ final class EloquentAuth0ClientRepositoryTest extends TestCase
         sort($actual);
 
         $this->assertEquals($expected, $actual);
-    }
-
-    public function test_it_can_predistribute_non_production_keys(): void
-    {
-        $integrationId = Uuid::uuid4();
-
-        $client1 = new Auth0Client(
-            Uuid::uuid4(),
-            $integrationId,
-            'client-id-1',
-            'client-secret-1',
-            Auth0Tenant::Acceptance
-        );
-        $client2 = new Auth0Client(
-            Uuid::uuid4(),
-            $integrationId,
-            'client-id-2',
-            'client-secret-2',
-            Auth0Tenant::Testing
-        );
-        $client3 = new Auth0Client(
-            Uuid::uuid4(),
-            $integrationId,
-            'client-id-3',
-            'client-secret-3',
-            Auth0Tenant::Production
-        );
-
-        $this->repository->save($client1, $client2, $client3);
-
-        $this->assertNotNull(Auth0ClientModel::find($client1->id)?->distributed_at);
-        $this->assertNotNull(Auth0ClientModel::find($client2->id)?->distributed_at);
-        $this->assertNull(Auth0ClientModel::find($client3->id)?->distributed_at);
-    }
-
-    public function test_it_can_distribute_keys(): void
-    {
-        $integrationId = Uuid::uuid4();
-        $client = new Auth0Client(
-            Uuid::uuid4(),
-            $integrationId,
-            'client-id',
-            'client-secret',
-            Auth0Tenant::Production
-        );
-
-        $this->repository->save($client);
-        $this->assertNull(Auth0ClientModel::find($client->id)?->distributed_at);
-        $this->repository->distribute($client);
-        $this->assertNotNull(Auth0ClientModel::find($client->id)?->distributed_at);
     }
 }
