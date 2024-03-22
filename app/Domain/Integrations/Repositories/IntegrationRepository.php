@@ -21,4 +21,5 @@ interface IntegrationRepository
     public function activateWithCouponCode(UuidInterface $id, string $couponCode): void;
     // @deprecated
     public function activateWithOrganization(UuidInterface $id, UuidInterface $organizationId): void;
+    public function approve(UuidInterface $id): void;
 }
