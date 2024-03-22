@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\UiTiDv1;
 
-use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
-use App\Domain\Integrations\Events\IntegrationActivatedWithOrganization;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationUpdated;
