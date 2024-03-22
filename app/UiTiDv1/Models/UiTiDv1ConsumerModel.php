@@ -26,17 +26,7 @@ final class UiTiDv1ConsumerModel extends UuidModel
         'consumer_secret',
         'api_key',
         'environment',
-        'distributed_at',
     ];
-
-    protected $casts = [
-        'distributed_at' => 'datetime',
-    ];
-
-    public function isDistributed(): bool
-    {
-        return $this->distributed_at !== null;
-    }
 
     public function toDomain(): UiTiDv1Consumer
     {
