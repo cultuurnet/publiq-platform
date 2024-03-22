@@ -121,7 +121,7 @@ final class UiTiDv1 extends Resource
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to activate this consumer?')
                 ->confirmButtonText('Activate')
-                ->cancelButtonText("Cancel")
+                ->cancelButtonText('Cancel')
                 ->canSee(fn (Request $request) => $this->canActivate($request, $this->resource))
                 ->canRun(fn (Request $request, UiTiDv1ConsumerModel $model) => $this->canActivate($request, $model)),
 
@@ -129,7 +129,7 @@ final class UiTiDv1 extends Resource
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to block this consumer?')
                 ->confirmButtonText('Block')
-                ->cancelButtonText("Cancel")
+                ->cancelButtonText('Cancel')
                 ->canSee(fn (Request $request) => $this->canBlock($request, $this->resource))
                 ->canRun(fn (Request $request, UiTiDv1ConsumerModel $model) => $this->canBlock($request, $model)),
 
