@@ -57,6 +57,11 @@ final class IntegrationModel extends UuidModel
         return $this->status !== IntegrationStatus::Active->value;
     }
 
+    public function canBeApproved(): bool
+    {
+        return $this->status === IntegrationStatus::PendingApprovalIntegration->value;
+    }
+
     public function canBeBlocked(): bool
     {
         return $this->status !== IntegrationStatus::Blocked->value;
