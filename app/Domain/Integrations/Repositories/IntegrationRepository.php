@@ -17,4 +17,5 @@ interface IntegrationRepository
     public function getByContactEmail(string $email, ?string $searchQuery): PaginatedCollection;
     public function requestActivation(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode): void;
     public function activate(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode): void;
+    public function approve(UuidInterface $id): void;
 }

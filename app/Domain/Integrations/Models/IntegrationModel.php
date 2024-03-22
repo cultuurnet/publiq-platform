@@ -53,7 +53,13 @@ final class IntegrationModel extends UuidModel
 
     public function canBeActivated(): bool
     {
-        return $this->status !== IntegrationStatus::Active->value;
+        return $this->status === IntegrationStatus::Draft->value
+            || $this->status === IntegrationStatus::Blocked->value;
+    }
+
+    public function canBeApproved(): bool
+    {
+        return $this->status === IntegrationStatus::PendingApprovalIntegration->value;
     }
 
     public function canBeBlocked(): bool
@@ -98,6 +104,13 @@ final class IntegrationModel extends UuidModel
             'status' => IntegrationStatus::Active,
         ]);
         IntegrationActivated::dispatch(Uuid::fromString($this->id));
+    }
+
+    public function approve(): void
+    {
+        $this->update([
+            'status' => IntegrationStatus::Active,
+        ]);
     }
 
     public function block(): void

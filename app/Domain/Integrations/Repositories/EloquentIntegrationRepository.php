@@ -133,4 +133,11 @@ final class EloquentIntegrationRepository implements IntegrationRepository
             $integrationModel->activate($organizationId);
         });
     }
+
+    public function approve(UuidInterface $id): void
+    {
+        /** @var IntegrationModel $integrationModel */
+        $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
+        $integrationModel->approve();
+    }
 }

@@ -60,7 +60,10 @@ final class IntegrationControllerTest extends TestCase
             ]
         );
 
-        $response->assertRedirect('/nl/integraties');
+        /** @var IntegrationModel $createdIntegration */
+        $createdIntegration = IntegrationModel::query()->latest()->first();
+
+        $response->assertRedirectToRoute('nl.integrations.show', ['id' => $createdIntegration->toDomain()->id->toString()]);
 
         $this->assertDatabaseHas('integrations', [
             'type' => IntegrationType::SearchApi->value,

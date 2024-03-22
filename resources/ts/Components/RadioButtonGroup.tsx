@@ -1,4 +1,4 @@
-import React, { ComponentProps, ReactElement } from "react";
+import React, { ComponentProps, ElementType, ReactElement } from "react";
 import { classNames } from "../utils/classNames";
 
 type Option = {
@@ -14,6 +14,26 @@ type Props = {
   orientation: "vertical" | "horizontal";
 } & Omit<ComponentProps<"ul">, "onChange">;
 
+export const RichRadioButton = ({
+  name,
+  description,
+  Icon,
+}: {
+  name: string | ReactElement;
+  description: string | ReactElement;
+  Icon?: ElementType;
+}) => (
+  <div className="flex flex-col md:flex-row justify-between items-center gap-2">
+    <span className="flex flex-row gap-2 justify-between text-left">
+      {Icon && <Icon className="h-7 w-7" />}
+      <span>{name}</span>
+    </span>
+    <span className="text-gray-400 font-thin max-md:text-center text-sm">
+      {description}
+    </span>
+  </div>
+);
+
 export const RadioButtonGroup = ({
   name,
   options,
@@ -25,6 +45,8 @@ export const RadioButtonGroup = ({
 }: Props) => {
   const isVertical = orientation === "vertical";
   const getRoundedStyles = (index: number) => {
+    if (options.length === 1) return "rounded-lg";
+
     switch (index) {
       case 0:
         return isVertical ? "rounded-t-lg" : "rounded-l-lg";
@@ -35,9 +57,11 @@ export const RadioButtonGroup = ({
 
   const optionClasses = (index: number, option: Option) => {
     return classNames(
-      "px-4 py-2 text-base font-medium text-center bg-white border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 ring-publiq-blue-dark focus:bg-gray-100 max-sm:rounded-lg cursor-pointer",
+      "px-4 py-2 text-base font-medium text-center border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 ring-publiq-blue-dark focus:bg-gray-100 max-sm:rounded-lg cursor-pointer",
       getRoundedStyles(index),
-      value === option.value ? "text-publiq-blue-dark" : "text-publiq-gray-900"
+      value === option.value
+        ? "bg-publiq-gray-75 text-publiq-blue-dark"
+        : "bg-white text-publiq-gray-900"
     );
   };
 
