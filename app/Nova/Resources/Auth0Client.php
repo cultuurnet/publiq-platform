@@ -118,7 +118,7 @@ final class Auth0Client extends Resource
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to activate this client?')
                 ->confirmButtonText('Activate')
-                ->cancelButtonText("Don't activate")
+                ->cancelButtonText('Cancel')
                 ->canSee(fn (Request $request) => $this->canActivate($request, $this->resource))
                 ->canRun(fn (Request $request, Auth0ClientModel $model) => $this->canActivate($request, $model)),
 
@@ -126,7 +126,7 @@ final class Auth0Client extends Resource
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to block this client?')
                 ->confirmButtonText('Block')
-                ->cancelButtonText("Don't block")
+                ->cancelButtonText('Cancel')
                 ->canSee(fn (Request $request) => $this->canBlock($request, $this->resource))
                 ->canRun(fn (Request $request, Auth0ClientModel $model) => $this->canBlock($request, $model)),
 

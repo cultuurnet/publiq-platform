@@ -140,4 +140,11 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
         $integrationModel->activateWithOrganization($organizationId);
     }
+
+    public function approve(UuidInterface $id): void
+    {
+        /** @var IntegrationModel $integrationModel */
+        $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
+        $integrationModel->approve();
+    }
 }
