@@ -5,22 +5,30 @@ declare(strict_types=1);
 namespace App\Domain\Newsletter\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Validator;
 use Mailjet\Client;
 use Mailjet\Resources;
-use Mailjet\Response;
 
 final class NewsletterController extends Controller
 {
-    public function handle(string $email): Response
+    public function handle(string $email): JsonResponse
     {
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new \InvalidArgumentException('Invalid email address');
+        $validator = Validator::make(
+            ['email' => $email],
+            ['email' => 'required|email']
+        );
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => $validator->errors()->first(),
+            ], 422);
         }
+
         $mailJetClient = new Client(
             config('newsletter.api_key'),
             config('newsletter.api_secret')
         );
-        return $mailJetClient->post(
+        $mailjetResponse = $mailJetClient->post(
             Resources::$ContactslistManagecontact,
             [
                 'id' => config('newsletter.id'),
@@ -30,5 +38,8 @@ final class NewsletterController extends Controller
                 ],
             ]
         );
+        return response()->json([
+            'status' => $mailjetResponse->getReasonPhrase(),
+        ], $mailjetResponse->getStatus() ?? 502);
     }
 }
