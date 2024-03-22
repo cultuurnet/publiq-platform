@@ -36,6 +36,7 @@ use Ramsey\Uuid\UuidInterface;
 use Tests\MockInsightlyClient;
 use Tests\TestCase;
 
+// @deprecated
 final class CreateProjectWithCouponTest extends TestCase
 {
     use MockInsightlyClient;

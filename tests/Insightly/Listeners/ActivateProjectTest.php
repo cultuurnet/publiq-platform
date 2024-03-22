@@ -7,8 +7,9 @@ namespace Tests\Insightly\Listeners;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\ContactRepository;
+use App\Domain\Coupons\Coupon;
 use App\Domain\Coupons\Repositories\CouponRepository;
-use App\Domain\Integrations\Events\IntegrationActivatedWithOrganization;
+use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
@@ -22,8 +23,7 @@ use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Domain\Subscriptions\Subscription;
 use App\Domain\Subscriptions\SubscriptionCategory;
 use App\Insightly\InsightlyMapping;
-use App\Insightly\Listeners\CreateProject;
-use App\Insightly\Listeners\CreateProjectWithOrganization;
+use App\Insightly\Listeners\ActivateProject;
 use App\Insightly\Objects\OpportunityStage;
 use App\Insightly\Objects\OpportunityState;
 use App\Insightly\Objects\ProjectStage;
@@ -33,18 +33,17 @@ use App\Insightly\Resources\ResourceType;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Tests\MockInsightlyClient;
-use Tests\TestCase;
 
-// @deprecated
-final class CreateProjectWithOrganizationTest extends TestCase
+final class ActivateProjectTest extends TestCase
 {
     use MockInsightlyClient;
 
-    private CreateProjectWithOrganization $createProjectWithOrganization;
+    private ActivateProject $activateProject;
 
     private IntegrationRepository&MockObject $integrationRepository;
 
@@ -69,17 +68,13 @@ final class CreateProjectWithOrganizationTest extends TestCase
         $this->couponRepository = $this->createMock(CouponRepository::class);
         $this->insightlyMappingRepository = $this->createMock(InsightlyMappingRepository::class);
 
-        $this->createProjectWithOrganization = new CreateProjectWithOrganization(
-            new CreateProject(
-                $this->insightlyClient,
-                $this->integrationRepository,
-                $this->contactRepository,
-                $this->subscriptionRepository,
-                $this->couponRepository,
-                $this->insightlyMappingRepository
-            ),
+        $this->activateProject = new ActivateProject(
             $this->insightlyClient,
+            $this->integrationRepository,
+            $this->subscriptionRepository,
+            $this->contactRepository,
             $this->organizationRepository,
+            $this->couponRepository,
             $this->insightlyMappingRepository,
             $this->createMock(LoggerInterface::class)
         );
@@ -87,7 +82,7 @@ final class CreateProjectWithOrganizationTest extends TestCase
         parent::setUp();
     }
 
-    public function test_it_creates_a_project_when_activating_with_an_organization(): void
+    public function test_it_activates_a_project(): void
     {
         $subscription = $this->givenThereIsASubscription();
         $integration = $this->givenThereIsAnIntegration($subscription->id);
@@ -107,11 +102,11 @@ final class CreateProjectWithOrganizationTest extends TestCase
 
         $this->opportunityResource->expects($this->once())
             ->method('updateState')
-            ->with($opportunityMapping->insightlyId, OpportunityState::OPEN);
+            ->with($opportunityMapping->insightlyId, OpportunityState::WON);
 
         $this->opportunityResource->expects($this->once())
             ->method('updateStage')
-            ->with($opportunityMapping->insightlyId, OpportunityStage::REQUEST);
+            ->with($opportunityMapping->insightlyId, OpportunityStage::CLOSED);
 
         $this->integrationRepository->expects($this->once())
             ->method('getById')
@@ -175,9 +170,104 @@ final class CreateProjectWithOrganizationTest extends TestCase
             ->method('linkOrganization')
             ->with($insightlyProjectId, $organizationMapping->insightlyId);
 
-        $this->createProjectWithOrganization->handle(
-            new IntegrationActivatedWithOrganization($integration->id)
+        $this->activateProject->handle(new IntegrationActivated($integration->id));
+    }
+
+    public function test_it_activates_a_project_with_coupon(): void
+    {
+        $subscription = $this->givenThereIsASubscription();
+        $integration = $this->givenThereIsAnIntegration($subscription->id);
+        $organization = $this->givenThereIsAnOrganization($integration->id);
+        $contacts = $this->givenThereAreContacts($integration->id);
+
+        /**
+         * @var InsightlyMapping $opportunityMapping
+         * @var InsightlyMapping $organizationMapping
+         * @var InsightlyMapping $technicalContactMapping
+         * @var InsightlyMapping $functionalContactMapping
+         */
+        [$opportunityMapping,
+            $organizationMapping,
+            $technicalContactMapping,
+            $functionalContactMapping] = $this->givenThereAreInsightlyMappings($integration, $organization, $contacts);
+
+        $coupon = $this->givenThereIsACoupon($integration->id, 'COUPON_CODE');
+
+        // It updates the stage of the opportunity
+        $this->opportunityResource->expects($this->once())
+            ->method('updateStage')
+            ->with($opportunityMapping->insightlyId, OpportunityStage::CLOSED);
+
+        // It updates the state of the opportunity
+        $this->opportunityResource->expects($this->once())
+            ->method('updateState')
+            ->with($opportunityMapping->insightlyId, OpportunityState::WON);
+
+        // It creates the project at Insightly
+        $insightlyProjectId = 55;
+        $this->projectResource->expects($this->once())
+            ->method('create')
+            ->with($integration)
+            ->willReturn($insightlyProjectId);
+
+        // It updates the project with a coupon code
+        $this->projectResource->expects($this->once())
+            ->method('updateWithCoupon')
+            ->with($insightlyProjectId, $coupon->code);
+
+        // It stores the insightlyProjectId mapping
+        $insightlyMapping = new InsightlyMapping(
+            $integration->id,
+            $insightlyProjectId,
+            ResourceType::Project,
         );
+
+        $this->insightlyMappingRepository->expects(self::once())
+            ->method('save')
+            ->with($insightlyMapping);
+
+        // It sets the correct stage of the project
+        $this->projectResource->expects($this->once())
+            ->method('updateStage')
+            ->with($insightlyProjectId, ProjectStage::LIVE);
+
+        // It sets the correct state of the project
+        $this->projectResource->expects($this->once())
+            ->method('updateState')
+            ->with($insightlyProjectId, ProjectState::COMPLETED);
+
+        // Then it updates the subscription inside Insightly
+        $this->projectResource->expects($this->once())
+            ->method('updateSubscription')
+            ->with($insightlyProjectId, $subscription, $coupon);
+
+        // It links the opportunity to the project
+        $this->projectResource->expects($this->once())
+            ->method('linkOpportunity')
+            ->with($insightlyProjectId, $opportunityMapping->insightlyId);
+
+        // It links the contacts
+        $this->projectResource->expects($this->exactly(2))
+            ->method('linkContact')
+            ->willReturnCallback(
+                fn (int $actualInsightlyProjectId, int $actualInsightlyContactId, ContactType $actualContactType) =>
+                match ([$actualInsightlyProjectId, $actualInsightlyContactId, $actualContactType]) {
+                    [$insightlyProjectId, $technicalContactMapping->insightlyId, ContactType::Technical],
+                    [$insightlyProjectId, $functionalContactMapping->insightlyId, ContactType::Functional] => null,
+                    default => throw new \LogicException('Invalid arguments received'),
+                }
+            );
+
+        $this->organizationRepository->expects($this->once())
+            ->method('getByIntegrationId')
+            ->with($integration->id)
+            ->willReturn($organization);
+
+        $this->projectResource->expects($this->once())
+            ->method('linkOrganization')
+            ->with($insightlyProjectId, $organizationMapping->insightlyId);
+
+        $this->activateProject->handle(new IntegrationActivated($integration->id));
     }
 
     private function givenThereIsAnIntegration(UuidInterface $subscriptionId): Integration
@@ -331,5 +421,22 @@ final class CreateProjectWithOrganizationTest extends TestCase
             ->willReturn($subscription);
 
         return $subscription;
+    }
+
+    private function givenThereIsACoupon(UuidInterface $integrationId, string $couponCode): Coupon
+    {
+        $coupon = new Coupon(
+            Uuid::uuid4(),
+            true,
+            $integrationId,
+            $couponCode,
+        );
+
+        $this->couponRepository->expects($this->once())
+            ->method('getByIntegrationId')
+            ->with($integrationId)
+            ->willReturn($coupon);
+
+        return $coupon;
     }
 }
