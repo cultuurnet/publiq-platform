@@ -97,7 +97,10 @@ final class IntegrationController extends Controller
         $this->integrationRepository->save($integration);
 
         return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName($request, 'integrations.index')
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
+            [
+                'id' => $integration->id,
+            ]
         );
     }
 
