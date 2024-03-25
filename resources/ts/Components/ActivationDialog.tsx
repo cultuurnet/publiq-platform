@@ -51,11 +51,7 @@ export const ActivationDialog = ({
 
   const handleSubmit = () => {
     organizationForm.post(`/integrations/${id}/activation`, {
-      onFinish: () => {
-        if (!organizationForm.hasErrors && organizationForm.wasSuccessful) {
-          onClose();
-        }
-      },
+      onSuccess: () => onClose(),
     });
   };
 
