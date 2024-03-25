@@ -97,10 +97,12 @@ Route::group(['middleware' => 'auth'], static function () {
 
         Route::patch('/integrations/{id}/organization', [IntegrationController::class, 'updateOrganization']);
 
-        Route::post('/integrations/{id}/coupon', [IntegrationController::class, 'activateWithCoupon']);
-        Route::post('/integrations/{id}/organization', [IntegrationController::class, 'activateWithOrganization']);
+        Route::post('/integrations/{id}/activation', [IntegrationController::class, 'requestActivation']);
 
-        Route::post('/integrations/{id}/auth0-clients', [IntegrationController::class, 'distributeAuth0Clients']);
+        // @deprecated
+        Route::post('/integrations/{id}/coupon', [IntegrationController::class, 'activateWithCoupon']);
+        // @deprecated
+        Route::post('/integrations/{id}/organization', [IntegrationController::class, 'activateWithOrganization']);
 
         Route::get('/integrations/{id}/widget', [IntegrationController::class, 'showWidget']);
     });

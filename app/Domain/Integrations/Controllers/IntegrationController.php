@@ -10,6 +10,7 @@ use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Coupons\Repositories\CouponRepository;
 use App\Domain\Integrations\FormRequests\ActivateWithCouponRequest;
 use App\Domain\Integrations\FormRequests\CreateOrganizationRequest;
+use App\Domain\Integrations\FormRequests\RequestActivationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationUrlRequest;
 use App\Domain\Integrations\FormRequests\UpdateContactInfoRequest;
@@ -138,8 +139,8 @@ final class IntegrationController extends Controller
             $integration = $this->integrationRepository->getById(Uuid::fromString($id));
             $subscription = $this->subscriptionRepository->getById($integration->subscriptionId);
             $contacts = $this->contactRepository->getByIntegrationId(UUid::fromString($id));
-            $authClients = $this->auth0ClientRepository->getDistributedByIntegrationId(UUid::fromString($id));
-            $legacyAuthConsumers = $this->uitidV1ConsumerRepository->getDistributedByIntegrationId(UUid::fromString($id));
+            $authClients = $this->auth0ClientRepository->getByIntegrationId(UUid::fromString($id));
+            $legacyAuthConsumers = $this->uitidV1ConsumerRepository->getByIntegrationId(UUid::fromString($id));
 
         } catch (Throwable) {
             abort(404);
@@ -250,6 +251,30 @@ final class IntegrationController extends Controller
         );
     }
 
+    public function requestActivation(string $id, RequestActivationRequest $request): RedirectResponse
+    {
+        if ($request->has('coupon')) {
+            try {
+                $coupon = $this->couponRepository->getByCode($request->input('coupon'));
+                if ($coupon->isDistributed) {
+                    return Redirect::back()->withErrors(['coupon' => 'Coupon is already used']);
+                }
+            } catch (ModelNotFoundException) {
+                return Redirect::back()->withErrors([
+                    'coupon' => 'Invalid coupon',
+                ]);
+            }
+        }
+
+        $organization = OrganizationMapper::mapActivationRequest($request);
+        $this->organizationRepository->save($organization);
+
+        $this->integrationRepository->requestActivation(Uuid::fromString($id), $organization->id, $request->input('coupon'));
+
+        return Redirect::back();
+    }
+
+    // @deprecated
     public function activateWithCoupon(string $id, ActivateWithCouponRequest $request): RedirectResponse
     {
         try {
@@ -269,6 +294,7 @@ final class IntegrationController extends Controller
         }
     }
 
+    // @deprecated
     public function activateWithOrganization(string $id, CreateOrganizationRequest $request): RedirectResponse
     {
         $organization = OrganizationMapper::mapCreate($request);
