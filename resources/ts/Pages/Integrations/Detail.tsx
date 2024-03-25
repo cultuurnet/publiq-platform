@@ -32,7 +32,7 @@ const Detail = ({ integration, email }: Props) => {
   };
 
   const url = new URL(document.location.href);
-  const activeTab = url.searchParams.get("tab") ?? "settings";
+  const activeTab = url.searchParams.get("tab") ?? "credentials";
 
   const handleResize = () => {
     setIsMobile(window.innerWidth < 768);
@@ -120,6 +120,16 @@ const Detail = ({ integration, email }: Props) => {
         <div className="w-full flex flex-col gap-5">
           <Tabs active={activeTab} onChange={changeTabInUrl}>
             <Tabs.Item
+              type="credentials"
+              label={
+                integration.type === IntegrationType.Widgets
+                  ? t("details.credentials.widgets")
+                  : t("details.credentials.title")
+              }
+            >
+              <Credentials {...integration} email={email} />
+            </Tabs.Item>
+            <Tabs.Item
               type="settings"
               label={t("details.integration_settings.title")}
             >
@@ -131,16 +141,6 @@ const Detail = ({ integration, email }: Props) => {
                 onConfirmLeaveTab={handleConfirmLeaveTab}
                 onCancelLeaveTab={handleCancelLeaveTab}
               />
-            </Tabs.Item>
-            <Tabs.Item
-              type="credentials"
-              label={
-                integration.type === IntegrationType.Widgets
-                  ? t("details.credentials.widgets")
-                  : t("details.credentials.title")
-              }
-            >
-              <Credentials {...integration} email={email} />
             </Tabs.Item>
             <Tabs.Item type="contacts" label={t("details.contact_info.title")}>
               <ContactInfo {...integration} isMobile={isMobile} />
