@@ -4,26 +4,17 @@ declare(strict_types=1);
 
 namespace App\Domain\Newsletter\Controllers;
 
+use App\Domain\Newsletter\FormRequests\SubscribeRequest;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
 use Mailjet\Client;
 use Mailjet\Resources;
 
 final class NewsletterController extends Controller
 {
-    public function handle(string $email): JsonResponse
+    public function subscribe(SubscribeRequest $request): RedirectResponse
     {
-        $validator = Validator::make(
-            ['email' => $email],
-            ['email' => 'required|email']
-        );
-        if ($validator->fails()) {
-            return response()->json([
-                'error' => $validator->errors()->first(),
-            ], 422);
-        }
-
         $mailJetClient = new Client(
             config('newsletter.api_key'),
             config('newsletter.api_secret')
@@ -33,13 +24,12 @@ final class NewsletterController extends Controller
             [
                 'id' => config('newsletter.id'),
                 'body' => [
-                    'Email' => $email,
+                    'Email' => $request->input('email'),
                     'Action' => 'addnoforce',
                 ],
             ]
         );
-        return response()->json([
-            'status' => $mailjetResponse->getReasonPhrase(),
-        ], $mailjetResponse->getStatus() ?? 502);
+
+        return $mailjetResponse->success() ? Redirect::back() : Redirect::back()->withErrors(['mailjet' => $mailjetResponse->getReasonPhrase() ?? '']);
     }
 }
