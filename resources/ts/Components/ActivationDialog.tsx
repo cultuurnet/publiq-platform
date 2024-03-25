@@ -35,7 +35,7 @@ export const ActivationDialog = ({
   const initialValuesOrganization = {
     organization: {
       name: "",
-      invoiceEmail: type === "entry-api" ? email : "",
+      invoiceEmail: "",
       vat: "",
       address: {
         street: "",
