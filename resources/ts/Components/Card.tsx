@@ -129,12 +129,12 @@ export const Card = ({
             {description}
           </p>
         )}
-        {children && (
-          <div className={classNames(backgroundColor, contentStyles)}>
-            {children}
-          </div>
-        )}
       </div>
+      {children && (
+        <div className={classNames(backgroundColor, contentStyles)}>
+          {children}
+        </div>
+      )}
     </div>
   );
 };
