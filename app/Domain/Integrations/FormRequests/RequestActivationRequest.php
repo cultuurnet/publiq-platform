@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\FormRequests;
 
-use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationType;
-use App\Domain\Integrations\Models\IntegrationModel;
-use App\Domain\Subscriptions\Models\SubscriptionModel;
-use App\Domain\Subscriptions\Subscription;
+use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\App;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @property string $id
@@ -35,17 +35,13 @@ final class RequestActivationRequest extends FormRequest
 
     private function isAccountingInfoRequired(): bool
     {
-        /** @var Integration $integration */
-        $integration = IntegrationModel::query()
-            ->where('id', '=', $this->id)
-            ->firstOrFail()
-            ->toDomain();
+        /** @var IntegrationRepository $integrationRepository */
+        $integrationRepository = App::get(IntegrationRepository::class);
+        $integration = $integrationRepository->getById(Uuid::fromString($this->id));
 
-        /** @var Subscription $subscription */
-        $subscription = SubscriptionModel::query()
-            ->where('id', '=', $integration->subscriptionId->toString())
-            ->firstOrFail()
-            ->toDomain();
+        /** @var SubscriptionRepository $subscriptionRepository */
+        $subscriptionRepository = App::get(SubscriptionRepository::class);
+        $subscription = $subscriptionRepository->getById($integration->subscriptionId);
 
         return $integration->type !== IntegrationType::EntryApi || $subscription->price > 0.0;
     }
