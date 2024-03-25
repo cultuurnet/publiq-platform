@@ -368,7 +368,7 @@ final class IntegrationControllerTest extends TestCase
             'description' => 'updated description',
         ]);
 
-        $response->assertRedirect("/nl/integraties/{$integration->id}");
+        $response->assertRedirect('/');
 
         $this->assertDatabaseHas('integrations', [
             'id' => $integration->id->toString(),
@@ -410,7 +410,7 @@ final class IntegrationControllerTest extends TestCase
             'url' => 'https://localhost:3000',
         ]);
 
-        $response->assertRedirect("/nl/integraties/{$integration->id}");
+        $response->assertRedirect('/');
 
         $this->assertDatabaseHas('integrations_urls', [
             'environment' => Environment::Testing->value,
@@ -450,7 +450,7 @@ final class IntegrationControllerTest extends TestCase
 
         $response = $this->delete("/integrations/{$integration->id}/urls/{$integrationUrl->id}");
 
-        $response->assertRedirect("/nl/integraties/{$integration->id}");
+        $response->assertRedirect('/');
 
         $this->assertDatabaseMissing('integrations_urls', [
             'id' => $integrationUrl->id,
@@ -503,7 +503,7 @@ final class IntegrationControllerTest extends TestCase
             ],
         ]);
 
-        $response->assertRedirect("/nl/integraties/{$integration->id}");
+        $response->assertRedirect('/');
 
         $this->assertDatabaseHas('integrations_urls', [
             'id' => $urls->loginUrl->id->toString(),
@@ -545,7 +545,7 @@ final class IntegrationControllerTest extends TestCase
             ],
         ]);
 
-        $response->assertRedirect("/nl/integraties/{$integration->id}");
+        $response->assertRedirect('/');
 
         $this->assertDatabaseCount('integrations_urls', 1);
 
@@ -568,7 +568,7 @@ final class IntegrationControllerTest extends TestCase
             'urls' => [],
         ]);
 
-        $response->assertRedirect("/nl/integraties/{$integration->id}");
+        $response->assertRedirect('/');
 
         $this->assertDatabaseCount('integrations_urls', 0);
     }
