@@ -19,20 +19,19 @@ export const NewsletterDialog = ({ isVisible, onClose }: Props) => {
 
   const isMobile = useIsMobile();
 
-  const [isFormVisible, setIsFormVisible] = useState(false);
+  const [isFormVisible, setIsFormVisible] = useState(true);
 
   const initialFormValues = {
     email: "",
   };
 
-  const {
-    data,
-    setData,
-    put,
-    errors: err,
-    wasSuccessful,
-    hasErrors,
-  } = useForm(initialFormValues);
+  const { data, setData, post, errors: err } = useForm(initialFormValues);
+
+  const handleSubmit = () => {
+    post("/newsletter", {
+      onSuccess: () => setIsFormVisible(false),
+    });
+  };
 
   const errors = err as Record<string, string | undefined>;
 
@@ -43,7 +42,9 @@ export const NewsletterDialog = ({ isVisible, onClose }: Props) => {
         isFormVisible && (
           <>
             <ButtonSecondary>{t("dialog.cancel")}</ButtonSecondary>
-            <ButtonPrimary>{t("dialog.confirm")}</ButtonPrimary>
+            <ButtonPrimary onClick={handleSubmit}>
+              {t("dialog.confirm")}
+            </ButtonPrimary>
           </>
         )
       }
@@ -55,7 +56,7 @@ export const NewsletterDialog = ({ isVisible, onClose }: Props) => {
         <FormElement
           label={`${t("footer.newsletter_dialog.email")}`}
           className="col-span-2"
-          error={errors["email"]}
+          error={errors["email"] || errors["mailjet"]}
           component={
             <Input
               type="text"
