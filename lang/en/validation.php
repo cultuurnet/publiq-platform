@@ -183,6 +183,7 @@ return [
         'organization.address.street' => 'street',
         'organization.address.zip' => 'postcode',
         'organization.address.city' => 'city',
+        'organization.vat' => 'BTW of ondernemingsnummer',
     ],
 
 ];
