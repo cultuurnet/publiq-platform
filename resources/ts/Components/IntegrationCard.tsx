@@ -140,7 +140,9 @@ export const IntegrationCard = ({
             >
               {t("integrations.test")}
             </Heading>
-
+            <span className="flex items-center whitespace-nowrap">
+              {t("details.credentials.api_key")}
+            </span>
             <CopyText>{legacyTestConsumer.apiKey}</CopyText>
           </section>
         )}
@@ -199,7 +201,13 @@ export const IntegrationCard = ({
                 {t("integrations.live")}
               </Heading>
               <div className="flex flex-col gap-2">
-                <CopyText>{legacyProdConsumer.apiKey}</CopyText>
+                <StatusLight status={status} />
+                <div className="flex gap-1 max-md:flex-col max-md:items-start">
+                  <span className="flex items-center whitespace-nowrap">
+                    {t("details.credentials.api_key")}
+                  </span>
+                  <CopyText>{legacyProdConsumer.apiKey}</CopyText>
+                </div>
               </div>
             </section>
           )}
