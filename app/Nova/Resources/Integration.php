@@ -7,11 +7,11 @@ namespace App\Nova\Resources;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Domain\Organizations\Repositories\OrganizationRepository;
-use App\Nova\Actions\ActivateIntegrationWithCoupon;
-use App\Nova\Actions\ActivateIntegrationWithOrganization;
+use App\Nova\Actions\ActivateIntegration;
+use App\Nova\Actions\ApproveIntegration;
 use App\Nova\Actions\BlockIntegration;
 use App\Nova\Actions\OpenWidgetManager;
 use App\Nova\Resource;
@@ -24,6 +24,7 @@ use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Http\Requests\ActionRequest;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\ResourceTool;
 use Publiq\InsightlyLink\InsightlyLink;
@@ -79,6 +80,16 @@ final class Integration extends Resource
                     IntegrationPartnerStatus::THIRD_PARTY->value => IntegrationPartnerStatus::THIRD_PARTY->value,
                 ])
                 ->default(IntegrationPartnerStatus::THIRD_PARTY->value)
+                ->rules('required'),
+
+            Select::make('Key Visibility')
+                ->filterable()
+                ->sortable()
+                ->options([
+                    KeyVisibility::v1->value => KeyVisibility::v1->name,
+                    KeyVisibility::v2->value => KeyVisibility::v2->name,
+                    KeyVisibility::all->value => KeyVisibility::all->name,
+                ])
                 ->rules('required'),
 
             Text::make('Description')
@@ -147,37 +158,34 @@ final class Integration extends Resource
     public function actions(NovaRequest $request): array
     {
         return [
-            (new ActivateIntegrationWithCoupon(App::make(IntegrationRepository::class)))
+            (new ActivateIntegration(App::make(IntegrationRepository::class)))
                 ->exceptOnIndex()
-                ->confirmText('Are you sure you want to activate this integration with a coupon?')
+                ->confirmText('Are you sure you want to activate this integration?')
                 ->confirmButtonText('Activate')
-                ->cancelButtonText("Don't activate")
-                ->canSee(fn () => $this->canBeActivated())
+                ->cancelButtonText('Cancel')
+                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeActivated())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeActivated()),
 
-            (new ActivateIntegrationWithOrganization(
-                App::make(IntegrationRepository::class),
-                App::make(OrganizationRepository::class)
-            ))
+            (new ApproveIntegration(App::make(IntegrationRepository::class)))
                 ->exceptOnIndex()
-                ->confirmText('Are you sure you want to activate this integration with an organization?')
-                ->confirmButtonText('Activate')
-                ->cancelButtonText("Don't activate")
-                ->canSee(fn () => $this->canBeActivated())
-                ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeActivated()),
+                ->confirmText('Are you sure you want to approve this integration?')
+                ->confirmButtonText('Approve')
+                ->cancelButtonText('Cancel')
+                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeApproved())
+                ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeApproved()),
 
             (new OpenWidgetManager())
                 ->exceptOnIndex()
                 ->withoutConfirmation()
-                ->canSee(fn () => $this->isWidgets())
+                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->isWidgets())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->isWidgets()),
 
             (new BlockIntegration())
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to block this integration?')
                 ->confirmButtonText('Block')
-                ->cancelButtonText("Don't block")
-                ->canSee(fn () => $this->canBeBlocked())
+                ->cancelButtonText('Cancel')
+                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeBlocked())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeBlocked()),
         ];
     }

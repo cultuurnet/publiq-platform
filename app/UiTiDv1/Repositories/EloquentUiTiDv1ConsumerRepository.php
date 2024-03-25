@@ -6,8 +6,6 @@ namespace App\UiTiDv1\Repositories;
 
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use App\UiTiDv1\UiTiDv1Consumer;
-use App\UiTiDv1\UiTiDv1Environment;
-use DateTime;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
@@ -38,39 +36,16 @@ final class EloquentUiTiDv1ConsumerRepository implements UiTiDv1ConsumerReposito
                             'consumer_secret' => $uitidv1Consumer->consumerSecret,
                             'api_key' => $uitidv1Consumer->apiKey,
                             'environment' => $environment,
-                            'distributed_at' => ($environment === UiTiDv1Environment::Production->value) ? null : new DateTime(),
                         ]
                     );
             }
         });
     }
 
-    public function distribute(UiTiDv1Consumer ...$uitidv1Consumers): void
-    {
-        $ids = array_map(
-            fn (UiTiDv1Consumer $consumer) => $consumer->id->toString(),
-            $uitidv1Consumers
-        );
-
-        UiTiDv1ConsumerModel::query()
-            ->whereIn('id', $ids)
-            ->touch('distributed_at');
-    }
-
     public function getByIntegrationId(UuidInterface $integrationId): array
     {
         return UiTiDv1ConsumerModel::query()
             ->where('integration_id', $integrationId->toString())
-            ->get()
-            ->map(static fn (UiTiDv1ConsumerModel $model) => $model->toDomain())
-            ->toArray();
-    }
-
-    public function getDistributedByIntegrationId(UuidInterface $integrationId): array
-    {
-        return UiTiDv1ConsumerModel::query()
-            ->where('integration_id', $integrationId->toString())
-            ->whereNotNull('distributed_at')
             ->get()
             ->map(static fn (UiTiDv1ConsumerModel $model) => $model->toDomain())
             ->toArray();

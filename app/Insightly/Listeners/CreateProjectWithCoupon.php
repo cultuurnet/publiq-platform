@@ -12,6 +12,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
+// @deprecated
 final class CreateProjectWithCoupon implements ShouldQueue
 {
     use Queueable;

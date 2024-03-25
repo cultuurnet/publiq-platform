@@ -12,6 +12,7 @@ use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
@@ -141,6 +142,7 @@ final class MigrateProjects extends Command
             $migrationProject->status(),
             IntegrationPartnerStatus::THIRD_PARTY,
         );
+        $integration = $integration->withKeyVisibility(KeyVisibility::v1);
         $this->integrationRepository->save($integration);
 
         IntegrationModel::query()->where('id', '=', $integrationId)->update([

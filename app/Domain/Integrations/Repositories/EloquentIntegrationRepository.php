@@ -98,6 +98,43 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         );
     }
 
+    public function requestActivation(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode): void
+    {
+        DB::transaction(static function () use ($couponCode, $id, $organizationId): void {
+            if ($couponCode) {
+                /** @var CouponModel $couponModel */
+                $couponModel = CouponModel::query()
+                    ->where('code', '=', $couponCode)
+                    ->whereNull('integration_id')
+                    ->firstOrFail();
+                $couponModel->useOnIntegration($id);
+            }
+
+            /** @var IntegrationModel $integrationModel */
+            $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
+            $integrationModel->requestActivation($organizationId);
+        });
+    }
+
+    public function activate(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode): void
+    {
+        DB::transaction(static function () use ($couponCode, $id, $organizationId): void {
+            if ($couponCode) {
+                /** @var CouponModel $couponModel */
+                $couponModel = CouponModel::query()
+                    ->where('code', '=', $couponCode)
+                    ->whereNull('integration_id')
+                    ->firstOrFail();
+                $couponModel->useOnIntegration($id);
+            }
+
+            /** @var IntegrationModel $integrationModel */
+            $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
+            $integrationModel->activate($organizationId);
+        });
+    }
+
+    // @deprecated
     public function activateWithCouponCode(UuidInterface $id, string $couponCode): void
     {
         DB::transaction(static function () use ($couponCode, $id): void {
@@ -114,10 +151,18 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         });
     }
 
+    // @deprecated
     public function activateWithOrganization(UuidInterface $id, UuidInterface $organizationId): void
     {
         /** @var IntegrationModel $integrationModel */
         $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
         $integrationModel->activateWithOrganization($organizationId);
+    }
+
+    public function approve(UuidInterface $id): void
+    {
+        /** @var IntegrationModel $integrationModel */
+        $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
+        $integrationModel->approve();
     }
 }

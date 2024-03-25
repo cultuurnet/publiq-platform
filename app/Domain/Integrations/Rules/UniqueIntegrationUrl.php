@@ -20,9 +20,13 @@ final readonly class UniqueIntegrationUrl implements ValidationRule
     {
         $index = (int)explode('.', $attribute)[1];
         $currentUrl = $this->urls[$index];
+        $inUse = [];
 
         // compare urls with the same type and environment
         foreach ($this->urls as $key => $url) {
+            $hash = $url['type'] . $url['environment'];
+            $inUse[$hash] ??= $key;
+
             if ($key === $index) {
                 continue;
             }
@@ -33,6 +37,10 @@ final readonly class UniqueIntegrationUrl implements ValidationRule
                 continue;
             }
             if (trim(($currentUrl['url'] ?? '')) !== trim($url['url'] ?? '')) {
+                continue;
+            }
+
+            if ($inUse[$hash] !== $key) {
                 continue;
             }
 

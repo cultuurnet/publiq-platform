@@ -15,7 +15,10 @@ import {
   IntegrationType,
   isIntegrationType,
 } from "../../types/IntegrationType";
-import { RadioButtonGroup } from "../../Components/RadioButtonGroup";
+import {
+  RadioButtonGroup,
+  RichRadioButton,
+} from "../../Components/RadioButtonGroup";
 
 type PricingPlan = {
   id: string;
@@ -84,6 +87,12 @@ const New = ({ subscriptions }: Props) => {
   const { t } = useTranslation();
   const { i18n } = useTranslation();
 
+  const freeSubscriptionId = subscriptions.find(
+    (subscription) =>
+      subscription.integration_type === IntegrationType.EntryApi &&
+      subscription.price === 0
+  )?.id;
+
   const url = new URL(document.location.href);
   const activeTypeFromUrl = url.searchParams.get("type");
   const activeType = isIntegrationType(activeTypeFromUrl)
@@ -92,7 +101,10 @@ const New = ({ subscriptions }: Props) => {
 
   const initialFormValues = {
     integrationType: activeType,
-    subscriptionId: "",
+    subscriptionId:
+      activeType === IntegrationType.EntryApi && !!freeSubscriptionId
+        ? freeSubscriptionId
+        : "",
     integrationName: "",
     description: "",
     organizationFunctionalContact: "",
@@ -142,15 +154,11 @@ const New = ({ subscriptions }: Props) => {
                 ({ Icon, ...integrationTypeInfo }) => ({
                   value: integrationTypeInfo.type,
                   label: (
-                    <div className="flex flex-row justify-between gap-2">
-                      <span className="flex flex-row gap-2 justify-between">
-                        <Icon className="h-7 w-7" />
-                        <span>{integrationTypeInfo.title}</span>
-                      </span>
-                      <span className="text-gray-400 font-thin">
-                        {integrationTypeInfo.description}
-                      </span>
-                    </div>
+                    <RichRadioButton
+                      name={integrationTypeInfo.title}
+                      description={integrationTypeInfo.description}
+                      Icon={Icon}
+                    />
                   ),
                 })
               )}
@@ -180,14 +188,10 @@ const New = ({ subscriptions }: Props) => {
                 options={translatedPricingPlans.map((pricingPlan) => ({
                   value: pricingPlan.id,
                   label: (
-                    <div className="flex flex-row items-center justify-between gap-2">
-                      <span className="text-left w-1/2">
-                        {pricingPlan.title} ({pricingPlan.price})
-                      </span>
-                      <span className="text-gray-400 font-thin text-right">
-                        {pricingPlan.description}
-                      </span>
-                    </div>
+                    <RichRadioButton
+                      name={`${pricingPlan.title} (${pricingPlan.price})`}
+                      description={pricingPlan.description}
+                    />
                   ),
                 }))}
               />
@@ -201,7 +205,7 @@ const New = ({ subscriptions }: Props) => {
           <Card>
             <FormElement
               label={t("integration_form.integration_name")}
-              labelSize="xl"
+              labelSize="2xl"
               info={t("integration_form.description_name")}
               component={
                 <Input
@@ -217,7 +221,7 @@ const New = ({ subscriptions }: Props) => {
           <Card>
             <FormElement
               label={t("integration_form.aim")}
-              labelSize="xl"
+              labelSize="2xl"
               info={t("integration_form.description_aim")}
               component={
                 <textarea

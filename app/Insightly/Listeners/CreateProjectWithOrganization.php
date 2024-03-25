@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
+// @deprecated
 final class CreateProjectWithOrganization implements ShouldQueue
 {
     use Queueable;
@@ -98,7 +99,7 @@ final class CreateProjectWithOrganization implements ShouldQueue
             );
         }
 
-        if ($organizationInsightlyId === null) {
+        if ($organizationInsightlyId === null && $organization->invoiceEmail !== null) {
             $organizationInsightlyId = $this->insightlyClient->organizations()->findIdByEmail(
                 $organization->invoiceEmail
             );

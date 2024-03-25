@@ -3,11 +3,11 @@ import { PubliqLogo } from "./logos/PubliqLogo";
 import { VlaanderenLogo } from "./logos/VlaanderenLogo";
 import { Heading } from "./Heading";
 import { ButtonLink } from "./ButtonLink";
-import { Link } from "@inertiajs/react";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { NewsletterDialog } from "./NewsletterDialog";
+import { Link } from "./Link";
 
 export default function Footer() {
   const { t } = useTranslation();
@@ -49,31 +49,37 @@ export default function Footer() {
           <Heading level={3} className="font-medium">
             {t("title")}
           </Heading>
-          <Link href="#" className="hover:underline">
-            {t("footer.links.what")}
+          <Link
+            href={t("footer.links.opportunities.link")}
+            className="hover:underline"
+          >
+            {t("footer.links.opportunities.label")}
           </Link>
-          <Link href="#" className="hover:underline">
-            {t("footer.links.opportunities")}
-          </Link>
-          <Link href="#" className="hover:underline">
-            {t("footer.links.price")}
-          </Link>
-          <Link href="#" className="hover:underline">
-            {t("footer.links.start")}
+          <Link href={t("footer.links.price.link")} className="hover:underline">
+            {t("footer.links.price.label")}
           </Link>
         </div>
         <div className="flex flex-col gap-1">
           <Heading level={3} className="font-medium">
             {t("footer.legal")}
           </Heading>
-          <Link href="#" className="hover:underline">
-            {t("footer.links.terms_of_use")}
+          <Link
+            href={t("footer.links.terms_of_use.link")}
+            className="hover:underline"
+          >
+            {t("footer.links.terms_of_use.label")}
           </Link>
-          <Link href="#" className="hover:underline">
-            {t("footer.links.privacy")}
+          <Link
+            href={t("footer.links.privacy.link")}
+            className="hover:underline"
+          >
+            {t("footer.links.privacy.label")}
           </Link>
-          <Link href="#" className="hover:underline">
-            {t("footer.links.cookie")}
+          <Link
+            href={t("footer.links.cookie.link")}
+            className="hover:underline"
+          >
+            {t("footer.links.cookie.label")}
           </Link>
         </div>
       </div>
@@ -82,14 +88,20 @@ export default function Footer() {
           <Heading level={3} className="font-medium">
             {t("footer.support")}
           </Heading>
-          <Link href="#" className="hover:underline">
-            {t("footer.links.documentation")}
+          <Link
+            href={t("footer.links.documentation.link")}
+            className="hover:underline"
+          >
+            {t("footer.links.documentation.label")}
           </Link>
-          <Link href="#" className="hover:underline">
-            {t("footer.links.status_page")}
+          <Link
+            href={t("footer.links.status_page.link")}
+            className="hover:underline"
+          >
+            {t("footer.links.status_page.label")}
           </Link>
-          <Link href="#" className="hover:underline">
-            {t("footer.links.help")}
+          <Link href={t("footer.links.help.link")} className="hover:underline">
+            {t("footer.links.help.label")}
           </Link>
           <Link href="#" className="hover:underline">
             {t("footer.links.slack")}
