@@ -52,10 +52,7 @@ export const ActivationDialog = ({
   const handleSubmit = () => {
     organizationForm.post(`/integrations/${id}/activation`, {
       onFinish: () => {
-        if (
-          !organizationForm.hasErrors &&
-          organizationForm.wasSuccessful
-        ) {
+        if (!organizationForm.hasErrors && organizationForm.wasSuccessful) {
           onClose();
         }
       },
@@ -248,7 +245,9 @@ export const ActivationDialog = ({
                   type="text"
                   name="coupon"
                   value={organizationForm.data.coupon}
-                  onChange={(e) => organizationForm.setData("coupon", e.target.value)}
+                  onChange={(e) =>
+                    organizationForm.setData("coupon", e.target.value)
+                  }
                 />
               }
             />
