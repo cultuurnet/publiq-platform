@@ -27,7 +27,7 @@ final class RequestActivationRequest extends FormRequest
         ]);
 
         if (!$this->isAccountingInfoRequired()) {
-            $rules->forget(['organization.invoiceEmail', 'organization.vat']);
+            $rules->forget(['organization.invoiceEmail', 'organization.vat', 'coupon']);
         }
 
         return $rules->toArray();
