@@ -87,6 +87,12 @@ const New = ({ subscriptions }: Props) => {
   const { t } = useTranslation();
   const { i18n } = useTranslation();
 
+  const freeSubscriptionId = subscriptions.find(
+    (subscription) =>
+      subscription.integration_type === IntegrationType.EntryApi &&
+      subscription.price === 0
+  )?.id;
+
   const url = new URL(document.location.href);
   const activeTypeFromUrl = url.searchParams.get("type");
   const activeType = isIntegrationType(activeTypeFromUrl)
@@ -95,7 +101,10 @@ const New = ({ subscriptions }: Props) => {
 
   const initialFormValues = {
     integrationType: activeType,
-    subscriptionId: "",
+    subscriptionId:
+      activeType === IntegrationType.EntryApi && !!freeSubscriptionId
+        ? freeSubscriptionId
+        : "",
     integrationName: "",
     description: "",
     organizationFunctionalContact: "",
