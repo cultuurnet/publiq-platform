@@ -18,6 +18,7 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Insightly\Models\InsightlyMappingModel;
@@ -46,6 +47,7 @@ final class IntegrationModel extends UuidModel
         'organization_id',
         'status',
         'partner_status',
+        'key_visibility',
     ];
 
     protected $attributes = [
@@ -245,7 +247,9 @@ final class IntegrationModel extends UuidModel
             Uuid::fromString($this->subscription_id),
             IntegrationStatus::from($this->status),
             IntegrationPartnerStatus::from($this->partner_status),
-        ))->withContacts(
+        ))->withKeyVisibility(
+            KeyVisibility::from($this->key_visibility)
+        )->withContacts(
             ...$this->contacts()
             ->get()
             ->map(fn (ContactModel $contactModel) => $contactModel->toDomain())
