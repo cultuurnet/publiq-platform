@@ -55,17 +55,6 @@ export const ActivationDialog = ({
     });
   };
 
-  const couponErrorMessage = useMemo(() => {
-    if (!organizationForm.errors.coupon) return;
-
-    switch (organizationForm.errors.coupon) {
-      case "Coupon is already used":
-        return t("integrations.activation_dialog.already_used_coupon");
-      default:
-        return t("integrations.activation_dialog.invalid_coupon");
-    }
-  }, [organizationForm.errors, t]);
-
   const organizationFormErrors = organizationForm.errors as Record<
     string,
     string | undefined
@@ -234,7 +223,7 @@ export const ActivationDialog = ({
             />
             <FormElement
               label={`${t("integrations.activation_dialog.coupon")}`}
-              error={couponErrorMessage}
+              error={organizationForm.errors.coupon}
               className="col-span-2"
               component={
                 <Input

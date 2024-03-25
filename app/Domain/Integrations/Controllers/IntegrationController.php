@@ -255,11 +255,11 @@ final class IntegrationController extends Controller
             try {
                 $coupon = $this->couponRepository->getByCode($request->input('coupon'));
                 if ($coupon->isDistributed) {
-                    return Redirect::back()->withErrors(['coupon' => 'Coupon is already used']);
+                    return Redirect::back()->withErrors(['coupon' => __('errors.coupon.already_used')]);
                 }
             } catch (ModelNotFoundException) {
                 return Redirect::back()->withErrors([
-                    'coupon' => 'Invalid coupon',
+                    'coupon' => __('errors.coupon.invalid'),
                 ]);
             }
         }
