@@ -13,17 +13,10 @@ interface UiTiDv1ConsumerRepository
 {
     public function save(UiTiDv1Consumer ...$uitidv1Consumers): void;
 
-    public function distribute(UiTiDv1Consumer ...$uitidv1Consumers): void;
-
     /**
      * @return UiTiDv1Consumer[]
      */
     public function getByIntegrationId(UuidInterface $integrationId): array;
-
-    /**
-    * @return UiTiDv1Consumer[]
-    */
-    public function getDistributedByIntegrationId(UuidInterface $integrationId): array;
 
     /**
      * @throws ModelNotFoundException<Model>

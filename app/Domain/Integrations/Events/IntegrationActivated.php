@@ -7,8 +7,7 @@ namespace App\Domain\Integrations\Events;
 use Illuminate\Foundation\Events\Dispatchable;
 use Ramsey\Uuid\UuidInterface;
 
-// @deprecated
-final class IntegrationActivatedWithCoupon
+final class IntegrationActivated
 {
     use Dispatchable;
 

@@ -10,14 +10,11 @@ use App\Auth0\Jobs\BlockClient;
 use App\Auth0\Jobs\BlockClientHandler;
 use App\Auth0\Listeners\BlockClients;
 use App\Auth0\Listeners\CreateClients;
-use App\Auth0\Listeners\DistributeClients;
 use App\Auth0\Listeners\UpdateClients;
 use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Auth0\Repositories\Auth0ManagementUserRepository;
 use App\Auth0\Repositories\Auth0UserRepository;
 use App\Auth0\Repositories\EloquentAuth0ClientRepository;
-use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
-use App\Domain\Integrations\Events\IntegrationActivatedWithOrganization;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationUpdated;
@@ -105,9 +102,6 @@ final class Auth0ServiceProvider extends ServiceProvider
 
             Event::listen(ActivateClient::class, [ActivateClientHandler::class, 'handle']);
             Event::listen(BlockClient::class, [BlockClientHandler::class, 'handle']);
-
-            Event::listen(IntegrationActivatedWithCoupon::class, [DistributeClients::class, 'handleIntegrationActivatedWithCoupon']);
-            Event::listen(IntegrationActivatedWithOrganization::class, [DistributeClients::class, 'handleIntegrationActivatedWithOrganization']);
         }
     }
 }

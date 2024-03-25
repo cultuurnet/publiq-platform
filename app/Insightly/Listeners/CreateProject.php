@@ -20,6 +20,7 @@ use App\Insightly\SyncIsAllowed;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Ramsey\Uuid\UuidInterface;
 
+// @deprecated
 final class CreateProject
 {
     public function __construct(

@@ -9,7 +9,6 @@ use App\Nova\ActionGuards\UiTiDv1\ActivateUiTiDv1ConsumerGuard;
 use App\Nova\ActionGuards\UiTiDv1\BlockUiTiDv1ConsumerGuard;
 use App\Nova\Actions\UiTiDv1\ActivateUiTiDv1Consumer;
 use App\Nova\Actions\UiTiDv1\BlockUiTiDv1Consumer;
-use App\Nova\Actions\UiTiDv1\DistributeUiTiDv1Consumer;
 use App\Nova\Resource;
 use App\UiTiDv1\CachedUiTiDv1Status;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
@@ -17,7 +16,6 @@ use App\UiTiDv1\UiTiDv1ConsumerStatus;
 use App\UiTiDv1\UiTiDv1Environment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
-use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
@@ -77,8 +75,6 @@ final class UiTiDv1 extends Resource
                     $status->name
                 );
             })->asHtml(),
-            DateTime::make('distributed_at')
-                ->readonly(),
             Text::make('consumer_key')
                 ->readonly(),
             Text::make('consumer_secret')
@@ -121,7 +117,7 @@ final class UiTiDv1 extends Resource
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to activate this consumer?')
                 ->confirmButtonText('Activate')
-                ->cancelButtonText("Don't activate")
+                ->cancelButtonText('Cancel')
                 ->canSee(fn (Request $request) => $this->canActivate($request, $this->resource))
                 ->canRun(fn (Request $request, UiTiDv1ConsumerModel $model) => $this->canActivate($request, $model)),
 
@@ -129,17 +125,9 @@ final class UiTiDv1 extends Resource
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to block this consumer?')
                 ->confirmButtonText('Block')
-                ->cancelButtonText("Don't block")
+                ->cancelButtonText('Cancel')
                 ->canSee(fn (Request $request) => $this->canBlock($request, $this->resource))
                 ->canRun(fn (Request $request, UiTiDv1ConsumerModel $model) => $this->canBlock($request, $model)),
-
-            App::make(DistributeUiTiDv1Consumer::class)
-                ->exceptOnIndex()
-                ->confirmText('Are you sure you want to distribute this consumer?')
-                ->confirmButtonText('Distribute')
-                ->cancelButtonText("Don't distribute")
-                ->canSee(fn (Request $request) => !$this->resource->isDistributed())
-                ->canRun(fn (Request $request, UiTiDv1ConsumerModel $model) => !$this->resource->isDistributed()),
         ];
     }
 

@@ -207,7 +207,7 @@
       "action_uitid": "UiTIDv2 credentials aanvragen",
       "client_id": "Client id",
       "client_secret": "Client secret",
-      "info": "Deze credentials blijven nog 3 maanden geldig en worden definitief verwijdered op {{datum + 3 maanden}}"
+      "info": "Deze credentials blijven nog 3 maanden geldig en worden definitief verwijderd op {{datum + 3 maanden}}"
     },
     "integration_settings": {
       "title": "Instellingen",
