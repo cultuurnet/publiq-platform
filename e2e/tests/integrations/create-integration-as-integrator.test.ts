@@ -18,7 +18,6 @@ test("As an integrator I can create a new integration", async ({ page }) => {
   await page.locator('input[name="emailFunctionalContact"]').fill('dev+e2etest@publiq.be');
   await page.locator('input[name="emailPartner"]').click();
   await page.locator('input[name="emailPartner"]').fill('dev+e2etest@publiq.be');
-  await page.locator('#app label').filter({ hasText: 'Ik ga akkoord met' }).click();
   await page.getByLabel('Ik ga akkoord met de').check();
   await page.getByRole('button', { name: 'Integratie aanmaken' }).click();
 
