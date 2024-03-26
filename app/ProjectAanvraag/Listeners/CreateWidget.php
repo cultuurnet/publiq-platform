@@ -149,14 +149,8 @@ final class CreateWidget implements ShouldQueue
             ConsumerCreated::class => 'consumer',
         };
 
-        $id = match (get_class($event)) {
-            IntegrationCreated::class => $event->integrationId->toString(),
-            ContactCreated::class => $event->id->toString(),
-            ConsumerCreated::class => $event->id->toString(),
-        };
-
-        $this->logger->error("Failed to create $entity", [
-            "{$entity}_id" => $id,
+        $this->logger->error('Failed to create widget', [
+            "{$entity}_id" => $event->id->toString(),
             'exception' => $throwable,
         ]);
     }
