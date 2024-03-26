@@ -23,6 +23,10 @@ use App\Domain\Integrations\Models\IntegrationUrlModel;
 use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\Organizations\Organization;
+use App\Domain\Subscriptions\Currency;
+use App\Domain\Subscriptions\Models\SubscriptionModel;
+use App\Domain\Subscriptions\Subscription;
+use App\Domain\Subscriptions\SubscriptionCategory;
 use App\ProjectAanvraag\ProjectAanvraagUrl;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
@@ -30,6 +34,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Validation\UnauthorizedException;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use Tests\TestCase;
 
 final class IntegrationControllerTest extends TestCase
@@ -156,7 +161,9 @@ final class IntegrationControllerTest extends TestCase
         $this->actingAs(UserModel::createSystemUser());
 
         $organization = $this->givenThereIsAnOrganization();
-        $integration = $this->givenThereIsAnIntegration();
+        $integrationType = IntegrationType::SearchApi;
+        $subscription = $this->givenThereIsASubscription(integrationType: $integrationType, subscriptionCategory: SubscriptionCategory::Basic);
+        $integration = $this->givenThereIsAnIntegration(integrationType: $integrationType, subscriptionId: $subscription->id);
 
         $this->givenTheActingUserIsAContactOnIntegration($integration);
 
@@ -194,7 +201,9 @@ final class IntegrationControllerTest extends TestCase
         $this->actingAs(UserModel::createSystemUser());
 
         $organization = $this->givenThereIsAnOrganization();
-        $integration = $this->givenThereIsAnIntegration();
+        $integrationType = IntegrationType::Widgets;
+        $subscription = $this->givenThereIsASubscription(integrationType: $integrationType, subscriptionCategory: SubscriptionCategory::Plus);
+        $integration = $this->givenThereIsAnIntegration(integrationType: $integrationType, subscriptionId: $subscription->id);
         $coupon = $this->givenThereIsACoupon();
 
         $this->givenTheActingUserIsAContactOnIntegration($integration);
@@ -690,14 +699,14 @@ final class IntegrationControllerTest extends TestCase
         $response->assertForbidden();
     }
 
-    private function givenThereIsAnIntegration(IntegrationType $integrationType = null): Integration
+    private function givenThereIsAnIntegration(IntegrationType $integrationType = null, UuidInterface $subscriptionId = null): Integration
     {
         $integration = new Integration(
             Uuid::uuid4(),
             $integrationType ?? IntegrationType::SearchApi,
             'Test Integration',
             'Test Integration description',
-            Uuid::uuid4(),
+            $subscriptionId ?? Uuid::uuid4(),
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::THIRD_PARTY,
         );
@@ -915,5 +924,34 @@ final class IntegrationControllerTest extends TestCase
                 ],
             ]
         );
+    }
+
+    private function givenThereIsASubscription(IntegrationType $integrationType, SubscriptionCategory $subscriptionCategory = null): Subscription
+    {
+        $subscription = new Subscription(
+            Uuid::uuid4(),
+            'Test Subscription',
+            'lorem ipsum',
+            $subscriptionCategory ?? SubscriptionCategory::Basic,
+            $integrationType,
+            Currency::EUR,
+            180,
+            200
+        );
+
+        SubscriptionModel::query()->create(
+            [
+                'id' => $subscription->id->toString(),
+                'name' => $subscription->name,
+                'description' => $subscription->description,
+                'category' => $subscription->category,
+                'integration_type' => $subscription->integrationType,
+                'currency' => $subscription->currency,
+                'price' => $subscription->price,
+                'fee' => $subscription->fee,
+            ]
+        );
+
+        return $subscription;
     }
 }
