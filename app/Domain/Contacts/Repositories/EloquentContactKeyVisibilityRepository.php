@@ -6,6 +6,7 @@ namespace App\Domain\Contacts\Repositories;
 
 use App\Domain\Contacts\Models\ContactKeyVisibilityModel;
 use App\Domain\Integrations\KeyVisibility;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 final class EloquentContactKeyVisibilityRepository implements ContactKeyVisibilityRepository
 {
@@ -17,7 +18,7 @@ final class EloquentContactKeyVisibilityRepository implements ContactKeyVisibili
                 ->where('email', $email)
                 ->firstOrFail();
             return $contactKeyVisibility->key_visibility;
-        } catch (\Throwable) {
+        } catch (ModelNotFoundException) {
             return KeyVisibility::v2;
         }
     }
