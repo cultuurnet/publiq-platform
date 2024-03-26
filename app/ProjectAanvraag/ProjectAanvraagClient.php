@@ -6,24 +6,30 @@ namespace App\ProjectAanvraag;
 
 use App\Json;
 use App\ProjectAanvraag\Requests\CreateWidgetRequest;
-use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
+use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Log\LoggerInterface;
+
+use JsonException;
 
 final readonly class ProjectAanvraagClient
 {
     public function __construct(
         private LoggerInterface  $logger,
-        private ?ClientInterface $client = null
+        private ClientInterface $httpClient,
     ) {
     }
 
+    /**
+     * @throws ClientExceptionInterface|JsonException
+     */
     public function createWidget(CreateWidgetRequest $createWidgetRequest): void
     {
+        $baseUri = ProjectAanvraagUrl::getStatusBaseUri($createWidgetRequest->status);
         $request = new Request(
             'POST',
-            'project/' . $createWidgetRequest->integrationId->toString(),
+            $baseUri . '/project/' . $createWidgetRequest->integrationId->toString(),
             [],
             Json::encode([
                 'userId' => $createWidgetRequest->userId,
@@ -35,12 +41,7 @@ final readonly class ProjectAanvraagClient
             ])
         );
 
-        $httpClient = $this->client ?? new Client([
-            'base_uri' => ProjectAanvraagUrl::getStatusBaseUri($createWidgetRequest->status),
-            'http_errors' => false,
-        ]);
-
-        $response = $httpClient->sendRequest($request);
+        $response = $this->httpClient->sendRequest($request);
 
         if ($response->getStatusCode() !== 200) {
             $this->logger->error(
