@@ -116,8 +116,6 @@ const New = ({ subscriptions }: Props) => {
     lastNameTechnicalContact: "",
     emailTechnicalContact: "",
     agreement: "",
-    coupon: "",
-    couponCode: "",
   };
 
   const { data, setData, errors, post, processing } =
@@ -385,38 +383,6 @@ const New = ({ subscriptions }: Props) => {
               }
               error={errors.agreement}
             />
-            <FormElement
-              label={t("integration_form.coupon")}
-              labelSize="base"
-              labelWeight="normal"
-              labelPosition="right"
-              component={
-                <input
-                  type="checkbox"
-                  name="coupon"
-                  className="text-publiq-blue-dark focus:ring-publiq-blue-dark rounded-sm"
-                  checked={data.coupon === "true"}
-                  onChange={() =>
-                    setData("coupon", data.coupon === "true" ? "" : "true")
-                  }
-                />
-              }
-              error={errors.coupon}
-            />
-            {data.coupon && (
-              <FormElement
-                component={
-                  <Input
-                    type="text"
-                    name="couponCode"
-                    value={data.couponCode}
-                    onChange={(e) => setData("couponCode", e.target.value)}
-                    placeholder={t("integration_form.code")}
-                  />
-                }
-                error={errors.couponCode}
-              />
-            )}
           </Card>
 
           <ButtonPrimary type="submit" disabled={processing} className="w-fit">
