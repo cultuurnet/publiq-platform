@@ -88,10 +88,9 @@ export const ActivationDialog = ({
           label={`${t("integrations.activation_dialog.subscription_plan")}`}
           component={
             <p className="text-sm">
-              {subscription &&
-                `${subscription.category} ${
-                  subscription.currency === "EUR" ? "€" : subscription.currency
-                } ${subscription.fee / 100}`}
+              {`${subscription.category} ${
+                subscription.currency === "EUR" ? "€" : subscription.currency
+              } ${subscription.fee}`}
             </p>
           }
         />
@@ -239,21 +238,16 @@ export const ActivationDialog = ({
             />
           </>
         )}
-        {!!subscription && (
-          <FormElement
-            label={`${t("integrations.activation_dialog.price")}`}
-            component={
-              <p className="text-sm">
-                {subscription &&
-                  `${
-                    subscription.currency === "EUR"
-                      ? "€"
-                      : subscription.currency
-                  } ${subscription.fee / 100}`}
-              </p>
-            }
-          />
-        )}
+        <FormElement
+          label={`${t("integrations.activation_dialog.price")}`}
+          component={
+            <p className="text-sm">
+              {`${
+                subscription.currency === "EUR" ? "€" : subscription.currency
+              } ${subscription.fee}`}
+            </p>
+          }
+        />
       </>
     </Dialog>
   );

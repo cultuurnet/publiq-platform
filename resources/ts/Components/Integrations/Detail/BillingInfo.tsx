@@ -41,7 +41,7 @@ export const BillingInfo = ({
               name="price"
               value={`${subscription.category} (${
                 subscription.currency === "EUR" ? "€" : subscription.currency
-              } ${subscription.fee / 100})`}
+              } ${subscription.fee})`}
               className="md:min-w-[40rem]"
               disabled
             />
