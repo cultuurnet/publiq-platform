@@ -8,7 +8,7 @@ import { useForm } from "@inertiajs/react";
 import { useTranslation } from "react-i18next";
 import { IntegrationType } from "../types/IntegrationType";
 import { useIsMobile } from "../hooks/useIsMobile";
-import { parseSubscriptionPriceInfo } from "../utils/parseSubscriptionPriceInfo";
+import { getPriceLabelFromSubscription } from "../utils/getPriceLabelFromSubscription";
 import { Subscription } from "../types/Subscription";
 
 type Props = {
@@ -69,7 +69,7 @@ export const ActivationDialog = ({
       <span className="text-sm font-medium">
         {t("integrations.activation_dialog.subscription_plan")}
       </span>
-      <p className="text-sm">{parseSubscriptionPriceInfo(subscription)}</p>
+      <p className="text-sm">{getPriceLabelFromSubscription(subscription)}</p>
     </div>
   );
 

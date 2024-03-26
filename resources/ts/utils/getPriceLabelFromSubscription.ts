@@ -1,6 +1,6 @@
 import { Subscription } from "../types/Subscription";
 
-export const parseSubscriptionPriceInfo = (subscription: Subscription) => {
+export const getPriceLabelFromSubscription = (subscription: Subscription) => {
   if (subscription.category === "Custom") {
     return "Nog te bepalen";
   }
