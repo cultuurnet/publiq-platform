@@ -6,11 +6,9 @@ test("create a new integration as an admin", async ({ page }) => {
   await page.goto("/admin");
   await page.getByRole("link", { name: "Integrations" }).click();
   await page.getByRole("link", { name: "Create Integration" }).click();
-  await page.getByPlaceholder("Name").click();
   await page.getByPlaceholder("Name").fill("Test E2E integration as admin");
   await page.locator("#type").selectOption("entry-api");
   await page.locator("#key_visibility").selectOption("all");
-  await page.getByPlaceholder("Description").click();
   await page
     .getByPlaceholder("Description")
     .fill("Test E2E integration as admin");
