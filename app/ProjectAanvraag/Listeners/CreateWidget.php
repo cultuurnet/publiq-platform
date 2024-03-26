@@ -141,10 +141,22 @@ final class CreateWidget implements ShouldQueue
         );
     }
 
-    public function failed(ContactCreated $contactCreated, Throwable $throwable): void
+    public function failed(IntegrationCreated|ContactCreated|ConsumerCreated $event, Throwable $throwable): void
     {
-        $this->logger->error('Failed to create contact', [
-            'contact_id' => $contactCreated->id->toString(),
+        $entity = match (get_class($event)) {
+            IntegrationCreated::class => 'integration',
+            ContactCreated::class => 'contact',
+            ConsumerCreated::class => 'consumer',
+        };
+
+        $id = match (get_class($event)) {
+            IntegrationCreated::class => $event->integrationId->toString(),
+            ContactCreated::class => $event->id->toString(),
+            ConsumerCreated::class => $event->id->toString(),
+        };
+
+        $this->logger->error("Failed to create $entity", [
+            "$entity.id" => $id,
             'exception' => $throwable,
         ]);
     }
