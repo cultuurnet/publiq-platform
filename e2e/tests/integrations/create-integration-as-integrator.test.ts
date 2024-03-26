@@ -11,8 +11,8 @@ test("As an integrator I can create a new integration", async ({ page }) => {
   await page.locator('input[name="lastNameFunctionalContact"]').press('Tab');
   await page.locator('input[name="firstNameFunctionalContact"]').fill('test');
   await page.locator('input[name="firstNameFunctionalContact"]').press('Tab');
-  await page.locator('input[name="emailFunctionalContact"]').fill('dev+e2etest@publiq.be');
-  await page.locator('input[name="emailPartner"]').fill('dev+e2etest@publiq.be');
+  await page.locator('input[name="emailFunctionalContact"]').fill(process.env.E2E_TEST_EMAIL!);
+  await page.locator('input[name="emailPartner"]').fill(process.env.E2E_TEST_EMAIL!);
   await page.getByLabel('Ik ga akkoord met de').check();
   await page.getByRole('button', { name: 'Integratie aanmaken' }).click();
 
