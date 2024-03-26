@@ -50,7 +50,7 @@ export type Subscription = {
   name: string;
   description: string;
   category: string;
-  integrationType: string;
+  integrationType: IntegrationType;
   currency: string;
   price: number;
   fee: number;

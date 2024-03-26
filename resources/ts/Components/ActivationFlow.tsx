@@ -10,7 +10,7 @@ import { ActivationRequest } from "./ActivationRequest";
 type Props = {
   status: IntegrationStatus;
   id: string;
-  subscription?: Subscription;
+  subscription: Subscription;
   type: Values<typeof IntegrationType>;
   email: string;
 };
