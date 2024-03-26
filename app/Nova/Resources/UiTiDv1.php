@@ -60,10 +60,9 @@ final class UiTiDv1 extends Resource
             Select::make('environment')
                 ->readonly()
                 ->filterable()
-                ->sortable()
                 ->options([
-                    UiTiDv1Environment::Testing->value => UiTiDv1Environment::Testing->name,
                     UiTiDv1Environment::Acceptance->value => UiTiDv1Environment::Acceptance->name,
+                    UiTiDv1Environment::Testing->value => UiTiDv1Environment::Testing->name,
                     UiTiDv1Environment::Production->value => UiTiDv1Environment::Production->name,
                 ]),
             Text::make('Status', static function (UiTiDv1ConsumerModel $model) {

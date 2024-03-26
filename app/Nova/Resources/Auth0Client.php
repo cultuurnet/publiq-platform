@@ -58,10 +58,9 @@ final class Auth0Client extends Resource
             Select::make('auth0_tenant')
                 ->readonly()
                 ->filterable()
-                ->sortable()
                 ->options([
-                    Auth0Tenant::Testing->value => Auth0Tenant::Testing->name,
                     Auth0Tenant::Acceptance->value => Auth0Tenant::Acceptance->name,
+                    Auth0Tenant::Testing->value => Auth0Tenant::Testing->name,
                     Auth0Tenant::Production->value => Auth0Tenant::Production->name,
                 ]),
             Text::make('Status', function (Auth0ClientModel $model) {
