@@ -94,6 +94,7 @@ export const ActivationDialog = ({
         />
         <FormElement
           label={`${t("details.billing_info.name")}`}
+          required
           error={organizationFormErrors["organization.name"]}
           className="w-full"
           component={
@@ -114,6 +115,7 @@ export const ActivationDialog = ({
         <div className="max-md:flex max-md:flex-col md:grid md:grid-cols-5 gap-3">
           <FormElement
             label={`${t("details.billing_info.address.street")}`}
+            required
             error={organizationFormErrors["organization.address.street"]}
             className="col-span-2"
             component={
@@ -136,6 +138,7 @@ export const ActivationDialog = ({
           />
           <FormElement
             label={`${t("details.billing_info.address.postcode")}`}
+            required
             error={organizationFormErrors["organization.address.zip"]}
             className="col-span-1"
             component={
@@ -158,6 +161,7 @@ export const ActivationDialog = ({
           />
           <FormElement
             label={`${t("details.billing_info.address.city")}`}
+            required
             error={organizationFormErrors["organization.address.city"]}
             className="col-span-2"
             component={
@@ -183,6 +187,7 @@ export const ActivationDialog = ({
           <>
             <FormElement
               label={`${t("details.billing_info.vat")}`}
+              required
               error={organizationFormErrors["organization.vat"]}
               className="w-full"
               component={
@@ -202,6 +207,7 @@ export const ActivationDialog = ({
             />
             <FormElement
               label={`${t("integrations.activation_dialog.contact")}`}
+              required
               error={organizationFormErrors["organization.invoiceEmail"]}
               info={`${t("integrations.activation_dialog.contact_description")}`}
               component={
