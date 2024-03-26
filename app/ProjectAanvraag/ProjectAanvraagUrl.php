@@ -17,7 +17,7 @@ final class ProjectAanvraagUrl
         return self::getBaseUrlForIntegrationStatus($integration->status) . 'project/' . $integration->id . '/widget/?idToken=' . $idToken;
     }
 
-    public static function getBaseUrlForIntegrationStatus(IntegrationStatus $integrationStatus): mixed
+    public static function getBaseUrlForIntegrationStatus(IntegrationStatus $integrationStatus): string
     {
         $stage = $integrationStatus === IntegrationStatus::Active ? 'live' : 'test';
 
