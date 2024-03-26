@@ -351,6 +351,15 @@
       "title": "Stay informed",
       "description": "Subscribe to our newsletter and stay up to date with the latest publiq news.",
       "action": "Subscribe"
+    },
+    "newsletter_dialog": {
+      "title": "Subscribe to the newsletter",
+      "email": "Email address",
+      "placeholder": "you@organization.be",
+      "success": {
+        "title": "Welcome!",
+        "description": "We have sent you a welcome email."
+      }
     }
   }
 }

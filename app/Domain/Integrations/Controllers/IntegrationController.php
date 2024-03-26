@@ -132,12 +132,7 @@ final class IntegrationController extends Controller
 
         $this->integrationRepository->update($updatedIntegration);
 
-        return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
-            [
-                'id' => $id,
-            ]
-        );
+        return Redirect::back();
     }
 
     public function show(string $id): Response
@@ -173,12 +168,7 @@ final class IntegrationController extends Controller
 
         $this->integrationUrlRepository->save($integrationUrl);
 
-        return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
-            [
-                'id' => $id,
-            ]
-        );
+        return Redirect::back();
     }
 
     public function destroyUrl(Request $request, string $id, string $urlId): RedirectResponse
@@ -189,12 +179,7 @@ final class IntegrationController extends Controller
             // We can redirect back to integrations, even if not successful
         }
 
-        return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
-            [
-                'id' => $id,
-            ]
-        );
+        return Redirect::back();
     }
 
     public function updateUrls(UpdateIntegrationUrlsRequest $request, string $id): RedirectResponse
@@ -212,12 +197,7 @@ final class IntegrationController extends Controller
 
         $this->integrationUrlRepository->deleteByIds($toDeleteUrlIds);
 
-        return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
-            [
-                'id' => $id,
-            ]
-        );
+        return Redirect::back();
     }
 
     public function updateContacts(string $id, UpdateContactInfoRequest $request): RedirectResponse

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { PubliqLogo } from "./logos/PubliqLogo";
 import { VlaanderenLogo } from "./logos/VlaanderenLogo";
 import { Heading } from "./Heading";
@@ -6,10 +6,14 @@ import { ButtonLink } from "./ButtonLink";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { NewsletterDialog } from "./NewsletterDialog";
 import { Link } from "./Link";
 
 export default function Footer() {
   const { t } = useTranslation();
+  const [isNewsletterDialogVisible, setIsNewsletterDialogVisible] =
+    useState(false);
+
   return (
     <footer
       className="bg-publiq-blue text-white w-full flex justify-between px-7 py-7 max-md:flex-col gap-7"
@@ -116,10 +120,15 @@ export default function Footer() {
             href="#"
             className="self-start"
             contentStyles="flex gap-2 items-center"
+            onClick={() => setIsNewsletterDialogVisible(true)}
           >
             <span>{t("footer.newsletter.action")}</span>
             <FontAwesomeIcon size="xs" icon={faChevronRight} />
           </ButtonLink>
+          <NewsletterDialog
+            isVisible={isNewsletterDialogVisible}
+            onClose={() => setIsNewsletterDialogVisible(false)}
+          />
         </div>
         <div className="md:self-end">
           <VlaanderenLogo />
