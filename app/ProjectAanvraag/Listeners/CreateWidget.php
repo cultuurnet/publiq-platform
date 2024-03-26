@@ -156,7 +156,7 @@ final class CreateWidget implements ShouldQueue
         };
 
         $this->logger->error("Failed to create $entity", [
-            "$entity.id" => $id,
+            "{$entity}_id" => $id,
             'exception' => $throwable,
         ]);
     }
