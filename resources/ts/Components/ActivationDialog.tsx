@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import { Subscription } from "../Pages/Integrations/Index";
 import { IntegrationType } from "../types/IntegrationType";
 import { useIsMobile } from "../hooks/useIsMobile";
+import { parseSubscriptionPriceInfo } from "../utils/parseSubscriptionPriceInfo";
 
 type Props = {
   isVisible?: boolean;
@@ -63,6 +64,15 @@ export const ActivationDialog = ({
     return null;
   }
 
+  const priceElement = (
+    <div className="flex flex-col gap-1">
+      <span className="text-sm font-medium">
+        {t("integrations.activation_dialog.subscription_plan")}
+      </span>
+      <p className="text-sm">{parseSubscriptionPriceInfo(subscription)}</p>
+    </div>
+  );
+
   return (
     <Dialog
       title={t("integrations.activation_dialog.title")}
@@ -82,16 +92,7 @@ export const ActivationDialog = ({
       contentStyles="gap-3"
     >
       <>
-        <FormElement
-          label={`${t("integrations.activation_dialog.subscription_plan")}`}
-          component={
-            <p className="text-sm">
-              {`${subscription.category} ${
-                subscription.currency === "EUR" ? "€" : subscription.currency
-              } ${subscription.fee}`}
-            </p>
-          }
-        />
+        {priceElement}
         <FormElement
           label={`${t("details.billing_info.name")}`}
           required
@@ -242,16 +243,7 @@ export const ActivationDialog = ({
             />
           </>
         )}
-        <FormElement
-          label={`${t("integrations.activation_dialog.price")}`}
-          component={
-            <p className="text-sm">
-              {`${
-                subscription.currency === "EUR" ? "€" : subscription.currency
-              } ${subscription.fee}`}
-            </p>
-          }
-        />
+        {priceElement}
       </>
     </Dialog>
   );
