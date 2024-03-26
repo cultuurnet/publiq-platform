@@ -17,6 +17,7 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Json;
 use App\ProjectAanvraag\Listeners\CreateWidget;
 use App\ProjectAanvraag\ProjectAanvraagClient;
+use App\ProjectAanvraag\ProjectAanvraagUrl;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use App\UiTiDv1\UiTiDv1Consumer;
 use App\UiTiDv1\UiTiDv1Environment;
@@ -113,7 +114,7 @@ final class CreateWidgetTest extends TestCase
 
         $expectedRequest = new Request(
             'POST',
-            'projects',
+            ProjectAanvraagUrl::getStatusBaseUri($integration->status) . '/projects',
             [],
             Json::encode([
                 'userId' => 'google-oauth2|102486314601596809843',
