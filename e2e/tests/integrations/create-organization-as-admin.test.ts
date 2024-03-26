@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test.use({ storageState: "playwright/.auth/user.json" });
+test.use({ storageState: "playwright/.auth/admin.json" });
 
 test("As an admin I can create a new organization", async ({ page }) => {
   await page.goto("/admin");
