@@ -114,7 +114,7 @@ final class CreateWidgetTest extends TestCase
 
         $expectedRequest = new Request(
             'POST',
-            ProjectAanvraagUrl::getStatusBaseUri($integration->status) . '/projects',
+            ProjectAanvraagUrl::getBaseUrlForIntegrationStatus($integration->status) . '/projects',
             [],
             Json::encode([
                 'userId' => 'google-oauth2|102486314601596809843',
