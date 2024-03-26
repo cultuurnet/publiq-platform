@@ -7,6 +7,7 @@ namespace App\Nova\Resources;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Nova\Actions\ActivateIntegration;
@@ -79,6 +80,16 @@ final class Integration extends Resource
                     IntegrationPartnerStatus::THIRD_PARTY->value => IntegrationPartnerStatus::THIRD_PARTY->value,
                 ])
                 ->default(IntegrationPartnerStatus::THIRD_PARTY->value)
+                ->rules('required'),
+
+            Select::make('Key Visibility')
+                ->filterable()
+                ->sortable()
+                ->options([
+                    KeyVisibility::v1->value => KeyVisibility::v1->name,
+                    KeyVisibility::v2->value => KeyVisibility::v2->name,
+                    KeyVisibility::all->value => KeyVisibility::all->name,
+                ])
                 ->rules('required'),
 
             Text::make('Description')

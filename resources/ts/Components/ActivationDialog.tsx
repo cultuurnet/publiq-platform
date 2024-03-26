@@ -9,11 +9,11 @@ import { useTranslation } from "react-i18next";
 import { Subscription } from "../Pages/Integrations/Index";
 import { Values } from "../types/Values";
 import { IntegrationType } from "../types/IntegrationType";
+import { useIsMobile } from "../hooks/useIsMobile";
 
 type Props = {
   isVisible?: boolean;
   onClose: () => void;
-  isFullscreen?: boolean;
   title?: string;
   id: string;
   subscription?: Subscription;
@@ -30,7 +30,8 @@ export const ActivationDialog = ({
   email,
 }: Props) => {
   const { t } = useTranslation();
-  const isMobile = window.innerWidth < 768;
+
+  const isMobile = useIsMobile();
 
   const initialValuesOrganization = {
     organization: {

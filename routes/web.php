@@ -6,6 +6,7 @@ use App\Domain\Auth\Controllers\CallbackController;
 use App\Domain\Auth\Controllers\LoginController;
 use App\Domain\Auth\Controllers\LogoutController;
 use App\Domain\Integrations\Controllers\IntegrationController;
+use App\Domain\Newsletter\Controllers\NewsletterController;
 use App\Domain\Subscriptions\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
 use App\Router\TranslatedRoute;
@@ -32,6 +33,8 @@ Route::get('/logout', [LogoutController::class, 'inertiaLogout']);
 Route::post('/admin/logout', [LogoutController::class, 'adminLogout']);
 
 Route::get('/auth/callback', CallbackController::class);
+
+Route::post('/newsletter', [NewsletterController::class, 'subscribe']);
 
 Route::group(['middleware' => 'auth'], static function () {
     TranslatedRoute::get(

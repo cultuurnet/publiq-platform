@@ -12,6 +12,8 @@ use Ramsey\Uuid\UuidInterface;
 
 final class Integration
 {
+    private KeyVisibility $keyVisibility;
+
     /** @var array<Contact> */
     private array $contacts;
 
@@ -33,13 +35,26 @@ final class Integration
         public readonly string $description,
         public readonly UuidInterface $subscriptionId,
         public readonly IntegrationStatus $status,
-        public readonly IntegrationPartnerStatus $partnerStatus,
+        public readonly IntegrationPartnerStatus $partnerStatus
     ) {
         $this->contacts = [];
         $this->urls = [];
         $this->uiTiDv1Consumers = [];
         $this->auth0Clients = [];
         $this->organization = null;
+        $this->keyVisibility = KeyVisibility::v2;
+    }
+
+    public function withKeyVisibility(KeyVisibility $keyVisibility): self
+    {
+        $clone = clone $this;
+        $clone->keyVisibility = $keyVisibility;
+        return $clone;
+    }
+
+    public function getKeyVisibility(): KeyVisibility
+    {
+        return $this->keyVisibility;
     }
 
     public function withContacts(Contact ...$contacts): self
@@ -136,6 +151,7 @@ final class Integration
             'subscriptionId' => $this->subscriptionId,
             'status' => $this->status,
             'partnerStatus' => $this->partnerStatus,
+            'keyVisibility' => $this->keyVisibility,
         ];
     }
 }
