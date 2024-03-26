@@ -328,6 +328,6 @@ final class IntegrationController extends Controller
             return KeyVisibility::v2;
         }
 
-        return $this->contactKeyVisibilityRepository->forEmail($contributor->email);
+        return $this->contactKeyVisibilityRepository->findByEmail($contributor->email);
     }
 }

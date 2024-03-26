@@ -8,5 +8,5 @@ use App\Domain\Integrations\KeyVisibility;
 
 interface ContactKeyVisibilityRepository
 {
-    public function forEmail(string $email): KeyVisibility;
+    public function findByEmail(string $email): KeyVisibility;
 }

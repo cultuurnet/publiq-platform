@@ -9,7 +9,7 @@ use App\Domain\Integrations\KeyVisibility;
 
 final class EloquentContactKeyVisibilityRepository implements ContactKeyVisibilityRepository
 {
-    public function forEmail(string $email): KeyVisibility
+    public function findByEmail(string $email): KeyVisibility
     {
         try {
             /** @var ContactKeyVisibilityModel $contactKeyVisibility */
