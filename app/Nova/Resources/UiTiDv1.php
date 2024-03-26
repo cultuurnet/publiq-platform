@@ -14,6 +14,7 @@ use App\UiTiDv1\CachedUiTiDv1Status;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use App\UiTiDv1\UiTiDv1ConsumerStatus;
 use App\UiTiDv1\UiTiDv1Environment;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Laravel\Nova\Fields\Field;
@@ -35,18 +36,19 @@ final class UiTiDv1 extends Resource
 
     public static $displayInNavigation = false;
 
-    /**
-     * @var array<string>
-     */
-    public static $search = [
-        'id',
-        'integration_id',
-        'consumer_id',
-        'consumer_key',
-        'consumer_secret',
-        'api_key',
-        'environment',
-    ];
+    public static $searchable = false;
+
+    public static function defaultOrderings($query): Builder
+    {
+        /** @var Builder $query */
+        return $query->orderByRaw(
+            'CASE
+                WHEN environment = \'acc\' THEN 1
+                WHEN environment = \'test\' THEN 2
+                WHEN environment = \'prod\' THEN 3
+            END'
+        );
+    }
 
     /**
      * @return array<Field>

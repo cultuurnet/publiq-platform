@@ -13,6 +13,7 @@ use App\Nova\ActionGuards\Auth0\BlockAuth0ClientGuard;
 use App\Nova\Actions\Auth0\ActivateAuth0Client;
 use App\Nova\Actions\Auth0\BlockAuth0Client;
 use App\Nova\Resource;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
@@ -35,16 +36,19 @@ final class Auth0Client extends Resource
 
     public static $displayInNavigation = false;
 
-    /**
-     * @var array<string>
-     */
-    public static $search = [
-        'id',
-        'integration_id',
-        'auth0_client_id',
-        'auth0_client_secret',
-        'auth0_tenant',
-    ];
+    public static $searchable = false;
+
+    public static function defaultOrderings($query): Builder
+    {
+        /** @var Builder $query */
+        return $query->orderByRaw(
+            'CASE
+                WHEN auth0_tenant = \'acc\' THEN 1
+                WHEN auth0_tenant = \'test\' THEN 2
+                WHEN auth0_tenant = \'prod\' THEN 3
+            END'
+        );
+    }
 
     /**
      * @return array<Field>
