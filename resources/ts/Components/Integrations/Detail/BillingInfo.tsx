@@ -9,6 +9,7 @@ import { useForm } from "@inertiajs/react";
 import { Alert } from "../../Alert";
 import { IntegrationType } from "../../../types/IntegrationType";
 import { IntegrationStatus } from "../../../types/IntegrationStatus";
+import { parseSubscriptionPriceInfo } from "../../../utils/parseSubscriptionPriceInfo";
 
 type Props = Integration;
 
@@ -39,9 +40,7 @@ export const BillingInfo = ({
             <Input
               type="text"
               name="price"
-              value={`${subscription.category} (${
-                subscription.currency === "EUR" ? "€" : subscription.currency
-              } ${subscription.fee})`}
+              value={parseSubscriptionPriceInfo(subscription)}
               className="md:min-w-[40rem]"
               disabled
             />

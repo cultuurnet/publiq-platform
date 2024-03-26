@@ -1,4 +1,4 @@
-import { type Subscription } from "../Pages/Integrations";
+import { Subscription } from "../types/Subscription";
 
 export const parseSubscriptionPriceInfo = (subscription: Subscription) => {
   if (subscription.category === "Custom") {

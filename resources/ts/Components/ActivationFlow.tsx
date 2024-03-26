@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { IntegrationStatus } from "../types/IntegrationStatus";
 import { router } from "@inertiajs/react";
 import { ActivationDialog } from "./ActivationDialog";
-import { Subscription } from "../Pages/Integrations/Index";
 import { Values } from "../types/Values";
 import { IntegrationType } from "../types/IntegrationType";
 import { ActivationRequest } from "./ActivationRequest";
+import { Subscription } from "../types/Subscription";
 
 type Props = {
   status: IntegrationStatus;
