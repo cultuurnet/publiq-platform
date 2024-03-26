@@ -26,7 +26,7 @@ final class ProjectAanvraagServiceProvider extends ServiceProvider
             $httpClient = new Client(
                 [
                   RequestOptions::HTTP_ERRORS => false,
-                  RequestOptions::TIMEOUT => config('project_aanvraag.connect_timeout'),
+                  RequestOptions::TIMEOUT => config('project_aanvraag.timeout'),
               ]
             );
 
