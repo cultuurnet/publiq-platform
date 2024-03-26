@@ -12,17 +12,27 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\ProjectAanvraag\Listeners\CreateWidget;
 use App\UiTiDv1\Events\ConsumerCreated;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
+use GuzzleHttp\RequestOptions;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Psr\Log\LoggerInterface;
+use GuzzleHttp\Client;
 
 final class ProjectAanvraagServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
         $this->app->singleton(ProjectAanvraagClient::class, function () {
+            $httpClient = new Client(
+                [
+                  RequestOptions::HTTP_ERRORS => false,
+                  RequestOptions::TIMEOUT => config('project_aanvraag.timeout'),
+              ]
+            );
+
             return new ProjectAanvraagClient(
-                $this->app->get(LoggerInterface::class)
+                $this->app->get(LoggerInterface::class),
+                $httpClient
             );
         });
 
