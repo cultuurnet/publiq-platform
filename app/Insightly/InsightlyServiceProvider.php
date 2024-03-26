@@ -20,7 +20,6 @@ use App\Insightly\Listeners\BlockOpportunity;
 use App\Insightly\Listeners\BlockProject;
 use App\Insightly\Listeners\CreateOpportunity;
 use App\Insightly\Listeners\CreateOrganization;
-use App\Insightly\Listeners\CreateProjectWithOrganization;
 use App\Insightly\Listeners\DeleteOpportunity;
 use App\Insightly\Listeners\DeleteProject;
 use App\Insightly\Listeners\SyncContact;

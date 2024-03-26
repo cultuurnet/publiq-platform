@@ -719,7 +719,7 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
-    private function givenThereIsAnIntegration(IntegrationType $integrationType = null): Integration
+    private function givenThereIsAnIntegration(IntegrationType $integrationType = null, UuidInterface $subscriptionId = null): Integration
     {
         $integration = new Integration(
             Uuid::uuid4(),
