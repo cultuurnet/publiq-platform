@@ -186,7 +186,10 @@ export const IntegrationSettings = ({
     return new Promise((resolve, reject) => {
       basicInfoForm.patch(`/integrations/${id}`, {
         onError: (error) => reject(error),
-        onSuccess: () => resolve(undefined),
+        onSuccess: () => {
+          resolve(undefined);
+          basicInfoForm.setDefaults();
+        },
         only: ["name", "description", "errors"],
       });
     });
@@ -196,7 +199,10 @@ export const IntegrationSettings = ({
     return new Promise((resolve, reject) => {
       urlsForm.put(`/integrations/${id}/urls`, {
         onError: (error) => reject(error),
-        onSuccess: () => resolve(undefined),
+        onSuccess: () => {
+          resolve(undefined);
+          urlsForm.setDefaults();
+        },
         only: ["urls", "errors"],
       });
     });
