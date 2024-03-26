@@ -13,6 +13,7 @@ use App\Domain\Integrations\Events\IntegrationActivatedWithOrganization;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
+use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
@@ -83,6 +84,9 @@ final class IntegrationModel extends UuidModel
         );
         self::updated(
             static fn (IntegrationModel $integrationModel) => IntegrationUpdated::dispatch(Uuid::fromString($integrationModel->id))
+        );
+        self::softDeleted(
+            static fn (IntegrationModel $integrationModel) => IntegrationDeleted::dispatch(Uuid::fromString($integrationModel->id))
         );
     }
 
