@@ -20,6 +20,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\UuidInterface;
+use Throwable;
 
 final class CreateWidget implements ShouldQueue
 {
@@ -138,5 +139,13 @@ final class CreateWidget implements ShouldQueue
                 $liveKey
             )
         );
+    }
+
+    public function failed(ContactCreated $contactCreated, Throwable $throwable): void
+    {
+        $this->logger->error('Failed to create contact', [
+            'contact_id' => $contactCreated->id->toString(),
+            'exception' => $throwable,
+        ]);
     }
 }
