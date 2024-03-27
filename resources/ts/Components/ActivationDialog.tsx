@@ -71,7 +71,7 @@ export const ActivationDialog = ({
       <span className="text-sm font-medium">
         {t("integrations.activation_dialog.subscription_plan")}
       </span>
-      <p className="text-sm">{`${pricingPlan.title} ${pricingPlan.price}`}</p>
+      <p className="text-sm">{`${pricingPlan.title} (${pricingPlan.price})`}</p>
     </div>
   );
 
