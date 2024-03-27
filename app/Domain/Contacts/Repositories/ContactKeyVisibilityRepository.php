@@ -8,5 +8,7 @@ use App\Domain\Integrations\KeyVisibility;
 
 interface ContactKeyVisibilityRepository
 {
+    public function save(string $email, KeyVisibility $keyVisibility): void;
+
     public function findByEmail(string $email): KeyVisibility;
 }

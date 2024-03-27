@@ -25,7 +25,6 @@ use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\Organizations\Organization;
 use App\ProjectAanvraag\ProjectAanvraagUrl;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\UnauthorizedException;
@@ -34,8 +33,6 @@ use Tests\TestCase;
 
 final class IntegrationControllerTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function test_it_can_store_an_integration(): void
     {
         $systemUser = UserModel::createSystemUser();

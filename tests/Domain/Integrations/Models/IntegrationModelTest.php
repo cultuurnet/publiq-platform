@@ -10,17 +10,12 @@ use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
-use Tests\CreatesApplication;
 use Tests\TestCase;
 
 final class IntegrationModelTest extends TestCase
 {
-    use RefreshDatabase;
-    use CreatesApplication;
-
     private IntegrationModel $integrationModel;
 
     protected function setUp(): void

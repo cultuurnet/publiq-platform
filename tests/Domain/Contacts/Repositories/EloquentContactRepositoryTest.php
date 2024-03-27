@@ -9,14 +9,11 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Contacts\Repositories\EloquentContactRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
 final class EloquentContactRepositoryTest extends TestCase
 {
-    use RefreshDatabase;
-
     private EloquentContactRepository $contactRepository;
 
     protected function setUp(): void
