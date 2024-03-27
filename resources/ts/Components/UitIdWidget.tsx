@@ -24,7 +24,7 @@ export const UitIdWidget = ({
     () =>
       JSON.stringify({
         $schema: `${widgetUrl}config-schema.json`,
-        applicationName: "Publiq platform",
+        applicationName: "publiq platform",
         uitidProfileUrl: profileUrl,
         uitidRegisterUrl: registerUrl,
         defaultLanguage: "nl",
