@@ -14,10 +14,10 @@ final class ProjectAanvraagUrl
     {
         $idToken = Session::get('id_token');
 
-        return self::getStatusBaseUri($integration->status) . 'project/' . $integration->id . '/widget/?idToken=' . $idToken;
+        return self::getBaseUrlForIntegrationStatus($integration->status) . 'project/' . $integration->id . '/widget/?idToken=' . $idToken;
     }
 
-    public static function getStatusBaseUri(IntegrationStatus $integrationStatus): mixed
+    public static function getBaseUrlForIntegrationStatus(IntegrationStatus $integrationStatus): string
     {
         $stage = $integrationStatus === IntegrationStatus::Active ? 'live' : 'test';
 

@@ -33,12 +33,12 @@ final class CreateOpportunity implements ShouldQueue
 
     public function handle(IntegrationCreated $integrationCreated): void
     {
-        $integration = $this->integrationRepository->getById($integrationCreated->integrationId);
+        $integration = $this->integrationRepository->getById($integrationCreated->id);
 
         $insightlyId = $this->insightlyClient->opportunities()->create($integration);
 
         $this->insightlyMappingRepository->save(new InsightlyMapping(
-            $integrationCreated->integrationId,
+            $integrationCreated->id,
             $insightlyId,
             ResourceType::Opportunity
         ));
@@ -59,7 +59,7 @@ final class CreateOpportunity implements ShouldQueue
             'Opportunity created for integration',
             [
                 'domain' => 'insightly',
-                'integration_id' => $integrationCreated->integrationId->toString(),
+                'integration_id' => $integrationCreated->id->toString(),
             ]
         );
     }
@@ -70,7 +70,7 @@ final class CreateOpportunity implements ShouldQueue
             'Failed to create opportunity for integration',
             [
                 'domain' => 'insightly',
-                'integration_id' => $integrationCreated->integrationId->toString(),
+                'integration_id' => $integrationCreated->id->toString(),
                 'exception' => $exception,
             ]
         );
