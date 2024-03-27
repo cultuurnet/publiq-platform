@@ -43,11 +43,10 @@ const PriceOverview = ({
               {t("integrations.activation_dialog.price_overview.coupon")}
             </span>
             <span className="text-publiq-orange">
-              -{" "}
-              {formatCurrency(
+              {`- ${formatCurrency(
                 subscription.currency,
                 couponInfo.reductionAmount
-              )}
+              )}`}
             </span>
           </>
         )}
