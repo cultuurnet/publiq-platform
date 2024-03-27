@@ -9,7 +9,6 @@ import { useForm } from "@inertiajs/react";
 import { Alert } from "../../Alert";
 import { IntegrationType } from "../../../types/IntegrationType";
 import { IntegrationStatus } from "../../../types/IntegrationStatus";
-import { PricingPlan } from "../../../hooks/useGetPricingPlans";
 import { PricingPlanContext } from "../../../Context/PricingPlan";
 
 type Props = Integration;

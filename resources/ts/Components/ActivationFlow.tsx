@@ -6,7 +6,6 @@ import { Values } from "../types/Values";
 import { IntegrationType } from "../types/IntegrationType";
 import { ActivationRequest } from "./ActivationRequest";
 import { Subscription } from "../types/Subscription";
-import { PricingPlan } from "../hooks/useGetPricingPlans";
 import { PricingPlanContext } from "../Context/PricingPlan";
 
 type Props = {

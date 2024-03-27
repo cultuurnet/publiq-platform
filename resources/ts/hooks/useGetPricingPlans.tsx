@@ -1,4 +1,3 @@
-import { Currency } from "../types/Currency";
 import { TFunction } from "i18next";
 import { IntegrationType } from "../types/IntegrationType";
 import { SubscriptionCategory } from "../types/SubscriptionCategory";
