@@ -150,7 +150,14 @@
       "contact": "E-mail boekhouding",
       "contact_description": "Dit adres ontvangt de betalinginstructies, -herinneringen en de factuur.",
       "coupon": "Coupon",
-      "total_price": "Total"
+      "price_overview": {
+        "title": "Prijs overzicht",
+        "setup": "setup",
+        "coupon": "Coupon",
+        "plan": "plan",
+        "year": "jaar",
+        "total_price": "Nog te betalen"
+      }
     },
     "documentation": {
       "title": "Documentation",

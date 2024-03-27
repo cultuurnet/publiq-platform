@@ -11,6 +11,7 @@ import { useIsMobile } from "../hooks/useIsMobile";
 import { Subscription } from "../types/Subscription";
 import { PricingPlan } from "../hooks/useGetPricingPlans";
 import { formatCurrency } from "../utils/formatCurrency";
+import { Heading } from "./Heading";
 
 type Props = {
   isVisible?: boolean;
@@ -21,6 +22,52 @@ type Props = {
   pricingPlan: PricingPlan;
   type: IntegrationType;
   email: string;
+};
+
+const PriceOverview = ({
+  coupon,
+  subscription,
+  pricingPlan,
+}: {
+  coupon?: string;
+  subscription: Subscription;
+  pricingPlan: PricingPlan;
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <section className="flex flex-col flex-1 gap-2 border-t mt-4 pt-4 text-sm">
+      <Heading level={4}>
+        {t("integrations.activation_dialog.price_overview.title")}
+      </Heading>
+
+      <div className="grid grid-cols-2 gap-1">
+        <span>{`${pricingPlan.title} ${t("integrations.activation_dialog.price_overview.setup")}`}</span>
+        <span>{formatCurrency(subscription.currency, subscription.fee)}</span>
+
+        {!!coupon && (
+          <>
+            <span className="text-publiq-orange">
+              {t("integrations.activation_dialog.price_overview.coupon")}
+            </span>
+            <span className="text-publiq-orange">
+              - {formatCurrency(subscription.currency, 125)}
+            </span>
+          </>
+        )}
+
+        <span>{`${pricingPlan.title} ${t("integrations.activation_dialog.price_overview.plan")}`}</span>
+        <span>
+          {`${formatCurrency(subscription.currency, subscription.price)} / ${t("integrations.activation_dialog.price_overview.year")}`}
+        </span>
+
+        <span className="font-semibold">{`${t("integrations.activation_dialog.price_overview.total_price")}:`}</span>
+        <span className="font-semibold">
+          {`${formatCurrency(subscription.currency, subscription.fee + subscription.price - (coupon ? 125 : 0))}`}
+        </span>
+      </div>
+    </section>
+  );
 };
 
 export const ActivationDialog = ({
@@ -242,12 +289,11 @@ export const ActivationDialog = ({
             />
           </>
         )}
-        <div className="flex flex-col gap-1">
-          <span className="text-sm font-medium">
-            {t("integrations.activation_dialog.total_price")}
-          </span>
-          <p className="text-sm">{`${formatCurrency(subscription.currency, subscription.fee + subscription.price)}`}</p>
-        </div>
+        <PriceOverview
+          subscription={subscription}
+          pricingPlan={pricingPlan}
+          coupon={organizationForm.data.coupon}
+        />
       </>
     </Dialog>
   );
