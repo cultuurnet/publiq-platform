@@ -6,6 +6,8 @@ namespace App\Domain\Integrations\Controllers;
 
 use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Domain\Auth\CurrentUser;
+use App\Domain\Contacts\ContactType;
+use App\Domain\Contacts\Repositories\ContactKeyVisibilityRepository;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Coupons\Repositories\CouponRepository;
 use App\Domain\Integrations\FormRequests\ActivateWithCouponRequest;
@@ -17,8 +19,10 @@ use App\Domain\Integrations\FormRequests\UpdateContactInfoRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationUrlsRequest;
 use App\Domain\Integrations\FormRequests\UpdateOrganizationRequest;
+use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\IntegrationUrl;
+use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Mappers\OrganizationMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationUrlMapper;
@@ -36,6 +40,7 @@ use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
@@ -51,6 +56,7 @@ final class IntegrationController extends Controller
         private readonly IntegrationRepository $integrationRepository,
         private readonly IntegrationUrlRepository $integrationUrlRepository,
         private readonly ContactRepository $contactRepository,
+        private readonly ContactKeyVisibilityRepository $contactKeyVisibilityRepository,
         private readonly OrganizationRepository $organizationRepository,
         private readonly CouponRepository $couponRepository,
         private readonly Auth0ClientRepository $auth0ClientRepository,
@@ -94,6 +100,7 @@ final class IntegrationController extends Controller
     public function store(StoreIntegrationRequest $request): RedirectResponse
     {
         $integration = StoreIntegrationMapper::map($request, $this->currentUser);
+        $integration = $integration->withKeyVisibility($this->getKeyVisibility($integration));
         $this->integrationRepository->save($integration);
 
         return Redirect::route(
@@ -290,5 +297,17 @@ final class IntegrationController extends Controller
     {
         $integration = $this->integrationRepository->getById(Uuid::fromString($id));
         return redirect()->away(ProjectAanvraagUrl::getForIntegration($integration));
+    }
+
+    private function getKeyVisibility(Integration $integration): KeyVisibility
+    {
+        $contacts = new Collection($integration->contacts());
+        $contributor = $contacts->firstWhere('type', ContactType::Contributor);
+
+        if ($contributor === null) {
+            return KeyVisibility::v2;
+        }
+
+        return $this->contactKeyVisibilityRepository->findByEmail($contributor->email);
     }
 }

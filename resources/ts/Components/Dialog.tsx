@@ -34,7 +34,7 @@ export const Dialog = ({
           "fixed bg-white flex flex-col items-center z-[60] top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] overflow-y-auto",
           isFullscreen
             ? "h-full w-full p-4"
-            : "min-h-[14rem] max-h-screen md:max-w-[40rem] md:min-w-[40rem] top-[30%]"
+            : "max-h-screen md:max-w-[40rem] md:min-w-[40rem] top-[30%]"
         )}
       >
         <div
@@ -62,14 +62,16 @@ export const Dialog = ({
         >
           {children}
         </div>
-        <div
-          className={classNames(
-            "w-full flex items-center gap-3 justify-end px-6 py-2",
-            !isFullscreen && "border-t border-gray-300"
-          )}
-        >
-          {actions}
-        </div>
+        {actions && (
+          <div
+            className={classNames(
+              "w-full flex items-center gap-3 justify-end px-6 py-2",
+              !isFullscreen && "border-t border-gray-300"
+            )}
+          >
+            {actions}
+          </div>
+        )}
       </div>
       <div
         className={"fixed top-0 right-0 bg-black w-full h-full opacity-60 z-50"}

@@ -27,13 +27,13 @@ final class CreateClients implements ShouldQueue
 
     public function handle(IntegrationCreated $integrationCreated): void
     {
-        $integration = $this->integrationRepository->getById($integrationCreated->integrationId);
+        $integration = $this->integrationRepository->getById($integrationCreated->id);
         $auth0Clients = $this->auth0ClusterSDK->createClientsForIntegration($integration);
         $this->auth0ClientRepository->save(...$auth0Clients);
 
         foreach ($auth0Clients as $auth0Client) {
             $this->logger->info('Auth0 client created', [
-                'integration_id' => $integrationCreated->integrationId->toString(),
+                'integration_id' => $integrationCreated->id->toString(),
                 'tenant' => $auth0Client->tenant->value,
                 'client_id' => $auth0Client->clientId,
             ]);
@@ -43,7 +43,7 @@ final class CreateClients implements ShouldQueue
     public function failed(IntegrationCreated $integrationCreated, Throwable $throwable): void
     {
         $this->logger->error('Failed to create Auth0 client(s)', [
-            'integration_id' => $integrationCreated->integrationId->toString(),
+            'integration_id' => $integrationCreated->id->toString(),
             'exception' => $throwable,
         ]);
     }
