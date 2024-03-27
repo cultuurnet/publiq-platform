@@ -22,13 +22,19 @@ import { Subscription } from "../../types/Subscription";
 import { PricingPlanProvider } from "../../Context/PricingPlan";
 import { useIsMobile } from "../../hooks/useIsMobile";
 
+export type CouponInfo = {
+  isUsed: boolean;
+  reductionAmount: number;
+};
+
 type Props = {
   integration: Integration;
   email: string;
   subscriptions: Subscription[];
+  couponInfo: CouponInfo;
 };
 
-const Detail = ({ integration, email, subscriptions }: Props) => {
+const Detail = ({ integration, email, subscriptions, couponInfo }: Props) => {
   const { t } = useTranslation();
 
   const isMobile = useIsMobile();
@@ -159,7 +165,7 @@ const Detail = ({ integration, email, subscriptions }: Props) => {
                 type="billing"
                 label={t("details.billing_info.title.billing")}
               >
-                <BillingInfo {...integration} />
+                <BillingInfo {...integration} couponInfo={couponInfo} />
               </Tabs.Item>
               <Tabs.Item
                 type="delete"

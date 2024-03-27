@@ -10,14 +10,19 @@ import { Alert } from "../../Alert";
 import { IntegrationType } from "../../../types/IntegrationType";
 import { IntegrationStatus } from "../../../types/IntegrationStatus";
 import { PricingPlanContext } from "../../../Context/PricingPlan";
+import { formatCurrency } from "../../../utils/formatCurrency";
+import { CouponInfo } from "../../../Pages/Integrations/Detail";
 
-type Props = Integration;
+type Props = Integration & {
+  couponInfo: CouponInfo;
+};
 
 export const BillingInfo = ({
   id,
   organization,
   subscription,
   status,
+  couponInfo,
 }: Props) => {
   const { t } = useTranslation();
   const initialFormValues = {
@@ -48,7 +53,20 @@ export const BillingInfo = ({
             />
           }
         />
+        {couponInfo.isUsed && (
+          <Alert
+            className={"col-span-2 col-start-2"}
+            variant="success"
+            title={t("details.billing_info.coupon_used", {
+              price: formatCurrency(
+                subscription.currency,
+                couponInfo.reductionAmount
+              ),
+            })}
+          />
+        )}
       </div>
+
       {subscription.integrationType !== IntegrationType.EntryApi &&
         status !== IntegrationStatus.Active && (
           <div className={"grid grid-cols-3 gap-10"}>

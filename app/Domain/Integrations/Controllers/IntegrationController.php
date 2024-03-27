@@ -9,6 +9,7 @@ use App\Domain\Auth\CurrentUser;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\ContactKeyVisibilityRepository;
 use App\Domain\Contacts\Repositories\ContactRepository;
+use App\Domain\Coupons\Coupon;
 use App\Domain\Coupons\Repositories\CouponRepository;
 use App\Domain\Integrations\FormRequests\RequestActivationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationRequest;
@@ -45,6 +46,7 @@ use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use Throwable;
 
 final class IntegrationController extends Controller
@@ -141,7 +143,6 @@ final class IntegrationController extends Controller
             $contacts = $this->contactRepository->getByIntegrationId(UUid::fromString($id));
             $authClients = $this->auth0ClientRepository->getByIntegrationId(UUid::fromString($id));
             $legacyAuthConsumers = $this->uitidV1ConsumerRepository->getByIntegrationId(UUid::fromString($id));
-
         } catch (Throwable) {
             abort(404);
         }
@@ -158,6 +159,10 @@ final class IntegrationController extends Controller
             ],
             'email' => Auth::user()?->email,
             'subscriptions' => $this->subscriptionRepository->all(),
+            'couponInfo' => [
+                'isUsed' => $this->hasCouponBeenUsed(UUid::fromString($id)),
+                'reductionAmount' => Coupon::REDUCTION_AMOUNT
+            ]
         ]);
     }
 
@@ -276,5 +281,15 @@ final class IntegrationController extends Controller
         }
 
         return $this->contactKeyVisibilityRepository->findByEmail($contributor->email);
+    }
+
+    private function hasCouponBeenUsed(UuidInterface $id): bool
+    {
+        try {
+            $coupon = $this->couponRepository->getByIntegrationId($id);
+            return $coupon->isDistributed;
+        } catch (Throwable) {
+            return false;
+        }
     }
 }

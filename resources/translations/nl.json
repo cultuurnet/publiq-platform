@@ -198,7 +198,8 @@
         "postcode": "Postcode",
         "city": "Gemeente"
       },
-      "vat": "BTW of ondernemingsnummer"
+      "vat": "BTW of ondernemingsnummer",
+      "coupon_used": "Een coupon is toegepast van {{price}}"
     },
     "credentials": {
       "title": "Credentials",

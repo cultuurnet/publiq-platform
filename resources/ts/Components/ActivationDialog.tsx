@@ -12,24 +12,16 @@ import { Subscription } from "../types/Subscription";
 import { PricingPlan } from "../hooks/useGetPricingPlans";
 import { formatCurrency } from "../utils/formatCurrency";
 import { Heading } from "./Heading";
-
-type Props = {
-  isVisible?: boolean;
-  onClose: () => void;
-  title?: string;
-  id: string;
-  subscription: Subscription;
-  pricingPlan: PricingPlan;
-  type: IntegrationType;
-  email: string;
-};
+import { CouponInfo } from "../Pages/Integrations/Detail";
 
 const PriceOverview = ({
   coupon,
+  couponInfo,
   subscription,
   pricingPlan,
 }: {
   coupon?: string;
+  couponInfo: CouponInfo;
   subscription: Subscription;
   pricingPlan: PricingPlan;
 }) => {
@@ -51,7 +43,11 @@ const PriceOverview = ({
               {t("integrations.activation_dialog.price_overview.coupon")}
             </span>
             <span className="text-publiq-orange">
-              - {formatCurrency(subscription.currency, 125)}
+              -{" "}
+              {formatCurrency(
+                subscription.currency,
+                couponInfo.reductionAmount
+              )}
             </span>
           </>
         )}
@@ -70,6 +66,18 @@ const PriceOverview = ({
   );
 };
 
+type Props = {
+  isVisible?: boolean;
+  onClose: () => void;
+  title?: string;
+  id: string;
+  subscription: Subscription;
+  pricingPlan: PricingPlan;
+  type: IntegrationType;
+  email: string;
+  couponInfo: CouponInfo;
+};
+
 export const ActivationDialog = ({
   isVisible,
   onClose,
@@ -77,6 +85,7 @@ export const ActivationDialog = ({
   pricingPlan,
   subscription,
   type,
+  couponInfo,
 }: Props) => {
   const { t } = useTranslation();
 
@@ -293,6 +302,7 @@ export const ActivationDialog = ({
           subscription={subscription}
           pricingPlan={pricingPlan}
           coupon={organizationForm.data.coupon}
+          couponInfo={couponInfo}
         />
       </>
     </Dialog>
