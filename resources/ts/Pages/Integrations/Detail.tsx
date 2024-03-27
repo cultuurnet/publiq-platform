@@ -20,6 +20,7 @@ import { IntegrationType } from "../../types/IntegrationType";
 import { useGetPricingPlans } from "../../hooks/useGetPricingPlans";
 import { Subscription } from "../../types/Subscription";
 import { PricingPlanProvider } from "../../Context/PricingPlan";
+import { useIsMobile } from "../../hooks/useIsMobile";
 
 type Props = {
   integration: Integration;
@@ -30,7 +31,7 @@ type Props = {
 const Detail = ({ integration, email, subscriptions }: Props) => {
   const { t } = useTranslation();
 
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useIsMobile();
 
   const pricingPlans = useGetPricingPlans(integration.type, subscriptions);
 
@@ -47,15 +48,6 @@ const Detail = ({ integration, email, subscriptions }: Props) => {
 
   const url = new URL(document.location.href);
   const activeTab = url.searchParams.get("tab") ?? "credentials";
-
-  const handleResize = () => {
-    setIsMobile(window.innerWidth < 768);
-  };
-
-  useEffect(() => {
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   const [isFormDirty, setIsFormDirty] = useState(false);
   const [isKeepChangesDialogVisible, setIsKeepChangesDialogVisible] =
