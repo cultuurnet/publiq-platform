@@ -33,8 +33,6 @@ const getPricingPlans = (
         sub.category === category && sub.integrationType === integrationType
     );
 
-    console.log({ data });
-
     if (!data) {
       return undefined;
     }
