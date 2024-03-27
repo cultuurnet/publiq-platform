@@ -67,7 +67,7 @@ final class IntegrationModelTest extends TestCase
     public function test_it_handles_activate(): void
     {
         $organizationId = Uuid::uuid4();
-        $this->integrationModel->activate($organizationId);
+        $this->integrationModel->activateWithOrganization($organizationId);
 
         Event::assertDispatched(IntegrationActivated::class);
 
