@@ -151,7 +151,8 @@
       "contact_description": "Dit adres ontvangt de betalinginstructies, -herinneringen en de factuur.",
       "coupon": "Coupon",
       "invalid_coupon": "Invalid coupon",
-      "already_used_coupon": "Coupon is already used"
+      "already_used_coupon": "Coupon is already used",
+      "total_price": "Totaal"
     },
     "documentation": {
       "title": "Documentatie",

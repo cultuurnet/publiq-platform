@@ -10,6 +10,7 @@ import { IntegrationType } from "../types/IntegrationType";
 import { useIsMobile } from "../hooks/useIsMobile";
 import { Subscription } from "../types/Subscription";
 import { PricingPlan } from "../hooks/useGetPricingPlans";
+import { formatCurrency } from "../utils/formatCurrency";
 
 type Props = {
   isVisible?: boolean;
@@ -26,8 +27,8 @@ export const ActivationDialog = ({
   isVisible,
   onClose,
   id,
-  subscription,
   pricingPlan,
+  subscription,
   type,
 }: Props) => {
   const { t } = useTranslation();
@@ -66,15 +67,6 @@ export const ActivationDialog = ({
     return null;
   }
 
-  const priceElement = (
-    <div className="flex flex-col gap-1">
-      <span className="text-sm font-medium">
-        {t("integrations.activation_dialog.subscription_plan")}
-      </span>
-      <p className="text-sm">{`${pricingPlan.title} (${pricingPlan.price})`}</p>
-    </div>
-  );
-
   return (
     <Dialog
       title={t("integrations.activation_dialog.title")}
@@ -94,7 +86,12 @@ export const ActivationDialog = ({
       contentStyles="gap-3"
     >
       <>
-        {priceElement}
+        <div className="flex flex-col gap-1">
+          <span className="text-sm font-medium">
+            {t("integrations.activation_dialog.subscription_plan")}
+          </span>
+          <p className="text-sm">{`${pricingPlan.title} (${pricingPlan.price})`}</p>
+        </div>
         <FormElement
           label={`${t("details.billing_info.name")}`}
           required
@@ -245,7 +242,12 @@ export const ActivationDialog = ({
             />
           </>
         )}
-        {priceElement}
+        <div className="flex flex-col gap-1">
+          <span className="text-sm font-medium">
+            {t("integrations.activation_dialog.total_price")}
+          </span>
+          <p className="text-sm">{`${formatCurrency(subscription.currency, subscription.fee + subscription.price)}`}</p>
+        </div>
       </>
     </Dialog>
   );

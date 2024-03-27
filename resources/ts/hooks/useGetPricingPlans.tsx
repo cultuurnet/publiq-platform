@@ -5,6 +5,7 @@ import { SubscriptionCategory } from "../types/SubscriptionCategory";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Subscription } from "../types/Subscription";
+import { formatCurrency } from "../utils/formatCurrency";
 
 export type PricingPlan = {
   id: string;
@@ -12,13 +13,6 @@ export type PricingPlan = {
   price: string;
   description: string;
 };
-
-const formatCurrency = (currency: Currency, amount: number) =>
-  Intl.NumberFormat("nl-BE", {
-    currency: currency,
-    style: "currency",
-    maximumFractionDigits: 0,
-  }).format(amount);
 
 const getPricingPlans = (
   t: TFunction,
