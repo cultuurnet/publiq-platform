@@ -25,11 +25,20 @@ export const NewsletterDialog = ({ isVisible, onClose }: Props) => {
     email: "",
   };
 
-  const { data, setData, post, errors: err } = useForm(initialFormValues);
+  const {
+    data,
+    setData,
+    post,
+    errors: err,
+    reset,
+  } = useForm(initialFormValues);
 
   const handleSubmit = () => {
     post("/newsletter", {
-      onSuccess: () => setIsFormVisible(false),
+      onSuccess: () => {
+        setIsFormVisible(false);
+        reset();
+      },
     });
   };
 
@@ -50,7 +59,10 @@ export const NewsletterDialog = ({ isVisible, onClose }: Props) => {
       }
       isFullscreen={isMobile}
       isVisible={isVisible}
-      onClose={onClose}
+      onClose={() => {
+        onClose();
+        setIsFormVisible(true);
+      }}
     >
       {isFormVisible ? (
         <FormElement
