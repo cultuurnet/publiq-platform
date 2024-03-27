@@ -8,8 +8,8 @@ import { useForm } from "@inertiajs/react";
 import { useTranslation } from "react-i18next";
 import { IntegrationType } from "../types/IntegrationType";
 import { useIsMobile } from "../hooks/useIsMobile";
-import { getPriceLabelFromSubscription } from "../utils/getPriceLabelFromSubscription";
 import { Subscription } from "../types/Subscription";
+import { PricingPlan } from "../hooks/useGetPricingPlans";
 
 type Props = {
   isVisible?: boolean;
@@ -17,6 +17,7 @@ type Props = {
   title?: string;
   id: string;
   subscription: Subscription;
+  pricingPlan: PricingPlan;
   type: IntegrationType;
   email: string;
 };
@@ -26,6 +27,7 @@ export const ActivationDialog = ({
   onClose,
   id,
   subscription,
+  pricingPlan,
   type,
 }: Props) => {
   const { t } = useTranslation();
@@ -69,7 +71,7 @@ export const ActivationDialog = ({
       <span className="text-sm font-medium">
         {t("integrations.activation_dialog.subscription_plan")}
       </span>
-      <p className="text-sm">{getPriceLabelFromSubscription(subscription)}</p>
+      <p className="text-sm">{`${pricingPlan.title} ${pricingPlan.price}`}</p>
     </div>
   );
 

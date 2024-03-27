@@ -19,6 +19,7 @@ import { Heading } from "../../Components/Heading";
 import { IntegrationType } from "../../types/IntegrationType";
 import { useGetPricingPlans } from "../../hooks/useGetPricingPlans";
 import { Subscription } from "../../types/Subscription";
+import { PricingPlanProvider } from "../../Context/PricingPlan";
 
 type Props = {
   integration: Integration;
@@ -131,46 +132,51 @@ const Detail = ({ integration, email, subscriptions }: Props) => {
         headless
       >
         <div className="w-full flex flex-col gap-5">
-          <Tabs active={activeTab} onChange={changeTabInUrl}>
-            <Tabs.Item
-              type="credentials"
-              label={
-                integration.type === IntegrationType.Widgets
-                  ? t("details.credentials.widgets")
-                  : t("details.credentials.title")
-              }
-            >
-              <Credentials {...integration} email={email} />
-            </Tabs.Item>
-            <Tabs.Item
-              type="settings"
-              label={t("details.integration_settings.title")}
-            >
-              <IntegrationSettings
-                {...integration}
-                isMobile={isMobile}
-                onChangeIsFormDirty={handleChangeIsFormDirty}
-                isKeepChangesDialogVisible={isKeepChangesDialogVisible}
-                onConfirmLeaveTab={handleConfirmLeaveTab}
-                onCancelLeaveTab={handleCancelLeaveTab}
-              />
-            </Tabs.Item>
-            <Tabs.Item type="contacts" label={t("details.contact_info.title")}>
-              <ContactInfo {...integration} isMobile={isMobile} />
-            </Tabs.Item>
-            <Tabs.Item
-              type="billing"
-              label={t("details.billing_info.title.billing")}
-            >
-              <BillingInfo {...integration} pricingPlan={pricingPlan} />
-            </Tabs.Item>
-            <Tabs.Item
-              type="delete"
-              label={t("details.delete_integration.title")}
-            >
-              <DeleteIntegration {...integration} />
-            </Tabs.Item>
-          </Tabs>
+          <PricingPlanProvider pricingPlan={pricingPlan}>
+            <Tabs active={activeTab} onChange={changeTabInUrl}>
+              <Tabs.Item
+                type="credentials"
+                label={
+                  integration.type === IntegrationType.Widgets
+                    ? t("details.credentials.widgets")
+                    : t("details.credentials.title")
+                }
+              >
+                <Credentials {...integration} email={email} />
+              </Tabs.Item>
+              <Tabs.Item
+                type="settings"
+                label={t("details.integration_settings.title")}
+              >
+                <IntegrationSettings
+                  {...integration}
+                  isMobile={isMobile}
+                  onChangeIsFormDirty={handleChangeIsFormDirty}
+                  isKeepChangesDialogVisible={isKeepChangesDialogVisible}
+                  onConfirmLeaveTab={handleConfirmLeaveTab}
+                  onCancelLeaveTab={handleCancelLeaveTab}
+                />
+              </Tabs.Item>
+              <Tabs.Item
+                type="contacts"
+                label={t("details.contact_info.title")}
+              >
+                <ContactInfo {...integration} isMobile={isMobile} />
+              </Tabs.Item>
+              <Tabs.Item
+                type="billing"
+                label={t("details.billing_info.title.billing")}
+              >
+                <BillingInfo {...integration} />
+              </Tabs.Item>
+              <Tabs.Item
+                type="delete"
+                label={t("details.delete_integration.title")}
+              >
+                <DeleteIntegration {...integration} />
+              </Tabs.Item>
+            </Tabs>
+          </PricingPlanProvider>
         </div>
       </Card>
     </Page>

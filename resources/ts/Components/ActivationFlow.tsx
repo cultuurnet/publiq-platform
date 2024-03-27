@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { IntegrationStatus } from "../types/IntegrationStatus";
 import { router } from "@inertiajs/react";
 import { ActivationDialog } from "./ActivationDialog";
@@ -6,6 +6,8 @@ import { Values } from "../types/Values";
 import { IntegrationType } from "../types/IntegrationType";
 import { ActivationRequest } from "./ActivationRequest";
 import { Subscription } from "../types/Subscription";
+import { PricingPlan } from "../hooks/useGetPricingPlans";
+import { PricingPlanContext } from "../Context/PricingPlan";
 
 type Props = {
   status: IntegrationStatus;
@@ -22,6 +24,8 @@ export const ActivationFlow = ({ id, subscription, type, email }: Props) => {
   const [isActivationDialogVisible, setIsActivationDialogVisible] =
     useState(!!isDialogVisible);
 
+  const pricingPlan = useContext(PricingPlanContext);
+
   return (
     <>
       <ActivationRequest id={id} type={type} />
@@ -37,6 +41,7 @@ export const ActivationFlow = ({ id, subscription, type, email }: Props) => {
         subscription={subscription}
         type={type}
         email={email}
+        pricingPlan={pricingPlan}
       />
     </>
   );

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Heading } from "../../Heading";
 import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
@@ -10,15 +10,15 @@ import { Alert } from "../../Alert";
 import { IntegrationType } from "../../../types/IntegrationType";
 import { IntegrationStatus } from "../../../types/IntegrationStatus";
 import { PricingPlan } from "../../../hooks/useGetPricingPlans";
+import { PricingPlanContext } from "../../../Context/PricingPlan";
 
-type Props = Integration & { pricingPlan: PricingPlan };
+type Props = Integration;
 
 export const BillingInfo = ({
   id,
   organization,
   subscription,
   status,
-  pricingPlan,
 }: Props) => {
   const { t } = useTranslation();
   const initialFormValues = {
@@ -28,6 +28,8 @@ export const BillingInfo = ({
   const { data, setData, patch, errors: err } = useForm(initialFormValues);
 
   const errors = err as Record<string, string | undefined>;
+
+  const pricingPlan = useContext(PricingPlanContext);
 
   return (
     <>
