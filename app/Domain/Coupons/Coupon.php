@@ -8,6 +8,8 @@ use Ramsey\Uuid\UuidInterface;
 
 final class Coupon
 {
+    public const REDUCTION_AMOUNT = 125.0;
+
     public function __construct(
         public readonly UuidInterface $id,
         public readonly bool $isDistributed,
@@ -18,6 +20,6 @@ final class Coupon
 
     public function reduction(): float
     {
-        return 125.0;
+        return self::REDUCTION_AMOUNT;
     }
 }
