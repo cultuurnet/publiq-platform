@@ -39,7 +39,7 @@ final class ActivateIntegration extends Action
         /** @var string $couponCode */
         $couponCode = $fields->get('coupon');
 
-        $this->integrationRepository->activate(
+        $this->integrationRepository->activateWithOrganization(
             Uuid::fromString($integration->id),
             $organizationId,
             $couponCode

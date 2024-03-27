@@ -103,6 +103,69 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
+    public function test_it_can_store_an_integration_with_a_coupon(): void
+    {
+        $systemUser = UserModel::createSystemUser();
+        $this->actingAs($systemUser);
+        $this->givenTheContactKeyVisibilityIs($systemUser->email, KeyVisibility::v2);
+
+        $coupon = $this->givenThereIsACoupon();
+
+        $subscriptionId = Uuid::uuid4();
+
+        $response = $this->post(
+            '/integrations',
+            [
+                'integrationType' => IntegrationType::SearchApi->value,
+                'subscriptionId' => $subscriptionId->toString(),
+                'integrationName' => 'Test Integration',
+                'description' => 'Test Integration description',
+                'firstNameFunctionalContact' => 'Jack',
+                'lastNameFunctionalContact' => 'Bauer',
+                'emailFunctionalContact' => 'jack.bauer@test.com',
+                'firstNameTechnicalContact' => 'John',
+                'lastNameTechnicalContact' => 'Doe',
+                'emailTechnicalContact' => 'john.doe@test.com',
+                'agreement' => 'true',
+                'privacy' => 'some privacy',
+                'coupon' => $coupon->code,
+            ]
+        );
+
+        /** @var IntegrationModel $createdIntegration */
+        $createdIntegration = IntegrationModel::query()->latest()->first();
+
+        $response->assertRedirectToRoute('nl.integrations.show', ['id' => $createdIntegration->toDomain()->id->toString()]);
+
+        $this->assertDatabaseHas('integrations', [
+            'type' => IntegrationType::SearchApi->value,
+            'subscription_id' => $subscriptionId->toString(),
+            'name' => 'Test Integration',
+            'description' => 'Test Integration description',
+            'status' => IntegrationStatus::Draft->value,
+            'partner_status' => IntegrationPartnerStatus::THIRD_PARTY->value,
+            'key_visibility' => KeyVisibility::v2->value,
+        ]);
+
+        $this->assertDatabaseHas('contacts', [
+            'type' => ContactType::Functional,
+            'first_name' => 'Jack',
+            'last_name' => 'Bauer',
+        ]);
+
+        $this->assertDatabaseHas('contacts', [
+            'type' => ContactType::Technical,
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+        ]);
+
+        $this->assertDatabaseHas('contacts', [
+            'type' => ContactType::Contributor,
+            'first_name' => 'System',
+            'last_name' => 'User',
+        ]);
+    }
+
     public function test_it_can_destroy_an_integration(): void
     {
         $this->actingAs(UserModel::createSystemUser());
