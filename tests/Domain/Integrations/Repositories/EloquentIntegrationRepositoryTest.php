@@ -368,6 +368,35 @@ final class EloquentIntegrationRepositoryTest extends TestCase
 
         $this->integrationRepository->save($searchIntegration);
 
+        $this->integrationRepository->activate($integrationId);
+
+        $this->assertDatabaseHas('integrations', [
+            'id' => $searchIntegration->id->toString(),
+            'type' => $searchIntegration->type,
+            'name' => $searchIntegration->name,
+            'description' => $searchIntegration->description,
+            'subscription_id' => $searchIntegration->subscriptionId,
+            'status' => IntegrationStatus::Active,
+        ]);
+
+        Event::assertDispatched(IntegrationActivated::class);
+    }
+
+    public function test_it_can_activate_with_organization(): void
+    {
+        $integrationId = Uuid::uuid4();
+        $searchIntegration = new Integration(
+            $integrationId,
+            IntegrationType::SearchApi,
+            'Search Integration',
+            'Search Integration description',
+            Uuid::uuid4(),
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
+        );
+
+        $this->integrationRepository->save($searchIntegration);
+
         $organizationId = Uuid::uuid4();
         $this->integrationRepository->activateWithOrganization($integrationId, $organizationId, null);
 
