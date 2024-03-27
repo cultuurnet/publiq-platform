@@ -157,6 +157,7 @@ final class IntegrationController extends Controller
                 'legacyAuthConsumers' => $legacyAuthConsumers,
             ],
             'email' => Auth::user()?->email,
+            'subscriptions' => $this->subscriptionRepository->all(),
         ]);
     }
 

@@ -17,13 +17,26 @@ import {
 } from "../../Components/IntegrationTypes";
 import { Heading } from "../../Components/Heading";
 import { IntegrationType } from "../../types/IntegrationType";
+import { useGetPricingPlans } from "../../hooks/useGetPricingPlans";
+import { Subscription } from "../../types/Subscription";
 
-type Props = { integration: Integration; email: string };
+type Props = {
+  integration: Integration;
+  email: string;
+  subscriptions: Subscription[];
+};
 
-const Detail = ({ integration, email }: Props) => {
+const Detail = ({ integration, email, subscriptions }: Props) => {
   const { t } = useTranslation();
 
   const [isMobile, setIsMobile] = useState(false);
+
+  const pricingPlans = useGetPricingPlans(integration.type, subscriptions);
+
+  // Should always be defined
+  const pricingPlan = pricingPlans.find(
+    (pricingPlan) => pricingPlan.id === integration.subscription.id
+  )!;
 
   const changeTabInUrl = (tab: string) => {
     router.get(url, {
@@ -149,7 +162,7 @@ const Detail = ({ integration, email }: Props) => {
               type="billing"
               label={t("details.billing_info.title.billing")}
             >
-              <BillingInfo {...integration} />
+              <BillingInfo {...integration} pricingPlan={pricingPlan} />
             </Tabs.Item>
             <Tabs.Item
               type="delete"

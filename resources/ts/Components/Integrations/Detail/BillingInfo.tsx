@@ -9,15 +9,16 @@ import { useForm } from "@inertiajs/react";
 import { Alert } from "../../Alert";
 import { IntegrationType } from "../../../types/IntegrationType";
 import { IntegrationStatus } from "../../../types/IntegrationStatus";
-import { getPriceLabelFromSubscription } from "../../../utils/getPriceLabelFromSubscription";
+import { PricingPlan } from "../../../hooks/useGetPricingPlans";
 
-type Props = Integration;
+type Props = Integration & { pricingPlan: PricingPlan };
 
 export const BillingInfo = ({
   id,
   organization,
   subscription,
   status,
+  pricingPlan,
 }: Props) => {
   const { t } = useTranslation();
   const initialFormValues = {
@@ -40,7 +41,7 @@ export const BillingInfo = ({
             <Input
               type="text"
               name="price"
-              value={getPriceLabelFromSubscription(subscription)}
+              value={`${pricingPlan.title} (${pricingPlan.price})`}
               className="md:min-w-[40rem]"
               disabled
             />

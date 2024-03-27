@@ -6,7 +6,7 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Subscription } from "../types/Subscription";
 
-type PricingPlan = {
+export type PricingPlan = {
   id: string;
   title: string;
   price: string;

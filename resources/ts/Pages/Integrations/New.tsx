@@ -1,4 +1,4 @@
-import React, { FormEvent, ReactNode, useEffect, useMemo } from "react";
+import React, { FormEvent, ReactNode } from "react";
 import { router, useForm } from "@inertiajs/react";
 import Layout from "../../layouts/Layout";
 import { Heading } from "../../Components/Heading";
@@ -73,13 +73,7 @@ const New = ({ subscriptions }: Props) => {
   }
 
   const integrationTypesInfo = useIntegrationTypesInfo();
-  console.log("data.integrationType", data.integrationType);
-  console.log("subscriptions", subscriptions);
   const pricingPlans = useGetPricingPlans(data.integrationType, subscriptions);
-
-  useEffect(() => {
-    console.log("pricingPlans", pricingPlans);
-  }, [pricingPlans]);
 
   return (
     <Page>
