@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Inertia\Response;
 use Sentry\State\Scope;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;
@@ -67,7 +68,7 @@ final class Handler extends ExceptionHandler
         });
     }
 
-    protected function handle500Error(Exception $exception)
+    protected function handle500Error(Exception $exception): Response
     {
         return Inertia::render('Error');
     }
