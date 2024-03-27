@@ -18,7 +18,6 @@ test("As an admin I can create a new organization", async ({ page }) => {
     .fill(faker.internet.email());
   await page.getByPlaceholder("Vat").fill("BE 0475 250 609");
   await page.getByRole("button", { name: "Create Organization" }).click();
-  await page.screenshot({ path: `screenshots/create-organization-as-admin.png` });
   await expect(
     page
       .locator("h1")
