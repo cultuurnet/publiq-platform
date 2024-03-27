@@ -66,6 +66,18 @@ final class IntegrationModelTest extends TestCase
 
     public function test_it_handles_activate(): void
     {
+        $this->integrationModel->activate();
+
+        Event::assertDispatched(IntegrationActivated::class);
+
+        $this->assertDatabaseHas('integrations', [
+            'id' =>  $this->integrationModel->id,
+            'status' => IntegrationStatus::Active,
+        ]);
+    }
+
+    public function test_it_handles_activate_with_organization(): void
+    {
         $organizationId = Uuid::uuid4();
         $this->integrationModel->activateWithOrganization($organizationId);
 
