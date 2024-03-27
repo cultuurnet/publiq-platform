@@ -8,7 +8,7 @@ use Ramsey\Uuid\UuidInterface;
 
 final class Coupon
 {
-    const REDUCTION_AMOUNT = 125.0;
+    public const REDUCTION_AMOUNT = 125.0;
 
     public function __construct(
         public readonly UuidInterface $id,

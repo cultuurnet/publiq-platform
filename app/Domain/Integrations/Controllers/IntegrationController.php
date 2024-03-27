@@ -161,8 +161,8 @@ final class IntegrationController extends Controller
             'subscriptions' => $this->subscriptionRepository->all(),
             'couponInfo' => [
                 'isUsed' => $this->hasCouponBeenUsed(Uuid::fromString($id)),
-                'reductionAmount' => Coupon::REDUCTION_AMOUNT
-            ]
+                'reductionAmount' => Coupon::REDUCTION_AMOUNT,
+            ],
         ]);
     }
 
