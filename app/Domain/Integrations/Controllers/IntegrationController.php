@@ -140,9 +140,9 @@ final class IntegrationController extends Controller
         try {
             $integration = $this->integrationRepository->getById(Uuid::fromString($id));
             $subscription = $this->subscriptionRepository->getById($integration->subscriptionId);
-            $contacts = $this->contactRepository->getByIntegrationId(UUid::fromString($id));
-            $authClients = $this->auth0ClientRepository->getByIntegrationId(UUid::fromString($id));
-            $legacyAuthConsumers = $this->uitidV1ConsumerRepository->getByIntegrationId(UUid::fromString($id));
+            $contacts = $this->contactRepository->getByIntegrationId(Uuid::fromString($id));
+            $authClients = $this->auth0ClientRepository->getByIntegrationId(Uuid::fromString($id));
+            $legacyAuthConsumers = $this->uitidV1ConsumerRepository->getByIntegrationId(Uuid::fromString($id));
         } catch (Throwable) {
             abort(404);
         }
@@ -160,7 +160,7 @@ final class IntegrationController extends Controller
             'email' => Auth::user()?->email,
             'subscriptions' => $this->subscriptionRepository->all(),
             'couponInfo' => [
-                'isUsed' => $this->hasCouponBeenUsed(UUid::fromString($id)),
+                'isUsed' => $this->hasCouponBeenUsed(Uuid::fromString($id)),
                 'reductionAmount' => Coupon::REDUCTION_AMOUNT
             ]
         ]);
