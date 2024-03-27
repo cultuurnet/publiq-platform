@@ -10,7 +10,7 @@
         "lint": "eslint --fix 'resources/ts/**/*.{js,jsx,ts,tsx}'",
         "lint:check": "eslint 'resources/ts/**/*.{js,jsx,ts,tsx}'",
         "types:check": "tsc",
-		"test:e2e": "playwright test"
+        "test:e2e": "playwright test"
     },
     "dependencies": {
         "@fortawesome/fontawesome-svg-core": "^6.5.1",
@@ -19,7 +19,7 @@
         "@fortawesome/react-fontawesome": "^0.2.0",
         "@inertiajs/react": "^1.0.15",
         "@sentry/browser": "^7.108.0",
-		"dotenv": "^16.4.5",
+        "dotenv": "^16.4.5",
         "i18next": "^23.10.1",
         "i18next-browser-languagedetector": "^7.2.0",
         "react": "^18.2.0",
@@ -28,10 +28,11 @@
         "tailwind-merge": "^2.2.2"
     },
     "devDependencies": {
-		"@playwright/test": "^1.42.1",
+        "@faker-js/faker": "^8.4.1",
+        "@playwright/test": "^1.42.1",
         "@tailwindcss/forms": "^0.5.7",
         "@types/lodash": "^4.14.202",
-		"@types/node": "^20.11.30",
+        "@types/node": "^20.11.30",
         "@types/react": "^18.2.66",
         "@types/react-dom": "^18.2.22",
         "@typescript-eslint/eslint-plugin": "^7.3.1",
