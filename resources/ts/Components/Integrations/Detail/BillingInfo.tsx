@@ -11,18 +11,15 @@ import { IntegrationType } from "../../../types/IntegrationType";
 import { IntegrationStatus } from "../../../types/IntegrationStatus";
 import { PricingPlanContext } from "../../../Context/PricingPlan";
 import { formatCurrency } from "../../../utils/formatCurrency";
-import { CouponInfo } from "../../../Pages/Integrations/Detail";
+import { CouponInfoContext } from "../../../Context/CouponInfo";
 
-type Props = Integration & {
-  couponInfo: CouponInfo;
-};
+type Props = Integration;
 
 export const BillingInfo = ({
   id,
   organization,
   subscription,
   status,
-  couponInfo,
 }: Props) => {
   const { t } = useTranslation();
   const initialFormValues = {
@@ -34,6 +31,7 @@ export const BillingInfo = ({
   const errors = err as Record<string, string | undefined>;
 
   const pricingPlan = useContext(PricingPlanContext);
+  const couponInfo = useContext(CouponInfoContext);
 
   return (
     <>

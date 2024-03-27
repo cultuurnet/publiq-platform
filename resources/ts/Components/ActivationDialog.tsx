@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Dialog } from "./Dialog";
 import { ButtonSecondary } from "./ButtonSecondary";
 import { ButtonPrimary } from "./ButtonPrimary";
@@ -12,20 +12,20 @@ import { Subscription } from "../types/Subscription";
 import { PricingPlan } from "../hooks/useGetPricingPlans";
 import { formatCurrency } from "../utils/formatCurrency";
 import { Heading } from "./Heading";
-import { CouponInfo } from "../Pages/Integrations/Detail";
+import { CouponInfoContext } from "../Context/CouponInfo";
 
 const PriceOverview = ({
   coupon,
-  couponInfo,
   subscription,
   pricingPlan,
 }: {
   coupon?: string;
-  couponInfo: CouponInfo;
   subscription: Subscription;
   pricingPlan: PricingPlan;
 }) => {
   const { t } = useTranslation();
+
+  const couponInfo = useContext(CouponInfoContext);
 
   return (
     <section className="flex flex-col flex-1 gap-2 border-t mt-4 pt-4 text-sm">
@@ -75,7 +75,6 @@ type Props = {
   pricingPlan: PricingPlan;
   type: IntegrationType;
   email: string;
-  couponInfo: CouponInfo;
 };
 
 export const ActivationDialog = ({
@@ -85,7 +84,6 @@ export const ActivationDialog = ({
   pricingPlan,
   subscription,
   type,
-  couponInfo,
 }: Props) => {
   const { t } = useTranslation();
 
@@ -302,7 +300,6 @@ export const ActivationDialog = ({
           subscription={subscription}
           pricingPlan={pricingPlan}
           coupon={organizationForm.data.coupon}
-          couponInfo={couponInfo}
         />
       </>
     </Dialog>
