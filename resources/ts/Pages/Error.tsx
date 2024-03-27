@@ -17,17 +17,17 @@ const Error = () => {
         contentStyles="flex flex-col gap-3"
       >
         <div className="text-center">
-        <Trans
-          i18nKey="error.description"
-          t={t}
-          components={[
-            <Link
-              key={t("error.description")}
-              href="mailto:technical-support@publiq.be"
-              className="text-publiq-blue-dark hover:underline"
-            />,
-          ]}
-        />
+          <Trans
+            i18nKey="error.description"
+            t={t}
+            components={[
+              <Link
+                key={t("error.description")}
+                href="mailto:technical-support@publiq.be"
+                className="text-publiq-blue-dark hover:underline"
+              />,
+            ]}
+          />
         </div>
         <ButtonSecondary onClick={navigateBack} className="self-center">
           {t("error.back")}
