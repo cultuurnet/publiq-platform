@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { Dialog } from "./Dialog";
 import { ButtonSecondary } from "./ButtonSecondary";
 import { ButtonPrimary } from "./ButtonPrimary";
@@ -6,18 +6,20 @@ import { FormElement } from "./FormElement";
 import { Input } from "./Input";
 import { useForm } from "@inertiajs/react";
 import { useTranslation } from "react-i18next";
-import { Subscription } from "../Pages/Integrations/Index";
-import { Values } from "../types/Values";
 import { IntegrationType } from "../types/IntegrationType";
 import { useIsMobile } from "../hooks/useIsMobile";
+import { Subscription } from "../types/Subscription";
+import { PricingPlan } from "../hooks/useGetPricingPlans";
+import { formatCurrency } from "../utils/formatCurrency";
 
 type Props = {
   isVisible?: boolean;
   onClose: () => void;
   title?: string;
   id: string;
-  subscription?: Subscription;
-  type: Values<typeof IntegrationType>;
+  subscription: Subscription;
+  pricingPlan: PricingPlan;
+  type: IntegrationType;
   email: string;
 };
 
@@ -25,19 +27,18 @@ export const ActivationDialog = ({
   isVisible,
   onClose,
   id,
+  pricingPlan,
   subscription,
   type,
-  email,
 }: Props) => {
   const { t } = useTranslation();
 
   const isMobile = useIsMobile();
 
-  const initialValuesCoupon = { coupon: "" };
   const initialValuesOrganization = {
     organization: {
       name: "",
-      invoiceEmail: type === "entry-api" ? email : "",
+      invoiceEmail: "",
       vat: "",
       address: {
         street: "",
@@ -46,39 +47,16 @@ export const ActivationDialog = ({
         country: "Belgium",
       },
     },
+    coupon: "",
   };
 
   const organizationForm = useForm(initialValuesOrganization);
-  const couponForm = useForm(initialValuesCoupon);
 
   const handleSubmit = () => {
-    organizationForm.post(`/integrations/${id}/organization`, {
-      onFinish: () => {
-        if (couponForm.data.coupon !== "") {
-          couponForm.post(`/integrations/${id}/coupon`);
-        }
-        if (
-          !organizationForm.hasErrors &&
-          organizationForm.wasSuccessful &&
-          !couponForm.hasErrors &&
-          couponForm.wasSuccessful
-        ) {
-          onClose();
-        }
-      },
+    organizationForm.post(`/integrations/${id}/activation`, {
+      onSuccess: () => onClose(),
     });
   };
-
-  const couponErrorMessage = useMemo(() => {
-    if (!couponForm.errors.coupon) return;
-
-    switch (couponForm.errors.coupon) {
-      case "Coupon is already used":
-        return t("integrations.activation_dialog.already_used_coupon");
-      default:
-        return t("integrations.activation_dialog.invalid_coupon");
-    }
-  }, [couponForm.errors, t]);
 
   const organizationFormErrors = organizationForm.errors as Record<
     string,
@@ -108,19 +86,15 @@ export const ActivationDialog = ({
       contentStyles="gap-3"
     >
       <>
-        <FormElement
-          label={`${t("integrations.activation_dialog.subscription_plan")}`}
-          component={
-            <p className="text-sm">
-              {subscription &&
-                `${subscription.category} ${
-                  subscription.currency === "EUR" ? "€" : subscription.currency
-                } ${subscription.fee / 100}`}
-            </p>
-          }
-        />
+        <div className="flex flex-col gap-1">
+          <span className="text-sm font-medium">
+            {t("integrations.activation_dialog.subscription_plan")}
+          </span>
+          <p className="text-sm">{`${pricingPlan.title} (${pricingPlan.price})`}</p>
+        </div>
         <FormElement
           label={`${t("details.billing_info.name")}`}
+          required
           error={organizationFormErrors["organization.name"]}
           className="w-full"
           component={
@@ -141,6 +115,7 @@ export const ActivationDialog = ({
         <div className="max-md:flex max-md:flex-col md:grid md:grid-cols-5 gap-3">
           <FormElement
             label={`${t("details.billing_info.address.street")}`}
+            required
             error={organizationFormErrors["organization.address.street"]}
             className="col-span-2"
             component={
@@ -163,6 +138,7 @@ export const ActivationDialog = ({
           />
           <FormElement
             label={`${t("details.billing_info.address.postcode")}`}
+            required
             error={organizationFormErrors["organization.address.zip"]}
             className="col-span-1"
             component={
@@ -185,6 +161,7 @@ export const ActivationDialog = ({
           />
           <FormElement
             label={`${t("details.billing_info.address.city")}`}
+            required
             error={organizationFormErrors["organization.address.city"]}
             className="col-span-2"
             component={
@@ -210,6 +187,7 @@ export const ActivationDialog = ({
           <>
             <FormElement
               label={`${t("details.billing_info.vat")}`}
+              required
               error={organizationFormErrors["organization.vat"]}
               className="w-full"
               component={
@@ -229,6 +207,7 @@ export const ActivationDialog = ({
             />
             <FormElement
               label={`${t("integrations.activation_dialog.contact")}`}
+              required
               error={organizationFormErrors["organization.invoiceEmail"]}
               info={`${t("integrations.activation_dialog.contact_description")}`}
               component={
@@ -248,34 +227,27 @@ export const ActivationDialog = ({
             />
             <FormElement
               label={`${t("integrations.activation_dialog.coupon")}`}
-              error={couponErrorMessage}
+              error={organizationForm.errors.coupon}
               className="col-span-2"
               component={
                 <Input
                   type="text"
                   name="coupon"
-                  value={couponForm.data.coupon}
-                  onChange={(e) => couponForm.setData("coupon", e.target.value)}
+                  value={organizationForm.data.coupon}
+                  onChange={(e) =>
+                    organizationForm.setData("coupon", e.target.value)
+                  }
                 />
               }
             />
           </>
         )}
-        {!!subscription && (
-          <FormElement
-            label={`${t("integrations.activation_dialog.price")}`}
-            component={
-              <p className="text-sm">
-                {subscription &&
-                  `${
-                    subscription.currency === "EUR"
-                      ? "€"
-                      : subscription.currency
-                  } ${subscription.fee / 100}`}
-              </p>
-            }
-          />
-        )}
+        <div className="flex flex-col gap-1">
+          <span className="text-sm font-medium">
+            {t("integrations.activation_dialog.total_price")}
+          </span>
+          <p className="text-sm">{`${formatCurrency(subscription.currency, subscription.fee + subscription.price)}`}</p>
+        </div>
       </>
     </Dialog>
   );

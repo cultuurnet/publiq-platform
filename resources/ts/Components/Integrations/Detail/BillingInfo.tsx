@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Heading } from "../../Heading";
 import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
@@ -9,6 +9,7 @@ import { useForm } from "@inertiajs/react";
 import { Alert } from "../../Alert";
 import { IntegrationType } from "../../../types/IntegrationType";
 import { IntegrationStatus } from "../../../types/IntegrationStatus";
+import { PricingPlanContext } from "../../../Context/PricingPlan";
 
 type Props = Integration;
 
@@ -27,6 +28,8 @@ export const BillingInfo = ({
 
   const errors = err as Record<string, string | undefined>;
 
+  const pricingPlan = useContext(PricingPlanContext);
+
   return (
     <>
       <div className="w-full max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-6">
@@ -39,9 +42,7 @@ export const BillingInfo = ({
             <Input
               type="text"
               name="price"
-              value={`${subscription.category} (${
-                subscription.currency === "EUR" ? "€" : subscription.currency
-              } ${subscription.fee / 100})`}
+              value={`${pricingPlan.title} (${pricingPlan.price})`}
               className="md:min-w-[40rem]"
               disabled
             />

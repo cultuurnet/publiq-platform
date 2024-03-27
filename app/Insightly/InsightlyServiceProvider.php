@@ -7,8 +7,6 @@ namespace App\Insightly;
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Contacts\Events\ContactUpdated;
 use App\Domain\Integrations\Events\IntegrationActivated;
-use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
-use App\Domain\Integrations\Events\IntegrationActivatedWithOrganization;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
@@ -20,10 +18,8 @@ use App\Domain\Organizations\Events\OrganizationUpdated;
 use App\Insightly\Listeners\ActivateProject;
 use App\Insightly\Listeners\BlockOpportunity;
 use App\Insightly\Listeners\BlockProject;
-use App\Insightly\Listeners\CreateProjectWithCoupon;
 use App\Insightly\Listeners\CreateOpportunity;
 use App\Insightly\Listeners\CreateOrganization;
-use App\Insightly\Listeners\CreateProjectWithOrganization;
 use App\Insightly\Listeners\DeleteOpportunity;
 use App\Insightly\Listeners\DeleteProject;
 use App\Insightly\Listeners\SyncContact;
@@ -58,11 +54,6 @@ final class InsightlyServiceProvider extends ServiceProvider
 
         if (config('insightly.enabled')) {
             Event::listen(IntegrationCreated::class, [CreateOpportunity::class, 'handle']);
-
-            // @deprecated
-            Event::listen(IntegrationActivatedWithCoupon::class, [CreateProjectWithCoupon::class, 'handle']);
-            // @deprecated
-            Event::listen(IntegrationActivatedWithOrganization::class, [CreateProjectWithOrganization::class, 'handle']);
 
             Event::listen(IntegrationActivationRequested::class, [ActivateProject::class, 'handle']);
             Event::listen(IntegrationActivated::class, [ActivateProject::class, 'handle']);

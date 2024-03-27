@@ -5,11 +5,11 @@ import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
 import { ButtonIcon } from "../../ButtonIcon";
 import { faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { IntegrationUrl } from "../../../Pages/Integrations/Index";
 import { IntegrationUrlType } from "../../../types/IntegrationUrlType";
 import { QuestionDialog } from "../../QuestionDialog";
 import { classNames } from "../../../utils/classNames";
 import { Environment } from "../../../types/Environment";
+import { IntegrationUrl } from "../../../types/IntegrationUrl";
 
 type UrlListProps = {
   type: IntegrationUrlType;

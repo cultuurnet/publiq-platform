@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Domain\Integrations\Models;
 
-use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
-use App\Domain\Integrations\Events\IntegrationActivatedWithOrganization;
+use App\Domain\Integrations\Events\IntegrationActivated;
+use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
@@ -51,29 +51,29 @@ final class IntegrationModelTest extends TestCase
         ]);
     }
 
-    public function test_it_handles_activate_with_coupon(): void
+    public function test_it_handles_request_activation(): void
     {
-        $this->integrationModel->activateWithCoupon();
+        $organizationId = Uuid::uuid4();
+        $this->integrationModel->requestActivation($organizationId);
 
-        Event::assertDispatched(IntegrationActivatedWithCoupon::class);
+        Event::assertDispatched(IntegrationActivationRequested::class);
 
         $this->assertDatabaseHas('integrations', [
             'id' =>  $this->integrationModel->id,
-            'status' => IntegrationStatus::Active,
+            'status' => IntegrationStatus::PendingApprovalIntegration,
         ]);
     }
 
-    public function test_it_handles_activate_with_organization(): void
+    public function test_it_handles_activate(): void
     {
         $organizationId = Uuid::uuid4();
-        $this->integrationModel->activateWithOrganization($organizationId);
+        $this->integrationModel->activate($organizationId);
 
-        Event::assertDispatched(IntegrationActivatedWithOrganization::class);
+        Event::assertDispatched(IntegrationActivated::class);
 
         $this->assertDatabaseHas('integrations', [
             'id' =>  $this->integrationModel->id,
             'status' => IntegrationStatus::Active,
-            'organization_id' => $organizationId->toString(),
         ]);
     }
 }

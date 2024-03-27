@@ -1,10 +1,9 @@
-import React, { FormEvent, ReactNode, useMemo } from "react";
+import React, { FormEvent, ReactNode } from "react";
 import { router, useForm } from "@inertiajs/react";
 import Layout from "../../layouts/Layout";
 import { Heading } from "../../Components/Heading";
 import { FormElement } from "../../Components/FormElement";
 import { Input } from "../../Components/Input";
-import { TFunction } from "i18next";
 import { Trans, useTranslation } from "react-i18next";
 import { Card } from "../../Components/Card";
 import { ButtonPrimary } from "../../Components/ButtonPrimary";
@@ -19,65 +18,8 @@ import {
   RadioButtonGroup,
   RichRadioButton,
 } from "../../Components/RadioButtonGroup";
-
-type PricingPlan = {
-  id: string;
-  title: string;
-  price: string;
-  description: string;
-};
-
-type Subscription = {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  integration_type: string;
-  currency: string;
-  price: number;
-  fee: number;
-  deleted_at: string | null;
-  created_at: string;
-  updated_at: string;
-};
-
-const getPricingPlansForType = (
-  t: TFunction,
-  integrationType: IntegrationType,
-  subscriptions: Subscription[]
-) => {
-  const getInfoForCategory = (category: string): PricingPlan | undefined => {
-    const data = subscriptions.find(
-      (sub) =>
-        sub.category.toLowerCase() === category &&
-        sub.integration_type === integrationType
-    );
-
-    if (!data) {
-      return undefined;
-    }
-
-    return {
-      id: data.id,
-      title: t(`integration_form.pricing.${category}.title`),
-      description: t(
-        `integration_form.pricing.${category}.description.${integrationType}`,
-        data.description
-      ),
-      price: t(`integration_form.pricing.${category}.price`, {
-        price: Intl.NumberFormat("nl-BE", {
-          currency: data.currency,
-          style: "currency",
-          maximumFractionDigits: 0,
-        }).format(data.price),
-      }),
-    };
-  };
-
-  return ["free", "basic", "plus", "custom"]
-    .map(getInfoForCategory)
-    .filter((info) => !!info?.id) as PricingPlan[];
-};
+import { Subscription } from "../../types/Subscription";
+import { useGetPricingPlans } from "../../hooks/useGetPricingPlans";
 
 type Props = {
   subscriptions: Subscription[];
@@ -89,7 +31,7 @@ const New = ({ subscriptions }: Props) => {
 
   const freeSubscriptionId = subscriptions.find(
     (subscription) =>
-      subscription.integration_type === IntegrationType.EntryApi &&
+      subscription.integrationType === IntegrationType.EntryApi &&
       subscription.price === 0
   )?.id;
 
@@ -116,8 +58,6 @@ const New = ({ subscriptions }: Props) => {
     lastNameTechnicalContact: "",
     emailTechnicalContact: "",
     agreement: "",
-    coupon: "",
-    couponCode: "",
   };
 
   const { data, setData, errors, post, processing } =
@@ -133,10 +73,7 @@ const New = ({ subscriptions }: Props) => {
   }
 
   const integrationTypesInfo = useIntegrationTypesInfo();
-  const translatedPricingPlans = useMemo(
-    () => getPricingPlansForType(t, data.integrationType, subscriptions),
-    [t, data.integrationType, subscriptions]
-  );
+  const pricingPlans = useGetPricingPlans(data.integrationType, subscriptions);
 
   return (
     <Page>
@@ -178,14 +115,14 @@ const New = ({ subscriptions }: Props) => {
             )}
           </Card>
 
-          {translatedPricingPlans.length > 0 && (
+          {pricingPlans.length > 0 && (
             <Card title={t("integration_form.pricing_plan")}>
               <RadioButtonGroup
                 orientation="vertical"
                 name="subscriptionId"
                 value={data.subscriptionId}
                 onChange={(value) => setData("subscriptionId", value)}
-                options={translatedPricingPlans.map((pricingPlan) => ({
+                options={pricingPlans.map((pricingPlan) => ({
                   value: pricingPlan.id,
                   label: (
                     <RichRadioButton
@@ -385,38 +322,6 @@ const New = ({ subscriptions }: Props) => {
               }
               error={errors.agreement}
             />
-            <FormElement
-              label={t("integration_form.coupon")}
-              labelSize="base"
-              labelWeight="normal"
-              labelPosition="right"
-              component={
-                <input
-                  type="checkbox"
-                  name="coupon"
-                  className="text-publiq-blue-dark focus:ring-publiq-blue-dark rounded-sm"
-                  checked={data.coupon === "true"}
-                  onChange={() =>
-                    setData("coupon", data.coupon === "true" ? "" : "true")
-                  }
-                />
-              }
-              error={errors.coupon}
-            />
-            {data.coupon && (
-              <FormElement
-                component={
-                  <Input
-                    type="text"
-                    name="couponCode"
-                    value={data.couponCode}
-                    onChange={(e) => setData("couponCode", e.target.value)}
-                    placeholder={t("integration_form.code")}
-                  />
-                }
-                error={errors.couponCode}
-              />
-            )}
           </Card>
 
           <ButtonPrimary type="submit" disabled={processing} className="w-fit">

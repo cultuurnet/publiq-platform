@@ -8,8 +8,6 @@ use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Events\IntegrationActivated;
-use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
-use App\Domain\Integrations\Events\IntegrationActivatedWithOrganization;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
@@ -112,25 +110,6 @@ final class IntegrationModel extends UuidModel
             'status' => IntegrationStatus::Active,
         ]);
         IntegrationActivated::dispatch(Uuid::fromString($this->id));
-    }
-
-    // @deprecated
-    public function activateWithCoupon(): void
-    {
-        $this->update([
-            'status' => IntegrationStatus::Active,
-        ]);
-        IntegrationActivatedWithCoupon::dispatch(Uuid::fromString($this->id));
-    }
-
-    // @deprecated
-    public function activateWithOrganization(UuidInterface $organizationId): void
-    {
-        $this->update([
-            'organization_id' => $organizationId->toString(),
-            'status' => IntegrationStatus::Active,
-        ]);
-        IntegrationActivatedWithOrganization::dispatch(Uuid::fromString($this->id));
     }
 
     public function approve(): void
