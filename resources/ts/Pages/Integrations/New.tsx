@@ -19,6 +19,7 @@ import {
   RadioButtonGroup,
   RichRadioButton,
 } from "../../Components/RadioButtonGroup";
+import { SubscriptionCategory } from "../../types/SubscriptionCategory";
 
 type PricingPlan = {
   id: string;
@@ -49,8 +50,7 @@ const getPricingPlansForType = (
   const getInfoForCategory = (category: string): PricingPlan | undefined => {
     const data = subscriptions.find(
       (sub) =>
-        sub.category.toLowerCase() === category &&
-        sub.integration_type === integrationType
+        sub.category === category && sub.integration_type === integrationType
     );
 
     if (!data) {
@@ -74,9 +74,9 @@ const getPricingPlansForType = (
     };
   };
 
-  return ["free", "basic", "plus", "custom"]
+  return Object.values(SubscriptionCategory)
     .map(getInfoForCategory)
-    .filter((info) => !!info?.id) as PricingPlan[];
+    .filter((info): info is PricingPlan => !!info?.id);
 };
 
 type Props = {
