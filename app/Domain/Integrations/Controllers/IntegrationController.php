@@ -47,22 +47,22 @@ use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 use Ramsey\Uuid\Uuid;
-use Throwable;
 
 final class IntegrationController extends Controller
 {
     public function __construct(
-        private readonly SubscriptionRepository $subscriptionRepository,
-        private readonly IntegrationRepository $integrationRepository,
-        private readonly IntegrationUrlRepository $integrationUrlRepository,
-        private readonly ContactRepository $contactRepository,
+        private readonly SubscriptionRepository         $subscriptionRepository,
+        private readonly IntegrationRepository          $integrationRepository,
+        private readonly IntegrationUrlRepository       $integrationUrlRepository,
+        private readonly ContactRepository              $contactRepository,
         private readonly ContactKeyVisibilityRepository $contactKeyVisibilityRepository,
-        private readonly OrganizationRepository $organizationRepository,
-        private readonly CouponRepository $couponRepository,
-        private readonly Auth0ClientRepository $auth0ClientRepository,
-        private readonly UiTiDv1ConsumerRepository $uitidV1ConsumerRepository,
-        private readonly CurrentUser $currentUser
-    ) {
+        private readonly OrganizationRepository         $organizationRepository,
+        private readonly CouponRepository               $couponRepository,
+        private readonly Auth0ClientRepository          $auth0ClientRepository,
+        private readonly UiTiDv1ConsumerRepository      $uitidV1ConsumerRepository,
+        private readonly CurrentUser                    $currentUser
+    )
+    {
     }
 
     public function index(Request $request): Response
@@ -74,7 +74,7 @@ final class IntegrationController extends Controller
             is_array($search) ? $search[0] : $search
         );
 
-        $integrationIds = array_map(fn ($integration) => $integration->id, $integrationsData->collection->toArray());
+        $integrationIds = array_map(fn($integration) => $integration->id, $integrationsData->collection->toArray());
 
         $auth0Clients = $this->auth0ClientRepository->getByIntegrationIds($integrationIds);
         $uitidV1Consumers = $this->uitidV1ConsumerRepository->getByIntegrationIds($integrationIds);
@@ -137,13 +137,7 @@ final class IntegrationController extends Controller
 
     public function show(string $id): Response
     {
-        try {
-            $integration = $this->integrationRepository->getById(Uuid::fromString($id));
-
-        } catch (Throwable) {
-            abort(404);
-        }
-
+        $integration = $this->integrationRepository->getById(Uuid::fromString($id));
 
         return Inertia::render('Integrations/Detail', [
             'integration' => $integration->toArray(),
@@ -180,9 +174,9 @@ final class IntegrationController extends Controller
 
         $toDeleteUrlIds = $currentUrls
             ->filter(
-                fn (IntegrationUrl $url) => $updatedUrls->doesntContain('id', '=', $url->id)
+                fn(IntegrationUrl $url) => $updatedUrls->doesntContain('id', '=', $url->id)
             )
-            ->map(fn (IntegrationUrl $url) => $url->id);
+            ->map(fn(IntegrationUrl $url) => $url->id);
 
         $this->integrationUrlRepository->deleteByIds($toDeleteUrlIds);
 
