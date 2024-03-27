@@ -100,7 +100,7 @@
       },
       "plus": {
         "title": "Plus",
-        "price": "eerste jaar: € 600 nadien: € 280 / jaar",
+        "price": "eerste jaar: {{fee}} nadien: {{price}} / jaar",
         "description": {
           "widgets": "Na een intakegesprek zorgt publiq voor de configuratie & integratie van je widget."
         }

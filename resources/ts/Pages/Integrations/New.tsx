@@ -20,6 +20,7 @@ import {
   RichRadioButton,
 } from "../../Components/RadioButtonGroup";
 import { SubscriptionCategory } from "../../types/SubscriptionCategory";
+import { Currency } from "../../types/Currency";
 
 type PricingPlan = {
   id: string;
@@ -32,9 +33,9 @@ type Subscription = {
   id: string;
   name: string;
   description: string;
-  category: string;
+  category: SubscriptionCategory;
   integration_type: string;
-  currency: string;
+  currency: Currency;
   price: number;
   fee: number;
   deleted_at: string | null;
@@ -42,12 +43,21 @@ type Subscription = {
   updated_at: string;
 };
 
+const formatCurrency = (currency: Currency, amount: number) =>
+  Intl.NumberFormat("nl-BE", {
+    currency: currency,
+    style: "currency",
+    maximumFractionDigits: 0,
+  }).format(amount);
+
 const getPricingPlansForType = (
   t: TFunction,
   integrationType: IntegrationType,
   subscriptions: Subscription[]
 ) => {
-  const getInfoForCategory = (category: string): PricingPlan | undefined => {
+  const getInfoForCategory = (
+    category: SubscriptionCategory
+  ): PricingPlan | undefined => {
     const data = subscriptions.find(
       (sub) =>
         sub.category === category && sub.integration_type === integrationType
@@ -57,19 +67,18 @@ const getPricingPlansForType = (
       return undefined;
     }
 
+    const categoryLowercase = category.toLowerCase();
+
     return {
       id: data.id,
-      title: t(`integration_form.pricing.${category}.title`),
+      title: t(`integration_form.pricing.${categoryLowercase}.title`),
       description: t(
-        `integration_form.pricing.${category}.description.${integrationType}`,
+        `integration_form.pricing.${categoryLowercase}.description.${integrationType}`,
         data.description
       ),
-      price: t(`integration_form.pricing.${category}.price`, {
-        price: Intl.NumberFormat("nl-BE", {
-          currency: data.currency,
-          style: "currency",
-          maximumFractionDigits: 0,
-        }).format(data.price),
+      price: t(`integration_form.pricing.${categoryLowercase}.price`, {
+        price: formatCurrency(data.currency, data.price),
+        fee: formatCurrency(data.currency, data.fee),
       }),
     };
   };
