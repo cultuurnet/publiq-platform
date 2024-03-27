@@ -1,9 +1,9 @@
-import { expect, test } from "@playwright/test";
+import { Page, expect, test } from "@playwright/test";
 import { fakerNL_BE as faker } from "@faker-js/faker";
 
 test.use({ storageState: "playwright/.auth/admin.json" });
 
-test("As an admin I can create a new organization", async ({ page }) => {
+export async function createOrganization(page: Page) {
   await page.goto("/admin");
   await page.getByRole("link", { name: "Organizations" }).click();
   await page.getByRole("link", { name: "Create Organization" }).click();
@@ -23,4 +23,9 @@ test("As an admin I can create a new organization", async ({ page }) => {
       .locator("h1")
       .getByText(`Organization Details: ${organizationName}`)
   ).toBeVisible();
+  return page;
+}
+
+test("As an admin I can create a new organization", async ({ page }) => {
+  await createOrganization(page);
 });
