@@ -139,25 +139,14 @@ final class IntegrationController extends Controller
     {
         try {
             $integration = $this->integrationRepository->getById(Uuid::fromString($id));
-            $subscription = $this->subscriptionRepository->getById($integration->subscriptionId);
-            $contacts = $this->contactRepository->getByIntegrationId(UUid::fromString($id));
-            $authClients = $this->auth0ClientRepository->getByIntegrationId(UUid::fromString($id));
-            $legacyAuthConsumers = $this->uitidV1ConsumerRepository->getByIntegrationId(UUid::fromString($id));
 
         } catch (Throwable) {
             abort(404);
         }
 
+
         return Inertia::render('Integrations/Detail', [
-            'integration' => [
-                ...$integration->toArray(),
-                'contacts' => $contacts->toArray(),
-                'urls' => $integration->urls(),
-                'organization' => $integration->organization(),
-                'subscription' => $subscription,
-                'authClients' => $authClients,
-                'legacyAuthConsumers' => $legacyAuthConsumers,
-            ],
+            'integration' => $integration->toArray(),
             'email' => Auth::user()?->email,
         ]);
     }

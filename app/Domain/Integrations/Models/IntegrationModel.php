@@ -273,7 +273,7 @@ final class IntegrationModel extends UuidModel
             ->get()
             ->map(fn (Auth0ClientModel $auth0ClientModel) => $auth0ClientModel->toDomain())
             ->toArray()
-        );
+        )->withSubscription($this->subscription?->toDomain());
 
         if ($foundOrganization !== null) {
             $integration = $integration->withOrganization($foundOrganization->toDomain());

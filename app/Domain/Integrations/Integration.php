@@ -7,6 +7,7 @@ namespace App\Domain\Integrations;
 use App\Auth0\Auth0Client;
 use App\Domain\Contacts\Contact;
 use App\Domain\Organizations\Organization;
+use App\Domain\Subscriptions\Subscription;
 use App\UiTiDv1\UiTiDv1Consumer;
 use Ramsey\Uuid\UuidInterface;
 
@@ -27,6 +28,8 @@ final class Integration
 
     /** @var array<IntegrationUrl> */
     private array $urls;
+
+    private ?Subscription $subscription;
 
     public function __construct(
         public readonly UuidInterface $id,
@@ -82,6 +85,13 @@ final class Integration
     {
         $clone = clone $this;
         $clone->auth0Clients = $auth0Clients;
+        return $clone;
+    }
+
+    public function withSubscription(Subscription $subscription): self
+    {
+        $clone = clone $this;
+        $clone->subscription = $subscription;
         return $clone;
     }
 
@@ -152,6 +162,14 @@ final class Integration
             'status' => $this->status,
             'partnerStatus' => $this->partnerStatus,
             'keyVisibility' => $this->keyVisibility,
+
+
+            'contacts' => $this->contacts,
+            'urls' => $this->urls,
+            'organization' => $this->organization,
+            'authClients' => $this->auth0Clients,
+            'legacyAuthConsumers' => $this->uiTiDv1Consumers,
+            'subscription' => $this->subscription,
         ];
     }
 }
