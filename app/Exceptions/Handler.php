@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace App\Exceptions;
 
+use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+use Inertia\Response;
 use Sentry\State\Scope;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;
 
 use function Sentry\configureScope;
@@ -56,5 +60,16 @@ final class Handler extends ExceptionHandler
                 app('sentry')->captureException($e);
             }
         });
+
+        $this->renderable(function (Exception $exception) {
+            if ($exception instanceof HttpException && $exception->getStatusCode() == 500) {
+                return $this->handle500Error($exception);
+            }
+        });
+    }
+
+    protected function handle500Error(Exception $exception): Response
+    {
+        return Inertia::render('Error');
     }
 }

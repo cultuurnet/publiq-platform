@@ -361,5 +361,10 @@
         "description": "We have sent you a welcome email."
       }
     }
+  },
+  "error": {
+    "title": "Oops! Something went Wrong.",
+    "description": "We're sorry, but there seems to be a problem on our end. Our team has been notified, and we're working to fix this as quickly as possible. Please try refreshing the page in a few minutes. If the problem persists, feel free to contact us at <0>technical-support@publiq.be</0> for assistance. We appreciate your understanding and patience.",
+    "back": "Back"
   }
 }
