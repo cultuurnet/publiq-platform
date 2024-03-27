@@ -7,6 +7,7 @@ namespace Tests\Domain\Integrations\Controllers;
 use App\Domain\Auth\Models\UserModel;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
+use App\Domain\Contacts\Models\ContactKeyVisibilityModel;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Coupon;
 use App\Domain\Coupons\Models\CouponModel;
@@ -17,6 +18,7 @@ use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\IntegrationUrlType;
+use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Models\IntegrationUrlModel;
 use App\Domain\Organizations\Address;
@@ -36,7 +38,9 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_store_an_integration(): void
     {
-        $this->actingAs(UserModel::createSystemUser());
+        $systemUser = UserModel::createSystemUser();
+        $this->actingAs($systemUser);
+        $this->givenTheContactKeyVisibilityIs($systemUser->email, KeyVisibility::v1);
 
         $subscriptionId = Uuid::uuid4();
 
@@ -70,6 +74,7 @@ final class IntegrationControllerTest extends TestCase
             'description' => 'Test Integration description',
             'status' => IntegrationStatus::Draft->value,
             'partner_status' => IntegrationPartnerStatus::THIRD_PARTY->value,
+            'key_visibility' => KeyVisibility::v1->value,
         ]);
 
         $this->assertDatabaseHas('contacts', [
@@ -82,6 +87,12 @@ final class IntegrationControllerTest extends TestCase
             'type' => ContactType::Technical,
             'first_name' => 'John',
             'last_name' => 'Doe',
+        ]);
+
+        $this->assertDatabaseHas('contacts', [
+            'type' => ContactType::Contributor,
+            'first_name' => 'System',
+            'last_name' => 'User',
         ]);
     }
 
@@ -810,6 +821,15 @@ final class IntegrationControllerTest extends TestCase
         $response = $this->get("/integrations/{$widgetIntegration->id}/widget");
 
         $response->assertForbidden();
+    }
+
+    private function givenTheContactKeyVisibilityIs(string $email, KeyVisibility $keyVisibility): void
+    {
+        ContactKeyVisibilityModel::query()->insert([
+            'id' => Uuid::uuid4()->toString(),
+            'email' => $email,
+            'key_visibility' => $keyVisibility->value,
+        ]);
     }
 
     private function givenThereIsAnIntegration(IntegrationType $integrationType = null): Integration

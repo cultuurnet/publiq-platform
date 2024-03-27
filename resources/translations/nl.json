@@ -353,6 +353,15 @@
       "title": "Blijf op de hoogte",
       "description": "Schrijf je in op onze nieuwsbrief en krijg als eerste updates over het publiq platform.",
       "action": "Inschrijven"
+    },
+    "newsletter_dialog": {
+      "title": "Schrijf je in op de nieuwsbrief",
+      "email": "E-mailadres",
+      "placeholder": "you@organization.be",
+      "success": {
+        "title": "Welkom!",
+        "description": "We hebben je een welkomst-e-mail gestuurd."
+      }
     }
   }
 }

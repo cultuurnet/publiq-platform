@@ -26,7 +26,7 @@ final class SubscriptionPolicy
 
     public function update(UserModel $userModel, SubscriptionModel $subscriptionModel): bool
     {
-        return false;
+        return true;
     }
 
     public function delete(UserModel $userModel, SubscriptionModel $subscriptionModel): bool

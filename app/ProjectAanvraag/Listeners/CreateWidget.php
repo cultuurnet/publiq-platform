@@ -20,6 +20,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\UuidInterface;
+use Throwable;
 
 final class CreateWidget implements ShouldQueue
 {
@@ -38,7 +39,7 @@ final class CreateWidget implements ShouldQueue
 
     public function handleIntegrationCreated(IntegrationCreated $integrationCreated): void
     {
-        $this->handle($integrationCreated->integrationId);
+        $this->handle($integrationCreated->id);
     }
 
     public function handleContactCreated(ContactCreated $contactCreated): void
@@ -138,5 +139,19 @@ final class CreateWidget implements ShouldQueue
                 $liveKey
             )
         );
+    }
+
+    public function failed(IntegrationCreated|ContactCreated|ConsumerCreated $event, Throwable $throwable): void
+    {
+        $entity = match (get_class($event)) {
+            IntegrationCreated::class => 'integration',
+            ContactCreated::class => 'contact',
+            ConsumerCreated::class => 'consumer',
+        };
+
+        $this->logger->error('Failed to create widget', [
+            "{$entity}_id" => $event->id->toString(),
+            'exception' => $throwable,
+        ]);
     }
 }
