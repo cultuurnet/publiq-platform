@@ -32,7 +32,14 @@ export const CredentialsLegacyAuthConsumers = ({
         <Heading className="font-semibold" level={4}>
           {t("details.credentials.test")}
         </Heading>
-        <CopyText>{legacyTestConsumer?.apiKey}</CopyText>
+        <div className="flex gap-1 max-md:flex-col max-md:items-start">
+          <span className="flex items-center whitespace-nowrap">
+            {t("details.credentials.api_key")}
+          </span>
+          {legacyTestConsumer && (
+            <CopyText>{legacyTestConsumer.apiKey}</CopyText>
+          )}
+        </div>
         <div className="flex flex-col gap-2">
           <Heading className="font-semibold" level={4}>
             {t("details.credentials.live")}
@@ -41,8 +48,14 @@ export const CredentialsLegacyAuthConsumers = ({
           {legacyProdConsumer && (
             <div className="flex flex-col gap-2">
               {status === IntegrationStatus.Active && (
-                <CopyText>{legacyProdConsumer?.apiKey}</CopyText>
+                <div className="flex gap-1 max-md:flex-col max-md:items-start">
+                  <span className="flex items-center whitespace-nowrap">
+                    {t("details.credentials.api_key")}
+                  </span>
+                  <CopyText>{legacyProdConsumer.apiKey}</CopyText>
+                </div>
               )}
+
               <Alert variant="info">{t("details.credentials.info")}</Alert>
             </div>
           )}
