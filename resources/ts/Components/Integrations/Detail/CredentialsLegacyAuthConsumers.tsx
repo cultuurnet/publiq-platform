@@ -36,7 +36,9 @@ export const CredentialsLegacyAuthConsumers = ({
           <span className="flex items-center whitespace-nowrap">
             {t("details.credentials.api_key")}
           </span>
-          <CopyText>{legacyTestConsumer?.apiKey}</CopyText>
+          {legacyTestConsumer && (
+            <CopyText>{legacyTestConsumer.apiKey}</CopyText>
+          )}
         </div>
         <div className="flex flex-col gap-2">
           <Heading className="font-semibold" level={4}>
@@ -50,7 +52,7 @@ export const CredentialsLegacyAuthConsumers = ({
                   <span className="flex items-center whitespace-nowrap">
                     {t("details.credentials.api_key")}
                   </span>
-                  <CopyText>{legacyProdConsumer?.apiKey}</CopyText>
+                  <CopyText>{legacyProdConsumer.apiKey}</CopyText>
                 </div>
               )}
 
