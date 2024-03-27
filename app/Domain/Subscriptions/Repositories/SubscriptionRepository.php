@@ -18,5 +18,6 @@ interface SubscriptionRepository
      */
     public function getById(UuidInterface $id): Subscription;
 
+    /** @return Collection<Subscription> */
     public function all(): Collection;
 }

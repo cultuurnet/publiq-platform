@@ -41,8 +41,11 @@ final class EloquentSubscriptionRepository implements SubscriptionRepository
         return $subscription->toDomain();
     }
 
+    /** @return Collection<Subscription> */
     public function all(): Collection
     {
-        return SubscriptionModel::query()->get();
+        return SubscriptionModel::query()
+            ->get()
+            ->map(fn (SubscriptionModel $subscriptionModel) => $subscriptionModel->toDomain());
     }
 }
