@@ -1,10 +1,9 @@
-import React, { FormEvent, ReactNode, useMemo } from "react";
+import React, { FormEvent, ReactNode, useEffect, useMemo } from "react";
 import { router, useForm } from "@inertiajs/react";
 import Layout from "../../layouts/Layout";
 import { Heading } from "../../Components/Heading";
 import { FormElement } from "../../Components/FormElement";
 import { Input } from "../../Components/Input";
-import { TFunction } from "i18next";
 import { Trans, useTranslation } from "react-i18next";
 import { Card } from "../../Components/Card";
 import { ButtonPrimary } from "../../Components/ButtonPrimary";
@@ -19,74 +18,8 @@ import {
   RadioButtonGroup,
   RichRadioButton,
 } from "../../Components/RadioButtonGroup";
-import { SubscriptionCategory } from "../../types/SubscriptionCategory";
-import { Currency } from "../../types/Currency";
-
-type PricingPlan = {
-  id: string;
-  title: string;
-  price: string;
-  description: string;
-};
-
-type Subscription = {
-  id: string;
-  name: string;
-  description: string;
-  category: SubscriptionCategory;
-  integration_type: string;
-  currency: Currency;
-  price: number;
-  fee: number;
-  deleted_at: string | null;
-  created_at: string;
-  updated_at: string;
-};
-
-const formatCurrency = (currency: Currency, amount: number) =>
-  Intl.NumberFormat("nl-BE", {
-    currency: currency,
-    style: "currency",
-    maximumFractionDigits: 0,
-  }).format(amount);
-
-const getPricingPlansForType = (
-  t: TFunction,
-  integrationType: IntegrationType,
-  subscriptions: Subscription[]
-) => {
-  const getInfoForCategory = (
-    category: SubscriptionCategory
-  ): PricingPlan | undefined => {
-    const data = subscriptions.find(
-      (sub) =>
-        sub.category === category && sub.integration_type === integrationType
-    );
-
-    if (!data) {
-      return undefined;
-    }
-
-    const categoryLowercase = category.toLowerCase();
-
-    return {
-      id: data.id,
-      title: t(`integration_form.pricing.${categoryLowercase}.title`),
-      description: t(
-        `integration_form.pricing.${categoryLowercase}.description.${integrationType}`,
-        data.description
-      ),
-      price: t(`integration_form.pricing.${categoryLowercase}.price`, {
-        price: formatCurrency(data.currency, data.price),
-        fee: formatCurrency(data.currency, data.fee),
-      }),
-    };
-  };
-
-  return Object.values(SubscriptionCategory)
-    .map(getInfoForCategory)
-    .filter((info): info is PricingPlan => !!info?.id);
-};
+import { Subscription } from "../../types/Subscription";
+import { useGetPricingPlans } from "../../hooks/useGetPricingPlans";
 
 type Props = {
   subscriptions: Subscription[];
@@ -98,7 +31,7 @@ const New = ({ subscriptions }: Props) => {
 
   const freeSubscriptionId = subscriptions.find(
     (subscription) =>
-      subscription.integration_type === IntegrationType.EntryApi &&
+      subscription.integrationType === IntegrationType.EntryApi &&
       subscription.price === 0
   )?.id;
 
@@ -140,10 +73,13 @@ const New = ({ subscriptions }: Props) => {
   }
 
   const integrationTypesInfo = useIntegrationTypesInfo();
-  const translatedPricingPlans = useMemo(
-    () => getPricingPlansForType(t, data.integrationType, subscriptions),
-    [t, data.integrationType, subscriptions]
-  );
+  console.log("data.integrationType", data.integrationType);
+  console.log("subscriptions", subscriptions);
+  const pricingPlans = useGetPricingPlans(data.integrationType, subscriptions);
+
+  useEffect(() => {
+    console.log("pricingPlans", pricingPlans);
+  }, [pricingPlans]);
 
   return (
     <Page>
@@ -185,14 +121,14 @@ const New = ({ subscriptions }: Props) => {
             )}
           </Card>
 
-          {translatedPricingPlans.length > 0 && (
+          {pricingPlans.length > 0 && (
             <Card title={t("integration_form.pricing_plan")}>
               <RadioButtonGroup
                 orientation="vertical"
                 name="subscriptionId"
                 value={data.subscriptionId}
                 onChange={(value) => setData("subscriptionId", value)}
-                options={translatedPricingPlans.map((pricingPlan) => ({
+                options={pricingPlans.map((pricingPlan) => ({
                   value: pricingPlan.id,
                   label: (
                     <RichRadioButton

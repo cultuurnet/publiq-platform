@@ -19,6 +19,38 @@
     "hello": "Hello",
     "integrations/new": "Add integration"
   },
+  "pricing_plan": {
+    "free": {
+      "title": "Free",
+      "price": "Free",
+      "description": {
+        "entry-api": "You are responsible for building the integration yourself, with support from our documentation."
+      }
+    },
+    "basic": {
+      "title": "Basic",
+      "price": "{{price}} / year",
+      "description": {
+        "search-api": "You handle the setup yourself while gaining access to all the functionalities of the Search API.",
+        "widgets": "You handle the setup yourself while gaining access to all the functionalities of the Widgets."
+      }
+    },
+    "plus": {
+      "title": "Plus",
+      "price": "setup: {{fee}}, {{price}} / year",
+      "description": {
+        "widgets": "After an intake interview, publiq takes care of the configuration of your widget."
+      }
+    },
+    "custom": {
+      "title": "Custom",
+      "price": "custom proposal",
+      "description": {
+        "search-api": "We will contact you for a tailored solution that meets your use case and target audience.",
+        "widgets": "We will contact you for a tailored solution that meets your use case and target audience."
+      }
+    }
+  },
   "home": {
     "hero": {
       "title": "Reach a broader audience with UiT",
@@ -81,39 +113,7 @@
     "coupon": "I have a coupon",
     "code": "Coupon code",
     "submit": "Create integration",
-    "back": "Back to integration overview",
-    "pricing": {
-      "free": {
-        "title": "Free",
-        "price": "Free",
-        "description": {
-          "entry-api": "You are responsible for building the integration yourself, with support from our documentation."
-        }
-      },
-      "basic": {
-        "title": "Basic",
-        "price": "{{price}} / year",
-        "description": {
-          "search-api": "You handle the setup yourself while gaining access to all the functionalities of the Search API.",
-          "widgets": "You handle the setup yourself while gaining access to all the functionalities of the Widgets."
-        }
-      },
-      "plus": {
-        "title": "Plus",
-        "price": "first year: € 600, thereafter: € 280 / year",
-        "description": {
-          "widgets": "After an intake interview, publiq takes care of the configuration of your widget."
-        }
-      },
-      "custom": {
-        "title": "Custom",
-        "price": "custom proposal",
-        "description": {
-          "search-api": "We will contact you for a tailored solution that meets your use case and target audience.",
-          "widgets": "We will contact you for a tailored solution that meets your use case and target audience."
-        }
-      }
-    }
+    "back": "Back to integration overview"
   },
   "integrations": {
     "title": "My integrations",
