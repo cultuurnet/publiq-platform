@@ -363,5 +363,10 @@
         "description": "We hebben je een welkomst-e-mail gestuurd."
       }
     }
+  },
+  "error": {
+    "title": "Oeps! Er ging iets mis.",
+    "description": "Het spijt ons, maar er lijkt een probleem te zijn aan onze kant. Ons team is op de hoogte gebracht en we werken eraan om dit zo snel mogelijk op te lossen. Probeer de pagina over een paar minuten te vernieuwen. Als het probleem zich blijft voordoen, neem dan gerust contact op met ons op <0>technical-support@publiq.be</0>. Wij stellen uw begrip en geduld op prijs.",
+    "back": "Terug"
   }
 }
