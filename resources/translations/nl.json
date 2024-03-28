@@ -152,11 +152,11 @@
       "coupon": "Coupon",
       "price_overview": {
         "title": "Prijs overzicht",
-        "setup": "setup",
+        "subscription_plan": "Prijsplan",
+        "setup": "Setup",
         "coupon": "Coupon",
-        "plan": "plan",
-        "year": "jaar",
-        "total_price": "Nog te betalen"
+        "plan": "Abonnement",
+        "year": "jaar"
       }
     },
     "documentation": {

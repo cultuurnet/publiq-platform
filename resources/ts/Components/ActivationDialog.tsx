@@ -34,32 +34,37 @@ const PriceOverview = ({
       </Heading>
 
       <div className="grid grid-cols-2 gap-1">
-        <span>{`${pricingPlan.title} ${t("integrations.activation_dialog.price_overview.setup")}`}</span>
-        <span>{formatCurrency(subscription.currency, subscription.fee)}</span>
-
-        <span>{`${pricingPlan.title} ${t("integrations.activation_dialog.price_overview.plan")}`}</span>
-        <span>
-          {`${formatCurrency(subscription.currency, subscription.price)} / ${t("integrations.activation_dialog.price_overview.year")}`}
+        <span className="col-span-2">
+          {t("integrations.activation_dialog.price_overview.subscription_plan")}{" "}
+          {pricingPlan.title}
         </span>
 
-        {!!coupon && (
+        <span className="pl-4">{`${t("integrations.activation_dialog.price_overview.setup")}`}</span>
+        <span>{formatCurrency(subscription.currency, subscription.fee)}</span>
+
+        <span className="pl-4">{`${t("integrations.activation_dialog.price_overview.plan")}`}</span>
+        <span
+          className={coupon ? "line-through" : ""}
+        >{`${formatCurrency(subscription.currency, subscription.price)} / ${t("integrations.activation_dialog.price_overview.year")}`}</span>
+
+        {coupon && (
           <>
+            <span className="text-publiq-orange text-right">-</span>
             <span className="text-publiq-orange">
-              {t("integrations.activation_dialog.price_overview.coupon")}
-            </span>
-            <span className="text-publiq-orange">
-              {`- ${formatCurrency(
+              {`${formatCurrency(
                 subscription.currency,
                 couponInfo.reductionAmount
+              )} / ${t("integrations.activation_dialog.price_overview.year")} (${t("integrations.activation_dialog.price_overview.coupon")})`}
+            </span>
+
+            <span className="col-start-2">
+              {`${formatCurrency(
+                subscription.currency,
+                subscription.price - couponInfo.reductionAmount
               )} / ${t("integrations.activation_dialog.price_overview.year")}`}
             </span>
           </>
         )}
-
-        <span className="font-semibold">{`${t("integrations.activation_dialog.price_overview.total_price")}:`}</span>
-        <span className="font-semibold">
-          {`${formatCurrency(subscription.currency, subscription.fee + subscription.price - (coupon ? 125 : 0))}`}
-        </span>
       </div>
     </section>
   );
@@ -139,12 +144,6 @@ export const ActivationDialog = ({
       contentStyles="gap-3"
     >
       <>
-        <div className="flex flex-col gap-1">
-          <span className="text-sm font-medium">
-            {t("integrations.activation_dialog.subscription_plan")}
-          </span>
-          <p className="text-sm">{`${pricingPlan.title} (${pricingPlan.price})`}</p>
-        </div>
         <FormElement
           label={`${t("details.billing_info.name")}`}
           required

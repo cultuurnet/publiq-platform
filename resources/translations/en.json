@@ -151,12 +151,12 @@
       "contact_description": "Dit adres ontvangt de betalinginstructies, -herinneringen en de factuur.",
       "coupon": "Coupon",
       "price_overview": {
-        "title": "Prijs overzicht",
-        "setup": "setup",
+        "title": "Price overview",
+        "subscription_plan": "Priceplan",
+        "setup": "Setup",
         "coupon": "Coupon",
-        "plan": "plan",
-        "year": "jaar",
-        "total_price": "Nog te betalen"
+        "plan": "Subscription",
+        "year": "year"
       }
     },
     "documentation": {
