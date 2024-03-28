@@ -97,16 +97,14 @@ final class SyncContactTest extends TestCase
         if ($mappedToOpportunity) {
             $this->thenItLinksTheContactToTheOpportunityAtInsightly(
                 $this->insightlyOpportunityId,
-                $this->insightlyContactId,
-                ContactType::Functional
+                $this->insightlyContactId
             );
         }
 
         if ($mappedToProject) {
             $this->thenItLinksTheContactToTheProjectInInsightly(
                 $this->insightlyProjectId,
-                $this->insightlyContactId,
-                ContactType::Functional,
+                $this->insightlyContactId
             );
         }
 
@@ -128,14 +126,12 @@ final class SyncContactTest extends TestCase
         $this->thenItStoresTheContactMapping($this->contactId, $expectedMappedInsightlyContactId);
         $this->thenItLinksTheContactToTheOpportunityAtInsightly(
             $this->insightlyOpportunityId,
-            $expectedMappedInsightlyContactId,
-            ContactType::Functional,
+            $expectedMappedInsightlyContactId
         );
 
         $this->thenItLinksTheContactToTheProjectInInsightly(
             $this->insightlyProjectId,
-            $expectedMappedInsightlyContactId,
-            ContactType::Functional,
+            $expectedMappedInsightlyContactId
         );
 
         $this->syncContact->handleContactCreated(new ContactCreated($this->contactId));
@@ -211,8 +207,7 @@ final class SyncContactTest extends TestCase
             );
             $this->thenItLinksTheContactToTheOpportunityAtInsightly(
                 $this->insightlyOpportunityId,
-                $updatedInsightlyContactId,
-                ContactType::Functional
+                $updatedInsightlyContactId
             );
         }
 
@@ -220,8 +215,7 @@ final class SyncContactTest extends TestCase
             $this->thenItRemovesTheContactFromTheProjectInInsightly($this->insightlyProjectId, $this->insightlyContactId);
             $this->thenItLinksTheContactToTheProjectInInsightly(
                 $this->insightlyProjectId,
-                $updatedInsightlyContactId,
-                ContactType::Functional,
+                $updatedInsightlyContactId
             );
         }
 
@@ -272,14 +266,12 @@ final class SyncContactTest extends TestCase
         $this->thenItUpdatesTheContactAtInsightly($contact, $expectedMappedInsightlyContactId);
         $this->thenItLinksTheContactToTheOpportunityAtInsightly(
             $this->insightlyOpportunityId,
-            $expectedMappedInsightlyContactId,
-            ContactType::Functional
+            $expectedMappedInsightlyContactId
         );
 
         $this->thenItLinksTheContactToTheProjectInInsightly(
             $this->insightlyProjectId,
-            $expectedMappedInsightlyContactId,
-            ContactType::Functional,
+            $expectedMappedInsightlyContactId
         );
 
         $this->thenItLinksTheNewContactToTheExistingContact($expectedMappedInsightlyContactId, $this->insightlyContactId);
@@ -400,12 +392,11 @@ final class SyncContactTest extends TestCase
 
     private function thenItLinksTheContactToTheOpportunityAtInsightly(
         int $insightlyIntegrationId,
-        int $insightlyContactId,
-        ContactType $contactType
+        int $insightlyContactId
     ): void {
         $this->opportunityResource->expects($this->once())
             ->method('linkContact')
-            ->with($insightlyIntegrationId, $insightlyContactId, $contactType);
+            ->with($insightlyIntegrationId, $insightlyContactId);
     }
 
     private function thenItLinksTheNewContactToTheExistingContact(
@@ -464,11 +455,10 @@ final class SyncContactTest extends TestCase
 
     private function thenItLinksTheContactToTheProjectInInsightly(
         int $insightlyProjectId,
-        int $insightlyContactId,
-        ContactType $contactType
+        int $insightlyContactId
     ): void {
         $this->projectResource->expects($this->once())
             ->method('linkContact')
-            ->with($insightlyProjectId, $insightlyContactId, $contactType);
+            ->with($insightlyProjectId, $insightlyContactId);
     }
 }

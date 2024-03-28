@@ -146,7 +146,7 @@ final class InsightlyOpportunityResource implements OpportunityResource
             'POST',
             $this->path . $id . '/Links',
             [],
-            Json::encode((new LinkSerializer())->contactToLink($contactId, $contactType))
+            Json::encode((new LinkSerializer())->contactToLink($contactId))
         );
 
         $this->insightlyClient->sendRequest($request);

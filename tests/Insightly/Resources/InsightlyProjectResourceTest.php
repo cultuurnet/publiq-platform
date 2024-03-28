@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Insightly\Resources;
 
-use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
@@ -234,7 +233,6 @@ final class InsightlyProjectResourceTest extends TestCase
             Json::encode([
                 'LINK_OBJECT_ID' => 20,
                 'LINK_OBJECT_NAME' => 'Contact',
-                'ROLE' => Role::Technical,
             ])
         );
 
@@ -242,7 +240,7 @@ final class InsightlyProjectResourceTest extends TestCase
             ->method('sendRequest')
             ->with(self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedRequest, $actualRequest)));
 
-        $this->resource->linkContact($insightlyProjectId, 20, ContactType::Technical);
+        $this->resource->linkContact($insightlyProjectId, 20);
     }
 
     public function test_it_deletes_an_project(): void

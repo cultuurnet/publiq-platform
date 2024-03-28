@@ -95,7 +95,6 @@ final class CreateProject
                 $this->insightlyClient->projects()->linkContact(
                     $insightlyProjectId,
                     $insightlyContactMapping->insightlyId,
-                    $linkedContact->type
                 );
             }
         }

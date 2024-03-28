@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Insightly\Resources;
 
-use App\Domain\Contacts\ContactType;
 use App\Domain\Coupons\Coupon;
 use App\Domain\Integrations\Integration;
 use App\Domain\Subscriptions\Subscription;
@@ -163,13 +162,13 @@ final class InsightlyProjectResource implements ProjectResource
         $this->insightlyClient->sendRequest($request);
     }
 
-    public function linkContact(int $id, int $contactId, ContactType $contactType): void
+    public function linkContact(int $id, int $contactId): void
     {
         $request = new Request(
             'POST',
             $this->path . $id . '/Links',
             [],
-            Json::encode((new LinkSerializer())->contactToLink($contactId, $contactType))
+            Json::encode((new LinkSerializer())->contactToLink($contactId))
         );
 
         $this->insightlyClient->sendRequest($request);

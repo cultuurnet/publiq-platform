@@ -128,7 +128,6 @@ final class ActivateProject implements ShouldQueue
                 $this->insightlyClient->projects()->linkContact(
                     $insightlyProjectId,
                     $insightlyContactMapping->insightlyId,
-                    $linkedContact->type
                 );
             }
         }

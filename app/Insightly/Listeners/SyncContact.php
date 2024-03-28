@@ -87,8 +87,7 @@ final class SyncContact implements ShouldQueue
             $projectMapping = $this->insightlyMappingRepository->getByIdAndType($contact->integrationId, ResourceType::Project);
             $this->insightlyClient->projects()->linkContact(
                 $projectMapping->insightlyId,
-                $contactInsightlyId,
-                $contact->type
+                $contactInsightlyId
             );
         } catch (ModelNotFoundException) {
             // No mapping exists so it can't be linked.

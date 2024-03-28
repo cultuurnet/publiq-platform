@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Insightly\Resources;
 
-use App\Domain\Contacts\ContactType;
 use App\Domain\Coupons\Coupon;
 use App\Domain\Integrations\Integration;
 use App\Domain\Subscriptions\Subscription;
@@ -32,7 +31,7 @@ interface ProjectResource
 
     public function linkOpportunity(int $id, int $opportunityId): void;
 
-    public function linkContact(int $id, int $contactId, ContactType $contactType): void;
+    public function linkContact(int $id, int $contactId): void;
 
     public function linkOrganization(int $id, int $organizationId): void;
 

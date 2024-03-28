@@ -170,10 +170,10 @@ final class CreateProjectWithCouponTest extends TestCase
         $this->projectResource->expects($this->exactly(2))
             ->method('linkContact')
             ->willReturnCallback(
-                fn (int $actualInsightlyProjectId, int $actualInsightlyContactId, ContactType $actualContactType) =>
-                    match ([$actualInsightlyProjectId, $actualInsightlyContactId, $actualContactType]) {
-                        [$insightlyProjectId, $insightlyTechnicalId, ContactType::Technical],
-                        [$insightlyProjectId, $insightlyFunctionalId, ContactType::Functional] => null,
+                fn (int $actualInsightlyProjectId, int $actualInsightlyContactId) =>
+                    match ([$actualInsightlyProjectId, $actualInsightlyContactId]) {
+                        [$insightlyProjectId, $insightlyTechnicalId],
+                        [$insightlyProjectId, $insightlyFunctionalId] => null,
                         default => throw new \LogicException('Invalid arguments received'),
                     }
             );

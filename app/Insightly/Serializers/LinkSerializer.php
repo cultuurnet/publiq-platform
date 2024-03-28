@@ -4,18 +4,15 @@ declare(strict_types=1);
 
 namespace App\Insightly\Serializers;
 
-use App\Domain\Contacts\ContactType;
-use App\Insightly\Objects\Role;
 use App\Insightly\Resources\ResourceType;
 
 final class LinkSerializer
 {
-    public function contactToLink(int $contactId, ContactType $contactType): array
+    public function contactToLink(int $contactId): array
     {
         return [
             'LINK_OBJECT_ID' => $contactId,
             'LINK_OBJECT_NAME' => ResourceType::Contact->name,
-            'ROLE' => $this->contactTypeToRole($contactType),
         ];
     }
 
@@ -26,11 +23,6 @@ final class LinkSerializer
             'LINK_OBJECT_NAME' => ResourceType::Contact->name,
             'RELATIONSHIP_ID' => 1,
         ];
-    }
-
-    public function contactTypeToRole(ContactType $contactType): string
-    {
-        return $contactType === ContactType::Technical ? Role::Technical->value : Role::Applicant->value;
     }
 
     public function opportunityToLink(int $opportunityId): array

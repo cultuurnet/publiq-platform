@@ -268,7 +268,7 @@ final class InsightlyOpportunityResourceTest extends TestCase
     }
 
     #[DataProvider('provideContactTypes')]
-    public function test_it_links_a_contact_to_an_opportunity(ContactType $contactType, Role $expectedRole): void
+    public function test_it_links_a_contact_to_an_opportunity(ContactType $contactType): void
     {
         $expectedRequest = new Request(
             'POST',
@@ -277,7 +277,6 @@ final class InsightlyOpportunityResourceTest extends TestCase
             Json::encode([
                 'LINK_OBJECT_ID' => 3,
                 'LINK_OBJECT_NAME' => 'Contact',
-                'ROLE' => $expectedRole->value,
             ])
         );
 
@@ -292,12 +291,10 @@ final class InsightlyOpportunityResourceTest extends TestCase
     {
         yield 'Technical' => [
             'contactType' => ContactType::Technical,
-            'expectedRole' => Role::Technical,
         ];
 
         yield 'Functional' => [
             'contactType' => ContactType::Functional,
-            'expectedRole' => Role::Applicant,
         ];
     }
 

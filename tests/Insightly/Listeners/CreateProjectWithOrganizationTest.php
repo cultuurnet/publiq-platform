@@ -158,10 +158,10 @@ final class CreateProjectWithOrganizationTest extends TestCase
         $this->projectResource->expects($this->exactly(2))
             ->method('linkContact')
             ->willReturnCallback(
-                fn (int $actualInsightlyProjectId, int $actualInsightlyContactId, ContactType $actualContactType) =>
-                match ([$actualInsightlyProjectId, $actualInsightlyContactId, $actualContactType]) {
-                    [$insightlyProjectId, $technicalContactMapping->insightlyId, ContactType::Technical],
-                    [$insightlyProjectId, $functionalContactMapping->insightlyId, ContactType::Functional] => null,
+                fn (int $actualInsightlyProjectId, int $actualInsightlyContactId) =>
+                match ([$actualInsightlyProjectId, $actualInsightlyContactId]) {
+                    [$insightlyProjectId, $technicalContactMapping->insightlyId],
+                    [$insightlyProjectId, $functionalContactMapping->insightlyId] => null,
                     default => throw new \LogicException('Invalid arguments received'),
                 }
             );
