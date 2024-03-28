@@ -86,13 +86,21 @@ export type Credentials = {
   uitidV1: LegacyAuthConsumer[];
 };
 
+export type Coupon = {
+  code: string;
+  id: string;
+  integrationId: string;
+  isDistributed: boolean;
+  reduction: number;
+};
+
 export type Integration = {
   id: string;
   type: Values<typeof IntegrationType>;
   name: string;
   description: string;
   subscriptionId: string;
-  couponCode: string;
+  coupon: Coupon;
   status: IntegrationStatus;
   contacts: Contact[];
   organization?: Organization;
