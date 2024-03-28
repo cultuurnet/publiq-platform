@@ -185,6 +185,8 @@
         "organization": "Organization details"
       },
       "subscription": "Pricing plan",
+      "coupon_reduction": "Discount with coupon",
+      "to_pay": "To be paid",
       "name": "Name of company, organization or municipality",
       "free_until_live": "This integration is currently running on a test environment. You only pay when your integration is active in the live environment",
       "address": {

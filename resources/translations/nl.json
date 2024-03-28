@@ -185,6 +185,8 @@
         "organization": "Organisatiegegevens"
       },
       "subscription": "Prijsplan",
+      "coupon_reduction": "Korting met coupon",
+      "to_pay": "Te betalen",
       "name": "Naam bedrijf, organisatie of gemeente",
       "free_until_live": "Deze integratie draait momenteel op een testomgeving. Je betaalt pas wanneer je integratie actief is op de live-omgeving",
       "address": {
