@@ -33,6 +33,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
+/**
+ * @property CouponModel|null $coupon
+ * @property SubscriptionModel|null $subscription
+ */
 final class IntegrationModel extends UuidModel
 {
     use SoftDeletes;
@@ -80,13 +84,13 @@ final class IntegrationModel extends UuidModel
     protected static function booted(): void
     {
         self::created(
-            static fn (IntegrationModel $integrationModel) => IntegrationCreated::dispatch(Uuid::fromString($integrationModel->id))
+            static fn(IntegrationModel $integrationModel) => IntegrationCreated::dispatch(Uuid::fromString($integrationModel->id))
         );
         self::updated(
-            static fn (IntegrationModel $integrationModel) => IntegrationUpdated::dispatch(Uuid::fromString($integrationModel->id))
+            static fn(IntegrationModel $integrationModel) => IntegrationUpdated::dispatch(Uuid::fromString($integrationModel->id))
         );
         self::softDeleted(
-            static fn (IntegrationModel $integrationModel) => IntegrationDeleted::dispatch(Uuid::fromString($integrationModel->id))
+            static fn(IntegrationModel $integrationModel) => IntegrationDeleted::dispatch(Uuid::fromString($integrationModel->id))
         );
     }
 
@@ -256,24 +260,28 @@ final class IntegrationModel extends UuidModel
         )->withContacts(
             ...$this->contacts()
             ->get()
-            ->map(fn (ContactModel $contactModel) => $contactModel->toDomain())
+            ->map(fn(ContactModel $contactModel) => $contactModel->toDomain())
             ->toArray()
         )->withUrls(
             ...$this->urls()
             ->get()
-            ->map(fn (IntegrationUrlModel $integrationUrlModel) => $integrationUrlModel->toDomain())
+            ->map(fn(IntegrationUrlModel $integrationUrlModel) => $integrationUrlModel->toDomain())
             ->toArray()
         )->withUiTiDv1Consumers(
             ...$this->uiTiDv1Consumers()
             ->get()
-            ->map(fn (UiTiDv1ConsumerModel $uiTiDv1ConsumerModel) => $uiTiDv1ConsumerModel->toDomain())
+            ->map(fn(UiTiDv1ConsumerModel $uiTiDv1ConsumerModel) => $uiTiDv1ConsumerModel->toDomain())
             ->toArray()
         )->withAuth0Clients(
             ...$this->auth0Clients()
             ->get()
-            ->map(fn (Auth0ClientModel $auth0ClientModel) => $auth0ClientModel->toDomain())
+            ->map(fn(Auth0ClientModel $auth0ClientModel) => $auth0ClientModel->toDomain())
             ->toArray()
         );
+
+        if ($this->coupon) {
+            $integration = $integration->withCoupon($this->coupon->toDomain());
+        }
 
         if ($foundOrganization !== null) {
             $integration = $integration->withOrganization($foundOrganization->toDomain());

@@ -6,6 +6,7 @@ namespace App\Domain\Integrations;
 
 use App\Auth0\Auth0Client;
 use App\Domain\Contacts\Contact;
+use App\Domain\Coupons\Coupon;
 use App\Domain\Organizations\Organization;
 use App\UiTiDv1\UiTiDv1Consumer;
 use Ramsey\Uuid\UuidInterface;
@@ -27,6 +28,8 @@ final class Integration
 
     /** @var array<IntegrationUrl> */
     private array $urls;
+
+    private ?Coupon $coupon;
 
     public function __construct(
         public readonly UuidInterface $id,
@@ -82,6 +85,13 @@ final class Integration
     {
         $clone = clone $this;
         $clone->auth0Clients = $auth0Clients;
+        return $clone;
+    }
+
+    public function withCoupon(Coupon $coupon): self
+    {
+        $clone = clone $this;
+        $clone->coupon = $coupon;
         return $clone;
     }
 
@@ -152,6 +162,7 @@ final class Integration
             'status' => $this->status,
             'partnerStatus' => $this->partnerStatus,
             'keyVisibility' => $this->keyVisibility,
+            'coupon' => $this->coupon->code,
         ];
     }
 }
