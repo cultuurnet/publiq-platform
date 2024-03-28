@@ -19,6 +19,7 @@ import {
   RadioButtonGroup,
   RichRadioButton,
 } from "../../Components/RadioButtonGroup";
+import { formatPricing } from "../../utils/formatPricing";
 
 type PricingPlan = {
   id: string;
@@ -65,11 +66,7 @@ const getPricingPlansForType = (
         data.description
       ),
       price: t(`integration_form.pricing.${category}.price`, {
-        price: Intl.NumberFormat("nl-BE", {
-          currency: data.currency,
-          style: "currency",
-          maximumFractionDigits: 0,
-        }).format(data.price),
+        price: formatPricing(data),
       }),
     };
   };
