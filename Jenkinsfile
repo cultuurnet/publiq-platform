@@ -90,6 +90,29 @@ pipeline {
             }
         }
 
+        stage('Acceptance tests') {
+            agent { label 'ubuntu && 20.04 && nodejs18' }
+            stages {
+                stage('Setup') {
+                    steps {
+                        sh label: 'Install dependencies', script: 'npm install'
+                    }
+                }
+                stage('Run acceptance tests') {
+                    steps {
+                        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                            sh label: 'Run acceptance tests', script: 'npm run test:e2e'
+                        }
+                    }
+                }
+            }
+            post {
+                cleanup {
+                    cleanWs()
+                }
+            }
+        }
+
         stage('Deploy to testing') {
             input { message "Deploy to Testing?" }
             agent { label 'ubuntu && 20.04' }
