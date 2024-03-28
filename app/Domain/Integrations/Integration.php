@@ -162,7 +162,7 @@ final class Integration
             'status' => $this->status,
             'partnerStatus' => $this->partnerStatus,
             'keyVisibility' => $this->keyVisibility,
-            'coupon' => $this->coupon->code,
+            'couponCode' => $this->coupon?->code,
         ];
     }
 }

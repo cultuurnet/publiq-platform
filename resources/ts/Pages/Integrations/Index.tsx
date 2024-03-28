@@ -92,6 +92,7 @@ export type Integration = {
   name: string;
   description: string;
   subscriptionId: string;
+  couponCode: string;
   status: IntegrationStatus;
   contacts: Contact[];
   organization?: Organization;
