@@ -37,6 +37,11 @@ const PriceOverview = ({
         <span>{`${pricingPlan.title} ${t("integrations.activation_dialog.price_overview.setup")}`}</span>
         <span>{formatCurrency(subscription.currency, subscription.fee)}</span>
 
+        <span>{`${pricingPlan.title} ${t("integrations.activation_dialog.price_overview.plan")}`}</span>
+        <span>
+          {`${formatCurrency(subscription.currency, subscription.price)} / ${t("integrations.activation_dialog.price_overview.year")}`}
+        </span>
+
         {!!coupon && (
           <>
             <span className="text-publiq-orange">
@@ -46,15 +51,10 @@ const PriceOverview = ({
               {`- ${formatCurrency(
                 subscription.currency,
                 couponInfo.reductionAmount
-              )}`}
+              )} / ${t("integrations.activation_dialog.price_overview.year")}`}
             </span>
           </>
         )}
-
-        <span>{`${pricingPlan.title} ${t("integrations.activation_dialog.price_overview.plan")}`}</span>
-        <span>
-          {`${formatCurrency(subscription.currency, subscription.price)} / ${t("integrations.activation_dialog.price_overview.year")}`}
-        </span>
 
         <span className="font-semibold">{`${t("integrations.activation_dialog.price_overview.total_price")}:`}</span>
         <span className="font-semibold">
