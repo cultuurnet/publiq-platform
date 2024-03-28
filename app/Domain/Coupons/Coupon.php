@@ -13,11 +13,7 @@ final class Coupon
         public readonly bool $isDistributed,
         public readonly ?UuidInterface $integrationId,
         public readonly string $code,
+        public readonly float $reduction = 125.0
     ) {
-    }
-
-    public function reduction(): float
-    {
-        return 125.0;
     }
 }
