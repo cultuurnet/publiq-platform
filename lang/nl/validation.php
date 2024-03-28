@@ -44,7 +44,7 @@ return [
     'digits' => ':Attribute moet :digits cijfers zijn.',
     'digits_between' => ':Attribute moet tussen :min en :max cijfers zijn.',
     'dimensions' => ':Attribute heeft een ongeldige grootte.',
-    'distinct' => ':Attribute heeft een dubbele waarde.',
+    'distinct' => 'Deze :Attribute is al in gebruik. Kies een unieke :Attribute.',
     'doesnt_end_with' => ':Attribute kan niet eindigen met de volgende waardes: :values.',
     'doesnt_start_with' => ':Attribute kan niet beginnen met de volgende waardes: :values.',
     'email' => ':Attribute dient een geldig emailadres te zijn.',
