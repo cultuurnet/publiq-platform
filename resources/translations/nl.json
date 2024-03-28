@@ -207,6 +207,7 @@
       "action_uitid": "UiTIDv2 credentials aanvragen",
       "client_id": "Client id",
       "client_secret": "Client secret",
+      "api_key": "API Key",
       "info": "Deze credentials blijven nog 3 maanden geldig en worden definitief verwijderd op {{datum + 3 maanden}}"
     },
     "integration_settings": {
@@ -226,7 +227,7 @@
         "title": "Tabblad verlaten?",
         "question": "Wijzigingen die je hebt aangebracht worden niet opgeslagen."
       },
-      "error": "Er is een fout opgetreden bij het indienen van het formulier. Controleer uw invoer en probeer het opnieuw.",
+      "error": "Je wijzigingen konden niet worden opgeslagen. Controleer je invoer en probeer opnieuw.",
       "success": "De wijzigingen zijn succesvol opgeslagen."
     },
     "delete_integration": {
