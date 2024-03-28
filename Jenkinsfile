@@ -95,6 +95,7 @@ pipeline {
             stages {
                 stage('Setup') {
                     steps {
+                        sh label: 'Initialize playwright', script: 'npx playwright install chromium --with-deps'
                         sh label: 'Install dependencies', script: 'npm install'
                     }
                 }
