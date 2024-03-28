@@ -1,4 +1,4 @@
-import type { ComponentProps} from "react";
+import type { ComponentProps } from "react";
 import React, { useState } from "react";
 import { faCopy, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { classNames } from "../utils/classNames";

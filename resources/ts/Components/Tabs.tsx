@@ -1,10 +1,5 @@
-import type {
-  ComponentProps,
-  ReactElement} from "react";
-import React, {
-  cloneElement,
-  useMemo,
-} from "react";
+import type { ComponentProps, ReactElement } from "react";
+import React, { cloneElement, useMemo } from "react";
 import { classNames } from "../utils/classNames";
 
 type OnTabChange = (tab: string) => void;

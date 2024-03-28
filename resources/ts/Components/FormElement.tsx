@@ -1,11 +1,5 @@
-import type {
-  ComponentProps,
-  ReactElement} from "react";
-import React, {
-  cloneElement,
-  memo,
-  useId,
-} from "react";
+import type { ComponentProps, ReactElement } from "react";
+import React, { cloneElement, memo, useId } from "react";
 import { classNames } from "../utils/classNames";
 import type { Theme } from "../types/Theme";
 

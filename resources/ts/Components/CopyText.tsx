@@ -1,4 +1,4 @@
-import type { ReactNode} from "react";
+import type { ReactNode } from "react";
 import React, { useRef, useState } from "react";
 import { Tooltip } from "./Tooltip";
 import { ButtonIconCopy } from "./ButtonIconCopy";
