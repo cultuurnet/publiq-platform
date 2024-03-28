@@ -55,6 +55,13 @@ final class InsightlyContactResourceTest extends TestCase
                 'FIRST_NAME' => $firstName,
                 'LAST_NAME' => $lastName,
                 'EMAIL_ADDRESS' => $email,
+                'CUSTOMFIELDS' => [
+                    [
+                        'FIELD_NAME' => 'Relatie_contact__c',
+                        'CUSTOM_FIELD_ID' => 'Relatie_contact__c',
+                        'FIELD_VALUE' => 'Functioneel contact publiq platform',
+                    ],
+                ],
             ]),
         );
 
@@ -92,6 +99,13 @@ final class InsightlyContactResourceTest extends TestCase
                 'FIRST_NAME' => $firstName,
                 'LAST_NAME' => $lastName,
                 'EMAIL_ADDRESS' => $email,
+                'CUSTOMFIELDS' => [
+                    [
+                        'FIELD_NAME' => 'Relatie_contact__c',
+                        'CUSTOM_FIELD_ID' => 'Relatie_contact__c',
+                        'FIELD_VALUE' => 'Functioneel contact publiq platform',
+                    ],
+                ],
                 'CONTACT_ID' => $insightlyId,
             ]),
         );
