@@ -1,6 +1,7 @@
-import React, {
+import type {
   ComponentProps,
-  ReactElement,
+  ReactElement} from "react";
+import React, {
   cloneElement,
   useMemo,
 } from "react";

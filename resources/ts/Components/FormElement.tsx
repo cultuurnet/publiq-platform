@@ -1,12 +1,13 @@
+import type {
+  ComponentProps,
+  ReactElement} from "react";
 import React, {
   cloneElement,
-  ComponentProps,
   memo,
-  ReactElement,
   useId,
 } from "react";
 import { classNames } from "../utils/classNames";
-import { Theme } from "../types/Theme";
+import type { Theme } from "../types/Theme";
 
 export type LabelPosition = keyof typeof InputStyle;
 type LabelSize = keyof Theme["fontSize"];

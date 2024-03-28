@@ -6,9 +6,9 @@ import { FormElement } from "./FormElement";
 import { Input } from "./Input";
 import { useForm } from "@inertiajs/react";
 import { useTranslation } from "react-i18next";
-import { Subscription } from "../Pages/Integrations/Index";
-import { Values } from "../types/Values";
-import { IntegrationType } from "../types/IntegrationType";
+import type { Subscription } from "../Pages/Integrations/Index";
+import type { Values } from "../types/Values";
+import type { IntegrationType } from "../types/IntegrationType";
 import { useIsMobile } from "../hooks/useIsMobile";
 
 type Props = {

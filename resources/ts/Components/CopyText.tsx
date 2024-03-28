@@ -1,4 +1,5 @@
-import React, { ReactNode, useRef, useState } from "react";
+import type { ReactNode} from "react";
+import React, { useRef, useState } from "react";
 import { Tooltip } from "./Tooltip";
 import { ButtonIconCopy } from "./ButtonIconCopy";
 import { useTranslation } from "react-i18next";

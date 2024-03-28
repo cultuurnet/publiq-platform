@@ -1,10 +1,11 @@
-import React, { FormEvent, ReactNode, useMemo } from "react";
+import type { FormEvent, ReactNode} from "react";
+import React, { useMemo } from "react";
 import { router, useForm } from "@inertiajs/react";
 import Layout from "../../layouts/Layout";
 import { Heading } from "../../Components/Heading";
 import { FormElement } from "../../Components/FormElement";
 import { Input } from "../../Components/Input";
-import { TFunction } from "i18next";
+import type { TFunction } from "i18next";
 import { Trans, useTranslation } from "react-i18next";
 import { Card } from "../../Components/Card";
 import { ButtonPrimary } from "../../Components/ButtonPrimary";

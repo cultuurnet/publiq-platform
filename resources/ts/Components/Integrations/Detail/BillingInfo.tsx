@@ -3,7 +3,7 @@ import { Heading } from "../../Heading";
 import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
 import { ButtonPrimary } from "../../ButtonPrimary";
-import { Integration } from "../../../Pages/Integrations/Index";
+import type { Integration } from "../../../Pages/Integrations/Index";
 import { useTranslation } from "react-i18next";
 import { useForm } from "@inertiajs/react";
 import { Alert } from "../../Alert";

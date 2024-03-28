@@ -3,7 +3,7 @@ import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
 import { useTranslation } from "react-i18next";
 import { ButtonPrimary } from "../../ButtonPrimary";
-import { Contact, Integration } from "../../../Pages/Integrations/Index";
+import type { Contact, Integration } from "../../../Pages/Integrations/Index";
 import { useForm } from "@inertiajs/react";
 import { ContactType } from "../../../types/ContactType";
 import { ButtonSecondary } from "../../ButtonSecondary";
