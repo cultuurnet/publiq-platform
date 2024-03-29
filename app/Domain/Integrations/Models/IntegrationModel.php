@@ -103,7 +103,15 @@ final class IntegrationModel extends UuidModel
         IntegrationActivationRequested::dispatch(Uuid::fromString($this->id));
     }
 
-    public function activate(UuidInterface $organizationId): void
+    public function activate(): void
+    {
+        $this->update([
+            'status' => IntegrationStatus::Active,
+        ]);
+        IntegrationActivated::dispatch(Uuid::fromString($this->id));
+    }
+
+    public function activateWithOrganization(UuidInterface $organizationId): void
     {
         $this->update([
             'organization_id' => $organizationId->toString(),
@@ -221,7 +229,6 @@ final class IntegrationModel extends UuidModel
     {
         $foundOrganization = $this->organization()->first();
 
-        /** @var Integration */
         $integration = (new Integration(
             Uuid::fromString($this->id),
             IntegrationType::from($this->type),

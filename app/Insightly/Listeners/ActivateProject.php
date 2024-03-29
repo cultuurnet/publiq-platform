@@ -139,7 +139,19 @@ final class ActivateProject implements ShouldQueue
 
     private function linkOrganization(UuidInterface $integrationId, int $insightlyProjectId): void
     {
-        $organization = $this->organizationRepository->getByIntegrationId($integrationId);
+        try {
+            $organization = $this->organizationRepository->getByIntegrationId($integrationId);
+        } catch (ModelNotFoundException) {
+            $this->logger->info(
+                'Organization not found for activated project',
+                [
+                    'domain' => 'insightly',
+                    'integration_id' => $integrationId->toString(),
+                ]
+            );
+            return;
+        }
+
         try {
             $organizationMapping = $this->insightlyMappingRepository->getByIdAndType(
                 $organization->id,

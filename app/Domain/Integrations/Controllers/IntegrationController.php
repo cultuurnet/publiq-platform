@@ -99,9 +99,19 @@ final class IntegrationController extends Controller
 
     public function store(StoreIntegrationRequest $request): RedirectResponse
     {
+        $guardCouponResult = $this->guardCoupon($request);
+        if ($guardCouponResult !== null) {
+            return $guardCouponResult;
+        }
+
         $integration = StoreIntegrationMapper::map($request, $this->currentUser);
         $integration = $integration->withKeyVisibility($this->getKeyVisibility($integration));
-        $this->integrationRepository->save($integration);
+
+        if ($request->filled('coupon')) {
+            $this->integrationRepository->saveWithCoupon($integration, $request->input('coupon'));
+        } else {
+            $this->integrationRepository->save($integration);
+        }
 
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
@@ -244,17 +254,9 @@ final class IntegrationController extends Controller
 
     public function requestActivation(string $id, RequestActivationRequest $request): RedirectResponse
     {
-        if ($request->filled('coupon')) {
-            try {
-                $coupon = $this->couponRepository->getByCode($request->input('coupon'));
-                if ($coupon->isDistributed) {
-                    return Redirect::back()->withErrors(['coupon' => __('errors.coupon.already_used')]);
-                }
-            } catch (ModelNotFoundException) {
-                return Redirect::back()->withErrors([
-                    'coupon' => __('errors.coupon.invalid'),
-                ]);
-            }
+        $guardCouponResult = $this->guardCoupon($request);
+        if ($guardCouponResult !== null) {
+            return $guardCouponResult;
         }
 
         $organization = OrganizationMapper::mapActivationRequest($request);
@@ -283,13 +285,24 @@ final class IntegrationController extends Controller
         return $this->contactKeyVisibilityRepository->findByEmail($contributor->email);
     }
 
-    private function hasCouponBeenUsed(UuidInterface $id): bool
+    private function guardCoupon(Request $request): ?RedirectResponse
     {
-        try {
-            $coupon = $this->couponRepository->getByIntegrationId($id);
-            return $coupon->isDistributed;
-        } catch (Throwable) {
-            return false;
+        if (!$request->filled('coupon')) {
+            return null;
         }
+
+        try {
+            $coupon = $this->couponRepository->getByCode($request->input('coupon'));
+        } catch (ModelNotFoundException) {
+            return Redirect::back()->withErrors([
+                'coupon' => __('errors.coupon.invalid'),
+            ]);
+        }
+
+        if ($coupon->isDistributed) {
+            return Redirect::back()->withErrors(['coupon' => __('errors.coupon.already_used')]);
+        }
+
+        return null;
     }
 }
