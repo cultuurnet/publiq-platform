@@ -80,7 +80,7 @@ final class IntegrationController extends Controller
         $uitidV1Consumers = $this->uitidV1ConsumerRepository->getByIntegrationIds($integrationIds);
 
         return Inertia::render('Integrations/Index', [
-            'integrations' => $integrationsData->collection,
+            'integrations' => $integrationsData->collection->map(fn (Integration $integration) => $integration->toArray()),
             'credentials' => [
                 'auth0' => $auth0Clients,
                 'uitidV1' => $uitidV1Consumers,

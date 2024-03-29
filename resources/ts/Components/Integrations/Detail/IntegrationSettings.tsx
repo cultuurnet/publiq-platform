@@ -10,6 +10,7 @@ import { IntegrationType } from "../../../types/IntegrationType";
 import { Alert } from "../../Alert";
 import { Environment } from "../../../types/Environment";
 import { QuestionDialog } from "../../QuestionDialog";
+import { KeyVisibility } from "../../../types/KeyVisibility";
 import { IntegrationUrl } from "../../../types/IntegrationUrl";
 
 export const NEW_URL_ID_PREFIX = "new-";
@@ -99,6 +100,7 @@ export const IntegrationSettings = ({
   type,
   description,
   urls,
+  keyVisibility,
   onChangeIsFormDirty,
   isKeepChangesDialogVisible,
   onConfirmLeaveTab,
@@ -248,6 +250,7 @@ export const IntegrationSettings = ({
       />
 
       {type !== IntegrationType.Widgets &&
+        keyVisibility !== KeyVisibility.v1 &&
         Object.values(IntegrationUrlType).map((type) => (
           <UrlList
             key={type}

@@ -19,6 +19,7 @@ import { IntegrationType } from "../../types/IntegrationType";
 import { Values } from "../../types/Values";
 import { Auth0Tenant } from "../../types/Auth0Tenant";
 import { UiTiDv1Environment } from "../../types/UiTiDv1Environment";
+import { KeyVisibility } from "../../types/KeyVisibility";
 import { Organization } from "../../types/Organization";
 import { Contact } from "../../types/Contact";
 import { Subscription } from "../../types/Subscription";
@@ -42,6 +43,7 @@ export type Integration = {
   urls: IntegrationUrl[];
   authClients: AuthClient[];
   legacyAuthConsumers: LegacyAuthConsumer[];
+  keyVisibility: KeyVisibility;
 };
 
 type Props = {
