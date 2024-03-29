@@ -8,16 +8,15 @@ use App\Domain\Auth\Models\UserModel;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\ContactRepository;
-use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
+use App\Domain\Coupons\Models\CouponModel;
+use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
-use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
-use App\Domain\Subscriptions\Subscription;
+use App\Domain\Subscriptions\SubscriptionCategory;
 use App\Insightly\InsightlyClient;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Repositories\InsightlyMappingRepository;
@@ -33,7 +32,6 @@ use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -50,8 +48,6 @@ final class MigrateProjects extends Command
 
     private ClientInterface $oauthClientTest;
     private ClientInterface $oauthClientProduction;
-
-    private Collection $subscriptions;
 
     public function __construct(
         private readonly IntegrationRepository $integrationRepository,
@@ -78,11 +74,9 @@ final class MigrateProjects extends Command
     public function handle(): int
     {
         Model::unsetEventDispatcher();
-        Event::forget(IntegrationActivatedWithCoupon::class);
+        Event::forget(IntegrationActivated::class);
 
         CauserResolver::setCauser(UserModel::createSystemUser());
-
-        $this->subscriptions = $this->subscriptionRepository->all();
 
         $rows = $this->readCsvFile('database/project-aanvraag/projects_with_subscriptions.csv');
         $migrationProjects = array_map(fn (array $row) => new MigrationProject($row), array_filter($rows));
@@ -133,12 +127,17 @@ final class MigrateProjects extends Command
 
     private function migrateIntegration(UuidInterface $integrationId, MigrationProject $migrationProject): void
     {
+        $subscriptionId = $this->subscriptionRepository->getByIntegrationTypeAndCategory(
+            $migrationProject->type(),
+            SubscriptionCategory::from($migrationProject->subscriptionCategory())
+        )->id;
+
         $integration = new Integration(
             $integrationId,
             $migrationProject->type(),
             $migrationProject->name(),
             $migrationProject->description() !== null ? $migrationProject->description() : '',
-            $this->getSubscription($migrationProject->type(), $migrationProject->subscriptionCategory())->id,
+            $subscriptionId,
             $migrationProject->status(),
             IntegrationPartnerStatus::THIRD_PARTY,
         );
@@ -150,19 +149,15 @@ final class MigrateProjects extends Command
         ]);
     }
 
-    private function getSubscription(IntegrationType $integrationType, string $category): Subscription
-    {
-        /** @var SubscriptionModel $subscriptionModel */
-        $subscriptionModel = $this->subscriptions->where('integration_type', $integrationType->value)
-            ->where('category', $category)
-            ->first();
-        return $subscriptionModel->toDomain();
-    }
-
     private function migrateCoupon(UuidInterface $integrationId, string $couponCode): void
     {
         try {
-            $this->integrationRepository->activateWithCouponCode($integrationId, $couponCode);
+            /** @var CouponModel $couponModel */
+            $couponModel = CouponModel::query()
+                ->where('code', '=', $couponCode)
+                ->whereNull('integration_id')
+                ->firstOrFail();
+            $couponModel->useOnIntegration($integrationId);
         } catch (ModelNotFoundException) {
             $this->warn($integrationId . ' - Coupon with code ' . $couponCode . ' not found.');
             return;

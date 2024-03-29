@@ -1,5 +1,4 @@
-import type { ReactNode } from "react";
-import React, { useMemo, useState } from "react";
+import React, { ReactNode, useMemo, useState } from "react";
 import { router } from "@inertiajs/react";
 import { Heading } from "../../Components/Heading";
 import Layout from "../../layouts/Layout";
@@ -11,81 +10,25 @@ import { useTranslateRoute } from "../../hooks/useTranslateRoute";
 import { Pagination } from "../../Components/Pagination";
 import { useTranslation } from "react-i18next";
 import { IntegrationCard } from "../../Components/IntegrationCard";
-import type { PaginationInfo } from "../../types/PaginationInfo";
+import { PaginationInfo } from "../../types/PaginationInfo";
 import { Page } from "../../Components/Page";
 import { QuestionDialog } from "../../Components/QuestionDialog";
 import { IconLink } from "../../Components/IconLink";
-import type { IntegrationStatus } from "../../types/IntegrationStatus";
-import type { ContactType } from "../../types/ContactType";
-import type { Environment } from "../../types/Environment";
-import type { IntegrationUrlType } from "../../types/IntegrationUrlType";
-import type { IntegrationType } from "../../types/IntegrationType";
-import type { Values } from "../../types/Values";
+import { IntegrationStatus } from "../../types/IntegrationStatus";
+import { IntegrationType } from "../../types/IntegrationType";
+import { Values } from "../../types/Values";
 import { Auth0Tenant } from "../../types/Auth0Tenant";
 import { UiTiDv1Environment } from "../../types/UiTiDv1Environment";
-
-type Organization = {
-  id: string;
-  name: string;
-  invoiceMail: string;
-  vat: string;
-  address: {
-    street: string;
-    zip: string;
-    city: string;
-    country: string;
-  };
-};
-
-export type Contact = {
-  id: string;
-  integrationId: string;
-  email: string;
-  type: ContactType;
-  firstName: string;
-  lastName: string;
-};
-
-export type Subscription = {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  integrationType: string;
-  currency: string;
-  price: number;
-  fee: number;
-};
-
-export type IntegrationUrl = {
-  id: string;
-  environment: Environment;
-  type: IntegrationUrlType;
-  url: string;
-};
-
-export type LegacyAuthConsumer = {
-  apiKey: string;
-  consumerId: string;
-  consumerKey: string;
-  consumerSecret: string;
-  environment: UiTiDv1Environment;
-  id: string;
-  integrationId: string;
-};
-
-export type AuthClient = {
-  clientId: string;
-  clientSecret: string;
-  id: string;
-  integrationId: string;
-  tenant: Auth0Tenant;
-};
-
-export type Credentials = {
-  auth0: AuthClient[];
-  uitidV1: LegacyAuthConsumer[];
-};
+import { KeyVisibility } from "../../types/KeyVisibility";
+import { Organization } from "../../types/Organization";
+import { Contact } from "../../types/Contact";
+import { Subscription } from "../../types/Subscription";
+import { IntegrationUrl } from "../../types/IntegrationUrl";
+import {
+  AuthClient,
+  Credentials,
+  LegacyAuthConsumer,
+} from "../../types/Credentials";
 
 export type Integration = {
   id: string;
@@ -100,6 +43,7 @@ export type Integration = {
   urls: IntegrationUrl[];
   authClients: AuthClient[];
   legacyAuthConsumers: LegacyAuthConsumer[];
+  keyVisibility: KeyVisibility;
 };
 
 type Props = {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Heading } from "../../Heading";
 import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
@@ -9,6 +9,9 @@ import { useForm } from "@inertiajs/react";
 import { Alert } from "../../Alert";
 import { IntegrationType } from "../../../types/IntegrationType";
 import { IntegrationStatus } from "../../../types/IntegrationStatus";
+import { PricingPlanContext } from "../../../Context/PricingPlan";
+import { formatCurrency } from "../../../utils/formatCurrency";
+import { CouponInfoContext } from "../../../Context/CouponInfo";
 
 type Props = Integration;
 
@@ -27,6 +30,9 @@ export const BillingInfo = ({
 
   const errors = err as Record<string, string | undefined>;
 
+  const pricingPlan = useContext(PricingPlanContext);
+  const couponInfo = useContext(CouponInfoContext);
+
   return (
     <>
       <div className="w-full max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-6">
@@ -39,15 +45,26 @@ export const BillingInfo = ({
             <Input
               type="text"
               name="price"
-              value={`${subscription.category} (${
-                subscription.currency === "EUR" ? "€" : subscription.currency
-              } ${subscription.fee / 100})`}
+              value={`${pricingPlan.title} (${pricingPlan.price})`}
               className="md:min-w-[40rem]"
               disabled
             />
           }
         />
+        {couponInfo.isUsed && (
+          <Alert
+            className={"col-span-2 col-start-2"}
+            variant="success"
+            title={t("details.billing_info.coupon_used", {
+              price: formatCurrency(
+                subscription.currency,
+                couponInfo.reductionAmount
+              ),
+            })}
+          />
+        )}
       </div>
+
       {subscription.integrationType !== IntegrationType.EntryApi &&
         status !== IntegrationStatus.Active && (
           <div className={"grid grid-cols-3 gap-10"}>
