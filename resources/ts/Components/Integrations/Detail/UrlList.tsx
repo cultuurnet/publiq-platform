@@ -1,4 +1,5 @@
-import React, { ComponentProps, Fragment, useState } from "react";
+import type { ComponentProps} from "react";
+import React, { Fragment, useState } from "react";
 import { Heading } from "../../Heading";
 import { useTranslation } from "react-i18next";
 import { FormElement } from "../../FormElement";
@@ -9,7 +10,7 @@ import { IntegrationUrlType } from "../../../types/IntegrationUrlType";
 import { QuestionDialog } from "../../QuestionDialog";
 import { classNames } from "../../../utils/classNames";
 import { Environment } from "../../../types/Environment";
-import { IntegrationUrl } from "../../../types/IntegrationUrl";
+import type { IntegrationUrl } from "../../../types/IntegrationUrl";
 
 type UrlListProps = {
   type: IntegrationUrlType;

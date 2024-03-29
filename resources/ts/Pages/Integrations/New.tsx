@@ -1,4 +1,5 @@
-import React, { FormEvent, ReactNode } from "react";
+import type { FormEvent, ReactNode } from "react";
+import React from "react";
 import { router, useForm } from "@inertiajs/react";
 import Layout from "../../layouts/Layout";
 import { Heading } from "../../Components/Heading";
@@ -18,7 +19,7 @@ import {
   RadioButtonGroup,
   RichRadioButton,
 } from "../../Components/RadioButtonGroup";
-import { Subscription } from "../../types/Subscription";
+import type { Subscription } from "../../types/Subscription";
 import { useGetPricingPlans } from "../../hooks/useGetPricingPlans";
 
 type Props = {

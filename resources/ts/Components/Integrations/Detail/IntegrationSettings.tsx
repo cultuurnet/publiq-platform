@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ButtonPrimary } from "../../ButtonPrimary";
 import { useForm } from "@inertiajs/react";
-import { Integration } from "../../../Pages/Integrations/Index";
+import type { Integration } from "../../../Pages/Integrations/Index";
 import { IntegrationUrlType } from "../../../types/IntegrationUrlType";
 import { UrlList } from "./UrlList";
 import { BasicInfo } from "./BasicInfo";
@@ -11,7 +11,7 @@ import { Alert } from "../../Alert";
 import { Environment } from "../../../types/Environment";
 import { QuestionDialog } from "../../QuestionDialog";
 import { KeyVisibility } from "../../../types/KeyVisibility";
-import { IntegrationUrl } from "../../../types/IntegrationUrl";
+import type { IntegrationUrl } from "../../../types/IntegrationUrl";
 
 export const NEW_URL_ID_PREFIX = "new-";
 

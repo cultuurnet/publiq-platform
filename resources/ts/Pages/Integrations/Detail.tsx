@@ -19,7 +19,7 @@ import {
 import { Heading } from "../../Components/Heading";
 import { IntegrationType } from "../../types/IntegrationType";
 import { useGetPricingPlans } from "../../hooks/useGetPricingPlans";
-import { Subscription } from "../../types/Subscription";
+import type { Subscription } from "../../types/Subscription";
 import { PricingPlanProvider } from "../../Context/PricingPlan";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { CouponInfoProvider } from "../../Context/CouponInfo";

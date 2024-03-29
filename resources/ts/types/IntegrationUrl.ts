@@ -1,5 +1,5 @@
-import { Environment } from "./Environment";
-import { IntegrationUrlType } from "./IntegrationUrlType";
+import type { Environment } from "./Environment";
+import type { IntegrationUrlType } from "./IntegrationUrlType";
 
 export type IntegrationUrl = {
   id: string;

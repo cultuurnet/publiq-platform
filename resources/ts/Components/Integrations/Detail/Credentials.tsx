@@ -4,7 +4,7 @@ import { CredentialsLegacyAuthConsumers } from "./CredentialsLegacyAuthConsumers
 import { CredentialsAuthClients } from "./CredentialsAuthClients";
 import { IntegrationType } from "../../../types/IntegrationType";
 import { CredentialsWidgets } from "./CredentialsWidgets";
-import { AuthClient, LegacyAuthConsumer } from "../../../types/Credentials";
+import type { AuthClient, LegacyAuthConsumer } from "../../../types/Credentials";
 
 type Props = Integration & {
   email: string;

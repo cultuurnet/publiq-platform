@@ -1,5 +1,5 @@
-import { Auth0Tenant } from "./Auth0Tenant";
-import { UiTiDv1Environment } from "./UiTiDv1Environment";
+import type { Auth0Tenant } from "./Auth0Tenant";
+import type { UiTiDv1Environment } from "./UiTiDv1Environment";
 
 export type LegacyAuthConsumer = {
   apiKey: string;
