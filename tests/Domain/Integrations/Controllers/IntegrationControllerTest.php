@@ -12,6 +12,7 @@ use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Coupon;
 use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Environment;
+use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
@@ -24,11 +25,17 @@ use App\Domain\Integrations\Models\IntegrationUrlModel;
 use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\Organizations\Organization;
+use App\Domain\Subscriptions\Currency;
+use App\Domain\Subscriptions\Models\SubscriptionModel;
+use App\Domain\Subscriptions\Subscription;
+use App\Domain\Subscriptions\SubscriptionCategory;
 use App\ProjectAanvraag\ProjectAanvraagUrl;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Validation\UnauthorizedException;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use Tests\TestCase;
 
 final class IntegrationControllerTest extends TestCase
@@ -72,6 +79,69 @@ final class IntegrationControllerTest extends TestCase
             'status' => IntegrationStatus::Draft->value,
             'partner_status' => IntegrationPartnerStatus::THIRD_PARTY->value,
             'key_visibility' => KeyVisibility::v1->value,
+        ]);
+
+        $this->assertDatabaseHas('contacts', [
+            'type' => ContactType::Functional,
+            'first_name' => 'Jack',
+            'last_name' => 'Bauer',
+        ]);
+
+        $this->assertDatabaseHas('contacts', [
+            'type' => ContactType::Technical,
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+        ]);
+
+        $this->assertDatabaseHas('contacts', [
+            'type' => ContactType::Contributor,
+            'first_name' => 'System',
+            'last_name' => 'User',
+        ]);
+    }
+
+    public function test_it_can_store_an_integration_with_a_coupon(): void
+    {
+        $systemUser = UserModel::createSystemUser();
+        $this->actingAs($systemUser);
+        $this->givenTheContactKeyVisibilityIs($systemUser->email, KeyVisibility::v2);
+
+        $coupon = $this->givenThereIsACoupon();
+
+        $subscriptionId = Uuid::uuid4();
+
+        $response = $this->post(
+            '/integrations',
+            [
+                'integrationType' => IntegrationType::SearchApi->value,
+                'subscriptionId' => $subscriptionId->toString(),
+                'integrationName' => 'Test Integration',
+                'description' => 'Test Integration description',
+                'firstNameFunctionalContact' => 'Jack',
+                'lastNameFunctionalContact' => 'Bauer',
+                'emailFunctionalContact' => 'jack.bauer@test.com',
+                'firstNameTechnicalContact' => 'John',
+                'lastNameTechnicalContact' => 'Doe',
+                'emailTechnicalContact' => 'john.doe@test.com',
+                'agreement' => 'true',
+                'privacy' => 'some privacy',
+                'coupon' => $coupon->code,
+            ]
+        );
+
+        /** @var IntegrationModel $createdIntegration */
+        $createdIntegration = IntegrationModel::query()->latest()->first();
+
+        $response->assertRedirectToRoute('nl.integrations.show', ['id' => $createdIntegration->toDomain()->id->toString()]);
+
+        $this->assertDatabaseHas('integrations', [
+            'type' => IntegrationType::SearchApi->value,
+            'subscription_id' => $subscriptionId->toString(),
+            'name' => 'Test Integration',
+            'description' => 'Test Integration description',
+            'status' => IntegrationStatus::Draft->value,
+            'partner_status' => IntegrationPartnerStatus::THIRD_PARTY->value,
+            'key_visibility' => KeyVisibility::v2->value,
         ]);
 
         $this->assertDatabaseHas('contacts', [
@@ -162,7 +232,9 @@ final class IntegrationControllerTest extends TestCase
         $this->actingAs(UserModel::createSystemUser());
 
         $organization = $this->givenThereIsAnOrganization();
-        $integration = $this->givenThereIsAnIntegration();
+        $integrationType = IntegrationType::SearchApi;
+        $subscription = $this->givenThereIsASubscription(integrationType: $integrationType, subscriptionCategory: SubscriptionCategory::Basic);
+        $integration = $this->givenThereIsAnIntegration(integrationType: $integrationType, subscriptionId: $subscription->id);
 
         $this->givenTheActingUserIsAContactOnIntegration($integration);
 
@@ -191,6 +263,8 @@ final class IntegrationControllerTest extends TestCase
             'organization_id' => $organization->id,
             'status' => IntegrationStatus::PendingApprovalIntegration,
         ]);
+
+        Event::assertDispatched(IntegrationActivationRequested::class);
     }
 
     public function test_it_can_request_activation_with_an_organization_and_coupon(): void
@@ -198,7 +272,9 @@ final class IntegrationControllerTest extends TestCase
         $this->actingAs(UserModel::createSystemUser());
 
         $organization = $this->givenThereIsAnOrganization();
-        $integration = $this->givenThereIsAnIntegration();
+        $integrationType = IntegrationType::Widgets;
+        $subscription = $this->givenThereIsASubscription(integrationType: $integrationType, subscriptionCategory: SubscriptionCategory::Plus);
+        $integration = $this->givenThereIsAnIntegration(integrationType: $integrationType, subscriptionId: $subscription->id);
         $coupon = $this->givenThereIsACoupon();
 
         $this->givenTheActingUserIsAContactOnIntegration($integration);
@@ -234,134 +310,8 @@ final class IntegrationControllerTest extends TestCase
             'id' => $coupon->id,
             'integration_id' => $integration->id->toString(),
         ]);
-    }
 
-    // @deprecated
-    public function test_it_can_activate_an_integration_with_a_coupon(): void
-    {
-        $this->actingAs(UserModel::createSystemUser());
-
-        $integration = $this->givenThereIsAnIntegration();
-        $this->givenTheActingUserIsAContactOnIntegration($integration);
-        $coupon = $this->givenThereIsACoupon();
-
-        $response = $this->post(
-            "/integrations/{$integration->id}/coupon",
-            [
-                'coupon' => $coupon->code,
-            ]
-        );
-
-        $response->assertRedirect('/');
-
-        $this->assertDatabaseHas('integrations', [
-            'id' => $integration->id->toString(),
-            'status' => IntegrationStatus::Active,
-        ]);
-
-        $this->assertDatabaseHas('coupons', [
-            'id' => $coupon->id,
-            'integration_id' => $integration->id->toString(),
-        ]);
-    }
-
-    // @deprecated
-    public function test_it_can_not_activate_an_integration_with_a_coupon_if_not_authorized(): void
-    {
-        $this->actingAs(UserModel::createSystemUser());
-
-        $integration = $this->givenThereIsAnIntegration();
-        $coupon = $this->givenThereIsACoupon();
-
-        $response = $this->post(
-            "/integrations/{$integration->id}/coupon",
-            [
-                'coupon' => $coupon->code,
-            ]
-        );
-
-        $response->assertForbidden();
-
-        $this->assertDatabaseMissing('integrations', [
-            'id' => $integration->id->toString(),
-            'status' => IntegrationStatus::Active,
-        ]);
-
-        $this->assertDatabaseMissing('coupons', [
-            'id' => $coupon->id,
-            'integration_id' => $integration->id->toString(),
-        ]);
-    }
-
-    // @deprecated
-    public function test_it_can_activate_an_integration_with_an_organization(): void
-    {
-        $this->actingAs(UserModel::createSystemUser());
-
-        $organization = $this->givenThereIsAnOrganization();
-        $integration = $this->givenThereIsAnIntegration();
-        $this->givenTheActingUserIsAContactOnIntegration($integration);
-
-        $response = $this->post(
-            "/integrations/{$integration->id}/organization",
-            [
-                'organization' => [
-                    'id' => $organization->id->toString(),
-                    'name' => $organization->name,
-                    'vat' => $organization->vat,
-                    'invoiceEmail' => $organization->invoiceEmail,
-                    'address' => [
-                        'street' => $organization->address->street,
-                        'zip' => $organization->address->zip,
-                        'city' => $organization->address->city,
-                        'country' => $organization->address->country,
-                    ],
-                ],
-            ]
-        );
-
-        $response->assertRedirect('/');
-
-        $this->assertDatabaseHas('integrations', [
-            'id' => $integration->id->toString(),
-            'organization_id' => $organization->id,
-            'status' => IntegrationStatus::Active,
-        ]);
-    }
-
-    // @deprecated
-    public function test_it_can_not_activate_an_integration_with_an_organization_if_not_authorized(): void
-    {
-        $this->actingAs(UserModel::createSystemUser());
-
-        $organization = $this->givenThereIsAnOrganization();
-        $integration = $this->givenThereIsAnIntegration();
-
-        $response = $this->post(
-            "/integrations/{$integration->id}/organization",
-            [
-                'organization' => [
-                    'id' => $organization->id,
-                    'name' => $organization->name,
-                    'vat' => $organization->vat,
-                    'invoiceEmail' => $organization->invoiceEmail,
-                    'address' => [
-                        'street' => $organization->address->street,
-                        'zip' => $organization->address->zip,
-                        'city' => $organization->address->city,
-                        'country' => $organization->address->country,
-                    ],
-                ],
-            ]
-        );
-
-        $response->assertForbidden();
-
-        $this->assertDatabaseHas('integrations', [
-            'id' => $integration->id->toString(),
-            'organization_id' => null,
-            'status' => IntegrationStatus::Draft,
-        ]);
+        Event::assertDispatched(IntegrationActivationRequested::class);
     }
 
     public function test_it_can_update_an_integration(): void
@@ -829,14 +779,14 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
-    private function givenThereIsAnIntegration(IntegrationType $integrationType = null): Integration
+    private function givenThereIsAnIntegration(IntegrationType $integrationType = null, UuidInterface $subscriptionId = null): Integration
     {
         $integration = new Integration(
             Uuid::uuid4(),
             $integrationType ?? IntegrationType::SearchApi,
             'Test Integration',
             'Test Integration description',
-            Uuid::uuid4(),
+            $subscriptionId ?? Uuid::uuid4(),
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::THIRD_PARTY,
         );
@@ -1054,5 +1004,34 @@ final class IntegrationControllerTest extends TestCase
                 ],
             ]
         );
+    }
+
+    private function givenThereIsASubscription(IntegrationType $integrationType, SubscriptionCategory $subscriptionCategory = null): Subscription
+    {
+        $subscription = new Subscription(
+            Uuid::uuid4(),
+            'Test Subscription',
+            'lorem ipsum',
+            $subscriptionCategory ?? SubscriptionCategory::Basic,
+            $integrationType,
+            Currency::EUR,
+            180,
+            200
+        );
+
+        SubscriptionModel::query()->create(
+            [
+                'id' => $subscription->id->toString(),
+                'name' => $subscription->name,
+                'description' => $subscription->description,
+                'category' => $subscription->category,
+                'integration_type' => $subscription->integrationType,
+                'currency' => $subscription->currency,
+                'price' => $subscription->price,
+                'fee' => $subscription->fee,
+            ]
+        );
+
+        return $subscription;
     }
 }
