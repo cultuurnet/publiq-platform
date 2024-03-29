@@ -10,8 +10,6 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\ContactKeyVisibilityRepository;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Coupons\Repositories\CouponRepository;
-use App\Domain\Integrations\FormRequests\ActivateWithCouponRequest;
-use App\Domain\Integrations\FormRequests\CreateOrganizationRequest;
 use App\Domain\Integrations\FormRequests\RequestActivationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationUrlRequest;
@@ -159,6 +157,7 @@ final class IntegrationController extends Controller
                 'legacyAuthConsumers' => $legacyAuthConsumers,
             ],
             'email' => Auth::user()?->email,
+            'subscriptions' => $this->subscriptionRepository->all(),
         ]);
     }
 
@@ -240,15 +239,15 @@ final class IntegrationController extends Controller
 
     public function requestActivation(string $id, RequestActivationRequest $request): RedirectResponse
     {
-        if ($request->has('coupon')) {
+        if ($request->filled('coupon')) {
             try {
                 $coupon = $this->couponRepository->getByCode($request->input('coupon'));
                 if ($coupon->isDistributed) {
-                    return Redirect::back()->withErrors(['coupon' => 'Coupon is already used']);
+                    return Redirect::back()->withErrors(['coupon' => __('errors.coupon.already_used')]);
                 }
             } catch (ModelNotFoundException) {
                 return Redirect::back()->withErrors([
-                    'coupon' => 'Invalid coupon',
+                    'coupon' => __('errors.coupon.invalid'),
                 ]);
             }
         }
@@ -257,38 +256,6 @@ final class IntegrationController extends Controller
         $this->organizationRepository->save($organization);
 
         $this->integrationRepository->requestActivation(Uuid::fromString($id), $organization->id, $request->input('coupon'));
-
-        return Redirect::back();
-    }
-
-    // @deprecated
-    public function activateWithCoupon(string $id, ActivateWithCouponRequest $request): RedirectResponse
-    {
-        try {
-            $coupon = $this->couponRepository->getByCode($request->input('coupon'));
-            if ($coupon->isDistributed) {
-                return Redirect::back()->withErrors(['coupon' => 'Coupon is already used']);
-            }
-
-            $this->integrationRepository->activateWithCouponCode(Uuid::fromString($id), $request->input('coupon'));
-
-            return Redirect::back();
-
-        } catch (ModelNotFoundException $exception) {
-            return Redirect::back()->withErrors([
-                'coupon' => 'Invalid coupon',
-            ]);
-        }
-    }
-
-    // @deprecated
-    public function activateWithOrganization(string $id, CreateOrganizationRequest $request): RedirectResponse
-    {
-        $organization = OrganizationMapper::mapCreate($request);
-
-        $this->organizationRepository->save($organization);
-
-        $this->integrationRepository->activateWithOrganization(Uuid::fromString($id), $organization->id);
 
         return Redirect::back();
     }

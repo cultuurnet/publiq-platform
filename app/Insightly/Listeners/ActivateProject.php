@@ -8,6 +8,7 @@ use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Coupons\Coupon;
 use App\Domain\Coupons\Repositories\CouponRepository;
 use App\Domain\Integrations\Events\IntegrationActivated;
+use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Organizations\Organization;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
@@ -44,7 +45,7 @@ final class ActivateProject implements ShouldQueue
     ) {
     }
 
-    public function handle(IntegrationActivated $integrationActivated): void
+    public function handle(IntegrationActivated|IntegrationActivationRequested $integrationActivated): void
     {
         $integrationId = $integrationActivated->id;
 

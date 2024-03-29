@@ -5,12 +5,12 @@ import { useForm } from "@inertiajs/react";
 import { Integration } from "../../../Pages/Integrations/Index";
 import { IntegrationUrlType } from "../../../types/IntegrationUrlType";
 import { UrlList } from "./UrlList";
-import { IntegrationUrl } from "../../../Pages/Integrations/Index";
 import { BasicInfo } from "./BasicInfo";
 import { IntegrationType } from "../../../types/IntegrationType";
 import { Alert } from "../../Alert";
 import { Environment } from "../../../types/Environment";
 import { QuestionDialog } from "../../QuestionDialog";
+import { IntegrationUrl } from "../../../types/IntegrationUrl";
 
 export const NEW_URL_ID_PREFIX = "new-";
 
