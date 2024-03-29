@@ -19,7 +19,9 @@ export const UitIdWidget = ({
   const { i18n } = useTranslation();
   const translateRoute = useTranslateRoute();
   const { component } = usePage();
-  const { props } = usePage();
+  const { props } = usePage<{
+    integration?: Integration;
+  }>();
   const widgetUrl = import.meta.env.VITE_UITID_WIDGET_URL;
 
   const widgetConfig = useMemo(
@@ -51,8 +53,6 @@ export const UitIdWidget = ({
     [auth0Domain, profileUrl, registerUrl, widgetUrl]
   );
 
-  const id = props.integration ? (props.integration as Integration).id : "";
-
   const currentPage = useMemo(
     () =>
       component
@@ -62,6 +62,12 @@ export const UitIdWidget = ({
         .toLowerCase() ?? "/",
     [component]
   );
+
+  const currentPageToVariables = {
+    "integrations/detail": {
+      id: props.integration?.id,
+    },
+  };
 
   return (
     <div className="w-full px-7 bg-uitid-widget">
@@ -81,7 +87,7 @@ export const UitIdWidget = ({
           <div className="flex gap-2">
             <a
               className={classNames(i18n.language === "nl" && "active")}
-              href={`${translateRoute(`/${currentPage}`, "nl", id)}?setLocale=true`}
+              href={`${translateRoute(`/${currentPage}`, "nl", currentPageToVariables[currentPage])}?setLocale=true`}
             >
               NL
             </a>
@@ -92,7 +98,7 @@ export const UitIdWidget = ({
             ></div>
             <a
               className={classNames(i18n.language === "en" && "active")}
-              href={`${translateRoute(`/${currentPage}`, "en", id)}?setLocale=true`}
+              href={`${translateRoute(`/${currentPage}`, "en", currentPageToVariables[currentPage])}?setLocale=true`}
             >
               EN
             </a>
