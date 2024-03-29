@@ -96,7 +96,7 @@ final class ActivateIntegrationTest extends TestCase
         $this->activateIntegration->handle(new IntegrationCreated($integration->id));
     }
 
-    #[DataProvider('SubscriptionCategoryProvider')]
+    #[DataProvider('subscriptionCategoryProvider')]
     public function test_it_only_activates_for_basic_subscription(SubscriptionCategory $subscriptionCategory): void
     {
         $subscription = $this->givenThereIsASubscription($subscriptionCategory);
@@ -109,7 +109,7 @@ final class ActivateIntegrationTest extends TestCase
         $this->activateIntegration->handle(new IntegrationCreated($integration->id));
     }
 
-    public static function SubscriptionCategoryProvider(): array
+    public static function subscriptionCategoryProvider(): array
     {
         return [
             [SubscriptionCategory::Free],
