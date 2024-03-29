@@ -15,77 +15,20 @@ import { Page } from "../../Components/Page";
 import { QuestionDialog } from "../../Components/QuestionDialog";
 import { IconLink } from "../../Components/IconLink";
 import { IntegrationStatus } from "../../types/IntegrationStatus";
-import { ContactType } from "../../types/ContactType";
-import { Environment } from "../../types/Environment";
-import { IntegrationUrlType } from "../../types/IntegrationUrlType";
 import { IntegrationType } from "../../types/IntegrationType";
 import { Values } from "../../types/Values";
 import { Auth0Tenant } from "../../types/Auth0Tenant";
 import { UiTiDv1Environment } from "../../types/UiTiDv1Environment";
 import { KeyVisibility } from "../../types/KeyVisibility";
-
-type Organization = {
-  id: string;
-  name: string;
-  invoiceMail: string;
-  vat: string;
-  address: {
-    street: string;
-    zip: string;
-    city: string;
-    country: string;
-  };
-};
-
-export type Contact = {
-  id: string;
-  integrationId: string;
-  email: string;
-  type: ContactType;
-  firstName: string;
-  lastName: string;
-};
-
-export type Subscription = {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  integrationType: string;
-  currency: string;
-  price: number;
-  fee: number;
-};
-
-export type IntegrationUrl = {
-  id: string;
-  environment: Environment;
-  type: IntegrationUrlType;
-  url: string;
-};
-
-export type LegacyAuthConsumer = {
-  apiKey: string;
-  consumerId: string;
-  consumerKey: string;
-  consumerSecret: string;
-  environment: UiTiDv1Environment;
-  id: string;
-  integrationId: string;
-};
-
-export type AuthClient = {
-  clientId: string;
-  clientSecret: string;
-  id: string;
-  integrationId: string;
-  tenant: Auth0Tenant;
-};
-
-export type Credentials = {
-  auth0: AuthClient[];
-  uitidV1: LegacyAuthConsumer[];
-};
+import { Organization } from "../../types/Organization";
+import { Contact } from "../../types/Contact";
+import { Subscription } from "../../types/Subscription";
+import { IntegrationUrl } from "../../types/IntegrationUrl";
+import {
+  AuthClient,
+  Credentials,
+  LegacyAuthConsumer,
+} from "../../types/Credentials";
 
 export type Integration = {
   id: string;

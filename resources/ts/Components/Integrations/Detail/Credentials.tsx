@@ -1,13 +1,10 @@
 import React, { useMemo } from "react";
-import type {
-  AuthClient,
-  Integration,
-  LegacyAuthConsumer,
-} from "../../../Pages/Integrations/Index";
+import type { Integration } from "../../../Pages/Integrations/Index";
 import { CredentialsLegacyAuthConsumers } from "./CredentialsLegacyAuthConsumers";
 import { CredentialsAuthClients } from "./CredentialsAuthClients";
 import { IntegrationType } from "../../../types/IntegrationType";
 import { CredentialsWidgets } from "./CredentialsWidgets";
+import { AuthClient, LegacyAuthConsumer } from "../../../types/Credentials";
 
 type Props = Integration & {
   email: string;

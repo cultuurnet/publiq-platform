@@ -368,8 +368,37 @@ final class EloquentIntegrationRepositoryTest extends TestCase
 
         $this->integrationRepository->save($searchIntegration);
 
+        $this->integrationRepository->activate($integrationId);
+
+        $this->assertDatabaseHas('integrations', [
+            'id' => $searchIntegration->id->toString(),
+            'type' => $searchIntegration->type,
+            'name' => $searchIntegration->name,
+            'description' => $searchIntegration->description,
+            'subscription_id' => $searchIntegration->subscriptionId,
+            'status' => IntegrationStatus::Active,
+        ]);
+
+        Event::assertDispatched(IntegrationActivated::class);
+    }
+
+    public function test_it_can_activate_with_organization(): void
+    {
+        $integrationId = Uuid::uuid4();
+        $searchIntegration = new Integration(
+            $integrationId,
+            IntegrationType::SearchApi,
+            'Search Integration',
+            'Search Integration description',
+            Uuid::uuid4(),
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
+        );
+
+        $this->integrationRepository->save($searchIntegration);
+
         $organizationId = Uuid::uuid4();
-        $this->integrationRepository->activate($integrationId, $organizationId, null);
+        $this->integrationRepository->activateWithOrganization($integrationId, $organizationId, null);
 
         $this->assertDatabaseHas('integrations', [
             'id' => $searchIntegration->id->toString(),
@@ -384,7 +413,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         Event::assertDispatched(IntegrationActivated::class);
     }
 
-    public function test_it_can_activate_with_coupon(): void
+    public function test_it_can_activate_with_organization_and_coupon(): void
     {
         $couponId = uuid::uuid4();
         $couponCode = '123';
@@ -409,7 +438,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         $this->integrationRepository->save($searchIntegration);
 
         $organizationId = Uuid::uuid4();
-        $this->integrationRepository->activate($integrationId, $organizationId, $couponCode);
+        $this->integrationRepository->activateWithOrganization($integrationId, $organizationId, $couponCode);
 
         $this->assertDatabaseHas('integrations', [
             'id' => $searchIntegration->id->toString(),
@@ -429,84 +458,6 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         ]);
 
         Event::assertDispatched(IntegrationActivated::class);
-    }
-
-    // @deprecated
-    public function test_it_can_activate_with_a_coupon(): void
-    {
-        $couponId = uuid::uuid4();
-        $couponCode = '123';
-
-        $integrationId = Uuid::uuid4();
-
-        CouponModel::query()->insert([
-            'id' => $couponId->toString(),
-            'is_distributed' => false,
-            'integration_id' => null,
-            'code' => $couponCode,
-        ]);
-
-        $searchIntegration = new Integration(
-            $integrationId,
-            IntegrationType::SearchApi,
-            'Search Integration',
-            'Search Integration description',
-            Uuid::uuid4(),
-            IntegrationStatus::Draft,
-            IntegrationPartnerStatus::THIRD_PARTY,
-        );
-
-        $this->integrationRepository->save($searchIntegration);
-
-        $this->integrationRepository->activateWithCouponCode($integrationId, $couponCode);
-
-        $this->assertDatabaseHas('integrations', [
-            'id' => $searchIntegration->id->toString(),
-            'type' => $searchIntegration->type,
-            'name' => $searchIntegration->name,
-            'description' => $searchIntegration->description,
-            'subscription_id' => $searchIntegration->subscriptionId,
-            'status' => IntegrationStatus::Active,
-        ]);
-
-        $this->assertDatabaseHas('coupons', [
-            'id' => $couponId->toString(),
-            'is_distributed' => true,
-            'integration_id' => $searchIntegration->id->toString(),
-            'code' => $couponCode,
-        ]);
-    }
-
-    // @deprecated
-    public function test_it_will_fail_on_unknown_coupon_code(): void
-    {
-        $couponId = uuid::uuid4();
-        $couponCode = '123';
-        $fakeCouponCode = '321';
-
-        $integrationId = Uuid::uuid4();
-
-        CouponModel::query()->insert([
-            'id' => $couponId->toString(),
-            'is_distributed' => true,
-            'integration_id' => null,
-            'code' => $couponCode,
-        ]);
-
-        $searchIntegration = new Integration(
-            $integrationId,
-            IntegrationType::SearchApi,
-            'Search Integration',
-            'Search Integration description',
-            Uuid::uuid4(),
-            IntegrationStatus::Draft,
-            IntegrationPartnerStatus::THIRD_PARTY,
-        );
-
-        $this->integrationRepository->save($searchIntegration);
-
-        $this->expectException(ModelNotFoundException::class);
-        $this->integrationRepository->activateWithCouponCode($integrationId, $fakeCouponCode);
     }
 
     public function test_it_will_fail_on_a_used_coupon(): void
@@ -536,37 +487,8 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         $this->integrationRepository->save($searchIntegration);
 
         $this->expectException(ModelNotFoundException::class);
-        $this->integrationRepository->activateWithCouponCode($integrationId, $couponCode);
-    }
 
-    public function test_it_can_active_with_an_organization(): void
-    {
-        $integrationId = Uuid::uuid4();
-        $organizationId = Uuid::uuid4();
-
-        $searchIntegration = new Integration(
-            $integrationId,
-            IntegrationType::SearchApi,
-            'Search Integration',
-            'Search Integration description',
-            Uuid::uuid4(),
-            IntegrationStatus::Draft,
-            IntegrationPartnerStatus::THIRD_PARTY,
-        );
-
-        $this->integrationRepository->save($searchIntegration);
-
-        $this->integrationRepository->activateWithOrganization($integrationId, $organizationId);
-
-        $this->assertDatabaseHas('integrations', [
-            'id' => $searchIntegration->id->toString(),
-            'type' => $searchIntegration->type,
-            'name' => $searchIntegration->name,
-            'description' => $searchIntegration->description,
-            'subscription_id' => $searchIntegration->subscriptionId,
-            'organization_id' => $organizationId,
-            'status' => IntegrationStatus::Active,
-        ]);
+        $this->integrationRepository->activateWithOrganization($integrationId, Uuid::uuid4(), $couponCode);
     }
 
     public function test_it_can_save_partner_status(): void
