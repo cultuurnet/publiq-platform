@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Dialog } from "./Dialog";
 import { ButtonSecondary } from "./ButtonSecondary";
 import { ButtonPrimary } from "./ButtonPrimary";
@@ -11,6 +11,64 @@ import { useIsMobile } from "../hooks/useIsMobile";
 import { Subscription } from "../types/Subscription";
 import { PricingPlan } from "../hooks/useGetPricingPlans";
 import { formatCurrency } from "../utils/formatCurrency";
+import { Heading } from "./Heading";
+import { CouponInfoContext } from "../Context/CouponInfo";
+
+const PriceOverview = ({
+  coupon,
+  subscription,
+  pricingPlan,
+}: {
+  coupon?: string;
+  subscription: Subscription;
+  pricingPlan: PricingPlan;
+}) => {
+  const { t } = useTranslation();
+
+  const couponInfo = useContext(CouponInfoContext);
+
+  return (
+    <section className="flex flex-col flex-1 gap-2 border-t mt-4 pt-4 text-sm">
+      <Heading level={4}>
+        {t("integrations.activation_dialog.price_overview.title")}
+      </Heading>
+
+      <div className="grid grid-cols-2 gap-1">
+        <span className="col-span-2">
+          {t("integrations.activation_dialog.price_overview.subscription_plan")}{" "}
+          {pricingPlan.title}
+        </span>
+
+        <span className="pl-4">{`${t("integrations.activation_dialog.price_overview.setup")}`}</span>
+        <span>{formatCurrency(subscription.currency, subscription.fee)}</span>
+
+        <span className="pl-4">{`${t("integrations.activation_dialog.price_overview.plan")}`}</span>
+        <span
+          className={coupon ? "line-through" : ""}
+        >{`${formatCurrency(subscription.currency, subscription.price)} / ${t("integrations.activation_dialog.price_overview.year")}`}</span>
+
+        {coupon && (
+          <>
+            <span className="text-publiq-orange text-right">-</span>
+            <span className="text-publiq-orange">
+              {`${formatCurrency(
+                subscription.currency,
+                couponInfo.reductionAmount
+              )} / ${t("integrations.activation_dialog.price_overview.year")} (${t("integrations.activation_dialog.price_overview.coupon")})`}
+            </span>
+
+            <span className="col-start-2">
+              {`${formatCurrency(
+                subscription.currency,
+                subscription.price - couponInfo.reductionAmount
+              )} / ${t("integrations.activation_dialog.price_overview.year")}`}
+            </span>
+          </>
+        )}
+      </div>
+    </section>
+  );
+};
 
 type Props = {
   isVisible?: boolean;
@@ -86,12 +144,6 @@ export const ActivationDialog = ({
       contentStyles="gap-3"
     >
       <>
-        <div className="flex flex-col gap-1">
-          <span className="text-sm font-medium">
-            {t("integrations.activation_dialog.subscription_plan")}
-          </span>
-          <p className="text-sm">{`${pricingPlan.title} (${pricingPlan.price})`}</p>
-        </div>
         <FormElement
           label={`${t("details.billing_info.name")}`}
           required
@@ -242,12 +294,11 @@ export const ActivationDialog = ({
             />
           </>
         )}
-        <div className="flex flex-col gap-1">
-          <span className="text-sm font-medium">
-            {t("integrations.activation_dialog.total_price")}
-          </span>
-          <p className="text-sm">{`${formatCurrency(subscription.currency, subscription.fee + subscription.price)}`}</p>
-        </div>
+        <PriceOverview
+          subscription={subscription}
+          pricingPlan={pricingPlan}
+          coupon={organizationForm.data.coupon}
+        />
       </>
     </Dialog>
   );

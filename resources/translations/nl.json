@@ -150,7 +150,14 @@
       "contact": "E-mail boekhouding",
       "contact_description": "Dit adres ontvangt de betalinginstructies, -herinneringen en de factuur.",
       "coupon": "Coupon",
-      "total_price": "Totaal"
+      "price_overview": {
+        "title": "Prijs overzicht",
+        "subscription_plan": "Prijsplan",
+        "setup": "Setup",
+        "coupon": "Coupon",
+        "plan": "Abonnement",
+        "year": "jaar"
+      }
     },
     "documentation": {
       "title": "Documentatie",
@@ -191,7 +198,8 @@
         "postcode": "Postcode",
         "city": "Gemeente"
       },
-      "vat": "BTW of ondernemingsnummer"
+      "vat": "BTW of ondernemingsnummer",
+      "coupon_used": "Een coupon van {{price}} is toegepast"
     },
     "credentials": {
       "title": "Credentials",

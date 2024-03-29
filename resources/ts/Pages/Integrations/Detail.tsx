@@ -21,14 +21,21 @@ import { useGetPricingPlans } from "../../hooks/useGetPricingPlans";
 import { Subscription } from "../../types/Subscription";
 import { PricingPlanProvider } from "../../Context/PricingPlan";
 import { useIsMobile } from "../../hooks/useIsMobile";
+import { CouponInfoProvider } from "../../Context/CouponInfo";
+
+export type CouponInfo = {
+  isUsed: boolean;
+  reductionAmount: number;
+};
 
 type Props = {
   integration: Integration;
   email: string;
   subscriptions: Subscription[];
+  couponInfo: CouponInfo;
 };
 
-const Detail = ({ integration, email, subscriptions }: Props) => {
+const Detail = ({ integration, email, subscriptions, couponInfo }: Props) => {
   const { t } = useTranslation();
 
   const isMobile = useIsMobile();
@@ -125,49 +132,51 @@ const Detail = ({ integration, email, subscriptions }: Props) => {
       >
         <div className="w-full flex flex-col gap-5">
           <PricingPlanProvider pricingPlan={pricingPlan}>
-            <Tabs active={activeTab} onChange={changeTabInUrl}>
-              <Tabs.Item
-                type="credentials"
-                label={
-                  integration.type === IntegrationType.Widgets
-                    ? t("details.credentials.widgets")
-                    : t("details.credentials.title")
-                }
-              >
-                <Credentials {...integration} email={email} />
-              </Tabs.Item>
-              <Tabs.Item
-                type="settings"
-                label={t("details.integration_settings.title")}
-              >
-                <IntegrationSettings
-                  {...integration}
-                  isMobile={isMobile}
-                  onChangeIsFormDirty={handleChangeIsFormDirty}
-                  isKeepChangesDialogVisible={isKeepChangesDialogVisible}
-                  onConfirmLeaveTab={handleConfirmLeaveTab}
-                  onCancelLeaveTab={handleCancelLeaveTab}
-                />
-              </Tabs.Item>
-              <Tabs.Item
-                type="contacts"
-                label={t("details.contact_info.title")}
-              >
-                <ContactInfo {...integration} isMobile={isMobile} />
-              </Tabs.Item>
-              <Tabs.Item
-                type="billing"
-                label={t("details.billing_info.title.billing")}
-              >
-                <BillingInfo {...integration} />
-              </Tabs.Item>
-              <Tabs.Item
-                type="delete"
-                label={t("details.delete_integration.title")}
-              >
-                <DeleteIntegration {...integration} />
-              </Tabs.Item>
-            </Tabs>
+            <CouponInfoProvider couponInfo={couponInfo}>
+              <Tabs active={activeTab} onChange={changeTabInUrl}>
+                <Tabs.Item
+                  type="credentials"
+                  label={
+                    integration.type === IntegrationType.Widgets
+                      ? t("details.credentials.widgets")
+                      : t("details.credentials.title")
+                  }
+                >
+                  <Credentials {...integration} email={email} />
+                </Tabs.Item>
+                <Tabs.Item
+                  type="settings"
+                  label={t("details.integration_settings.title")}
+                >
+                  <IntegrationSettings
+                    {...integration}
+                    isMobile={isMobile}
+                    onChangeIsFormDirty={handleChangeIsFormDirty}
+                    isKeepChangesDialogVisible={isKeepChangesDialogVisible}
+                    onConfirmLeaveTab={handleConfirmLeaveTab}
+                    onCancelLeaveTab={handleCancelLeaveTab}
+                  />
+                </Tabs.Item>
+                <Tabs.Item
+                  type="contacts"
+                  label={t("details.contact_info.title")}
+                >
+                  <ContactInfo {...integration} isMobile={isMobile} />
+                </Tabs.Item>
+                <Tabs.Item
+                  type="billing"
+                  label={t("details.billing_info.title.billing")}
+                >
+                  <BillingInfo {...integration} />
+                </Tabs.Item>
+                <Tabs.Item
+                  type="delete"
+                  label={t("details.delete_integration.title")}
+                >
+                  <DeleteIntegration {...integration} />
+                </Tabs.Item>
+              </Tabs>
+            </CouponInfoProvider>
           </PricingPlanProvider>
         </div>
       </Card>

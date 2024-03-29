@@ -150,7 +150,14 @@
       "contact": "E-mail boekhouding",
       "contact_description": "Dit adres ontvangt de betalinginstructies, -herinneringen en de factuur.",
       "coupon": "Coupon",
-      "total_price": "Total"
+      "price_overview": {
+        "title": "Price overview",
+        "subscription_plan": "Priceplan",
+        "setup": "Setup",
+        "coupon": "Coupon",
+        "plan": "Subscription",
+        "year": "year"
+      }
     },
     "documentation": {
       "title": "Documentation",
@@ -191,7 +198,8 @@
         "postcode": "Postcode",
         "city": "City"
       },
-      "vat": "VAT or company number"
+      "vat": "VAT or company number",
+      "coupon_used": "A coupon of {{price}} has been applied"
     },
     "credentials": {
       "title": "Credentials",
