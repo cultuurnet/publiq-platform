@@ -19,6 +19,38 @@
     "hello": "Hallo",
     "integrations/new": "Integratie toevoegen"
   },
+  "pricing_plan": {
+    "free": {
+      "title": "Free",
+      "price": "Gratis",
+      "description": {
+        "entry-api": "Je staat zelf in voor het bouwen van de koppeling, met ondersteuning van onze documentatie."
+      }
+    },
+    "basic": {
+      "title": "Basic",
+      "price": "{{price}} / jaar",
+      "description": {
+        "search-api": "Je zorgt zelf voor de integratie, terwijl je toegang krijgt tot alle functionaliteiten van de Search API.",
+        "widgets": "Je zorgt zelf voor de setup, terwijl je toegang krijgt tot alle functionaliteiten van de Widgets."
+      }
+    },
+    "plus": {
+      "title": "Plus",
+      "price": "setup: {{fee}}, {{price}} / jaar",
+      "description": {
+        "widgets": "Na een intakegesprek zorgt publiq voor de configuratie & integratie van je widget."
+      }
+    },
+    "custom": {
+      "title": "Custom",
+      "price": "voorstel op maat",
+      "description": {
+        "search-api": "We nemen contact met je op voor een oplossing op maat van jouw use case en doelpubliek.",
+        "widgets": "We nemen contact met je op voor een oplossing op maat van jouw use case en doelpubliek."
+      }
+    }
+  },
   "home": {
     "hero": {
       "title": "Bereik een groter publiek met UiT",
@@ -81,39 +113,7 @@
     "coupon": "Ik heb een coupon",
     "code": "Couponcode",
     "submit": "Integratie aanmaken",
-    "back": "Terug naar integratieoverzicht",
-    "pricing": {
-      "free": {
-        "title": "Free",
-        "price": "Gratis",
-        "description": {
-          "entry-api": "Je staat zelf in voor het bouwen van de koppeling, met ondersteuning van onze documentatie."
-        }
-      },
-      "basic": {
-        "title": "Basic",
-        "price": "{{price}} / jaar",
-        "description": {
-          "search-api": "Je zorgt zelf voor de integratie, terwijl je toegang krijgt tot alle functionaliteiten van de Search API.",
-          "widgets": "Je zorgt zelf voor de setup, terwijl je toegang krijgt tot alle functionaliteiten van de Widgets."
-        }
-      },
-      "plus": {
-        "title": "Plus",
-        "price": "eerste jaar: € 600 nadien: € 280 / jaar",
-        "description": {
-          "widgets": "Na een intakegesprek zorgt publiq voor de configuratie & integratie van je widget."
-        }
-      },
-      "custom": {
-        "title": "Custom",
-        "price": "voorstel op maat",
-        "description": {
-          "search-api": "We nemen contact met je op voor een oplossing op maat van jouw use case en doelpubliek.",
-          "widgets": "We nemen contact met je op voor een oplossing op maat van jouw use case en doelpubliek."
-        }
-      }
-    }
+    "back": "Terug naar integratieoverzicht"
   },
   "integrations": {
     "title": "Mijn integraties",
@@ -150,8 +150,7 @@
       "contact": "E-mail boekhouding",
       "contact_description": "Dit adres ontvangt de betalinginstructies, -herinneringen en de factuur.",
       "coupon": "Coupon",
-      "invalid_coupon": "Invalid coupon",
-      "already_used_coupon": "Coupon is already used"
+      "total_price": "Totaal"
     },
     "documentation": {
       "title": "Documentatie",
@@ -363,5 +362,10 @@
         "description": "We hebben je een welkomst-e-mail gestuurd."
       }
     }
+  },
+  "error": {
+    "title": "Oeps! Er ging iets mis.",
+    "description": "Het spijt ons, maar er lijkt een probleem te zijn aan onze kant. Ons team is op de hoogte gebracht en we werken eraan om dit zo snel mogelijk op te lossen. Probeer de pagina over een paar minuten te vernieuwen. Als het probleem zich blijft voordoen, neem dan gerust contact op met ons op <0>technical-support@publiq.be</0>. Wij stellen uw begrip en geduld op prijs.",
+    "back": "Terug"
   }
 }
