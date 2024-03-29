@@ -3,6 +3,7 @@ import { classNames } from "../utils/classNames";
 import { useTranslation } from "react-i18next";
 import { usePage } from "@inertiajs/react";
 import { useTranslateRoute } from "../hooks/useTranslateRoute";
+import { Integration } from "../Pages/Integrations/Index";
 
 export type WidgetConfigVariables = {
   profileUrl: string;
@@ -18,6 +19,7 @@ export const UitIdWidget = ({
   const { i18n } = useTranslation();
   const translateRoute = useTranslateRoute();
   const { component } = usePage();
+  const { props } = usePage();
   const widgetUrl = import.meta.env.VITE_UITID_WIDGET_URL;
 
   const widgetConfig = useMemo(
@@ -49,6 +51,8 @@ export const UitIdWidget = ({
     [auth0Domain, profileUrl, registerUrl, widgetUrl]
   );
 
+  const id = props.integration ? (props.integration as Integration).id : "";
+
   const currentPage = useMemo(
     () =>
       component
@@ -77,7 +81,7 @@ export const UitIdWidget = ({
           <div className="flex gap-2">
             <a
               className={classNames(i18n.language === "nl" && "active")}
-              href={`${translateRoute(`/${currentPage}`, "nl")}?setLocale=true`}
+              href={`${translateRoute(`/${currentPage}`, "nl", id)}?setLocale=true`}
             >
               NL
             </a>
@@ -88,7 +92,7 @@ export const UitIdWidget = ({
             ></div>
             <a
               className={classNames(i18n.language === "en" && "active")}
-              href={`${translateRoute(`/${currentPage}`, "en")}?setLocale=true`}
+              href={`${translateRoute(`/${currentPage}`, "en", id)}?setLocale=true`}
             >
               EN
             </a>
