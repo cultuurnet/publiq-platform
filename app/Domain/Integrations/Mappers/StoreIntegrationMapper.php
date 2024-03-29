@@ -47,7 +47,6 @@ final class StoreIntegrationMapper
             $currentUser->lastName()
         );
 
-
         return (new Integration(
             $integrationId,
             IntegrationType::from($request->input('integrationType')),
