@@ -285,6 +285,16 @@ final class IntegrationController extends Controller
         return $this->contactKeyVisibilityRepository->findByEmail($contributor->email);
     }
 
+    private function hasCouponBeenUsed(UuidInterface $integrationId): bool
+    {
+        try {
+            $coupon = $this->couponRepository->getByIntegrationId($integrationId);
+            return $coupon->isDistributed;
+        } catch (ModelNotFoundException) {
+            return false;
+        }
+    }
+
     private function guardCoupon(Request $request): ?RedirectResponse
     {
         if (!$request->filled('coupon')) {
