@@ -1,5 +1,7 @@
-import React, { ComponentPropsWithoutRef, Ref } from "react";
-import { Link as InertiaLink, InertiaLinkProps } from "@inertiajs/react";
+import type { ComponentPropsWithoutRef, Ref } from "react";
+import React from "react";
+import type { InertiaLinkProps } from "@inertiajs/react";
+import { Link as InertiaLink } from "@inertiajs/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { classNames } from "../utils/classNames";

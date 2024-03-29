@@ -1,4 +1,4 @@
-import { ContactType } from "./ContactType";
+import type { ContactType } from "./ContactType";
 
 export type Contact = {
   id: string;

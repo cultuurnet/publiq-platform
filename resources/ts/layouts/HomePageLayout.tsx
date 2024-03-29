@@ -1,4 +1,5 @@
-import React, { ReactNode } from "react";
+import type { ReactNode } from "react";
+import React from "react";
 import Footer from "../Components/Footer";
 
 const Main = ({ children }: { children: ReactNode }) => {

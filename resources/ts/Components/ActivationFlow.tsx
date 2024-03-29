@@ -1,11 +1,11 @@
 import React, { useContext, useState } from "react";
-import { IntegrationStatus } from "../types/IntegrationStatus";
+import type { IntegrationStatus } from "../types/IntegrationStatus";
 import { router } from "@inertiajs/react";
 import { ActivationDialog } from "./ActivationDialog";
-import { Values } from "../types/Values";
-import { IntegrationType } from "../types/IntegrationType";
+import type { Values } from "../types/Values";
+import type { IntegrationType } from "../types/IntegrationType";
 import { ActivationRequest } from "./ActivationRequest";
-import { Subscription } from "../types/Subscription";
+import type { Subscription } from "../types/Subscription";
 import { PricingPlanContext } from "../Context/PricingPlan";
 
 type Props = {
