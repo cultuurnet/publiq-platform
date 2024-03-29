@@ -281,17 +281,20 @@ final class IntegrationController extends Controller
 
     private function guardCoupon(Request $request): ?RedirectResponse
     {
-        if ($request->filled('coupon')) {
-            try {
-                $coupon = $this->couponRepository->getByCode($request->input('coupon'));
-                if ($coupon->isDistributed) {
-                    return Redirect::back()->withErrors(['coupon' => __('errors.coupon.already_used')]);
-                }
-            } catch (ModelNotFoundException) {
-                return Redirect::back()->withErrors([
-                    'coupon' => __('errors.coupon.invalid'),
-                ]);
-            }
+        if (!$request->filled('coupon')) {
+            return null;
+        }
+
+        try {
+            $coupon = $this->couponRepository->getByCode($request->input('coupon'));
+        } catch (ModelNotFoundException) {
+            return Redirect::back()->withErrors([
+                'coupon' => __('errors.coupon.invalid'),
+            ]);
+        }
+
+        if ($coupon->isDistributed) {
+            return Redirect::back()->withErrors(['coupon' => __('errors.coupon.already_used')]);
         }
 
         return null;
