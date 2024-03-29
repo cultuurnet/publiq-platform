@@ -1,4 +1,5 @@
-import React, { ComponentProps, ReactNode } from "react";
+import type { ComponentProps, ReactNode } from "react";
+import React from "react";
 import { ButtonIcon } from "./ButtonIcon";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { classNames } from "../utils/classNames";

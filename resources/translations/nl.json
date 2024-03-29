@@ -199,7 +199,7 @@
         "city": "Gemeente"
       },
       "vat": "BTW of ondernemingsnummer",
-      "coupon_used": "Een coupon van {{price}} is toegepast"
+      "coupon_used": "Er is een coupon actief op deze integratie die een korting van {{price}} op de abonnementsprijs geeft."
     },
     "credentials": {
       "title": "Credentials",

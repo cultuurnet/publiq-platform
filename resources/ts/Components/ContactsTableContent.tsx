@@ -1,5 +1,6 @@
-import React, { ComponentProps } from "react";
-import { ContactsTableProps } from "./ContactsTable";
+import type { ComponentProps } from "react";
+import React from "react";
+import type { ContactsTableProps } from "./ContactsTable";
 import { classNames } from "../utils/classNames";
 import { ButtonIcon } from "./ButtonIcon";
 import { faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";

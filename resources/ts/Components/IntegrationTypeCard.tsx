@@ -1,6 +1,6 @@
 import React from "react";
 import { Card } from "./Card";
-import { IntegrationTypesInfo } from "./IntegrationTypes";
+import type { IntegrationTypesInfo } from "./IntegrationTypes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheckSquare,
