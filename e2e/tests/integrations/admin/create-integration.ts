@@ -1,4 +1,4 @@
-import { Page, expect } from "@playwright/test";
+import { Page } from "@playwright/test";
 import { fakerNL_BE as faker } from "@faker-js/faker";
 
 export const ContactTypes = {
@@ -36,33 +36,5 @@ export const ContactTypes = {
       .getByTestId("subscriptions")
       .selectOption(IntegrationTypeSubscriptionMap[type]);
     await page.getByRole("button", { name: "Create Integration" }).click();
-    await expect(
-      page.locator("h1").getByText(`Integration Details: ${name}`)
-    ).toBeVisible();
-    return page;
+    return {name, page};
   }
-
-  export async function createOrganization(page: Page) {
-    await page.goto("/admin");
-    await page.getByRole("link", { name: "Organizations" }).click();
-    await page.getByRole("link", { name: "Create Organization" }).click();
-    const organizationName = faker.company.name()
-    await page.getByPlaceholder("Name").fill(organizationName);
-    await page.getByPlaceholder("Street").fill(faker.location.streetAddress());
-    await page.getByPlaceholder("City").fill(faker.location.city());
-    await page.getByPlaceholder("Zip").fill(faker.location.zipCode('####'));
-    await page.getByPlaceholder("Country").fill(faker.location.country());
-    await page
-      .getByPlaceholder("Invoice Email")
-      .fill(faker.internet.email());
-    await page.getByPlaceholder("Vat").fill("BE 0475 250 609");
-    await page.getByRole("button", { name: "Create Organization" }).click();
-    await expect(
-      page
-        .locator("h1")
-        .getByText(`Organization Details: ${organizationName}`)
-    ).toBeVisible();
-    return page;
-  }
-  
-  

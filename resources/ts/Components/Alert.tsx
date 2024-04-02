@@ -1,23 +1,23 @@
 import React from "react";
-import { ComponentProps } from "react";
+import type { ComponentProps } from "react";
 import { classNames } from "../utils/classNames";
 import { Heading } from "./Heading";
 import { ButtonIcon } from "./ButtonIcon";
+import type { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import {
   faXmark,
   faTriangleExclamation,
   faCircleCheck,
   faBell,
-  IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type Variant = "error" | "success" | "info";
 
 const variantToAlertStyle: Record<Variant, string> = {
-  error: "bg-status-red border border-status-red-dark",
-  success: "bg-status-green border border-status-green-medium",
-  info: "bg-status-blue border border-status-blue-medium",
+  error: "bg-alert-error border border-alert-error-dark",
+  success: "bg-alert-success border border-alert-success-dark",
+  info: "bg-alert-info border border-alert-info-dark",
 };
 
 const variantToIcon: Record<Variant, IconDefinition> = {
@@ -27,15 +27,15 @@ const variantToIcon: Record<Variant, IconDefinition> = {
 };
 
 const variantToIconColor: Record<Variant, string> = {
-  error: "text-status-red-dark",
-  success: "text-status-green-dark",
-  info: "text-status-blue-dark",
+  error: "text-alert-error-dark",
+  success: "text-alert-success-dark",
+  info: "text-alert-info-dark",
 };
 
 const variantToHeadingStyle: Record<Variant, string> = {
-  error: "text-status-red-dark",
-  success: "text-status-green-dark",
-  info: "text-status-blue-dark",
+  error: "text-publiq-gray",
+  success: "text-publiq-gray",
+  info: "text-publiq-gray",
 };
 
 type Props = ComponentProps<"div"> & {
@@ -64,18 +64,18 @@ export const Alert = ({
     <div
       {...props}
       className={classNames(
-        "flex gap-3 justify-between items-start rounded-md p-4",
+        "flex gap-3 justify-between items-center rounded-md p-2",
         variantToAlertStyle[variant],
         className
       )}
     >
-      <div className={"flex gap-3 items-start"}>
+      <div className="flex gap-3 items-start pl-2">
         <FontAwesomeIcon
           icon={variantToIcon[variant]}
           className={variantToIconColor[variant]}
           size="lg"
         />
-        <section className={"flex flex-col"}>
+        <section className="flex flex-col">
           {title && (
             <Heading
               level={5}
@@ -87,7 +87,7 @@ export const Alert = ({
               {title}
             </Heading>
           )}
-          <div className={`flex flex-col items-start text-sm max-w-2xl`}>
+          <div className="flex flex-col items-start text-sm max-w-2xl">
             {children}
           </div>
         </section>

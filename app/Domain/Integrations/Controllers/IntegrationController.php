@@ -9,9 +9,8 @@ use App\Domain\Auth\CurrentUser;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\ContactKeyVisibilityRepository;
 use App\Domain\Contacts\Repositories\ContactRepository;
+use App\Domain\Coupons\Coupon;
 use App\Domain\Coupons\Repositories\CouponRepository;
-use App\Domain\Integrations\FormRequests\ActivateWithCouponRequest;
-use App\Domain\Integrations\FormRequests\CreateOrganizationRequest;
 use App\Domain\Integrations\FormRequests\RequestActivationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationUrlRequest;
@@ -47,6 +46,7 @@ use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use Throwable;
 
 final class IntegrationController extends Controller
@@ -80,7 +80,7 @@ final class IntegrationController extends Controller
         $uitidV1Consumers = $this->uitidV1ConsumerRepository->getByIntegrationIds($integrationIds);
 
         return Inertia::render('Integrations/Index', [
-            'integrations' => $integrationsData->collection,
+            'integrations' => $integrationsData->collection->map(fn (Integration $integration) => $integration->toArray()),
             'credentials' => [
                 'auth0' => $auth0Clients,
                 'uitidV1' => $uitidV1Consumers,
@@ -99,9 +99,19 @@ final class IntegrationController extends Controller
 
     public function store(StoreIntegrationRequest $request): RedirectResponse
     {
+        $guardCouponResult = $this->guardCoupon($request);
+        if ($guardCouponResult !== null) {
+            return $guardCouponResult;
+        }
+
         $integration = StoreIntegrationMapper::map($request, $this->currentUser);
         $integration = $integration->withKeyVisibility($this->getKeyVisibility($integration));
-        $this->integrationRepository->save($integration);
+
+        if ($request->filled('coupon')) {
+            $this->integrationRepository->saveWithCoupon($integration, $request->input('coupon'));
+        } else {
+            $this->integrationRepository->save($integration);
+        }
 
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
@@ -140,10 +150,9 @@ final class IntegrationController extends Controller
         try {
             $integration = $this->integrationRepository->getById(Uuid::fromString($id));
             $subscription = $this->subscriptionRepository->getById($integration->subscriptionId);
-            $contacts = $this->contactRepository->getByIntegrationId(UUid::fromString($id));
-            $authClients = $this->auth0ClientRepository->getByIntegrationId(UUid::fromString($id));
-            $legacyAuthConsumers = $this->uitidV1ConsumerRepository->getByIntegrationId(UUid::fromString($id));
-
+            $contacts = $this->contactRepository->getByIntegrationId(Uuid::fromString($id));
+            $authClients = $this->auth0ClientRepository->getByIntegrationId(Uuid::fromString($id));
+            $legacyAuthConsumers = $this->uitidV1ConsumerRepository->getByIntegrationId(Uuid::fromString($id));
         } catch (Throwable) {
             abort(404);
         }
@@ -159,6 +168,11 @@ final class IntegrationController extends Controller
                 'legacyAuthConsumers' => $legacyAuthConsumers,
             ],
             'email' => Auth::user()?->email,
+            'subscriptions' => $this->subscriptionRepository->all(),
+            'couponInfo' => [
+                'isUsed' => $this->hasCouponBeenUsed(Uuid::fromString($id)),
+                'reductionAmount' => Coupon::REDUCTION_AMOUNT,
+            ],
         ]);
     }
 
@@ -240,55 +254,15 @@ final class IntegrationController extends Controller
 
     public function requestActivation(string $id, RequestActivationRequest $request): RedirectResponse
     {
-        if ($request->has('coupon')) {
-            try {
-                $coupon = $this->couponRepository->getByCode($request->input('coupon'));
-                if ($coupon->isDistributed) {
-                    return Redirect::back()->withErrors(['coupon' => 'Coupon is already used']);
-                }
-            } catch (ModelNotFoundException) {
-                return Redirect::back()->withErrors([
-                    'coupon' => 'Invalid coupon',
-                ]);
-            }
+        $guardCouponResult = $this->guardCoupon($request);
+        if ($guardCouponResult !== null) {
+            return $guardCouponResult;
         }
 
         $organization = OrganizationMapper::mapActivationRequest($request);
         $this->organizationRepository->save($organization);
 
         $this->integrationRepository->requestActivation(Uuid::fromString($id), $organization->id, $request->input('coupon'));
-
-        return Redirect::back();
-    }
-
-    // @deprecated
-    public function activateWithCoupon(string $id, ActivateWithCouponRequest $request): RedirectResponse
-    {
-        try {
-            $coupon = $this->couponRepository->getByCode($request->input('coupon'));
-            if ($coupon->isDistributed) {
-                return Redirect::back()->withErrors(['coupon' => 'Coupon is already used']);
-            }
-
-            $this->integrationRepository->activateWithCouponCode(Uuid::fromString($id), $request->input('coupon'));
-
-            return Redirect::back();
-
-        } catch (ModelNotFoundException $exception) {
-            return Redirect::back()->withErrors([
-                'coupon' => 'Invalid coupon',
-            ]);
-        }
-    }
-
-    // @deprecated
-    public function activateWithOrganization(string $id, CreateOrganizationRequest $request): RedirectResponse
-    {
-        $organization = OrganizationMapper::mapCreate($request);
-
-        $this->organizationRepository->save($organization);
-
-        $this->integrationRepository->activateWithOrganization(Uuid::fromString($id), $organization->id);
 
         return Redirect::back();
     }
@@ -309,5 +283,36 @@ final class IntegrationController extends Controller
         }
 
         return $this->contactKeyVisibilityRepository->findByEmail($contributor->email);
+    }
+
+    private function hasCouponBeenUsed(UuidInterface $integrationId): bool
+    {
+        try {
+            $coupon = $this->couponRepository->getByIntegrationId($integrationId);
+            return $coupon->isDistributed;
+        } catch (ModelNotFoundException) {
+            return false;
+        }
+    }
+
+    private function guardCoupon(Request $request): ?RedirectResponse
+    {
+        if (!$request->filled('coupon')) {
+            return null;
+        }
+
+        try {
+            $coupon = $this->couponRepository->getByCode($request->input('coupon'));
+        } catch (ModelNotFoundException) {
+            return Redirect::back()->withErrors([
+                'coupon' => __('errors.coupon.invalid'),
+            ]);
+        }
+
+        if ($coupon->isDistributed) {
+            return Redirect::back()->withErrors(['coupon' => __('errors.coupon.already_used')]);
+        }
+
+        return null;
     }
 }

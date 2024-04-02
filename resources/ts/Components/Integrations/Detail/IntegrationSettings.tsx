@@ -2,15 +2,16 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ButtonPrimary } from "../../ButtonPrimary";
 import { useForm } from "@inertiajs/react";
-import { Integration } from "../../../Pages/Integrations/Index";
+import type { Integration } from "../../../Pages/Integrations/Index";
 import { IntegrationUrlType } from "../../../types/IntegrationUrlType";
 import { UrlList } from "./UrlList";
-import { IntegrationUrl } from "../../../Pages/Integrations/Index";
 import { BasicInfo } from "./BasicInfo";
 import { IntegrationType } from "../../../types/IntegrationType";
 import { Alert } from "../../Alert";
 import { Environment } from "../../../types/Environment";
 import { QuestionDialog } from "../../QuestionDialog";
+import { KeyVisibility } from "../../../types/KeyVisibility";
+import type { IntegrationUrl } from "../../../types/IntegrationUrl";
 
 export const NEW_URL_ID_PREFIX = "new-";
 
@@ -99,6 +100,7 @@ export const IntegrationSettings = ({
   type,
   description,
   urls,
+  keyVisibility,
   onChangeIsFormDirty,
   isKeepChangesDialogVisible,
   onConfirmLeaveTab,
@@ -248,6 +250,7 @@ export const IntegrationSettings = ({
       />
 
       {type !== IntegrationType.Widgets &&
+        keyVisibility !== KeyVisibility.v1 &&
         Object.values(IntegrationUrlType).map((type) => (
           <UrlList
             key={type}
