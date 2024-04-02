@@ -7,7 +7,6 @@ use App\Domain\Auth\Controllers\LoginController;
 use App\Domain\Auth\Controllers\LogoutController;
 use App\Domain\Integrations\Controllers\IntegrationController;
 use App\Domain\Newsletter\Controllers\NewsletterController;
-use App\Domain\Subscriptions\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
 use App\Router\TranslatedRoute;
 use App\Http\Controllers\HomeController;
@@ -51,14 +50,6 @@ Route::group(['middleware' => 'auth'], static function () {
     Route::post('/support/slack', [SupportController::class, 'sendInvitation']);
 });
 
-TranslatedRoute::get(
-    [
-        '/en/subscriptions',
-        '/nl/abonnementen',
-    ],
-    [SubscriptionController::class, 'index']
-);
-
 Route::group(['middleware' => 'auth'], static function () {
     TranslatedRoute::get(
         [
@@ -101,11 +92,6 @@ Route::group(['middleware' => 'auth'], static function () {
         Route::patch('/integrations/{id}/organization', [IntegrationController::class, 'updateOrganization']);
 
         Route::post('/integrations/{id}/activation', [IntegrationController::class, 'requestActivation']);
-
-        // @deprecated
-        Route::post('/integrations/{id}/coupon', [IntegrationController::class, 'activateWithCoupon']);
-        // @deprecated
-        Route::post('/integrations/{id}/organization', [IntegrationController::class, 'activateWithOrganization']);
 
         Route::get('/integrations/{id}/widget', [IntegrationController::class, 'showWidget']);
     });

@@ -1,4 +1,5 @@
-import React, { ReactNode } from "react";
+import type { ReactNode } from "react";
+import React from "react";
 import Layout from "../../layouts/Layout";
 import { SupportTypes } from "../../Components/SupportTypes";
 import { Heading } from "../../Components/Heading";

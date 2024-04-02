@@ -1,9 +1,11 @@
-import React, { ReactNode } from "react";
+import type { ReactNode } from "react";
+import React from "react";
 import Header from "../Components/Header";
 import HeaderMobile from "../Components/HeaderMobile";
 import Footer from "../Components/Footer";
 import { usePage, Head } from "@inertiajs/react";
-import { UitIdWidget, WidgetConfigVariables } from "../Components/UitIdWidget";
+import type { WidgetConfigVariables } from "../Components/UitIdWidget";
+import { UitIdWidget } from "../Components/UitIdWidget";
 
 const Main = ({ children }: { children: ReactNode }) => (
   <main className={"flex flex-col items-center w-full pt-6"}>{children}</main>

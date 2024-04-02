@@ -142,7 +142,7 @@ return [
         'string' => ':Attribute moet :size karakters lang zijn.',
     ],
     'starts_with' => ':Attribute moet beginnen met één van het volgende: :values',
-    'string' => ':Attribute moet een string zijn.',
+    'string' => ':Attribute mag niet leeg zijn.',
     'timezone' => ':Attribute moet een geldige tijdszone zijn.',
     'unique' => ':Attribute is al bezet.',
     'uploaded' => 'Het uploaden van :attribute is mislukt.',
@@ -198,6 +198,7 @@ return [
         'organization.address.street' => 'straat',
         'organization.address.zip' => 'postcode',
         'organization.address.city' => 'gemeente',
+        'organization.vat' => 'BTW of ondernemingsnummer',
     ],
 
 ];
