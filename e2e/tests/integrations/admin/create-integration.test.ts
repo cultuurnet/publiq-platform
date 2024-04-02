@@ -1,7 +1,6 @@
 import { Page, expect, test } from "@playwright/test";
 import { faker } from "@faker-js/faker";
-import { ContactType, ContactTypes, IntegrationTypes, createIntegration } from "./helpers";
-
+import { ContactType, ContactTypes, IntegrationTypes, createIntegration } from "./create-integration";
 
 async function addContactToIntegration(type: ContactType, integrationId: string, page: Page) {
   const contributrorEmail = faker.internet.email();
@@ -30,7 +29,12 @@ test.use({ storageState: "playwright/.auth/admin.json" });
 test("create a new integration as an admin (with functional, technical and contributor contact)", async ({
   page,
 }) => {
-  const integrationPage = await createIntegration(IntegrationTypes.SEARCH_API, page);
+  const { page: integrationPage, name: integrationName} = await createIntegration(IntegrationTypes.SEARCH_API, page);
+
+  await expect(
+    page.locator("h1").getByText(`Integration Details: ${integrationName}`)
+  ).toBeVisible();
+
   const url = integrationPage.url();
   const integrationId = url.split("/").pop();
 

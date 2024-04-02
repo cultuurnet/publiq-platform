@@ -1,17 +1,18 @@
 import { expect, test } from "@playwright/test";
-import { IntegrationTypes, createIntegration, createOrganization } from "./helpers.ts";
+import { IntegrationTypes, createIntegration } from "./create-integration.ts";
+import { createOrganization } from "./create-organization.ts";
 
 test.use({ storageState: "playwright/.auth/admin.json" });
 
 test("As an admin I can activate an integration", async ({ page }) => {
 
   // create organization
-  const organizationPage = await createOrganization(page);
+  const { page: organizationPage} = await createOrganization(page);
   const organizationUrl = organizationPage.url();
   const organizationId = organizationUrl.split("/").pop();
 
   // create integration
-  const integrationPage = await createIntegration(
+  const {page: integrationPage } = await createIntegration(
     IntegrationTypes.SEARCH_API,
     page
   );
