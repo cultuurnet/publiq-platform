@@ -13,13 +13,11 @@ use App\Domain\Integrations\Models\IntegrationModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
-use Tests\CreatesApplication;
 use Tests\TestCase;
 
 final class IntegrationModelTest extends TestCase
 {
     use RefreshDatabase;
-    use CreatesApplication;
 
     private IntegrationModel $integrationModel;
 

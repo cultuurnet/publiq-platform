@@ -7,6 +7,7 @@ namespace App\Console\Commands\Migrations;
 use App\Domain\Auth\Models\UserModel;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
+use App\Domain\Contacts\Repositories\ContactKeyVisibilityRepository;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Events\IntegrationActivated;
@@ -55,6 +56,7 @@ final class MigrateProjects extends Command
         private readonly InsightlyMappingRepository $insightlyMappingRepository,
         private readonly UiTiDv1ConsumerRepository $uiTiDv1ConsumerRepository,
         private readonly SubscriptionRepository $subscriptionRepository,
+        private readonly ContactKeyVisibilityRepository $contactKeyVisibilityRepository,
         private readonly InsightlyClient $insightlyClient
     ) {
         parent::__construct();
@@ -225,6 +227,7 @@ final class MigrateProjects extends Command
 
         $contact = $this->getContactFromInInsightly($integrationId, $contactId, $insightlyContact->insightlyId);
         $this->contactRepository->save($contact);
+        $this->contactKeyVisibilityRepository->save($contact->email, KeyVisibility::v1);
     }
 
     private function migrateKeys(UuidInterface $integrationId, MigrationProject $migrationProject): void
