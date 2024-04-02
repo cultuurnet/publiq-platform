@@ -1,12 +1,7 @@
-import React, {
-  cloneElement,
-  ComponentProps,
-  memo,
-  ReactElement,
-  useId,
-} from "react";
+import type { ComponentProps, ReactElement } from "react";
+import React, { cloneElement, memo, useId } from "react";
 import { classNames } from "../utils/classNames";
-import { Theme } from "../types/Theme";
+import type { Theme } from "../types/Theme";
 
 export type LabelPosition = keyof typeof InputStyle;
 type LabelSize = keyof Theme["fontSize"];
@@ -41,21 +36,30 @@ type LabelProps = ComponentProps<"label"> & {
   id: string;
   label: string | ReactElement;
   labelSize: LabelSize;
+  required: boolean;
   labelWeight?: LabelWeight;
 };
 
 const Label = memo(
-  ({ id, labelSize, labelWeight = "medium", label, className }: LabelProps) => (
+  ({
+    id,
+    labelSize,
+    labelWeight = "medium",
+    label,
+    required,
+    className,
+  }: LabelProps) => (
     <label
       htmlFor={id}
       className={classNames(
-        "cursor-pointer",
+        "inline-flex items-center gap-1 cursor-pointer",
         `font-${labelWeight}`,
         labelSize ? `text-${labelSize}` : "",
         className
       )}
     >
       {label}
+      {required && <span className="text-status-red-dark">*</span>}
     </label>
   )
 );
@@ -78,6 +82,7 @@ type Props = {
   info?: string;
   component: ReactElement;
   elementId?: string;
+  required?: boolean;
 } & ComponentProps<"div">;
 
 export const FormElement = ({
@@ -90,6 +95,7 @@ export const FormElement = ({
   info,
   elementId,
   className,
+  required = false,
 }: Props) => {
   const id = useId();
 
@@ -113,6 +119,7 @@ export const FormElement = ({
                 labelSize={labelSize}
                 labelWeight={labelWeight}
                 className={classNames(labelPosition === "left" ? "w-40" : "")}
+                required={required}
               />
             )}
             <div className={InputStyle[labelPosition]}>{clonedComponent}</div>

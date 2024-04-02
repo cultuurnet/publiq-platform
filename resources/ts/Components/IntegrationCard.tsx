@@ -13,11 +13,11 @@ import {
   integrationIconClasses,
   useIntegrationTypesInfo,
 } from "./IntegrationTypes";
-import { IconSearchApi } from "./icons/IconSearchApi";
+import type { IconSearchApi } from "./icons/IconSearchApi";
 import { ActivationRequest } from "./ActivationRequest";
 import { IntegrationType } from "../types/IntegrationType";
 import { CopyText } from "./CopyText";
-import { Credentials } from "./Integrations/Detail/Credentials";
+import type { Credentials } from "./Integrations/Detail/Credentials";
 
 type Props = Integration &
   Credentials & {

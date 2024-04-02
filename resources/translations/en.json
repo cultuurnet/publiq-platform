@@ -19,6 +19,38 @@
     "hello": "Hello",
     "integrations/new": "Add integration"
   },
+  "pricing_plan": {
+    "free": {
+      "title": "Free",
+      "price": "Free",
+      "description": {
+        "entry-api": "You are responsible for building the integration yourself, with support from our documentation."
+      }
+    },
+    "basic": {
+      "title": "Basic",
+      "price": "{{price}} / year",
+      "description": {
+        "search-api": "You handle the setup yourself while gaining access to all the functionalities of the Search API.",
+        "widgets": "You handle the setup yourself while gaining access to all the functionalities of the Widgets."
+      }
+    },
+    "plus": {
+      "title": "Plus",
+      "price": "setup: {{fee}}, {{price}} / year",
+      "description": {
+        "widgets": "After an intake interview, publiq takes care of the configuration of your widget."
+      }
+    },
+    "custom": {
+      "title": "Custom",
+      "price": "custom proposal",
+      "description": {
+        "search-api": "We will contact you for a tailored solution that meets your use case and target audience.",
+        "widgets": "We will contact you for a tailored solution that meets your use case and target audience."
+      }
+    }
+  },
   "home": {
     "hero": {
       "title": "Reach a broader audience with UiT",
@@ -81,39 +113,7 @@
     "coupon": "I have a coupon",
     "code": "Coupon code",
     "submit": "Create integration",
-    "back": "Back to integration overview",
-    "pricing": {
-      "free": {
-        "title": "Free",
-        "price": "Free",
-        "description": {
-          "entry-api": "You are responsible for building the integration yourself, with support from our documentation."
-        }
-      },
-      "basic": {
-        "title": "Basic",
-        "price": "{{price}} / year",
-        "description": {
-          "search-api": "You handle the setup yourself while gaining access to all the functionalities of the Search API.",
-          "widgets": "You handle the setup yourself while gaining access to all the functionalities of the Widgets."
-        }
-      },
-      "plus": {
-        "title": "Plus",
-        "price": "first year: € 600, thereafter: € 280 / year",
-        "description": {
-          "widgets": "After an intake interview, publiq takes care of the configuration of your widget."
-        }
-      },
-      "custom": {
-        "title": "Custom",
-        "price": "custom proposal",
-        "description": {
-          "search-api": "We will contact you for a tailored solution that meets your use case and target audience.",
-          "widgets": "We will contact you for a tailored solution that meets your use case and target audience."
-        }
-      }
-    }
+    "back": "Back to integration overview"
   },
   "integrations": {
     "title": "My integrations",
@@ -150,8 +150,14 @@
       "contact": "E-mail boekhouding",
       "contact_description": "Dit adres ontvangt de betalinginstructies, -herinneringen en de factuur.",
       "coupon": "Coupon",
-      "invalid_coupon": "Invalid coupon",
-      "alrady_used_coupon": "Coupon is already used"
+      "price_overview": {
+        "title": "Price overview",
+        "subscription_plan": "Priceplan",
+        "setup": "Setup",
+        "coupon": "Coupon",
+        "plan": "Subscription",
+        "year": "year"
+      }
     },
     "documentation": {
       "title": "Documentation",
@@ -192,7 +198,8 @@
         "postcode": "Postcode",
         "city": "City"
       },
-      "vat": "VAT or company number"
+      "vat": "VAT or company number",
+      "coupon_used": "A coupon of {{price}} has been applied"
     },
     "credentials": {
       "title": "Credentials",
@@ -284,7 +291,7 @@
       "description": "Have questions after reading our documentation? We're here to help. Reach us quickly through our support channel on Slack.",
       "img_url": "#",
       "action_title": "Go to Slack channel",
-      "action_url": "https://cultuurnet.slack.com/channels/udb-json-api",
+      "action_url": "https://cultuurnet.slack.com/channels/technical-support-publiq",
       "invitation": "Request access"
     },
     "customized_support": {
@@ -361,5 +368,10 @@
         "description": "We have sent you a welcome email."
       }
     }
+  },
+  "error": {
+    "title": "Oops! Something went Wrong.",
+    "description": "We're sorry, but there seems to be a problem on our end. Our team has been notified, and we're working to fix this as quickly as possible. Please try refreshing the page in a few minutes. If the problem persists, feel free to contact us at <0>technical-support@publiq.be</0> for assistance. We appreciate your understanding and patience.",
+    "back": "Back"
   }
 }

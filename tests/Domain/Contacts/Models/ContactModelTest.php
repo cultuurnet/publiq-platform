@@ -16,13 +16,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
-use Tests\CreatesApplication;
-use Illuminate\Foundation\Testing\TestCase;
+use Tests\TestCase;
 
 final class ContactModelTest extends TestCase
 {
     use RefreshDatabase;
-    use CreatesApplication;
 
     private ContactModel $contactModel;
 

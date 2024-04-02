@@ -1,3 +1,3 @@
-import theme from "tailwindcss/defaultTheme";
+import type theme from "tailwindcss/defaultTheme";
 
 export type Theme = typeof theme;

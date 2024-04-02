@@ -4,8 +4,16 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\FormRequests;
 
+use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\App;
+use Ramsey\Uuid\Uuid;
 
+/**
+ * @property string $id
+ */
 final class RequestActivationRequest extends FormRequest
 {
     /**
@@ -13,11 +21,28 @@ final class RequestActivationRequest extends FormRequest
      */
     public function rules(): array
     {
-        return array_merge(
-            (new CreateOrganizationRequest())->rules(),
-            [
-                'coupon' => ['nullable', 'string', 'max:255'],
-            ]
-        );
+        $rules = collect([
+            ...(new CreateOrganizationRequest())->rules(),
+            'coupon' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        if (!$this->isAccountingInfoRequired()) {
+            $rules->forget(['organization.invoiceEmail', 'organization.vat', 'coupon']);
+        }
+
+        return $rules->toArray();
+    }
+
+    private function isAccountingInfoRequired(): bool
+    {
+        /** @var IntegrationRepository $integrationRepository */
+        $integrationRepository = App::get(IntegrationRepository::class);
+        $integration = $integrationRepository->getById(Uuid::fromString($this->id));
+
+        /** @var SubscriptionRepository $subscriptionRepository */
+        $subscriptionRepository = App::get(SubscriptionRepository::class);
+        $subscription = $subscriptionRepository->getById($integration->subscriptionId);
+
+        return $integration->type !== IntegrationType::EntryApi || $subscription->price > 0.0;
     }
 }
