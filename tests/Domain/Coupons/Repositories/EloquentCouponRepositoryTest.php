@@ -8,11 +8,14 @@ use App\Domain\Coupons\Coupon;
 use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Coupons\Repositories\EloquentCouponRepository;
 use Illuminate\Database\QueryException;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
 final class EloquentCouponRepositoryTest extends TestCase
 {
+    use RefreshDatabase;
+
     private EloquentCouponRepository $couponRepository;
 
     protected function setUp(): void

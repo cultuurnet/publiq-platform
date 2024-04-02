@@ -30,6 +30,7 @@ use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Domain\Subscriptions\Subscription;
 use App\Domain\Subscriptions\SubscriptionCategory;
 use App\ProjectAanvraag\ProjectAanvraagUrl;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
@@ -40,6 +41,8 @@ use Tests\TestCase;
 
 final class IntegrationControllerTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_it_can_store_an_integration(): void
     {
         $systemUser = UserModel::createSystemUser();

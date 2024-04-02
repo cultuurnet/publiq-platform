@@ -7,11 +7,14 @@ namespace Tests\UiTiDv1\Repositories;
 use App\UiTiDv1\Repositories\EloquentUiTiDv1ConsumerRepository;
 use App\UiTiDv1\UiTiDv1Consumer;
 use App\UiTiDv1\UiTiDv1Environment;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
 final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
 {
+    use RefreshDatabase;
+
     private EloquentUiTiDv1ConsumerRepository $repository;
 
     protected function setUp(): void

@@ -8,11 +8,14 @@ use App\Insightly\InsightlyMapping;
 use App\Insightly\Models\InsightlyMappingModel;
 use App\Insightly\Repositories\EloquentInsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
 final class EloquentInsightlyMappingRepositoryTest extends TestCase
 {
+    use RefreshDatabase;
+
     private EloquentInsightlyMappingRepository $insightlyMappingRepository;
 
     private InsightlyMapping $opportunityMapping;
