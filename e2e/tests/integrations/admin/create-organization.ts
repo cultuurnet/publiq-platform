@@ -1,4 +1,4 @@
-import { Page, expect } from "@playwright/test";
+import type { Page } from "@playwright/test";
 import { fakerNL_BE as faker } from "@faker-js/faker";
 
 export async function createOrganization(page: Page) {
@@ -14,5 +14,5 @@ export async function createOrganization(page: Page) {
   await page.getByPlaceholder("Invoice Email").fill(faker.internet.email());
   await page.getByPlaceholder("Vat").fill("BE 0475 250 609");
   await page.getByRole("button", { name: "Create Organization" }).click();
-  return { organizationName, page};
+  return { organizationName, page };
 }
