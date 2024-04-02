@@ -14,11 +14,13 @@ use Tests\UuidTestFactory;
 
 final class EloquentContactKeyVisibilityRepositoryTest extends TestCase
 {
+    private const ID = 'a40a0c9d-988e-48da-8543-fc74510ea495';
+
     private EloquentContactKeyVisibilityRepository $repository;
 
     protected function setUp(): void
     {
-        Uuid::setFactory(new UuidTestFactory(['uuid4' => ['a40a0c9d-988e-48da-8543-fc74510ea495']]));
+        Uuid::setFactory(new UuidTestFactory(['uuid4' => [self::ID]]));
 
         $this->repository = new EloquentContactKeyVisibilityRepository();
 
@@ -37,7 +39,7 @@ final class EloquentContactKeyVisibilityRepositoryTest extends TestCase
         $this->repository->save('info@publiq.be', KeyVisibility::v1);
 
         $this->assertDatabaseHas('contacts_key_visibility', [
-            'id' => 'a40a0c9d-988e-48da-8543-fc74510ea495',
+            'id' => self::ID,
             'email' => 'info@publiq.be',
             'key_visibility' => KeyVisibility::v1,
         ]);
@@ -46,7 +48,7 @@ final class EloquentContactKeyVisibilityRepositoryTest extends TestCase
     public function test_it_can_find_a_key_visibility_by_email(): void
     {
         ContactKeyVisibilityModel::query()->create([
-            'id' => 'a40a0c9d-988e-48da-8543-fc74510ea495',
+            'id' => self::ID,
             'email' => 'info@publiq.be',
             'key_visibility' => KeyVisibility::all,
         ]);
