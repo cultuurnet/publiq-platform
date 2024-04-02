@@ -3,13 +3,15 @@ import { Heading } from "../../Heading";
 import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
 import { ButtonPrimary } from "../../ButtonPrimary";
-import { Integration } from "../../../Pages/Integrations/Index";
+import type { Integration } from "../../../Pages/Integrations/Index";
 import { useTranslation } from "react-i18next";
 import { useForm } from "@inertiajs/react";
 import { Alert } from "../../Alert";
 import { IntegrationType } from "../../../types/IntegrationType";
 import { IntegrationStatus } from "../../../types/IntegrationStatus";
 import { PricingPlanContext } from "../../../Context/PricingPlan";
+import { formatCurrency } from "../../../utils/formatCurrency";
+import { CouponInfoContext } from "../../../Context/CouponInfo";
 
 type Props = Integration;
 
@@ -29,6 +31,7 @@ export const BillingInfo = ({
   const errors = err as Record<string, string | undefined>;
 
   const pricingPlan = useContext(PricingPlanContext);
+  const couponInfo = useContext(CouponInfoContext);
 
   return (
     <>
@@ -48,7 +51,20 @@ export const BillingInfo = ({
             />
           }
         />
+        {couponInfo.isUsed && (
+          <Alert
+            className={"col-span-2 col-start-2"}
+            variant="success"
+            title={t("details.billing_info.coupon_used", {
+              price: formatCurrency(
+                subscription.currency,
+                couponInfo.reductionAmount
+              ),
+            })}
+          />
+        )}
       </div>
+
       {subscription.integrationType !== IntegrationType.EntryApi &&
         status !== IntegrationStatus.Active && (
           <div className={"grid grid-cols-3 gap-10"}>

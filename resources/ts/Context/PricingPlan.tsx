@@ -1,5 +1,6 @@
-import React, { ReactNode } from "react";
-import { PricingPlan } from "../hooks/useGetPricingPlans";
+import type { ReactNode } from "react";
+import React from "react";
+import type { PricingPlan } from "../hooks/useGetPricingPlans";
 
 export const PricingPlanContext = React.createContext(
   undefined as unknown as PricingPlan

@@ -1,8 +1,8 @@
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { TFunction } from "i18next";
+import type { TFunction } from "i18next";
 import { SupportCard } from "./SupportCard";
-import { SupportProps } from "../Pages/Support/Index";
+import type { SupportProps } from "../Pages/Support/Index";
 import { IconDocumentation } from "./icons/IconDocumentation";
 import { IconStyleguide } from "./icons/IconStyleguide";
 import { IconStatuspage } from "./icons/IconStatuspage";

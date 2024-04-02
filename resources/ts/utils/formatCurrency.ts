@@ -1,4 +1,4 @@
-import { Currency } from "../types/Currency";
+import type { Currency } from "../types/Currency";
 
 export const formatCurrency = (currency: Currency, amount: number) =>
   Intl.NumberFormat("nl-BE", {

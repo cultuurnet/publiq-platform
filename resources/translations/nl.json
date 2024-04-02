@@ -150,7 +150,14 @@
       "contact": "E-mail boekhouding",
       "contact_description": "Dit adres ontvangt de betalinginstructies, -herinneringen en de factuur.",
       "coupon": "Coupon",
-      "total_price": "Totaal"
+      "price_overview": {
+        "title": "Prijs overzicht",
+        "subscription_plan": "Prijsplan",
+        "setup": "Setup",
+        "coupon": "Coupon",
+        "plan": "Abonnement",
+        "year": "jaar"
+      }
     },
     "documentation": {
       "title": "Documentatie",
@@ -191,7 +198,8 @@
         "postcode": "Postcode",
         "city": "Gemeente"
       },
-      "vat": "BTW of ondernemingsnummer"
+      "vat": "BTW of ondernemingsnummer",
+      "coupon_used": "Er is een coupon actief op deze integratie die een korting van {{price}} op de abonnementsprijs geeft."
     },
     "credentials": {
       "title": "Credentials",
@@ -254,7 +262,7 @@
     },
     "styleguide": {
       "title": "Stijlgids",
-      "description": "Alle iconen, logo's en kleuren voor jou op een rijtje gezet. Een must wanneer je een UiT-agenda bouwt.",
+      "description": "Alle beeldmerken, iconen en kleuren voor jou op een rijtje gezet. Een must wanneer je een UiT-agenda bouwt.",
       "img_url": "#",
       "action_title": "Naar de stijlgids",
       "action_url": "https://www.publiq.be/nl/projecten/publiq-platform/stijlgids"
@@ -285,7 +293,7 @@
       "description": "Heb je na het lezen van onze documentatie toch nog vragen? We horen ze graag. Via ons support kanaal op slack spelen we kort op de bal.",
       "img_url": "#",
       "action_title": "Naar het slack kanaal",
-      "action_url": "https://cultuurnet.slack.com/channels/udb-json-api",
+      "action_url": "https://cultuurnet.slack.com/channels/technical-support-publiq",
       "invitation": "Toegang vragen"
     },
     "customized_support": {

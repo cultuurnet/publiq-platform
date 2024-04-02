@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "@inertiajs/react";
 import { classNames } from "../utils/classNames";
-import { LinkProps } from "./Link";
+import type { LinkProps } from "./Link";
 
 type Props = LinkProps;
 

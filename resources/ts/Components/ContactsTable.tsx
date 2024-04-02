@@ -1,5 +1,6 @@
-import React, { ComponentProps } from "react";
-import { ContactFormData } from "./Integrations/Detail/ContactInfo";
+import type { ComponentProps } from "react";
+import React from "react";
+import type { ContactFormData } from "./Integrations/Detail/ContactInfo";
 import { ContactsTableDesktop } from "./ContactsTableDesktop";
 import { ContactsTableMobile } from "./ContactsTableMobile";
 import { ContactsTableContent } from "./ContactsTableContent";

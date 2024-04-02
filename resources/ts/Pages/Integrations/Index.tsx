@@ -1,4 +1,5 @@
-import React, { ReactNode, useMemo, useState } from "react";
+import type { ReactNode } from "react";
+import React, { useMemo, useState } from "react";
 import { router } from "@inertiajs/react";
 import { Heading } from "../../Components/Heading";
 import Layout from "../../layouts/Layout";
@@ -10,20 +11,21 @@ import { useTranslateRoute } from "../../hooks/useTranslateRoute";
 import { Pagination } from "../../Components/Pagination";
 import { useTranslation } from "react-i18next";
 import { IntegrationCard } from "../../Components/IntegrationCard";
-import { PaginationInfo } from "../../types/PaginationInfo";
+import type { PaginationInfo } from "../../types/PaginationInfo";
 import { Page } from "../../Components/Page";
 import { QuestionDialog } from "../../Components/QuestionDialog";
 import { IconLink } from "../../Components/IconLink";
-import { IntegrationStatus } from "../../types/IntegrationStatus";
-import { IntegrationType } from "../../types/IntegrationType";
-import { Values } from "../../types/Values";
+import type { IntegrationStatus } from "../../types/IntegrationStatus";
+import type { IntegrationType } from "../../types/IntegrationType";
+import type { Values } from "../../types/Values";
 import { Auth0Tenant } from "../../types/Auth0Tenant";
 import { UiTiDv1Environment } from "../../types/UiTiDv1Environment";
-import { Organization } from "../../types/Organization";
-import { Contact } from "../../types/Contact";
-import { Subscription } from "../../types/Subscription";
-import { IntegrationUrl } from "../../types/IntegrationUrl";
-import {
+import type { KeyVisibility } from "../../types/KeyVisibility";
+import type { Organization } from "../../types/Organization";
+import type { Contact } from "../../types/Contact";
+import type { Subscription } from "../../types/Subscription";
+import type { IntegrationUrl } from "../../types/IntegrationUrl";
+import type {
   AuthClient,
   Credentials,
   LegacyAuthConsumer,
@@ -42,6 +44,7 @@ export type Integration = {
   urls: IntegrationUrl[];
   authClients: AuthClient[];
   legacyAuthConsumers: LegacyAuthConsumer[];
+  keyVisibility: KeyVisibility;
 };
 
 type Props = {
