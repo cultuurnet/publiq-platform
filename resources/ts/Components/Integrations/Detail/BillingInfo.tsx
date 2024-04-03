@@ -9,6 +9,7 @@ import { useForm } from "@inertiajs/react";
 import { Alert } from "../../Alert";
 import { IntegrationType } from "../../../types/IntegrationType";
 import { IntegrationStatus } from "../../../types/IntegrationStatus";
+import { formatPricing } from "../../../utils/formatPricing";
 
 type Props = Integration;
 
@@ -16,6 +17,7 @@ export const BillingInfo = ({
   id,
   organization,
   subscription,
+  coupon,
   status,
 }: Props) => {
   const { t } = useTranslation();
@@ -34,7 +36,6 @@ export const BillingInfo = ({
           {t("details.billing_info.title.subscription")}
         </Heading>
         <FormElement
-          error={errors["organization.address.street"]}
           component={
             <Input
               type="text"
@@ -47,24 +48,56 @@ export const BillingInfo = ({
             />
           }
         />
+        {status !== IntegrationStatus.Active &&
+          subscription.integrationType !== IntegrationType.EntryApi && (
+            <div className={"grid grid-cols-3 gap-10"}>
+              <Alert
+                className={"col-span-2 col-start-2"}
+                variant="info"
+                title={t("details.billing_info.free_until_live")}
+              />
+            </div>
+          )}
       </div>
-      {subscription.integrationType !== IntegrationType.EntryApi &&
-        status !== IntegrationStatus.Active && (
-          <div className={"grid grid-cols-3 gap-10"}>
-            <Alert
-              className={"col-span-2 col-start-2"}
-              variant="info"
-              title={t("details.billing_info.free_until_live")}
-            />
+      {coupon.reduction && (
+        <div className="w-full max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-6">
+          <Heading level={4} className="font-semibold">
+            {t("details.billing_info.coupon_reduction")}
+          </Heading>
+          <div className="w-full block relative md:min-w-[40rem]">
+            {t(`integration_form.pricing.basic.price`, {
+              price: formatPricing({
+                currency: subscription.currency,
+                price: coupon.reduction,
+              }),
+            })}
           </div>
-        )}
+        </div>
+      )}
+      {status === IntegrationStatus.Active && (
+        <div className="w-full max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-6">
+          <Heading level={4} className="font-semibold">
+            {t("details.billing_info.to_pay")}
+          </Heading>
+          <div className="w-full block relative md:min-w-[40rem]">
+            {t(`integration_form.pricing.basic.price`, {
+              price: formatPricing({
+                currency: subscription.currency,
+                price: Math.max(
+                  subscription.fee / 100 - (coupon?.reduction ?? 0),
+                  0
+                ),
+              }),
+            })}
+          </div>
+        </div>
+      )}
       {data.organization && (
         <>
           <div className="w-full max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-6">
             <Heading level={4} className="font-semibold">
               {t("details.billing_info.title.organization")}
             </Heading>
-
             <div className="flex flex-col gap-5">
               <FormElement
                 label={`${t("details.billing_info.name")}`}
