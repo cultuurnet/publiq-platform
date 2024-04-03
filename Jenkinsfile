@@ -93,7 +93,9 @@ pipeline {
         stage('Acceptance tests') {
             agent { label 'ubuntu && 20.04 && nodejs18' }
             environment {
-                E2E_TEST_BASE_URL = 'https://platform-acc.publiq.be'
+                E2E_TEST_BASE_URL          = 'https://platform-acc.publiq.be'
+                E2E_TEST_USER_CREDENTIALS  = credentials('publiq-platform_e2etest_user')
+                E2E_TEST_ADMIN_CREDENTIALS = credentials('publiq-platform_e2etest_admin')
             }
             stages {
                 stage('Setup') {
@@ -103,6 +105,12 @@ pipeline {
                     }
                 }
                 stage('Run acceptance tests') {
+                    environment {
+                        E2E_TEST_EMAIL          = "${env.E2E_TEST_USER_CREDENTIALS_USR}"
+                        E2E_TEST_PASSWORD       = "${env.E2E_TEST_USER_CREDENTIALS_PSW}"
+                        E2E_TEST_ADMIN_EMAIL    = "${env.E2E_TEST_ADMIN_CREDENTIALS_USR}"
+                        E2E_TEST_ADMIN_PASSWORD = "${env.E2E_TEST_ADMIN_CREDENTIALS_PSW}"
+                    }
                     steps {
                         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                             sh label: 'Run acceptance tests', script: 'npm run test:e2e'
