@@ -33,10 +33,9 @@ type Props = {
   integration: Integration;
   email: string;
   subscriptions: Subscription[];
-  couponInfo: CouponInfo;
 };
 
-const Detail = ({ integration, email, subscriptions, couponInfo }: Props) => {
+const Detail = ({ integration, email, subscriptions }: Props) => {
   const { t } = useTranslation();
 
   const isMobile = useIsMobile();
@@ -133,7 +132,7 @@ const Detail = ({ integration, email, subscriptions, couponInfo }: Props) => {
       >
         <div className="w-full flex flex-col gap-5">
           <PricingPlanProvider pricingPlan={pricingPlan}>
-            <CouponInfoProvider couponInfo={couponInfo}>
+            <CouponInfoProvider couponInfo={integration.coupon}>
               <Tabs active={activeTab} onChange={changeTabInUrl}>
                 <Tabs.Item
                   type="credentials"

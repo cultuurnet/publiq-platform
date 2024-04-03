@@ -178,7 +178,7 @@ final class Integration
             'authClients' => $this->auth0Clients,
             'legacyAuthConsumers' => $this->uiTiDv1Consumers,
             'subscription' => $this->subscription,
-            'coupon' => isset($this->coupon) ? $this->coupon : null,
+            'coupon' => $this->coupon ?? null,
         ];
     }
 }

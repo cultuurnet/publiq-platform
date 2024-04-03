@@ -33,7 +33,6 @@ export const BillingInfo = ({
   const errors = err as Record<string, string | undefined>;
 
   const pricingPlan = useContext(PricingPlanContext);
-  const couponInfo = useContext(CouponInfoContext);
 
   return (
     <>
@@ -52,15 +51,12 @@ export const BillingInfo = ({
             />
           }
         />
-        {couponInfo.isUsed && (
+        {coupon.isDistributed && (
           <Alert
             className={"col-span-2 col-start-2"}
             variant="success"
             title={t("details.billing_info.coupon_used", {
-              price: formatCurrency(
-                subscription.currency,
-                couponInfo.reductionAmount
-              ),
+              price: formatCurrency(subscription.currency, coupon.reduction),
             })}
           />
         )}
@@ -75,21 +71,6 @@ export const BillingInfo = ({
             />
           </div>
         )}
-      {coupon.reduction && (
-        <div className="w-full max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-6">
-          <Heading level={4} className="font-semibold">
-            {t("details.billing_info.coupon_reduction")}
-          </Heading>
-          <div className="w-full block relative md:min-w-[40rem]">
-            {t(`pricing_plan.basic.price`, {
-              price: formatPricing({
-                currency: subscription.currency,
-                price: coupon.reduction,
-              }),
-            })}
-          </div>
-        </div>
-      )}
       {status === IntegrationStatus.Active && (
         <div className="w-full max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-6">
           <Heading level={4} className="font-semibold">

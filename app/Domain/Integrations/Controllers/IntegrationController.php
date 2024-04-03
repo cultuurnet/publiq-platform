@@ -152,10 +152,6 @@ final class IntegrationController extends Controller
             'integration' => $integration->toArray(),
             'email' => Auth::user()?->email,
             'subscriptions' => $this->subscriptionRepository->all(),
-            'couponInfo' => [
-                'isUsed' => $this->hasCouponBeenUsed(Uuid::fromString($id)),
-                'reductionAmount' => Coupon::REDUCTION_AMOUNT,
-            ],
         ]);
     }
 
@@ -271,8 +267,7 @@ final class IntegrationController extends Controller
     private function hasCouponBeenUsed(UuidInterface $integrationId): bool
     {
         try {
-            $coupon = $this->couponRepository->getByIntegrationId($integrationId);
-            return $coupon->isDistributed;
+            return $this->couponRepository->getByIntegrationId($integrationId)->isDistributed;
         } catch (ModelNotFoundException) {
             return false;
         }
