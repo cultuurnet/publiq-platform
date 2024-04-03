@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { IntegrationTypeCard } from "./IntegrationTypeCard";
 import { useTranslation } from "react-i18next";
-import { TFunction } from "i18next";
+import type { TFunction } from "i18next";
 import { IntegrationType } from "../types/IntegrationType";
 import { IconEntryApi } from "./icons/IconEntryApi";
 import { IconSearchApi } from "./icons/IconSearchApi";

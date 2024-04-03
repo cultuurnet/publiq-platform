@@ -1,5 +1,5 @@
 import React from "react";
-import { SupportType } from "./SupportTypes";
+import type { SupportType } from "./SupportTypes";
 import { Heading } from "./Heading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
@@ -8,7 +8,7 @@ import { ButtonSecondary } from "./ButtonSecondary";
 import { router } from "@inertiajs/react";
 import { InformationDialog } from "./InformationDialog";
 import { useTranslation } from "react-i18next";
-import { SupportProps } from "../Pages/Support/Index";
+import type { SupportProps } from "../Pages/Support/Index";
 import { useTranslateRoute } from "../hooks/useTranslateRoute";
 
 type Props = SupportType & SupportProps;

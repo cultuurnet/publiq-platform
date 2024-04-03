@@ -8,8 +8,6 @@ use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Events\IntegrationActivated;
-use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
-use App\Domain\Integrations\Events\IntegrationActivatedWithOrganization;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
@@ -84,13 +82,13 @@ final class IntegrationModel extends UuidModel
     protected static function booted(): void
     {
         self::created(
-            static fn(IntegrationModel $integrationModel) => IntegrationCreated::dispatch(Uuid::fromString($integrationModel->id))
+            static fn (IntegrationModel $integrationModel) => IntegrationCreated::dispatch(Uuid::fromString($integrationModel->id))
         );
         self::updated(
-            static fn(IntegrationModel $integrationModel) => IntegrationUpdated::dispatch(Uuid::fromString($integrationModel->id))
+            static fn (IntegrationModel $integrationModel) => IntegrationUpdated::dispatch(Uuid::fromString($integrationModel->id))
         );
         self::softDeleted(
-            static fn(IntegrationModel $integrationModel) => IntegrationDeleted::dispatch(Uuid::fromString($integrationModel->id))
+            static fn (IntegrationModel $integrationModel) => IntegrationDeleted::dispatch(Uuid::fromString($integrationModel->id))
         );
     }
 
@@ -109,32 +107,21 @@ final class IntegrationModel extends UuidModel
         IntegrationActivationRequested::dispatch(Uuid::fromString($this->id));
     }
 
-    public function activate(UuidInterface $organizationId): void
+    public function activate(): void
     {
         $this->update([
-            'organization_id' => $organizationId->toString(),
             'status' => IntegrationStatus::Active,
         ]);
         IntegrationActivated::dispatch(Uuid::fromString($this->id));
     }
 
-    // @deprecated
-    public function activateWithCoupon(): void
-    {
-        $this->update([
-            'status' => IntegrationStatus::Active,
-        ]);
-        IntegrationActivatedWithCoupon::dispatch(Uuid::fromString($this->id));
-    }
-
-    // @deprecated
     public function activateWithOrganization(UuidInterface $organizationId): void
     {
         $this->update([
             'organization_id' => $organizationId->toString(),
             'status' => IntegrationStatus::Active,
         ]);
-        IntegrationActivatedWithOrganization::dispatch(Uuid::fromString($this->id));
+        IntegrationActivated::dispatch(Uuid::fromString($this->id));
     }
 
     public function approve(): void
@@ -246,7 +233,6 @@ final class IntegrationModel extends UuidModel
     {
         $foundOrganization = $this->organization()->first();
 
-        /** @var Integration */
         $integration = (new Integration(
             Uuid::fromString($this->id),
             IntegrationType::from($this->type),
@@ -260,22 +246,22 @@ final class IntegrationModel extends UuidModel
         )->withContacts(
             ...$this->contacts()
             ->get()
-            ->map(fn(ContactModel $contactModel) => $contactModel->toDomain())
+            ->map(fn (ContactModel $contactModel) => $contactModel->toDomain())
             ->toArray()
         )->withUrls(
             ...$this->urls()
             ->get()
-            ->map(fn(IntegrationUrlModel $integrationUrlModel) => $integrationUrlModel->toDomain())
+            ->map(fn (IntegrationUrlModel $integrationUrlModel) => $integrationUrlModel->toDomain())
             ->toArray()
         )->withUiTiDv1Consumers(
             ...$this->uiTiDv1Consumers()
             ->get()
-            ->map(fn(UiTiDv1ConsumerModel $uiTiDv1ConsumerModel) => $uiTiDv1ConsumerModel->toDomain())
+            ->map(fn (UiTiDv1ConsumerModel $uiTiDv1ConsumerModel) => $uiTiDv1ConsumerModel->toDomain())
             ->toArray()
         )->withAuth0Clients(
             ...$this->auth0Clients()
             ->get()
-            ->map(fn(Auth0ClientModel $auth0ClientModel) => $auth0ClientModel->toDomain())
+            ->map(fn (Auth0ClientModel $auth0ClientModel) => $auth0ClientModel->toDomain())
             ->toArray()
         );
 

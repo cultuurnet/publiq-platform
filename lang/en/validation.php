@@ -42,7 +42,7 @@ return [
     'digits' => 'The :attribute must be :digits digits.',
     'digits_between' => 'The :attribute must be between :min and :max digits.',
     'dimensions' => 'The :attribute has invalid image dimensions.',
-    'distinct' => 'The :attribute field has a duplicate value.',
+    'distinct' => 'This :attribute is already in use. Choose a different :attribute.',
     'doesnt_end_with' => 'The :attribute may not end with one of the following: :values.',
     'doesnt_start_with' => 'The :attribute may not start with one of the following: :values.',
     'email' => 'The :attribute must be a valid email address.',
@@ -134,7 +134,7 @@ return [
         'string' => 'The :attribute must be :size characters.',
     ],
     'starts_with' => 'The :attribute must start with one of the following: :values.',
-    'string' => 'The :attribute must be a string.',
+    'string' => 'The :attribute must not be empty.',
     'timezone' => 'The :attribute must be a valid timezone.',
     'unique' => 'The :attribute has already been taken.',
     'uploaded' => 'The :attribute failed to upload.',
@@ -183,6 +183,7 @@ return [
         'organization.address.street' => 'street',
         'organization.address.zip' => 'postcode',
         'organization.address.city' => 'city',
+        'organization.vat' => 'VAT or company number',
     ],
 
 ];

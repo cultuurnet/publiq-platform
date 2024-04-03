@@ -1,4 +1,5 @@
-import React, { ComponentProps } from "react";
+import type { ComponentProps } from "react";
+import React from "react";
 import { classNames } from "../utils/classNames";
 
 type Props = ComponentProps<"section">;

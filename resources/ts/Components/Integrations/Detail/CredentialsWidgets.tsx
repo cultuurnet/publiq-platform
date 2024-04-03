@@ -1,8 +1,8 @@
 import React from "react";
 import { Heading } from "../../Heading";
 import { useTranslation } from "react-i18next";
-import { Credentials } from "./Credentials";
-import { Integration } from "../../../Pages/Integrations/Index";
+import type { Credentials } from "./Credentials";
+import type { Integration } from "../../../Pages/Integrations/Index";
 import { IntegrationStatus } from "../../../types/IntegrationStatus";
 import { OpenWidgetBuilderButton } from "../../IntegrationCard";
 import { StatusLight } from "../../StatusLight";
