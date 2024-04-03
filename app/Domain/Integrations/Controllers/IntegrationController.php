@@ -9,7 +9,6 @@ use App\Domain\Auth\CurrentUser;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\ContactKeyVisibilityRepository;
 use App\Domain\Contacts\Repositories\ContactRepository;
-use App\Domain\Coupons\Coupon;
 use App\Domain\Coupons\Repositories\CouponRepository;
 use App\Domain\Integrations\FormRequests\RequestActivationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationRequest;
@@ -46,7 +45,6 @@ use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidInterface;
 
 final class IntegrationController extends Controller
 {
@@ -262,15 +260,6 @@ final class IntegrationController extends Controller
         }
 
         return $this->contactKeyVisibilityRepository->findByEmail($contributor->email);
-    }
-
-    private function hasCouponBeenUsed(UuidInterface $integrationId): bool
-    {
-        try {
-            return $this->couponRepository->getByIntegrationId($integrationId)->isDistributed;
-        } catch (ModelNotFoundException) {
-            return false;
-        }
     }
 
     private function guardCoupon(Request $request): ?RedirectResponse
