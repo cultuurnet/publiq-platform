@@ -12,7 +12,7 @@ import { ContactsTable } from "../../ContactsTable";
 import { classNames } from "../../../utils/classNames";
 import { Heading } from "../../Heading";
 import type { Contact } from "../../../types/Contact";
-import { Integration } from "../../../types/Integration";
+import type { Integration } from "../../../types/Integration";
 
 export type ContactFormData = {
   functional: Contact;

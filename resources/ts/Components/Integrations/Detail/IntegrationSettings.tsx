@@ -11,7 +11,7 @@ import { Environment } from "../../../types/Environment";
 import { QuestionDialog } from "../../QuestionDialog";
 import { KeyVisibility } from "../../../types/KeyVisibility";
 import type { IntegrationUrl } from "../../../types/IntegrationUrl";
-import { Integration } from "../../../types/Integration";
+import type { Integration } from "../../../types/Integration";
 
 export const NEW_URL_ID_PREFIX = "new-";
 

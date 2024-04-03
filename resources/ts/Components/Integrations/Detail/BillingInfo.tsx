@@ -10,9 +10,8 @@ import { IntegrationType } from "../../../types/IntegrationType";
 import { IntegrationStatus } from "../../../types/IntegrationStatus";
 import { PricingPlanContext } from "../../../Context/PricingPlan";
 import { formatCurrency } from "../../../utils/formatCurrency";
-import { CouponInfoContext } from "../../../Context/CouponInfo";
 import { formatPricing } from "../../../utils/formatPricing";
-import { Integration } from "../../../types/Integration";
+import type { Integration } from "../../../types/Integration";
 
 type Props = Integration;
 

@@ -6,7 +6,7 @@ import { IntegrationStatus } from "../../../types/IntegrationStatus";
 import { OpenWidgetBuilderButton } from "../../IntegrationCard";
 import { StatusLight } from "../../StatusLight";
 import { ActivationFlow } from "../../ActivationFlow";
-import { Integration } from "../../../types/Integration";
+import type { Integration } from "../../../types/Integration";
 
 type Props = Pick<Integration, "id" | "status" | "subscription" | "type"> &
   Credentials & { email: string };

@@ -22,7 +22,7 @@ import type { Subscription } from "../../types/Subscription";
 import { PricingPlanProvider } from "../../Context/PricingPlan";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { CouponInfoProvider } from "../../Context/CouponInfo";
-import { Integration } from "../../types/Integration";
+import type { Integration } from "../../types/Integration";
 
 type Props = {
   integration: Integration;

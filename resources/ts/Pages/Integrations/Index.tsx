@@ -18,7 +18,7 @@ import { IconLink } from "../../Components/IconLink";
 import { Auth0Tenant } from "../../types/Auth0Tenant";
 import { UiTiDv1Environment } from "../../types/UiTiDv1Environment";
 import type { Credentials } from "../../types/Credentials";
-import { Integration } from "../../types/Integration";
+import type { Integration } from "../../types/Integration";
 
 type Props = {
   integrations: Integration[];

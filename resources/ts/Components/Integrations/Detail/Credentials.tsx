@@ -7,7 +7,7 @@ import type {
   AuthClient,
   LegacyAuthConsumer,
 } from "../../../types/Credentials";
-import { Integration } from "../../../types/Integration";
+import type { Integration } from "../../../types/Integration";
 
 type Props = Integration & {
   email: string;

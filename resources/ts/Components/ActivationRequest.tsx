@@ -5,7 +5,7 @@ import { ButtonPrimary } from "./ButtonPrimary";
 import { router } from "@inertiajs/react";
 import { useTranslateRoute } from "../hooks/useTranslateRoute";
 import { IntegrationType } from "../types/IntegrationType";
-import { Integration } from "../types/Integration";
+import type { Integration } from "../types/Integration";
 
 type Props = Pick<Integration, "id" | "type">;
 

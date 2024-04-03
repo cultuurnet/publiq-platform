@@ -7,7 +7,7 @@ import { ActivationFlow } from "../../ActivationFlow";
 import { Alert } from "../../Alert";
 import { IntegrationStatus } from "../../../types/IntegrationStatus";
 import type { Credentials } from "./Credentials";
-import { Integration } from "../../../types/Integration";
+import type { Integration } from "../../../types/Integration";
 
 type Props = Pick<Integration, "id" | "status" | "subscription" | "type"> &
   Credentials & { email: string };

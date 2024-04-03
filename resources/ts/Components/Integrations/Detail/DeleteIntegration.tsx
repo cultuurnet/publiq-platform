@@ -6,7 +6,7 @@ import { QuestionDialog } from "../../QuestionDialog";
 import { router } from "@inertiajs/react";
 import { t } from "i18next";
 import { Heading } from "../../Heading";
-import { Integration } from "../../../types/Integration";
+import type { Integration } from "../../../types/Integration";
 
 type Props = Integration;
 

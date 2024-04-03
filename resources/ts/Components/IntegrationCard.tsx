@@ -17,7 +17,7 @@ import { ActivationRequest } from "./ActivationRequest";
 import { IntegrationType } from "../types/IntegrationType";
 import { CopyText } from "./CopyText";
 import type { Credentials } from "./Integrations/Detail/Credentials";
-import { Integration } from "../types/Integration";
+import type { Integration } from "../types/Integration";
 
 type Props = Integration &
   Credentials & {
