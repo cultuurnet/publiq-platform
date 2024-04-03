@@ -1,13 +1,13 @@
 import React from "react";
 import { Heading } from "../../Heading";
 import { useTranslation } from "react-i18next";
-import type { Integration } from "../../../Pages/Integrations/Index";
 import { StatusLight } from "../../StatusLight";
 //import { ButtonPrimary } from "../../ButtonPrimary";
 import { CopyText } from "../../CopyText";
 import { ActivationFlow } from "../../ActivationFlow";
 import { IntegrationStatus } from "../../../types/IntegrationStatus";
 import type { Credentials } from "./Credentials";
+import { Integration } from "../../../types/Integration";
 
 type Props = Pick<Integration, "id" | "status" | "subscription" | "type"> &
   Credentials & { email: string };

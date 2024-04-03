@@ -4,8 +4,8 @@ import { Link } from "./Link";
 import { ButtonPrimary } from "./ButtonPrimary";
 import { router } from "@inertiajs/react";
 import { useTranslateRoute } from "../hooks/useTranslateRoute";
-import type { Integration } from "../Pages/Integrations/Index";
 import { IntegrationType } from "../types/IntegrationType";
+import { Integration } from "../types/Integration";
 
 type Props = Pick<Integration, "id" | "type">;
 

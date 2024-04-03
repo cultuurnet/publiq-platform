@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import React, { useEffect, useState } from "react";
 import Layout from "../../layouts/Layout";
 import { Page } from "../../Components/Page";
-import type { Integration } from "./Index";
 import { ContactInfo } from "../../Components/Integrations/Detail/ContactInfo";
 import { BillingInfo } from "../../Components/Integrations/Detail/BillingInfo";
 import { Credentials } from "../../Components/Integrations/Detail/Credentials";
@@ -23,11 +22,7 @@ import type { Subscription } from "../../types/Subscription";
 import { PricingPlanProvider } from "../../Context/PricingPlan";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { CouponInfoProvider } from "../../Context/CouponInfo";
-
-export type CouponInfo = {
-  isUsed: boolean;
-  reductionAmount: number;
-};
+import { Integration } from "../../types/Integration";
 
 type Props = {
   integration: Integration;

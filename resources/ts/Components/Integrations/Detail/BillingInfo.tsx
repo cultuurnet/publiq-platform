@@ -3,7 +3,6 @@ import { Heading } from "../../Heading";
 import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
 import { ButtonPrimary } from "../../ButtonPrimary";
-import type { Integration } from "../../../Pages/Integrations/Index";
 import { useTranslation } from "react-i18next";
 import { useForm } from "@inertiajs/react";
 import { Alert } from "../../Alert";
@@ -13,6 +12,7 @@ import { PricingPlanContext } from "../../../Context/PricingPlan";
 import { formatCurrency } from "../../../utils/formatCurrency";
 import { CouponInfoContext } from "../../../Context/CouponInfo";
 import { formatPricing } from "../../../utils/formatPricing";
+import { Integration } from "../../../types/Integration";
 
 type Props = Integration;
 

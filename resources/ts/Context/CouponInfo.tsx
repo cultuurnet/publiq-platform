@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import React from "react";
-import type { Integration } from "../Pages/Integrations";
+
+import { Integration } from "../types/Integration";
 
 export const CouponInfoContext = React.createContext(
   undefined as unknown as Integration["coupon"]

@@ -15,46 +15,10 @@ import type { PaginationInfo } from "../../types/PaginationInfo";
 import { Page } from "../../Components/Page";
 import { QuestionDialog } from "../../Components/QuestionDialog";
 import { IconLink } from "../../Components/IconLink";
-import type { IntegrationStatus } from "../../types/IntegrationStatus";
-import type { IntegrationType } from "../../types/IntegrationType";
-import type { Values } from "../../types/Values";
 import { Auth0Tenant } from "../../types/Auth0Tenant";
 import { UiTiDv1Environment } from "../../types/UiTiDv1Environment";
-import type { KeyVisibility } from "../../types/KeyVisibility";
-import type { Organization } from "../../types/Organization";
-import type { Contact } from "../../types/Contact";
-import type { Subscription } from "../../types/Subscription";
-import type { IntegrationUrl } from "../../types/IntegrationUrl";
-import type {
-  AuthClient,
-  Credentials,
-  LegacyAuthConsumer,
-} from "../../types/Credentials";
-
-export type Coupon = {
-  code: string;
-  id: string;
-  integrationId: string;
-  isDistributed: boolean;
-  reduction: number;
-};
-
-export type Integration = {
-  id: string;
-  type: Values<typeof IntegrationType>;
-  name: string;
-  description: string;
-  subscriptionId: string;
-  coupon: Coupon;
-  status: IntegrationStatus;
-  contacts: Contact[];
-  organization?: Organization;
-  subscription: Subscription;
-  urls: IntegrationUrl[];
-  authClients: AuthClient[];
-  legacyAuthConsumers: LegacyAuthConsumer[];
-  keyVisibility: KeyVisibility;
-};
+import type { Credentials } from "../../types/Credentials";
+import { Integration } from "../../types/Integration";
 
 type Props = {
   integrations: Integration[];

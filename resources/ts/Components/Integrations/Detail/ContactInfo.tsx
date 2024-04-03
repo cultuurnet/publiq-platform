@@ -3,7 +3,6 @@ import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
 import { useTranslation } from "react-i18next";
 import { ButtonPrimary } from "../../ButtonPrimary";
-import type { Integration } from "../../../Pages/Integrations/Index";
 import { useForm } from "@inertiajs/react";
 import { ContactType } from "../../../types/ContactType";
 import { ButtonSecondary } from "../../ButtonSecondary";
@@ -13,6 +12,7 @@ import { ContactsTable } from "../../ContactsTable";
 import { classNames } from "../../../utils/classNames";
 import { Heading } from "../../Heading";
 import type { Contact } from "../../../types/Contact";
+import { Integration } from "../../../types/Integration";
 
 export type ContactFormData = {
   functional: Contact;

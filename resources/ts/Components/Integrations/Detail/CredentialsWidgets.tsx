@@ -2,11 +2,11 @@ import React from "react";
 import { Heading } from "../../Heading";
 import { useTranslation } from "react-i18next";
 import type { Credentials } from "./Credentials";
-import type { Integration } from "../../../Pages/Integrations/Index";
 import { IntegrationStatus } from "../../../types/IntegrationStatus";
 import { OpenWidgetBuilderButton } from "../../IntegrationCard";
 import { StatusLight } from "../../StatusLight";
 import { ActivationFlow } from "../../ActivationFlow";
+import { Integration } from "../../../types/Integration";
 
 type Props = Pick<Integration, "id" | "status" | "subscription" | "type"> &
   Credentials & { email: string };

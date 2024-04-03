@@ -1,5 +1,4 @@
 import React from "react";
-import type { Integration } from "../Pages/Integrations/Index";
 import { ButtonIcon } from "./ButtonIcon";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { Heading } from "./Heading";
@@ -18,6 +17,7 @@ import { ActivationRequest } from "./ActivationRequest";
 import { IntegrationType } from "../types/IntegrationType";
 import { CopyText } from "./CopyText";
 import type { Credentials } from "./Integrations/Detail/Credentials";
+import { Integration } from "../types/Integration";
 
 type Props = Integration &
   Credentials & {
