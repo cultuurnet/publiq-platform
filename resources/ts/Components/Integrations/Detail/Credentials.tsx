@@ -49,9 +49,7 @@ export const Credentials = ({
 
   if (!hasAnyCredentials) {
     return (
-      <Alert variant={"info"}>
-        This integration doesn't have credentials yet
-      </Alert>
+      <Alert variant={"info"}>{t("integrations.pending_credentials")}</Alert>
     );
   }
 

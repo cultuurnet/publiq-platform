@@ -249,7 +249,7 @@ export const IntegrationCard = ({
           credentials
         ) : (
           <Alert variant={"info"}>
-            This integration doesn't have credentials yet
+            {t("integrations.pending_credentials")}
           </Alert>
         )}
       </div>
