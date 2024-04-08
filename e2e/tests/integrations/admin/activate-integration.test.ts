@@ -1,27 +1,30 @@
 import { expect, test } from "@playwright/test";
-import { IntegrationTypes, createIntegration } from "./create-integration.js";
+import {  createIntegration } from "./create-integration.js";
 import { createOrganization } from "./create-organization.js";
+import { IntegrationTypes } from "../../types.js";
 
 test.use({ storageState: "playwright/.auth/admin.json" });
 
-test("As an admin I can approve an integration", async ({ page }) => {
+test("As an admin I can activate an integration", async ({ page }) => {
 
   // create organization
   const { page: organizationPage, organizationName} = await createOrganization(page);
   await expect(
-    organizationPage.locator("h1").getByText(`Organization Details: ${organizationName}`)
+    page.locator("h1").getByText(`Organization Details: ${organizationName}`)
   ).toBeVisible();
   const organizationUrl = organizationPage.url();
   const organizationId = organizationUrl.split("/").pop();
 
   // create integration
   const {page: integrationPage, name: integrationName } = await createIntegration(
-    IntegrationTypes.SEARCH_API,
-    page
+    page,
+    IntegrationTypes.SEARCH_API
   );
+
   await expect(
     page.locator("h1").getByText(`Integration Details: ${integrationName}`)
   ).toBeVisible();
+
   const integrationUrl = integrationPage.url();
   const integrationId = integrationUrl.split("/").pop();
 
