@@ -8,6 +8,7 @@
     "/": "/nl",
     "/integrations": "/nl/integraties",
     "/integrations/new": "/nl/integraties/nieuw",
+    "/integrations/detail": "/nl/integraties/{{id}}",
     "/support": "/nl/ondersteuning",
     "/subscriptions": "/nl/abonnementen"
   },
