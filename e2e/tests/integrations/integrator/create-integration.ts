@@ -13,11 +13,17 @@ export async function createIntegrationAsIntegrator(
     .click();
 
   if (integrationType === IntegrationTypes.SEARCH_API) {
-    await page.locator('li').filter({ hasText: /^Search API/ }).click();
+    await page
+      .locator("li")
+      .filter({ hasText: /^Search API/ })
+      .click();
   }
 
   if (integrationType === IntegrationTypes.WIDGETS) {
-    await page.locator('li').filter({ hasText: /^WIDGETS/ }).click();
+    await page
+      .locator("li")
+      .filter({ hasText: /^WIDGETS/ })
+      .click();
   }
 
   if (integrationType !== IntegrationTypes.ENTRY_API) {
@@ -50,5 +56,5 @@ export async function createIntegrationAsIntegrator(
   await page.getByLabel("Ik ga akkoord met de").check();
   await page.getByRole("button", { name: "Integratie aanmaken" }).click();
 
-  return { page, integrationName};
+  return { page, integrationName };
 }

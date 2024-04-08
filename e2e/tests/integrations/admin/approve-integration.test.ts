@@ -7,10 +7,8 @@ test.use({ storageState: "playwright/.auth/admin.json" });
 
 test("As an admin I can approve an integration", async ({ page }) => {
   // create integration as integrator
-  const {page: integrationPage, integrationName} = await createIntegrationAsIntegrator(
-    page,
-    IntegrationTypes.ENTRY_API
-  );
+  const { page: integrationPage, integrationName } =
+    await createIntegrationAsIntegrator(page, IntegrationTypes.ENTRY_API);
 
   await page.waitForURL(/https?:\/\/[^/]*\/nl\/integraties(\/.*)?/);
   await expect(page.getByText(integrationName)).toBeVisible();
