@@ -1,5 +1,5 @@
 import { test } from "@playwright/test";
-import { createIntegrationAsIntegrator } from "./create-integration";
+import { createIntegrationAsIntegrator } from "./create-integration.js";
 
 test.use({ storageState: 'playwright/.auth/user.json' });
 

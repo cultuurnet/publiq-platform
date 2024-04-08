@@ -1,4 +1,4 @@
-import { Page, expect } from "@playwright/test";
+import { type Page, expect } from "@playwright/test";
 import { fakerNL_BE as faker } from "@faker-js/faker";
 
 export async function createIntegrationAsIntegrator(page: Page) {

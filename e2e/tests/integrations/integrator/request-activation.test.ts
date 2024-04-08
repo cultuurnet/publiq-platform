@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { fakerNL_BE as faker } from "@faker-js/faker";
-import { requestActivationAsIntegrator } from "./request-activation";
+import { requestActivationAsIntegrator } from "./request-activation.js";
 
 test("As an integrator I can request activation via organization details", async ({
   page,
