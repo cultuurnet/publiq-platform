@@ -9,6 +9,7 @@ import type {
 } from "../../../types/Credentials";
 import type { Integration } from "../../../types/Integration";
 import { Alert } from "../../Alert";
+import { useTranslation } from "react-i18next";
 
 type Props = Integration & {
   email: string;
@@ -30,6 +31,7 @@ export const Credentials = ({
   legacyAuthConsumers,
   authClients,
 }: Props) => {
+  const { t } = useTranslation();
   const hasAnyCredentials = Boolean(
     legacyAuthConsumers.length || authClients.length
   );

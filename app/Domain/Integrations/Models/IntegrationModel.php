@@ -263,7 +263,7 @@ final class IntegrationModel extends UuidModel
             ->get()
             ->map(fn (Auth0ClientModel $auth0ClientModel) => $auth0ClientModel->toDomain())
             ->toArray()
-        )->withSubscription($this->subscription?->toDomain());
+        );
 
         if ($this->subscription) {
             $integration = $integration->withSubscription($this->subscription->toDomain());
@@ -278,6 +278,5 @@ final class IntegrationModel extends UuidModel
         }
 
         return $integration;
-
     }
 }

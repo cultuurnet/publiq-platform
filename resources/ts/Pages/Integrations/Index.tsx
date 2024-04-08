@@ -1,4 +1,5 @@
-import { ReactNode, useEffect } from "react";
+import type { ReactNode} from "react";
+import { useEffect } from "react";
 import React, { useMemo, useState } from "react";
 import { router } from "@inertiajs/react";
 import { Heading } from "../../Components/Heading";
