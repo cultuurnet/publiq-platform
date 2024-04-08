@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { createOrganization } from "./create-organization";
+import { createOrganization } from "./create-organization.js";
 
 test.use({ storageState: "playwright/.auth/admin.json" });
 

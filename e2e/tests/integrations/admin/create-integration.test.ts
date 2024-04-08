@@ -5,7 +5,7 @@ import {
   type ContactType,
   createIntegration,
   ContactTypes,
-} from "./create-integration";
+} from "./create-integration.js";
 
 async function addContactToIntegration(
   type: ContactType,

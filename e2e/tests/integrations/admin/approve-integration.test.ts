@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
-import { createIntegrationAsIntegrator } from "../integrator/create-integration.ts";
-import { requestActivationAsIntegrator } from "../integrator/request-activation.ts";
+import { createIntegrationAsIntegrator } from "../integrator/create-integration.js";
+import { requestActivationAsIntegrator } from "../integrator/request-activation.js";
 
 test.use({ storageState: "playwright/.auth/admin.json" });
 
