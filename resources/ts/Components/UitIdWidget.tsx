@@ -63,11 +63,12 @@ export const UitIdWidget = ({
     [component]
   );
 
-  const currentPageToVariables = {
-    "integrations/detail": {
-      id: props.integration?.id,
-    },
-  };
+  const currentPageToVariables: { [key: string]: { [key: string]: unknown } } =
+    {
+      "integrations/detail": {
+        id: props.integration?.id,
+      },
+    };
 
   return (
     <div className="w-full px-7 bg-uitid-widget">
