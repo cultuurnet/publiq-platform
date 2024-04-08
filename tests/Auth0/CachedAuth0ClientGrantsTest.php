@@ -9,6 +9,7 @@ use App\Auth0\Auth0Tenant;
 use App\Auth0\CachedAuth0ClientGrants;
 use App\Json;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Support\Facades\Log;
 use PHPUnit\Framework\MockObject\MockObject;
 use Tests\TestCase;
 use Psr\Http\Client\ClientInterface;
@@ -41,6 +42,9 @@ final class CachedAuth0ClientGrantsTest extends TestCase
             ->willReturn(
                 new Response(200, [], Json::encode(['grant_types' => $expectedGrants]))
             );
+
+        Log::shouldReceive('info')
+            ->twice();
 
         $receivedGrants = $this->cachedAuth0ClientGrants->findGrantsOnClient($this->client);
 

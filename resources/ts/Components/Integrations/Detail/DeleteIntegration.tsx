@@ -5,7 +5,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { QuestionDialog } from "../../QuestionDialog";
 import { router } from "@inertiajs/react";
 import { t } from "i18next";
-import { Integration } from "../../../Pages/Integrations/Index";
+import type { Integration } from "../../../Pages/Integrations/Index";
 import { Heading } from "../../Heading";
 
 type Props = Integration;

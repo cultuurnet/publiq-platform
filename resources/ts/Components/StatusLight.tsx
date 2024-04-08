@@ -1,4 +1,5 @@
-import React, { ComponentProps } from "react";
+import type { ComponentProps } from "react";
+import React from "react";
 import { IntegrationStatus } from "../types/IntegrationStatus";
 import { classNames } from "../utils/classNames";
 import { useTranslation } from "react-i18next";

@@ -1,9 +1,17 @@
-import { Page, expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import { faker } from "@faker-js/faker";
-import { ContactType, ContactTypes, IntegrationTypes, createIntegration } from "./helpers";
+import {
+  IntegrationTypes,
+  type ContactType,
+  createIntegration,
+  ContactTypes,
+} from "./create-integration";
 
-
-async function addContactToIntegration(type: ContactType, integrationId: string, page: Page) {
+async function addContactToIntegration(
+  type: ContactType,
+  integrationId: string,
+  page: Page
+) {
   const contributrorEmail = faker.internet.email();
   await page.goto("/admin");
   await page.getByRole("link", { name: "Contacts", exact: true }).click();
@@ -30,13 +38,31 @@ test.use({ storageState: "playwright/.auth/admin.json" });
 test("create a new integration as an admin (with functional, technical and contributor contact)", async ({
   page,
 }) => {
-  const integrationPage = await createIntegration(IntegrationTypes.SEARCH_API, page);
+  const { page: integrationPage, name: integrationName } =
+    await createIntegration(IntegrationTypes.SEARCH_API, page);
+
+  await expect(
+    page.locator("h1").getByText(`Integration Details: ${integrationName}`)
+  ).toBeVisible();
+
   const url = integrationPage.url();
   const integrationId = url.split("/").pop();
 
-  const contributorEmail = await addContactToIntegration(ContactTypes.CONTRIBUTOR, integrationId!, page);
-  const functionalEmail = await addContactToIntegration(ContactTypes.FUNCTIONAL, integrationId!, page);
-  const technicalEmail = await addContactToIntegration(ContactTypes.TECHNICAL, integrationId!, page);
+  const contributorEmail = await addContactToIntegration(
+    ContactTypes.CONTRIBUTOR,
+    integrationId!,
+    page
+  );
+  const functionalEmail = await addContactToIntegration(
+    ContactTypes.FUNCTIONAL,
+    integrationId!,
+    page
+  );
+  const technicalEmail = await addContactToIntegration(
+    ContactTypes.TECHNICAL,
+    integrationId!,
+    page
+  );
 
   // Go to overview page and see if the contacts are visible
   await page.goto(`/admin/resources/integrations/${integrationId}`);

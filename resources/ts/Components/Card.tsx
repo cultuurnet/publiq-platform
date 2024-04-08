@@ -1,4 +1,5 @@
-import React, { ComponentProps, ReactElement } from "react";
+import type { ComponentProps, ReactElement } from "react";
+import React from "react";
 import { classNames } from "../utils/classNames";
 import { Heading } from "./Heading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

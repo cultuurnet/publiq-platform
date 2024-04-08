@@ -90,6 +90,41 @@ pipeline {
             }
         }
 
+        stage('Acceptance tests') {
+            agent { label 'ubuntu && 20.04 && nodejs18' }
+            environment {
+                E2E_TEST_BASE_URL          = 'https://platform-acc.publiq.be'
+            }
+            stages {
+                stage('Setup') {
+                    steps {
+                        sh label: 'Install dependencies', script: 'npm install'
+                        sh label: 'Initialize playwright', script: 'npx playwright install chromium'
+                    }
+                }
+                stage('Run acceptance tests') {
+                    steps {
+                        withCredentials([usernamePassword(credentialsId: 'publiq-platform_e2etest_user',
+                                                          usernameVariable: 'E2E_TEST_EMAIL',
+                                                          passwordVariable: 'E2E_TEST_PASSWORD'),
+                                         usernamePassword(credentialsId: 'publiq-platform_e2etest_admin',
+                                                          usernameVariable: 'E2E_TEST_ADMIN_EMAIL',
+                                                          passwordVariable: 'E2E_TEST_ADMIN_PASSWORD')]
+                        ) {
+                            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                                sh label: 'Run acceptance tests', script: 'npm run test:e2e'
+                            }
+                        }
+                    }
+                }
+            }
+            post {
+                cleanup {
+                    cleanWs()
+                }
+            }
+        }
+
         stage('Deploy to testing') {
             input { message "Deploy to Testing?" }
             agent { label 'ubuntu && 20.04' }

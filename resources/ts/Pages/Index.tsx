@@ -1,4 +1,5 @@
-import React, { ReactNode } from "react";
+import type { ReactNode } from "react";
+import React from "react";
 import { Hero } from "../Components/Hero";
 import { IntegrationTypes } from "../Components/IntegrationTypes";
 import { Page } from "../Components/Page";

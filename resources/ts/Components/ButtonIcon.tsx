@@ -1,7 +1,7 @@
 import React from "react";
-import { IconProp, SizeProp } from "@fortawesome/fontawesome-svg-core";
+import type { IconProp, SizeProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ComponentProps } from "react";
+import type { ComponentProps } from "react";
 import { classNames } from "../utils/classNames";
 import { twMerge } from "tailwind-merge";
 

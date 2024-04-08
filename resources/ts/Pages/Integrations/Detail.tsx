@@ -1,7 +1,8 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import type { ReactNode } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../../layouts/Layout";
 import { Page } from "../../Components/Page";
-import { Integration } from "./Index";
+import type { Integration } from "./Index";
 import { ContactInfo } from "../../Components/Integrations/Detail/ContactInfo";
 import { BillingInfo } from "../../Components/Integrations/Detail/BillingInfo";
 import { Credentials } from "../../Components/Integrations/Detail/Credentials";
@@ -17,13 +18,35 @@ import {
 } from "../../Components/IntegrationTypes";
 import { Heading } from "../../Components/Heading";
 import { IntegrationType } from "../../types/IntegrationType";
+import { useGetPricingPlans } from "../../hooks/useGetPricingPlans";
+import type { Subscription } from "../../types/Subscription";
+import { PricingPlanProvider } from "../../Context/PricingPlan";
+import { useIsMobile } from "../../hooks/useIsMobile";
+import { CouponInfoProvider } from "../../Context/CouponInfo";
 
-type Props = { integration: Integration; email: string };
+export type CouponInfo = {
+  isUsed: boolean;
+  reductionAmount: number;
+};
 
-const Detail = ({ integration, email }: Props) => {
+type Props = {
+  integration: Integration;
+  email: string;
+  subscriptions: Subscription[];
+  couponInfo: CouponInfo;
+};
+
+const Detail = ({ integration, email, subscriptions, couponInfo }: Props) => {
   const { t } = useTranslation();
 
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useIsMobile();
+
+  const pricingPlans = useGetPricingPlans(integration.type, subscriptions);
+
+  // Should always be defined
+  const pricingPlan = pricingPlans.find(
+    (pricingPlan) => pricingPlan.id === integration.subscription.id
+  )!;
 
   const changeTabInUrl = (tab: string) => {
     router.get(url, {
@@ -33,15 +56,6 @@ const Detail = ({ integration, email }: Props) => {
 
   const url = new URL(document.location.href);
   const activeTab = url.searchParams.get("tab") ?? "credentials";
-
-  const handleResize = () => {
-    setIsMobile(window.innerWidth < 768);
-  };
-
-  useEffect(() => {
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   const [isFormDirty, setIsFormDirty] = useState(false);
   const [isKeepChangesDialogVisible, setIsKeepChangesDialogVisible] =
@@ -118,46 +132,53 @@ const Detail = ({ integration, email }: Props) => {
         headless
       >
         <div className="w-full flex flex-col gap-5">
-          <Tabs active={activeTab} onChange={changeTabInUrl}>
-            <Tabs.Item
-              type="credentials"
-              label={
-                integration.type === IntegrationType.Widgets
-                  ? t("details.credentials.widgets")
-                  : t("details.credentials.title")
-              }
-            >
-              <Credentials {...integration} email={email} />
-            </Tabs.Item>
-            <Tabs.Item
-              type="settings"
-              label={t("details.integration_settings.title")}
-            >
-              <IntegrationSettings
-                {...integration}
-                isMobile={isMobile}
-                onChangeIsFormDirty={handleChangeIsFormDirty}
-                isKeepChangesDialogVisible={isKeepChangesDialogVisible}
-                onConfirmLeaveTab={handleConfirmLeaveTab}
-                onCancelLeaveTab={handleCancelLeaveTab}
-              />
-            </Tabs.Item>
-            <Tabs.Item type="contacts" label={t("details.contact_info.title")}>
-              <ContactInfo {...integration} isMobile={isMobile} />
-            </Tabs.Item>
-            <Tabs.Item
-              type="billing"
-              label={t("details.billing_info.title.billing")}
-            >
-              <BillingInfo {...integration} />
-            </Tabs.Item>
-            <Tabs.Item
-              type="delete"
-              label={t("details.delete_integration.title")}
-            >
-              <DeleteIntegration {...integration} />
-            </Tabs.Item>
-          </Tabs>
+          <PricingPlanProvider pricingPlan={pricingPlan}>
+            <CouponInfoProvider couponInfo={couponInfo}>
+              <Tabs active={activeTab} onChange={changeTabInUrl}>
+                <Tabs.Item
+                  type="credentials"
+                  label={
+                    integration.type === IntegrationType.Widgets
+                      ? t("details.credentials.widgets")
+                      : t("details.credentials.title")
+                  }
+                >
+                  <Credentials {...integration} email={email} />
+                </Tabs.Item>
+                <Tabs.Item
+                  type="settings"
+                  label={t("details.integration_settings.title")}
+                >
+                  <IntegrationSettings
+                    {...integration}
+                    isMobile={isMobile}
+                    onChangeIsFormDirty={handleChangeIsFormDirty}
+                    isKeepChangesDialogVisible={isKeepChangesDialogVisible}
+                    onConfirmLeaveTab={handleConfirmLeaveTab}
+                    onCancelLeaveTab={handleCancelLeaveTab}
+                  />
+                </Tabs.Item>
+                <Tabs.Item
+                  type="contacts"
+                  label={t("details.contact_info.title")}
+                >
+                  <ContactInfo {...integration} isMobile={isMobile} />
+                </Tabs.Item>
+                <Tabs.Item
+                  type="billing"
+                  label={t("details.billing_info.title.billing")}
+                >
+                  <BillingInfo {...integration} />
+                </Tabs.Item>
+                <Tabs.Item
+                  type="delete"
+                  label={t("details.delete_integration.title")}
+                >
+                  <DeleteIntegration {...integration} />
+                </Tabs.Item>
+              </Tabs>
+            </CouponInfoProvider>
+          </PricingPlanProvider>
         </div>
       </Card>
     </Page>

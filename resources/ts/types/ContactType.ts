@@ -1,4 +1,4 @@
-import { Values } from "./Values";
+import type { Values } from "./Values";
 
 export const ContactType = {
   Functional: "functional",

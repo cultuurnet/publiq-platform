@@ -44,7 +44,7 @@ return [
     'digits' => ':Attribute moet :digits cijfers zijn.',
     'digits_between' => ':Attribute moet tussen :min en :max cijfers zijn.',
     'dimensions' => ':Attribute heeft een ongeldige grootte.',
-    'distinct' => ':Attribute heeft een dubbele waarde.',
+    'distinct' => 'Deze :Attribute is al in gebruik. Kies een unieke :Attribute.',
     'doesnt_end_with' => ':Attribute kan niet eindigen met de volgende waardes: :values.',
     'doesnt_start_with' => ':Attribute kan niet beginnen met de volgende waardes: :values.',
     'email' => ':Attribute dient een geldig emailadres te zijn.',
@@ -142,7 +142,7 @@ return [
         'string' => ':Attribute moet :size karakters lang zijn.',
     ],
     'starts_with' => ':Attribute moet beginnen met één van het volgende: :values',
-    'string' => ':Attribute moet een string zijn.',
+    'string' => ':Attribute mag niet leeg zijn.',
     'timezone' => ':Attribute moet een geldige tijdszone zijn.',
     'unique' => ':Attribute is al bezet.',
     'uploaded' => 'Het uploaden van :attribute is mislukt.',
@@ -198,6 +198,7 @@ return [
         'organization.address.street' => 'straat',
         'organization.address.zip' => 'postcode',
         'organization.address.city' => 'gemeente',
+        'organization.vat' => 'BTW of ondernemingsnummer',
     ],
 
 ];
