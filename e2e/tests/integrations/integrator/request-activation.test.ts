@@ -1,5 +1,4 @@
 import { expect, test } from "@playwright/test";
-import { fakerNL_BE as faker } from "@faker-js/faker";
 import { requestActivationAsIntegrator } from "./request-activation.js";
 import { createIntegrationAsIntegrator } from "./create-integration.js";
 import { IntegrationTypes } from "../../types.js";

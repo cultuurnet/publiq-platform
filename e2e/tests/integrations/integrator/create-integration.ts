@@ -1,4 +1,4 @@
-import { type Page, expect } from "@playwright/test";
+import { type Page } from "@playwright/test";
 import { fakerNL_BE as faker } from "@faker-js/faker";
 import { IntegrationTypes, type IntegrationType } from "../../types.js";
 
