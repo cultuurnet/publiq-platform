@@ -31,6 +31,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
+/**
+ * @property CouponModel|null $coupon
+ * @property SubscriptionModel|null $subscription
+ */
 final class IntegrationModel extends UuidModel
 {
     use SoftDeletes;
@@ -260,6 +264,14 @@ final class IntegrationModel extends UuidModel
             ->map(fn (Auth0ClientModel $auth0ClientModel) => $auth0ClientModel->toDomain())
             ->toArray()
         );
+
+        if ($this->subscription) {
+            $integration = $integration->withSubscription($this->subscription->toDomain());
+        }
+
+        if ($this->coupon) {
+            $integration = $integration->withCoupon($this->coupon->toDomain());
+        }
 
         if ($foundOrganization !== null) {
             $integration = $integration->withOrganization($foundOrganization->toDomain());

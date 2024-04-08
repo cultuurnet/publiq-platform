@@ -6,7 +6,7 @@ import { FormElement } from "./FormElement";
 import { Input } from "./Input";
 import { useForm } from "@inertiajs/react";
 import { useTranslation } from "react-i18next";
-import type { IntegrationType } from "../types/IntegrationType";
+import { IntegrationType } from "../types/IntegrationType";
 import { useIsMobile } from "../hooks/useIsMobile";
 import type { Subscription } from "../types/Subscription";
 import type { PricingPlan } from "../hooks/useGetPricingPlans";
@@ -53,14 +53,14 @@ const PriceOverview = ({
             <span className="text-publiq-orange">
               {`${formatCurrency(
                 subscription.currency,
-                couponInfo.reductionAmount
+                couponInfo.reduction
               )} / ${t("integrations.activation_dialog.price_overview.year")} (${t("integrations.activation_dialog.price_overview.coupon")})`}
             </span>
 
             <span className="col-start-2">
               {`${formatCurrency(
                 subscription.currency,
-                subscription.price - couponInfo.reductionAmount
+                subscription.price - couponInfo.reduction
               )} / ${t("integrations.activation_dialog.price_overview.year")}`}
             </span>
           </>
@@ -235,7 +235,7 @@ export const ActivationDialog = ({
             }
           />
         </div>
-        {type !== "entry-api" && (
+        {type !== IntegrationType.EntryApi && (
           <>
             <FormElement
               label={`${t("details.billing_info.vat")}`}
@@ -294,11 +294,13 @@ export const ActivationDialog = ({
             />
           </>
         )}
-        <PriceOverview
-          subscription={subscription}
-          pricingPlan={pricingPlan}
-          coupon={organizationForm.data.coupon}
-        />
+        {type !== IntegrationType.EntryApi && (
+          <PriceOverview
+            subscription={subscription}
+            pricingPlan={pricingPlan}
+            coupon={organizationForm.data.coupon}
+          />
+        )}
       </>
     </Dialog>
   );
