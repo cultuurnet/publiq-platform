@@ -3,6 +3,7 @@ import { classNames } from "../utils/classNames";
 import { useTranslation } from "react-i18next";
 import { usePage } from "@inertiajs/react";
 import { useTranslateRoute } from "../hooks/useTranslateRoute";
+import type { Integration } from "../types/Integration";
 
 export type WidgetConfigVariables = {
   profileUrl: string;
@@ -18,6 +19,9 @@ export const UitIdWidget = ({
   const { i18n } = useTranslation();
   const translateRoute = useTranslateRoute();
   const { component } = usePage();
+  const { props } = usePage<{
+    integration?: Integration;
+  }>();
   const widgetUrl = import.meta.env.VITE_UITID_WIDGET_URL;
 
   const widgetConfig = useMemo(
@@ -59,6 +63,13 @@ export const UitIdWidget = ({
     [component]
   );
 
+  const currentPageToVariables: { [key: string]: { [key: string]: unknown } } =
+    {
+      "integrations/detail": {
+        id: props.integration?.id,
+      },
+    };
+
   return (
     <div className="w-full px-7 bg-uitid-widget">
       <script id="uitid-widget-config" type="application/json">
@@ -77,7 +88,7 @@ export const UitIdWidget = ({
           <div className="flex gap-2">
             <a
               className={classNames(i18n.language === "nl" && "active")}
-              href={`${translateRoute(`/${currentPage}`, "nl")}?setLocale=true`}
+              href={`${translateRoute(`/${currentPage}`, "nl", currentPageToVariables[currentPage])}?setLocale=true`}
             >
               NL
             </a>
@@ -88,7 +99,7 @@ export const UitIdWidget = ({
             ></div>
             <a
               className={classNames(i18n.language === "en" && "active")}
-              href={`${translateRoute(`/${currentPage}`, "en")}?setLocale=true`}
+              href={`${translateRoute(`/${currentPage}`, "en", currentPageToVariables[currentPage])}?setLocale=true`}
             >
               EN
             </a>

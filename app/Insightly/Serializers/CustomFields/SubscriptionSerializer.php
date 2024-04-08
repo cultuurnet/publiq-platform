@@ -33,7 +33,7 @@ final class SubscriptionSerializer
 
             $price = $subscription->price;
             if ($coupon) {
-                $price = max($price - $coupon->reduction(), 0);
+                $price = max($price - $coupon->reduction, 0);
             }
 
             $insightlyArray[] = [

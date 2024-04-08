@@ -19,29 +19,12 @@ final class EloquentIntegrationRepository implements IntegrationRepository
 {
     public function save(Integration $integration): void
     {
-        DB::transaction(static function () use ($integration): void {
-            IntegrationModel::query()->create([
-                'id' => $integration->id->toString(),
-                'type' => $integration->type,
-                'name' => $integration->name,
-                'description' => $integration->description,
-                'subscription_id' => $integration->subscriptionId,
-                'status' => $integration->status,
-                'partner_status' => $integration->partnerStatus,
-                'key_visibility' => $integration->getKeyVisibility(),
-            ]);
+        $this->saveTransaction($integration, null);
+    }
 
-            foreach ($integration->contacts() as $contact) {
-                ContactModel::query()->create([
-                    'id' => $contact->id->toString(),
-                    'integration_id' => $integration->id->toString(),
-                    'type' => $contact->type->value,
-                    'first_name' => $contact->firstName,
-                    'last_name' => $contact->lastName,
-                    'email' => $contact->email,
-                ]);
-            }
-        });
+    public function saveWithCoupon(Integration $integration, string $couponCode): void
+    {
+        $this->saveTransaction($integration, $couponCode);
     }
 
     public function update(Integration $integration): void
@@ -101,14 +84,9 @@ final class EloquentIntegrationRepository implements IntegrationRepository
 
     public function requestActivation(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode): void
     {
-        DB::transaction(static function () use ($couponCode, $id, $organizationId): void {
+        DB::transaction(function () use ($couponCode, $id, $organizationId): void {
             if ($couponCode) {
-                /** @var CouponModel $couponModel */
-                $couponModel = CouponModel::query()
-                    ->where('code', '=', $couponCode)
-                    ->whereNull('integration_id')
-                    ->firstOrFail();
-                $couponModel->useOnIntegration($id);
+                $this->useCouponOnIntegration($id, $couponCode);
             }
 
             /** @var IntegrationModel $integrationModel */
@@ -117,47 +95,24 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         });
     }
 
-    public function activate(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode): void
+    public function activate(UuidInterface $id): void
     {
-        DB::transaction(static function () use ($couponCode, $id, $organizationId): void {
+        /** @var IntegrationModel $integrationModel */
+        $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
+        $integrationModel->activate();
+    }
+
+    public function activateWithOrganization(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode): void
+    {
+        DB::transaction(function () use ($couponCode, $id, $organizationId): void {
             if ($couponCode) {
-                /** @var CouponModel $couponModel */
-                $couponModel = CouponModel::query()
-                    ->where('code', '=', $couponCode)
-                    ->whereNull('integration_id')
-                    ->firstOrFail();
-                $couponModel->useOnIntegration($id);
+                $this->useCouponOnIntegration($id, $couponCode);
             }
 
             /** @var IntegrationModel $integrationModel */
             $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
-            $integrationModel->activate($organizationId);
+            $integrationModel->activateWithOrganization($organizationId);
         });
-    }
-
-    // @deprecated
-    public function activateWithCouponCode(UuidInterface $id, string $couponCode): void
-    {
-        DB::transaction(static function () use ($couponCode, $id): void {
-            /** @var CouponModel $couponModel */
-            $couponModel = CouponModel::query()
-                ->where('code', '=', $couponCode)
-                ->whereNull('integration_id')
-                ->firstOrFail();
-            $couponModel->useOnIntegration($id);
-
-            /** @var IntegrationModel $integrationModel */
-            $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
-            $integrationModel->activateWithCoupon();
-        });
-    }
-
-    // @deprecated
-    public function activateWithOrganization(UuidInterface $id, UuidInterface $organizationId): void
-    {
-        /** @var IntegrationModel $integrationModel */
-        $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
-        $integrationModel->activateWithOrganization($organizationId);
     }
 
     public function approve(UuidInterface $id): void
@@ -165,5 +120,46 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         /** @var IntegrationModel $integrationModel */
         $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
         $integrationModel->approve();
+    }
+
+    private function useCouponOnIntegration(UuidInterface $id, string $couponCode): void
+    {
+        /** @var CouponModel $couponModel */
+        $couponModel = CouponModel::query()
+            ->where('code', '=', $couponCode)
+            ->whereNull('integration_id')
+            ->firstOrFail();
+        $couponModel->useOnIntegration($id);
+    }
+
+    private function saveTransaction(Integration $integration, ?string $couponCode): void
+    {
+        DB::transaction(function () use ($integration, $couponCode): void {
+            if ($couponCode) {
+                $this->useCouponOnIntegration($integration->id, $couponCode);
+            }
+
+            IntegrationModel::query()->create([
+                'id' => $integration->id->toString(),
+                'type' => $integration->type,
+                'name' => $integration->name,
+                'description' => $integration->description,
+                'subscription_id' => $integration->subscriptionId,
+                'status' => $integration->status,
+                'partner_status' => $integration->partnerStatus,
+                'key_visibility' => $integration->getKeyVisibility(),
+            ]);
+
+            foreach ($integration->contacts() as $contact) {
+                ContactModel::query()->create([
+                    'id' => $contact->id->toString(),
+                    'integration_id' => $integration->id->toString(),
+                    'type' => $contact->type->value,
+                    'first_name' => $contact->firstName,
+                    'last_name' => $contact->lastName,
+                    'email' => $contact->email,
+                ]);
+            }
+        });
     }
 }

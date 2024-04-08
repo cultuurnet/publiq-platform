@@ -6,6 +6,7 @@ namespace App\Domain\Integrations;
 
 use App\Auth0\Auth0Client;
 use App\Domain\Contacts\Contact;
+use App\Domain\Coupons\Coupon;
 use App\Domain\Organizations\Organization;
 use App\Domain\Subscriptions\Subscription;
 use App\UiTiDv1\UiTiDv1Consumer;
@@ -30,6 +31,8 @@ final class Integration
     private array $urls;
 
     private ?Subscription $subscription;
+
+    private ?Coupon $coupon;
 
     public function __construct(
         public readonly UuidInterface $id,
@@ -92,6 +95,13 @@ final class Integration
     {
         $clone = clone $this;
         $clone->subscription = $subscription;
+        return $clone;
+    }
+
+    public function withCoupon(Coupon $coupon): self
+    {
+        $clone = clone $this;
+        $clone->coupon = $coupon;
         return $clone;
     }
 
@@ -162,14 +172,13 @@ final class Integration
             'status' => $this->status,
             'partnerStatus' => $this->partnerStatus,
             'keyVisibility' => $this->keyVisibility,
-
-
             'contacts' => $this->contacts,
             'urls' => $this->urls,
             'organization' => $this->organization,
             'authClients' => $this->auth0Clients,
             'legacyAuthConsumers' => $this->uiTiDv1Consumers,
             'subscription' => $this->subscription,
+            'coupon' => $this->coupon ?? null,
         ];
     }
 }

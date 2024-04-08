@@ -1,14 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Heading } from "../../Heading";
 import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
 import { ButtonPrimary } from "../../ButtonPrimary";
-import { Integration } from "../../../Pages/Integrations/Index";
 import { useTranslation } from "react-i18next";
 import { useForm } from "@inertiajs/react";
 import { Alert } from "../../Alert";
 import { IntegrationType } from "../../../types/IntegrationType";
 import { IntegrationStatus } from "../../../types/IntegrationStatus";
+import { PricingPlanContext } from "../../../Context/PricingPlan";
+import { formatCurrency } from "../../../utils/formatCurrency";
+import { formatPricing } from "../../../utils/formatPricing";
+import type { Integration } from "../../../types/Integration";
 
 type Props = Integration;
 
@@ -16,6 +19,7 @@ export const BillingInfo = ({
   id,
   organization,
   subscription,
+  coupon,
   status,
 }: Props) => {
   const { t } = useTranslation();
@@ -27,6 +31,8 @@ export const BillingInfo = ({
 
   const errors = err as Record<string, string | undefined>;
 
+  const pricingPlan = useContext(PricingPlanContext);
+
   return (
     <>
       <div className="w-full max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-6">
@@ -34,22 +40,28 @@ export const BillingInfo = ({
           {t("details.billing_info.title.subscription")}
         </Heading>
         <FormElement
-          error={errors["organization.address.street"]}
           component={
             <Input
               type="text"
               name="price"
-              value={`${subscription.category} (${
-                subscription.currency === "EUR" ? "€" : subscription.currency
-              } ${subscription.fee / 100})`}
+              value={`${pricingPlan.title} (${pricingPlan.price})`}
               className="md:min-w-[40rem]"
               disabled
             />
           }
         />
+        {coupon.isDistributed && (
+          <Alert
+            className={"col-span-2 col-start-2"}
+            variant="success"
+            title={t("details.billing_info.coupon_used", {
+              price: formatCurrency(subscription.currency, coupon.reduction),
+            })}
+          />
+        )}
       </div>
-      {subscription.integrationType !== IntegrationType.EntryApi &&
-        status !== IntegrationStatus.Active && (
+      {status !== IntegrationStatus.Active &&
+        subscription.integrationType !== IntegrationType.EntryApi && (
           <div className={"grid grid-cols-3 gap-10"}>
             <Alert
               className={"col-span-2 col-start-2"}
@@ -58,13 +70,30 @@ export const BillingInfo = ({
             />
           </div>
         )}
+      {status === IntegrationStatus.Active && (
+        <div className="w-full max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-6">
+          <Heading level={4} className="font-semibold">
+            {t("details.billing_info.to_pay")}
+          </Heading>
+          <div className="w-full block relative md:min-w-[40rem]">
+            {t(`pricing_plan.basic.price`, {
+              price: formatPricing({
+                currency: subscription.currency,
+                price: Math.max(
+                  subscription.fee / 100 - (coupon?.reduction ?? 0),
+                  0
+                ),
+              }),
+            })}
+          </div>
+        </div>
+      )}
       {data.organization && (
         <>
           <div className="w-full max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-6">
             <Heading level={4} className="font-semibold">
               {t("details.billing_info.title.organization")}
             </Heading>
-
             <div className="flex flex-col gap-5">
               <FormElement
                 label={`${t("details.billing_info.name")}`}

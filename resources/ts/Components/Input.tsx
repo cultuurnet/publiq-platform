@@ -1,8 +1,8 @@
 import React from "react";
-import { ComponentProps } from "react";
+import type { ComponentProps } from "react";
 import { classNames } from "../utils/classNames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import type { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 type Props = ComponentProps<"input"> & {
   iconBack?: IconProp;

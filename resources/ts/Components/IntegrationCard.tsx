@@ -1,5 +1,4 @@
 import React from "react";
-import type { Integration } from "../Pages/Integrations/Index";
 import { ButtonIcon } from "./ButtonIcon";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { Heading } from "./Heading";
@@ -13,11 +12,12 @@ import {
   integrationIconClasses,
   useIntegrationTypesInfo,
 } from "./IntegrationTypes";
-import { IconSearchApi } from "./icons/IconSearchApi";
+import type { IconSearchApi } from "./icons/IconSearchApi";
 import { ActivationRequest } from "./ActivationRequest";
 import { IntegrationType } from "../types/IntegrationType";
 import { CopyText } from "./CopyText";
-import { Credentials } from "./Integrations/Detail/Credentials";
+import type { Credentials } from "./Integrations/Detail/Credentials";
+import type { Integration } from "../types/Integration";
 
 type Props = Integration &
   Credentials & {

@@ -1,4 +1,5 @@
-import React, { ReactNode, useMemo, useState } from "react";
+import type { ReactNode } from "react";
+import React, { useMemo, useState } from "react";
 import { router } from "@inertiajs/react";
 import { Heading } from "../../Components/Heading";
 import Layout from "../../layouts/Layout";
@@ -10,96 +11,14 @@ import { useTranslateRoute } from "../../hooks/useTranslateRoute";
 import { Pagination } from "../../Components/Pagination";
 import { useTranslation } from "react-i18next";
 import { IntegrationCard } from "../../Components/IntegrationCard";
-import { PaginationInfo } from "../../types/PaginationInfo";
+import type { PaginationInfo } from "../../types/PaginationInfo";
 import { Page } from "../../Components/Page";
 import { QuestionDialog } from "../../Components/QuestionDialog";
 import { IconLink } from "../../Components/IconLink";
-import { IntegrationStatus } from "../../types/IntegrationStatus";
-import { ContactType } from "../../types/ContactType";
-import { Environment } from "../../types/Environment";
-import { IntegrationUrlType } from "../../types/IntegrationUrlType";
-import { IntegrationType } from "../../types/IntegrationType";
-import { Values } from "../../types/Values";
 import { Auth0Tenant } from "../../types/Auth0Tenant";
 import { UiTiDv1Environment } from "../../types/UiTiDv1Environment";
-
-type Organization = {
-  id: string;
-  name: string;
-  invoiceMail: string;
-  vat: string;
-  address: {
-    street: string;
-    zip: string;
-    city: string;
-    country: string;
-  };
-};
-
-export type Contact = {
-  id: string;
-  integrationId: string;
-  email: string;
-  type: ContactType;
-  firstName: string;
-  lastName: string;
-};
-
-export type Subscription = {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  integrationType: string;
-  currency: string;
-  price: number;
-  fee: number;
-};
-
-export type IntegrationUrl = {
-  id: string;
-  environment: Environment;
-  type: IntegrationUrlType;
-  url: string;
-};
-
-export type LegacyAuthConsumer = {
-  apiKey: string;
-  consumerId: string;
-  consumerKey: string;
-  consumerSecret: string;
-  environment: UiTiDv1Environment;
-  id: string;
-  integrationId: string;
-};
-
-export type AuthClient = {
-  clientId: string;
-  clientSecret: string;
-  id: string;
-  integrationId: string;
-  tenant: Auth0Tenant;
-};
-
-export type Credentials = {
-  auth0: AuthClient[];
-  uitidV1: LegacyAuthConsumer[];
-};
-
-export type Integration = {
-  id: string;
-  type: Values<typeof IntegrationType>;
-  name: string;
-  description: string;
-  subscriptionId: string;
-  status: IntegrationStatus;
-  contacts: Contact[];
-  organization?: Organization;
-  subscription: Subscription;
-  urls: IntegrationUrl[];
-  authClients: AuthClient[];
-  legacyAuthConsumers: LegacyAuthConsumer[];
-};
+import type { Credentials } from "../../types/Credentials";
+import type { Integration } from "../../types/Integration";
 
 type Props = {
   integrations: Integration[];

@@ -1,5 +1,6 @@
 import React from "react";
-import { Link, InertiaLinkProps } from "@inertiajs/react";
+import type { InertiaLinkProps } from "@inertiajs/react";
+import { Link } from "@inertiajs/react";
 import { classNames } from "../utils/classNames";
 
 type Props = { contentStyles?: string } & InertiaLinkProps;

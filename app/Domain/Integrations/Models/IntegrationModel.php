@@ -8,8 +8,6 @@ use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Events\IntegrationActivated;
-use App\Domain\Integrations\Events\IntegrationActivatedWithCoupon;
-use App\Domain\Integrations\Events\IntegrationActivatedWithOrganization;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
@@ -33,6 +31,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
+/**
+ * @property CouponModel|null $coupon
+ * @property SubscriptionModel|null $subscription
+ */
 final class IntegrationModel extends UuidModel
 {
     use SoftDeletes;
@@ -105,32 +107,21 @@ final class IntegrationModel extends UuidModel
         IntegrationActivationRequested::dispatch(Uuid::fromString($this->id));
     }
 
-    public function activate(UuidInterface $organizationId): void
+    public function activate(): void
     {
         $this->update([
-            'organization_id' => $organizationId->toString(),
             'status' => IntegrationStatus::Active,
         ]);
         IntegrationActivated::dispatch(Uuid::fromString($this->id));
     }
 
-    // @deprecated
-    public function activateWithCoupon(): void
-    {
-        $this->update([
-            'status' => IntegrationStatus::Active,
-        ]);
-        IntegrationActivatedWithCoupon::dispatch(Uuid::fromString($this->id));
-    }
-
-    // @deprecated
     public function activateWithOrganization(UuidInterface $organizationId): void
     {
         $this->update([
             'organization_id' => $organizationId->toString(),
             'status' => IntegrationStatus::Active,
         ]);
-        IntegrationActivatedWithOrganization::dispatch(Uuid::fromString($this->id));
+        IntegrationActivated::dispatch(Uuid::fromString($this->id));
     }
 
     public function approve(): void
@@ -242,7 +233,6 @@ final class IntegrationModel extends UuidModel
     {
         $foundOrganization = $this->organization()->first();
 
-        /** @var Integration */
         $integration = (new Integration(
             Uuid::fromString($this->id),
             IntegrationType::from($this->type),
@@ -274,6 +264,14 @@ final class IntegrationModel extends UuidModel
             ->map(fn (Auth0ClientModel $auth0ClientModel) => $auth0ClientModel->toDomain())
             ->toArray()
         )->withSubscription($this->subscription?->toDomain());
+
+        if ($this->subscription) {
+            $integration = $integration->withSubscription($this->subscription->toDomain());
+        }
+
+        if ($this->coupon) {
+            $integration = $integration->withCoupon($this->coupon->toDomain());
+        }
 
         if ($foundOrganization !== null) {
             $integration = $integration->withOrganization($foundOrganization->toDomain());
