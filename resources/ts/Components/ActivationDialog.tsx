@@ -6,7 +6,7 @@ import { FormElement } from "./FormElement";
 import { Input } from "./Input";
 import { useForm } from "@inertiajs/react";
 import { useTranslation } from "react-i18next";
-import type { IntegrationType } from "../types/IntegrationType";
+import { IntegrationType } from "../types/IntegrationType";
 import { useIsMobile } from "../hooks/useIsMobile";
 import type { Subscription } from "../types/Subscription";
 import type { PricingPlan } from "../hooks/useGetPricingPlans";
@@ -235,7 +235,7 @@ export const ActivationDialog = ({
             }
           />
         </div>
-        {type !== "entry-api" && (
+        {type !== IntegrationType.EntryApi && (
           <>
             <FormElement
               label={`${t("details.billing_info.vat")}`}
@@ -294,11 +294,13 @@ export const ActivationDialog = ({
             />
           </>
         )}
-        <PriceOverview
-          subscription={subscription}
-          pricingPlan={pricingPlan}
-          coupon={organizationForm.data.coupon}
-        />
+        {type !== IntegrationType.EntryApi && (
+          <PriceOverview
+            subscription={subscription}
+            pricingPlan={pricingPlan}
+            coupon={organizationForm.data.coupon}
+          />
+        )}
       </>
     </Dialog>
   );
