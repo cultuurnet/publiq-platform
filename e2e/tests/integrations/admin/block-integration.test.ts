@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
-import { IntegrationTypes, createIntegration } from "./create-integration.js";
+import { createIntegration } from "./create-integration.js";
+import { IntegrationTypes } from "../../types.js";
 
 test.use({ storageState: "playwright/.auth/admin.json" });
 
@@ -7,8 +8,8 @@ test("As an admin I can block an integration", async ({ page }) => {
 
   // create integration
   const {page: integrationPage, name: integrationName } = await createIntegration(
+    page,
     IntegrationTypes.SEARCH_API,
-    page
   );
 
   await expect(
