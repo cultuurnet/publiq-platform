@@ -8,6 +8,7 @@
     "/": "/en",
     "/integrations": "/en/integrations",
     "/integrations/new": "/en/integrations/new",
+    "/integrations/detail": "/en/integrations/{{id}}",
     "/support": "/en/support",
     "/subscriptions": "/en/subscriptions"
   },
