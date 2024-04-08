@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import React, { useMemo, useState } from "react";
 import { router } from "@inertiajs/react";
 import { Heading } from "../../Components/Heading";
@@ -19,7 +19,7 @@ import { Auth0Tenant } from "../../types/Auth0Tenant";
 import { UiTiDv1Environment } from "../../types/UiTiDv1Environment";
 import type { Credentials } from "../../types/Credentials";
 import type { Integration } from "../../types/Integration";
-
+import { router } from "@inertiajs/react";
 type Props = {
   integrations: Integration[];
   credentials: Credentials;
@@ -83,6 +83,15 @@ const Index = ({ integrations, paginationInfo, credentials }: Props) => {
       preserveScroll: true,
     });
   };
+
+  useEffect(() => {
+    const timeout = setInterval(
+      () => router.reload({ only: ["credentials"] }),
+      2000
+    );
+
+    return () => clearTimeout(timeout);
+  }, []);
 
   return (
     <Page>
