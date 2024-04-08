@@ -3,7 +3,7 @@ import { classNames } from "../utils/classNames";
 import { useTranslation } from "react-i18next";
 import { usePage } from "@inertiajs/react";
 import { useTranslateRoute } from "../hooks/useTranslateRoute";
-import { Integration } from "../Pages/Integrations/Index";
+import type { Integration } from "../Pages/Integrations/Index";
 
 export type WidgetConfigVariables = {
   profileUrl: string;
