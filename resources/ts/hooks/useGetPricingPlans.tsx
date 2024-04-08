@@ -1,9 +1,9 @@
-import { TFunction } from "i18next";
-import { IntegrationType } from "../types/IntegrationType";
+import type { TFunction } from "i18next";
+import type { IntegrationType } from "../types/IntegrationType";
 import { SubscriptionCategory } from "../types/SubscriptionCategory";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Subscription } from "../types/Subscription";
+import type { Subscription } from "../types/Subscription";
 import { formatCurrency } from "../utils/formatCurrency";
 
 export type PricingPlan = {

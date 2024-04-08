@@ -1,7 +1,8 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import type { ReactNode } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../../layouts/Layout";
 import { Page } from "../../Components/Page";
-import { Integration } from "./Index";
+import type { Integration } from "./Index";
 import { ContactInfo } from "../../Components/Integrations/Detail/ContactInfo";
 import { BillingInfo } from "../../Components/Integrations/Detail/BillingInfo";
 import { Credentials } from "../../Components/Integrations/Detail/Credentials";
@@ -18,7 +19,7 @@ import {
 import { Heading } from "../../Components/Heading";
 import { IntegrationType } from "../../types/IntegrationType";
 import { useGetPricingPlans } from "../../hooks/useGetPricingPlans";
-import { Subscription } from "../../types/Subscription";
+import type { Subscription } from "../../types/Subscription";
 import { PricingPlanProvider } from "../../Context/PricingPlan";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { CouponInfoProvider } from "../../Context/CouponInfo";

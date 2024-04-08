@@ -1,14 +1,14 @@
 import React from "react";
-import { ComponentProps } from "react";
+import type { ComponentProps } from "react";
 import { classNames } from "../utils/classNames";
 import { Heading } from "./Heading";
 import { ButtonIcon } from "./ButtonIcon";
+import type { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import {
   faXmark,
   faTriangleExclamation,
   faCircleCheck,
   faBell,
-  IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 

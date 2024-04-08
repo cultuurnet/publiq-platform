@@ -1,6 +1,6 @@
-import { IntegrationType } from "./IntegrationType";
-import { Currency } from "./Currency";
-import { SubscriptionCategory } from "./SubscriptionCategory";
+import type { IntegrationType } from "./IntegrationType";
+import type { Currency } from "./Currency";
+import type { SubscriptionCategory } from "./SubscriptionCategory";
 
 export type Subscription = {
   id: string;
