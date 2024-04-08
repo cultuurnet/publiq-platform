@@ -1,11 +1,11 @@
 import { expect, test, type Page } from "@playwright/test";
 import { faker } from "@faker-js/faker";
 import {
-  IntegrationTypes,
   type ContactType,
   createIntegration,
   ContactTypes,
 } from "./create-integration.js";
+import { IntegrationTypes } from "../../types.js";
 
 async function addContactToIntegration(
   type: ContactType,
@@ -39,7 +39,7 @@ test("create a new integration as an admin (with functional, technical and contr
   page,
 }) => {
   const { page: integrationPage, name: integrationName } =
-    await createIntegration(IntegrationTypes.SEARCH_API, page);
+    await createIntegration(page, IntegrationTypes.SEARCH_API);
 
   await expect(
     page.locator("h1").getByText(`Integration Details: ${integrationName}`)
