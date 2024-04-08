@@ -53,14 +53,14 @@ const PriceOverview = ({
             <span className="text-publiq-orange">
               {`${formatCurrency(
                 subscription.currency,
-                couponInfo.reductionAmount
+                couponInfo.reduction
               )} / ${t("integrations.activation_dialog.price_overview.year")} (${t("integrations.activation_dialog.price_overview.coupon")})`}
             </span>
 
             <span className="col-start-2">
               {`${formatCurrency(
                 subscription.currency,
-                subscription.price - couponInfo.reductionAmount
+                subscription.price - couponInfo.reduction
               )} / ${t("integrations.activation_dialog.price_overview.year")}`}
             </span>
           </>

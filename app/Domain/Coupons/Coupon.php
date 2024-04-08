@@ -15,11 +15,7 @@ final class Coupon
         public readonly bool $isDistributed,
         public readonly ?UuidInterface $integrationId,
         public readonly string $code,
+        public readonly float $reduction = self::REDUCTION_AMOUNT
     ) {
-    }
-
-    public function reduction(): float
-    {
-        return self::REDUCTION_AMOUNT;
     }
 }
