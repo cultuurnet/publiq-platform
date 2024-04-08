@@ -60,13 +60,13 @@ export const CredentialsLegacyAuthConsumers = ({
                     <CopyText>{legacyProdConsumer.apiKey}</CopyText>
                   </div>
                 )}
-                {keyVisibility.includes(KeyVisibility.all) && (
+                {keyVisibility === KeyVisibility.all && (
                   <Alert variant="info">{t("details.credentials.info")}</Alert>
                 )}
               </div>
             )}
             {status === IntegrationStatus.Draft &&
-              keyVisibility.includes(KeyVisibility.v1) && (
+              keyVisibility === KeyVisibility.v1 && (
                 <ActivationFlow
                   status={status}
                   id={id}

@@ -55,7 +55,7 @@ export const CredentialsAuthClients = ({
       <Heading className="font-semibold lg:min-w-60" level={4}>
         {t("details.credentials.uitid_v2")}
       </Heading>
-      {keyVisibility.includes(KeyVisibility.v1) ? (
+      {keyVisibility === KeyVisibility.v1 ? (
         <div className="flex flex-col flex-1 gap-4">
           <p>{t("details.credentials.uitid_alert")}</p>
           <ButtonPrimary className="self-start">
