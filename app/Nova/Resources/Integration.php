@@ -48,6 +48,10 @@ final class Integration extends Resource
         'description',
     ];
 
+    protected static ?array $defaultSort = [
+        'created_at' => 'desc',
+    ];
+
     /**
      * @return array<Field|ResourceTool>
      */
