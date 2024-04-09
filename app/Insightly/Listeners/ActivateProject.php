@@ -229,7 +229,7 @@ final class ActivateProject implements ShouldQueue
     }
 
     public function failed(
-        IntegrationActivated $integrationActivated,
+        IntegrationActivated|IntegrationActivationRequested $integrationActivated,
         Throwable $exception
     ): void {
         $this->logger->error(
