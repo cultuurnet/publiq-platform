@@ -100,39 +100,48 @@ export const IntegrationCard = ({
 
   const credentials = (
     <>
-      {type !== IntegrationType.Widgets && keyVisibility !== KeyVisibility.v1 && (
-        <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center gap-3">
-          <Heading level={5} className="font-semibold min-w-[10rem] self-start">
+      {type !== IntegrationType.Widgets &&
+        keyVisibility !== KeyVisibility.v1 && (
+          <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center gap-3">
+            <Heading
+              level={5}
+              className="font-semibold min-w-[10rem] self-start"
+            >
               {t("integrations.test")}
-          </Heading>
-          <div className="flex flex-col gap-2">
+            </Heading>
             <div className="flex flex-col gap-2">
-              {auth0TestClientWithLabels.map((client) => (
-                <div
-                  key={`${client.label}-${client.value}`}
-                  className="flex gap-1 max-md:flex-col max-md:items-start"
-                >
-                  <span className="flex items-center whitespace-nowrap">
-                    {t(client.label)}
-                  </span>
-                  <CopyText>{client.value}</CopyText>
-                </div>
-              ))}
+              <div className="flex flex-col gap-2">
+                {auth0TestClientWithLabels.map((client) => (
+                  <div
+                    key={`${client.label}-${client.value}`}
+                    className="flex gap-1 max-md:flex-col max-md:items-start"
+                  >
+                    <span className="flex items-center whitespace-nowrap">
+                      {t(client.label)}
+                    </span>
+                    <CopyText>{client.value}</CopyText>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
-      )}
-      {type !== IntegrationType.Widgets &&keyVisibility !== KeyVisibility.v2 && legacyTestConsumer && (
-        <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center gap-3">
-          <Heading level={5} className="font-semibold min-w-[10rem] self-start">
-            {t("integrations.test")}
-          </Heading>
-          <span className="flex items-center whitespace-nowrap">
-            {t("details.credentials.api_key")}
-          </span>
-          <CopyText>{legacyTestConsumer.apiKey}</CopyText>
-        </section>
-      )}
+          </section>
+        )}
+      {type !== IntegrationType.Widgets &&
+        keyVisibility !== KeyVisibility.v2 &&
+        legacyTestConsumer && (
+          <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center gap-3">
+            <Heading
+              level={5}
+              className="font-semibold min-w-[10rem] self-start"
+            >
+              {t("integrations.test")}
+            </Heading>
+            <span className="flex items-center whitespace-nowrap">
+              {t("details.credentials.api_key")}
+            </span>
+            <CopyText>{legacyTestConsumer.apiKey}</CopyText>
+          </section>
+        )}
 
       {type === IntegrationType.Widgets &&
         status !== IntegrationStatus.Active && (
@@ -176,8 +185,9 @@ export const IntegrationCard = ({
               )}
           </div>
         </div>
-      </section>{keyVisibility !== KeyVisibility.v2 &&
-      legacyProdConsumer &&
+      </section>
+      {keyVisibility !== KeyVisibility.v2 &&
+        legacyProdConsumer &&
         status === IntegrationStatus.Active &&
         type !== IntegrationType.Widgets && (
           <section className="flex-1 inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">
