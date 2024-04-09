@@ -22,7 +22,7 @@ export type Integration = {
   name: string;
   description: string;
   subscriptionId: string;
-  coupon: Coupon;
+  coupon?: Coupon | null;
   status: IntegrationStatus;
   contacts: Contact[];
   organization?: Organization;
