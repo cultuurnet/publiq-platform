@@ -1,6 +1,6 @@
 import type { FormEvent, ReactNode } from "react";
-import { useState } from "react";
 import React from "react";
+import { useState } from "react";
 import { router, useForm } from "@inertiajs/react";
 import Layout from "../../layouts/Layout";
 import { Heading } from "../../Components/Heading";
@@ -22,6 +22,7 @@ import {
 } from "../../Components/RadioButtonGroup";
 import type { Subscription } from "../../types/Subscription";
 import { useGetPricingPlans } from "../../hooks/useGetPricingPlans";
+import type { SubscriptionCategory } from "../../types/SubscriptionCategory";
 
 type Props = {
   subscriptions: Subscription[];
@@ -38,7 +39,9 @@ const New = ({ subscriptions }: Props) => {
   )?.id;
 
   const basicSubscriptionIds = subscriptions
-    .filter((subscription) => subscription.category.includes("Basic"))
+    .filter((subscription) =>
+      subscription.category.includes(SubscriptionCategory.Basic)
+    )
     .map((subscription) => subscription.id);
 
   const url = new URL(document.location.href);
@@ -349,7 +352,7 @@ const New = ({ subscriptions }: Props) => {
                       name="hasCoupon"
                       className="text-publiq-blue-dark focus:ring-publiq-blue-dark rounded-sm"
                       checked={hasCoupon}
-                      onChange={() => setHasCoupon(!hasCoupon)}
+                      onChange={() => setHasCoupon((prev) => !prev)}
                     />
                   }
                 />
