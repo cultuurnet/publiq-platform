@@ -8,5 +8,5 @@
     "skipLibCheck": true,
     "types": ["../node_modules/@types/node"]
   },
-  "include": ["./**/*.ts"]
+  "include": ["./**/*.ts", "../resources/ts/types/IntegrationType.ts"]
 }

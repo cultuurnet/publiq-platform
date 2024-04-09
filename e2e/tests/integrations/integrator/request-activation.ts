@@ -1,6 +1,6 @@
 import { type Page, expect } from "@playwright/test";
 import { fakerNL_BE as faker } from "@faker-js/faker";
-import { IntegrationTypes, type IntegrationType } from "../../types.js";
+import { IntegrationType } from "../../../../resources/ts/types/IntegrationType.js";
 
 export async function requestActivationAsIntegrator(
   page: Page,
@@ -20,7 +20,7 @@ export async function requestActivationAsIntegrator(
   await page.getByLabel("Postcode").fill(faker.location.zipCode("####"));
   await page.getByLabel(/^Gemeente/).fill(faker.location.city());
 
-  if (integrationType !== IntegrationTypes.ENTRY_API) {
+  if (integrationType !== IntegrationType.EntryApi) {
     await page
       .getByLabel("BTW of ondernemingsnummer")
       .fill("BE 0475 250 609");

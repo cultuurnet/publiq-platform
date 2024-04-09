@@ -1,13 +1,13 @@
 import { test, expect } from "@playwright/test";
 import { createIntegrationAsIntegrator } from "./create-integration.js";
-import { IntegrationTypes } from "../../types.js";
+import { IntegrationType } from "../../../../resources/ts/types/IntegrationType.js";
 
 test.use({ storageState: "playwright/.auth/user.json" });
 
 test("As an integrator I can create a new integration", async ({ page }) => {
   const { integrationName } = await createIntegrationAsIntegrator(
     page,
-    IntegrationTypes.SEARCH_API
+    IntegrationType.SearchApi
   );
 
   await page.waitForURL(/https?:\/\/[^/]*\/nl\/integraties(\/.*)?/);

@@ -5,7 +5,7 @@ import {
   createIntegration,
   ContactTypes,
 } from "./create-integration.js";
-import { IntegrationTypes } from "../../types.js";
+import { IntegrationType } from "../../../../resources/ts/types/IntegrationType.js";
 
 async function addContactToIntegration(
   type: ContactType,
@@ -39,7 +39,7 @@ test("create a new integration as an admin (with functional, technical and contr
   page,
 }) => {
   const { page: integrationPage, name: integrationName } =
-    await createIntegration(page, IntegrationTypes.SEARCH_API);
+    await createIntegration(page, IntegrationType.SearchApi);
 
   await expect(
     page.locator("h1").getByText(`Integration Details: ${integrationName}`)
