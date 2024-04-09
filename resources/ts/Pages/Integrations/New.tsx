@@ -1,4 +1,4 @@
-import type { FormEvent, ReactNode} from "react";
+import type { FormEvent, ReactNode } from "react";
 import { useState } from "react";
 import React from "react";
 import { router, useForm } from "@inertiajs/react";
