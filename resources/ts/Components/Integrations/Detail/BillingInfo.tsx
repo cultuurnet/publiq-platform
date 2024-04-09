@@ -75,19 +75,17 @@ export const BillingInfo = ({
           <Heading level={4} className="font-semibold">
             {t("details.billing_info.to_pay")}
           </Heading>
-          {coupon && (
-            <div className="w-full block relative md:min-w-[40rem]">
-              {t(`pricing_plan.basic.price`, {
-                price: formatPricing({
-                  currency: subscription.currency,
-                  price: Math.max(
-                    subscription.fee / 100 - (coupon?.reduction ?? 0),
-                    0
-                  ),
-                }),
-              })}
-            </div>
-          )}
+          <div className="w-full block relative md:min-w-[40rem]">
+            {t(`pricing_plan.basic.price`, {
+              price: formatPricing({
+                currency: subscription.currency,
+                price: Math.max(
+                  subscription.fee / 100 - (coupon?.reduction ?? 0),
+                  0
+                ),
+              }),
+            })}
+          </div>
         </div>
       )}
       {data.organization && (
