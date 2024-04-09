@@ -22,10 +22,10 @@ export type Integration = {
   name: string;
   description: string;
   subscriptionId: string;
-  coupon?: Coupon | null;
+  coupon: Coupon | null;
   status: IntegrationStatus;
   contacts: Contact[];
-  organization?: Organization;
+  organization: Organization | null;
   subscription: Subscription;
   urls: IntegrationUrl[];
   authClients: AuthClient[];
