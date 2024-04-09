@@ -49,7 +49,7 @@ final class Integration extends Resource
     ];
 
     protected static ?array $defaultSort = [
-        'created_at' => 'desc'
+        'created_at' => 'desc',
     ];
 
     /**
