@@ -10,6 +10,8 @@ use App\Domain\Contacts\Repositories\EloquentContactKeyVisibilityRepository;
 use App\Domain\Contacts\Repositories\EloquentContactRepository;
 use App\Domain\Coupons\Repositories\CouponRepository;
 use App\Domain\Coupons\Repositories\EloquentCouponRepository;
+use App\Domain\KeyVisibilityUpgrades\Repositories\EloquentKeyVisibilityUpgradeRepository;
+use App\Domain\KeyVisibilityUpgrades\Repositories\KeyVisibilityUpgradeRepository;
 use App\Domain\Organizations\Repositories\EloquentOrganizationRepository;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
 use App\Domain\Subscriptions\Repositories\EloquentSubscriptionRepository;
@@ -25,5 +27,6 @@ final class AppServiceProvider extends ServiceProvider
         $this->app->bind(CouponRepository::class, EloquentCouponRepository::class);
         $this->app->bind(OrganizationRepository::class, EloquentOrganizationRepository::class);
         $this->app->bind(SubscriptionRepository::class, EloquentSubscriptionRepository::class);
+        $this->app->bind(KeyVisibilityUpgradeRepository::class, EloquentKeyVisibilityUpgradeRepository::class);
     }
 }
