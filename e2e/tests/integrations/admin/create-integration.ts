@@ -2,14 +2,6 @@ import type { Page } from "@playwright/test";
 import { fakerNL_BE as faker } from "@faker-js/faker";
 import { IntegrationType } from "@app-types/IntegrationType";
 
-export const ContactTypes = {
-  FUNCTIONAL: "functional",
-  TECHNICAL: "technical",
-  CONTRIBUTOR: "contributor",
-} as const;
-
-export type ContactType = (typeof ContactTypes)[keyof typeof ContactTypes];
-
 const IntegrationTypeSubscriptionMap: Record<IntegrationType, string> = {
   [IntegrationType.SearchApi]: "b46745a1-feb5-45fd-8fa9-8e3ef25aac26",
   [IntegrationType.Widgets]: "c470ccbf-074c-4bf1-b526-47c94c5e9296",

@@ -1,11 +1,8 @@
 import { expect, test, type Page } from "@playwright/test";
 import { faker } from "@faker-js/faker";
-import {
-  type ContactType,
-  createIntegration,
-  ContactTypes,
-} from "./create-integration.js";
+import { createIntegration } from "./create-integration.js";
 import { IntegrationType } from "@app-types/IntegrationType";
+import { ContactType } from "@app-types/ContactType";
 
 async function addContactToIntegration(
   type: ContactType,
@@ -49,17 +46,17 @@ test("create a new integration as an admin (with functional, technical and contr
   const integrationId = url.split("/").pop();
 
   const contributorEmail = await addContactToIntegration(
-    ContactTypes.CONTRIBUTOR,
+    ContactType.Contributor,
     integrationId!,
     page
   );
   const functionalEmail = await addContactToIntegration(
-    ContactTypes.FUNCTIONAL,
+    ContactType.Functional,
     integrationId!,
     page
   );
   const technicalEmail = await addContactToIntegration(
-    ContactTypes.TECHNICAL,
+    ContactType.Technical,
     integrationId!,
     page
   );
