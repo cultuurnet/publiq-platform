@@ -23,7 +23,7 @@ import { PricingPlanProvider } from "../../Context/PricingPlan";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { CouponInfoProvider } from "../../Context/CouponInfo";
 import type { Integration } from "../../types/Integration";
-import { useCredentialsPolling } from "../../hooks/useCredentialsPolling";
+import { usePropsPolling } from "../../hooks/usePropsPolling";
 
 type Props = {
   integration: Integration;
@@ -73,7 +73,10 @@ const Detail = ({ integration, email, subscriptions }: Props) => {
     setOriginalVisitingUrl("");
   };
 
-  useCredentialsPolling();
+  usePropsPolling([
+    "integration.authClients.length",
+    "integration.legacyAuthConsumers.length",
+  ]);
 
   useEffect(() => {
     const cleanUp = router.on("before", (e) => {
