@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { router } from "@inertiajs/react";
-import { VisitOptions } from "@inertiajs/core/types";
+import type { VisitOptions } from "@inertiajs/core/types";
 
 export const usePolling = (
   condition: boolean,
@@ -15,4 +15,4 @@ export const usePolling = (
     const timeout = setInterval(() => router.reload(visitOptions), interval);
 
     return () => clearInterval(timeout);
-  }, [condition]);
+  }, [condition, visitOptions, interval]);
