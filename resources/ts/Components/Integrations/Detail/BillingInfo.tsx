@@ -50,7 +50,7 @@ export const BillingInfo = ({
             />
           }
         />
-        {coupon.isDistributed && (
+        {coupon?.isDistributed && (
           <Alert
             className={"col-span-2 col-start-2"}
             variant="success"

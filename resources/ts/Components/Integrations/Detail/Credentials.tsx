@@ -8,6 +8,8 @@ import type {
   LegacyAuthConsumer,
 } from "../../../types/Credentials";
 import type { Integration } from "../../../types/Integration";
+import { Alert } from "../../Alert";
+import { useTranslation } from "react-i18next";
 
 type Props = Integration & {
   email: string;
@@ -30,6 +32,10 @@ export const Credentials = ({
   legacyAuthConsumers,
   authClients,
 }: Props) => {
+  const { t } = useTranslation();
+  const hasAnyCredentials = Boolean(
+    legacyAuthConsumers.length || authClients.length
+  );
   const credentials = useMemo(
     () => ({
       legacyTestConsumer: legacyAuthConsumers.find(
@@ -43,6 +49,12 @@ export const Credentials = ({
     }),
     [legacyAuthConsumers, authClients]
   );
+
+  if (!hasAnyCredentials) {
+    return (
+      <Alert variant={"info"}>{t("integrations.pending_credentials")}</Alert>
+    );
+  }
 
   if (type === IntegrationType.Widgets) {
     return (

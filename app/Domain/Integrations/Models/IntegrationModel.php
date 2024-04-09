@@ -278,6 +278,5 @@ final class IntegrationModel extends UuidModel
         }
 
         return $integration;
-
     }
 }
