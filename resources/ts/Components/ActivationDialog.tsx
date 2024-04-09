@@ -47,7 +47,7 @@ const PriceOverview = ({
           className={coupon ? "line-through" : ""}
         >{`${formatCurrency(subscription.currency, subscription.price)} / ${t("integrations.activation_dialog.price_overview.year")}`}</span>
 
-        {coupon && (
+        {couponInfo && (
           <>
             <span className="text-publiq-orange text-right">-</span>
             <span className="text-publiq-orange">
