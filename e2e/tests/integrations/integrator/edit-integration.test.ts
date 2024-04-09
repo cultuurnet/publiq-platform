@@ -40,5 +40,4 @@ test("As an integrator I can edit an existing integration", async ({
   await page.getByRole("button", { name: "Aanpassingen bewaren" }).click();
 
   await expect(page.getByRole("heading", { name: "De wijzigingen zijn succesvol" })).toBeVisible();
-  await page.screenshot({ path: "edit-integration.png" });
 });
