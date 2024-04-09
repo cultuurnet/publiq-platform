@@ -1,14 +1,14 @@
 import { expect, test } from "@playwright/test";
 import { createIntegrationAsIntegrator } from "../integrator/create-integration.js";
 import { requestActivationAsIntegrator } from "../integrator/request-activation.js";
-import { IntegrationTypes } from "../../types.js";
+import { IntegrationType } from "@app-types/IntegrationType";
 
 test.use({ storageState: "playwright/.auth/admin.json" });
 
 test("As an admin I can approve an integration", async ({ page }) => {
   // create integration as integrator
   const { page: integrationPage, integrationName } =
-    await createIntegrationAsIntegrator(page, IntegrationTypes.ENTRY_API);
+    await createIntegrationAsIntegrator(page, IntegrationType.EntryApi);
 
   await page.waitForURL(/https?:\/\/[^/]*\/nl\/integraties(\/.*)?/);
   await expect(page.getByText(integrationName)).toBeVisible();
@@ -20,7 +20,7 @@ test("As an admin I can approve an integration", async ({ page }) => {
   await requestActivationAsIntegrator(
     page,
     integrationId!,
-    IntegrationTypes.ENTRY_API
+    IntegrationType.EntryApi
   );
 
   // approve integration
