@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { createIntegration } from "./create-integration.js";
-import {IntegrationType} from "../../../../resources/ts/types/IntegrationType.js";
+import { IntegrationType } from "@app-types/IntegrationType";
 
 test.use({ storageState: "playwright/.auth/admin.json" });
 

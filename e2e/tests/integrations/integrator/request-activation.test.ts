@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { requestActivationAsIntegrator } from "./request-activation.js";
 import { createIntegrationAsIntegrator } from "./create-integration.js";
-import { IntegrationType } from "../../../../resources/ts/types/IntegrationType.js";
+import { IntegrationType } from "@app-types/IntegrationType";
 
 test("As an integrator I can request activation via organization details", async ({
   page,
@@ -22,6 +22,6 @@ test("As an integrator I can request activation via organization details", async
   await requestActivationAsIntegrator(
     page,
     newIntegrationId!,
-      IntegrationType.SearchApi
+    IntegrationType.SearchApi
   );
 });

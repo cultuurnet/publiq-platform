@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { createIntegrationAsIntegrator } from "../integrator/create-integration.js";
 import { requestActivationAsIntegrator } from "../integrator/request-activation.js";
-import { IntegrationType } from "../../../../resources/ts/types/IntegrationType.js";
+import { IntegrationType } from "@app-types/IntegrationType";
 
 test.use({ storageState: "playwright/.auth/admin.json" });
 
@@ -20,7 +20,7 @@ test("As an admin I can approve an integration", async ({ page }) => {
   await requestActivationAsIntegrator(
     page,
     integrationId!,
-      IntegrationType.EntryApi
+    IntegrationType.EntryApi
   );
 
   // approve integration

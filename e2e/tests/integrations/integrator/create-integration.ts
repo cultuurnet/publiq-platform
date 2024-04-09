@@ -1,6 +1,6 @@
 import { type Page } from "@playwright/test";
 import { fakerNL_BE as faker } from "@faker-js/faker";
-import { IntegrationType } from "../../../../resources/ts/types/IntegrationType.js";
+import { IntegrationType } from "@app-types/IntegrationType";
 
 export async function createIntegrationAsIntegrator(
   page: Page,
