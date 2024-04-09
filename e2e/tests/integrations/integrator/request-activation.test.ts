@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { requestActivationAsIntegrator } from "./request-activation.js";
 import { createIntegrationAsIntegrator } from "./create-integration.js";
-import { IntegrationTypes } from "../../types.js";
+import { IntegrationType } from "@app-types/IntegrationType";
 
 test("As an integrator I can request activation via organization details", async ({
   page,
@@ -9,7 +9,7 @@ test("As an integrator I can request activation via organization details", async
   // Create SAPI integration
   const { integrationName } = await createIntegrationAsIntegrator(
     page,
-    IntegrationTypes.SEARCH_API
+    IntegrationType.SearchApi
   );
 
   await page.waitForURL(/https?:\/\/[^/]*\/nl\/integraties(\/.*)?/);
@@ -22,6 +22,6 @@ test("As an integrator I can request activation via organization details", async
   await requestActivationAsIntegrator(
     page,
     newIntegrationId!,
-    IntegrationTypes.SEARCH_API
+    IntegrationType.SearchApi
   );
 });

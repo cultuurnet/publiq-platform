@@ -1,6 +1,6 @@
 import { type Page, expect } from "@playwright/test";
 import { fakerNL_BE as faker } from "@faker-js/faker";
-import { IntegrationTypes, type IntegrationType } from "../../types.js";
+import { IntegrationType } from "@app-types/IntegrationType";
 
 export async function requestActivationAsIntegrator(
   page: Page,
@@ -8,9 +8,7 @@ export async function requestActivationAsIntegrator(
   integrationType: IntegrationType
 ) {
   await page.goto(`/nl/integraties/${integrationId}`);
-  await page
-    .getByRole("button", { name: "Activatie aanvragen" })
-    .click();
+  await page.getByRole("button", { name: "Activatie aanvragen" }).click();
   await page
     .getByLabel("Naam bedrijf, organisatie of")
     .fill(faker.company.name());
@@ -20,13 +18,9 @@ export async function requestActivationAsIntegrator(
   await page.getByLabel("Postcode").fill(faker.location.zipCode("####"));
   await page.getByLabel(/^Gemeente/).fill(faker.location.city());
 
-  if (integrationType !== IntegrationTypes.ENTRY_API) {
-    await page
-      .getByLabel("BTW of ondernemingsnummer")
-      .fill("BE 0475 250 609");
-    await page
-      .getByLabel("E-mail boekhouding")
-      .fill(faker.internet.email());
+  if (integrationType !== IntegrationType.EntryApi) {
+    await page.getByLabel("BTW of ondernemingsnummer").fill("BE 0475 250 609");
+    await page.getByLabel("E-mail boekhouding").fill(faker.internet.email());
   }
 
   await page.getByRole("button", { name: "Bevestigen" }).click();
