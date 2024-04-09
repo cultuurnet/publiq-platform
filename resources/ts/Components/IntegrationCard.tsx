@@ -17,6 +17,7 @@ import { ActivationRequest } from "./ActivationRequest";
 import { IntegrationType } from "../types/IntegrationType";
 import { CopyText } from "./CopyText";
 import type { Credentials } from "./Integrations/Detail/Credentials";
+import { KeyVisibility } from "../types/KeyVisibility";
 import type { Integration } from "../types/Integration";
 import { Alert } from "./Alert";
 import { classNames } from "../utils/classNames";
@@ -61,6 +62,7 @@ export const IntegrationCard = ({
   legacyProdConsumer,
   testClient,
   prodClient,
+  keyVisibility,
   onEdit,
 }: Props) => {
   const { t } = useTranslation();
@@ -98,10 +100,10 @@ export const IntegrationCard = ({
 
   const credentials = (
     <>
-      {type !== IntegrationType.Widgets && testClient && (
+      {type !== IntegrationType.Widgets && keyVisibility !== KeyVisibility.v1 && (
         <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center gap-3">
           <Heading level={5} className="font-semibold min-w-[10rem] self-start">
-            {t("integrations.test")}
+              {t("integrations.test")}
           </Heading>
           <div className="flex flex-col gap-2">
             <div className="flex flex-col gap-2">
@@ -120,7 +122,7 @@ export const IntegrationCard = ({
           </div>
         </section>
       )}
-      {type !== IntegrationType.Widgets && legacyTestConsumer && (
+      {type !== IntegrationType.Widgets &&keyVisibility !== KeyVisibility.v2 && legacyTestConsumer && (
         <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center gap-3">
           <Heading level={5} className="font-semibold min-w-[10rem] self-start">
             {t("integrations.test")}
@@ -155,7 +157,7 @@ export const IntegrationCard = ({
             {status === IntegrationStatus.Active && (
               <OpenWidgetBuilderButton type={type} id={id} />
             )}
-            {prodClient &&
+            {keyVisibility !== KeyVisibility.v1 &&
               status === IntegrationStatus.Active &&
               type !== IntegrationType.Widgets && (
                 <div className="flex flex-col gap-2">
@@ -174,8 +176,8 @@ export const IntegrationCard = ({
               )}
           </div>
         </div>
-      </section>
-      {legacyProdConsumer &&
+      </section>{keyVisibility !== KeyVisibility.v2 &&
+      legacyProdConsumer &&
         status === IntegrationStatus.Active &&
         type !== IntegrationType.Widgets && (
           <section className="flex-1 inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">

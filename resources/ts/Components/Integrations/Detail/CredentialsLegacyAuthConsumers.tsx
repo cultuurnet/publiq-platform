@@ -7,9 +7,13 @@ import { ActivationFlow } from "../../ActivationFlow";
 import { Alert } from "../../Alert";
 import { IntegrationStatus } from "../../../types/IntegrationStatus";
 import type { Credentials } from "./Credentials";
+import { KeyVisibility } from "../../../types/KeyVisibility";
 import type { Integration } from "../../../types/Integration";
 
-type Props = Pick<Integration, "id" | "status" | "subscription" | "type"> &
+type Props = Pick<
+  Integration,
+  "id" | "status" | "subscription" | "type" | "keyVisibility"
+> &
   Credentials & { email: string };
 
 export const CredentialsLegacyAuthConsumers = ({
@@ -20,9 +24,9 @@ export const CredentialsLegacyAuthConsumers = ({
   email,
   subscription,
   type,
+  keyVisibility,
 }: Props) => {
   const { t } = useTranslation();
-
   return (
     <div className="flex w-full max-lg:flex-col gap-6 border-b pb-10 border-gray-300">
       <Heading className="font-semibold lg:min-w-60" level={4}>
@@ -40,35 +44,39 @@ export const CredentialsLegacyAuthConsumers = ({
             <CopyText>{legacyTestConsumer.apiKey}</CopyText>
           )}
         </div>
-        <div className="flex flex-col gap-2">
-          <Heading className="font-semibold" level={4}>
-            {t("details.credentials.live")}
-          </Heading>
-          <StatusLight status={status} />
-          {legacyProdConsumer && (
-            <div className="flex flex-col gap-2">
-              {status === IntegrationStatus.Active && (
-                <div className="flex gap-1 max-md:flex-col max-md:items-start">
-                  <span className="flex items-center whitespace-nowrap">
-                    {t("details.credentials.api_key")}
-                  </span>
-                  <CopyText>{legacyProdConsumer.apiKey}</CopyText>
-                </div>
+        {keyVisibility !== KeyVisibility.v2 && (
+          <div className="flex flex-col gap-2">
+            <Heading className="font-semibold" level={4}>
+              {t("details.credentials.live")}
+            </Heading>
+            <StatusLight status={status} />
+            {legacyProdConsumer && (
+              <div className="flex flex-col gap-2">
+                {status === IntegrationStatus.Active && (
+                  <div className="flex gap-1 max-md:flex-col max-md:items-start">
+                    <span className="flex items-center whitespace-nowrap">
+                      {t("details.credentials.api_key")}
+                    </span>
+                    <CopyText>{legacyProdConsumer.apiKey}</CopyText>
+                  </div>
+                )}
+                {keyVisibility === KeyVisibility.all && (
+                  <Alert variant="info">{t("details.credentials.info")}</Alert>
+                )}
+              </div>
+            )}
+            {status === IntegrationStatus.Draft &&
+              keyVisibility === KeyVisibility.v1 && (
+                <ActivationFlow
+                  status={status}
+                  id={id}
+                  subscription={subscription}
+                  type={type}
+                  email={email}
+                />
               )}
-
-              <Alert variant="info">{t("details.credentials.info")}</Alert>
-            </div>
-          )}
-          {status === IntegrationStatus.Draft && (
-            <ActivationFlow
-              status={status}
-              id={id}
-              subscription={subscription}
-              type={type}
-              email={email}
-            />
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
