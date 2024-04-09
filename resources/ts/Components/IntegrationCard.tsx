@@ -96,7 +96,7 @@ export const IntegrationCard = ({
     legacyTestConsumer || legacyProdConsumer || testClient || prodClient
   );
 
-  usePolling(!hasAnyCredentials);
+  usePolling(!hasAnyCredentials, { only: ["credentials"] });
   const CardIcon = integrationTypesInfo.find((i) => i.type === type)?.Icon as
     | typeof IconSearchApi
     | undefined;

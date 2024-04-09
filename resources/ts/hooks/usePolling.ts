@@ -4,14 +4,15 @@ import { VisitOptions } from "@inertiajs/core/types";
 
 export const usePolling = (
   condition: boolean,
-  visitOptions: VisitOptions = {}
+  visitOptions: VisitOptions = {},
+  interval = 2000
 ) =>
   useEffect(() => {
     if (!condition) {
       return;
     }
 
-    const timeout = setInterval(() => router.reload(visitOptions), 2000);
+    const timeout = setInterval(() => router.reload(visitOptions), interval);
 
     return () => clearInterval(timeout);
   }, [condition]);
