@@ -123,6 +123,7 @@
     "results_found_one": "{{count}} integratie gevonden",
     "results_found_other": "{{count}} integraties gevonden",
     "no_results_found": "Geen integraties gevonden",
+    "pending_credentials": "Je API credentials komen eraan! We maken nog even de landingsbaan vrij voor een soepele landing.",
     "searching": "Zoeken ...",
     "test": "Test",
     "live": "Live",
