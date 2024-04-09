@@ -123,6 +123,7 @@
     "results_found_one": "{{count}} integration found",
     "results_found_other": "{{count}} integrations found",
     "no_results_found": "No integrations found",
+    "pending_credentials": "API credentials incoming! Just clearing the runway for a smooth landing.",
     "searching": "Searching...",
     "test": "Test",
     "live": "Live",

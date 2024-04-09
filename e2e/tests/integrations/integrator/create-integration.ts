@@ -1,6 +1,6 @@
 import { type Page } from "@playwright/test";
 import { fakerNL_BE as faker } from "@faker-js/faker";
-import { IntegrationTypes, type IntegrationType } from "../../types.js";
+import { IntegrationType } from "@app-types/IntegrationType";
 
 export async function createIntegrationAsIntegrator(
   page: Page,
@@ -12,21 +12,21 @@ export async function createIntegrationAsIntegrator(
     .getByRole("link", { name: "Integratie toevoegen" })
     .click();
 
-  if (integrationType === IntegrationTypes.SEARCH_API) {
+  if (integrationType === IntegrationType.SearchApi) {
     await page
       .locator("li")
       .filter({ hasText: /^Search API/ })
       .click();
   }
 
-  if (integrationType === IntegrationTypes.WIDGETS) {
+  if (integrationType === IntegrationType.Widgets) {
     await page
       .locator("li")
       .filter({ hasText: /^WIDGETS/ })
       .click();
   }
 
-  if (integrationType !== IntegrationTypes.ENTRY_API) {
+  if (integrationType !== IntegrationType.EntryApi) {
     await page.getByText("Basic (€ 125 / jaar)", { exact: true }).click();
   }
 
