@@ -26,6 +26,7 @@ export const Credentials = ({
   email,
   subscription,
   type,
+  keyVisibility,
   legacyAuthConsumers,
   authClients,
 }: Props) => {
@@ -58,14 +59,17 @@ export const Credentials = ({
 
   return (
     <>
-      <CredentialsLegacyAuthConsumers
-        {...credentials}
-        email={email}
-        status={status}
-        id={id}
-        type={type}
-        subscription={subscription}
-      />
+      {credentials.legacyTestConsumer && (
+        <CredentialsLegacyAuthConsumers
+          {...credentials}
+          email={email}
+          status={status}
+          id={id}
+          type={type}
+          subscription={subscription}
+          keyVisibility={keyVisibility}
+        />
+      )}
       <CredentialsAuthClients
         {...credentials}
         email={email}
@@ -73,6 +77,7 @@ export const Credentials = ({
         id={id}
         type={type}
         subscription={subscription}
+        keyVisibility={keyVisibility}
       />
     </>
   );
