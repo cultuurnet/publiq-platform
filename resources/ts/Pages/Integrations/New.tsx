@@ -39,8 +39,8 @@ const New = ({ subscriptions }: Props) => {
   )?.id;
 
   const basicSubscriptionIds = subscriptions
-    .filter((subscription) =>
-      subscription.category.includes(SubscriptionCategory.Basic)
+    .filter(
+      (subscription) => subscription.category === SubscriptionCategory.Basic
     )
     .map((subscription) => subscription.id);
 
