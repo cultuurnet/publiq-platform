@@ -21,7 +21,7 @@ import { KeyVisibility } from "../types/KeyVisibility";
 import type { Integration } from "../types/Integration";
 import { Alert } from "./Alert";
 import { classNames } from "../utils/classNames";
-import { usePolling } from "../hooks/usePropsPolling";
+import { usePolling } from "../hooks/usePolling";
 
 type Props = Integration &
   Credentials & {
