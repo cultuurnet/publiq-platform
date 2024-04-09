@@ -30,7 +30,4 @@ test("As an admin I can edit an existing integration", async ({ page }) => {
   await expect(
     page.locator("h1").getByText(`Integration Details: ${newIntegrationName}`)
   ).toBeVisible();
-
-  await page.screenshot({ path: `screenshots/edit-integration-${integrationId}.png` });
-
 });
