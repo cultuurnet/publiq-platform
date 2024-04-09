@@ -98,6 +98,6 @@ Route::group(['middleware' => 'auth'], static function () {
     });
 
     Route::fallback(function () {
-        return Inertia::render('Error');
+        return Inertia::render('Error', ['statusCode' => 404]);
     });
 });

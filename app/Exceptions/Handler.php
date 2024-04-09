@@ -70,6 +70,6 @@ final class Handler extends ExceptionHandler
 
     protected function handle500Error(Exception $exception): Response
     {
-        return Inertia::render('Error', ['statusCode' => '500']);
+        return Inertia::render('Error', ['statusCode' => 500]);
     }
 }
