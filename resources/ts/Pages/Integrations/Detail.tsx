@@ -23,6 +23,7 @@ import { PricingPlanProvider } from "../../Context/PricingPlan";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { CouponInfoProvider } from "../../Context/CouponInfo";
 import type { Integration } from "../../types/Integration";
+import { useCredentialsPolling } from "../../hooks/useCredentialsPolling";
 
 type Props = {
   integration: Integration;
@@ -71,6 +72,8 @@ const Detail = ({ integration, email, subscriptions }: Props) => {
     setIsKeepChangesDialogVisible(false);
     setOriginalVisitingUrl("");
   };
+
+  useCredentialsPolling();
 
   useEffect(() => {
     const cleanUp = router.on("before", (e) => {

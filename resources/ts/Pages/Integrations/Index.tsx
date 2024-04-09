@@ -19,6 +19,7 @@ import { UiTiDv1Environment } from "../../types/UiTiDv1Environment";
 import type { Credentials } from "../../types/Credentials";
 import type { Integration } from "../../types/Integration";
 import { router } from "@inertiajs/react";
+import { useCredentialsPolling } from "../../hooks/useCredentialsPolling";
 
 type Props = {
   integrations: Integration[];
@@ -34,6 +35,8 @@ const Index = ({ integrations, paginationInfo, credentials }: Props) => {
 
   const searchParams = new URLSearchParams(document.location.search);
   const searchFromUrl = searchParams.get("search");
+
+  useCredentialsPolling();
 
   const handleChangeSearchInput = debounce(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,15 +86,6 @@ const Index = ({ integrations, paginationInfo, credentials }: Props) => {
       preserveScroll: true,
     });
   };
-
-  useEffect(() => {
-    const timeout = setInterval(
-      () => router.reload({ only: ["credentials"] }),
-      2000
-    );
-
-    return () => clearTimeout(timeout);
-  }, []);
 
   return (
     <Page>
