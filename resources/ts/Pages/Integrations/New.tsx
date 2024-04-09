@@ -22,7 +22,7 @@ import {
 } from "../../Components/RadioButtonGroup";
 import type { Subscription } from "../../types/Subscription";
 import { useGetPricingPlans } from "../../hooks/useGetPricingPlans";
-import type { SubscriptionCategory } from "../../types/SubscriptionCategory";
+import { SubscriptionCategory } from "../../types/SubscriptionCategory";
 
 type Props = {
   subscriptions: Subscription[];
