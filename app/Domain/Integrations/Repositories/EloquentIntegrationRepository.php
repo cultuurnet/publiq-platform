@@ -37,6 +37,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
             'subscription_id' => $integration->subscriptionId,
             'status' => $integration->status,
             'partner_status' => $integration->partnerStatus,
+            'key_visibility' => $integration->getKeyVisibility(),
         ]);
     }
 
