@@ -21,6 +21,7 @@ import { KeyVisibility } from "../types/KeyVisibility";
 import type { Integration } from "../types/Integration";
 import { Alert } from "./Alert";
 import { classNames } from "../utils/classNames";
+import { usePolling } from "../hooks/usePolling";
 
 type Props = Integration &
   Credentials & {
@@ -94,6 +95,8 @@ export const IntegrationCard = ({
   const hasAnyCredentials = Boolean(
     legacyTestConsumer || legacyProdConsumer || testClient || prodClient
   );
+
+  usePolling(!hasAnyCredentials, { only: ["credentials"] });
   const CardIcon = integrationTypesInfo.find((i) => i.type === type)?.Icon as
     | typeof IconSearchApi
     | undefined;

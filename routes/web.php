@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 use App\Router\TranslatedRoute;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SupportController;
+use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -94,5 +95,9 @@ Route::group(['middleware' => 'auth'], static function () {
         Route::post('/integrations/{id}/activation', [IntegrationController::class, 'requestActivation']);
 
         Route::get('/integrations/{id}/widget', [IntegrationController::class, 'showWidget']);
+    });
+
+    Route::fallback(function () {
+        return Inertia::render('Error', ['statusCode' => 404]);
     });
 });

@@ -10,6 +10,7 @@ import type {
 import type { Integration } from "../../../types/Integration";
 import { Alert } from "../../Alert";
 import { useTranslation } from "react-i18next";
+import { usePolling } from "../../../hooks/usePolling";
 
 type Props = Integration & {
   email: string;
@@ -36,6 +37,7 @@ export const Credentials = ({
   const hasAnyCredentials = Boolean(
     legacyAuthConsumers.length || authClients.length
   );
+  usePolling(!hasAnyCredentials, { only: ["integration"] });
   const credentials = useMemo(
     () => ({
       legacyTestConsumer: legacyAuthConsumers.find(
