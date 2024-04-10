@@ -214,22 +214,26 @@ export const IntegrationCard = ({
         legacyProdConsumer &&
         type !== IntegrationType.Widgets && (
           <section className="flex-1 inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">
-            <Heading
-              className={classNames(
-                keyVisibility === KeyVisibility.all && "invisible",
-                "font-semibold min-w-[10rem] self-start"
-              )}
-              level={5}
-            >
-              {t("integrations.live")}
-            </Heading>
+            {(keyVisibility === KeyVisibility.v1 ||
+              status !== IntegrationStatus.Draft) && (
+              <Heading
+                className={classNames(
+                  keyVisibility === KeyVisibility.all && "invisible",
+                  "font-semibold min-w-[10rem] self-start"
+                )}
+                level={5}
+              >
+                {t("integrations.live")}
+              </Heading>
+            )}
             <div className="flex flex-col gap-2">
               {keyVisibility !== KeyVisibility.all && (
                 <StatusLight status={status} />
               )}
-              {status === IntegrationStatus.Draft && (
-                <ActivationRequest id={id} type={type} />
-              )}
+              {status === IntegrationStatus.Draft &&
+                keyVisibility !== KeyVisibility.all && (
+                  <ActivationRequest id={id} type={type} />
+                )}
               {status === IntegrationStatus.Active && (
                 <div className="flex gap-1 max-md:flex-col max-md:items-start">
                   <span className="flex items-center whitespace-nowrap">
