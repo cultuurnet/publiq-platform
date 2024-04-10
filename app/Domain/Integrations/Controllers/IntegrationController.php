@@ -13,6 +13,7 @@ use App\Domain\Coupons\Repositories\CouponRepository;
 use App\Domain\Integrations\FormRequests\RequestActivationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationUrlRequest;
+use App\Domain\Integrations\FormRequests\KeyVisibilityUpgradeRequest;
 use App\Domain\Integrations\FormRequests\UpdateContactInfoRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationUrlsRequest;
@@ -24,6 +25,7 @@ use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Mappers\OrganizationMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationUrlMapper;
+use App\Domain\Integrations\Mappers\KeyVisibilityUpgradeMapper;
 use App\Domain\Integrations\Mappers\UpdateContactInfoMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationUrlsMapper;
@@ -31,6 +33,7 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\IntegrationUrlRepository;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
+use App\Domain\KeyVisibilityUpgrades\Repositories\KeyVisibilityUpgradeRepository;
 use App\Http\Controllers\Controller;
 use App\ProjectAanvraag\ProjectAanvraagUrl;
 use App\Router\TranslatedRoute;
@@ -58,6 +61,7 @@ final class IntegrationController extends Controller
         private readonly CouponRepository $couponRepository,
         private readonly Auth0ClientRepository $auth0ClientRepository,
         private readonly UiTiDv1ConsumerRepository $uitidV1ConsumerRepository,
+        private readonly KeyVisibilityUpgradeRepository $keyVisibilityUpgradeRepository,
         private readonly CurrentUser $currentUser
     ) {
     }
@@ -248,6 +252,15 @@ final class IntegrationController extends Controller
     {
         $integration = $this->integrationRepository->getById(Uuid::fromString($id));
         return redirect()->away(ProjectAanvraagUrl::getForIntegration($integration));
+    }
+
+    public function storeKeyVisibilityUpgrade(string $id, KeyVisibilityUpgradeRequest $request): RedirectResponse
+    {
+        $this->keyVisibilityUpgradeRepository->save(KeyVisibilityUpgradeMapper::map($request, Uuid::fromString($id)));
+
+        return Redirect::route(
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.index')
+        );
     }
 
     private function getKeyVisibility(Integration $integration): KeyVisibility
