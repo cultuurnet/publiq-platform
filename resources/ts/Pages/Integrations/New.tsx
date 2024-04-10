@@ -1,5 +1,6 @@
 import type { FormEvent, ReactNode } from "react";
 import React from "react";
+import { useState } from "react";
 import { router, useForm } from "@inertiajs/react";
 import Layout from "../../layouts/Layout";
 import { Heading } from "../../Components/Heading";
@@ -21,6 +22,7 @@ import {
 } from "../../Components/RadioButtonGroup";
 import type { Subscription } from "../../types/Subscription";
 import { useGetPricingPlans } from "../../hooks/useGetPricingPlans";
+import { SubscriptionCategory } from "../../types/SubscriptionCategory";
 
 type Props = {
   subscriptions: Subscription[];
@@ -35,6 +37,12 @@ const New = ({ subscriptions }: Props) => {
       subscription.integrationType === IntegrationType.EntryApi &&
       subscription.price === 0
   )?.id;
+
+  const basicSubscriptionIds = subscriptions
+    .filter(
+      (subscription) => subscription.category === SubscriptionCategory.Basic
+    )
+    .map((subscription) => subscription.id);
 
   const url = new URL(document.location.href);
   const activeTypeFromUrl = url.searchParams.get("type");
@@ -59,7 +67,10 @@ const New = ({ subscriptions }: Props) => {
     lastNameTechnicalContact: "",
     emailTechnicalContact: "",
     agreement: "",
+    coupon: "",
   };
+
+  const [hasCoupon, setHasCoupon] = useState(false);
 
   const { data, setData, errors, post, processing } =
     useForm(initialFormValues);
@@ -72,6 +83,11 @@ const New = ({ subscriptions }: Props) => {
       },
     });
   }
+
+  const isCouponFieldVisible =
+    (activeType === IntegrationType.SearchApi ||
+      activeType === IntegrationType.Widgets) &&
+    basicSubscriptionIds.some((id) => data.subscriptionId === id);
 
   const integrationTypesInfo = useIntegrationTypesInfo();
   const pricingPlans = useGetPricingPlans(data.integrationType, subscriptions);
@@ -323,6 +339,39 @@ const New = ({ subscriptions }: Props) => {
               }
               error={errors.agreement}
             />
+            {isCouponFieldVisible && (
+              <>
+                <FormElement
+                  label={t("integration_form.coupon")}
+                  labelPosition="right"
+                  labelSize="base"
+                  labelWeight="normal"
+                  component={
+                    <input
+                      type="checkbox"
+                      name="hasCoupon"
+                      className="text-publiq-blue-dark focus:ring-publiq-blue-dark rounded-sm"
+                      checked={hasCoupon}
+                      onChange={() => setHasCoupon((prev) => !prev)}
+                    />
+                  }
+                />
+                {hasCoupon && (
+                  <FormElement
+                    component={
+                      <Input
+                        type="text"
+                        name="coupon"
+                        value={data.coupon}
+                        onChange={(e) => setData("coupon", e.target.value)}
+                        placeholder={t("integration_form.code")}
+                      />
+                    }
+                    error={errors.coupon}
+                  />
+                )}
+              </>
+            )}
           </Card>
 
           <ButtonPrimary type="submit" disabled={processing} className="w-fit">

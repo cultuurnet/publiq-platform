@@ -265,7 +265,7 @@
     },
     "styleguide": {
       "title": "Stijlgids",
-      "description": "Alle beeldmerken, iconen en kleuren voor jou op een rijtje gezet. Een must wanneer je een UiT-agenda bouwt.",
+      "description": "Alle UiT-iconen, beeldmerken en kleuren voor jou op een rijtje gezet. Een must wanneer je een UiTagenda bouwt.",
       "img_url": "#",
       "action_title": "Naar de stijlgids",
       "action_url": "https://www.publiq.be/nl/projecten/publiq-platform/stijlgids"
@@ -279,7 +279,7 @@
     },
     "roadmap": {
       "title": "Roadmap",
-      "description": "Neem een kijkje in onze plannen en deel jouw briljante ideeën om onze producten nog beter te maken.",
+      "description": "Neem een kijkje in onze plannen en deel jouw ideeën om onze producten nog beter te maken.",
       "img_url": "#",
       "action_title": "Naar de roadmap",
       "action_url": "https://trello.com/b/Qa6OxKIC/publiq-platform"
@@ -300,8 +300,8 @@
       "invitation": "Toegang vragen"
     },
     "customized_support": {
-      "title": "Ondersteuning op maat",
-      "description": "Een organisatie met een hart voor cultuur en vrije tijd? Dan werken we graag een voorstel op maat uit!",
+      "title": "Diensten op maat",
+      "description": "Wil je aan de slag met onze tools maar weet je niet waar te beginnen? Dan werken we graag een voorstel op maat uit.",
       "img_url": "#",
       "action_title": "Contacteer ons",
       "action_url": "mailto:partnerships@publiq.be"
@@ -375,8 +375,16 @@
     }
   },
   "error": {
-    "title": "Oeps! Er ging iets mis.",
-    "description": "Het spijt ons, maar er lijkt een probleem te zijn aan onze kant. Ons team is op de hoogte gebracht en we werken eraan om dit zo snel mogelijk op te lossen. Probeer de pagina over een paar minuten te vernieuwen. Als het probleem zich blijft voordoen, neem dan gerust contact op met ons op <0>technical-support@publiq.be</0>. Wij stellen uw begrip en geduld op prijs.",
-    "back": "Terug"
+    "500": {
+      "title": "Oeps! Er ging iets mis.",
+      "description": "Het spijt ons, maar er lijkt een probleem te zijn aan onze kant. Ons team is op de hoogte gebracht en we werken eraan om dit zo snel mogelijk op te lossen. Probeer de pagina over een paar minuten te vernieuwen. Als het probleem zich blijft voordoen, neem dan gerust contact op met ons op <0>technical-support@publiq.be</0>. Wij stellen uw begrip en geduld op prijs.",
+      "back": "Terug"
+    },
+    "404": {
+      "title": "Spijtig, deze pagina bestaat niet (meer).",
+      "description": "Je klikte op een link naar een pagina die we helaas niet vinden op publiq platform.",
+      "back": "Ga terug naar de homepagina"
+    }
+ 
   }
 }
