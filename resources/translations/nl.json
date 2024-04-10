@@ -265,7 +265,7 @@
     },
     "styleguide": {
       "title": "Stijlgids",
-      "description": "Alle beeldmerken, iconen en kleuren voor jou op een rijtje gezet. Een must wanneer je een UiT-agenda bouwt.",
+      "description": "Alle UiT-iconen, beeldmerken en kleuren voor jou op een rijtje gezet. Een must wanneer je een UiTagenda bouwt.",
       "img_url": "#",
       "action_title": "Naar de stijlgids",
       "action_url": "https://www.publiq.be/nl/projecten/publiq-platform/stijlgids"
@@ -279,7 +279,7 @@
     },
     "roadmap": {
       "title": "Roadmap",
-      "description": "Neem een kijkje in onze plannen en deel jouw briljante ideeën om onze producten nog beter te maken.",
+      "description": "Neem een kijkje in onze plannen en deel jouw ideeën om onze producten nog beter te maken.",
       "img_url": "#",
       "action_title": "Naar de roadmap",
       "action_url": "https://trello.com/b/Qa6OxKIC/publiq-platform"
@@ -300,8 +300,8 @@
       "invitation": "Toegang vragen"
     },
     "customized_support": {
-      "title": "Ondersteuning op maat",
-      "description": "Een organisatie met een hart voor cultuur en vrije tijd? Dan werken we graag een voorstel op maat uit!",
+      "title": "Diensten op maat",
+      "description": "Wil je aan de slag met onze tools maar weet je niet waar te beginnen? Dan werken we graag een voorstel op maat uit.",
       "img_url": "#",
       "action_title": "Contacteer ons",
       "action_url": "mailto:partnerships@publiq.be"
