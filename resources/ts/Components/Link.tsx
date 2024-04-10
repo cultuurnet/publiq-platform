@@ -39,13 +39,15 @@ export const Link = ({
       ) : (
         <InertiaLink
           className={classNames(
-            "text-publiq-blue inline-flex gap-2 items-center",
+            "text-publiq-blue inline-flex gap-2 items-baseline",
             className
           )}
           href={href}
           {...props}
         >
-          <span className="hover:underline">{children}</span>
+          <span className="hover:underline flex items-baseline gap-1">
+            {children}
+          </span>
         </InertiaLink>
       )}
     </>
