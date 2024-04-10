@@ -95,6 +95,8 @@ Route::group(['middleware' => 'auth'], static function () {
         Route::post('/integrations/{id}/activation', [IntegrationController::class, 'requestActivation']);
 
         Route::get('/integrations/{id}/widget', [IntegrationController::class, 'showWidget']);
+
+        Route::post('/integrations/{id}/upgrade', [IntegrationController::class, 'storeKeyVisibilityUpgrade']);
     });
 
     Route::fallback(function () {

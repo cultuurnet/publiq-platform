@@ -773,6 +773,43 @@ final class IntegrationControllerTest extends TestCase
         $response->assertForbidden();
     }
 
+    public function test_it_can_handle_key_visibility_upgrades(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration(null, null, KeyVisibility::v1);
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+
+        $response = $this->post("/integrations/{$integration->id}/upgrade", [
+            'keyVisibility' => KeyVisibility::v2->value,
+        ]);
+
+        $response->assertRedirect('/nl/integraties/');
+
+        $this->assertDatabaseHas('key_visibility_upgrades', [
+            'integration_id' => $integration->id->toString(),
+            'key_visibility' => KeyVisibility::v2->value,
+        ]);
+    }
+
+    public function test_it_does_not_handle_key_visibility_upgrades_if_unauthorized(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration(null, null, KeyVisibility::v1);
+
+        $response = $this->post("/integrations/{$integration->id}/upgrade", [
+            'keyVisibility' => KeyVisibility::v2->value,
+        ]);
+
+        $response->assertForbidden();
+
+        $this->assertDatabaseHas('integrations', [
+            'id' => $integration->id->toString(),
+            'key_visibility' => KeyVisibility::v1->value,
+        ]);
+    }
+
     private function givenTheContactKeyVisibilityIs(string $email, KeyVisibility $keyVisibility): void
     {
         ContactKeyVisibilityModel::query()->insert([
@@ -782,9 +819,12 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
-    private function givenThereIsAnIntegration(IntegrationType $integrationType = null, UuidInterface $subscriptionId = null): Integration
-    {
-        $integration = new Integration(
+    private function givenThereIsAnIntegration(
+        IntegrationType $integrationType = null,
+        UuidInterface $subscriptionId = null,
+        KeyVisibility $keyVisibility = KeyVisibility::v2
+    ): Integration {
+        $integration = (new Integration(
             Uuid::uuid4(),
             $integrationType ?? IntegrationType::SearchApi,
             'Test Integration',
@@ -792,7 +832,7 @@ final class IntegrationControllerTest extends TestCase
             $subscriptionId ?? Uuid::uuid4(),
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::THIRD_PARTY,
-        );
+        ))->withKeyVisibility($keyVisibility);
 
         IntegrationModel::query()->insert([
             'id' => $integration->id->toString(),
@@ -802,6 +842,7 @@ final class IntegrationControllerTest extends TestCase
             'subscription_id' => $integration->subscriptionId->toString(),
             'status' => $integration->status->value,
             'partner_status' => $integration->partnerStatus->value,
+            'key_visibility' => $integration->getKeyVisibility()->value,
         ]);
 
         return $integration;
