@@ -125,7 +125,7 @@ const Detail = ({ integration, email, subscriptions }: Props) => {
         border
         headless
       >
-        <div className="w-full flex flex-col gap-5">
+        <div className="w-full flex flex-col gap-5 pb-3">
           <PricingPlanProvider pricingPlan={pricingPlan}>
             <CouponInfoProvider couponInfo={integration.coupon}>
               <Tabs active={activeTab} onChange={changeTabInUrl}>
