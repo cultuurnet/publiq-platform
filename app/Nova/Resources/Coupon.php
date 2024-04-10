@@ -55,7 +55,8 @@ final class Coupon extends Resource
 
             BelongsTo::make('Integration')
                 ->withoutTrashed()
-                ->sortable(),
+                ->sortable()
+                ->nullable(),
 
             HasMany::make('Activity Log'),
         ];
