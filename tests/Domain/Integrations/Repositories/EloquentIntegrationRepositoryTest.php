@@ -13,6 +13,7 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\EloquentIntegrationRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -132,7 +133,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
 
         $this->integrationRepository->save($secondIntegration);
 
-        $updatedIntegration = new Integration(
+        $updatedIntegration = (new Integration(
             $initialIntegration->id,
             $initialIntegration->type,
             'Updated Integration',
@@ -140,7 +141,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             $initialIntegration->subscriptionId,
             IntegrationStatus::Active,
             $initialIntegration->partnerStatus,
-        );
+        ))->withKeyVisibility(KeyVisibility::all);
 
         $this->integrationRepository->update($updatedIntegration);
 
