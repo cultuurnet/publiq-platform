@@ -18,6 +18,7 @@ use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\KeyVisibility;
+use App\Domain\KeyVisibilityUpgrades\Models\KeyVisibilityUpgradeModel;
 use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Insightly\Models\InsightlyMappingModel;
@@ -34,6 +35,7 @@ use Ramsey\Uuid\UuidInterface;
 /**
  * @property CouponModel|null $coupon
  * @property SubscriptionModel|null $subscription
+ * @property KeyVisibilityUpgradeModel|null $keyVisibilityUpgrade
  */
 final class IntegrationModel extends UuidModel
 {
@@ -137,6 +139,14 @@ final class IntegrationModel extends UuidModel
             'status' => IntegrationStatus::Blocked,
         ]);
         IntegrationBlocked::dispatch(Uuid::fromString($this->id));
+    }
+
+    /**
+     * @return HasOne<KeyVisibilityUpgradeModel>
+     */
+    public function keyVisibilityUpgrade(): HasOne
+    {
+        return $this->hasOne(KeyVisibilityUpgradeModel::class, 'integration_id');
     }
 
     /**
@@ -264,6 +274,10 @@ final class IntegrationModel extends UuidModel
             ->map(fn (Auth0ClientModel $auth0ClientModel) => $auth0ClientModel->toDomain())
             ->toArray()
         );
+
+        if ($this->keyVisibilityUpgrade) {
+            $integration = $integration->withKeyVisibilityUpgrade($this->keyVisibilityUpgrade->toDomain());
+        }
 
         if ($this->subscription) {
             $integration = $integration->withSubscription($this->subscription->toDomain());
