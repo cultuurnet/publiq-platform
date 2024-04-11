@@ -207,15 +207,15 @@
     "credentials": {
       "title": "Credentials",
       "widgets": "Build widgets",
-      "uitid_v1": "UITID v1",
-      "uitid_v2": "UITID v2",
+      "uitid_v1": "API Key",
+      "uitid_v2": "Client credentials",
       "test": "Test",
       "live": "Live",
       "status_alert": "Approval from publiq is necessary for the live integration of this project. All information to smoothly go live can be found",
       "link": "here",
-      "uitid_alert": "UiTIDv2 credentials have not yet been requested for this integration.",
+      "uitid_alert": "Client credentials have not yet been requested for this integration.",
       "action_status": "Request activation",
-      "action_uitid": "Request UiTIDv2 credentials"
+      "action_uitid": "Request client credentials"
     },
     "integration_settings": {
       "title": "Settings",
