@@ -7,25 +7,20 @@ import { giveContactKeyVisibility } from "../admin/give-contact-key-visibility.j
 test("As an integrator with migrated projects the key visibility is v1 when creating a new integration", async ({
   browser,
 }) => {
+  const userContext = await browser.newContext({
+    storageState: "playwright/.auth/user-v1.json",
+  });
+  const userPage = await userContext.newPage();
+
+  const { integrationId } = await createIntegrationAsIntegrator(
+    userPage,
+    IntegrationType.SearchApi
+  );
+
   const adminContext = await browser.newContext({
     storageState: "playwright/.auth/admin.json",
   });
   const adminPage = await adminContext.newPage();
-
-  await giveContactKeyVisibility(
-    adminPage,
-    process.env.E2E_TEST_EMAIL!,
-    KeyVisibility.v1
-  );
-
-  const userContext = await browser.newContext({
-    storageState: "playwright/.auth/user.json",
-  });
-  const userPage = await userContext.newPage();
-
-  const { integrationName, integrationId } =
-    await createIntegrationAsIntegrator(userPage, IntegrationType.SearchApi);
-
   await adminPage.goto(`/admin/resources/integrations/${integrationId}`);
   await expect(adminPage.getByText("Key Visibilityv1")).toBeVisible();
 });
