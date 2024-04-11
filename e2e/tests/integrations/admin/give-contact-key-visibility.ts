@@ -15,8 +15,6 @@ const updateExistingKeyVisibilityForContact = async (
   }
 
   await page.getByText(contactEmail).click();
-  await page.getByRole("button", { name: "Actions" }).click();
-  await page.locator(".z-\\[999\\]").click();
   await page.getByTestId("edit-resource").click();
   await page
     .getByRole("button", { name: "Update Contacts Key Visibility" })
