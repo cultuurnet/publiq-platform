@@ -23,16 +23,9 @@ test("As an integrator with migrated projects the key visibility is v1 when crea
   });
   const userPage = await userContext.newPage();
 
-  const { integrationName } = await createIntegrationAsIntegrator(
-    userPage,
-    IntegrationType.SearchApi
-  );
-  await userPage.waitForURL(/https?:\/\/[^/]*\/nl\/integraties(\/.*)?/);
-  await expect(userPage.getByText(integrationName)).toBeVisible();
+  const { integrationName, integrationId } =
+    await createIntegrationAsIntegrator(userPage, IntegrationType.SearchApi);
 
-  await adminPage.goto("/admin/resources/integrations");
-  await adminPage
-    .getByRole("cell", { name: integrationName, exact: true })
-    .click();
+  await adminPage.goto(`/admin/resources/integrations/${integrationId}`);
   await expect(adminPage.getByText("Key Visibilityv1")).toBeVisible();
 });
