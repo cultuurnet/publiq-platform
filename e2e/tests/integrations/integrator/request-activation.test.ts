@@ -7,21 +7,15 @@ test("As an integrator I can request activation via organization details", async
   page,
 }) => {
   // Create SAPI integration
-  const { integrationName } = await createIntegrationAsIntegrator(
+  const { integrationId } = await createIntegrationAsIntegrator(
     page,
     IntegrationType.SearchApi
   );
 
-  await page.waitForURL(/https?:\/\/[^/]*\/nl\/integraties(\/.*)?/);
-  await expect(page.getByText(integrationName)).toBeVisible();
-
-  const url = page.url();
-  const newIntegrationId = url.split("/").pop();
-
   // Request activation
   await requestActivationAsIntegrator(
     page,
-    newIntegrationId!,
+    integrationId,
     IntegrationType.SearchApi
   );
 });

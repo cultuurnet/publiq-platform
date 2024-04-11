@@ -13,15 +13,11 @@ test("As an integrator I can edit an existing integration", async ({
     IntegrationType.SearchApi
   );
 
-  await page.waitForURL(/https?:\/\/[^/]*\/nl\/integraties(\/.*)?/);
-  await expect(page.getByText(integrationName)).toBeVisible();
-
   // Edit integration
   await page.getByRole("button", { name: "Instellingen" }).click();
 
   await page.getByLabel("Integratienaam").fill(faker.word.adjective());
   await page.getByLabel("Beschrijving").fill(faker.lorem.lines(2));
-
 
   await page
     .locator("div")
@@ -39,5 +35,7 @@ test("As an integrator I can edit an existing integration", async ({
 
   await page.getByRole("button", { name: "Aanpassingen bewaren" }).click();
 
-  await expect(page.getByRole("heading", { name: "De wijzigingen zijn succesvol" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "De wijzigingen zijn succesvol" })
+  ).toBeVisible();
 });
