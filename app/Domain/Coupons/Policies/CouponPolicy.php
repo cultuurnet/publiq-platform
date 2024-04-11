@@ -21,7 +21,7 @@ final class CouponPolicy
 
     public function create(UserModel $userModel): bool
     {
-        return false;
+        return true;
     }
 
     public function update(UserModel $userModel, CouponModel $couponModel): bool

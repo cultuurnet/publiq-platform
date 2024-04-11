@@ -50,26 +50,26 @@ export const BillingInfo = ({
             />
           }
         />
-        {coupon?.isDistributed && (
-          <Alert
-            className={"col-span-2 col-start-2"}
-            variant="success"
-            title={t("details.billing_info.coupon_used", {
-              price: formatCurrency(subscription.currency, coupon.reduction),
-            })}
-          />
-        )}
-      </div>
-      {status !== IntegrationStatus.Active &&
-        subscription.integrationType !== IntegrationType.EntryApi && (
-          <div className={"grid grid-cols-3 gap-10"}>
+        <div className="col-span-2 col-start-2 lg:max-w-[35%]">
+          {coupon?.isDistributed && (
             <Alert
-              className={"col-span-2 col-start-2"}
-              variant="info"
-              title={t("details.billing_info.free_until_live")}
+              className="md:min-w-[40rem]"
+              variant="success"
+              title={t("details.billing_info.coupon_used", {
+                price: formatCurrency(subscription.currency, coupon.reduction),
+              })}
             />
-          </div>
-        )}
+          )}
+          {status !== IntegrationStatus.Active &&
+            subscription.integrationType !== IntegrationType.EntryApi && (
+              <Alert
+                className="md:min-w-[40rem]"
+                variant="info"
+                title={t("details.billing_info.free_until_live")}
+              />
+            )}
+        </div>
+      </div>
       {status === IntegrationStatus.Active && (
         <div className="w-full max-lg:flex max-lg:flex-col lg:grid lg:grid-cols-3 gap-6">
           <Heading level={4} className="font-semibold">

@@ -21,6 +21,7 @@ import { KeyVisibility } from "../types/KeyVisibility";
 import type { Integration } from "../types/Integration";
 import { Alert } from "./Alert";
 import { classNames } from "../utils/classNames";
+import { usePolling } from "../hooks/usePolling";
 
 type Props = Integration &
   Credentials & {
@@ -94,6 +95,8 @@ export const IntegrationCard = ({
   const hasAnyCredentials = Boolean(
     legacyTestConsumer || legacyProdConsumer || testClient || prodClient
   );
+
+  usePolling(!hasAnyCredentials, { only: ["credentials"] });
   const CardIcon = integrationTypesInfo.find((i) => i.type === type)?.Icon as
     | typeof IconSearchApi
     | undefined;
@@ -129,10 +132,14 @@ export const IntegrationCard = ({
       {type !== IntegrationType.Widgets &&
         keyVisibility !== KeyVisibility.v2 &&
         legacyTestConsumer && (
-          <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center gap-3">
+          <section className="flex max-md:flex-col max-md:items-start md:items-center gap-3">
             <Heading
               level={5}
-              className="font-semibold min-w-[10rem] self-start"
+              className={classNames(
+                keyVisibility === KeyVisibility.all &&
+                  "max-md:hidden invisible",
+                "font-semibold min-w-[10rem]"
+              )}
             >
               {t("integrations.test")}
             </Heading>
@@ -142,53 +149,19 @@ export const IntegrationCard = ({
             <CopyText>{legacyTestConsumer.apiKey}</CopyText>
           </section>
         )}
-
       {type === IntegrationType.Widgets &&
         status !== IntegrationStatus.Active && (
           <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center justify-start gap-3">
-            <Heading level={5} className="font-semibold min-w-[10rem]">
+            <Heading
+              level={5}
+              className="font-semibold min-w-[10rem] self-start"
+            >
               {t("integrations.test")}
             </Heading>
             <OpenWidgetBuilderButton type={type} id={id} />
           </section>
         )}
-
-      <section className="flex-1 inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">
-        <Heading className="font-semibold min-w-[10rem] self-start" level={5}>
-          {t("integrations.live")}
-        </Heading>
-        <div className="flex flex-col gap-3 self-start">
-          <StatusLight status={status} />
-          <div className="flex flex-col align-center gap-3">
-            {status === IntegrationStatus.Draft && (
-              <ActivationRequest id={id} type={type} />
-            )}
-            {status === IntegrationStatus.Active && (
-              <OpenWidgetBuilderButton type={type} id={id} />
-            )}
-            {keyVisibility !== KeyVisibility.v1 &&
-              status === IntegrationStatus.Active &&
-              type !== IntegrationType.Widgets && (
-                <div className="flex flex-col gap-2">
-                  {auth0ProdClientWithLabels.map((client) => (
-                    <div
-                      key={`${client.label}-${client.value}`}
-                      className="flex gap-1 max-md:flex-col max-md:items-start"
-                    >
-                      <span className="flex items-center whitespace-nowrap">
-                        {t(client.label)}
-                      </span>
-                      <CopyText>{client.value}</CopyText>
-                    </div>
-                  ))}
-                </div>
-              )}
-          </div>
-        </div>
-      </section>
-      {keyVisibility !== KeyVisibility.v2 &&
-        legacyProdConsumer &&
-        status === IntegrationStatus.Active &&
+      {keyVisibility !== KeyVisibility.v1 &&
         type !== IntegrationType.Widgets && (
           <section className="flex-1 inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">
             <Heading
@@ -197,19 +170,85 @@ export const IntegrationCard = ({
             >
               {t("integrations.live")}
             </Heading>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-3 self-start">
               <StatusLight status={status} />
-              <div className="flex gap-1 max-md:flex-col max-md:items-start">
-                <span className="flex items-center whitespace-nowrap">
-                  {t("details.credentials.api_key")}
-                </span>
-                <CopyText>{legacyProdConsumer.apiKey}</CopyText>
+              <div className="flex flex-col align-center gap-3">
+                {status === IntegrationStatus.Draft && (
+                  <ActivationRequest id={id} type={type} />
+                )}
+                {status === IntegrationStatus.Active && (
+                  <div className="flex flex-col gap-2">
+                    {auth0ProdClientWithLabels.map((client) => (
+                      <div
+                        key={`${client.label}-${client.value}`}
+                        className="flex gap-1 max-md:flex-col max-md:items-start"
+                      >
+                        <span className="flex items-center whitespace-nowrap">
+                          {t(client.label)}
+                        </span>
+                        <CopyText>{client.value}</CopyText>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </section>
         )}
+      {type === IntegrationType.Widgets && (
+        <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center justify-start gap-3">
+          <Heading level={5} className="font-semibold min-w-[10rem] self-start">
+            {t("integrations.live")}
+          </Heading>
+          <div className="flex flex-col gap-3 self-start">
+            <StatusLight status={status} />
+            {status === IntegrationStatus.Draft && (
+              <ActivationRequest id={id} type={type} />
+            )}
+            {status === IntegrationStatus.Active && (
+              <OpenWidgetBuilderButton type={type} id={id} />
+            )}
+          </div>
+        </section>
+      )}
+      {keyVisibility !== KeyVisibility.v2 &&
+        legacyProdConsumer &&
+        type !== IntegrationType.Widgets && (
+          <section className="flex-1 inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">
+            {(keyVisibility === KeyVisibility.v1 ||
+              status === IntegrationStatus.Active) && (
+              <Heading
+                className={classNames(
+                  keyVisibility === KeyVisibility.all &&
+                    "max-md:hidden invisible",
+                  "font-semibold min-w-[10rem] self-start"
+                )}
+                level={5}
+              >
+                {t("integrations.live")}
+              </Heading>
+            )}
+            <div className="flex flex-col gap-2">
+              {keyVisibility !== KeyVisibility.all && (
+                <StatusLight status={status} />
+              )}
+              {status === IntegrationStatus.Draft &&
+                keyVisibility !== KeyVisibility.all && (
+                  <ActivationRequest id={id} type={type} />
+                )}
+              {status === IntegrationStatus.Active && (
+                <div className="flex gap-1 max-md:flex-col max-md:items-start">
+                  <span className="flex items-center whitespace-nowrap">
+                    {t("details.credentials.api_key")}
+                  </span>
+                  <CopyText>{legacyProdConsumer.apiKey}</CopyText>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
       <section className="flex-1 inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">
-        <Heading className="font-semibold min-w-[10rem]" level={5}>
+        <Heading className="font-semibold min-w-[10rem] self-start" level={5}>
           {t("integrations.documentation.title")}
         </Heading>
         <div className="flex flex-col gap-2">

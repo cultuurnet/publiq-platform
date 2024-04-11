@@ -69,7 +69,7 @@ export const Alert = ({
         className
       )}
     >
-      <div className="flex gap-3 items-start pl-2">
+      <div className="flex gap-3 items-start p-1.5">
         <FontAwesomeIcon
           icon={variantToIcon[variant]}
           className={variantToIconColor[variant]}
@@ -87,7 +87,7 @@ export const Alert = ({
               {title}
             </Heading>
           )}
-          <div className="flex flex-col items-start text-sm max-w-2xl">
+          <div className="flex flex-col items-start text-base max-w-2xl">
             {children}
           </div>
         </section>
