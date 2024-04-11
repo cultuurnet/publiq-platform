@@ -52,7 +52,9 @@ export const CredentialsAuthClients = ({
   ];
 
   const handleKeyVisibilityUpgrade = () =>
-    router.post(`/integrations/${id}/upgrade`, { keyVisibility });
+    router.post(`/integrations/${id}/upgrade`, {
+      keyVisibility: KeyVisibility.all,
+    });
 
   return (
     <div className="flex w-full max-lg:flex-col gap-6">
