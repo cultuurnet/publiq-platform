@@ -132,12 +132,12 @@ export const IntegrationCard = ({
       {type !== IntegrationType.Widgets &&
         keyVisibility !== KeyVisibility.v2 &&
         legacyTestConsumer && (
-          <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center gap-3">
+          <section className="flex max-md:flex-col max-md:items-start md:items-center gap-3">
             <Heading
               level={5}
               className={classNames(
                 keyVisibility === KeyVisibility.all && "invisible",
-                "font-semibold min-w-[10rem] self-start"
+                "font-semibold min-w-[10rem]"
               )}
             >
               {t("integrations.test")}
@@ -246,7 +246,7 @@ export const IntegrationCard = ({
           </section>
         )}
       <section className="flex-1 inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">
-        <Heading className="font-semibold min-w-[10rem]" level={5}>
+        <Heading className="font-semibold min-w-[10rem] self-start" level={5}>
           {t("integrations.documentation.title")}
         </Heading>
         <div className="flex flex-col gap-2">
