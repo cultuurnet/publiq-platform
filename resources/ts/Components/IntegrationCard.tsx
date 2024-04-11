@@ -215,7 +215,7 @@ export const IntegrationCard = ({
         type !== IntegrationType.Widgets && (
           <section className="flex-1 inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">
             {(keyVisibility === KeyVisibility.v1 ||
-              status !== IntegrationStatus.Draft) && (
+              status === IntegrationStatus.Active) && (
               <Heading
                 className={classNames(
                   keyVisibility === KeyVisibility.all && "invisible",
