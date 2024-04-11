@@ -9,6 +9,7 @@ import { IntegrationStatus } from "../../../types/IntegrationStatus";
 import type { Credentials } from "./Credentials";
 import type { Integration } from "../../../types/Integration";
 import { KeyVisibility } from "../../../types/KeyVisibility";
+import { router } from "@inertiajs/react";
 
 type Props = Pick<
   Integration,
@@ -50,6 +51,9 @@ export const CredentialsAuthClients = ({
     },
   ];
 
+  const handleKeyVisibilityUpgrade = () =>
+    router.post(`/integrations/${id}/upgrade`, { keyVisibility });
+
   return (
     <div className="flex w-full max-lg:flex-col gap-6">
       <Heading className="font-semibold lg:min-w-60" level={4}>
@@ -58,7 +62,10 @@ export const CredentialsAuthClients = ({
       {keyVisibility === KeyVisibility.v1 ? (
         <div className="flex flex-col flex-1 gap-4">
           <p>{t("details.credentials.uitid_alert")}</p>
-          <ButtonPrimary className="self-start">
+          <ButtonPrimary
+            className="self-start"
+            onClick={handleKeyVisibilityUpgrade}
+          >
             {t("details.credentials.action_uitid")}
           </ButtonPrimary>
         </div>
