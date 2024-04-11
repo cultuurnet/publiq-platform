@@ -34,10 +34,18 @@ final class KeyVisibilityUpgrade
 
     private function getDaysLeft(): int
     {
-        return $this->createdAt->diff(new DateTimeImmutable())->days;
+        if ($this->createdAt === null) {
+            throw new \Exception('Property createdAt should exist');
+        }
+
+        $days = $this->createdAt->diff(new DateTimeImmutable())->days;
+        // days can return false if the DateInterval is not created by the diff method
+        assert(is_int($days), 'days should be an integer');
+
+        return $days;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'id' => $this->id,
