@@ -207,8 +207,8 @@
     "credentials": {
       "title": "Credentials",
       "widgets": "Widgets bouwen",
-      "uitid_v1": "UITID v1",
-      "uitid_v2": "UITID v2",
+      "uitid_v1": "API Key",
+      "uitid_v2": "Client credentials",
       "test": "Test",
       "live": "Live",
       "in_progress": "Je aanvraag tot activatie is in behandeling.",
