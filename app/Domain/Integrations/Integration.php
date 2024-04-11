@@ -52,6 +52,7 @@ final class Integration
         $this->auth0Clients = [];
         $this->organization = null;
         $this->keyVisibility = KeyVisibility::v2;
+        $this->keyVisibilityUpgrade = null;
     }
 
     public function withKeyVisibility(KeyVisibility $keyVisibility): self
@@ -187,7 +188,7 @@ final class Integration
             'status' => $this->status,
             'partnerStatus' => $this->partnerStatus,
             'keyVisibility' => $this->keyVisibility,
-            'keyVisibilityUpgrade' => $this->keyVisibilityUpgrade,
+            'keyVisibilityUpgrade' => $this->keyVisibilityUpgrade->toArray(),
             'contacts' => $this->contacts,
             'urls' => $this->urls,
             'organization' => $this->organization,

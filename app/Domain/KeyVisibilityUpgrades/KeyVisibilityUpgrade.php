@@ -31,4 +31,19 @@ final class KeyVisibilityUpgrade
     {
         return $this->createdAt;
     }
+
+    private function getDaysLeft(): int
+    {
+        return $this->createdAt->diff(new DateTimeImmutable())->days;
+    }
+
+    public function toArray()
+    {
+        return [
+            'id' => $this->id,
+            'integrationId' => $this->integrationId,
+            'keyVisibility' => $this->keyVisibility,
+            'daysLeft' => $this->getDaysLeft(),
+        ];
+    }
 }
