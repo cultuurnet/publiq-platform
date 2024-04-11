@@ -30,10 +30,7 @@ test("As an integrator with migrated projects the key visibility is v1 when crea
   await userPage.waitForURL(/https?:\/\/[^/]*\/nl\/integraties(\/.*)?/);
   await expect(userPage.getByText(integrationName)).toBeVisible();
 
-  // await userPage.close();
-
   await adminPage.goto("/admin/resources/integrations");
-  // await adminPage.reload();
   await adminPage
     .getByRole("cell", { name: integrationName, exact: true })
     .click();
