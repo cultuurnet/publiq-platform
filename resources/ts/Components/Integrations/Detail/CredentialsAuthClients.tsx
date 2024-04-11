@@ -53,7 +53,7 @@ export const CredentialsAuthClients = ({
 
   const handleKeyVisibilityUpgrade = () =>
     router.post(`/integrations/${id}/upgrade`, {
-      keyVisibility: KeyVisibility.all,
+      keyVisibility: KeyVisibility.v2,
     });
 
   return (
