@@ -259,7 +259,10 @@ final class IntegrationController extends Controller
         $this->keyVisibilityUpgradeRepository->save(KeyVisibilityUpgradeMapper::map($request, Uuid::fromString($id)));
 
         return Redirect::route(
-            TranslatedRoute::getTranslatedRouteName($request, 'integrations.index')
+            TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
+            [
+                'id' => $id,
+            ]
         );
     }
 
