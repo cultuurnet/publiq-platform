@@ -270,7 +270,7 @@
     },
     "statuspage": {
       "title": "Status page",
-      "description": "We provide an overview of the status of applications & services within the publiq platform. You can subscribe to stay informed of important updates.",
+      "description": "We provide an overview of the status of applications & services within the publiq platform. You can subscribe to stay informed of important updates (Dutch only).",
       "img_url": "#",
       "action_title": "Go to status page",
       "action_url": "https://status.publiq.be"
