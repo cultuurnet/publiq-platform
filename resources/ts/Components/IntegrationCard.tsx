@@ -136,7 +136,8 @@ export const IntegrationCard = ({
             <Heading
               level={5}
               className={classNames(
-                keyVisibility === KeyVisibility.all && "invisible",
+                keyVisibility === KeyVisibility.all &&
+                  "max-md:hidden invisible",
                 "font-semibold min-w-[10rem]"
               )}
             >
@@ -218,7 +219,8 @@ export const IntegrationCard = ({
               status === IntegrationStatus.Active) && (
               <Heading
                 className={classNames(
-                  keyVisibility === KeyVisibility.all && "invisible",
+                  keyVisibility === KeyVisibility.all &&
+                    "max-md:hidden invisible",
                   "font-semibold min-w-[10rem] self-start"
                 )}
                 level={5}
