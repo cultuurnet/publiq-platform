@@ -146,15 +146,15 @@
       "activate": "Activate"
     },
     "activation_dialog": {
-      "title": "Activatie aanvragen",
-      "subscription_plan": "Prijsplan",
-      "price": "Totaalbedrag",
-      "contact": "E-mail boekhouding",
-      "contact_description": "Dit adres ontvangt de betalinginstructies, -herinneringen en de factuur.",
+      "title": "Request activation",
+      "subscription_plan": "Price plan",
+      "price": "Total amount",
+      "contact": "E-mail accounting",
+      "contact_description": "This address will receive payment instructions, reminders and the invoice.",
       "coupon": "Coupon",
       "price_overview": {
         "title": "Price overview",
-        "subscription_plan": "Priceplan",
+        "subscription_plan": "Price plan",
         "setup": "Setup",
         "coupon": "Coupon",
         "plan": "Subscription",
