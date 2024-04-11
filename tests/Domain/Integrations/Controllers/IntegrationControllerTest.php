@@ -784,7 +784,10 @@ final class IntegrationControllerTest extends TestCase
             'keyVisibility' => KeyVisibility::v2->value,
         ]);
 
-        $response->assertRedirect('/nl/integraties/');
+        /** @var IntegrationModel $createdIntegration */
+        $createdIntegration = IntegrationModel::query()->latest()->first();
+
+        $response->assertRedirectToRoute('nl.integrations.show', ['id' => $createdIntegration->toDomain()->id->toString()]);
 
         $this->assertDatabaseHas('key_visibility_upgrades', [
             'integration_id' => $integration->id->toString(),
