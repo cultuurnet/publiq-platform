@@ -1,8 +1,6 @@
 import { expect, test } from "@playwright/test";
-import { KeyVisibility } from "@app-types/KeyVisibility";
 import { IntegrationType } from "@app-types/IntegrationType";
 import { createIntegrationAsIntegrator } from "./create-integration.js";
-import { giveContactKeyVisibility } from "../admin/give-contact-key-visibility.js";
 
 test("As an integrator with migrated projects the key visibility is v1 when creating a new integration", async ({
   browser,
