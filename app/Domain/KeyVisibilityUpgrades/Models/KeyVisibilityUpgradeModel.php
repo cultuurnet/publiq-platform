@@ -9,10 +9,15 @@ use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\KeyVisibilityUpgrades\Events\KeyVisibilityUpgradeCreated;
 use App\Domain\KeyVisibilityUpgrades\KeyVisibilityUpgrade;
 use App\Models\UuidModel;
+use Carbon\Carbon;
+use DateTimeImmutable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 
+/**
+ * @property Carbon $created_at
+ */
 final class KeyVisibilityUpgradeModel extends UuidModel
 {
     use SoftDeletes;
@@ -43,10 +48,10 @@ final class KeyVisibilityUpgradeModel extends UuidModel
 
     public function toDomain(): KeyVisibilityUpgrade
     {
-        return new KeyVisibilityUpgrade(
+        return (new KeyVisibilityUpgrade(
             Uuid::fromString($this->id),
             Uuid::fromString($this->integration_id),
             KeyVisibility::from($this->key_visibility)
-        );
+        ))->withCreatedAt($this->created_at->toDateTimeImmutable());
     }
 }
