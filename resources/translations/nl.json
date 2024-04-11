@@ -97,7 +97,7 @@
     "integration_name": "Naam integratie",
     "description_name": "Geef een duidelijk titel aan je integratie en vermeld de naam van de organisatie of gemeente waarvoor de integratie gebouwd wordt",
     "aim": "Doel van de integratie",
-    "description_aim": "Geef een duidelijke, gemotiveerde beschrijving van de integraite die je met het publiq platform wil opzetten (max. 200 karakters)",
+    "description_aim": "Geef een duidelijke, gemotiveerde beschrijving van de integratie die je met het publiq platform wil opzetten (max. 200 karakters)",
     "contact_label_functional": "Inhoudelijk contact",
     "contact_label_technical": "Technisch contact",
     "contact_label_contributor": "Medewerker",
