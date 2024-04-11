@@ -10,13 +10,14 @@ use Ramsey\Uuid\UuidInterface;
 
 final class KeyVisibilityUpgrade
 {
-    private DateTimeImmutable $createdAt;
+    private ?DateTimeImmutable $createdAt;
 
     public function __construct(
         public readonly UuidInterface $id,
         public readonly UuidInterface $integrationId,
         public readonly KeyVisibility $keyVisibility
     ) {
+        $this->createdAt = null;
     }
 
     public function withCreatedAt(DateTimeImmutable $createdAt): self
@@ -26,7 +27,7 @@ final class KeyVisibilityUpgrade
         return $clone;
     }
 
-    public function getCreatedAt(): DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
     }
