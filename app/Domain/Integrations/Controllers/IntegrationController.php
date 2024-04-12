@@ -31,6 +31,7 @@ use App\Domain\Integrations\Mappers\UpdateIntegrationMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationUrlsMapper;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\IntegrationUrlRepository;
+use App\Domain\KeyVisibilityUpgrades\KeyVisibilityUpgrade;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Domain\KeyVisibilityUpgrades\Repositories\KeyVisibilityUpgradeRepository;
@@ -38,6 +39,7 @@ use App\Http\Controllers\Controller;
 use App\ProjectAanvraag\ProjectAanvraagUrl;
 use App\Router\TranslatedRoute;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -146,12 +148,27 @@ final class IntegrationController extends Controller
         return Redirect::back();
     }
 
+    private function getAmountOfDaysLeftOldCredentials(?KeyVisibilityUpgrade $upgrade): ?int
+    {
+        $createdAt = $upgrade?->getCreatedAt();
+        if ($createdAt === null) {
+            return null;
+        }
+        $expirationAmountInDays = config('key_visibility.oldCredentialsExpirationAmountInDays');
+        $expirationDate = (new Carbon($createdAt))->addDays($expirationAmountInDays);
+        $days = $expirationDate->diff(new \DateTimeImmutable())->days;
+        assert(is_int($days), 'Days should be an integer');
+        return $days;
+    }
+
     public function show(string $id): Response
     {
         $integration = $this->integrationRepository->getById(Uuid::fromString($id));
+        $amountOfDaysLeftOldCredentials = $this->getAmountOfDaysLeftOldCredentials($integration->getKeyVisibilityUpgrade());
 
         return Inertia::render('Integrations/Detail', [
             'integration' => $integration->toArray(),
+            'amountOfDaysLeftOldCredentials' => $amountOfDaysLeftOldCredentials,
             'email' => Auth::user()?->email,
             'subscriptions' => $this->subscriptionRepository->all(),
         ]);
