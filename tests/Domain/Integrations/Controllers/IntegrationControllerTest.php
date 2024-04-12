@@ -828,6 +828,7 @@ final class IntegrationControllerTest extends TestCase
             ['id' => $integration->id->toString()]
         );
         $response = $this->get($route);
+        $response->dump();
 
         $response->assertOk();
     }
