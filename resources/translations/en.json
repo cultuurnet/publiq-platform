@@ -215,7 +215,8 @@
       "link": "here",
       "uitid_alert": "UiTIDv2 credentials have not yet been requested for this integration.",
       "action_status": "Request activation",
-      "action_uitid": "Request UiTIDv2 credentials"
+      "action_uitid": "Request UiTIDv2 credentials",
+      "info": "These credentials remain valid for another {{amount}} and will be permanently deleted on {{date}}"
     },
     "integration_settings": {
       "title": "Settings",
