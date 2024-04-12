@@ -148,7 +148,7 @@ final class IntegrationController extends Controller
         return Redirect::back();
     }
 
-    private function getAmountOfDaysLeftOldCredentials(?KeyVisibilityUpgrade $upgrade): ?int
+    private function getExpirationDateForOldCredentials(?KeyVisibilityUpgrade $upgrade): ?string
     {
         $createdAt = $upgrade?->getCreatedAt();
         if ($createdAt === null) {
@@ -156,19 +156,17 @@ final class IntegrationController extends Controller
         }
         $expirationAmountInDays = config('key_visibility.oldCredentialsExpirationAmountInDays');
         $expirationDate = (new Carbon($createdAt))->addDays($expirationAmountInDays);
-        $days = $expirationDate->diff(new \DateTimeImmutable())->days;
-        assert(is_int($days), 'Days should be an integer');
-        return $days;
+        return $expirationDate->toISOString();
     }
 
     public function show(string $id): Response
     {
         $integration = $this->integrationRepository->getById(Uuid::fromString($id));
-        $amountOfDaysLeftOldCredentials = $this->getAmountOfDaysLeftOldCredentials($integration->getKeyVisibilityUpgrade());
+        $oldCredentialsExpirationDate = $this->getExpirationDateForOldCredentials($integration->getKeyVisibilityUpgrade());
 
         return Inertia::render('Integrations/Detail', [
             'integration' => $integration->toArray(),
-            'amountOfDaysLeftOldCredentials' => $amountOfDaysLeftOldCredentials,
+            'oldCredentialsExpirationDate' => $oldCredentialsExpirationDate,
             'email' => Auth::user()?->email,
             'subscriptions' => $this->subscriptionRepository->all(),
         ]);
