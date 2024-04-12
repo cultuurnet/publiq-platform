@@ -829,8 +829,6 @@ final class IntegrationControllerTest extends TestCase
         );
         $response = $this->get($route);
 
-        dump($response->exception);
-
         $response->assertOk();
     }
 
