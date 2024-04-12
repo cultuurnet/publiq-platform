@@ -844,9 +844,9 @@ final class IntegrationControllerTest extends TestCase
         $adminUser = UserModel::fromSession([
             'user_id' => Uuid::uuid4()->toString(),
             'email' => 'simon.debruijn@publiq.be',
-            'name' => 'John Doe',
-            'first_name' => 'John',
-            'last_name' => 'Doe',
+            'name' => 'Simon de Bruijn',
+            'first_name' => 'Simon',
+            'last_name' => 'de Bruijn',
         ]);
         $this->actingAs($adminUser);
 
