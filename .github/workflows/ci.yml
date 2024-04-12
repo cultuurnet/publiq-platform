@@ -123,7 +123,7 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
       - name: 💅🏻 Build frontend assets
-        run: npm run types:check
+        run: npm run build
 
       - name: ✅ Run tests
         run: php artisan test
