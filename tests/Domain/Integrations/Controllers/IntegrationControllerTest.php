@@ -817,7 +817,14 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_show_integration_detail_if_authorized(): void
     {
-        $this->actingAs(UserModel::createSystemUser());
+        $user = UserModel::fromSession([
+            'user_id' => Uuid::uuid4(),
+            'email' => 'john.doe@test.com',
+            'name' => 'John Doe',
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+        ]);
+        $this->actingAs($user);
 
         $subscription = $this->givenThereIsASubscription(IntegrationType::SearchApi, SubscriptionCategory::Basic);
         $integration = $this->givenThereIsAnIntegration(IntegrationType::SearchApi, $subscription->id);
@@ -832,9 +839,39 @@ final class IntegrationControllerTest extends TestCase
         $response->assertOk();
     }
 
+    public function test_it_can_show_integration_detail_if_user_is_admin(): void
+    {
+        $adminUser = UserModel::fromSession([
+            'user_id' => Uuid::uuid4(),
+            'email' => 'simon.debruijn@publiq.be',
+            'name' => 'John Doe',
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+        ]);
+        $this->actingAs($adminUser);
+
+        $subscription = $this->givenThereIsASubscription(IntegrationType::SearchApi, SubscriptionCategory::Basic);
+        $integration = $this->givenThereIsAnIntegration(IntegrationType::SearchApi, $subscription->id);
+
+        $route = route(
+            TranslatedRoute::getTranslatedRouteName(Request::instance(), 'integrations.show'),
+            ['id' => $integration->id->toString()]
+        );
+        $response = $this->get($route);
+
+        $response->assertOk();
+    }
+
     public function test_it_can_not_show_integration_detail_if_not_authorized(): void
     {
-        $this->actingAs(UserModel::createSystemUser());
+        $user = UserModel::fromSession([
+            'user_id' => Uuid::uuid4(),
+            'email' => 'john.doe@test.com',
+            'name' => 'John Doe',
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+        ]);
+        $this->actingAs($user);
 
         $subscription = $this->givenThereIsASubscription(IntegrationType::SearchApi, SubscriptionCategory::Basic);
         $integration = $this->givenThereIsAnIntegration(IntegrationType::SearchApi, $subscription->id);
