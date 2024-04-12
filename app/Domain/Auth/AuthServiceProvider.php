@@ -19,11 +19,18 @@ final class AuthServiceProvider extends ServiceProvider
     {
         $this->app->bind(Auth0Interface::class, Auth0::class);
 
+        /** @var array $adminEmails */
+        $adminEmails = config('nova.users');
+
         $this->app->when(AccessController::class)
             ->needs('$adminEmails')
-            ->give(config('nova.users'));
+            ->give($adminEmails);
 
-        Gate::define('access-integration', function (UserModel $user, string $integrationId): bool {
+        Gate::define('access-integration', function (UserModel $user, string $integrationId) use ($adminEmails): bool {
+            if (collect($adminEmails)->contains($user->email)) {
+                return true;
+            }
+
             /**
              * @var ContactRepository  $contactRepository
              */
