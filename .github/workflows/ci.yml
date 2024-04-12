@@ -104,6 +104,11 @@ jobs:
         env:
           update: true
 
+      - name: 🐢 Setup NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.14
+
       - name: 🔢 Create .env file
         run: cp .env.ci .env
 
@@ -114,6 +119,11 @@ jobs:
 
       - name: 🔑 Generate a laravel key
         run: php artisan key:generate
+
+      - name: Install npm dependencies
+        run: npm ci
+      - name: 💅🏻 Build frontend assets
+        run: npm run build
 
       - name: ✅ Run tests
         run: php artisan test
