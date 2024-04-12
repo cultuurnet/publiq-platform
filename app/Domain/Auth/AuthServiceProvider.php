@@ -27,7 +27,7 @@ final class AuthServiceProvider extends ServiceProvider
             ->give($adminEmails);
 
         Gate::define('access-integration', function (UserModel $user, string $integrationId) use ($adminEmails): bool {
-            if (collect($adminEmails)->contains($user->email)) {
+            if (in_array($user->email, $adminEmails)) {
                 return true;
             }
 
