@@ -249,7 +249,7 @@ const New = ({ subscriptions }: Props) => {
 
           <Card
             title={t("integration_form.contact_label_technical")}
-            contentStyles="flex flex-col gap-5 mb-5"
+            contentStyles="flex flex-col gap-5"
           >
             <div className="grid grid-cols-3 max-md:flex max-md:flex-col gap-5">
               <FormElement
