@@ -100,7 +100,11 @@ const New = ({ subscriptions }: Props) => {
         {hasErrors && (
           <Alert variant="error">{t("integration_form.error")}</Alert>
         )}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-7">
+        <form
+          onSubmit={handleSubmit}
+          noValidate
+          className="flex flex-col gap-7"
+        >
           <Card title={t("integration_form.type")}>
             <RadioButtonGroup
               orientation="vertical"
