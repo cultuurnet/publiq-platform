@@ -110,6 +110,7 @@
       "last_name": "Last name",
       "email": "Email address"
     },
+    "error": "Not all mandatory fields were filled in correctly. Check your input.",  
     "agree": "I agree to the <1>terms of use</1> and the <2>privacy policy</2>",
     "terms_of_use_link": "https://docs.publiq.be/docs/uitdatabank/terms-of-use/terms-of-use",
     "privacy_link": "https://www.publiq.be/en/privacy",
