@@ -91,9 +91,9 @@
   },
   "integration_form": {
     "title": "Add integration",
-    "description": "You only pay when you want to use real data. You can explore all possibilities with test events first.",
     "type": "Integration type",
     "pricing_plan": "Pricing plan",
+    "price_info": "You only pay when you want to use real data. You can explore all possibilities with test events first.",
     "integration_name": "Integration name",
     "description_name": "Give a clear title to your integration and mention the name of the organization or municipality for which the integration is built",
     "aim": "Integration purpose",

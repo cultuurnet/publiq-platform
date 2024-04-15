@@ -91,9 +91,9 @@
   },
   "integration_form": {
     "title": "Integratie toevoegen",
-    "description": "Je betaalt pas wanneer je gebruik wilt maken van echte data. Je probeert eerst alle mogelijkheden met testevenementen.",
     "type": "Type integratie",
     "pricing_plan": "Prijsplan",
+    "price_info": "Je betaalt pas wanneer je gebruik wilt maken van echte data. Je probeert eerst alle mogelijkheden met testevenementen.",
     "integration_name": "Naam integratie",
     "description_name": "Geef een duidelijk titel aan je integratie en vermeld de naam van de organisatie of gemeente waarvoor de integratie gebouwd wordt",
     "aim": "Doel van de integratie",
