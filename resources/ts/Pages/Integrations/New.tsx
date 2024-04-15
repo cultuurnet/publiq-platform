@@ -241,6 +241,9 @@ const New = ({ subscriptions }: Props) => {
                   error={errors.emailFunctionalContact}
                 />
               </div>
+              <span className="text-gray-500 text-sm">
+                {t("integration_form.contact_label_functional_info")}
+              </span>
             </div>
           </Card>
 
@@ -296,6 +299,9 @@ const New = ({ subscriptions }: Props) => {
                 error={errors.emailTechnicalContact}
               />
             </div>
+            <span className="text-gray-500 text-sm">
+              {t("integration_form.contact_label_technical_info")}
+            </span>
           </Card>
 
           <Card contentStyles="flex flex-col gap-5">

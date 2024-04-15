@@ -99,7 +99,9 @@
     "aim": "Doel van de integratie",
     "description_aim": "Geef een duidelijke, gemotiveerde beschrijving van de integratie die je met het publiq platform wil opzetten (max. 200 karakters)",
     "contact_label_functional": "Inhoudelijk contact",
+    "contact_label_functional_info": "Het inhoudelijk contact is het inhoudelijk aanspreekpunt voor de integratie (bvb. een medewerker van de organisatie of gemeente waarvoor de integratie is).",
     "contact_label_technical": "Technisch contact",
+    "contact_label_technical_info": "Het technisch contact is het technische aanspreekpunt voor de integratie (bvb. de ontwikkelaar van de integratie).", 
     "contact_label_contributor": "Medewerker",
     "add": "Medewerker toevoegen",
     "contact": {
