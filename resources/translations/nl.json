@@ -204,6 +204,7 @@
         "postcode": "Postcode",
         "city": "Gemeente"
       },
+      "invoiceEmail": "E-mailadres",
       "vat": "BTW of ondernemingsnummer",
       "coupon_used": "Er is een coupon actief op deze integratie die een korting van {{price}} op de abonnementsprijs geeft."
     },
