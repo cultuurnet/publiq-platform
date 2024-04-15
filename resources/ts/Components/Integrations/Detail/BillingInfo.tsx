@@ -184,26 +184,6 @@ export const BillingInfo = ({
                 />
               </div>
               <FormElement
-                label={`${t("details.billing_info.invoiceEmail")}`}
-                error={errors["organization.invoiceEmail"]}
-                className="w-full"
-                component={
-                  <Input
-                    type="text"
-                    name="organization.invoiceEmail"
-                    value={data.organization?.invoiceEmail}
-                    className="md:min-w-[40rem]"
-                    onChange={(e) =>
-                      setData("organization", {
-                        // We know organization exists
-                        ...data.organization!,
-                        invoiceEmail: e.target.value,
-                      })
-                    }
-                  />
-                }
-              />
-              <FormElement
                 label={`${t("details.billing_info.vat")}`}
                 error={errors["organization.vat"]}
                 className="w-full"
