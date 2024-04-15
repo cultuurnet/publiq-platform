@@ -153,19 +153,6 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
     toBeEditedId,
   ]);
 
-  const editContactInfo = () => {
-    return new Promise((resolve, reject) => {
-      patch(`/integrations/${id}/contacts`, {
-        preserveScroll: true,
-        onError: (error) => reject(error),
-        onSuccess: () => {
-          setToBeEditedId("");
-          resolve(undefined);
-        },
-      });
-    });
-  };
-
   return (
     <>
       <div className="w-full flex flex-col gap-6">
@@ -283,8 +270,13 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
                   {t("dialog.cancel")}
                 </ButtonSecondary>
                 <ButtonPrimary
-                  onClick={async () => {
-                    await editContactInfo();
+                  onClick={() => {
+                    patch(`/integrations/${id}/contacts`, {
+                      preserveScroll: true,
+                      onSuccess: () => {
+                        setToBeEditedId("");
+                      },
+                    });
                   }}
                 >
                   {t("dialog.confirm")}
