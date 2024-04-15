@@ -817,14 +817,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_show_integration_detail_if_authorized(): void
     {
-        $user = UserModel::fromSession([
-            'user_id' => Uuid::uuid4()->toString(),
-            'email' => 'john.doe@test.com',
-            'name' => 'John Doe',
-            'first_name' => 'John',
-            'last_name' => 'Doe',
-        ]);
-        $this->actingAs($user);
+        $this->actingAsIntegrator();
 
         $subscription = $this->givenThereIsASubscription(IntegrationType::SearchApi, SubscriptionCategory::Basic);
         $integration = $this->givenThereIsAnIntegration(IntegrationType::SearchApi, $subscription->id);
@@ -841,14 +834,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_show_integration_detail_if_user_is_admin(): void
     {
-        $adminUser = UserModel::fromSession([
-            'user_id' => Uuid::uuid4()->toString(),
-            'email' => 'dev+e2etest-admin@publiq.be',
-            'name' => 'Admin The Admin',
-            'first_name' => 'Admin',
-            'last_name' => 'The Admin',
-        ]);
-        $this->actingAs($adminUser);
+        $this->actingAsAdmin();
 
         $subscription = $this->givenThereIsASubscription(IntegrationType::SearchApi, SubscriptionCategory::Basic);
         $integration = $this->givenThereIsAnIntegration(IntegrationType::SearchApi, $subscription->id);
@@ -864,14 +850,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_not_show_integration_detail_if_not_authorized(): void
     {
-        $user = UserModel::fromSession([
-            'user_id' => Uuid::uuid4()->toString(),
-            'email' => 'john.doe@test.com',
-            'name' => 'John Doe',
-            'first_name' => 'John',
-            'last_name' => 'Doe',
-        ]);
-        $this->actingAs($user);
+        $this->actingAsIntegrator();
 
         $subscription = $this->givenThereIsASubscription(IntegrationType::SearchApi, SubscriptionCategory::Basic);
         $integration = $this->givenThereIsAnIntegration(IntegrationType::SearchApi, $subscription->id);
