@@ -1,7 +1,7 @@
 export type Organization = {
   id: string;
   name: string;
-  invoiceEmail: string;
+  invoiceMail: string;
   vat: string;
   address: {
     street: string;
