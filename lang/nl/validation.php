@@ -193,6 +193,8 @@ return [
         'lastNameTechnicalContact' => 'achternaam',
         'emailTechnicalContact' => 'email',
         'agreement' => 'gebruikersvoorwaarden',
+        'functional.email' => 'email',
+        'technical.email' => 'email',
         'organization.name' => 'naam',
         'organization.invoiceEmail' => 'email',
         'organization.address.street' => 'straat',

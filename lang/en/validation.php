@@ -178,6 +178,8 @@ return [
         'firstNamePartner' => 'first name',
         'lastNamePartner' => 'last name',
         'emailPartner' => 'email',
+        'functional.email' => 'email',
+        'technical.email' => 'email',
         'organization.name' => 'name',
         'organization.invoiceEmail' => 'email',
         'organization.address.street' => 'street',
