@@ -4,7 +4,8 @@ import { IntegrationType } from "@app-types/IntegrationType";
 
 export async function createIntegrationAsIntegrator(
   page: Page,
-  integrationType: IntegrationType
+  integrationType: IntegrationType,
+  couponCode?: string
 ) {
   await page.goto("/nl/integraties");
   await page
@@ -53,7 +54,14 @@ export async function createIntegrationAsIntegrator(
     .fill(faker.person.firstName());
   await page.locator('input[name="firstNameTechnicalContact"]').press("Tab");
   await page.locator('input[name="emailPartner"]').fill(faker.internet.email());
+
   await page.getByLabel("Ik ga akkoord met de").check();
+
+  if (couponCode && integrationType !== IntegrationType.EntryApi) {
+    await page.getByLabel('Ik heb een coupon').check();
+    await page.locator('input[name="coupon"]').fill(couponCode);
+  }
+
   await page.getByRole("button", { name: "Integratie aanmaken" }).click();
 
   return { page, integrationName };
