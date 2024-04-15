@@ -35,8 +35,4 @@ test("As an integrator I can create an integration with coupon (so it doesn't ne
   await userPage.waitForLoadState("networkidle");
 
   await expect(userPage.getByText("Actief", { exact: true})).toBeVisible();
-
-  await userPage.screenshot({
-    path: `screenshots/integration-with-coupon.png`,
-  });
 });
