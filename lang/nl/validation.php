@@ -147,7 +147,7 @@ return [
     'unique' => ':Attribute is al bezet.',
     'uploaded' => 'Het uploaden van :attribute is mislukt.',
     'uppercase' => ':Attribuut moet in hoofdletters zijn.',
-    'url' => ':Attribute formaat is ongeldig.',
+    'url' => ':Attribute moet een geldige URL zijn.',
     'ulid' => ':Attribute moet een valide ULID zijn.',
     'uuid' => ':Attribute moet een valide UUID zijn.',
 
