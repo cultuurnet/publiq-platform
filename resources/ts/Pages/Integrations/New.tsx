@@ -23,6 +23,7 @@ import {
 import type { Subscription } from "../../types/Subscription";
 import { useGetPricingPlans } from "../../hooks/useGetPricingPlans";
 import { SubscriptionCategory } from "../../types/SubscriptionCategory";
+import { Alert } from "../../Components/Alert";
 
 type Props = {
   subscriptions: Subscription[];
@@ -72,7 +73,7 @@ const New = ({ subscriptions }: Props) => {
 
   const [hasCoupon, setHasCoupon] = useState(false);
 
-  const { data, setData, errors, post, processing } =
+  const { data, setData, errors, hasErrors, post, processing } =
     useForm(initialFormValues);
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -96,6 +97,9 @@ const New = ({ subscriptions }: Props) => {
     <Page>
       <div className="inline-flex flex-col gap-5 w-full">
         <Heading level={2}>{t("integration_form.title")}</Heading>
+        {hasErrors && (
+          <Alert variant="error">{t("integration_form.error")}</Alert>
+        )}
         <form onSubmit={handleSubmit} className="flex flex-col gap-7">
           <Card title={t("integration_form.type")}>
             <RadioButtonGroup
@@ -147,16 +151,18 @@ const New = ({ subscriptions }: Props) => {
                   ),
                 }))}
               />
-              {data.integrationType !== IntegrationType.EntryApi && (
-                <span className="text-gray-500 text-sm mt-3 inline-block">
-                  {t("integration_form.price_info")}
-                </span>
-              )}
-              {errors.subscriptionId && (
-                <span className="text-red-500 mt-3 inline-block">
-                  {errors.subscriptionId}
-                </span>
-              )}
+              <div className="flex flex-col">
+                {errors.subscriptionId && (
+                  <span className="text-red-500 mt-3 inline-block">
+                    {errors.subscriptionId}
+                  </span>
+                )}
+                {data.integrationType !== IntegrationType.EntryApi && (
+                  <span className="text-gray-500 text-sm mt-3 inline-block">
+                    {t("integration_form.price_info")}
+                  </span>
+                )}
+              </div>
             </Card>
           )}
           <Card>
