@@ -13,6 +13,7 @@ import { classNames } from "../../../utils/classNames";
 import { Heading } from "../../Heading";
 import type { Contact } from "../../../types/Contact";
 import type { Integration } from "../../../types/Integration";
+import { Alert } from "../../Alert";
 
 export type ContactFormData = {
   functional: Contact;
@@ -25,9 +26,15 @@ export type ContactFormData = {
 
 type Props = {
   isMobile: boolean;
+  duplicateContactErrorMessage?: string;
 } & Integration;
 
-export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
+export const ContactInfo = ({
+  id,
+  contacts,
+  isMobile,
+  duplicateContactErrorMessage,
+}: Props) => {
   const { t } = useTranslation();
   const [isDisabled, setIsDisabled] = useState(true);
   const [isAddFormVisible, setIsAddFormVisible] = useState(false);
@@ -156,6 +163,9 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
   return (
     <>
       <div className="w-full flex flex-col gap-6">
+        {duplicateContactErrorMessage && (
+          <Alert variant="error">{duplicateContactErrorMessage}</Alert>
+        )}
         <Heading level={4} className="font-semibold col-span-1">
           {t("details.contact_info.title")}
         </Heading>
