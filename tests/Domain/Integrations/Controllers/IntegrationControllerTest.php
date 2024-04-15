@@ -817,7 +817,7 @@ final class IntegrationControllerTest extends TestCase
 
     public function test_it_can_show_integration_detail_if_authorized(): void
     {
-        $this->actingAs(UserModel::createSystemUser());
+        $this->actingAsIntegrator();
 
         $subscription = $this->givenThereIsASubscription(IntegrationType::SearchApi, SubscriptionCategory::Basic);
         $integration = $this->givenThereIsAnIntegration(IntegrationType::SearchApi, $subscription->id);
@@ -832,9 +832,25 @@ final class IntegrationControllerTest extends TestCase
         $response->assertOk();
     }
 
+    public function test_it_can_show_integration_detail_if_user_is_admin(): void
+    {
+        $this->actingAsAdmin();
+
+        $subscription = $this->givenThereIsASubscription(IntegrationType::SearchApi, SubscriptionCategory::Basic);
+        $integration = $this->givenThereIsAnIntegration(IntegrationType::SearchApi, $subscription->id);
+
+        $route = route(
+            TranslatedRoute::getTranslatedRouteName(Request::instance(), 'integrations.show'),
+            ['id' => $integration->id->toString()]
+        );
+        $response = $this->get($route);
+
+        $response->assertOk();
+    }
+
     public function test_it_can_not_show_integration_detail_if_not_authorized(): void
     {
-        $this->actingAs(UserModel::createSystemUser());
+        $this->actingAsIntegrator();
 
         $subscription = $this->givenThereIsASubscription(IntegrationType::SearchApi, SubscriptionCategory::Basic);
         $integration = $this->givenThereIsAnIntegration(IntegrationType::SearchApi, $subscription->id);

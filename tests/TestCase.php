@@ -13,6 +13,7 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
     use RefreshDatabase;
+    use ActingAsUser;
 
     protected function setUp(): void
     {
