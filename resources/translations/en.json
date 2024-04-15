@@ -99,7 +99,9 @@
     "aim": "Integration purpose",
     "description_aim": "Provide a clear, motivated description of the integration you want to set up with the publiq platform (max. 200 characters)",
     "contact_label_functional": "Functional contact",
+    "contact_label_functional_info": "The functional contact is the functional point of contact for the integration (e.g., an employee of the organization or municipality for which the integration is intended).",
     "contact_label_technical": "Technical contact",
+    "contact_label_technical_info": "The technical contact is the technical point of contact for the integration (e.g., the developer of the integration).",
     "contact_label_contributor": "Employee",
     "add": "Add employee",
     "contact": {
