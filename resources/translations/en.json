@@ -109,7 +109,7 @@
       "email": "Email address"
     },
     "agree": "I agree to the <1>terms of use</1> and the <2>privacy policy</2>",
-    "terms_of_use_link": "https://www.publiq.be/en/gebruiksvoorwaarden",
+    "terms_of_use_link": "https://docs.publiq.be/docs/uitdatabank/terms-of-use/terms-of-use",
     "privacy_link": "https://www.publiq.be/en/privacy",
     "coupon": "I have a coupon",
     "code": "Coupon code",
@@ -123,6 +123,7 @@
     "results_found_one": "{{count}} integration found",
     "results_found_other": "{{count}} integrations found",
     "no_results_found": "No integrations found",
+    "pending_credentials": "API credentials incoming! Just clearing the runway for a smooth landing.",
     "searching": "Searching...",
     "test": "Test",
     "live": "Live",
@@ -139,21 +140,21 @@
       "deleted": "Deleted",
       "pending_approval_integration": "Pending approval",
       "pending_approval_payment": "Pending approval",
-      "pending_approval_integration_description": "Approval from publiq is necessary for the live integration. All information to smoothly go live can be found",
+      "pending_approval_integration_description": "Approval from publiq is necessary for the live integration. All information to smoothly go live can be found <0>here</0>",
       "pending_approval_payment_description": "Ready to work with real data and events? Activate your Search API integration (from €125 per year)",
       "here": "here.",
       "activate": "Activate"
     },
     "activation_dialog": {
-      "title": "Activatie aanvragen",
-      "subscription_plan": "Prijsplan",
-      "price": "Totaalbedrag",
-      "contact": "E-mail boekhouding",
-      "contact_description": "Dit adres ontvangt de betalinginstructies, -herinneringen en de factuur.",
+      "title": "Request activation",
+      "subscription_plan": "Price plan",
+      "price": "Total amount",
+      "contact": "E-mail accounting",
+      "contact_description": "This address will receive payment instructions, reminders and the invoice.",
       "coupon": "Coupon",
       "price_overview": {
         "title": "Price overview",
-        "subscription_plan": "Priceplan",
+        "subscription_plan": "Price plan",
         "setup": "Setup",
         "coupon": "Coupon",
         "plan": "Subscription",
@@ -206,15 +207,15 @@
     "credentials": {
       "title": "Credentials",
       "widgets": "Build widgets",
-      "uitid_v1": "UITID v1",
-      "uitid_v2": "UITID v2",
+      "uitid_v1": "API Key",
+      "uitid_v2": "Client credentials",
       "test": "Test",
       "live": "Live",
       "status_alert": "Approval from publiq is necessary for the live integration of this project. All information to smoothly go live can be found",
       "link": "here",
-      "uitid_alert": "UiTIDv2 credentials have not yet been requested for this integration.",
+      "uitid_alert": "Client credentials have not yet been requested for this integration.",
       "action_status": "Request activation",
-      "action_uitid": "Request UiTIDv2 credentials"
+      "action_uitid": "Request client credentials"
     },
     "integration_settings": {
       "title": "Settings",
@@ -262,14 +263,14 @@
     },
     "styleguide": {
       "title": "Style guide",
-      "description": "All icons, logos, and colours compiled for you. A must when building a UiT agenda.",
+      "description": "All icons, logos, and colours compiled for you. A must when building a UiT agenda (Dutch only).",
       "img_url": "#",
       "action_title": "Go to style guide",
       "action_url": "#"
     },
     "statuspage": {
       "title": "Status page",
-      "description": "We provide an overview of the status of applications & services within the publiq platform. You can subscribe to stay informed of important updates.",
+      "description": "We provide an overview of the status of applications & services within the publiq platform. You can subscribe to stay informed of important updates (Dutch only).",
       "img_url": "#",
       "action_title": "Go to status page",
       "action_url": "https://status.publiq.be"
@@ -372,8 +373,15 @@
     }
   },
   "error": {
-    "title": "Oops! Something went Wrong.",
-    "description": "We're sorry, but there seems to be a problem on our end. Our team has been notified, and we're working to fix this as quickly as possible. Please try refreshing the page in a few minutes. If the problem persists, feel free to contact us at <0>technical-support@publiq.be</0> for assistance. We appreciate your understanding and patience.",
-    "back": "Back"
+    "500": {
+      "title": "Oops! Something went Wrong.",
+      "description": "We're sorry, but there seems to be a problem on our end. Our team has been notified, and we're working to fix this as quickly as possible. Please try refreshing the page in a few minutes. If the problem persists, feel free to contact us at <0>technical-support@publiq.be</0> for assistance. We appreciate your understanding and patience.",
+      "back": "Back"
+    },
+    "404": {
+      "title": "Sorry, this page does not exist (anymore).",
+      "description": "You clicked on a link to a page that we unfortunately cannot find on publiq platform.",
+      "back": "Go back to the homepage"
+    }
   }
 }

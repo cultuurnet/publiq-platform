@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 use App\Router\TranslatedRoute;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SupportController;
+use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,18 +68,18 @@ Route::group(['middleware' => 'auth'], static function () {
         ],
         [IntegrationController::class, 'create']
     );
-    TranslatedRoute::get(
-        [
-            '/en/integrations/{id}',
-            '/nl/integraties/{id}',
-        ],
-        [IntegrationController::class, 'show'],
-        'integrations.show'
-    );
 
     Route::post('/integrations', [IntegrationController::class, 'store']);
 
     Route::group(['middleware' => 'can:access-integration,id'], static function () {
+        TranslatedRoute::get(
+            [
+                '/en/integrations/{id}',
+                '/nl/integraties/{id}',
+            ],
+            [IntegrationController::class, 'show'],
+            'integrations.show'
+        );
         Route::delete('/integrations/{id}', [IntegrationController::class, 'destroy']);
         Route::patch('/integrations/{id}', [IntegrationController::class, 'update']);
 
@@ -94,5 +95,11 @@ Route::group(['middleware' => 'auth'], static function () {
         Route::post('/integrations/{id}/activation', [IntegrationController::class, 'requestActivation']);
 
         Route::get('/integrations/{id}/widget', [IntegrationController::class, 'showWidget']);
+
+        Route::post('/integrations/{id}/upgrade', [IntegrationController::class, 'storeKeyVisibilityUpgrade']);
+    });
+
+    Route::fallback(function () {
+        return Inertia::render('Error', ['statusCode' => 404]);
     });
 });

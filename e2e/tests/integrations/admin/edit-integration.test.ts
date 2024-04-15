@@ -3,13 +3,13 @@ import { fakerNL_BE as faker } from "@faker-js/faker";
 import {
   createIntegration,
 } from "./create-integration.js";
-import { IntegrationTypes } from "../../types.js";
+import { IntegrationType } from "@app-types/IntegrationType";
 
 test.use({ storageState: "playwright/.auth/admin.json" });
 
 test("As an admin I can edit an existing integration", async ({ page }) => {
   const { page: integrationPage, name: integrationName } =
-    await createIntegration(page, IntegrationTypes.SEARCH_API);
+    await createIntegration(page, IntegrationType.SearchApi);
 
   await expect(
     page.locator("h1").getByText(`Integration Details: ${integrationName}`)
@@ -18,6 +18,7 @@ test("As an admin I can edit an existing integration", async ({ page }) => {
   const url = integrationPage.url();
   const integrationId = url.split("/").pop();
 
+  
   await page.goto(`/admin/resources/integrations/${integrationId}`);
 
   const newIntegrationName = faker.word.adjective();
@@ -30,4 +31,7 @@ test("As an admin I can edit an existing integration", async ({ page }) => {
   await expect(
     page.locator("h1").getByText(`Integration Details: ${newIntegrationName}`)
   ).toBeVisible();
+
+  await page.screenshot({ path: `screenshots/edit-integration-${integrationId}.png` });
+
 });

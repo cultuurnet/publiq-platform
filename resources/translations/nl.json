@@ -97,7 +97,7 @@
     "integration_name": "Naam integratie",
     "description_name": "Geef een duidelijk titel aan je integratie en vermeld de naam van de organisatie of gemeente waarvoor de integratie gebouwd wordt",
     "aim": "Doel van de integratie",
-    "description_aim": "Geef een duidelijke, gemotiveerde beschrijving van de integraite die je met het publiq platform wil opzetten (max. 200 karakters)",
+    "description_aim": "Geef een duidelijke, gemotiveerde beschrijving van de integratie die je met het publiq platform wil opzetten (max. 200 karakters)",
     "contact_label_functional": "Inhoudelijk contact",
     "contact_label_technical": "Technisch contact",
     "contact_label_contributor": "Medewerker",
@@ -109,7 +109,7 @@
       "email": "E-mailadres"
     },
     "agree": "Ik ga akkoord met de <1>gebruiksvoorwaarden</1> en de <2>privacyverklaring</2>",
-    "terms_of_use_link": "https://www.publiq.be/nl/gebruiksvoorwaarden",
+    "terms_of_use_link": "https://docs.publiq.be/docs/uitdatabank/terms-of-use/terms-of-use",
     "privacy_link": "https://www.publiq.be/nl/privacy",
     "coupon": "Ik heb een coupon",
     "code": "Couponcode",
@@ -123,6 +123,7 @@
     "results_found_one": "{{count}} integratie gevonden",
     "results_found_other": "{{count}} integraties gevonden",
     "no_results_found": "Geen integraties gevonden",
+    "pending_credentials": "Je API credentials komen eraan! We maken nog even de landingsbaan vrij voor een soepele landing.",
     "searching": "Zoeken ...",
     "test": "Test",
     "live": "Live",
@@ -206,14 +207,14 @@
     "credentials": {
       "title": "Credentials",
       "widgets": "Widgets bouwen",
-      "uitid_v1": "UITID v1",
-      "uitid_v2": "UITID v2",
+      "uitid_v1": "API Key",
+      "uitid_v2": "Client credentials",
       "test": "Test",
       "live": "Live",
       "in_progress": "Je aanvraag tot activatie is in behandeling.",
       "link": "here",
-      "uitid_alert": "Voor deze integratie zijn nog geen UiTIDv2 credentials aangevraagd.",
-      "action_uitid": "UiTIDv2 credentials aanvragen",
+      "uitid_alert": "Voor deze integratie zijn nog geen Client credentials aangevraagd.",
+      "action_uitid": "Client credentials aanvragen",
       "client_id": "Client id",
       "client_secret": "Client secret",
       "api_key": "API Key",
@@ -264,7 +265,7 @@
     },
     "styleguide": {
       "title": "Stijlgids",
-      "description": "Alle beeldmerken, iconen en kleuren voor jou op een rijtje gezet. Een must wanneer je een UiT-agenda bouwt.",
+      "description": "Alle UiT-iconen, beeldmerken en kleuren voor jou op een rijtje gezet. Een must wanneer je een UiTagenda bouwt.",
       "img_url": "#",
       "action_title": "Naar de stijlgids",
       "action_url": "https://www.publiq.be/nl/projecten/publiq-platform/stijlgids"
@@ -278,7 +279,7 @@
     },
     "roadmap": {
       "title": "Roadmap",
-      "description": "Neem een kijkje in onze plannen en deel jouw briljante ideeën om onze producten nog beter te maken.",
+      "description": "Neem een kijkje in onze plannen en deel jouw ideeën om onze producten nog beter te maken.",
       "img_url": "#",
       "action_title": "Naar de roadmap",
       "action_url": "https://trello.com/b/Qa6OxKIC/publiq-platform"
@@ -299,8 +300,8 @@
       "invitation": "Toegang vragen"
     },
     "customized_support": {
-      "title": "Ondersteuning op maat",
-      "description": "Een organisatie met een hart voor cultuur en vrije tijd? Dan werken we graag een voorstel op maat uit!",
+      "title": "Diensten op maat",
+      "description": "Wil je aan de slag met onze tools maar weet je niet waar te beginnen? Dan werken we graag een voorstel op maat uit.",
       "img_url": "#",
       "action_title": "Contacteer ons",
       "action_url": "mailto:partnerships@publiq.be"
@@ -374,8 +375,16 @@
     }
   },
   "error": {
-    "title": "Oeps! Er ging iets mis.",
-    "description": "Het spijt ons, maar er lijkt een probleem te zijn aan onze kant. Ons team is op de hoogte gebracht en we werken eraan om dit zo snel mogelijk op te lossen. Probeer de pagina over een paar minuten te vernieuwen. Als het probleem zich blijft voordoen, neem dan gerust contact op met ons op <0>technical-support@publiq.be</0>. Wij stellen uw begrip en geduld op prijs.",
-    "back": "Terug"
+    "500": {
+      "title": "Oeps! Er ging iets mis.",
+      "description": "Het spijt ons, maar er lijkt een probleem te zijn aan onze kant. Ons team is op de hoogte gebracht en we werken eraan om dit zo snel mogelijk op te lossen. Probeer de pagina over een paar minuten te vernieuwen. Als het probleem zich blijft voordoen, neem dan gerust contact op met ons op <0>technical-support@publiq.be</0>. Wij stellen uw begrip en geduld op prijs.",
+      "back": "Terug"
+    },
+    "404": {
+      "title": "Spijtig, deze pagina bestaat niet (meer).",
+      "description": "Je klikte op een link naar een pagina die we helaas niet vinden op publiq platform.",
+      "back": "Ga terug naar de homepagina"
+    }
+ 
   }
 }

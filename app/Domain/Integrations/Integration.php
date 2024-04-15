@@ -7,6 +7,7 @@ namespace App\Domain\Integrations;
 use App\Auth0\Auth0Client;
 use App\Domain\Contacts\Contact;
 use App\Domain\Coupons\Coupon;
+use App\Domain\KeyVisibilityUpgrades\KeyVisibilityUpgrade;
 use App\Domain\Organizations\Organization;
 use App\Domain\Subscriptions\Subscription;
 use App\UiTiDv1\UiTiDv1Consumer;
@@ -15,6 +16,8 @@ use Ramsey\Uuid\UuidInterface;
 final class Integration
 {
     private KeyVisibility $keyVisibility;
+
+    private ?KeyVisibilityUpgrade $keyVisibilityUpgrade;
 
     /** @var array<Contact> */
     private array $contacts;
@@ -49,6 +52,7 @@ final class Integration
         $this->auth0Clients = [];
         $this->organization = null;
         $this->keyVisibility = KeyVisibility::v2;
+        $this->keyVisibilityUpgrade = null;
     }
 
     public function withKeyVisibility(KeyVisibility $keyVisibility): self
@@ -61,6 +65,18 @@ final class Integration
     public function getKeyVisibility(): KeyVisibility
     {
         return $this->keyVisibility;
+    }
+
+    public function withKeyVisibilityUpgrade(KeyVisibilityUpgrade $keyVisibilityUpgrade): self
+    {
+        $clone = clone $this;
+        $clone->keyVisibilityUpgrade = $keyVisibilityUpgrade;
+        return $clone;
+    }
+
+    public function getKeyVisibilityUpgrade(): ?KeyVisibilityUpgrade
+    {
+        return $this->keyVisibilityUpgrade;
     }
 
     public function withContacts(Contact ...$contacts): self
@@ -172,6 +188,7 @@ final class Integration
             'status' => $this->status,
             'partnerStatus' => $this->partnerStatus,
             'keyVisibility' => $this->keyVisibility,
+            'keyVisibilityUpgrade' => $this->keyVisibilityUpgrade,
             'contacts' => $this->contacts,
             'urls' => $this->urls,
             'organization' => $this->organization,
