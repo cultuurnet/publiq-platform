@@ -96,7 +96,11 @@ const New = ({ subscriptions }: Props) => {
     <Page>
       <div className="inline-flex flex-col gap-5 w-full">
         <Heading level={2}>{t("integration_form.title")}</Heading>
-        <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-7">
+        <form
+          onSubmit={handleSubmit}
+          noValidate
+          className="flex flex-col gap-7"
+        >
           <Card title={t("integration_form.type")}>
             <RadioButtonGroup
               orientation="vertical"
