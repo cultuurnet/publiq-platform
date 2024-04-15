@@ -96,8 +96,6 @@ const New = ({ subscriptions }: Props) => {
     <Page>
       <div className="inline-flex flex-col gap-5 w-full">
         <Heading level={2}>{t("integration_form.title")}</Heading>
-        <p className="mb-5">{t("integration_form.description")}</p>
-
         <form onSubmit={handleSubmit} className="flex flex-col gap-7">
           <Card title={t("integration_form.type")}>
             <RadioButtonGroup
@@ -149,6 +147,11 @@ const New = ({ subscriptions }: Props) => {
                   ),
                 }))}
               />
+              {data.integrationType !== IntegrationType.EntryApi && (
+                <span className="text-gray-500 text-sm mt-3 inline-block">
+                  {t("integration_form.price_info")}
+                </span>
+              )}
               {errors.subscriptionId && (
                 <span className="text-red-500 mt-3 inline-block">
                   {errors.subscriptionId}
