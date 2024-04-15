@@ -204,7 +204,6 @@
         "postcode": "Postcode",
         "city": "City"
       },
-      "invoiceEmail": "Email address",
       "vat": "VAT or company number",
       "coupon_used": "A coupon of {{price}} has been applied"
     },
