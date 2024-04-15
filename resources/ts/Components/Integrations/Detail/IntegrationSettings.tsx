@@ -249,7 +249,7 @@ export const IntegrationSettings = ({
         errors={basicInfoForm.errors}
       />
 
-      {type !== IntegrationType.Widgets &&
+      {type === IntegrationType.EntryApi &&
         keyVisibility !== KeyVisibility.v1 &&
         Object.values(IntegrationUrlType).map((type) => (
           <UrlList
