@@ -28,10 +28,17 @@ type Props = {
   integration: Integration;
   email: string;
   subscriptions: Subscription[];
+  oldCredentialsExpirationDate: number;
   errors: Record<string, string | undefined>;
 };
 
-const Detail = ({ integration, email, subscriptions, errors }: Props) => {
+const Detail = ({
+  integration,
+  email,
+  subscriptions,
+  oldCredentialsExpirationDate,
+  errors,
+}: Props) => {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
 
@@ -139,7 +146,11 @@ const Detail = ({ integration, email, subscriptions, errors }: Props) => {
                       : t("details.credentials.title")
                   }
                 >
-                  <Credentials {...integration} email={email} />
+                  <Credentials
+                    {...integration}
+                    email={email}
+                    oldCredentialsExpirationDate={oldCredentialsExpirationDate}
+                  />
                 </Tabs.Item>
                 <Tabs.Item
                   type="settings"

@@ -138,7 +138,7 @@ return [
     'timezone' => 'The :attribute must be a valid timezone.',
     'unique' => 'The :attribute has already been taken.',
     'uploaded' => 'The :attribute failed to upload.',
-    'url' => 'The :attribute must be a valid URL.',
+    'url' => ':Attribute must be a valid URL.',
     'uuid' => 'The :attribute must be a valid UUID.',
 
     /*
@@ -178,6 +178,12 @@ return [
         'firstNamePartner' => 'first name',
         'lastNamePartner' => 'last name',
         'emailPartner' => 'email',
+        'functional.email' => 'email',
+        'functional.lastName' => 'last name',
+        'functional.firstName' => 'first name',
+        'technical.email' => 'email',
+        'technical.lastName' => 'last name',
+        'technical.firstName' => 'first name',
         'organization.name' => 'name',
         'organization.invoiceEmail' => 'email',
         'organization.address.street' => 'street',

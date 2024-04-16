@@ -281,9 +281,11 @@ export const ContactInfo = ({
                 </ButtonSecondary>
                 <ButtonPrimary
                   onClick={() => {
-                    setToBeEditedId("");
                     patch(`/integrations/${id}/contacts`, {
                       preserveScroll: true,
+                      onSuccess: () => {
+                        setToBeEditedId("");
+                      },
                     });
                   }}
                 >

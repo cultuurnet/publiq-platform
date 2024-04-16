@@ -19,7 +19,7 @@ final class StoreIntegrationUrlRequest extends FormRequest
         return [
             'environment' => ['required', new Enum(Environment::class)],
             'type' => ['required', new Enum(IntegrationUrlType::class)],
-            'url' => ['required', 'url:https', 'max:255'],
+            'url' => ['required', 'url:http,https', 'max:255'],
         ];
     }
 }

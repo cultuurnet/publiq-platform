@@ -31,6 +31,7 @@ use App\Domain\Integrations\Mappers\UpdateIntegrationMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationUrlsMapper;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\IntegrationUrlRepository;
+use App\Domain\KeyVisibilityUpgrades\KeyVisibilityUpgrade;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Domain\KeyVisibilityUpgrades\Repositories\KeyVisibilityUpgradeRepository;
@@ -38,6 +39,7 @@ use App\Http\Controllers\Controller;
 use App\ProjectAanvraag\ProjectAanvraagUrl;
 use App\Router\TranslatedRoute;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\RedirectResponse;
@@ -147,12 +149,25 @@ final class IntegrationController extends Controller
         return Redirect::back();
     }
 
+    private function getExpirationDateForOldCredentials(?KeyVisibilityUpgrade $upgrade): ?string
+    {
+        $createdAt = $upgrade?->getCreatedAt();
+        if ($createdAt === null) {
+            return null;
+        }
+        $expirationAmountInDays = config('key_visibility.oldCredentialsExpirationAmountInDays');
+        $expirationDate = (new Carbon($createdAt))->addDays($expirationAmountInDays);
+        return $expirationDate->toISOString();
+    }
+
     public function show(string $id): Response
     {
         $integration = $this->integrationRepository->getById(Uuid::fromString($id));
+        $oldCredentialsExpirationDate = $this->getExpirationDateForOldCredentials($integration->getKeyVisibilityUpgrade());
 
         return Inertia::render('Integrations/Detail', [
             'integration' => $integration->toArray(),
+            'oldCredentialsExpirationDate' => $oldCredentialsExpirationDate,
             'email' => Auth::user()?->email,
             'subscriptions' => $this->subscriptionRepository->all(),
         ]);

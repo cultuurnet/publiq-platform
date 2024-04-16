@@ -24,7 +24,7 @@ final class UpdateIntegrationUrlsRequest extends FormRequest
                 'id' => ['string'],
                 'environment' => ['required', new Enum(Environment::class)],
                 'type' => ['required', new Enum(IntegrationUrlType::class)],
-                'url' => ['required', 'url:https', 'max:255', new UniqueIntegrationUrl($this->input('urls'))],
+                'url' => ['required', 'url:http,https', 'max:255', new UniqueIntegrationUrl($this->input('urls'))],
             ]),
         ];
     }

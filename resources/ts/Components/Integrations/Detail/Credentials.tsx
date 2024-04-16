@@ -15,6 +15,7 @@ import { KeyVisibility } from "../../../types/KeyVisibility";
 
 type Props = Integration & {
   email: string;
+  oldCredentialsExpirationDate: number;
 };
 
 export type Credentials = {
@@ -33,6 +34,7 @@ export const Credentials = ({
   keyVisibility,
   legacyAuthConsumers,
   authClients,
+  oldCredentialsExpirationDate,
 }: Props) => {
   const { t } = useTranslation();
   const hasAnyCredentials = Boolean(
@@ -83,6 +85,7 @@ export const Credentials = ({
           type={type}
           subscription={subscription}
           keyVisibility={keyVisibility}
+          oldCredentialsExpirationDate={oldCredentialsExpirationDate}
         />
       )}
       <CredentialsAuthClients
