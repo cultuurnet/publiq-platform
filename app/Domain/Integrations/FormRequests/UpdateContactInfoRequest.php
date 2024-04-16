@@ -6,7 +6,6 @@ namespace App\Domain\Integrations\FormRequests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Request;
 
 final class UpdateContactInfoRequest extends FormRequest
 {
@@ -14,8 +13,8 @@ final class UpdateContactInfoRequest extends FormRequest
      * @return array<string, mixed>
      */
     public function rules(): array
-    {   
-        $newContributorFieldsRequired = Rule::requiredIf($this->filled('functional.id') || $this->filled('technical.id') || count($this->input('contributors.*')) === 0 );
+    {
+        $newContributorFieldsRequired = Rule::requiredIf($this->filled('functional.id') || $this->filled('technical.id') || count($this->input('contributors.*')) === 0);
         var_dump($newContributorFieldsRequired);
         return [
                 'functional.id' => ['string'],
