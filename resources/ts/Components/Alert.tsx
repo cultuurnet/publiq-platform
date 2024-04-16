@@ -80,16 +80,14 @@ export const Alert = ({
             <Heading
               level={5}
               className={classNames(
-                "text-base",
+                "text-base font-semibold",
                 variantToHeadingStyle[variant]
               )}
             >
               {title}
             </Heading>
           )}
-          <div className="flex flex-col items-start text-base max-w-2xl">
-            {children}
-          </div>
+          <div className="flex flex-col items-start text-basem">{children}</div>
         </section>
       </div>
       {closable && (

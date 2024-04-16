@@ -187,7 +187,11 @@
         "title": "Contact verwijderen",
         "question": "Ben je zeker dat je het contact met e-mailadres {{email}} wilt verwijderen?"
       },
-      "edit_dialog": "Contact bewerken"
+      "edit_dialog": "Contact bewerken",
+      "alert": {
+        "title": "Gevarenzone",
+        "description": "Contacten kunnen de integratie aanpassen, activeren en verwijderen. Eens verwijderd heeft een contact geen toegang meer tot de integratie."
+      }
     },
     "billing_info": {
       "title": {
@@ -389,6 +393,5 @@
       "description": "Je klikte op een link naar een pagina die we helaas niet vinden op publiq platform.",
       "back": "Ga terug naar de homepagina"
     }
- 
   }
 }

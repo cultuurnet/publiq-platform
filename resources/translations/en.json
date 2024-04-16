@@ -187,7 +187,11 @@
         "title": "Delete contact",
         "question": "Are you sure you want to delete the contact with email address {{email}}?"
       },
-      "edit_dialog": "Edit contact"
+      "edit_dialog": "Edit contact",
+      "alert": {
+        "title": "Danger zone",
+        "description": "Contacts can edit, activate, and delete the integration. Once deleted, a contact no longer has access to the integration."
+      }
     },
     "billing_info": {
       "title": {
