@@ -16,7 +16,7 @@ type Props = Pick<
   Integration,
   "id" | "status" | "subscription" | "type" | "keyVisibility"
 > &
-  Credentials & { email: string; oldCredentialsExpirationDate: number };
+  Credentials & { email: string; oldCredentialsExpirationDate: string };
 
 const languageToLocale: { [key: string]: Locale } = {
   nl: nlBE,
