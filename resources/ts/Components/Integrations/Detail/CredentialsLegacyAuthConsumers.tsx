@@ -76,7 +76,7 @@ export const CredentialsLegacyAuthConsumers = ({
                   </div>
                 )}
                 {keyVisibility === KeyVisibility.all && (
-                  <Alert variant="info">
+                  oldCredentialsExpirationDate && <Alert variant="info">
                     {t("details.credentials.info", {
                       date: oldCredentialsExpirationDate.toLocaleDateString(),
                       amount: timeLeft,
