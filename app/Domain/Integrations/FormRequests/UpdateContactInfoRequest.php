@@ -6,6 +6,7 @@ namespace App\Domain\Integrations\FormRequests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Request;
 
 final class UpdateContactInfoRequest extends FormRequest
 {
@@ -13,7 +14,9 @@ final class UpdateContactInfoRequest extends FormRequest
      * @return array<string, mixed>
      */
     public function rules(): array
-    {
+    {   
+        $newContributorFieldsRequired = Rule::requiredIf($this->filled('functional.id') || $this->filled('technical.id') || count($this->input('contributors.*')) === 0 );
+        var_dump($newContributorFieldsRequired);
         return [
                 'functional.id' => ['string'],
                 'functional.integrationId' => ['string'],
@@ -27,9 +30,9 @@ final class UpdateContactInfoRequest extends FormRequest
                 'technical.type' => ['string', 'min:2', 'max:255'],
                 'technical.firstName' => ['string', 'min:2', 'max:255'],
                 'technical.lastName' => ['string', 'min:2', 'max:255'],
-                'newContributorFirstName' => ['nullable', 'string', 'min:2', 'max:255'],
-                'newContributorLastName' => ['nullable', 'string', 'min:2', 'max:255'],
-                'newContributorEmail' => ['nullable', 'string', 'email', 'min:2', 'max:255'],
+                'newContributorFirstName' => [$newContributorFieldsRequired, 'string', 'min:2', 'max:255'],
+                'newContributorLastName' => [$newContributorFieldsRequired, 'string', 'min:2', 'max:255'],
+                'newContributorEmail' => [$newContributorFieldsRequired, 'string', 'email', 'min:2', 'max:255'],
                 'contributors.*' => Rule::forEach(function () {
                     return [
                         'id' => ['required', 'string'],
