@@ -69,6 +69,9 @@ final class Handler extends ExceptionHandler
             if (!$exception instanceof HttpException) {
                 return $this->handle500Error($exception);
             }
+            if ($exception->getStatusCode() >= 500) {
+                return $this->handle500Error($exception);
+            }
         });
     }
 
