@@ -65,11 +65,20 @@ final class Handler extends ExceptionHandler
             if ($exception instanceof HttpException && $exception->getStatusCode() >= 500) {
                 return $this->handle500Error($exception);
             }
+
+            if ($exception instanceof HttpException && $exception->getStatusCode() === 404) {
+                return $this->handle404Error($exception);
+            }
         });
     }
 
     protected function handle500Error(Exception $exception): Response
     {
         return Inertia::render('Error', ['statusCode' => 500]);
+    }
+
+    protected function handle404Error(Exception $exception): Response
+    {
+        return Inertia::render('Error', ['statusCode' => 404]);
     }
 }

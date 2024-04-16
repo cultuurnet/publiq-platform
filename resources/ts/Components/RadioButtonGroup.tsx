@@ -29,7 +29,7 @@ export const RichRadioButton = ({
       {Icon && <Icon className="h-7 w-7" />}
       <span>{name}</span>
     </span>
-    <span className="text-gray-400 font-thin max-md:text-center text-sm">
+    <span className="text-neutral-700 font-thin max-md:text-center text-sm">
       {description}
     </span>
   </div>

@@ -68,18 +68,18 @@ Route::group(['middleware' => 'auth'], static function () {
         ],
         [IntegrationController::class, 'create']
     );
-    TranslatedRoute::get(
-        [
-            '/en/integrations/{id}',
-            '/nl/integraties/{id}',
-        ],
-        [IntegrationController::class, 'show'],
-        'integrations.show'
-    );
 
     Route::post('/integrations', [IntegrationController::class, 'store']);
 
     Route::group(['middleware' => 'can:access-integration,id'], static function () {
+        TranslatedRoute::get(
+            [
+                '/en/integrations/{id}',
+                '/nl/integraties/{id}',
+            ],
+            [IntegrationController::class, 'show'],
+            'integrations.show'
+        );
         Route::delete('/integrations/{id}', [IntegrationController::class, 'destroy']);
         Route::patch('/integrations/{id}', [IntegrationController::class, 'update']);
 

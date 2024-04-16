@@ -30,10 +30,12 @@ use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Domain\Subscriptions\Subscription;
 use App\Domain\Subscriptions\SubscriptionCategory;
 use App\ProjectAanvraag\ProjectAanvraagUrl;
+use App\Router\TranslatedRoute;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Validation\UnauthorizedException;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -811,6 +813,55 @@ final class IntegrationControllerTest extends TestCase
             'id' => $integration->id->toString(),
             'key_visibility' => KeyVisibility::v1->value,
         ]);
+    }
+
+    public function test_it_can_show_integration_detail_if_authorized(): void
+    {
+        $this->actingAsIntegrator();
+
+        $subscription = $this->givenThereIsASubscription(IntegrationType::SearchApi, SubscriptionCategory::Basic);
+        $integration = $this->givenThereIsAnIntegration(IntegrationType::SearchApi, $subscription->id);
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+
+        $route = route(
+            TranslatedRoute::getTranslatedRouteName(Request::instance(), 'integrations.show'),
+            ['id' => $integration->id->toString()]
+        );
+        $response = $this->get($route);
+
+        $response->assertOk();
+    }
+
+    public function test_it_can_show_integration_detail_if_user_is_admin(): void
+    {
+        $this->actingAsAdmin();
+
+        $subscription = $this->givenThereIsASubscription(IntegrationType::SearchApi, SubscriptionCategory::Basic);
+        $integration = $this->givenThereIsAnIntegration(IntegrationType::SearchApi, $subscription->id);
+
+        $route = route(
+            TranslatedRoute::getTranslatedRouteName(Request::instance(), 'integrations.show'),
+            ['id' => $integration->id->toString()]
+        );
+        $response = $this->get($route);
+
+        $response->assertOk();
+    }
+
+    public function test_it_can_not_show_integration_detail_if_not_authorized(): void
+    {
+        $this->actingAsIntegrator();
+
+        $subscription = $this->givenThereIsASubscription(IntegrationType::SearchApi, SubscriptionCategory::Basic);
+        $integration = $this->givenThereIsAnIntegration(IntegrationType::SearchApi, $subscription->id);
+
+        $route = route(
+            TranslatedRoute::getTranslatedRouteName(Request::instance(), 'integrations.show'),
+            ['id' => $integration->id->toString()]
+        );
+        $response = $this->get($route);
+
+        $response->assertForbidden();
     }
 
     private function givenTheContactKeyVisibilityIs(string $email, KeyVisibility $keyVisibility): void
