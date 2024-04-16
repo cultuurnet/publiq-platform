@@ -40,7 +40,7 @@ export const UitIdWidget = ({
         actions: [
           {
             url: {
-              nl: "/nl/integrations",
+              nl: "/nl/integraties",
               en: "/en/integrations",
             },
             label: {
