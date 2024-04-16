@@ -289,14 +289,14 @@
       "description": "Take a look at our plans and share your brilliant ideas to make our products even better (Dutch only).",
       "img_url": "#",
       "action_title": "Go to roadmap",
-      "action_url": "#"
+      "action_url": "https://trello.com/b/Qa6OxKIC/publiq-platform"
     },
     "release_notes": {
       "title": "Release notes",
       "description": "An overview of all new features, technical changes, and improvements within the publiq platform.",
       "img_url": "#",
       "action_title": "Go to release notes",
-      "action_url": "#"
+      "action_url": "https://docs.publiq.be/docs/release-notes/introduction"
     },
     "support_via_slack": {
       "title": "Support via Slack",
