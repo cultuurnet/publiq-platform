@@ -119,7 +119,9 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
     setIsDisabled(true);
     patch(`/integrations/${id}/contacts`, {
       preserveScroll: true,
-      preserveState: false,
+      onSuccess: () => {
+        setIsAddFormVisible(false);
+      },
     });
   };
 
@@ -200,7 +202,6 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
             <ButtonPrimary
               onClick={() => {
                 handleSaveChanges();
-                setIsAddFormVisible(false);
               }}
               className="p-0"
             >
