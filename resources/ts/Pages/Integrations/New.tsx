@@ -23,6 +23,7 @@ import {
 import type { Subscription } from "../../types/Subscription";
 import { useGetPricingPlans } from "../../hooks/useGetPricingPlans";
 import { SubscriptionCategory } from "../../types/SubscriptionCategory";
+import { Alert } from "../../Components/Alert";
 
 type Props = {
   subscriptions: Subscription[];
@@ -72,7 +73,7 @@ const New = ({ subscriptions }: Props) => {
 
   const [hasCoupon, setHasCoupon] = useState(false);
 
-  const { data, setData, errors, post, processing } =
+  const { data, setData, errors, hasErrors, post, processing } =
     useForm(initialFormValues);
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -96,9 +97,14 @@ const New = ({ subscriptions }: Props) => {
     <Page>
       <div className="inline-flex flex-col gap-5 w-full">
         <Heading level={2}>{t("integration_form.title")}</Heading>
-        <p className="mb-5">{t("integration_form.description")}</p>
-
-        <form onSubmit={handleSubmit} className="flex flex-col gap-7">
+        {hasErrors && (
+          <Alert variant="error">{t("integration_form.error")}</Alert>
+        )}
+        <form
+          onSubmit={handleSubmit}
+          noValidate
+          className="flex flex-col gap-7"
+        >
           <Card title={t("integration_form.type")}>
             <RadioButtonGroup
               orientation="vertical"
@@ -149,11 +155,18 @@ const New = ({ subscriptions }: Props) => {
                   ),
                 }))}
               />
-              {errors.subscriptionId && (
-                <span className="text-red-500 mt-3 inline-block">
-                  {errors.subscriptionId}
-                </span>
-              )}
+              <div className="flex flex-col">
+                {errors.subscriptionId && (
+                  <span className="text-red-500 mt-3 inline-block">
+                    {errors.subscriptionId}
+                  </span>
+                )}
+                {data.integrationType !== IntegrationType.EntryApi && (
+                  <span className="text-gray-500 text-sm mt-3 inline-block">
+                    {t("integration_form.price_info")}
+                  </span>
+                )}
+              </div>
             </Card>
           )}
           <Card>
@@ -241,12 +254,15 @@ const New = ({ subscriptions }: Props) => {
                   error={errors.emailFunctionalContact}
                 />
               </div>
+              <span className="text-gray-500 text-sm">
+                {t("integration_form.contact_label_functional_info")}
+              </span>
             </div>
           </Card>
 
           <Card
             title={t("integration_form.contact_label_technical")}
-            contentStyles="flex flex-col gap-5 mb-5"
+            contentStyles="flex flex-col gap-5"
           >
             <div className="grid grid-cols-3 max-md:flex max-md:flex-col gap-5">
               <FormElement
@@ -296,6 +312,9 @@ const New = ({ subscriptions }: Props) => {
                 error={errors.emailTechnicalContact}
               />
             </div>
+            <span className="text-gray-500 text-sm">
+              {t("integration_form.contact_label_technical_info")}
+            </span>
           </Card>
 
           <Card contentStyles="flex flex-col gap-5">

@@ -23,10 +23,10 @@
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",
         "fakerphp/faker": "^1.9.1",
+        "larastan/larastan": "^2.0",
         "laravel/sail": "^1.16",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^7.5",
-        "nunomaduro/larastan": "^2.0",
         "phpunit/phpunit": "^10.2.2",
         "publiq/php-cs-fixer-config": "^2.0",
         "spatie/laravel-ignition": "^2.1.3"

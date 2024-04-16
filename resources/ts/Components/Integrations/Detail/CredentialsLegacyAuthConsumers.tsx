@@ -9,12 +9,19 @@ import { IntegrationStatus } from "../../../types/IntegrationStatus";
 import type { Credentials } from "./Credentials";
 import { KeyVisibility } from "../../../types/KeyVisibility";
 import type { Integration } from "../../../types/Integration";
+import { formatDistanceToNow, type Locale } from "date-fns";
+import { nlBE, enUS } from "date-fns/locale";
 
 type Props = Pick<
   Integration,
   "id" | "status" | "subscription" | "type" | "keyVisibility"
 > &
-  Credentials & { email: string };
+  Credentials & { email: string; oldCredentialsExpirationDate: number };
+
+const languageToLocale: { [key: string]: Locale } = {
+  nl: nlBE,
+  en: enUS,
+};
 
 export const CredentialsLegacyAuthConsumers = ({
   legacyTestConsumer,
@@ -25,8 +32,16 @@ export const CredentialsLegacyAuthConsumers = ({
   subscription,
   type,
   keyVisibility,
+  oldCredentialsExpirationDate: oldCredentialsExpirationDateString,
 }: Props) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const oldCredentialsExpirationDate = new Date(
+    oldCredentialsExpirationDateString
+  );
+  const timeLeft = formatDistanceToNow(oldCredentialsExpirationDate, {
+    locale: languageToLocale[i18n.language],
+  });
+
   return (
     <div className="flex w-full max-lg:flex-col gap-6 border-b pb-10 border-gray-300">
       <Heading className="font-semibold lg:min-w-60" level={4}>
@@ -61,7 +76,12 @@ export const CredentialsLegacyAuthConsumers = ({
                   </div>
                 )}
                 {keyVisibility === KeyVisibility.all && (
-                  <Alert variant="info">{t("details.credentials.info")}</Alert>
+                  <Alert variant="info">
+                    {t("details.credentials.info", {
+                      date: oldCredentialsExpirationDate.toLocaleDateString(),
+                      amount: timeLeft,
+                    })}
+                  </Alert>
                 )}
               </div>
             )}

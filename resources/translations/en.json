@@ -91,15 +91,17 @@
   },
   "integration_form": {
     "title": "Add integration",
-    "description": "You only pay when you want to use real data. You can explore all possibilities with test events first.",
     "type": "Integration type",
     "pricing_plan": "Pricing plan",
+    "price_info": "You only pay when you want to use real data. You can explore all possibilities with test events first.",
     "integration_name": "Integration name",
     "description_name": "Give a clear title to your integration and mention the name of the organization or municipality for which the integration is built",
     "aim": "Integration purpose",
     "description_aim": "Provide a clear, motivated description of the integration you want to set up with the publiq platform (max. 200 characters)",
     "contact_label_functional": "Functional contact",
+    "contact_label_functional_info": "The functional contact is the functional point of contact for the integration (e.g., an employee of the organization or municipality for which the integration is intended).",
     "contact_label_technical": "Technical contact",
+    "contact_label_technical_info": "The technical contact is the technical point of contact for the integration (e.g., the developer of the integration).",
     "contact_label_contributor": "Employee",
     "add": "Add employee",
     "contact": {
@@ -108,6 +110,7 @@
       "last_name": "Last name",
       "email": "Email address"
     },
+    "error": "Not all mandatory fields were filled in correctly. Check your input.",  
     "agree": "I agree to the <1>terms of use</1> and the <2>privacy policy</2>",
     "terms_of_use_link": "https://docs.publiq.be/docs/uitdatabank/terms-of-use/terms-of-use",
     "privacy_link": "https://www.publiq.be/en/privacy",
@@ -201,6 +204,7 @@
         "postcode": "Postcode",
         "city": "City"
       },
+      "invoiceEmail": "Email address",
       "vat": "VAT or company number",
       "coupon_used": "A coupon of {{price}} has been applied"
     },
@@ -215,7 +219,8 @@
       "link": "here",
       "uitid_alert": "Client credentials have not yet been requested for this integration.",
       "action_status": "Request activation",
-      "action_uitid": "Request client credentials"
+      "action_uitid": "Request client credentials",
+      "info": "These credentials remain valid for another {{amount}} and will be permanently deleted on {{date}}"
     },
     "integration_settings": {
       "title": "Settings",
