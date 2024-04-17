@@ -220,7 +220,7 @@
       "live": "Live",
       "in_progress": "Je aanvraag tot activatie is in behandeling.",
       "link": "here",
-      "uitid_alert": "Voor deze integratie zijn nog geen Client credentials aangevraagd.",
+      "uitid_alert": "Je kan de overstap maken naar authenticatie met client credentials. Bekijk hier of deze manier van authenticatie geschikt is voor jouw applicatie. Eens je client credentials aangevraagd hebt, blijft je API key nog 6 maanden geldig.",
       "action_uitid": "Client credentials aanvragen",
       "client_id": "Client id",
       "client_secret": "Client secret",
