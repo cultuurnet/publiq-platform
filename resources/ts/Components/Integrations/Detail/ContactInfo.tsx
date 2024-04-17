@@ -53,7 +53,7 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
       contacts.filter((contact) => contact.type === ContactType.Contributor),
     [contacts]
   );
-  
+
   const storeContactForm = useForm({ email: "", firstName: "", lastName: "" });
 
   const createInitialFormData = () => {
