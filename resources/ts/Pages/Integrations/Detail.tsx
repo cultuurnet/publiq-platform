@@ -28,7 +28,7 @@ type Props = {
   integration: Integration;
   email: string;
   subscriptions: Subscription[];
-  oldCredentialsExpirationDate: number;
+  oldCredentialsExpirationDate: string;
 };
 
 const Detail = ({
