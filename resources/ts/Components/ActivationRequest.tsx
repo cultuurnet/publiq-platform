@@ -31,7 +31,7 @@ export const ActivationRequest = ({ id, type }: Props) => {
                   "integrations.status.pending_approval_integration_description"
                 )}
                 href={t("integrations.status.before_going_live_link")}
-                className="text-publiq-blue-dark hover:underline"
+                className="text-publiq-blue-dark hover:underline mb-3"
               />,
             ]}
           />
