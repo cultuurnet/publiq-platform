@@ -174,7 +174,6 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
             {t("details.contact_info.alert.description")}
           </Alert>
         )}
-        <p>{t("integration_form.contact.description")}</p>
         <ContactsTable
           data={{
             functional: functionalContact,
