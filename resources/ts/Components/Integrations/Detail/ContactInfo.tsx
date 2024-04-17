@@ -166,7 +166,6 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
           <Alert
             variant="error"
             title={t("details.contact_info.alert.title")}
-            closable
             onClose={() => setIsContactInfoAlertVisible(false)}
           >
             {t("details.contact_info.alert.description")}
