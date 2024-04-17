@@ -1,9 +1,9 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
 import { useTranslation } from "react-i18next";
 import { ButtonPrimary } from "../../ButtonPrimary";
-import { useForm } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 import { ContactType } from "../../../types/ContactType";
 import { ButtonSecondary } from "../../ButtonSecondary";
 import { QuestionDialog } from "../../QuestionDialog";
@@ -19,9 +19,6 @@ export type ContactFormData = {
   functional: Contact;
   technical: Contact;
   contributors: Contact[];
-  newContributorLastName: string;
-  newContributorFirstName: string;
-  newContributorEmail: string;
 };
 
 type Props = {
@@ -56,29 +53,30 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
       contacts.filter((contact) => contact.type === ContactType.Contributor),
     [contacts]
   );
+  
+  const storeContactForm = useForm({ email: "", firstName: "", lastName: "" });
 
-  const initialFormValues = {
-    functional: { ...functionalContact, changed: false },
-    technical: { ...technicalContact, changed: false },
-    contributors: contributorContacts.map((contributor) => ({
-      ...contributor,
-      changed: false,
-    })),
-    newContributorLastName: "",
-    newContributorFirstName: "",
-    newContributorEmail: "",
+  const createInitialFormData = () => {
+    return {
+      functional: { ...functionalContact, changed: false },
+      technical: { ...technicalContact, changed: false },
+      contributors: contributorContacts.map((contributor) => ({
+        ...contributor,
+        changed: false,
+      })),
+    };
   };
 
-  const {
-    data,
-    setData,
-    patch,
-    delete: destroy,
-    transform,
-    errors: errs,
-  } = useForm(initialFormValues);
+  const updateContactForm = useForm(createInitialFormData());
 
-  transform(
+  useEffect(() => {
+    updateContactForm.setData(createInitialFormData());
+
+    // form is not a stable reference and triggers whenever a field value changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contributorContacts, toBeEditedId]);
+
+  updateContactForm.transform(
     (data) =>
       ({
         ...data,
@@ -88,12 +86,12 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
       }) as typeof data
   );
 
-  const errors = errs as Record<string, string | undefined>;
+  const errors = updateContactForm.errors as Record<string, string | undefined>;
 
   const changeContact = (type: ContactType, newData: Contact) => {
     const property = type === "contributor" ? "contributors" : type;
 
-    setData((prevData) => ({
+    updateContactForm.setData((prevData) => ({
       ...prevData,
       [property]:
         property === "contributors"
@@ -112,7 +110,7 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
   };
 
   const handleDeleteContributor = () => {
-    destroy(`/integrations/${id}/contacts/${toBeDeletedId}`, {
+    router.delete(`/integrations/${id}/contacts/${toBeDeletedId}`, {
       preserveScroll: true,
       preserveState: false,
     });
@@ -120,7 +118,7 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
 
   const handleSaveChanges = () => {
     setIsDisabled(true);
-    patch(`/integrations/${id}/contacts`, {
+    storeContactForm.post(`/integrations/${id}/contacts`, {
       preserveScroll: true,
       onSuccess: () => {
         setIsAddFormVisible(false);
@@ -130,8 +128,10 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
 
   const foundContributor = useMemo(
     () =>
-      data.contributors.find((contributor) => contributor.id === toBeEditedId),
-    [data.contributors, toBeEditedId]
+      updateContactForm.data.contributors.find(
+        (contributor) => contributor.id === toBeEditedId
+      ),
+    [updateContactForm.data.contributors, toBeEditedId]
   );
 
   const [formContactType, setFormContactType] = useState("" as ContactType);
@@ -139,11 +139,11 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
   const toBeEditedContact = useMemo(() => {
     if (functionalContact.id === toBeEditedId) {
       setFormContactType(ContactType.Functional);
-      return data.functional;
+      return updateContactForm.data.functional;
     }
     if (technicalContact.id === toBeEditedId) {
       setFormContactType(ContactType.Technical);
-      return data.technical;
+      return updateContactForm.data.technical;
     }
     if (foundContributor) {
       setFormContactType(ContactType.Contributor);
@@ -153,8 +153,8 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
     functionalContact,
     technicalContact,
     foundContributor,
-    data.functional,
-    data.technical,
+    updateContactForm.data.functional,
+    updateContactForm.data.technical,
     toBeEditedId,
   ]);
 
@@ -176,7 +176,11 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
         )}
         <p>{t("integration_form.contact.description")}</p>
         <ContactsTable
-          data={data}
+          data={{
+            functional: functionalContact,
+            technical: technicalContact,
+            contributors: contributorContacts,
+          }}
           onEdit={(id) => setToBeEditedId(id)}
           onDelete={(id, email) => {
             setToBeDeletedId(id);
@@ -231,15 +235,15 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
         >
           <FormElement
             label={`${t("integration_form.contact.last_name")}`}
-            error={errors["newContributorLastName"]}
+            error={storeContactForm.errors["lastName"]}
             className="w-full"
             component={
               <Input
                 type="text"
-                name="newContributorLastName"
-                value={data.newContributorLastName}
+                name="lastName"
+                value={storeContactForm.data.lastName}
                 onChange={(e) =>
-                  setData("newContributorLastName", e.target.value)
+                  storeContactForm.setData("lastName", e.target.value)
                 }
                 className="w-full"
               />
@@ -247,15 +251,15 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
           />
           <FormElement
             label={`${t("integration_form.contact.first_name")}`}
-            error={errors["newContributorFirstName"]}
+            error={storeContactForm.errors["firstName"]}
             className="w-full"
             component={
               <Input
                 type="text"
-                name="newContributorFirstName"
-                value={data.newContributorFirstName}
+                name="firstName"
+                value={storeContactForm.data.firstName}
                 onChange={(e) =>
-                  setData("newContributorFirstName", e.target.value)
+                  storeContactForm.setData("firstName", e.target.value)
                 }
               />
             }
@@ -263,13 +267,15 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
         </div>
         <FormElement
           label={`${t("integration_form.contact.email")}`}
-          error={errors["newContributorEmail"]}
+          error={storeContactForm.errors["email"]}
           component={
             <Input
               type="text"
-              name="newContributorEmail"
-              value={data.newContributorEmail}
-              onChange={(e) => setData("newContributorEmail", e.target.value)}
+              name="email"
+              value={storeContactForm.data.email}
+              onChange={(e) =>
+                storeContactForm.setData("email", e.target.value)
+              }
             />
           }
         />
@@ -285,7 +291,7 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
                 </ButtonSecondary>
                 <ButtonPrimary
                   onClick={() => {
-                    patch(`/integrations/${id}/contacts`, {
+                    updateContactForm.patch(`/integrations/${id}/contacts`, {
                       preserveScroll: true,
                       onSuccess: () => {
                         setToBeEditedId("");
@@ -378,7 +384,7 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
             onClick={() => {
               setIsDisabled(true);
 
-              patch(`/integrations/${id}/contacts`, {
+              updateContactForm.patch(`/integrations/${id}/contacts`, {
                 preserveScroll: true,
               });
             }}
