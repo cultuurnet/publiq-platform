@@ -11,6 +11,7 @@ use App\Domain\Contacts\Repositories\ContactKeyVisibilityRepository;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Coupons\Repositories\CouponRepository;
 use App\Domain\Integrations\FormRequests\RequestActivationRequest;
+use App\Domain\Integrations\FormRequests\StoreContactRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationUrlRequest;
 use App\Domain\Integrations\FormRequests\KeyVisibilityUpgradeRequest;
@@ -23,6 +24,7 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Mappers\OrganizationMapper;
+use App\Domain\Integrations\Mappers\StoreContactMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationUrlMapper;
 use App\Domain\Integrations\Mappers\KeyVisibilityUpgradeMapper;
@@ -225,6 +227,15 @@ final class IntegrationController extends Controller
         if ($redirect !== null) {
             return $redirect;
         }
+
+        return Redirect::back();
+    }
+
+    public function storeContact(StoreContactRequest $request, string $id): RedirectResponse
+    {
+        $contact = StoreContactMapper::map($request, Uuid::fromString($id));
+
+        $this->contactRepository->save($contact);
 
         return Redirect::back();
     }
