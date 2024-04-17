@@ -1,6 +1,6 @@
 import React from "react";
 import { Heading } from "../../Heading";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { StatusLight } from "../../StatusLight";
 import { ButtonPrimary } from "../../ButtonPrimary";
 import { CopyText } from "../../CopyText";
@@ -10,6 +10,7 @@ import type { Credentials } from "./Credentials";
 import type { Integration } from "../../../types/Integration";
 import { KeyVisibility } from "../../../types/KeyVisibility";
 import { router } from "@inertiajs/react";
+import { Link } from "../../Link";
 
 type Props = Pick<
   Integration,
@@ -63,7 +64,19 @@ export const CredentialsAuthClients = ({
       </Heading>
       {keyVisibility === KeyVisibility.v1 ? (
         <div className="flex flex-col flex-1 gap-4">
-          <p>{t("details.credentials.uitid_alert")}</p>
+          <div>
+            <Trans
+              i18nKey="details.credentials.uitid_alert"
+              t={t}
+              components={[
+                <Link
+                  key={t("details.credentials.uitid_alert")}
+                  href={t("details.credentials.uitid_alert_link")}
+                  className="text-publiq-blue-dark hover:underline mb-3"
+                />,
+              ]}
+            />
+          </div>
           <ButtonPrimary
             className="self-start"
             onClick={handleKeyVisibilityUpgrade}
