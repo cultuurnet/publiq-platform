@@ -2,6 +2,21 @@ import type { ComponentProps, ElementType, ReactElement } from "react";
 import React from "react";
 import { classNames } from "../utils/classNames";
 
+export const RadioButtonGroupLabel = ({
+  name,
+  description,
+}: {
+  name: string | ReactElement;
+  description: string | ReactElement;
+}) => (
+  <div className="flex flex-col flex-grow justify-between md:flex-row items-center gap-2">
+    <span>{name}</span>
+    <span className="text-neutral-700 font-thin max-md:text-center text-sm">
+      {description}
+    </span>
+  </div>
+);
+
 type Option = {
   label: string | ReactElement;
   value: string;
@@ -14,26 +29,6 @@ type Props = {
   onChange: (newValue: string) => void;
   orientation: "vertical" | "horizontal";
 } & Omit<ComponentProps<"ul">, "onChange">;
-
-export const RichRadioButton = ({
-  name,
-  description,
-  Icon,
-}: {
-  name: string | ReactElement;
-  description: string | ReactElement;
-  Icon?: ElementType;
-}) => (
-  <div className="flex flex-col md:flex-row justify-between items-center gap-2">
-    <span className="flex flex-row gap-2 justify-between text-left">
-      {Icon && <Icon className="h-7 w-7" />}
-      <span>{name}</span>
-    </span>
-    <span className="text-neutral-700 font-thin max-md:text-center text-sm">
-      {description}
-    </span>
-  </div>
-);
 
 export const RadioButtonGroup = ({
   name,
@@ -58,7 +53,7 @@ export const RadioButtonGroup = ({
 
   const optionClasses = (index: number, option: Option) => {
     return classNames(
-      "px-4 py-2 text-base font-medium text-center border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 ring-publiq-blue-dark focus:bg-gray-100 max-sm:rounded-lg cursor-pointer",
+      "px-4 py-2 text-base font-medium border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 ring-publiq-blue-dark focus:bg-gray-100 max-sm:rounded-lg cursor-pointer",
       getRoundedStyles(index),
       value === option.value
         ? "bg-publiq-gray-75 text-publiq-blue-dark"
@@ -88,7 +83,7 @@ export const RadioButtonGroup = ({
           }}
           className={classNames(
             optionClasses(index, option),
-            "px-10 py-3 max-md:px-5 max-md:py-2 w-[100%] h-[100%]"
+            "flex items-center gap-5 px-10 py-3 max-md:px-5 max-md:py-2 w-[100%] h-[100%]"
           )}
         >
           <input
@@ -96,11 +91,16 @@ export const RadioButtonGroup = ({
             id={option.value}
             name={name}
             value={option.value}
-            className="hidden"
+            checked={value === option.value}
           />
-          <label htmlFor={option.value} className="cursor-pointer text-right">
-            {option.label}
-          </label>
+          <div className="flex flex-grow">
+            <label
+              htmlFor={option.value}
+              className="flex flex-grow cursor-pointer"
+            >
+              {option.label}
+            </label>
+          </div>
         </li>
       ))}
     </ul>

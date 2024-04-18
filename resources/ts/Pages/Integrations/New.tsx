@@ -18,6 +18,7 @@ import {
 } from "../../types/IntegrationType";
 import {
   RadioButtonGroup,
+  RadioButtonGroupLabel,
   RichRadioButton,
 } from "../../Components/RadioButtonGroup";
 import type { Subscription } from "../../types/Subscription";
@@ -111,13 +112,12 @@ const New = ({ subscriptions }: Props) => {
               name="integrationType"
               value={data.integrationType}
               options={integrationTypesInfo.map(
-                ({ Icon, ...integrationTypeInfo }) => ({
+                ({ ...integrationTypeInfo }) => ({
                   value: integrationTypeInfo.type,
                   label: (
-                    <RichRadioButton
+                    <RadioButtonGroupLabel
                       name={integrationTypeInfo.title}
                       description={integrationTypeInfo.description}
-                      Icon={Icon}
                     />
                   ),
                 })
@@ -148,8 +148,8 @@ const New = ({ subscriptions }: Props) => {
                 options={pricingPlans.map((pricingPlan) => ({
                   value: pricingPlan.id,
                   label: (
-                    <RichRadioButton
-                      name={`${pricingPlan.title} (${pricingPlan.price})`}
+                    <RadioButtonGroupLabel
+                      name={`${pricingPlan.title} ${pricingPlan.price}`}
                       description={pricingPlan.description}
                     />
                   ),
