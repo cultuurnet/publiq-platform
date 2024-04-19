@@ -67,7 +67,6 @@ export const CredentialsAuthClients = ({
           <div>
             <Trans
               i18nKey="details.credentials.uitid_alert"
-              t={t}
               components={[
                 <Link
                   key={t("details.credentials.uitid_alert")}
