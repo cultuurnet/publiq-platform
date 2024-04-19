@@ -163,7 +163,6 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
         <Alert variant="error" title={t("details.contact_info.alert.title")}>
           {t("details.contact_info.alert.description")}
         </Alert>
-        <p>{t("integration_form.contact.description")}</p>
         <ContactsTable
           data={data}
           onEdit={(id) => setToBeEditedId(id)}
