@@ -93,7 +93,7 @@ pipeline {
         stage('Acceptance tests') {
             agent { label 'ubuntu && 20.04 && nodejs18' }
             environment {
-                E2E_TEST_BASE_URL          = 'https://platform-acc.publiq.be'
+                E2E_TEST_BASE_URL = 'https://platform-acc.publiq.be'
             }
             stages {
                 stage('Setup') {
@@ -114,6 +114,14 @@ pipeline {
                             catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                                 sh label: 'Run acceptance tests', script: 'npm run test:e2e'
                             }
+                        }
+                    }
+                    post {
+                        unstable {
+                            sendBuildNotification to: '#publiq-platform', message: "Pipeline <${env.RUN_DISPLAY_URL}|${env.JOB_NAME} [${currentBuild.displayName}]>: automated acceptance tests finished"
+                        }
+                        always {
+                            sendBuildNotification to: '#upw-ops', message: "Pipeline <${env.RUN_DISPLAY_URL}|${env.JOB_NAME} [${currentBuild.displayName}]>: automated acceptance tests finished"
                         }
                     }
                 }
