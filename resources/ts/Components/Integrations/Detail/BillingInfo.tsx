@@ -50,23 +50,19 @@ export const BillingInfo = ({
             />
           }
         />
-        <div className="col-span-2 col-start-2 lg:max-w-[35%]">
+        <div className="flex flex-col gap-3 col-span-2 col-start-2 lg:max-w-[35%]">
           {coupon?.isDistributed && (
-            <Alert
-              className="md:min-w-[40rem]"
-              variant="success"
-              title={t("details.billing_info.coupon_used", {
+            <Alert className="md:min-w-[40rem]" variant="success">
+              {t("details.billing_info.coupon_used", {
                 price: formatCurrency(subscription.currency, coupon.reduction),
               })}
-            />
+            </Alert>
           )}
           {status !== IntegrationStatus.Active &&
             subscription.integrationType !== IntegrationType.EntryApi && (
-              <Alert
-                className="md:min-w-[40rem]"
-                variant="info"
-                title={t("details.billing_info.free_until_live")}
-              />
+              <Alert className="md:min-w-[40rem]" variant="info">
+                {t("details.billing_info.free_until_live")}
+              </Alert>
             )}
         </div>
       </div>

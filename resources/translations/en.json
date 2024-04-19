@@ -105,7 +105,6 @@
     "contact_label_contributor": "Employee",
     "add": "Add employee",
     "contact": {
-      "description": "Contacts can manage, activate, and delete the integration.",
       "first_name": "First name",
       "last_name": "Last name",
       "email": "Email address"
@@ -187,7 +186,11 @@
         "title": "Delete contact",
         "question": "Are you sure you want to delete the contact with email address {{email}}?"
       },
-      "edit_dialog": "Edit contact"
+      "edit_dialog": "Edit contact",
+      "alert": {
+        "title": "Danger zone",
+        "description": "Contacts can edit, activate, and delete the integration. Once deleted, a contact no longer has access to the integration."
+      }
     },
     "billing_info": {
       "title": {
@@ -285,14 +288,14 @@
       "description": "Take a look at our plans and share your brilliant ideas to make our products even better (Dutch only).",
       "img_url": "#",
       "action_title": "Go to roadmap",
-      "action_url": "#"
+      "action_url": "https://trello.com/b/Qa6OxKIC/publiq-platform"
     },
     "release_notes": {
       "title": "Release notes",
       "description": "An overview of all new features, technical changes, and improvements within the publiq platform.",
       "img_url": "#",
       "action_title": "Go to release notes",
-      "action_url": "#"
+      "action_url": "https://docs.publiq.be/docs/release-notes/introduction"
     },
     "support_via_slack": {
       "title": "Support via Slack",

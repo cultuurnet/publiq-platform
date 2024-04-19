@@ -16,7 +16,7 @@ type Props = Pick<
   Integration,
   "id" | "status" | "subscription" | "type" | "keyVisibility"
 > &
-  Credentials & { email: string; oldCredentialsExpirationDate: number };
+  Credentials & { email: string; oldCredentialsExpirationDate: string };
 
 const languageToLocale: { [key: string]: Locale } = {
   nl: nlBE,
@@ -75,14 +75,15 @@ export const CredentialsLegacyAuthConsumers = ({
                     <CopyText>{legacyProdConsumer.apiKey}</CopyText>
                   </div>
                 )}
-                {keyVisibility === KeyVisibility.all && (
-                  <Alert variant="info">
-                    {t("details.credentials.info", {
-                      date: oldCredentialsExpirationDate.toLocaleDateString(),
-                      amount: timeLeft,
-                    })}
-                  </Alert>
-                )}
+                {keyVisibility === KeyVisibility.all &&
+                  oldCredentialsExpirationDate && (
+                    <Alert variant="info">
+                      {t("details.credentials.info", {
+                        date: oldCredentialsExpirationDate.toLocaleDateString(),
+                        amount: timeLeft,
+                      })}
+                    </Alert>
+                  )}
               </div>
             )}
             {status === IntegrationStatus.Draft &&

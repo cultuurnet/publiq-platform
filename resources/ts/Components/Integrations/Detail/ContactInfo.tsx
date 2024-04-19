@@ -13,6 +13,7 @@ import { classNames } from "../../../utils/classNames";
 import { Heading } from "../../Heading";
 import type { Contact } from "../../../types/Contact";
 import type { Integration } from "../../../types/Integration";
+import { Alert } from "../../Alert";
 
 export type ContactFormData = {
   functional: Contact;
@@ -35,6 +36,8 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
   const [toBeDeletedEmail, setToBeDeletedEmail] = useState("");
   const [toBeEditedId, setToBeEditedId] = useState("");
   const [isMobileContactVisible, setIsMobileContactVisible] = useState(false);
+  const [isContactInfoAlertVisible, setIsContactInfoAlertVisible] =
+    useState(true);
 
   const functionalContact = useMemo(
     // We know for sure there is a functional contact
@@ -159,7 +162,16 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
         <Heading level={4} className="font-semibold col-span-1">
           {t("details.contact_info.title")}
         </Heading>
-        <p>{t("integration_form.contact.description")}</p>
+        {isContactInfoAlertVisible && (
+          <Alert
+            variant="error"
+            title={t("details.contact_info.alert.title")}
+            closable
+            onClose={() => setIsContactInfoAlertVisible(false)}
+          >
+            {t("details.contact_info.alert.description")}
+          </Alert>
+        )}
         <ContactsTable
           data={data}
           onEdit={(id) => setToBeEditedId(id)}
