@@ -61,13 +61,16 @@ final class Handler extends ExceptionHandler
             }
         });
 
+
         $this->renderable(function (Exception $exception) {
-            if ($exception instanceof HttpException && $exception->getStatusCode() >= 500) {
+            if (!$exception instanceof HttpException) {
                 return $this->handle500Error($exception);
             }
-
-            if ($exception instanceof HttpException && $exception->getStatusCode() === 404) {
+            if ($exception->getStatusCode() === 404) {
                 return $this->handle404Error($exception);
+            }
+            if ($exception->getStatusCode() >= 500) {
+                return $this->handle500Error($exception);
             }
         });
     }
