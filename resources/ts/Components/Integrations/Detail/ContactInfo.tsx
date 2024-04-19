@@ -36,8 +36,6 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
   const [toBeDeletedEmail, setToBeDeletedEmail] = useState("");
   const [toBeEditedId, setToBeEditedId] = useState("");
   const [isMobileContactVisible, setIsMobileContactVisible] = useState(false);
-  const [isContactInfoAlertVisible, setIsContactInfoAlertVisible] =
-    useState(true);
 
   const functionalContact = useMemo(
     // We know for sure there is a functional contact
@@ -162,15 +160,9 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
         <Heading level={4} className="font-semibold col-span-1">
           {t("details.contact_info.title")}
         </Heading>
-        {isContactInfoAlertVisible && (
-          <Alert
-            variant="error"
-            title={t("details.contact_info.alert.title")}
-            onClose={() => setIsContactInfoAlertVisible(false)}
-          >
-            {t("details.contact_info.alert.description")}
-          </Alert>
-        )}
+        <Alert variant="error" title={t("details.contact_info.alert.title")}>
+          {t("details.contact_info.alert.description")}
+        </Alert>
         <p>{t("integration_form.contact.description")}</p>
         <ContactsTable
           data={data}
