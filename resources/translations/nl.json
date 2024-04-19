@@ -105,7 +105,6 @@
     "contact_label_contributor": "Medewerker",
     "add": "Medewerker toevoegen",
     "contact": {
-      "description": "Contacten kunnen de integratie aanpassen, activeren en verwijderen.",
       "first_name": "Voornaam",
       "last_name": "Achternaam",
       "email": "E-mailadres"

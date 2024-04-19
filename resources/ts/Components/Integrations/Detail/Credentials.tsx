@@ -15,7 +15,7 @@ import { KeyVisibility } from "../../../types/KeyVisibility";
 
 type Props = Integration & {
   email: string;
-  oldCredentialsExpirationDate: number;
+  oldCredentialsExpirationDate: string;
 };
 
 export type Credentials = {
