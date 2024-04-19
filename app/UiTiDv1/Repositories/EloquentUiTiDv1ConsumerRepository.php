@@ -6,6 +6,7 @@ namespace App\UiTiDv1\Repositories;
 
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use App\UiTiDv1\UiTiDv1Consumer;
+use App\UiTiDv1\UiTiDv1Environment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
@@ -78,5 +79,23 @@ final class EloquentUiTiDv1ConsumerRepository implements UiTiDv1ConsumerReposito
             ->get()
             ->map(static fn (UiTiDv1ConsumerModel $model) => $model->toDomain())
             ->toArray();
+    }
+
+    public function getMissingEnvironmentsByIntegrationId(UuidInterface $integrationId): array
+    {
+        $uiTiDv1Consumers = $this->getByIntegrationId($integrationId);
+
+        $existingEnvironments = array_map(
+            static fn (UiTiDv1Consumer $uiTiDv1Consumer) => $uiTiDv1Consumer->environment,
+            $uiTiDv1Consumers
+        );
+
+        $missingEnvironments = array_udiff(
+            UiTiDv1Environment::cases(),
+            $existingEnvironments,
+            fn (UiTiDv1Environment $e1, UiTiDv1Environment $e2) => strcmp($e1->value, $e2->value)
+        );
+
+        return array_values($missingEnvironments);
     }
 }
