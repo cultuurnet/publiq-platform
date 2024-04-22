@@ -7,7 +7,7 @@ namespace App\ProjectAanvraag\Requests;
 use App\Domain\Integrations\IntegrationStatus;
 use Ramsey\Uuid\UuidInterface;
 
-final readonly class CreateWidgetRequest
+final readonly class SyncWidgetRequest
 {
     public function __construct(
         public UuidInterface $integrationId,

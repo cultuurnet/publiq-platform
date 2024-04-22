@@ -16,7 +16,7 @@ use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\ProjectAanvraag\ProjectAanvraagClient;
-use App\ProjectAanvraag\Requests\CreateWidgetRequest;
+use App\ProjectAanvraag\Requests\SyncWidgetRequest;
 use App\UiTiDv1\Events\ConsumerCreated;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use App\UiTiDv1\UiTiDv1Environment;
@@ -152,7 +152,7 @@ final class SyncWidget implements ShouldQueue
         }
 
         $this->projectAanvraagClient->createWidget(
-            new CreateWidgetRequest(
+            new SyncWidgetRequest(
                 $integration->id,
                 $userId,
                 $integration->name,

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\ProjectAanvraag;
 
 use App\Json;
-use App\ProjectAanvraag\Requests\CreateWidgetRequest;
+use App\ProjectAanvraag\Requests\SyncWidgetRequest;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
@@ -24,7 +24,7 @@ final readonly class ProjectAanvraagClient
     /**
      * @throws ClientExceptionInterface|JsonException
      */
-    public function createWidget(CreateWidgetRequest $createWidgetRequest): void
+    public function createWidget(SyncWidgetRequest $createWidgetRequest): void
     {
         $baseUri = ProjectAanvraagUrl::getBaseUri();
         $request = new Request(
