@@ -26,7 +26,7 @@ final readonly class ProjectAanvraagClient
      */
     public function createWidget(CreateWidgetRequest $createWidgetRequest): void
     {
-        $baseUri = ProjectAanvraagUrl::getBaseUrlForIntegrationStatus($createWidgetRequest->status);
+        $baseUri = ProjectAanvraagUrl::getBaseUri();
         $request = new Request(
             'POST',
             $baseUri . '/project/' . $createWidgetRequest->integrationId->toString(),
