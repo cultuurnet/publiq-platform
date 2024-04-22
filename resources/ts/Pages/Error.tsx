@@ -19,11 +19,14 @@ type Props = {
 const Error = ({ statusCode }: Props) => {
   const { t } = useTranslation();
   const translateRoute = useTranslateRoute();
-  // @ts-expect-error
-  const navigateBack = () =>
-    router.activeVisit
-      ? window.history.back()
-      : router.get(translateRoute("/"));
+  const navigateBack = () => {
+    // @ts-expect-error
+    if (router.activeVisit) {
+      window.history.back();
+    } else {
+      router.get(translateRoute("/"));
+    }
+  };
 
   if (statusCode === 404)
     return (
