@@ -81,6 +81,12 @@ export default function Footer() {
           >
             {t("footer.links.cookie.label")}
           </Link>
+          <Link
+            href={t("footer.links.responsible_disclosure_policy.link")}
+            className="hover:underline"
+          >
+            {t("footer.links.responsible_disclosure_policy.label")}
+          </Link>
         </div>
       </div>
       <div className="flex flex-col font-light text-lg">
