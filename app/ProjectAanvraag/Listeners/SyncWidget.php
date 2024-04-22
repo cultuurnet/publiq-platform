@@ -161,19 +161,9 @@ final class SyncWidget implements ShouldQueue
                 $this->groupId,
                 $testKey,
                 $liveKey,
-                $this->integrationStateToWidgetStatus($integration->status)
+                $this->integrationStatusToWidgetStatus($integration->status)
             )
         );
-    }
-
-    private function integrationStateToWidgetStatus(IntegrationStatus $status): string
-    {
-        return match ($status) {
-            IntegrationStatus::Draft, IntegrationStatus::PendingApprovalIntegration => 'application_sent',
-            IntegrationStatus::Active => 'active',
-            IntegrationStatus::Blocked, IntegrationStatus::Deleted => 'blocked',
-            IntegrationStatus::PendingApprovalPayment => 'waiting_for_payment',
-        };
     }
 
     public function failed(IntegrationCreated|ContactCreated|ConsumerCreated|IntegrationActivated|IntegrationBlocked|IntegrationDeleted $event, Throwable $throwable): void
@@ -188,5 +178,15 @@ final class SyncWidget implements ShouldQueue
             "{$entity}_id" => $event->id->toString(),
             'exception' => $throwable,
         ]);
+    }
+
+    private function integrationStatusToWidgetStatus(IntegrationStatus $status): string
+    {
+        return match ($status) {
+            IntegrationStatus::Draft, IntegrationStatus::PendingApprovalIntegration => 'application_sent',
+            IntegrationStatus::Active => 'active',
+            IntegrationStatus::Blocked, IntegrationStatus::Deleted => 'blocked',
+            IntegrationStatus::PendingApprovalPayment => 'waiting_for_payment',
+        };
     }
 }
