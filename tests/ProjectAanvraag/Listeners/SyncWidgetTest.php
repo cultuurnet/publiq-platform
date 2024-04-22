@@ -27,6 +27,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Http\Client\ClientInterface;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use Tests\AssertRequest;
 use Tests\TestCase;
 
@@ -73,7 +74,21 @@ final class SyncWidgetTest extends TestCase
 
     public function test_it_creates_a_widget(): void
     {
+        $integration = $this->givenThereIsAnIntegration();
+
+        $this->givenThereIsAContact($integration->id);
+
+        $this->givenThereAreConsumers($integration->id);
+
+        $this->assertRequest($integration, 'application_sent');
+
+        $this->syncWidget->handleIntegrationCreated(new IntegrationCreated($integration->id));
+    }
+
+    private function givenThereIsAnIntegration(): Integration
+    {
         $integrationId = Uuid::uuid4();
+
         $integration = new Integration(
             $integrationId,
             IntegrationType::Widgets,
@@ -84,6 +99,16 @@ final class SyncWidgetTest extends TestCase
             IntegrationPartnerStatus::THIRD_PARTY,
         );
 
+        $this->integrationRepository->expects($this->once())
+            ->method('getById')
+            ->with($integrationId)
+            ->willReturn($integration);
+
+        return $integration;
+    }
+
+    private function givenThereIsAContact(UuidInterface $integrationId): Contact
+    {
         $contact = new Contact(
             Uuid::uuid4(),
             $integrationId,
@@ -92,45 +117,6 @@ final class SyncWidgetTest extends TestCase
             'John',
             'Doe'
         );
-
-        $testConsumer = new UiTiDv1Consumer(
-            Uuid::uuid4(),
-            $integrationId,
-            'consumer-id-testing',
-            'consumer-key-testing',
-            'consumer-secret-testing',
-            'api-key-testing',
-            UiTiDv1Environment::Testing
-        );
-        $productionConsumer = new UiTiDv1Consumer(
-            Uuid::uuid4(),
-            $integrationId,
-            'consumer-id-production',
-            'consumer-key-production',
-            'consumer-secret-production',
-            'api-key-production',
-            UiTiDv1Environment::Production
-        );
-
-        $expectedRequest = new Request(
-            'POST',
-            ProjectAanvraagUrl::getBaseUri() . '/projects',
-            [],
-            Json::encode([
-                'userId' => 'google-oauth2|102486314601596809843',
-                'name' => $integration->name,
-                'summary' => $integration->description,
-                'groupId' => 123,
-                'testApiKeySapi3' => 'api-key-testing',
-                'liveApiKeySapi3' => 'api-key-production',
-                'state' => 'application_sent',
-            ])
-        );
-
-        $this->integrationRepository->expects($this->once())
-            ->method('getById')
-            ->with($integrationId)
-            ->willReturn($integration);
 
         $this->contactRepository->expects($this->once())
             ->method('getByIntegrationId')
@@ -142,15 +128,56 @@ final class SyncWidgetTest extends TestCase
             ->with($contact->email)
             ->willReturn('google-oauth2|102486314601596809843');
 
+        return $contact;
+    }
+
+    private function givenThereAreConsumers(UuidInterface $integrationId): void
+    {
+        $testConsumer = new UiTiDv1Consumer(
+            Uuid::uuid4(),
+            $integrationId,
+            'consumer-id-testing',
+            'consumer-key-testing',
+            'consumer-secret-testing',
+            'api-key-testing',
+            UiTiDv1Environment::Testing
+        );
+
+        $productionConsumer = new UiTiDv1Consumer(
+            Uuid::uuid4(),
+            $integrationId,
+            'consumer-id-production',
+            'consumer-key-production',
+            'consumer-secret-production',
+            'api-key-production',
+            UiTiDv1Environment::Production
+        );
+
         $this->uiTiDv1ConsumerRepository->expects($this->once())
             ->method('getByIntegrationId')
             ->with($integrationId)
             ->willReturn([$testConsumer, $productionConsumer]);
+    }
+
+    private function assertRequest(Integration $integration, string $state): void
+    {
+        $expectedRequest = new Request(
+            'POST',
+            ProjectAanvraagUrl::getBaseUri() . '/projects',
+            [],
+            Json::encode([
+                'userId' => 'google-oauth2|102486314601596809843',
+                'name' => $integration->name,
+                'summary' => $integration->description,
+                'groupId' => 123,
+                'testApiKeySapi3' => 'api-key-testing',
+                'liveApiKeySapi3' => 'api-key-production',
+                'state' => $state,
+            ])
+        );
 
         $this->client->expects($this->once())
             ->method('sendRequest')
             ->with(self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedRequest, $actualRequest)));
-
-        $this->syncWidget->handleIntegrationCreated(new IntegrationCreated($integrationId));
     }
 }
