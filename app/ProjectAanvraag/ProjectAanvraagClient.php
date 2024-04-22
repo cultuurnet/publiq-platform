@@ -29,7 +29,7 @@ final readonly class ProjectAanvraagClient
         $baseUri = ProjectAanvraagUrl::getBaseUri();
         $request = new Request(
             'POST',
-            $baseUri . '/project/' . $createWidgetRequest->integrationId->toString(),
+            $baseUri . 'project/' . $createWidgetRequest->integrationId->toString(),
             [],
             Json::encode([
                 'userId' => $createWidgetRequest->userId,
