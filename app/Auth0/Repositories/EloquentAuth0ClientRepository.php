@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Auth0\Repositories;
 
 use App\Auth0\Auth0Client;
+use App\Auth0\Auth0Tenant;
 use App\Auth0\Models\Auth0ClientModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -76,5 +77,27 @@ final class EloquentAuth0ClientRepository implements Auth0ClientRepository
             ->get()
             ->map(static fn (Auth0ClientModel $model) => $model->toDomain())
             ->toArray();
+    }
+
+    public function getMissingTenantsByIntegrationId(UuidInterface $integrationId): array
+    {
+        $auth0Clients = $this->getByIntegrationId($integrationId);
+
+        if (count($auth0Clients) === count(Auth0Tenant::cases())) {
+            return [];
+        }
+
+        $existingTenants = array_map(
+            static fn (Auth0Client $auth0Client) => $auth0Client->tenant,
+            $auth0Clients
+        );
+
+        $missingTenants = array_udiff(
+            Auth0Tenant::cases(),
+            $existingTenants,
+            fn (Auth0Tenant $t1, Auth0Tenant $t2) => strcmp($t1->value, $t2->value)
+        );
+
+        return array_values($missingTenants);
     }
 }

@@ -12,8 +12,10 @@ use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Nova\Actions\ActivateIntegration;
 use App\Nova\Actions\ApproveIntegration;
+use App\Nova\Actions\Auth0\CreateMissingAuth0Clients;
 use App\Nova\Actions\BlockIntegration;
 use App\Nova\Actions\OpenWidgetManager;
+use App\Nova\Actions\UiTiDv1\CreateMissingUiTiDv1Consumers;
 use App\Nova\Resource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -191,6 +193,24 @@ final class Integration extends Resource
                 ->cancelButtonText('Cancel')
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeBlocked())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeBlocked()),
+
+            (new CreateMissingAuth0Clients())
+                ->withName('Create missing Auth0 Clients')
+                ->exceptOnIndex()
+                ->confirmText('Are you sure you want to create missing Auth0 clients for this integration?')
+                ->confirmButtonText('Create')
+                ->cancelButtonText('Cancel')
+                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->hasMissingAuth0Clients())
+                ->canRun(fn (Request $request, IntegrationModel $model) => $model->hasMissingAuth0Clients()),
+
+            (new CreateMissingUiTiDv1Consumers())
+                ->withName('Create missing UiTiD v1 Consumers')
+                ->exceptOnIndex()
+                ->confirmText('Are you sure you want to create missing UiTiD v1 consumers for this integration?')
+                ->confirmButtonText('Create')
+                ->cancelButtonText('Cancel')
+                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->hasMissingUiTiDv1Consumers())
+                ->canRun(fn (Request $request, IntegrationModel $model) => $model->hasMissingUiTiDv1Consumers()),
         ];
     }
 }

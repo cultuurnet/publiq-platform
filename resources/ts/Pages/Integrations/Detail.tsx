@@ -29,6 +29,7 @@ type Props = {
   email: string;
   subscriptions: Subscription[];
   oldCredentialsExpirationDate: string;
+  errors: Record<string, string | undefined>;
 };
 
 const Detail = ({
@@ -36,10 +37,12 @@ const Detail = ({
   email,
   subscriptions,
   oldCredentialsExpirationDate,
+  errors,
 }: Props) => {
   const { t } = useTranslation();
-
   const isMobile = useIsMobile();
+
+  const duplicateContactErrorMessage = errors["duplicate_contact"];
 
   const pricingPlans = useGetPricingPlans(integration.type, subscriptions);
 
@@ -166,7 +169,11 @@ const Detail = ({
                   type="contacts"
                   label={t("details.contact_info.title")}
                 >
-                  <ContactInfo {...integration} isMobile={isMobile} />
+                  <ContactInfo
+                    {...integration}
+                    isMobile={isMobile}
+                    duplicateContactErrorMessage={duplicateContactErrorMessage}
+                  />
                 </Tabs.Item>
                 <Tabs.Item
                   type="billing"
