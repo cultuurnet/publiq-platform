@@ -49,6 +49,14 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         return $integrationModel->toDomain();
     }
 
+    public function getByIdWithTrashed(UuidInterface $id): Integration
+    {
+        /** @var IntegrationModel $integrationModel */
+        $integrationModel = IntegrationModel::withTrashed()->findOrFail($id->toString());
+
+        return $integrationModel->toDomain();
+    }
+
     public function deleteById(UuidInterface $id): ?bool
     {
         /** @var IntegrationModel $integrationModel */

@@ -177,6 +177,45 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         $this->assertEquals($integration, $integrationFromRepository);
     }
 
+    public function test_it_can_get_a_deleted_integration_by_id(): void
+    {
+        $integration = new Integration(
+            Uuid::uuid4(),
+            IntegrationType::SearchApi,
+            'Test Integration',
+            'Test Integration description',
+            Uuid::uuid4(),
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
+        );
+
+        IntegrationModel::query()->insert([
+            'id' => $integration->id->toString(),
+            'type' => $integration->type,
+            'name' => $integration->name,
+            'description' => $integration->description,
+            'subscription_id' => $integration->subscriptionId,
+            'status' => $integration->status,
+            'partner_status' => IntegrationPartnerStatus::THIRD_PARTY,
+        ]);
+
+        $this->integrationRepository->deleteById($integration->id);
+
+        $deletedIntegration = new Integration(
+            $integration->id,
+            $integration->type,
+            $integration->name,
+            $integration->description,
+            $integration->subscriptionId,
+            IntegrationStatus::Deleted,
+            $integration->partnerStatus
+        );
+
+        $integrationFromRepository = $this->integrationRepository->getByIdWithTrashed($integration->id);
+
+        $this->assertEquals($deletedIntegration, $integrationFromRepository);
+    }
+
     public function test_it_can_get_integrations_by_contact_email(): void
     {
         $searchIntegrationId = Uuid::uuid4();
