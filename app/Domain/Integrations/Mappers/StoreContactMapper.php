@@ -14,7 +14,6 @@ final class StoreContactMapper
 {
     public static function map(StoreContactRequest $request, UuidInterface $integrationId): Contact
     {
-
         return new Contact(
             Uuid::uuid4(),
             $integrationId,
@@ -23,6 +22,5 @@ final class StoreContactMapper
             $request->input('firstName'),
             $request->input('lastName'),
         );
-
     }
 }
