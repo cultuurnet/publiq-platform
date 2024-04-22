@@ -201,6 +201,10 @@ final class EloquentIntegrationRepositoryTest extends TestCase
 
         $this->integrationRepository->deleteById($integration->id);
 
+        $this->expectException(ModelNotFoundException::class);
+
+        $this->integrationRepository->getById($integration->id);
+
         $deletedIntegration = new Integration(
             $integration->id,
             $integration->type,
