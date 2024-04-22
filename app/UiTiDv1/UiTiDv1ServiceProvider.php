@@ -11,6 +11,8 @@ use App\UiTiDv1\Jobs\ActivateConsumer;
 use App\UiTiDv1\Jobs\ActivateConsumerHandler;
 use App\UiTiDv1\Jobs\BlockConsumer;
 use App\UiTiDv1\Jobs\BlockConsumerHandler;
+use App\UiTiDv1\Jobs\CreateMissingConsumers;
+use App\UiTiDv1\Jobs\CreateMissingConsumersHandler;
 use App\UiTiDv1\Listeners\BlockConsumers;
 use App\UiTiDv1\Listeners\CreateConsumers;
 use App\UiTiDv1\Listeners\UpdateConsumers;
@@ -71,6 +73,7 @@ final class UiTiDv1ServiceProvider extends ServiceProvider
             // May always be registered even if there are no configured environments, because in that case the cluster SDK
             // will just not have any environment SDKs to loop over and so it simply won't do anything. But it won't crash either.
             Event::listen(IntegrationCreated::class, [CreateConsumers::class, 'handle']);
+            Event::listen(CreateMissingConsumers::class, [CreateMissingConsumersHandler::class, 'handle']);
             Event::listen(IntegrationUpdated::class, [UpdateConsumers::class, 'handle']);
             Event::listen(IntegrationBlocked::class, [BlockConsumers::class, 'handle']);
 
