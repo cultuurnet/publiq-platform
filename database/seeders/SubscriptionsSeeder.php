@@ -89,7 +89,7 @@ final class SubscriptionsSeeder extends Seeder
         foreach (SubscriptionPlan::cases() as $subscriptionPlan) {
             $subscription = $this->getSubscription($subscriptionPlan);
             try {
-                $subscriptionRepository->getByIntegrationTypeAndCategory($subscription->integrationType, $subscription->category);
+                $subscriptionRepository->getById($subscription->id);
             } catch (ModelNotFoundException) {
                 $subscriptionRepository->save($subscription);
             }
