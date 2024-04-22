@@ -9,19 +9,19 @@ use App\Domain\Subscriptions\Currency;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Domain\Subscriptions\Subscription;
 use App\Domain\Subscriptions\SubscriptionCategory;
-use App\Domain\Subscriptions\SubscriptionPlan;
+use App\Domain\Subscriptions\SubscriptionUuid;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Seeder;
 use Ramsey\Uuid\Uuid;
 
 final class SubscriptionsSeeder extends Seeder
 {
-    private function getSubscription(SubscriptionPlan $subscriptionPlan): Subscription
+    private function getSubscription(SubscriptionUuid $subscriptionUuid): Subscription
     {
-        $subscriptionId = Uuid::fromString($subscriptionPlan->value);
+        $subscriptionId = Uuid::fromString($subscriptionUuid->value);
 
-        return match ($subscriptionPlan) {
-            SubscriptionPlan::FREE_ENTRY_API_PLAN => new Subscription(
+        return match ($subscriptionUuid) {
+            SubscriptionUuid::FREE_ENTRY_API_PLAN => new Subscription(
                 $subscriptionId,
                 'Free Plan - Entry API',
                 'Free Plan for integrating with Entry API',
@@ -31,7 +31,7 @@ final class SubscriptionsSeeder extends Seeder
                 0,
                 0
             ),
-            SubscriptionPlan::BASIC_SEARCH_API_PLAN => new Subscription(
+            SubscriptionUuid::BASIC_SEARCH_API_PLAN => new Subscription(
                 $subscriptionId,
                 'Basic Plan - Search API - Monthly',
                 'Basic Plan for integrating with Search API, billed monthly',
@@ -41,7 +41,7 @@ final class SubscriptionsSeeder extends Seeder
                 125,
                 0
             ),
-            SubscriptionPlan::CUSTOM_SEARCH_API_PLAN => new Subscription(
+            SubscriptionUuid::CUSTOM_SEARCH_API_PLAN => new Subscription(
                 $subscriptionId,
                 'Custom Plan - Search API - Monthly',
                 'Custom Plan for integrating with Search API, billed monthly and with a onetime fee.',
@@ -51,7 +51,7 @@ final class SubscriptionsSeeder extends Seeder
                 0,
                 0
             ),
-            SubscriptionPlan::BASIC_WIDGETS_PLAN => new Subscription(
+            SubscriptionUuid::BASIC_WIDGETS_PLAN => new Subscription(
                 $subscriptionId,
                 'Basic Plan - Widgets - Monthly',
                 'Basic Plan for integrating Widgets, billed monthly.',
@@ -61,7 +61,7 @@ final class SubscriptionsSeeder extends Seeder
                 125,
                 0
             ),
-            SubscriptionPlan::PLUS_WIDGETS_PLAN => new Subscription(
+            SubscriptionUuid::PLUS_WIDGETS_PLAN => new Subscription(
                 $subscriptionId,
                 'Plus Plan - Widgets - Monthly',
                 'Plus Plan for integrating with Widgets, billed monthly and with a onetime fee.',
@@ -71,7 +71,7 @@ final class SubscriptionsSeeder extends Seeder
                 280,
                 600
             ),
-            SubscriptionPlan::CUSTOM_WIDGETS_PLAN => new Subscription(
+            SubscriptionUuid::CUSTOM_WIDGETS_PLAN => new Subscription(
                 $subscriptionId,
                 'Custom Plan - Widgets - Monthly',
                 'Custom Plan for integrating with Widgets, billed monthly and with a onetime fee.',
@@ -86,8 +86,8 @@ final class SubscriptionsSeeder extends Seeder
 
     public function run(SubscriptionRepository $subscriptionRepository): void
     {
-        foreach (SubscriptionPlan::cases() as $subscriptionPlan) {
-            $subscription = $this->getSubscription($subscriptionPlan);
+        foreach (SubscriptionUuid::cases() as $subscriptionUuid) {
+            $subscription = $this->getSubscription($subscriptionUuid);
             try {
                 $subscriptionRepository->getById($subscription->id);
             } catch (ModelNotFoundException) {
