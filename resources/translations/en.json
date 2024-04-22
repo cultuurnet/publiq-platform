@@ -338,7 +338,7 @@
       },
       "terms_of_use": {
         "label": "Terms of Use",
-        "link": "https://www.publiq.be/nl/gebruikersvoorwaarden-publiq-platform"
+        "link": "https://www.publiq.be/projecten/publiq-platform/gebruiksvoorwaarden"
       },
       "privacy": {
         "label": "Privacy Policy",
@@ -347,6 +347,10 @@
       "cookie": {
         "label": "Cookie Policy",
         "link": "https://www.publiq.be/nl/cookies"
+      },
+      "responsible_disclosure_policy": {
+        "label": "Responsible Disclosure Policy",
+        "link": "https://www.publiq.be/projecten/publiq-platform/responsible-disclosure-policy"
       },
       "documentation": {
         "label": "Documentation",
