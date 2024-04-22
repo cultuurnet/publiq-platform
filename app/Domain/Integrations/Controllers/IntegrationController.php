@@ -224,6 +224,12 @@ final class IntegrationController extends Controller
             return Redirect::back()->withErrors(['duplicate_contact' => __('errors.contact.duplicate')]);
         }
 
+        $redirect = $this->guardUserIsContact($request, $id);
+
+        if ($redirect !== null) {
+            return $redirect;
+        }
+
         return Redirect::back();
     }
 
@@ -233,6 +239,12 @@ final class IntegrationController extends Controller
             $this->contactRepository->delete(Uuid::fromString($contactId));
         } catch (ModelNotFoundException) {
             // We can redirect back to integrations, even if not successful
+        }
+
+        $redirect = $this->guardUserIsContact($request, $id);
+
+        if ($redirect !== null) {
+            return $redirect;
         }
 
         return Redirect::back();
@@ -313,6 +325,19 @@ final class IntegrationController extends Controller
 
         if ($coupon->isDistributed) {
             return Redirect::back()->withErrors(['coupon' => __('errors.coupon.already_used')]);
+        }
+
+        return null;
+    }
+
+    private function guardUserIsContact(Request $request, string $integrationId): ?RedirectResponse
+    {
+        $contacts = $this->contactRepository->getByIntegrationIdAndEmail(Uuid::fromString($integrationId), $this->currentUser->email());
+
+        if ($contacts->count() === 0) {
+            return Redirect::route(
+                TranslatedRoute::getTranslatedRouteName($request, 'integrations.index')
+            );
         }
 
         return null;

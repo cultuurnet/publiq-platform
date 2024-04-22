@@ -169,7 +169,9 @@ export const ContactInfo = ({
         <Heading level={4} className="font-semibold col-span-1">
           {t("details.contact_info.title")}
         </Heading>
-        <p>{t("integration_form.contact.description")}</p>
+        <Alert variant="error" title={t("details.contact_info.alert.title")}>
+          {t("details.contact_info.alert.description")}
+        </Alert>
         <ContactsTable
           data={data}
           onEdit={(id) => setToBeEditedId(id)}
