@@ -206,4 +206,35 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
 
         $this->assertEquals($expected, $actual);
     }
+
+    public function test_it_can_get_missing_environments(): void
+    {
+        $integrationId = Uuid::uuid4();
+
+        $consumer1 = new UiTiDv1Consumer(
+            Uuid::uuid4(),
+            $integrationId,
+            '1',
+            'consumer-key-1',
+            'consumer-secret-1',
+            'api-key-1',
+            UiTiDv1Environment::Acceptance
+        );
+        $consumer2 = new UiTiDv1Consumer(
+            Uuid::uuid4(),
+            $integrationId,
+            '2',
+            'consumer-key-2',
+            'consumer-secret-2',
+            'api-key-2',
+            UiTiDv1Environment::Testing
+        );
+
+        $this->repository->save($consumer1, $consumer2);
+
+        $this->assertEquals(
+            [UiTiDv1Environment::Production],
+            $this->repository->getMissingEnvironmentsByIntegrationId($integrationId)
+        );
+    }
 }

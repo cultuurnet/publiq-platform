@@ -8,6 +8,8 @@ use App\Auth0\Jobs\ActivateClient;
 use App\Auth0\Jobs\ActivateClientHandler;
 use App\Auth0\Jobs\BlockClient;
 use App\Auth0\Jobs\BlockClientHandler;
+use App\Auth0\Jobs\CreateMissingClients;
+use App\Auth0\Jobs\CreateMissingClientsHandler;
 use App\Auth0\Listeners\BlockClients;
 use App\Auth0\Listeners\CreateClients;
 use App\Auth0\Listeners\UpdateClients;
@@ -93,6 +95,7 @@ final class Auth0ServiceProvider extends ServiceProvider
             // May always be registered even if there are no configured tenants, because in that case the cluster SDK will
             // just not have any tenant SDKs to loop over and so it simply won't do anything. But it won't crash either.
             Event::listen(IntegrationCreated::class, [CreateClients::class, 'handle']);
+            Event::listen(CreateMissingClients::class, [CreateMissingClientsHandler::class, 'handle']);
             Event::listen(IntegrationUpdated::class, [UpdateClients::class, 'handle']);
             Event::listen(IntegrationBlocked::class, [BlockClients::class, 'handle']);
 
