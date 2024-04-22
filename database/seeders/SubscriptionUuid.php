@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Subscriptions;
+namespace Database\Seeders;
 
-enum SubscriptionPlan: string
+enum SubscriptionUuid: string
 {
     case BASIC_SEARCH_API_PLAN = 'b46745a1-feb5-45fd-8fa9-8e3ef25aac26';
     case BASIC_WIDGETS_PLAN = 'c470ccbf-074c-4bf1-b526-47c94c5e9296';

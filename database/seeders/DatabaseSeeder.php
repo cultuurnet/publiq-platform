@@ -16,7 +16,6 @@ final class DatabaseSeeder extends Seeder
 
         $this->call([
             SubscriptionsSeeder::class,
-            CouponsSeeder::class,
         ]);
     }
 }
