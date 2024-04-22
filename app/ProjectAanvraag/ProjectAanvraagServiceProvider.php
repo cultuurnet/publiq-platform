@@ -62,8 +62,6 @@ final class ProjectAanvraagServiceProvider extends ServiceProvider
             Event::listen(IntegrationActivated::class, [CreateWidget::class, 'handleActivation']);
             Event::listen(IntegrationBlocked::class, [CreateWidget::class, 'handleBlock']);
             Event::listen(IntegrationDeleted::class, [CreateWidget::class, 'handleDelete']);
-
-            //Event::listen(IntegrationUpdated::class);
         }
     }
 }
