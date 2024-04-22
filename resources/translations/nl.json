@@ -349,6 +349,10 @@
         "label": "Cookieverklaring",
         "link": "https://www.publiq.be/nl/cookies"
       },
+      "responsible_disclosure_policy": {
+        "label":"Responsible Disclosure Policy",
+        "link": "https://www.publiq.be/projecten/publiq-platform/responsible-disclosure-policy"
+      },
       "documentation": {
         "label": "Documentatie",
         "link": "https://docs.publiq.be"
