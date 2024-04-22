@@ -21,6 +21,44 @@ export type ContactFormData = {
   contributors: Contact[];
 };
 
+const useUpdateContactForm = ({
+  functional,
+  technical,
+  contributors,
+}: ContactFormData) => {
+  const initialFormData = useMemo(() => {
+    return {
+      functional: { ...functional, changed: false },
+      technical: { ...technical, changed: false },
+      contributors: contributors.map((c) => ({
+        ...c,
+        changed: false,
+      })),
+    };
+  }, [contributors, functional, technical]);
+
+  const updateContactForm = useForm(initialFormData);
+
+  useEffect(() => {
+    updateContactForm.setData(initialFormData);
+
+    // form is not a stable reference and triggers whenever a field value changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialFormData]);
+
+  updateContactForm.transform(
+    (data) =>
+      ({
+        ...data,
+        functional: data.functional.changed ? data.functional : undefined,
+        technical: data.technical.changed ? data.technical : undefined,
+        contributors: data.contributors.filter((c) => c.changed),
+      }) as typeof data
+  );
+
+  return updateContactForm;
+};
+
 type Props = {
   isMobile: boolean;
   duplicateContactErrorMessage?: string;
@@ -58,37 +96,15 @@ export const ContactInfo = ({
     [contacts]
   );
 
-  const storeContactForm = useForm({ email: "", firstName: "", lastName: "" });
-
-  const createInitialFormData = () => {
-    return {
-      functional: { ...functionalContact, changed: false },
-      technical: { ...technicalContact, changed: false },
-      contributors: contributorContacts.map((contributor) => ({
-        ...contributor,
-        changed: false,
-      })),
-    };
+  const initialContacts = {
+    functional: functionalContact,
+    technical: technicalContact,
+    contributors: contributorContacts,
   };
 
-  const updateContactForm = useForm(createInitialFormData());
+  const storeContactForm = useForm({ email: "", firstName: "", lastName: "" });
 
-  useEffect(() => {
-    updateContactForm.setData(createInitialFormData());
-
-    // form is not a stable reference and triggers whenever a field value changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contributorContacts, toBeEditedId]);
-
-  updateContactForm.transform(
-    (data) =>
-      ({
-        ...data,
-        functional: data.functional.changed ? data.functional : undefined,
-        technical: data.technical.changed ? data.technical : undefined,
-        contributors: data.contributors.filter((c) => c.changed),
-      }) as typeof data
-  );
+  const updateContactForm = useUpdateContactForm(initialContacts);
 
   const errors = updateContactForm.errors as Record<string, string | undefined>;
 
@@ -141,11 +157,11 @@ export const ContactInfo = ({
   const [formContactType, setFormContactType] = useState("" as ContactType);
 
   const toBeEditedContact = useMemo(() => {
-    if (functionalContact.id === toBeEditedId) {
+    if (updateContactForm.data.functional.id === toBeEditedId) {
       setFormContactType(ContactType.Functional);
       return updateContactForm.data.functional;
     }
-    if (technicalContact.id === toBeEditedId) {
+    if (updateContactForm.data.technical.id === toBeEditedId) {
       setFormContactType(ContactType.Technical);
       return updateContactForm.data.technical;
     }
@@ -154,12 +170,10 @@ export const ContactInfo = ({
       return foundContributor;
     }
   }, [
-    functionalContact,
-    technicalContact,
     foundContributor,
+    toBeEditedId,
     updateContactForm.data.functional,
     updateContactForm.data.technical,
-    toBeEditedId,
   ]);
 
   return (
@@ -175,19 +189,13 @@ export const ContactInfo = ({
           {t("details.contact_info.alert.description")}
         </Alert>
         <ContactsTable
-          data={{
-            functional: functionalContact,
-            technical: technicalContact,
-            contributors: contributorContacts,
-          }}
+          data={initialContacts}
           onEdit={(id) => setToBeEditedId(id)}
           onDelete={(id, email) => {
             setToBeDeletedId(id);
             setToBeDeletedEmail(email);
           }}
           onPreview={(bool) => setIsMobileContactVisible(bool)}
-          functionalId={functionalContact.id}
-          technicalId={technicalContact.id}
           className="col-span-2"
         />
       </div>
