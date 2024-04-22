@@ -8,7 +8,10 @@ use App\Auth0\Repositories\Auth0UserRepository;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\ContactRepository;
+use App\Domain\Integrations\Events\IntegrationActivated;
+use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
+use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
@@ -72,9 +75,9 @@ final class SyncWidgetTest extends TestCase
         );
     }
 
-    public function test_it_creates_a_widget(): void
+    public function test_it_handles_integration_created(): void
     {
-        $integration = $this->givenThereIsAnIntegration();
+        $integration = $this->givenThereIsAnIntegration(IntegrationStatus::PendingApprovalIntegration);
 
         $this->givenThereIsAContact($integration->id);
 
@@ -85,7 +88,46 @@ final class SyncWidgetTest extends TestCase
         $this->syncWidget->handleIntegrationCreated(new IntegrationCreated($integration->id));
     }
 
-    private function givenThereIsAnIntegration(): Integration
+    public function test_it_handles_integration_activated(): void
+    {
+        $integration = $this->givenThereIsAnIntegration(IntegrationStatus::Active);
+
+        $this->givenThereIsAContact($integration->id);
+
+        $this->givenThereAreConsumers($integration->id);
+
+        $this->assertRequest($integration, 'active');
+
+        $this->syncWidget->handleIntegrationActivated(new IntegrationActivated($integration->id));
+    }
+
+    public function test_it_handles_integration_blocked(): void
+    {
+        $integration = $this->givenThereIsAnIntegration(IntegrationStatus::Blocked);
+
+        $this->givenThereIsAContact($integration->id);
+
+        $this->givenThereAreConsumers($integration->id);
+
+        $this->assertRequest($integration, 'blocked');
+
+        $this->syncWidget->handleIntegrationBlocked(new IntegrationBlocked($integration->id));
+    }
+
+    public function test_it_handles_integration_deleted(): void
+    {
+        $integration = $this->givenThereIsAnIntegration(IntegrationStatus::Deleted);
+
+        $this->givenThereIsAContact($integration->id);
+
+        $this->givenThereAreConsumers($integration->id);
+
+        $this->assertRequest($integration, 'blocked');
+
+        $this->syncWidget->handleIntegrationDeleted(new IntegrationDeleted($integration->id));
+    }
+
+    private function givenThereIsAnIntegration(IntegrationStatus $integrationStatus): Integration
     {
         $integrationId = Uuid::uuid4();
 
@@ -95,7 +137,7 @@ final class SyncWidgetTest extends TestCase
             'My widgets project',
             'This is my widgets project',
             Uuid::uuid4(),
-            IntegrationStatus::Draft,
+            $integrationStatus,
             IntegrationPartnerStatus::THIRD_PARTY,
         );
 
