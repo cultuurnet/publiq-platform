@@ -27,7 +27,7 @@ use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\UuidInterface;
 use Throwable;
 
-final class CreateWidget implements ShouldQueue
+final class SyncWidget implements ShouldQueue
 {
     use Queueable;
 

@@ -15,7 +15,7 @@ use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Json;
-use App\ProjectAanvraag\Listeners\CreateWidget;
+use App\ProjectAanvraag\Listeners\SyncWidget;
 use App\ProjectAanvraag\ProjectAanvraagClient;
 use App\ProjectAanvraag\ProjectAanvraagUrl;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
@@ -30,7 +30,7 @@ use Ramsey\Uuid\Uuid;
 use Tests\AssertRequest;
 use Tests\TestCase;
 
-final class CreateWidgetTest extends TestCase
+final class SyncWidgetTest extends TestCase
 {
     use AssertRequest;
 
@@ -44,7 +44,7 @@ final class CreateWidgetTest extends TestCase
 
     private Auth0UserRepository&MockObject $auth0UserRepository;
 
-    private CreateWidget $createWidget;
+    private SyncWidget $syncWidget;
 
     protected function setUp(): void
     {
@@ -57,7 +57,7 @@ final class CreateWidgetTest extends TestCase
         $this->auth0UserRepository = $this->createMock(Auth0UserRepository::class);
         $logger = $this->createMock(LoggerInterface::class);
 
-        $this->createWidget = new CreateWidget(
+        $this->syncWidget = new SyncWidget(
             new ProjectAanvraagClient(
                 $logger,
                 $this->client
@@ -151,6 +151,6 @@ final class CreateWidgetTest extends TestCase
             ->method('sendRequest')
             ->with(self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedRequest, $actualRequest)));
 
-        $this->createWidget->handleIntegrationCreated(new IntegrationCreated($integrationId));
+        $this->syncWidget->handleIntegrationCreated(new IntegrationCreated($integrationId));
     }
 }

@@ -12,7 +12,7 @@ use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\ProjectAanvraag\Listeners\CreateWidget;
+use App\ProjectAanvraag\Listeners\SyncWidget;
 use App\UiTiDv1\Events\ConsumerCreated;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use GuzzleHttp\RequestOptions;
@@ -39,11 +39,11 @@ final class ProjectAanvraagServiceProvider extends ServiceProvider
             );
         });
 
-        $this->app->singleton(CreateWidget::class, function () {
+        $this->app->singleton(SyncWidget::class, function () {
             $groups = config('uitidv1.environments.prod.groups.widgets');
             $groups = explode(',', str_replace(' ', '', $groups));
 
-            return new CreateWidget(
+            return new SyncWidget(
                 $this->app->get(ProjectAanvraagClient::class),
                 $this->app->get(IntegrationRepository::class),
                 $this->app->get(ContactRepository::class),
@@ -55,13 +55,13 @@ final class ProjectAanvraagServiceProvider extends ServiceProvider
         });
 
         if (config('project_aanvraag.create_widget', false)) {
-            Event::listen(IntegrationCreated::class, [CreateWidget::class, 'handleIntegrationCreated']);
-            Event::listen(ContactCreated::class, [CreateWidget::class, 'handleContactCreated']);
-            Event::listen(ConsumerCreated::class, [CreateWidget::class, 'handleConsumerCreated']);
+            Event::listen(IntegrationCreated::class, [SyncWidget::class, 'handleIntegrationCreated']);
+            Event::listen(ContactCreated::class, [SyncWidget::class, 'handleContactCreated']);
+            Event::listen(ConsumerCreated::class, [SyncWidget::class, 'handleConsumerCreated']);
 
-            Event::listen(IntegrationActivated::class, [CreateWidget::class, 'handleActivation']);
-            Event::listen(IntegrationBlocked::class, [CreateWidget::class, 'handleBlock']);
-            Event::listen(IntegrationDeleted::class, [CreateWidget::class, 'handleDelete']);
+            Event::listen(IntegrationActivated::class, [SyncWidget::class, 'handleActivation']);
+            Event::listen(IntegrationBlocked::class, [SyncWidget::class, 'handleBlock']);
+            Event::listen(IntegrationDeleted::class, [SyncWidget::class, 'handleDelete']);
         }
     }
 }
