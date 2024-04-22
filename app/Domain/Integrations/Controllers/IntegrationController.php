@@ -41,6 +41,7 @@ use App\Router\TranslatedRoute;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -213,12 +214,15 @@ final class IntegrationController extends Controller
     public function updateContacts(string $id, UpdateContactInfoRequest $request): RedirectResponse
     {
         $contacts = UpdateContactInfoMapper::map($request, $id);
-
-        DB::transaction(function () use ($contacts) {
-            foreach ($contacts as $contact) {
-                $this->contactRepository->save($contact);
-            }
-        });
+        try {
+            DB::transaction(function () use ($contacts) {
+                foreach ($contacts as $contact) {
+                    $this->contactRepository->save($contact);
+                }
+            });
+        } catch (UniqueConstraintViolationException $exception) {
+            return Redirect::back()->withErrors(['duplicate_contact' => __('errors.contact.duplicate')]);
+        }
 
         $redirect = $this->guardUserIsContact($request, $id);
 

@@ -25,7 +25,7 @@ export const Link = ({
     <>
       {isExternal ? (
         <a
-          className={classNames("inline-flex gap-2 items-center", className)}
+          className={className}
           href={href}
           target="_blank"
           rel="noreferrer"
@@ -33,7 +33,7 @@ export const Link = ({
         >
           <span className="hover:underline">{children}</span>
           {hasExternalIcon && (
-            <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+            <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="mx-1" />
           )}
         </a>
       ) : (
