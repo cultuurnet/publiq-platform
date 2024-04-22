@@ -123,6 +123,7 @@ final class CreateWidgetTest extends TestCase
                 'groupId' => 123,
                 'testApiKeySapi3' => 'api-key-testing',
                 'liveApiKeySapi3' => 'api-key-production',
+                'state' => 'application_sent',
             ])
         );
 
