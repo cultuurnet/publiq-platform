@@ -37,7 +37,6 @@ final class ProjectAanvraagServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(CreateWidget::class, function () {
-            // TODO: Use correct environment
             $groups = config('uitidv1.environments.prod.groups.widgets');
             $groups = explode(',', str_replace(' ', '', $groups));
 
