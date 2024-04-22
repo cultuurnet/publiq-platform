@@ -9,6 +9,7 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Integrations\Events\IntegrationCreated;
+use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\ProjectAanvraag\ProjectAanvraagClient;
@@ -136,9 +137,20 @@ final class CreateWidget implements ShouldQueue
                 $integration->status,
                 $this->groupId,
                 $testKey,
-                $liveKey
+                $liveKey,
+                $this->integrationStateToWidgetStatus($integration->status)
             )
         );
+    }
+
+    private function integrationStateToWidgetStatus(IntegrationStatus $status): string
+    {
+        return match ($status) {
+            IntegrationStatus::Draft, IntegrationStatus::PendingApprovalIntegration => 'application_sent',
+            IntegrationStatus::Active => 'active',
+            IntegrationStatus::Blocked, IntegrationStatus::Deleted => 'blocked',
+            IntegrationStatus::PendingApprovalPayment => 'waiting_for_payment',
+        };
     }
 
     public function failed(IntegrationCreated|ContactCreated|ConsumerCreated $event, Throwable $throwable): void

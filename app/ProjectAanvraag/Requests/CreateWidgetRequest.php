@@ -17,7 +17,8 @@ final readonly class CreateWidgetRequest
         public IntegrationStatus $status,
         public int $groupId,
         public string $testApiKeySapi3,
-        public string $liveApiKeySapi3
+        public string $liveApiKeySapi3,
+        public string $state
     ) {
     }
 }
