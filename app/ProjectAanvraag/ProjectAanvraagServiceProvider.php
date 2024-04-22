@@ -7,7 +7,10 @@ namespace App\ProjectAanvraag;
 use App\Auth0\Repositories\Auth0UserRepository;
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Contacts\Repositories\ContactRepository;
+use App\Domain\Integrations\Events\IntegrationActivated;
+use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
+use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\ProjectAanvraag\Listeners\CreateWidget;
 use App\UiTiDv1\Events\ConsumerCreated;
@@ -55,6 +58,12 @@ final class ProjectAanvraagServiceProvider extends ServiceProvider
             Event::listen(IntegrationCreated::class, [CreateWidget::class, 'handleIntegrationCreated']);
             Event::listen(ContactCreated::class, [CreateWidget::class, 'handleContactCreated']);
             Event::listen(ConsumerCreated::class, [CreateWidget::class, 'handleConsumerCreated']);
+
+            Event::listen(IntegrationActivated::class, [CreateWidget::class, 'handleActivation']);
+            Event::listen(IntegrationBlocked::class, [CreateWidget::class, 'handleBlock']);
+            Event::listen(IntegrationDeleted::class, [CreateWidget::class, 'handleDelete']);
+
+            //Event::listen(IntegrationUpdated::class);
         }
     }
 }
