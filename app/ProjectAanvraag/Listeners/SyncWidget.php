@@ -12,6 +12,7 @@ use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationDeleted;
+use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
@@ -72,6 +73,11 @@ final class SyncWidget implements ShouldQueue
     public function handleIntegrationDeleted(IntegrationDeleted $integrationDeleted): void
     {
         $this->handle($integrationDeleted->id);
+    }
+
+    public function handleIntegrationUpdated(IntegrationUpdated $integrationUpdated): void
+    {
+        $this->handle($integrationUpdated->id);
     }
 
     private function handle(UuidInterface $integrationId): void
@@ -166,10 +172,22 @@ final class SyncWidget implements ShouldQueue
         );
     }
 
-    public function failed(IntegrationCreated|ContactCreated|ConsumerCreated|IntegrationActivated|IntegrationBlocked|IntegrationDeleted $event, Throwable $throwable): void
-    {
+    public function failed(
+        IntegrationCreated|
+        ContactCreated|
+        ConsumerCreated|
+        IntegrationActivated|
+        IntegrationBlocked|
+        IntegrationDeleted|
+        IntegrationUpdated $event,
+        Throwable $throwable
+    ): void {
         $entity = match (get_class($event)) {
-            IntegrationCreated::class, IntegrationActivated::class, IntegrationBlocked::class, IntegrationDeleted::class => 'integration',
+            IntegrationCreated::class,
+            IntegrationActivated::class,
+            IntegrationBlocked::class,
+            IntegrationDeleted::class,
+            IntegrationUpdated::class => 'integration',
             ContactCreated::class => 'contact',
             ConsumerCreated::class => 'consumer',
         };

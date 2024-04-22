@@ -12,6 +12,7 @@ use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationDeleted;
+use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
@@ -125,6 +126,19 @@ final class SyncWidgetTest extends TestCase
         $this->assertRequest($integration, 'blocked');
 
         $this->syncWidget->handleIntegrationDeleted(new IntegrationDeleted($integration->id));
+    }
+
+    public function test_it_handles_integration_updated(): void
+    {
+        $integration = $this->givenThereIsAnIntegration(IntegrationStatus::Active);
+
+        $this->givenThereIsAContact($integration->id);
+
+        $this->givenThereAreConsumers($integration->id);
+
+        $this->assertRequest($integration, 'active');
+
+        $this->syncWidget->handleIntegrationUpdated(new IntegrationUpdated($integration->id));
     }
 
     private function givenThereIsAnIntegration(IntegrationStatus $integrationStatus): Integration
