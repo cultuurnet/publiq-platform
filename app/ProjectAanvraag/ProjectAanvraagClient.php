@@ -38,6 +38,7 @@ final readonly class ProjectAanvraagClient
                 'groupId' => $createWidgetRequest->groupId,
                 'testApiKeySapi3' => $createWidgetRequest->testApiKeySapi3,
                 'liveApiKeySapi3' => $createWidgetRequest->liveApiKeySapi3,
+                'state' => $createWidgetRequest->state,
             ])
         );
 
