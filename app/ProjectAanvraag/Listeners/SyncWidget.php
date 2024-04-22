@@ -59,17 +59,17 @@ final class SyncWidget implements ShouldQueue
         $this->handle($consumer->integrationId);
     }
 
-    public function handleActivation(IntegrationActivated $integrationActivated): void
+    public function handleIntegrationActivated(IntegrationActivated $integrationActivated): void
     {
         $this->handle($integrationActivated->id);
     }
 
-    public function handleBlock(IntegrationBlocked $integrationBlocked): void
+    public function handleIntegrationBlocked(IntegrationBlocked $integrationBlocked): void
     {
         $this->handle($integrationBlocked->id);
     }
 
-    public function handleDelete(IntegrationDeleted $integrationDeleted): void
+    public function handleIntegrationDeleted(IntegrationDeleted $integrationDeleted): void
     {
         $this->handle($integrationDeleted->id);
     }

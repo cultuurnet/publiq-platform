@@ -59,9 +59,9 @@ final class ProjectAanvraagServiceProvider extends ServiceProvider
             Event::listen(ContactCreated::class, [SyncWidget::class, 'handleContactCreated']);
             Event::listen(ConsumerCreated::class, [SyncWidget::class, 'handleConsumerCreated']);
 
-            Event::listen(IntegrationActivated::class, [SyncWidget::class, 'handleActivation']);
-            Event::listen(IntegrationBlocked::class, [SyncWidget::class, 'handleBlock']);
-            Event::listen(IntegrationDeleted::class, [SyncWidget::class, 'handleDelete']);
+            Event::listen(IntegrationActivated::class, [SyncWidget::class, 'handleIntegrationActivated']);
+            Event::listen(IntegrationBlocked::class, [SyncWidget::class, 'handleIntegrationBlocked']);
+            Event::listen(IntegrationDeleted::class, [SyncWidget::class, 'handleIntegrationDeleted']);
         }
     }
 }
