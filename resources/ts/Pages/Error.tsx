@@ -20,7 +20,7 @@ const Error = ({ statusCode }: Props) => {
   const { t } = useTranslation();
   const translateRoute = useTranslateRoute();
   const navigateBack = () => {
-    // @ts-expect-error
+    // @ts-expect-error We need to check protected property activeVisit
     if (router.activeVisit) {
       window.history.back();
     } else {
