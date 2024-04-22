@@ -8,7 +8,6 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use App\UiTiDv1\UiTiDv1ClusterSDK;
-use App\UiTiDv1\UiTiDv1Consumer;
 use App\UiTiDv1\UiTiDv1Environment;
 use App\UiTiDv1\UiTiDv1EnvironmentNotConfigured;
 use Illuminate\Console\Command;
@@ -55,17 +54,11 @@ final class CreateMissingUiTiDv1Consumers extends Command
 
     private function createMissingUiTiDConsumerForIntegration(Integration $integration): void
     {
-        $uiTiDv1Consumers = $this->uiTiDv1ConsumerRepository->getByIntegrationId($integration->id);
+        $missingEnvironments = $this->uiTiDv1ConsumerRepository->getMissingEnvironmentsByIntegrationId($integration->id);
 
-        $existingEnvironments = array_map(
-            static fn (UiTiDv1Consumer $uiTiDv1Consumer) => $uiTiDv1Consumer->environment,
-            $uiTiDv1Consumers
-        );
-        $missingEnvironments = array_udiff(
-            UiTiDv1Environment::cases(),
-            $existingEnvironments,
-            fn (UiTiDv1Environment $e1, UiTiDv1Environment $e2) => strcmp($e1->value, $e2->value)
-        );
+        if (count($missingEnvironments) === 0) {
+            $this->warn($integration->id . ' - already has all UiTiD v1 consumers');
+        }
 
         foreach ($missingEnvironments as $missingEnvironment) {
             try {
