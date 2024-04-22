@@ -184,4 +184,31 @@ final class EloquentAuth0ClientRepositoryTest extends TestCase
 
         $this->assertEquals($expected, $actual);
     }
+
+    public function test_it_can_get_missing_tenants_by_integration_id(): void
+    {
+        $integrationId = Uuid::uuid4();
+
+        $client1 = new Auth0Client(
+            Uuid::uuid4(),
+            $integrationId,
+            'client-id-1',
+            'client-secret-1',
+            Auth0Tenant::Acceptance
+        );
+        $client2 = new Auth0Client(
+            Uuid::uuid4(),
+            $integrationId,
+            'client-id-2',
+            'client-secret-2',
+            Auth0Tenant::Testing
+        );
+
+        $this->repository->save($client1, $client2);
+
+        $this->assertEquals(
+            [Auth0Tenant::Production],
+            $this->repository->getMissingTenantsByIntegrationId($integrationId)
+        );
+    }
 }

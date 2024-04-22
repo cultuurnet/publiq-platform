@@ -101,7 +101,7 @@
     "contact_label_functional": "Inhoudelijk contact",
     "contact_label_functional_info": "Het inhoudelijk contact is het inhoudelijk aanspreekpunt voor de integratie (bvb. een medewerker van de organisatie of gemeente waarvoor de integratie is).",
     "contact_label_technical": "Technisch contact",
-    "contact_label_technical_info": "Het technisch contact is het technische aanspreekpunt voor de integratie (bvb. de ontwikkelaar van de integratie).", 
+    "contact_label_technical_info": "Het technisch contact is het technische aanspreekpunt voor de integratie (bvb. de ontwikkelaar van de integratie).",
     "contact_label_contributor": "Medewerker",
     "add": "Medewerker toevoegen",
     "contact": {
@@ -109,7 +109,7 @@
       "last_name": "Achternaam",
       "email": "E-mailadres"
     },
-    "error": "Niet alle verplichte velden werden correct ingevuld. Controleer je invoer.", 
+    "error": "Niet alle verplichte velden werden correct ingevuld. Controleer je invoer.",
     "agree": "Ik ga akkoord met de <1>gebruiksvoorwaarden</1> en de <2>privacyverklaring</2>",
     "terms_of_use_link": "https://docs.publiq.be/docs/uitdatabank/terms-of-use/terms-of-use",
     "privacy_link": "https://www.publiq.be/nl/privacy",
@@ -219,8 +219,8 @@
       "test": "Test",
       "live": "Live",
       "in_progress": "Je aanvraag tot activatie is in behandeling.",
-      "link": "here",
-      "uitid_alert": "Voor deze integratie zijn nog geen Client credentials aangevraagd.",
+      "uitid_alert": "Je kan de overstap maken naar authenticatie met client credentials. Bekijk <0>hier</0> of deze manier van authenticatie geschikt is voor jouw applicatie. Eens je client credentials aangevraagd hebt, blijft je API key nog 6 maanden geldig.",
+      "uitid_alert_link": "https://docs.publiq.be/docs/authentication/methods/overview",
       "action_uitid": "Client credentials aanvragen",
       "client_id": "Client id",
       "client_secret": "Client secret",
@@ -250,13 +250,10 @@
     "delete_integration": {
       "title": "Verwijderen",
       "delete": {
-        "title": "Integratie verwijderen",
+        "title": "Gevarenzone",
         "question": "Wil je deze integratie echt verwijderen?",
-        "description": {
-          "part1": "Ben je zeker dat je je integratie definitief wil verwijderen?",
-          "part2": "Wanneer je je integratie verwijdert wordt de toegang tot de API's onmiddellijk stopgezet. Na het verwijderen van je integratie ontvang je van ons nog een factuur voor het laatste jaar.",
-          "part3": "Het verwijderen van een integratie kan niet ongedaan gemaakt worden."
-        }
+        "description": "Wanneer je je integratie verwijdert wordt de toegang tot de API's onmiddellijk stopgezet. Na het verwijderen van je integratie ontvang je van ons nog een factuur voor het laatste jaar. Het verwijderen van een integratie kan niet ongedaan gemaakt worden.",
+        "action": "Integratie verwijderen"
       }
     }
   },
@@ -275,7 +272,7 @@
       "description": "Alle UiT-iconen, beeldmerken en kleuren voor jou op een rijtje gezet. Een must wanneer je een UiTagenda bouwt.",
       "img_url": "#",
       "action_title": "Naar de stijlgids",
-      "action_url": "https://www.publiq.be/nl/projecten/publiq-platform/stijlgids"
+      "action_url": "https://www.publiq.be/projecten/publiq-platform/beeldmerken-en-verwijzigingen"
     },
     "statuspage": {
       "title": "Statuspagina",
@@ -342,7 +339,7 @@
       },
       "terms_of_use": {
         "label": "Gebruiksvoorwaarden",
-        "link": "https://www.publiq.be/nl/gebruikersvoorwaarden-publiq-platform"
+        "link": "https://www.publiq.be/projecten/publiq-platform/gebruiksvoorwaarden"
       },
       "privacy": {
         "label": "Privacyverklaring",
@@ -351,6 +348,10 @@
       "cookie": {
         "label": "Cookieverklaring",
         "link": "https://www.publiq.be/nl/cookies"
+      },
+      "responsible_disclosure_policy": {
+        "label": "Responsible Disclosure Policy",
+        "link": "https://www.publiq.be/projecten/publiq-platform/responsible-disclosure-policy"
       },
       "documentation": {
         "label": "Documentatie",

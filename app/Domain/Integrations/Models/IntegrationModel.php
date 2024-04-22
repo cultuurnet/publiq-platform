@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Models;
 
+use App\Auth0\Auth0Tenant;
 use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
@@ -25,6 +26,7 @@ use App\Insightly\Models\InsightlyMappingModel;
 use App\Insightly\Resources\ResourceType;
 use App\Models\UuidModel;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
+use App\UiTiDv1\UiTiDv1Environment;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -237,6 +239,16 @@ final class IntegrationModel extends UuidModel
     public function uiTiDv1Consumers(): HasMany
     {
         return $this->hasMany(UiTiDv1ConsumerModel::class, 'integration_id');
+    }
+
+    public function hasMissingAuth0Clients(): bool
+    {
+        return $this->auth0Clients()->count() < count(Auth0Tenant::cases());
+    }
+
+    public function hasMissingUiTiDv1Consumers(): bool
+    {
+        return $this->uiTiDv1Consumers()->count() < count(UiTiDv1Environment::cases());
     }
 
     public function toDomain(): Integration

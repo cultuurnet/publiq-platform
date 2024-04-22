@@ -23,9 +23,15 @@ export type ContactFormData = {
 
 type Props = {
   isMobile: boolean;
+  duplicateContactErrorMessage?: string;
 } & Integration;
 
-export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
+export const ContactInfo = ({
+  id,
+  contacts,
+  isMobile,
+  duplicateContactErrorMessage,
+}: Props) => {
   const { t } = useTranslation();
   const [isDisabled, setIsDisabled] = useState(true);
   const [isAddFormVisible, setIsAddFormVisible] = useState(false);
@@ -33,8 +39,6 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
   const [toBeDeletedEmail, setToBeDeletedEmail] = useState("");
   const [toBeEditedId, setToBeEditedId] = useState("");
   const [isMobileContactVisible, setIsMobileContactVisible] = useState(false);
-  const [isContactInfoAlertVisible, setIsContactInfoAlertVisible] =
-    useState(true);
 
   const functionalContact = useMemo(
     // We know for sure there is a functional contact
@@ -161,19 +165,15 @@ export const ContactInfo = ({ id, contacts, isMobile }: Props) => {
   return (
     <>
       <div className="w-full flex flex-col gap-6">
+        {duplicateContactErrorMessage && (
+          <Alert variant="error">{duplicateContactErrorMessage}</Alert>
+        )}
         <Heading level={4} className="font-semibold col-span-1">
           {t("details.contact_info.title")}
         </Heading>
-        {isContactInfoAlertVisible && (
-          <Alert
-            variant="error"
-            title={t("details.contact_info.alert.title")}
-            closable
-            onClose={() => setIsContactInfoAlertVisible(false)}
-          >
-            {t("details.contact_info.alert.description")}
-          </Alert>
-        )}
+        <Alert variant="error" title={t("details.contact_info.alert.title")}>
+          {t("details.contact_info.alert.description")}
+        </Alert>
         <ContactsTable
           data={{
             functional: functionalContact,

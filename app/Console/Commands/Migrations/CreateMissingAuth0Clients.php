@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Console\Commands\Migrations;
 
-use App\Auth0\Auth0Client;
 use App\Auth0\Auth0ClusterSDK;
 use App\Auth0\Auth0Tenant;
 use App\Auth0\Auth0TenantNotConfigured;
@@ -55,22 +54,12 @@ final class CreateMissingAuth0Clients extends Command
 
     private function createMissingAuth0ClientsForIntegration(Integration $integration): void
     {
-        $auth0Clients = $this->auth0ClientRepository->getByIntegrationId($integration->id);
+        $missingTenants = $this->auth0ClientRepository->getMissingTenantsByIntegrationId($integration->id);
 
-        if (count($auth0Clients) === count(Auth0Tenant::cases())) {
+        if (count($missingTenants) === 0) {
             $this->warn($integration->id . ' - already has all Auth0 clients');
             return;
         }
-
-        $existingTenants = array_map(
-            static fn (Auth0Client $auth0Client) => $auth0Client->tenant,
-            $auth0Clients
-        );
-        $missingTenants = array_udiff(
-            Auth0Tenant::cases(),
-            $existingTenants,
-            fn (Auth0Tenant $t1, Auth0Tenant $t2) => strcmp($t1->value, $t2->value)
-        );
 
         foreach ($missingTenants as $missingTenant) {
             try {
