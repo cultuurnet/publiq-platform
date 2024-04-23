@@ -725,7 +725,7 @@ final class IntegrationControllerTest extends TestCase
             'email' => $email,
         ]);
 
-        $response->assertRedirect();
+        $response->assertRedirect('/');
         $response->assertSessionHasErrors('duplicate_contact');
     }
 
