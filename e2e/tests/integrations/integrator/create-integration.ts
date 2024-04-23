@@ -28,7 +28,7 @@ export async function createIntegrationAsIntegrator(
   }
 
   if (integrationType !== IntegrationType.EntryApi) {
-    await page.getByText("Basic (€ 125 / jaar)", { exact: true }).click();
+    await page.getByText("Basic € 125 / jaar", { exact: true }).click();
   }
 
   const integrationName = faker.word.adjective();
