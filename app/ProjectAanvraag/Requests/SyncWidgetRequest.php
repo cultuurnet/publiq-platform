@@ -17,8 +17,7 @@ final readonly class SyncWidgetRequest
         public IntegrationStatus $status,
         public int $groupId,
         public string $testApiKeySapi3,
-        public string $liveApiKeySapi3,
-        public string $state
+        public string $liveApiKeySapi3
     ) {
     }
 }

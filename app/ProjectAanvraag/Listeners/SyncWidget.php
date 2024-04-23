@@ -166,8 +166,7 @@ final class SyncWidget implements ShouldQueue
                 $integration->status,
                 $this->groupId,
                 $testKey,
-                $liveKey,
-                $this->integrationStatusToWidgetStatus($integration->status)
+                $liveKey
             )
         );
     }
