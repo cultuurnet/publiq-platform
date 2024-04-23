@@ -679,6 +679,54 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
+    public function test_it_can_add_a_contact_if_authorized(): void {
+        $this->actingAsIntegrator();
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+
+        $firstName = fake()->firstName();
+        $lastName = fake()->lastName();
+        $email = fake()->email();
+
+        $this->post("/integrations/{$integration->id}/contacts", [
+            'firstName' => $firstName,
+            'lastName' => $lastName,
+            'email' => $email
+        ]);
+
+        $this->assertDatabaseHas('contacts',
+            [
+                'first_name' => $firstName,
+                'last_name' => $lastName,
+                'email' => $email
+        ]);
+    }
+
+    public function test_it_can_not_add_a_contact_if_unauthorized(): void {
+        $this->actingAsIntegrator();
+
+        $integration = $this->givenThereIsAnIntegration();
+
+        $firstName = fake()->firstName();
+        $lastName = fake()->lastName();
+        $email = fake()->email();
+
+        $response = $this->post("/integrations/{$integration->id}/contacts", [
+            'firstName' => $firstName,
+            'lastName' => $lastName,
+            'email' => $email
+        ]);
+
+        $response->assertForbidden();
+
+        $this->assertDatabaseMissing('contacts', [
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+            'email' => $email
+        ]);
+    }
+
     public function test_it_can_update_billing_info_of_organization(): void
     {
         $this->actingAs(UserModel::createSystemUser());
