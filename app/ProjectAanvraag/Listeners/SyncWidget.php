@@ -8,21 +8,26 @@ use App\Auth0\Repositories\Auth0UserRepository;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Contacts\Repositories\ContactRepository;
+use App\Domain\Integrations\Events\IntegrationActivated;
+use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
+use App\Domain\Integrations\Events\IntegrationDeleted;
+use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\ProjectAanvraag\ProjectAanvraagClient;
-use App\ProjectAanvraag\Requests\CreateWidgetRequest;
+use App\ProjectAanvraag\Requests\SyncWidgetRequest;
 use App\UiTiDv1\Events\ConsumerCreated;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use App\UiTiDv1\UiTiDv1Environment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\UuidInterface;
 use Throwable;
 
-final class CreateWidget implements ShouldQueue
+final class SyncWidget implements ShouldQueue
 {
     use Queueable;
 
@@ -54,9 +59,33 @@ final class CreateWidget implements ShouldQueue
         $this->handle($consumer->integrationId);
     }
 
+    public function handleIntegrationActivated(IntegrationActivated $integrationActivated): void
+    {
+        $this->handle($integrationActivated->id);
+    }
+
+    public function handleIntegrationBlocked(IntegrationBlocked $integrationBlocked): void
+    {
+        $this->handle($integrationBlocked->id);
+    }
+
+    public function handleIntegrationDeleted(IntegrationDeleted $integrationDeleted): void
+    {
+        $this->handle($integrationDeleted->id);
+    }
+
+    public function handleIntegrationUpdated(IntegrationUpdated $integrationUpdated): void
+    {
+        $this->handle($integrationUpdated->id);
+    }
+
     private function handle(UuidInterface $integrationId): void
     {
-        $integration = $this->integrationRepository->getById($integrationId);
+        try {
+            $integration = $this->integrationRepository->getById($integrationId);
+        } catch (ModelNotFoundException) {
+            $integration = $this->integrationRepository->getByIdWithTrashed($integrationId);
+        }
         if ($integration->type !== IntegrationType::Widgets) {
             $this->logger->info(
                 'Integration {integrationId} is not a widget integration, skipping widget creation',
@@ -127,8 +156,8 @@ final class CreateWidget implements ShouldQueue
             return;
         }
 
-        $this->projectAanvraagClient->createWidget(
-            new CreateWidgetRequest(
+        $this->projectAanvraagClient->syncWidget(
+            new SyncWidgetRequest(
                 $integration->id,
                 $userId,
                 $integration->name,
@@ -141,10 +170,22 @@ final class CreateWidget implements ShouldQueue
         );
     }
 
-    public function failed(IntegrationCreated|ContactCreated|ConsumerCreated $event, Throwable $throwable): void
-    {
+    public function failed(
+        IntegrationCreated|
+        ContactCreated|
+        ConsumerCreated|
+        IntegrationActivated|
+        IntegrationBlocked|
+        IntegrationDeleted|
+        IntegrationUpdated $event,
+        Throwable $throwable
+    ): void {
         $entity = match (get_class($event)) {
-            IntegrationCreated::class => 'integration',
+            IntegrationCreated::class,
+            IntegrationActivated::class,
+            IntegrationBlocked::class,
+            IntegrationDeleted::class,
+            IntegrationUpdated::class => 'integration',
             ContactCreated::class => 'contact',
             ConsumerCreated::class => 'consumer',
         };
