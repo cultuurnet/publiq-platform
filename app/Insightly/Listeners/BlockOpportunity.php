@@ -26,7 +26,7 @@ final class BlockOpportunity implements ShouldQueue
     public function handle(IntegrationBlocked $integrationBlocked): void
     {
         try {
-            $integrationId = $integrationBlocked->integrationId;
+            $integrationId = $integrationBlocked->id;
 
             $insightlyMapping = $this->insightlyMappingRepository->getByIdAndType(
                 $integrationId,
@@ -57,7 +57,7 @@ final class BlockOpportunity implements ShouldQueue
             'Failed to block opportunity',
             [
                 'domain' => 'insightly',
-                'contact_id' => $integrationBlocked->integrationId->toString(),
+                'contact_id' => $integrationBlocked->id->toString(),
                 'exception' => $exception,
             ]
         );
