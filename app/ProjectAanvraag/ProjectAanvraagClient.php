@@ -24,21 +24,21 @@ final readonly class ProjectAanvraagClient
     /**
      * @throws ClientExceptionInterface|JsonException
      */
-    public function syncWidget(SyncWidgetRequest $createWidgetRequest): void
+    public function syncWidget(SyncWidgetRequest $syncWidgetRequest): void
     {
         $baseUri = ProjectAanvraagUrl::getBaseUri();
         $request = new Request(
             'POST',
-            $baseUri . 'project/' . $createWidgetRequest->integrationId->toString(),
+            $baseUri . 'project/' . $syncWidgetRequest->integrationId->toString(),
             [],
             Json::encode([
-                'userId' => $createWidgetRequest->userId,
-                'name' => $createWidgetRequest->name,
-                'summary' => $createWidgetRequest->summary,
-                'groupId' => $createWidgetRequest->groupId,
-                'testApiKeySapi3' => $createWidgetRequest->testApiKeySapi3,
-                'liveApiKeySapi3' => $createWidgetRequest->liveApiKeySapi3,
-                'state' => $createWidgetRequest->state,
+                'userId' => $syncWidgetRequest->userId,
+                'name' => $syncWidgetRequest->name,
+                'summary' => $syncWidgetRequest->summary,
+                'groupId' => $syncWidgetRequest->groupId,
+                'testApiKeySapi3' => $syncWidgetRequest->testApiKeySapi3,
+                'liveApiKeySapi3' => $syncWidgetRequest->liveApiKeySapi3,
+                'state' => $syncWidgetRequest->state,
             ])
         );
 
