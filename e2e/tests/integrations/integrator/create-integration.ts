@@ -58,7 +58,7 @@ export async function createIntegrationAsIntegrator(
   await page.getByLabel("Ik ga akkoord met de").check();
 
   if (couponCode && integrationType !== IntegrationType.EntryApi) {
-    await page.getByText('Ik heb een coupon').click();
+    await page.getByLabel('Ik heb een coupon').check();
     await page.locator('input[name="coupon"]').fill(couponCode);
   }
 
