@@ -696,14 +696,11 @@ final class IntegrationControllerTest extends TestCase
             'email' => $email,
         ]);
 
-        $this->assertDatabaseHas(
-            'contacts',
-            [
-                'first_name' => $firstName,
-                'last_name' => $lastName,
-                'email' => $email,
-        ]
-        );
+        $this->assertDatabaseHas('contacts', [
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+            'email' => $email,
+        ]);
     }
 
     public function test_it_can_not_add_a_contact_if_unauthorized(): void
