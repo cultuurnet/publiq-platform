@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\ProjectAanvraag;
 
+use App\Domain\Integrations\IntegrationStatus;
 use App\Json;
 use App\ProjectAanvraag\Requests\SyncWidgetRequest;
 use GuzzleHttp\Psr7\Request;
@@ -38,7 +39,7 @@ final readonly class ProjectAanvraagClient
                 'groupId' => $syncWidgetRequest->groupId,
                 'testApiKeySapi3' => $syncWidgetRequest->testApiKeySapi3,
                 'liveApiKeySapi3' => $syncWidgetRequest->liveApiKeySapi3,
-                'state' => $syncWidgetRequest->state,
+                'state' => $this->integrationStatusToWidgetStatus($syncWidgetRequest->status),
             ])
         );
 
@@ -61,5 +62,15 @@ final readonly class ProjectAanvraagClient
                 ]
             );
         }
+    }
+
+    private function integrationStatusToWidgetStatus(IntegrationStatus $status): string
+    {
+        return match ($status) {
+            IntegrationStatus::Draft, IntegrationStatus::PendingApprovalIntegration => 'application_sent',
+            IntegrationStatus::Active => 'active',
+            IntegrationStatus::Blocked, IntegrationStatus::Deleted => 'blocked',
+            IntegrationStatus::PendingApprovalPayment => 'waiting_for_payment',
+        };
     }
 }
