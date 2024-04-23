@@ -35,10 +35,10 @@ final class UpdateOpportunity implements ShouldQueue
     public function handle(IntegrationUpdated $integrationUpdated): void
     {
         try {
-            $integration = $this->integrationRepository->getById($integrationUpdated->integrationId);
+            $integration = $this->integrationRepository->getById($integrationUpdated->id);
 
             $opportunityMapping = $this->insightlyMappingRepository->getByIdAndType(
-                $integrationUpdated->integrationId,
+                $integrationUpdated->id,
                 ResourceType::Opportunity
             );
 
@@ -53,7 +53,7 @@ final class UpdateOpportunity implements ShouldQueue
                 'Opportunity updated',
                 [
                     'domain' => 'insightly',
-                    'integration_id' => $integrationUpdated->integrationId->toString(),
+                    'integration_id' => $integrationUpdated->id->toString(),
                 ]
             );
         } catch (ModelNotFoundException) {
@@ -66,7 +66,7 @@ final class UpdateOpportunity implements ShouldQueue
             'Failed to update opportunity',
             [
                 'domain' => 'insightly',
-                'integration_id' => $integrationUpdated->integrationId->toString(),
+                'integration_id' => $integrationUpdated->id->toString(),
                 'exception' => $exception,
             ]
         );

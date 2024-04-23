@@ -27,8 +27,8 @@ final class UpdateConsumers implements ShouldQueue
 
     public function handle(IntegrationUpdated $integrationUpdated): void
     {
-        $integration = $this->integrationRepository->getById($integrationUpdated->integrationId);
-        $consumers = $this->consumerRepository->getByIntegrationId($integrationUpdated->integrationId);
+        $integration = $this->integrationRepository->getById($integrationUpdated->id);
+        $consumers = $this->consumerRepository->getByIntegrationId($integrationUpdated->id);
 
         $this->clusterSDK->updateConsumersForIntegration($integration, ...$consumers);
 
@@ -36,7 +36,7 @@ final class UpdateConsumers implements ShouldQueue
             'UiTiD v1 consumer(s) updated',
             [
                 'domain' => 'uitid',
-                'integration_id' => $integrationUpdated->integrationId->toString(),
+                'integration_id' => $integrationUpdated->id->toString(),
             ]
         );
     }
@@ -44,7 +44,7 @@ final class UpdateConsumers implements ShouldQueue
     public function failed(IntegrationUpdated $integrationUpdated, Throwable $throwable): void
     {
         $this->logger->error('Failed to update UiTiD v1 consumer(s)', [
-            'integration_id' => $integrationUpdated->integrationId->toString(),
+            'integration_id' => $integrationUpdated->id->toString(),
             'exception' => $throwable,
         ]);
     }
