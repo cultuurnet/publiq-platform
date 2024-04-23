@@ -679,7 +679,8 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
-    public function test_it_can_add_a_contact_if_authorized(): void {
+    public function test_it_can_add_a_contact_if_authorized(): void
+    {
         $this->actingAsIntegrator();
 
         $integration = $this->givenThereIsAnIntegration();
@@ -692,18 +693,21 @@ final class IntegrationControllerTest extends TestCase
         $this->post("/integrations/{$integration->id}/contacts", [
             'firstName' => $firstName,
             'lastName' => $lastName,
-            'email' => $email
+            'email' => $email,
         ]);
 
-        $this->assertDatabaseHas('contacts',
+        $this->assertDatabaseHas(
+            'contacts',
             [
                 'first_name' => $firstName,
                 'last_name' => $lastName,
-                'email' => $email
-        ]);
+                'email' => $email,
+        ]
+        );
     }
 
-    public function test_it_can_not_add_a_contact_if_unauthorized(): void {
+    public function test_it_can_not_add_a_contact_if_unauthorized(): void
+    {
         $this->actingAsIntegrator();
 
         $integration = $this->givenThereIsAnIntegration();
@@ -715,7 +719,7 @@ final class IntegrationControllerTest extends TestCase
         $response = $this->post("/integrations/{$integration->id}/contacts", [
             'firstName' => $firstName,
             'lastName' => $lastName,
-            'email' => $email
+            'email' => $email,
         ]);
 
         $response->assertForbidden();
@@ -723,7 +727,7 @@ final class IntegrationControllerTest extends TestCase
         $this->assertDatabaseMissing('contacts', [
             'first_name' => $firstName,
             'last_name' => $lastName,
-            'email' => $email
+            'email' => $email,
         ]);
     }
 
