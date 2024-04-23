@@ -1,9 +1,9 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
 import { useTranslation } from "react-i18next";
 import { ButtonPrimary } from "../../ButtonPrimary";
-import { useForm } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 import { ContactType } from "../../../types/ContactType";
 import { ButtonSecondary } from "../../ButtonSecondary";
 import { QuestionDialog } from "../../QuestionDialog";
@@ -19,9 +19,44 @@ export type ContactFormData = {
   functional: Contact;
   technical: Contact;
   contributors: Contact[];
-  newContributorLastName: string;
-  newContributorFirstName: string;
-  newContributorEmail: string;
+};
+
+const useUpdateContactForm = ({
+  functional,
+  technical,
+  contributors,
+}: ContactFormData) => {
+  const initialFormData = useMemo(() => {
+    return {
+      functional: { ...functional, changed: false },
+      technical: { ...technical, changed: false },
+      contributors: contributors.map((c) => ({
+        ...c,
+        changed: false,
+      })),
+    };
+  }, [contributors, functional, technical]);
+
+  const updateContactForm = useForm(initialFormData);
+
+  useEffect(() => {
+    updateContactForm.setData(initialFormData);
+
+    // form is not a stable reference and triggers whenever a field value changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialFormData]);
+
+  updateContactForm.transform(
+    (data) =>
+      ({
+        ...data,
+        functional: data.functional.changed ? data.functional : undefined,
+        technical: data.technical.changed ? data.technical : undefined,
+        contributors: data.contributors.filter((c) => c.changed),
+      }) as typeof data
+  );
+
+  return updateContactForm;
 };
 
 type Props = {
@@ -61,43 +96,22 @@ export const ContactInfo = ({
     [contacts]
   );
 
-  const initialFormValues = {
-    functional: { ...functionalContact, changed: false },
-    technical: { ...technicalContact, changed: false },
-    contributors: contributorContacts.map((contributor) => ({
-      ...contributor,
-      changed: false,
-    })),
-    newContributorLastName: "",
-    newContributorFirstName: "",
-    newContributorEmail: "",
+  const initialContacts = {
+    functional: functionalContact,
+    technical: technicalContact,
+    contributors: contributorContacts,
   };
 
-  const {
-    data,
-    setData,
-    patch,
-    delete: destroy,
-    transform,
-    errors: errs,
-  } = useForm(initialFormValues);
+  const storeContactForm = useForm({ email: "", firstName: "", lastName: "" });
 
-  transform(
-    (data) =>
-      ({
-        ...data,
-        functional: data.functional.changed ? data.functional : undefined,
-        technical: data.technical.changed ? data.technical : undefined,
-        contributors: data.contributors.filter((c) => c.changed),
-      }) as typeof data
-  );
+  const updateContactForm = useUpdateContactForm(initialContacts);
 
-  const errors = errs as Record<string, string | undefined>;
+  const errors = updateContactForm.errors as Record<string, string | undefined>;
 
   const changeContact = (type: ContactType, newData: Contact) => {
     const property = type === "contributor" ? "contributors" : type;
 
-    setData((prevData) => ({
+    updateContactForm.setData((prevData) => ({
       ...prevData,
       [property]:
         property === "contributors"
@@ -116,7 +130,7 @@ export const ContactInfo = ({
   };
 
   const handleDeleteContributor = () => {
-    destroy(`/integrations/${id}/contacts/${toBeDeletedId}`, {
+    router.delete(`/integrations/${id}/contacts/${toBeDeletedId}`, {
       preserveScroll: true,
       preserveState: false,
     });
@@ -124,40 +138,47 @@ export const ContactInfo = ({
 
   const handleSaveChanges = () => {
     setIsDisabled(true);
-    patch(`/integrations/${id}/contacts`, {
+    storeContactForm.post(`/integrations/${id}/contacts`, {
       preserveScroll: true,
-      preserveState: false,
+      onSuccess: () => {
+        setIsAddFormVisible(false);
+      },
+      onError: (errors) => {
+        if (errors["duplicate_contact"]) {
+          setIsAddFormVisible(false);
+        }
+      },
     });
   };
 
   const foundContributor = useMemo(
     () =>
-      data.contributors.find((contributor) => contributor.id === toBeEditedId),
-    [data.contributors, toBeEditedId]
+      updateContactForm.data.contributors.find(
+        (contributor) => contributor.id === toBeEditedId
+      ),
+    [updateContactForm.data.contributors, toBeEditedId]
   );
 
   const [formContactType, setFormContactType] = useState("" as ContactType);
 
   const toBeEditedContact = useMemo(() => {
-    if (functionalContact.id === toBeEditedId) {
+    if (updateContactForm.data.functional.id === toBeEditedId) {
       setFormContactType(ContactType.Functional);
-      return data.functional;
+      return updateContactForm.data.functional;
     }
-    if (technicalContact.id === toBeEditedId) {
+    if (updateContactForm.data.technical.id === toBeEditedId) {
       setFormContactType(ContactType.Technical);
-      return data.technical;
+      return updateContactForm.data.technical;
     }
     if (foundContributor) {
       setFormContactType(ContactType.Contributor);
       return foundContributor;
     }
   }, [
-    functionalContact,
-    technicalContact,
     foundContributor,
-    data.functional,
-    data.technical,
     toBeEditedId,
+    updateContactForm.data.functional,
+    updateContactForm.data.technical,
   ]);
 
   return (
@@ -173,15 +194,13 @@ export const ContactInfo = ({
           {t("details.contact_info.alert.description")}
         </Alert>
         <ContactsTable
-          data={data}
+          data={initialContacts}
           onEdit={(id) => setToBeEditedId(id)}
           onDelete={(id, email) => {
             setToBeDeletedId(id);
             setToBeDeletedEmail(email);
           }}
           onPreview={(bool) => setIsMobileContactVisible(bool)}
-          functionalId={functionalContact.id}
-          technicalId={technicalContact.id}
           className="col-span-2"
         />
       </div>
@@ -212,7 +231,6 @@ export const ContactInfo = ({
             <ButtonPrimary
               onClick={() => {
                 handleSaveChanges();
-                setIsAddFormVisible(false);
               }}
               className="p-0"
             >
@@ -229,15 +247,15 @@ export const ContactInfo = ({
         >
           <FormElement
             label={`${t("integration_form.contact.last_name")}`}
-            error={errors["newContributorLastName"]}
+            error={storeContactForm.errors["lastName"]}
             className="w-full"
             component={
               <Input
                 type="text"
-                name="newContributorLastName"
-                value={data.newContributorLastName}
+                name="lastName"
+                value={storeContactForm.data.lastName}
                 onChange={(e) =>
-                  setData("newContributorLastName", e.target.value)
+                  storeContactForm.setData("lastName", e.target.value)
                 }
                 className="w-full"
               />
@@ -245,15 +263,15 @@ export const ContactInfo = ({
           />
           <FormElement
             label={`${t("integration_form.contact.first_name")}`}
-            error={errors["newContributorFirstName"]}
+            error={storeContactForm.errors["firstName"]}
             className="w-full"
             component={
               <Input
                 type="text"
-                name="newContributorFirstName"
-                value={data.newContributorFirstName}
+                name="firstName"
+                value={storeContactForm.data.firstName}
                 onChange={(e) =>
-                  setData("newContributorFirstName", e.target.value)
+                  storeContactForm.setData("firstName", e.target.value)
                 }
               />
             }
@@ -261,13 +279,15 @@ export const ContactInfo = ({
         </div>
         <FormElement
           label={`${t("integration_form.contact.email")}`}
-          error={errors["newContributorEmail"]}
+          error={storeContactForm.errors["email"]}
           component={
             <Input
               type="text"
-              name="newContributorEmail"
-              value={data.newContributorEmail}
-              onChange={(e) => setData("newContributorEmail", e.target.value)}
+              name="email"
+              value={storeContactForm.data.email}
+              onChange={(e) =>
+                storeContactForm.setData("email", e.target.value)
+              }
             />
           }
         />
@@ -283,7 +303,7 @@ export const ContactInfo = ({
                 </ButtonSecondary>
                 <ButtonPrimary
                   onClick={() => {
-                    patch(`/integrations/${id}/contacts`, {
+                    updateContactForm.patch(`/integrations/${id}/contacts`, {
                       preserveScroll: true,
                       onSuccess: () => {
                         setToBeEditedId("");
@@ -376,7 +396,7 @@ export const ContactInfo = ({
             onClick={() => {
               setIsDisabled(true);
 
-              patch(`/integrations/${id}/contacts`, {
+              updateContactForm.patch(`/integrations/${id}/contacts`, {
                 preserveScroll: true,
               });
             }}

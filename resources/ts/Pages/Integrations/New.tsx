@@ -126,7 +126,7 @@ const New = ({ subscriptions }: Props) => {
                 router.get(
                   url.pathname,
                   { type: value },
-                  { preserveScroll: true }
+                  { preserveScroll: true, preserveState: true }
                 );
               }}
             />
