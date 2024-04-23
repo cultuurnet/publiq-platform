@@ -25,7 +25,7 @@ final class BlockClients implements ShouldQueue
 
     public function handle(IntegrationBlocked $integrationBlocked): void
     {
-        $auth0Clients = $this->auth0ClientRepository->getByIntegrationId($integrationBlocked->integrationId);
+        $auth0Clients = $this->auth0ClientRepository->getByIntegrationId($integrationBlocked->id);
 
         $this->clusterSDK->blockClients(...$auth0Clients);
 
@@ -33,7 +33,7 @@ final class BlockClients implements ShouldQueue
             'Auth0 client(s) blocked',
             [
                 'domain' => 'auth0',
-                'integration_id' => $integrationBlocked->integrationId->toString(),
+                'integration_id' => $integrationBlocked->id->toString(),
             ]
         );
     }
@@ -41,7 +41,7 @@ final class BlockClients implements ShouldQueue
     public function failed(IntegrationBlocked $integrationBlocked, Throwable $throwable): void
     {
         $this->logger->error('Failed to block Auth0 client(s)', [
-            'integration_id' => $integrationBlocked->integrationId->toString(),
+            'integration_id' => $integrationBlocked->id->toString(),
             'exception' => $throwable,
         ]);
     }
