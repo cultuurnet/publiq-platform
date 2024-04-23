@@ -143,6 +143,11 @@ export const ContactInfo = ({
       onSuccess: () => {
         setIsAddFormVisible(false);
       },
+      onError: (errors) => {
+        if (errors["duplicate_contact"]) {
+          setIsAddFormVisible(false);
+        }
+      },
     });
   };
 

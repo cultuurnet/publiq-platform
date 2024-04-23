@@ -238,8 +238,11 @@ final class IntegrationController extends Controller
     public function storeContact(StoreContactRequest $request, string $id): RedirectResponse
     {
         $contact = StoreContactMapper::map($request, Uuid::fromString($id));
-
-        $this->contactRepository->save($contact);
+         try {
+             $this->contactRepository->save($contact);
+         } catch (UniqueConstraintViolationException) {
+            return Redirect::back()->withErrors(['duplicate_contact' => __('errors.contact.duplicate')]);
+        }
 
         return Redirect::back();
     }

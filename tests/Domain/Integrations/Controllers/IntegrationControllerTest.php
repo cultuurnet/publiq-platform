@@ -703,6 +703,32 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
+    public function test_it_can_not_add_a_contact_if_duplicate(): void
+    {
+        $firstName = fake()->firstName();
+        $lastName = fake()->lastName();
+        $email = fake()->email();
+
+        $this->actingAsIntegrator([
+            'email' => $email,
+            'name' => $firstName . ' ' . $lastName,
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+        ]);
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+
+        $response = $this->post("/integrations/{$integration->id}/contacts", [
+            'firstName' => fake()->firstName(),
+            'lastName' => fake()->lastName(),
+            'email' => $email,
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHasErrors('duplicate_contact');
+    }
+
     public function test_it_can_not_add_a_contact_if_unauthorized(): void
     {
         $this->actingAsIntegrator();
