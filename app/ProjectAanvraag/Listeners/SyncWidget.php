@@ -157,7 +157,7 @@ final class SyncWidget implements ShouldQueue
             return;
         }
 
-        $this->projectAanvraagClient->createWidget(
+        $this->projectAanvraagClient->syncWidget(
             new SyncWidgetRequest(
                 $integration->id,
                 $userId,

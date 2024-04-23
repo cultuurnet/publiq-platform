@@ -24,7 +24,7 @@ final readonly class ProjectAanvraagClient
     /**
      * @throws ClientExceptionInterface|JsonException
      */
-    public function createWidget(SyncWidgetRequest $createWidgetRequest): void
+    public function syncWidget(SyncWidgetRequest $createWidgetRequest): void
     {
         $baseUri = ProjectAanvraagUrl::getBaseUri();
         $request = new Request(
