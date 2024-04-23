@@ -196,14 +196,4 @@ final class SyncWidget implements ShouldQueue
             'exception' => $throwable,
         ]);
     }
-
-    private function integrationStatusToWidgetStatus(IntegrationStatus $status): string
-    {
-        return match ($status) {
-            IntegrationStatus::Draft, IntegrationStatus::PendingApprovalIntegration => 'application_sent',
-            IntegrationStatus::Active => 'active',
-            IntegrationStatus::Blocked, IntegrationStatus::Deleted => 'blocked',
-            IntegrationStatus::PendingApprovalPayment => 'waiting_for_payment',
-        };
-    }
 }
