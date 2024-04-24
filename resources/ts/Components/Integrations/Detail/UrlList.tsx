@@ -63,12 +63,12 @@ export const UrlList = ({
           Object.entries(environmentToUrls) as [Environment, IntegrationUrl[]][]
         ).map(([environment, urls]) => (
           <Fragment key={environment}>
-            <label>{t(`details.integration_settings.${environment}`)}</label>
             {urls.map((url, index) => (
               <FormElement
                 key={url.id}
                 elementId={url.id}
                 error={errors[`${url.type}.${url.environment}.${index}`]}
+                label={t(`details.integration_settings.${environment}`)}
                 component={
                   <div className="flex gap-2">
                     <Input

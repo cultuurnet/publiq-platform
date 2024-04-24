@@ -10,8 +10,6 @@ export type ContactsTableProps = {
   onEdit: (id: string) => void;
   onDelete: (id: string, email: string) => void;
   onPreview: (bool: boolean) => void;
-  functionalId: string;
-  technicalId: string;
 } & ComponentProps<"div">;
 
 export const ContactsTable = (props: ContactsTableProps) => {

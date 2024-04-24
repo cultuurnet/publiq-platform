@@ -9,6 +9,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
+use Ramsey\Uuid\Exception\InvalidUuidStringException;
 use Sentry\State\Scope;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;
@@ -61,13 +62,16 @@ final class Handler extends ExceptionHandler
             }
         });
 
-        $this->renderable(function (Exception $exception) {
-            if ($exception instanceof HttpException && $exception->getStatusCode() >= 500) {
-                return $this->handle500Error($exception);
-            }
 
+        $this->renderable(function (Exception $exception) {
+            if ($exception instanceof InvalidUuidStringException) {
+                return $this->handle404Error($exception);
+            }
             if ($exception instanceof HttpException && $exception->getStatusCode() === 404) {
                 return $this->handle404Error($exception);
+            }
+            if ($exception instanceof HttpException && $exception->getStatusCode() >= 500) {
+                return $this->handle500Error($exception);
             }
         });
     }

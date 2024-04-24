@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\ProjectAanvraag;
 
+use App\Domain\Integrations\IntegrationStatus;
 use App\Json;
-use App\ProjectAanvraag\Requests\CreateWidgetRequest;
+use App\ProjectAanvraag\Requests\SyncWidgetRequest;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
@@ -24,20 +25,21 @@ final readonly class ProjectAanvraagClient
     /**
      * @throws ClientExceptionInterface|JsonException
      */
-    public function createWidget(CreateWidgetRequest $createWidgetRequest): void
+    public function syncWidget(SyncWidgetRequest $syncWidgetRequest): void
     {
-        $baseUri = ProjectAanvraagUrl::getBaseUrlForIntegrationStatus($createWidgetRequest->status);
+        $baseUri = ProjectAanvraagUrl::getBaseUri();
         $request = new Request(
             'POST',
-            $baseUri . '/project/' . $createWidgetRequest->integrationId->toString(),
+            $baseUri . 'project/' . $syncWidgetRequest->integrationId->toString(),
             [],
             Json::encode([
-                'userId' => $createWidgetRequest->userId,
-                'name' => $createWidgetRequest->name,
-                'summary' => $createWidgetRequest->summary,
-                'groupId' => $createWidgetRequest->groupId,
-                'testApiKeySapi3' => $createWidgetRequest->testApiKeySapi3,
-                'liveApiKeySapi3' => $createWidgetRequest->liveApiKeySapi3,
+                'userId' => $syncWidgetRequest->userId,
+                'name' => $syncWidgetRequest->name,
+                'summary' => $syncWidgetRequest->summary,
+                'groupId' => $syncWidgetRequest->groupId,
+                'testApiKeySapi3' => $syncWidgetRequest->testApiKeySapi3,
+                'liveApiKeySapi3' => $syncWidgetRequest->liveApiKeySapi3,
+                'state' => $this->integrationStatusToWidgetStatus($syncWidgetRequest->status),
             ])
         );
 
@@ -60,5 +62,15 @@ final readonly class ProjectAanvraagClient
                 ]
             );
         }
+    }
+
+    private function integrationStatusToWidgetStatus(IntegrationStatus $status): string
+    {
+        return match ($status) {
+            IntegrationStatus::Draft, IntegrationStatus::PendingApprovalIntegration => 'application_sent',
+            IntegrationStatus::Active => 'active',
+            IntegrationStatus::Blocked, IntegrationStatus::Deleted => 'blocked',
+            IntegrationStatus::PendingApprovalPayment => 'waiting_for_payment',
+        };
     }
 }

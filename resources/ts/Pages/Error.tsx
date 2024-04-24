@@ -9,6 +9,8 @@ import { ErrorImage } from "../Components/ErrorImage";
 import { Heading } from "../Components/Heading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { router } from "@inertiajs/react";
+import { useTranslateRoute } from "../hooks/useTranslateRoute";
 
 type Props = {
   statusCode: number;
@@ -16,7 +18,15 @@ type Props = {
 
 const Error = ({ statusCode }: Props) => {
   const { t } = useTranslation();
-  const navigateBack = () => window.history.back();
+  const translateRoute = useTranslateRoute();
+  const navigateBack = () => {
+    // @ts-expect-error We need to check protected property activeVisit
+    if (router.activeVisit) {
+      window.history.back();
+    } else {
+      router.get(translateRoute("/"));
+    }
+  };
 
   if (statusCode === 404)
     return (

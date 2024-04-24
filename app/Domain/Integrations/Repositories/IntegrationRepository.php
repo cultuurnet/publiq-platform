@@ -14,6 +14,7 @@ interface IntegrationRepository
     public function saveWithCoupon(Integration $integration, string $couponCode): void;
     public function update(Integration $integration): void;
     public function getById(UuidInterface $id): Integration;
+    public function getByIdWithTrashed(UuidInterface $id): Integration;
     public function deleteById(UuidInterface $id): ?bool;
     public function getByContactEmail(string $email, ?string $searchQuery): PaginatedCollection;
     public function requestActivation(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode): void;

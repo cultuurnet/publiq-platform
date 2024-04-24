@@ -11,6 +11,7 @@ use App\Domain\Contacts\Repositories\ContactKeyVisibilityRepository;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Coupons\Repositories\CouponRepository;
 use App\Domain\Integrations\FormRequests\RequestActivationRequest;
+use App\Domain\Integrations\FormRequests\StoreContactRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationUrlRequest;
 use App\Domain\Integrations\FormRequests\KeyVisibilityUpgradeRequest;
@@ -23,6 +24,7 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Mappers\OrganizationMapper;
+use App\Domain\Integrations\Mappers\StoreContactMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationUrlMapper;
 use App\Domain\Integrations\Mappers\KeyVisibilityUpgradeMapper;
@@ -41,6 +43,7 @@ use App\Router\TranslatedRoute;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -213,12 +216,33 @@ final class IntegrationController extends Controller
     public function updateContacts(string $id, UpdateContactInfoRequest $request): RedirectResponse
     {
         $contacts = UpdateContactInfoMapper::map($request, $id);
+        try {
+            DB::transaction(function () use ($contacts) {
+                foreach ($contacts as $contact) {
+                    $this->contactRepository->save($contact);
+                }
+            });
+        } catch (UniqueConstraintViolationException $exception) {
+            return Redirect::back()->withErrors(['duplicate_contact' => __('errors.contact.duplicate')]);
+        }
 
-        DB::transaction(function () use ($contacts) {
-            foreach ($contacts as $contact) {
-                $this->contactRepository->save($contact);
-            }
-        });
+        $redirect = $this->guardUserIsContact($request, $id);
+
+        if ($redirect !== null) {
+            return $redirect;
+        }
+
+        return Redirect::back();
+    }
+
+    public function storeContact(StoreContactRequest $request, string $id): RedirectResponse
+    {
+        $contact = StoreContactMapper::map($request, Uuid::fromString($id));
+        try {
+            $this->contactRepository->save($contact);
+        } catch (UniqueConstraintViolationException) {
+            return Redirect::back()->withErrors(['duplicate_contact' => __('errors.contact.duplicate')]);
+        }
 
         return Redirect::back();
     }
@@ -229,6 +253,12 @@ final class IntegrationController extends Controller
             $this->contactRepository->delete(Uuid::fromString($contactId));
         } catch (ModelNotFoundException) {
             // We can redirect back to integrations, even if not successful
+        }
+
+        $redirect = $this->guardUserIsContact($request, $id);
+
+        if ($redirect !== null) {
+            return $redirect;
         }
 
         return Redirect::back();
@@ -309,6 +339,19 @@ final class IntegrationController extends Controller
 
         if ($coupon->isDistributed) {
             return Redirect::back()->withErrors(['coupon' => __('errors.coupon.already_used')]);
+        }
+
+        return null;
+    }
+
+    private function guardUserIsContact(Request $request, string $integrationId): ?RedirectResponse
+    {
+        $contacts = $this->contactRepository->getByIntegrationIdAndEmail(Uuid::fromString($integrationId), $this->currentUser->email());
+
+        if ($contacts->count() === 0) {
+            return Redirect::route(
+                TranslatedRoute::getTranslatedRouteName($request, 'integrations.index')
+            );
         }
 
         return null;

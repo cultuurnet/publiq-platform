@@ -49,6 +49,14 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         return $integrationModel->toDomain();
     }
 
+    public function getByIdWithTrashed(UuidInterface $id): Integration
+    {
+        /** @var IntegrationModel $integrationModel */
+        $integrationModel = IntegrationModel::withTrashed()->findOrFail($id->toString());
+
+        return $integrationModel->toDomain();
+    }
+
     public function deleteById(UuidInterface $id): ?bool
     {
         /** @var IntegrationModel $integrationModel */
@@ -62,6 +70,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
             ->select('integrations.*')
             ->join('contacts', 'integrations.id', '=', 'contacts.integration_id')
             ->where('contacts.email', $email)
+            ->whereNull('contacts.deleted_at')
             ->when($searchQuery, function (Builder $query, ?string $searchQuery) {
                 $query->where('integrations.name', 'like', '%' . $searchQuery . '%');
             })

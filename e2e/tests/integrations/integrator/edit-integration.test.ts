@@ -10,7 +10,7 @@ test("As an integrator I can edit an existing integration", async ({
 }) => {
   const { integrationName } = await createIntegrationAsIntegrator(
     page,
-    IntegrationType.SearchApi
+    IntegrationType.EntryApi
   );
 
   // Edit integration
