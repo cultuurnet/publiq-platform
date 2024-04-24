@@ -9,7 +9,5 @@ test("As an integrator I can create a new integration", async ({ page }) => {
     page,
     IntegrationType.SearchApi
   );
-
-  await page.waitForURL(/https?:\/\/[^/]*\/nl\/integraties(\/.*)?/);
   await expect(page.getByText(integrationName)).toBeVisible();
 });

@@ -1,4 +1,4 @@
-import { type Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
 import { fakerNL_BE as faker } from "@faker-js/faker";
 import { IntegrationType } from "@app-types/IntegrationType";
 
@@ -64,5 +64,10 @@ export async function createIntegrationAsIntegrator(
 
   await page.getByRole("button", { name: "Integratie aanmaken" }).click();
 
-  return { page, integrationName };
+  await page.waitForURL(/https?:\/\/[^/]*\/nl\/integraties(\/.*)?/);
+  await expect(page.getByText(integrationName)).toBeVisible();
+
+  const integrationId = page.url().split("/").pop()!;
+
+  return { page, integrationName, integrationId };
 }

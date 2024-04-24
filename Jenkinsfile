@@ -107,6 +107,9 @@ pipeline {
                         withCredentials([usernamePassword(credentialsId: 'publiq-platform_e2etest_user',
                                                           usernameVariable: 'E2E_TEST_EMAIL',
                                                           passwordVariable: 'E2E_TEST_PASSWORD'),
+                                         usernamePassword(credentialsId: 'publiq-platform_e2etest_v1',
+                                                          usernameVariable: 'E2E_TEST_V1_EMAIL',
+                                                          passwordVariable: 'E2E_TEST_V1_PASSWORD')
                                          usernamePassword(credentialsId: 'publiq-platform_e2etest_admin',
                                                           usernameVariable: 'E2E_TEST_ADMIN_EMAIL',
                                                           passwordVariable: 'E2E_TEST_ADMIN_PASSWORD')]
