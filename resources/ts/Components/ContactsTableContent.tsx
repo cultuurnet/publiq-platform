@@ -16,10 +16,12 @@ export const ContactsTableContent = ({
   onEdit,
   onDelete,
   onPreview,
-  functionalId,
-  technicalId,
 }: Props) => {
   const { t } = useTranslation();
+
+  const functionalId = data.functional.id;
+  const technicalId = data.technical.id;
+
   const contactTypes = [
     { label: "functional", id: functionalId },
     { label: "technical", id: technicalId },
