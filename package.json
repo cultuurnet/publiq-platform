@@ -18,7 +18,7 @@
         "@fortawesome/free-solid-svg-icons": "^6.5.2",
         "@fortawesome/react-fontawesome": "^0.2.0",
         "@inertiajs/react": "^1.0.16",
-        "@sentry/browser": "^7.111.0",
+        "@sentry/browser": "^7.112.2",
         "date-fns": "^3.6.0",
         "dotenv": "^16.4.5",
         "i18next": "^23.11.2",
