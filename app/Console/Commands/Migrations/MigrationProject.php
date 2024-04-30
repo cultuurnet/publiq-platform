@@ -19,6 +19,11 @@ final class MigrationProject
         );
     }
 
+    public function id(): string
+    {
+        return $this->projectAsArray[0];
+    }
+
     public function name(): string
     {
         return $this->projectAsArray[3];
