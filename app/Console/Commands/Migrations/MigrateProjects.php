@@ -32,6 +32,7 @@ use GuzzleHttp\ClientInterface;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
@@ -227,7 +228,12 @@ final class MigrateProjects extends Command
 
         $contact = $this->getContactFromInInsightly($integrationId, $contactId, $insightlyContact->insightlyId);
         $this->contactRepository->save($contact);
-        $this->contactKeyVisibilityRepository->save($contact->email, KeyVisibility::v1);
+
+        try {
+            $this->contactKeyVisibilityRepository->save($contact->email, KeyVisibility::v1);
+        } catch (UniqueConstraintViolationException) {
+            $this->info($contactId . ' - email ' . $contact->email . ' already has a key visibility');
+        }
     }
 
     private function migrateKeys(UuidInterface $integrationId, MigrationProject $migrationProject): void
