@@ -101,7 +101,7 @@ final class MigrateProjects extends Command
         foreach ($migrationProjects as $migrationProject) {
             $integrationId = Uuid::uuid4();
 
-            $this->info($integrationId . ' - Started importing project ' . $migrationProject->name());
+            $this->info($integrationId . ' - Started importing project ' . $migrationProject->name() . ' (' . $migrationProject->id() . ')');
 
             $this->migrateIntegration($integrationId, $migrationProject);
 
@@ -121,7 +121,7 @@ final class MigrateProjects extends Command
 
             $this->migrateKeys($integrationId, $migrationProject);
 
-            $this->info($integrationId . ' - Ended importing project ' . $migrationProject->name());
+            $this->info($integrationId . ' - Ended importing project ' . $migrationProject->name() . ' (' . $migrationProject->id() . ')');
             $this->info('---');
         }
 
