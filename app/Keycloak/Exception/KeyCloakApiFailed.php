@@ -12,6 +12,7 @@ final class KeyCloakApiFailed extends Exception
     public const COULD_NOT_FETCH_ACCESS_TOKEN = 1;
     public const UNEXPECTED_TOKEN_RESPONSE = 2;
     public const IS_DISABLED = 3;
+    public const FAILED_TO_FETCH_CLIENT = 4;
 
     private function __construct(
         string $message,
@@ -33,5 +34,10 @@ final class KeyCloakApiFailed extends Exception
     public static function isDisabled(): self
     {
         return new self('Keycloak API is disabled.', self::IS_DISABLED);
+    }
+
+    public static function failedToFetchClient(Realm $realm, string $body): self
+    {
+        return new self(sprintf('Failed to fetch clients by realm %s: %s', $realm->getInternalName(), $body), self::FAILED_TO_FETCH_CLIENT);
     }
 }
