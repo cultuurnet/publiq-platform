@@ -44,7 +44,7 @@ export const OpenWidgetBuilderButton = ({
   }
 
   const handleOpenWidgetBuilder = () => {
-    window.open(`http://localhost/integrations/${id}/widget`, "_blank");
+    window.open(`/integrations/${id}/widget`, "_blank");
   };
 
   return (
