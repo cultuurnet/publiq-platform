@@ -43,13 +43,13 @@ export const OpenWidgetBuilderButton = ({
     return null;
   }
 
-  const handleWidgetBuilderButton = () => {
+  const handleOpenWidgetBuilder = () => {
     window.open(`http://localhost/integrations/${id}/widget`, "_blank");
   };
 
   return (
     <ButtonSecondary
-      onClick={handleWidgetBuilderButton}
+      onClick={handleOpenWidgetBuilder}
       className="flex self-start"
     >
       {t("integrations.open_widget")}
