@@ -11,8 +11,7 @@ final class KeyCloakApiFailed extends Exception
 {
     public const COULD_NOT_FETCH_ACCESS_TOKEN = 1;
     public const UNEXPECTED_TOKEN_RESPONSE = 2;
-    public const FAILED_TO_FETCH_CLIENT = 3;
-    public const IS_DISABLED = 4;
+    public const IS_DISABLED = 3;
 
     private function __construct(
         string $message,
