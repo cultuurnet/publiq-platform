@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Keycloak\Exception;
 
-use App\Keycloak\Dto\Realm;
 use Exception;
 
 final class KeyCloakApiFailed extends Exception
