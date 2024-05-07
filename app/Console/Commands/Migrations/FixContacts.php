@@ -29,7 +29,6 @@ final class FixContacts extends Command
     protected $description = 'Fix the missing technical and or functional contacts in the database.';
 
     public function __construct(
-        private readonly IntegrationRepository $integrationRepository,
         private readonly ContactRepository $contactRepository,
         private readonly InsightlyMappingRepository $insightlyMappingRepository
     ) {
@@ -44,14 +43,16 @@ final class FixContacts extends Command
 
         $this->info('Fixing contacts...');
 
+        // @phpstan-ignore-next-line
         $integrationsIds = IntegrationModel::all()->pluck('id')->toArray();
+        $integrationsIdsCount = count($integrationsIds);
 
-        if ($integrationsIds <= 0) {
+        if ($integrationsIdsCount <= 0) {
             $this->warn('No integrations to fix contacts for');
             return 0;
         }
 
-        if (!$this->confirm('Are you sure you want to fix ' . count($integrationsIds) . ' integrations?')) {
+        if (!$this->confirm('Are you sure you want to fix ' . $integrationsIdsCount . ' integrations?')) {
             return 0;
         }
 
