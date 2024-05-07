@@ -28,9 +28,4 @@ final class KeyCloakApiFailed extends Exception
     {
         return new self('Unexpected token response body', self::UNEXPECTED_TOKEN_RESPONSE);
     }
-
-    public static function isDisabled(): self
-    {
-        return new self('Keycloak API is disabled.', self::IS_DISABLED);
-    }
 }
