@@ -301,7 +301,7 @@ final class MigrateProjects extends Command
         }
 
         return new Contact(
-            Uuid::fromString($uitId),
+            Uuid::uuid4(),
             $integrationId,
             $email,
             ContactType::Contributor,
