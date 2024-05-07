@@ -15,21 +15,21 @@ final class Pipelines
 
     public function getOpportunitiesPipelineId(): int
     {
-        return $this->mapping['opportunities']['id'];
+        return (int) ($this->mapping['opportunities']['id']);
     }
 
     public function getOpportunityStageId(OpportunityStage $opportunityStage): int
     {
-        return $this->mapping['opportunities']['stages'][$opportunityStage->value];
+        return (int) ($this->mapping['opportunities']['stages'][$opportunityStage->value]);
     }
 
     public function getProjectsPipelineId(): int
     {
-        return $this->mapping['projects']['id'];
+        return (int) ($this->mapping['projects']['id']);
     }
 
     public function getProjectStageId(ProjectStage $projectStage): int
     {
-        return $this->mapping['projects']['stages'][$projectStage->value];
+        return (int) ($this->mapping['projects']['stages'][$projectStage->value]);
     }
 }
