@@ -7,7 +7,6 @@ import { useTranslation } from "react-i18next";
 import { Link } from "./Link";
 import { StatusLight } from "./StatusLight";
 import { IntegrationStatus } from "../types/IntegrationStatus";
-import { ButtonLinkSecondary } from "./ButtonLinkSecondary";
 import {
   integrationIconClasses,
   useIntegrationTypesInfo,
@@ -22,6 +21,7 @@ import type { Integration } from "../types/Integration";
 import { Alert } from "./Alert";
 import { classNames } from "../utils/classNames";
 import { usePolling } from "../hooks/usePolling";
+import { ButtonSecondary } from "./ButtonSecondary";
 
 type Props = Integration &
   Credentials & {
@@ -43,14 +43,17 @@ export const OpenWidgetBuilderButton = ({
     return null;
   }
 
+  const handleOpenWidgetBuilder = () => {
+    window.open(`/integrations/${id}/widget`, "_blank");
+  };
+
   return (
-    <ButtonLinkSecondary
-      href={`/integrations/${id}/widget`}
-      target="_blank"
+    <ButtonSecondary
+      onClick={handleOpenWidgetBuilder}
       className="flex self-start"
     >
       {t("integrations.open_widget")}
-    </ButtonLinkSecondary>
+    </ButtonSecondary>
   );
 };
 
