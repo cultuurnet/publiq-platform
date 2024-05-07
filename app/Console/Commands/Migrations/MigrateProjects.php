@@ -315,7 +315,7 @@ final class MigrateProjects extends Command
         $contactAsArray = $this->insightlyClient->contacts()->get($insightlyId);
 
         return new Contact(
-            Uuid::fromString($uitId),
+            Uuid::uuid4(),
             $integrationId,
             $contactAsArray['EMAIL_ADDRESS'],
             ContactType::Contributor,
