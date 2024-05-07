@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace App\Keycloak\TokenStrategy;
 
 use App\Json;
+use App\Keycloak\Client\KeycloakClient;
 use App\Keycloak\Config;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realm;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
+use GuzzleHttp\Psr7\Request;
 
 /*
  * LIMITATION: This class currently does not refresh the token automatically.
@@ -21,7 +22,7 @@ final class ClientCredentials implements TokenStrategy
     private array $accessToken = [];
 
     public function __construct(
-        private readonly ClientInterface $client,
+        private readonly KeycloakClient $client,
         private readonly Config $config,
         private readonly LoggerInterface $logger,
     ) {
@@ -36,9 +37,9 @@ final class ClientCredentials implements TokenStrategy
         }
 
         try {
-            $response = $this->client->request(
+            $request = new Request(
                 'POST',
-                $this->config->baseUrl . 'realms/' . $realm->internalName . '/protocol/openid-connect/token',
+                'realms/' . $realm->internalName . '/protocol/openid-connect/token',
                 [
                     'form_params' => [
                         'grant_type' => 'client_credentials',
@@ -47,6 +48,7 @@ final class ClientCredentials implements TokenStrategy
                     ],
                 ]
             );
+            $response = $this->client->send($request);
         } catch (GuzzleException $e) {
             $this->logger->error($e->getMessage());
             throw KeyCloakApiFailed::couldNotFetchAccessToken($e->getMessage());
