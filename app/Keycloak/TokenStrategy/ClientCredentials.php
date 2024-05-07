@@ -29,40 +29,43 @@ final class ClientCredentials implements TokenStrategy
 
     public function fetchToken(Realm $realm): string
     {
-        // move to implementation Client, pass request objects.
-        if ($this->accessToken[$realm->internalName] === null) { //lazy loading
-            try {
-                $response = $this->client->request(
-                    'POST',
-                    $this->config->baseUrl . 'realms/' . $realm->internalName . '/protocol/openid-connect/token',
-                    [
-                        'form_params' => [
-                            'grant_type' => 'client_credentials',
-                            'client_id' => $this->config->clientId,
-                            'client_secret' => $this->config->clientSecret,
-                        ],
-                    ]
-                );
-            } catch (GuzzleException $e) {
-                $this->logger->error($e->getMessage());
-                throw KeyCloakApiFailed::couldNotFetchAccessToken($e->getMessage());
-            }
+        $key = $realm->internalName . $this->config->clientId;
 
-            if ($response->getStatusCode() !== 200) {
-                $this->logger->error($response->getBody()->getContents());
-                throw KeyCloakApiFailed::couldNotFetchAccessToken($response->getBody()->getContents());
-            }
-
-            $json = Json::decodeAssociatively($response->getBody()->getContents());
-
-            if (!isset($json['access_token'])) {
-                throw KeyCloakApiFailed::unexpectedTokenResponse();
-            }
-
-            $this->logger->info('Fetched token for ' . $this->config->clientId . ', token starts with ' . substr($json['access_token'], 0, 6));
-            $this->accessToken[$realm->internalName] = $json['access_token'];
+        if ($this->accessToken[$key] !== null) {
+            return $this->accessToken[$key];
         }
 
-        return $this->accessToken[$realm->internalName];
+        try {
+            $response = $this->client->request(
+                'POST',
+                $this->config->baseUrl . 'realms/' . $realm->internalName . '/protocol/openid-connect/token',
+                [
+                    'form_params' => [
+                        'grant_type' => 'client_credentials',
+                        'client_id' => $this->config->clientId,
+                        'client_secret' => $this->config->clientSecret,
+                    ],
+                ]
+            );
+        } catch (GuzzleException $e) {
+            $this->logger->error($e->getMessage());
+            throw KeyCloakApiFailed::couldNotFetchAccessToken($e->getMessage());
+        }
+
+        if ($response->getStatusCode() !== 200) {
+            $this->logger->error($response->getBody()->getContents());
+            throw KeyCloakApiFailed::couldNotFetchAccessToken($response->getBody()->getContents());
+        }
+
+        $json = Json::decodeAssociatively($response->getBody()->getContents());
+
+        if (!isset($json['access_token'])) {
+            throw KeyCloakApiFailed::unexpectedTokenResponse();
+        }
+
+        $this->logger->info('Fetched token for ' . $this->config->clientId . ', token starts with ' . substr($json['access_token'], 0, 6));
+        $this->accessToken[$key] = $json['access_token'];
+
+        return $this->accessToken[$key];
     }
 }
