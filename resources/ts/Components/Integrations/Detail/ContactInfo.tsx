@@ -15,9 +15,12 @@ import type { Contact } from "../../../types/Contact";
 import type { Integration } from "../../../types/Integration";
 import { Alert } from "../../Alert";
 
+// TODO: Remove: This is a temp fix for https://jira.publiq.be/browse/PPF-443
+type ChangeMe = undefined;
+
 export type ContactFormData = {
-  functional: Contact;
-  technical: Contact;
+  functional: Contact | ChangeMe;
+  technical: Contact | ChangeMe;
   contributors: Contact[];
 };
 
@@ -164,16 +167,17 @@ export const ContactInfo = ({
   const toBeEditedContact = useMemo(() => {
     if (updateContactForm.data.functional.id === toBeEditedId) {
       setFormContactType(ContactType.Functional);
-      return updateContactForm.data.functional;
+      // TODO: Remove as Contact: This is a temp fix for https://jira.publiq.be/browse/PPF-443
+      return updateContactForm.data.functional as Contact;
     }
     if (updateContactForm.data.technical.id === toBeEditedId) {
       setFormContactType(ContactType.Technical);
-      return updateContactForm.data.technical;
+      // TODO: Remove as Contact: This is a temp fix for https://jira.publiq.be/browse/PPF-443
+      return updateContactForm.data.technical as Contact;
     }
-    if (foundContributor) {
-      setFormContactType(ContactType.Contributor);
-      return foundContributor;
-    }
+    setFormContactType(ContactType.Contributor);
+    // TODO: Remove as Contact: This is a temp fix for https://jira.publiq.be/browse/PPF-443
+    return foundContributor! as Contact;
   }, [
     foundContributor,
     toBeEditedId,
