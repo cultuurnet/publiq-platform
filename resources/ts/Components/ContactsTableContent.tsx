@@ -19,8 +19,10 @@ export const ContactsTableContent = ({
 }: Props) => {
   const { t } = useTranslation();
 
-  const functionalId = data.functional.id;
-  const technicalId = data.technical.id;
+  const functionalId = data.functional?.id;
+  const technicalId = data.technical?.id;
+
+  const isRequiredContactsMissing = !functionalId || !technicalId;
 
   const contactTypes = [
     { label: "functional", id: functionalId },
@@ -29,63 +31,66 @@ export const ContactsTableContent = ({
 
   return (
     <tbody>
-      {contactTypes.map((type) => (
-        <tr
-          className={classNames(
-            "bg-white border-b",
-            desktop && "hover:bg-publiq-gray-50"
-          )}
-          key={type.id}
-        >
-          <td
+      {!isRequiredContactsMissing &&
+        contactTypes.map((type) => (
+          <tr
             className={classNames(
-              desktop && "w-2/4",
-              mobile && "px-2 py-4 w-full"
+              "bg-white border-b",
+              desktop && "hover:bg-publiq-gray-50"
             )}
-            onClick={
-              mobile
-                ? () => {
-                    onPreview(true);
-                    onEdit(type.id);
-                  }
-                : undefined
-            }
+            key={type.id}
           >
-            <div
+            <td
               className={classNames(
-                desktop && "px-6 pt-4 font-semibold",
-                mobile &&
-                  "text-publiq-blue-dark flex gap-2 items-center underline"
+                desktop && "w-2/4",
+                mobile && "px-2 py-4 w-full"
+              )}
+              onClick={
+                mobile
+                  ? () => {
+                      onPreview(true);
+                      // TODO: remove !
+                      onEdit(type.id!);
+                    }
+                  : undefined
+              }
+            >
+              <div
+                className={classNames(
+                  desktop && "px-6 pt-4 font-semibold",
+                  mobile &&
+                    "text-publiq-blue-dark flex gap-2 items-center underline"
+                )}
+              >
+                {data[type.label]?.firstName} {data[type.label]?.lastName}
+              </div>
+              <div
+                className={classNames(
+                  desktop && "px-6 pb-4",
+                  mobile && "text-xs"
+                )}
+              >
+                {t(`integration_form.contact_label_${type.label}`)}
+              </div>
+            </td>
+            {desktop && (
+              <td className="w-2/4 px-6 py-4">{data[type.label]?.email}</td>
+            )}
+            <td
+              className={classNames(
+                desktop && "px-6",
+                mobile && "px-3 py-4 flex justify-start"
               )}
             >
-              {data[type.label]?.firstName} {data[type.label].lastName}
-            </div>
-            <div
-              className={classNames(
-                desktop && "px-6 pb-4",
-                mobile && "text-xs"
-              )}
-            >
-              {t(`integration_form.contact_label_${type.label}`)}
-            </div>
-          </td>
-          {desktop && (
-            <td className="w-2/4 px-6 py-4">{data[type.label].email}</td>
-          )}
-          <td
-            className={classNames(
-              desktop && "px-6",
-              mobile && "px-3 py-4 flex justify-start"
-            )}
-          >
-            <ButtonIcon
-              icon={faPencil}
-              className="text-icon-gray"
-              onClick={() => onEdit(type.id)}
-            />
-          </td>
-        </tr>
-      ))}
+              <ButtonIcon
+                icon={faPencil}
+                className="text-icon-gray"
+                // TODO: remove !
+                onClick={() => onEdit(type.id!)}
+              />
+            </td>
+          </tr>
+        ))}
       {data.contributors.map((contributor) => (
         <tr
           key={contributor.id}
