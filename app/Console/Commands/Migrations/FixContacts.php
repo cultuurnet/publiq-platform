@@ -86,7 +86,6 @@ final class FixContacts extends Command
                 $this->warn('No contributor mapping found for integration ' . $integrationId);
             }
 
-            $technical = $contacts->first(fn (Contact $contact) => $contact->type === ContactType::Technical);
             if ($technical === null) {
                 $this->saveContact(
                     Uuid::fromString($integrationId),
@@ -96,7 +95,6 @@ final class FixContacts extends Command
                 );
             }
 
-            $functional = $contacts->first(fn (Contact $contact) => $contact->type === ContactType::Functional);
             if ($functional === null) {
                 $this->saveContact(
                     Uuid::fromString($integrationId),
