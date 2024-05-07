@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Keycloak\Dto;
+namespace App\Keycloak;
 
 final readonly class Realm
 {

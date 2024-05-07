@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Keycloak\Collection;
+namespace App\Keycloak;
 
-use App\Keycloak\Realm;
 use Illuminate\Support\Collection;
 
 /**

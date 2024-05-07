@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Keycloak\Dto;
-
-use App\Keycloak\Collection\RealmCollection;
+namespace App\Keycloak;
 
 final readonly class Config
 {
