@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Keycloak\Exception;
 
-use App\Keycloak\Realm;
 use Exception;
 use Psr\Http\Message\ResponseInterface;
 
@@ -37,6 +36,11 @@ final class KeyCloakApiFailed extends Exception
     public static function failedToCreateClient(string $message): self
     {
         return new self(sprintf('Failed to create client: %s', $message), self::FAILED_TO_CREATE_CLIENT);
+    }
+
+    public static function failedToCreateClientWithResponse(ResponseInterface $response): self
+    {
+        return new self(sprintf('Failed to create client (status code %d): %s', $response->getStatusCode(), $response->getBody()->getContents()), self::FAILED_TO_CREATE_CLIENT_WITH_RESPONSE);
     }
 
     public static function failedToAddScopeToClient(string $message): self
