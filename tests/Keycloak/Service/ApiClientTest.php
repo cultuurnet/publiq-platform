@@ -26,6 +26,7 @@ final class ApiClientTest extends TestCase
     use IntegrationHelper;
 
     private const INTEGRATION_ID = '824c09c0-2f3a-4fa0-bde2-8bf25c9a5b74';
+    private const UUID = '824c09c0-2f3a-4fa0-bde2-8bf25c9a5b74';
     public const SECRET = 'abra_kadabra';
 
     private Realm $realm;
@@ -112,5 +113,56 @@ final class ApiClientTest extends TestCase
             $clientId,
             $scopeId
         );
+    }
+
+    public function test_can_fetch_client(): void
+    {
+        $mock = new MockHandler([
+            new Response(200, [], json_encode(['access_token' => 'pqeaefosdfhbsdq'], JSON_THROW_ON_ERROR)),
+            new Response(200, [], json_encode(
+                [
+                    [
+                        'id' => self::UUID,
+                        'clientId' => self::INTEGRATION_ID,
+                        'name' => 'test client',
+                        'secret' => self::SECRET,
+                        'enabled' => true,
+                    ],
+                ],
+                JSON_THROW_ON_ERROR
+            )),
+        ]);
+
+        $apiClient = new ApiClient(
+            $this->createKeycloakClientWithBearer($this->logger, $mock),
+            $this->logger
+        );
+
+        $client = $apiClient->fetchClient($this->realm, $this->createIntegration(Uuid::fromString(self::INTEGRATION_ID)));
+
+        $this->assertEquals(self::UUID, $client->id->toString());
+        $this->assertEquals(self::INTEGRATION_ID, $client->clientId->toString());
+        $this->assertEquals(self::SECRET, $client->clientSecret);
+        $this->assertEquals($this->realm, $client->realm);
+        $this->assertEquals(self::INTEGRATION_ID, $client->integrationId->toString());
+    }
+
+    public function test_client_not_found(): void
+    {
+        $mock = new MockHandler([
+            new Response(200, [], json_encode(['access_token' => 'pqeaefosdfhbsdq'], JSON_THROW_ON_ERROR)),
+            new Response(500, [], 'It is broken'),
+        ]);
+
+        $this->expectException(KeyCloakApiFailed::class);
+        $this->expectExceptionCode(KeyCloakApiFailed::FAILED_TO_FETCH_CLIENT);
+
+        $apiClient = new ApiClient(
+            $this->createKeycloakClientWithBearer($this->logger, $mock),
+            $this->logger
+        );
+
+        $client = $apiClient->fetchClient($this->realm, $this->integration);
+        $this->assertEmpty($client);
     }
 }

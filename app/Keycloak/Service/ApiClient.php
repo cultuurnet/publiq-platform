@@ -6,6 +6,7 @@ namespace App\Keycloak\Service;
 
 use App\Domain\Integrations\Integration;
 use App\Json;
+use App\Keycloak\Client;
 use App\Keycloak\Client\KeycloakClientWithBearer;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realm;
@@ -65,6 +66,29 @@ final readonly class ApiClient
 
         if ($response->getStatusCode() !== 204) {
             throw KeyCloakApiFailed::failedToAddScopeToClientWithResponse($response);
+        }
+    }
+
+    public function fetchClient(Realm $realm, Integration $integration): Client
+    {
+        try {
+            $response = $this->client->send(
+                new Request(
+                    'GET',
+                    'admin/realms/' . $realm->internalName . '/clients?' . http_build_query(['clientId' => $integration->id->toString()])
+                )
+            );
+
+            $body = $response->getBody()->getContents();
+
+            if (empty($body) || $response->getStatusCode() !== 200) {
+                throw KeyCloakApiFailed::failedToFetchClient($realm, $body);
+            }
+
+            $data = Json::decodeAssociatively($body);
+            return Client::createFromJson($realm, $integration->id, $data[0]);
+        } catch (Exception $e) {
+            throw KeyCloakApiFailed::failedToFetchClient($realm, $e->getMessage());
         }
     }
 }
