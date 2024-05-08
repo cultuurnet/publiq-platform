@@ -4,34 +4,24 @@ declare(strict_types=1);
 
 namespace Tests\Keycloak\TokenStrategy;
 
-use App\Keycloak\Client\KeycloakClient;
 use App\Keycloak\Config;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realm;
 use App\Keycloak\RealmCollection;
 use App\Keycloak\TokenStrategy\ClientCredentials;
-use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Tests\Keycloak\KeycloakHelper;
 
 final class ClientCredentialsTest extends TestCase
 {
+    use KeycloakHelper;
     public const ACCESS_TOKEN = 'pqeaefosdfhbsdq';
-    private Config $config;
 
     private LoggerInterface&MockObject $logger;
-
-    public function createKeycloakClient(MockHandler $mock): KeycloakClient
-    {
-        return new KeycloakClient(
-            new Client(['handler' => HandlerStack::create($mock)]),
-            $this->config
-        );
-    }
 
     protected function setUp(): void
     {
@@ -52,7 +42,7 @@ final class ClientCredentialsTest extends TestCase
         ]);
 
         $clientCredentials = new ClientCredentials(
-            $this->createKeycloakClient($mock),
+            $this->createKeycloakClientWithoutBearer($mock),
             $this->config,
             $this->logger
         );
@@ -68,7 +58,7 @@ final class ClientCredentialsTest extends TestCase
         ]);
 
         $clientCredentials = new ClientCredentials(
-            $this->createKeycloakClient($mock),
+            $this->createKeycloakClientWithoutBearer($mock),
             $this->config,
             $this->logger
         );
@@ -88,7 +78,7 @@ final class ClientCredentialsTest extends TestCase
         ]);
 
         $clientCredentials = new ClientCredentials(
-            $this->createKeycloakClient($mock),
+            $this->createKeycloakClientWithoutBearer($mock),
             $this->config,
             $this->logger
         );

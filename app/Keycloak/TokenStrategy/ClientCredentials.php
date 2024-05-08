@@ -5,24 +5,25 @@ declare(strict_types=1);
 namespace App\Keycloak\TokenStrategy;
 
 use App\Json;
-use App\Keycloak\Client\KeycloakClient;
+use App\Keycloak\Client\KeycloakClientWithoutBearer;
 use App\Keycloak\Config;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realm;
 use GuzzleHttp\Exception\GuzzleException;
-use Psr\Log\LoggerInterface;
 use GuzzleHttp\Psr7\Request;
+use Psr\Log\LoggerInterface;
 
 /*
  * LIMITATION: This class currently does not refresh the token automatically.
  * For normal usage this should be ok, but if we ever implement long-running CLI processes this will need to be improved.
  * */
+
 final class ClientCredentials implements TokenStrategy
 {
     private array $accessToken = [];
 
     public function __construct(
-        private readonly KeycloakClient $client,
+        private readonly KeycloakClientWithoutBearer $client,
         private readonly Config $config,
         private readonly LoggerInterface $logger,
     ) {
@@ -32,7 +33,7 @@ final class ClientCredentials implements TokenStrategy
     {
         $key = $realm->internalName . $this->config->clientId;
 
-        if ($this->accessToken[$key] !== null) {
+        if (isset($this->accessToken[$key])) {
             return $this->accessToken[$key];
         }
 
@@ -40,13 +41,12 @@ final class ClientCredentials implements TokenStrategy
             $request = new Request(
                 'POST',
                 'realms/' . $realm->internalName . '/protocol/openid-connect/token',
-                [
-                    'form_params' => [
-                        'grant_type' => 'client_credentials',
-                        'client_id' => $this->config->clientId,
-                        'client_secret' => $this->config->clientSecret,
-                    ],
-                ]
+                ['Content-Type' => 'application/x-www-form-urlencoded'],
+                http_build_query([
+                    'grant_type' => 'client_credentials',
+                    'client_id' => $this->config->clientId,
+                    'client_secret' => $this->config->clientSecret,
+                ])
             );
             $response = $this->client->send($request);
         } catch (GuzzleException $e) {
