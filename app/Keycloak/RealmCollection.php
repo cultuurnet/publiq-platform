@@ -11,4 +11,9 @@ use Illuminate\Support\Collection;
  */
 final class RealmCollection extends Collection
 {
+    public static function getDefaultRealms(): RealmCollection
+    {
+        //@todo Change this once all Realms have been configured
+        return new self([new Realm('uitidpoc', 'Acceptance')]);
+    }
 }
