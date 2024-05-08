@@ -10,6 +10,7 @@ use App\Keycloak\Client\KeycloakClientWithBearer;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realm;
 use Exception;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
@@ -47,5 +48,23 @@ final readonly class ApiClient
         $this->logger->info(sprintf('Client %s, client id %s created with id %s', $integration->name, $integration->id->toString(), $id->toString()));
 
         return $id;
+    }
+
+    public function addScopeToClient(Realm $realm, UuidInterface $clientId, UuidInterface $scopeId): void
+    {
+        try {
+            $response = $this->client->send(
+                new Request(
+                    'PUT',
+                    sprintf('admin/realms/%s/clients/%s/default-client-scopes/%s', $realm->internalName, $clientId->toString(), $scopeId->toString())
+                )
+            );
+        } catch (GuzzleException $e) {
+            throw KeyCloakApiFailed::failedToAddScopeToClient($e->getMessage());
+        }
+
+        if ($response->getStatusCode() !== 204) {
+            throw KeyCloakApiFailed::failedToAddScopeToClientWithResponse($response);
+        }
     }
 }
