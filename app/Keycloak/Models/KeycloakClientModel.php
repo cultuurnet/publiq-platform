@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Keycloak\Models;
 
 use App\Keycloak\Client;
@@ -11,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 
-class KeycloakClientModel extends Model
+final class KeycloakClientModel extends Model
 {
     use HasFactory;
 
@@ -30,11 +32,12 @@ class KeycloakClientModel extends Model
     public function toDomain(): Client
     {
         return new Client(
-            Uuid::fromString($this->id),
-            Uuid::fromString($this->integration_id),
-            $this->client_id,
+            // Trying to use magic getters for eg $this->id gives a 0 back
+            Uuid::fromString($this->attributes['id']),
+            Uuid::fromString($this->attributes['integration_id']),
+            Uuid::fromString($this->attributes['client_id']),
             $this->client_secret,
-            RealmCollection::from($this->realm)
+            RealmCollection::fromInternalName($this->realm)
         );
     }
 

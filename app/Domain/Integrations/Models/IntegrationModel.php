@@ -24,7 +24,6 @@ use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Insightly\Models\InsightlyMappingModel;
 use App\Insightly\Resources\ResourceType;
-use App\Keycloak\Client as KeycloakClient;
 use App\Keycloak\Models\KeycloakClientModel;
 use App\Keycloak\RealmCollection;
 use App\Models\UuidModel;
