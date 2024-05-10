@@ -27,7 +27,7 @@ final class KeycloakClientWithoutBearerTest extends TestCase
             'https://keycloak.com/api',
             'php_client',
             'dfgopopzjcvijogdrg',
-            RealmCollection::getDefaultRealms(),
+            RealmCollection::getRealms(),
         );
     }
 
