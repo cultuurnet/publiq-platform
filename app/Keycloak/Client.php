@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Keycloak;
 
+use App\Auth0\Auth0Client;
+use App\Auth0\Auth0Tenant;
 use InvalidArgumentException;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;

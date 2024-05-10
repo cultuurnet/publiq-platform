@@ -48,7 +48,7 @@ final class KeycloakServiceProvider extends ServiceProvider
                 config('keycloak.base_url'),
                 config('keycloak.client_id'),
                 config('keycloak.client_secret'),
-                RealmCollection::getDefaultRealms(),
+                RealmCollection::getRealms(),
             );
         });
 
