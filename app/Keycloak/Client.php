@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Keycloak;
 
-use App\Auth0\Auth0Client;
-use App\Auth0\Auth0Tenant;
 use InvalidArgumentException;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -35,5 +33,10 @@ final readonly class Client
             $data['secret'],
             $realm,
         );
+    }
+
+    public function getKeycloakUrl(string $baseUrl): string
+    {
+        return sprintf('%s/admin/master/console/#/%s/clients/%s/settings', $baseUrl, $this->realm->internalName, $this->clientId->toString());
     }
 }

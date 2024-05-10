@@ -6,5 +6,4 @@ namespace App\Keycloak\Repositories;
 
 interface KeycloakClientRepository
 {
-
 }
