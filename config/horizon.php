@@ -220,5 +220,7 @@ return [
         'luc@madewithlove.be',
         'jonas@cultuurnet.be',
         'paul@herbosch.be',
+        'robin.geldhof@publiq.be',
+        'manon@cultuurnet.be',
     ],
 ];
