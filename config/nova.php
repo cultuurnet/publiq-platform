@@ -107,6 +107,8 @@ return [
         'manon@cultuurnet.be',
         'emile.dekeyser@publiq.be',
         'renate@bill.be',
+        'tessa@publiq.be',
+        'tessa.depauw@publiq.be',
     ],
 
     /*
