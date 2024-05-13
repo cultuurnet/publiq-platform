@@ -31,7 +31,7 @@ final class KeycloakClientWithBearerTest extends TestCase
             'https://keycloak.com/api',
             'php_client',
             'dfgopopzjcvijogdrg',
-            RealmCollection::getDefaultRealms(),
+            RealmCollection::getRealms(),
         );
         $this->tokenStrategy = $this->createMock(TokenStrategy::class);
         $this->tokenStrategy->expects($this->once())

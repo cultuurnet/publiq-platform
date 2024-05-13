@@ -21,7 +21,7 @@ final class IntegrationToKeycloakClientConverterTest extends TestCase
     {
         $id = Uuid::uuid4();
 
-        $integration = $this->createIntegration($id, ['partnerStatus' => $partnerStatus]);
+        $integration = $this->givenThereIsAnIntegration($id, ['partnerStatus' => $partnerStatus]);
 
         $convertedData = IntegrationToKeycloakClientConverter::convert($id, $integration);
 

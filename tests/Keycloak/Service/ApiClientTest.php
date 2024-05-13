@@ -43,7 +43,7 @@ final class ApiClientTest extends TestCase
         );
 
         $this->realm = new Realm('uitidpoc', 'Acceptance');
-        $this->integration = $this->createIntegration(Uuid::fromString(self::INTEGRATION_ID));
+        $this->integration = $this->givenThereIsAnIntegration(Uuid::fromString(self::INTEGRATION_ID));
         $this->logger = $this->createMock(LoggerInterface::class);
         ;
     }
