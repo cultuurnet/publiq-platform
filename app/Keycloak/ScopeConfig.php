@@ -8,7 +8,7 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationType;
 use Ramsey\Uuid\UuidInterface;
 
-readonly final class ScopeConfig
+final readonly class ScopeConfig
 {
     public function __construct(
         public UuidInterface $searchApiScopeId,
