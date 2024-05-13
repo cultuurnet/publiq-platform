@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Tests\Keycloak\Service;
 
 use App\Domain\Integrations\IntegrationPartnerStatus;
-use App\Keycloak\Service\ClientToKeycloakConverter;
+use App\Keycloak\Service\IntegrationToKeycloakClientConverter;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use Tests\IntegrationHelper;
 
-final class ClientToKeycloakConverterTest extends TestCase
+final class IntegrationToKeycloakClientConverterTest extends TestCase
 {
     use IntegrationHelper;
 
@@ -23,7 +23,7 @@ final class ClientToKeycloakConverterTest extends TestCase
 
         $integration = $this->createIntegration($id, ['partnerStatus' => $partnerStatus]);
 
-        $convertedData = ClientToKeycloakConverter::convert($id, $integration);
+        $convertedData = IntegrationToKeycloakClientConverter::convert($id, $integration);
 
         $this->assertIsArray($convertedData);
         $this->assertEquals('openid-connect', $convertedData['protocol']);

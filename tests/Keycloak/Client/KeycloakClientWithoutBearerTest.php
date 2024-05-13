@@ -31,7 +31,7 @@ final class KeycloakClientWithoutBearerTest extends TestCase
         );
     }
 
-    public function test_can_retrieve_token(): void
+    public function can_send_a_request_without_bearer(): void
     {
         $request = new Request('GET', '/endpoint');
         $response = new Response(200, [], 'Response body');

@@ -33,7 +33,7 @@ final readonly class ApiClient
                     'POST',
                     sprintf('admin/realms/%s/clients', $realm->internalName),
                     [],
-                    Json::encode(ClientToKeycloakConverter::convert($id, $integration))
+                    Json::encode(IntegrationToKeycloakClientConverter::convert($id, $integration))
                 )
             );
         } catch (Exception $e) {

@@ -8,7 +8,7 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use Ramsey\Uuid\UuidInterface;
 
-final class ClientToKeycloakConverter
+final class IntegrationToKeycloakClientConverter
 {
     public static function convert(UuidInterface $id, Integration $integration): array
     {
