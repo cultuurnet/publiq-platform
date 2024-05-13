@@ -8,21 +8,21 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationType;
 use Ramsey\Uuid\UuidInterface;
 
-final class ScopeConfig
+readonly final class ScopeConfig
 {
     public function __construct(
-        public UuidInterface $searchApi,
-        public UuidInterface $entryApi,
-        public UuidInterface $widgets,
+        public UuidInterface $searchApiScopeId,
+        public UuidInterface $entryApiScopeId,
+        public UuidInterface $ScopeId,
     ) {
     }
 
     public function getScopeIdFromIntegrationType(Integration $integration): UuidInterface
     {
         return match ($integration->type) {
-            IntegrationType::EntryApi => $this->entryApi,
-            IntegrationType::Widgets => $this->widgets,
-            IntegrationType::SearchApi => $this->searchApi
+            IntegrationType::EntryApi => $this->entryApiScopeId,
+            IntegrationType::Widgets => $this->ScopeId,
+            IntegrationType::SearchApi => $this->searchApiScopeId
         };
     }
 }
