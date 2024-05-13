@@ -104,6 +104,7 @@ return [
         'robin.geldhof@publiq.be',
         'bram.pauwelyn@publiq.be',
         'kristof@publiq.be',
+        'manon@cultuurnet.be',
     ],
 
     /*
