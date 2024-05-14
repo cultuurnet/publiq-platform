@@ -34,17 +34,14 @@ final class KeycloakHttpClientTest extends TestCase
             RealmCollection::getRealms(),
         );
         $this->tokenStrategy = $this->createMock(TokenStrategy::class);
-    }
-
-    public function test_it_can_send_a_request_with_bearer(): void
-    {
-        $keycloakClient = new KeycloakHttpClient($this->clientMock, $this->config, $this->tokenStrategy);
-
         $this->tokenStrategy->expects($this->once())
             ->method('fetchToken')
-            ->with($keycloakClient, Realm::getMasterRealm())
+            ->with(Realm::getMasterRealm())
             ->willReturn(self::MY_SECRET_TOKEN);
+    }
 
+    public function can_send_a_request_with_bearer(): void
+    {
         $request = new Request('GET', '/endpoint');
         $response = new Response(200, [], 'Response body');
 
@@ -57,12 +54,13 @@ final class KeycloakHttpClientTest extends TestCase
             }))
             ->willReturn($response);
 
+        $keycloakClient = new KeycloakHttpClient($this->clientMock, $this->config, $this->tokenStrategy);
         $result = $keycloakClient->sendWithBearer($request);
 
         $this->assertEquals('Response body', $result->getBody()->getContents());
     }
 
-    public function test_it_can_send_a_request_without_bearer(): void
+    public function can_send_a_request_without_bearer(): void
     {
         $request = new Request('GET', '/endpoint');
         $response = new Response(200, [], 'Response body');
