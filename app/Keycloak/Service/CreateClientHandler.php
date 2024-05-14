@@ -11,7 +11,7 @@ use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\ScopeConfig;
 use Psr\Log\LoggerInterface;
 
-final readonly class CreateClientFlow
+final readonly class CreateClientHandler
 {
     public function __construct(
         private ApiClient $client,
@@ -21,7 +21,7 @@ final readonly class CreateClientFlow
     ) {
     }
 
-    public function createClientsForIntegration(Integration $integration): ClientCollection
+    public function handle(Integration $integration): ClientCollection
     {
         $scopeId = $this->scopeConfig->getScopeIdFromIntegrationType($integration);
 

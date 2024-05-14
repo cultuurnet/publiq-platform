@@ -8,7 +8,7 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Config;
 use App\Keycloak\ScopeConfig;
 use App\Keycloak\Service\ApiClient;
-use App\Keycloak\Service\CreateClientFlow;
+use App\Keycloak\Service\CreateClientHandler;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Psr\Log\LoggerInterface;
@@ -41,14 +41,14 @@ final class KeycloakCreateClient extends Command
             return self::FAILURE;
         }
 
-        $flow = new CreateClientFlow(
+        $flow = new CreateClientHandler(
             $this->apiClient,
             $this->config,
             $this->scopeConfig,
             $this->logger
         );
 
-        $clients = $flow->createClientsForIntegration($integration);
+        $clients = $flow->handle($integration);
 
         foreach ($clients as $client) {
             $this->info(sprintf("Created Keycloak client for realm '%s' with client ID: %s", $client->realm->internalName, $client->clientId));
