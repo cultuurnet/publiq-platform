@@ -88,4 +88,29 @@ final class ApiClientTest extends TestCase
             $this->integration
         );
     }
+
+    public function test_fails_to_add_scope_to_client(): void
+    {
+        $clientId = Uuid::uuid4();
+        $scopeId = Uuid::fromString('123ae05d-1c41-40c8-8716-c4654a3bfd98');
+
+        $mock = new MockHandler([
+            new Response(200, [], json_encode(['access_token' => 'pqeaefosdfhbsdq'], JSON_THROW_ON_ERROR)),
+            new Response(500),
+        ]);
+
+        $apiClient = new ApiClient(
+            $this->createKeycloakClientWithBearer($this->logger, $mock),
+            $this->logger
+        );
+
+        $this->expectException(KeyCloakApiFailed::class);
+        $this->expectExceptionCode(KeyCloakApiFailed::FAILED_TO_ADD_SCOPE_WITH_RESPONSE);
+
+        $apiClient->addScopeToClient(
+            $this->realm,
+            $clientId,
+            $scopeId
+        );
+    }
 }
