@@ -109,6 +109,8 @@ return [
         'renate@bill.be',
         'tessa@publiq.be',
         'tessa.depauw@publiq.be',
+        'delfien@publiq.be',
+        'delfien.delputte@publiq.be',
     ],
 
     /*
