@@ -101,7 +101,7 @@ final class ApiClientTest extends TestCase
         ]);
 
         $apiClient = new ApiClient(
-            $this->createKeycloakClientWithBearer($this->logger, $mock),
+            $this->givenKeycloakHttpClient($this->logger, $mock),
             $this->logger
         );
 
@@ -134,11 +134,11 @@ final class ApiClientTest extends TestCase
         ]);
 
         $apiClient = new ApiClient(
-            $this->createKeycloakClientWithBearer($this->logger, $mock),
+            $this->givenKeycloakHttpClient($this->logger, $mock),
             $this->logger
         );
 
-        $client = $apiClient->fetchClient($this->realm, $this->createIntegration(Uuid::fromString(self::INTEGRATION_ID)));
+        $client = $apiClient->fetchClient($this->realm, $this->givenThereIsAnIntegration(Uuid::fromString(self::INTEGRATION_ID)));
 
         $this->assertEquals(self::UUID, $client->id->toString());
         $this->assertEquals(self::INTEGRATION_ID, $client->clientId->toString());
@@ -158,7 +158,7 @@ final class ApiClientTest extends TestCase
         $this->expectExceptionCode(KeyCloakApiFailed::FAILED_TO_FETCH_CLIENT);
 
         $apiClient = new ApiClient(
-            $this->createKeycloakClientWithBearer($this->logger, $mock),
+            $this->givenKeycloakHttpClient($this->logger, $mock),
             $this->logger
         );
 
