@@ -48,7 +48,7 @@ final class KeycloakCreateClient extends Command
             $this->logger
         );
 
-        $clients = $flow->handle($integration);
+        $clients = $createClientHandler->handle($integration);
 
         foreach ($clients as $client) {
             $this->info(sprintf("Created Keycloak client for realm '%s' with client ID: %s", $client->realm->internalName, $client->clientId));
