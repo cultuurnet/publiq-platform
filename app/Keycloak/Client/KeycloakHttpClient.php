@@ -13,7 +13,7 @@ use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-final readonly class KeycloakClientWithBearer implements KeycloakClient
+final readonly class KeycloakHttpClient
 {
     public function __construct(private ClientInterface $client, private Config $config, private TokenStrategy $tokenStrategy)
     {
@@ -22,11 +22,22 @@ final readonly class KeycloakClientWithBearer implements KeycloakClient
     /**
      * @throws GuzzleException
      */
-    public function send(RequestInterface $request): ResponseInterface
+    public function sendWithoutBearer(RequestInterface $request): ResponseInterface
+    {
+        $request = $request
+            ->withUri(new Uri($this->config->baseUrl . $request->getUri()));
+
+        return $this->client->send($request);
+    }
+
+    /**
+     * @throws GuzzleException
+     */
+    public function sendWithBearer(RequestInterface $request): ResponseInterface
     {
         $request = $request
             ->withUri(new Uri($this->config->baseUrl . $request->getUri()))
-            ->withAddedHeader('Authorization', 'Bearer ' . $this->tokenStrategy->fetchToken(Realm::getMasterRealm()));
+            ->withAddedHeader('Authorization', 'Bearer ' . $this->tokenStrategy->fetchToken($this, Realm::getMasterRealm()));
         return $this->client->send($request);
     }
 }

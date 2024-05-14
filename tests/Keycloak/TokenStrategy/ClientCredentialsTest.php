@@ -42,11 +42,13 @@ final class ClientCredentialsTest extends TestCase
         ]);
 
         $clientCredentials = new ClientCredentials(
-            $this->createKeycloakClientWithoutBearer($mock),
             $this->config,
             $this->logger
         );
-        $token = $clientCredentials->fetchToken(Realm::getMasterRealm());
+        $token = $clientCredentials->fetchToken(
+            $this->givenKeycloakHttpClient($this->logger, $mock),
+            Realm::getMasterRealm()
+        );
 
         $this->assertEquals(self::ACCESS_TOKEN, $token);
     }
@@ -58,7 +60,6 @@ final class ClientCredentialsTest extends TestCase
         ]);
 
         $clientCredentials = new ClientCredentials(
-            $this->createKeycloakClientWithoutBearer($mock),
             $this->config,
             $this->logger
         );
@@ -66,7 +67,10 @@ final class ClientCredentialsTest extends TestCase
         $this->expectException(KeyCloakApiFailed::class);
         $this->expectExceptionCode(KeyCloakApiFailed::UNEXPECTED_TOKEN_RESPONSE);
 
-        $token = $clientCredentials->fetchToken(Realm::getMasterRealm());
+        $token = $clientCredentials->fetchToken(
+            $this->givenKeycloakHttpClient($this->logger, $mock),
+            Realm::getMasterRealm()
+        );
 
         $this->assertEquals(self::ACCESS_TOKEN, $token);
     }
@@ -78,13 +82,15 @@ final class ClientCredentialsTest extends TestCase
         ]);
 
         $clientCredentials = new ClientCredentials(
-            $this->createKeycloakClientWithoutBearer($mock),
             $this->config,
             $this->logger
         );
 
         $this->expectException(KeyCloakApiFailed::class);
         $this->expectExceptionCode(KeyCloakApiFailed::COULD_NOT_FETCH_ACCESS_TOKEN);
-        $clientCredentials->fetchToken(Realm::getMasterRealm());
+        $clientCredentials->fetchToken(
+            $this->givenKeycloakHttpClient($this->logger, $mock),
+            Realm::getMasterRealm()
+        );
     }
 }

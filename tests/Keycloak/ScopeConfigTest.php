@@ -35,7 +35,7 @@ final class ScopeConfigTest extends TestCase
     public function test_get_scope_id_from_integration(IntegrationType $type, string $expectedScopeId): void
     {
         $actualScopeId = $this->scopeConfig->getScopeIdFromIntegrationType(
-            $this->createIntegration(Uuid::uuid4(), ['type' => $type])
+            $this->givenThereIsAnIntegration(Uuid::uuid4(), ['type' => $type])
         );
 
         $this->assertEquals($expectedScopeId, $actualScopeId->toString());

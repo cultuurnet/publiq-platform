@@ -44,7 +44,7 @@ final class ApiClientTest extends TestCase
         );
 
         $this->realm = new Realm('uitidpoc', 'Acceptance');
-        $this->integration = $this->createIntegration(Uuid::fromString(self::INTEGRATION_ID));
+        $this->integration = $this->givenThereIsAnIntegration(Uuid::fromString(self::INTEGRATION_ID));
         $this->logger = $this->createMock(LoggerInterface::class);
         ;
     }
@@ -57,7 +57,7 @@ final class ApiClientTest extends TestCase
         ]);
 
         $apiClient = new ApiClient(
-            $this->createKeycloakClientWithBearer($this->logger, $mock),
+            $this->givenKeycloakHttpClient($this->logger, $mock),
             $this->logger
         );
 
@@ -77,7 +77,7 @@ final class ApiClientTest extends TestCase
         ]);
 
         $apiClient = new ApiClient(
-            $this->createKeycloakClientWithBearer($this->logger, $mock),
+            $this->givenKeycloakHttpClient($this->logger, $mock),
             $this->logger
         );
 
