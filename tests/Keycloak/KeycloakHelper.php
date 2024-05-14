@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Keycloak;
 
-use App\Keycloak\Client\KeycloakClientWithBearer;
-use App\Keycloak\Client\KeycloakClientWithoutBearer;
+use App\Keycloak\Client\KeycloakHttpClient;
 use App\Keycloak\Config;
 use App\Keycloak\TokenStrategy\ClientCredentials;
 use GuzzleHttp\Client;
@@ -18,28 +17,19 @@ trait KeycloakHelper
 {
     private Config $config;
 
-    protected function createKeycloakClientWithBearer(LoggerInterface $logger, ?MockHandler $mock = null): KeycloakClientWithBearer
+    protected function givenKeycloakHttpClient(LoggerInterface $logger, ?MockHandler $mock = null): KeycloakHttpClient
     {
-        return new KeycloakClientWithBearer(
-            $this->createClient($mock),
+        return new KeycloakHttpClient(
+            $this->givenClient($mock),
             $this->config,
             new ClientCredentials(
-                $this->createKeycloakClientWithoutBearer($mock),
                 $this->config,
                 $logger
             )
         );
     }
 
-    protected function createKeycloakClientWithoutBearer(?MockHandler $mock = null): KeycloakClientWithoutBearer
-    {
-        return new KeycloakClientWithoutBearer(
-            $this->createClient($mock),
-            $this->config
-        );
-    }
-
-    private function createClient(?MockHandler $mock): Client
+    private function givenClient(?MockHandler $mock): Client
     {
         return new Client($mock ? ['handler' => HandlerStack::create($mock), RequestOptions::HTTP_ERRORS => false] : [RequestOptions::HTTP_ERRORS => false]);
     }

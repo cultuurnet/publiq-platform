@@ -6,7 +6,7 @@ namespace App\Keycloak\Service;
 
 use App\Domain\Integrations\Integration;
 use App\Json;
-use App\Keycloak\Client\KeycloakClientWithBearer;
+use App\Keycloak\Client\KeycloakHttpClient;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realm;
 use Exception;
@@ -18,7 +18,7 @@ use Ramsey\Uuid\UuidInterface;
 final readonly class ApiClient
 {
     public function __construct(
-        private KeycloakClientWithBearer $client,
+        private KeycloakHttpClient $client,
         private LoggerInterface $logger
     ) {
     }
@@ -28,7 +28,7 @@ final readonly class ApiClient
         $id = Uuid::uuid4();
 
         try {
-            $response = $this->client->send(
+            $response = $this->client->sendWithBearer(
                 new Request(
                     'POST',
                     sprintf('admin/realms/%s/clients', $realm->internalName),

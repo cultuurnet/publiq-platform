@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Keycloak\TokenStrategy;
 
 use App\Json;
-use App\Keycloak\Client\KeycloakClientWithoutBearer;
+use App\Keycloak\Client\KeycloakHttpClient;
 use App\Keycloak\Config;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realm;
@@ -23,13 +23,12 @@ final class ClientCredentials implements TokenStrategy
     private array $accessToken = [];
 
     public function __construct(
-        private readonly KeycloakClientWithoutBearer $client,
         private readonly Config $config,
         private readonly LoggerInterface $logger,
     ) {
     }
 
-    public function fetchToken(Realm $realm): string
+    public function fetchToken(KeycloakHttpClient $client, Realm $realm): string
     {
         $key = $realm->internalName . $this->config->clientId;
 
@@ -48,7 +47,7 @@ final class ClientCredentials implements TokenStrategy
                     'client_secret' => $this->config->clientSecret,
                 ])
             );
-            $response = $this->client->send($request);
+            $response = $client->sendWithoutBearer($request);
         } catch (GuzzleException $e) {
             $this->logger->error($e->getMessage());
             throw KeyCloakApiFailed::couldNotFetchAccessToken($e->getMessage());

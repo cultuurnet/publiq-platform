@@ -56,7 +56,7 @@ final class ApiClientTest extends TestCase
         ]);
 
         $apiClient = new ApiClient(
-            $this->createKeycloakClientWithBearer($this->logger, $mock),
+            $this->givenKeycloakHttpClient($this->logger, $mock),
             $this->logger
         );
 
@@ -76,7 +76,7 @@ final class ApiClientTest extends TestCase
         ]);
 
         $apiClient = new ApiClient(
-            $this->createKeycloakClientWithBearer($this->logger, $mock),
+            $this->givenKeycloakHttpClient($this->logger, $mock),
             $this->logger
         );
 
