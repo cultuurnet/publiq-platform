@@ -101,6 +101,11 @@ return [
         'emma@madewithlove.be',
         'corneel.wille@cultuurnet.be',
         'wannes.van.ingelghem@publiq.be',
+        'robin.geldhof@publiq.be',
+        'bram.pauwelyn@publiq.be',
+        'kristof@publiq.be',
+        'manon@cultuurnet.be',
+        'emile.dekeyser@publiq.be',
     ],
 
     /*

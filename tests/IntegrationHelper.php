@@ -13,7 +13,7 @@ use Ramsey\Uuid\UuidInterface;
 
 trait IntegrationHelper
 {
-    public function createIntegration(UuidInterface $integrationId, array $options = []): Integration
+    public function givenThereIsAnIntegration(UuidInterface $integrationId, array $options = []): Integration
     {
         return new Integration(
             $integrationId,
