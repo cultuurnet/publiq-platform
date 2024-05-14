@@ -41,7 +41,7 @@ final class KeycloakCreateClient extends Command
             return self::FAILURE;
         }
 
-        $flow = new CreateClientHandler(
+        $createClientHandler = new CreateClientHandler(
             $this->apiClient,
             $this->config,
             $this->scopeConfig,
