@@ -65,7 +65,7 @@ final class EloquentKeycloakClientRepository implements KeycloakClientRepository
     public function getByIntegrationIds(array $integrationIds): array
     {
         $ids = array_map(
-            fn ($integrationId) => $integrationId->toString(),
+            static fn ($integrationId) => $integrationId->toString(),
             $integrationIds
         );
 
