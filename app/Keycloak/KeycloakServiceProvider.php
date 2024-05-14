@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Keycloak;
 
-use App\Keycloak\Client\KeycloakClientWithBearer;
-use App\Keycloak\Client\KeycloakClientWithoutBearer;
+use App\Keycloak\Client\KeycloakHttpClient;
 use App\Keycloak\Service\ApiClient;
 use App\Keycloak\TokenStrategy\ClientCredentials;
 use GuzzleHttp\Client;
@@ -19,25 +18,15 @@ final class KeycloakServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(ApiClient::class, function () {
-            $client = new Client([RequestOptions::HTTP_ERRORS => false]);
-
-            $keycloakClientWithoutBearer = new KeycloakClientWithoutBearer(
-                $client,
-                $this->app->get(Config::class)
-            );
-
-            $keycloakClient = new KeycloakClientWithBearer(
-                $client,
-                $this->app->get(Config::class),
-                new ClientCredentials(
-                    $keycloakClientWithoutBearer,
-                    $this->app->get(Config::class),
-                    $this->app->get(LoggerInterface::class)
-                )
-            );
-
             return new ApiClient(
-                $keycloakClient,
+                new KeycloakHttpClient(
+                    new Client([RequestOptions::HTTP_ERRORS => false]),
+                    $this->app->get(Config::class),
+                    new ClientCredentials(
+                        $this->app->get(Config::class),
+                        $this->app->get(LoggerInterface::class)
+                    )
+                ),
                 $this->app->get(LoggerInterface::class),
             );
         });
