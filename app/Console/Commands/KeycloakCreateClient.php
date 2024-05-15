@@ -51,7 +51,7 @@ final class KeycloakCreateClient extends Command
         $clients = $createClientHandler->handle($integration);
 
         foreach ($clients as $client) {
-            $this->info(sprintf("Created Keycloak client for realm '%s' with client ID: %s", $client->realm->internalName, $client->clientId));
+            $this->info(sprintf("Created Keycloak client for realm '%s' for integration '%s'", $client->realm->internalName, $client->integrationId));
         }
 
         return self::SUCCESS;
