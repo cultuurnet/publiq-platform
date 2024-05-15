@@ -14,7 +14,7 @@ use Psr\Log\LoggerInterface;
 final readonly class CreateClientHandler
 {
     public function __construct(
-        private ApiClient $client,
+        private ApiClientInterface $client,
         private Config $config,
         private ScopeConfig $scopeConfig,
         private LoggerInterface $logger
