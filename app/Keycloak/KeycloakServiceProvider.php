@@ -5,15 +5,12 @@ declare(strict_types=1);
 namespace App\Keycloak;
 
 use App\Domain\Integrations\Events\IntegrationCreated;
-use App\Domain\Integrations\Events\IntegrationUpdated;
-use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Listeners\CreateClients;
 use App\Keycloak\Client\KeycloakHttpClient;
 use App\Keycloak\Repositories\EloquentKeycloakClientRepository;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Keycloak\Service\ApiClient;
 use App\Keycloak\Service\ApiClientInterface;
-use App\Keycloak\Service\CreateClientHandler;
 use App\Keycloak\TokenStrategy\ClientCredentials;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
