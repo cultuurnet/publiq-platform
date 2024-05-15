@@ -141,10 +141,9 @@ final class ApiClientTest extends TestCase
         $client = $apiClient->fetchClient($this->realm, $this->givenThereIsAnIntegration(Uuid::fromString(self::INTEGRATION_ID)));
 
         $this->assertEquals(self::UUID, $client->id->toString());
-        $this->assertEquals(self::INTEGRATION_ID, $client->clientId->toString());
+        $this->assertEquals(self::INTEGRATION_ID, $client->integrationId->toString());
         $this->assertEquals(self::SECRET, $client->clientSecret);
         $this->assertEquals($this->realm, $client->realm);
-        $this->assertEquals(self::INTEGRATION_ID, $client->integrationId->toString());
     }
 
     public function test_client_not_found(): void

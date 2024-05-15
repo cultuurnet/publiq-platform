@@ -20,10 +20,14 @@ final class RealmCollection extends Collection
 
     public static function fromInternalName(string $internalName): Realm
     {
-        foreach(self::getRealms() as $realm) {
-            if($realm->internalName === $internalName) {
+        foreach (self::getRealms() as $realm) {
+            if ($realm->internalName === $internalName) {
                 return $realm;
             }
+        }
+
+        if ($internalName === Realm::getMasterRealm()->internalName) {
+            return Realm::getMasterRealm();
         }
 
         throw new InvalidArgumentException('Invalid realm: ' . $internalName);
@@ -35,7 +39,7 @@ final class RealmCollection extends Collection
     public static function asArray(): array
     {
         $output = [];
-        foreach(self::getRealms() as $realm) {
+        foreach (self::getRealms() as $realm) {
             $output[$realm->internalName] = $realm->publicName;
         }
         return $output;

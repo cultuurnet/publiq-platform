@@ -13,7 +13,6 @@ final readonly class Client
     public function __construct(
         public UuidInterface $id,
         public UuidInterface $integrationId,
-        public UuidInterface $clientId,
         public string $clientSecret,
         public Realm $realm
     ) {
@@ -25,11 +24,9 @@ final readonly class Client
             throw new InvalidArgumentException('Missing secret');
         }
 
-        //@todo Currently IntegrationId is always equal to clientId. is that something we want?
         return new self(
             Uuid::fromString($data['id']),
             $integrationId,
-            Uuid::fromString($data['clientId']),
             $data['secret'],
             $realm,
         );
@@ -37,6 +34,6 @@ final readonly class Client
 
     public function getKeycloakUrl(string $baseUrl): string
     {
-        return sprintf('%s/admin/master/console/#/%s/clients/%s/settings', $baseUrl, $this->realm->internalName, $this->clientId->toString());
+        return sprintf('%s/admin/master/console/#/%s/clients/%s/settings', $baseUrl, $this->realm->internalName, $this->integrationId->toString());
     }
 }

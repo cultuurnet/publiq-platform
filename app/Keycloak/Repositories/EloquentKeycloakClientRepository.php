@@ -6,6 +6,7 @@ namespace App\Keycloak\Repositories;
 
 use App\Keycloak\Client;
 use App\Keycloak\Models\KeycloakClientModel;
+use App\Keycloak\RealmCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
@@ -24,13 +25,12 @@ final class EloquentKeycloakClientRepository implements KeycloakClientRepository
                 KeycloakClientModel::query()
                     ->updateOrCreate(
                         [
-                            'client_id' => $client->clientId,
+                            'client_secret' => $client->clientSecret, // secret could actually change because of secret rotation
                             'realm' => $client->realm->internalName,
                         ],
                         [
                             'id' => $client->id->toString(),
                             'integration_id' => $client->integrationId->toString(),
-                            'client_id' => $client->clientId,
                             'client_secret' => $client->clientSecret,
                             'realm' => $client->realm->internalName,
                         ]

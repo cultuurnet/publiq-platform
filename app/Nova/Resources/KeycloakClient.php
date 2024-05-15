@@ -58,11 +58,11 @@ final class KeycloakClient extends Resource
             Text::make('Status', function (KeycloakClientModel $model) {
                 $client = $model->toDomain();
                 if (random_int(0, 1)) { //@todo implement status check
-                    Log::info('KeycloakClient - status - ' . $client->clientId . ': blocked');
+                    Log::info('KeycloakClient - status - ' . $client->integrationId . ': blocked');
                     return '<span style="color: red;">Blocked</span>';
                 }
 
-                Log::debug('KeycloakClient - status - ' . $client->clientId . ': active');
+                Log::debug('KeycloakClient - status - ' . $client->integrationId . ': active');
                 return '<span style="color: green;">Active</span>';
             })->asHtml(),
             Text::make('client_id')
