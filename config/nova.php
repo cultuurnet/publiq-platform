@@ -107,10 +107,13 @@ return [
         'manon@cultuurnet.be',
         'emile.dekeyser@publiq.be',
         'renate@bill.be',
+        'renate.neven@publiq.be',
         'tessa@publiq.be',
         'tessa.depauw@publiq.be',
         'delfien@publiq.be',
         'delfien.delputte@publiq.be',
+        'amel.ahdour@publiq.be',
+        'helene@publiq.be',
     ],
 
     /*
