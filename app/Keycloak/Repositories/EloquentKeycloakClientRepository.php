@@ -76,4 +76,24 @@ final class EloquentKeycloakClientRepository implements KeycloakClientRepository
             ->map(static fn (KeycloakClientModel $model) => $model->toDomain())
             ->toArray();
     }
+
+    public function getMissingRealmsByIntegrationId(UuidInterface $integrationId): RealmCollection
+    {
+        $clients = $this->getByIntegrationId($integrationId);
+
+        if (count($clients) === count(RealmCollection::getRealms())) {
+            return new RealmCollection();
+        }
+
+        $existingRealms = array_map(
+            static fn (Client $client) => $client->realm,
+            $clients
+        );
+
+        return new RealmCollection(array_udiff(
+            RealmCollection::getRealms()->toArray(),
+            $existingRealms,
+            fn (Client $t1, Client $t2) => strcmp($t1->id->toString(), $t2->id->toString())
+        ));
+    }
 }
