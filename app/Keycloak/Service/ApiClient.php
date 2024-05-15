@@ -17,11 +17,11 @@ use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-class ApiClient
+final readonly class ApiClient implements ApiClientInterface
 {
     public function __construct(
-        private readonly KeycloakHttpClient $client,
-        private readonly LoggerInterface $logger
+        private KeycloakHttpClient $client,
+        private LoggerInterface $logger
     ) {
     }
 
