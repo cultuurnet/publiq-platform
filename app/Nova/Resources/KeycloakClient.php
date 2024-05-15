@@ -65,7 +65,7 @@ final class KeycloakClient extends Resource
                 Log::debug('KeycloakClient - status - ' . $client->integrationId . ': active');
                 return '<span style="color: green;">Active</span>';
             })->asHtml(),
-            Text::make('client_id', function(KeycloakClientModel $model) {
+            Text::make('client_id', function (KeycloakClientModel $model) {
                 return $model->toDomain()->integrationId->toString();
             })
                 ->readonly(),

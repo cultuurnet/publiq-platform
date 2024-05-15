@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Keycloak\Listeners;
 
 use App\Domain\Integrations\Events\IntegrationCreated;
-use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Keycloak\Service\CreateClientHandler;
