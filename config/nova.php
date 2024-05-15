@@ -115,6 +115,7 @@ return [
         'amel.ahdour@publiq.be',
         'helene@publiq.be',
         'toon.beullens@cultuurnet.be',
+        'karen.schilders@cultuurnet.be',
     ],
 
     /*
