@@ -114,6 +114,7 @@ return [
         'delfien.delputte@publiq.be',
         'amel.ahdour@publiq.be',
         'helene@publiq.be',
+        'toon.beullens@cultuurnet.be',
     ],
 
     /*
