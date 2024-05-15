@@ -12,12 +12,13 @@ return new class () extends Migration {
         Schema::create('keycloak_clients', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('integration_id');
-            $table->string('client_id');
             $table->string('client_secret');
             $table->string('realm');
 
             $table->softDeletes();
             $table->timestamps();
+
+            $table->index('integration_id', 'realm');
         });
     }
 
