@@ -112,6 +112,9 @@ jobs:
       - name: 🔢 Create .env file
         run: cp .env.ci .env
 
+      - name: 👽 Create nova_users.php file
+        run: cp nova_users.php.ci nova_users.php
+
       - name: 📦 Install composer dependencies
         run: |
           composer config "http-basic.nova.laravel.com" "${{ secrets.NOVA_USERNAME }}" "${{ secrets.NOVA_PASSWORD }}"
