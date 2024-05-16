@@ -9,7 +9,7 @@ use App\Keycloak\Config;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realm;
 use App\Keycloak\RealmCollection;
-use App\Keycloak\Service\ApiClient;
+use App\Keycloak\Service\KeycloakApiClient;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -56,7 +56,7 @@ final class ApiClientTest extends TestCase
             new Response(201),
         ]);
 
-        $apiClient = new ApiClient(
+        $apiClient = new KeycloakApiClient(
             $this->givenKeycloakHttpClient($this->logger, $mock),
             $this->logger
         );
@@ -76,7 +76,7 @@ final class ApiClientTest extends TestCase
             new Response(500),
         ]);
 
-        $apiClient = new ApiClient(
+        $apiClient = new KeycloakApiClient(
             $this->givenKeycloakHttpClient($this->logger, $mock),
             $this->logger
         );
@@ -100,7 +100,7 @@ final class ApiClientTest extends TestCase
             new Response(500),
         ]);
 
-        $apiClient = new ApiClient(
+        $apiClient = new KeycloakApiClient(
             $this->givenKeycloakHttpClient($this->logger, $mock),
             $this->logger
         );
@@ -133,7 +133,7 @@ final class ApiClientTest extends TestCase
             )),
         ]);
 
-        $apiClient = new ApiClient(
+        $apiClient = new KeycloakApiClient(
             $this->givenKeycloakHttpClient($this->logger, $mock),
             $this->logger
         );
@@ -141,10 +141,9 @@ final class ApiClientTest extends TestCase
         $client = $apiClient->fetchClient($this->realm, $this->givenThereIsAnIntegration(Uuid::fromString(self::INTEGRATION_ID)));
 
         $this->assertEquals(self::UUID, $client->id->toString());
-        $this->assertEquals(self::INTEGRATION_ID, $client->clientId->toString());
+        $this->assertEquals(self::INTEGRATION_ID, $client->integrationId->toString());
         $this->assertEquals(self::SECRET, $client->clientSecret);
         $this->assertEquals($this->realm, $client->realm);
-        $this->assertEquals(self::INTEGRATION_ID, $client->integrationId->toString());
     }
 
     public function test_client_not_found(): void
@@ -157,7 +156,7 @@ final class ApiClientTest extends TestCase
         $this->expectException(KeyCloakApiFailed::class);
         $this->expectExceptionCode(KeyCloakApiFailed::FAILED_TO_FETCH_CLIENT);
 
-        $apiClient = new ApiClient(
+        $apiClient = new KeycloakApiClient(
             $this->givenKeycloakHttpClient($this->logger, $mock),
             $this->logger
         );

@@ -24,6 +24,8 @@ use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Insightly\Models\InsightlyMappingModel;
 use App\Insightly\Resources\ResourceType;
+use App\Keycloak\Models\KeycloakClientModel;
+use App\Keycloak\RealmCollection;
 use App\Models\UuidModel;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use App\UiTiDv1\UiTiDv1Environment;
@@ -241,6 +243,14 @@ final class IntegrationModel extends UuidModel
         return $this->hasMany(UiTiDv1ConsumerModel::class, 'integration_id');
     }
 
+    /**
+     * @return HasMany<KeycloakClientModel>
+     */
+    public function keycloakClients(): HasMany
+    {
+        return $this->hasMany(KeycloakClientModel::class, 'integration_id');
+    }
+
     public function hasMissingAuth0Clients(): bool
     {
         return $this->auth0Clients()->count() < count(Auth0Tenant::cases());
@@ -249,6 +259,11 @@ final class IntegrationModel extends UuidModel
     public function hasMissingUiTiDv1Consumers(): bool
     {
         return $this->uiTiDv1Consumers()->count() < count(UiTiDv1Environment::cases());
+    }
+
+    public function hasMissingKeycloakConsumers(): bool
+    {
+        return $this->keycloakClients()->count() < count(RealmCollection::getRealms());
     }
 
     public function toDomain(): Integration
@@ -284,6 +299,11 @@ final class IntegrationModel extends UuidModel
             ...$this->auth0Clients()
             ->get()
             ->map(fn (Auth0ClientModel $auth0ClientModel) => $auth0ClientModel->toDomain())
+            ->toArray()
+        )->withKeycloakClients(
+            ...$this->keycloakClients()
+            ->get()
+            ->map(fn (KeycloakClientModel $keycloakClientModel) => $keycloakClientModel->toDomain())
             ->toArray()
         );
 

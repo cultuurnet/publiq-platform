@@ -7,7 +7,7 @@ namespace App\Console\Commands;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Config;
 use App\Keycloak\ScopeConfig;
-use App\Keycloak\Service\ApiClient;
+use App\Keycloak\Service\KeycloakApiClient;
 use App\Keycloak\Service\CreateClientHandler;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -22,7 +22,7 @@ final class KeycloakCreateClient extends Command
 
     public function __construct(
         private readonly IntegrationRepository $integrationRepository,
-        private readonly ApiClient $apiClient,
+        private readonly KeycloakApiClient $apiClient,
         private readonly Config $config,
         private readonly ScopeConfig $scopeConfig,
         private readonly LoggerInterface $logger
@@ -51,7 +51,7 @@ final class KeycloakCreateClient extends Command
         $clients = $createClientHandler->handle($integration);
 
         foreach ($clients as $client) {
-            $this->info(sprintf("Created Keycloak client for realm '%s' with client ID: %s", $client->realm->internalName, $client->clientId));
+            $this->info(sprintf("Created Keycloak client for realm '%s' for integration '%s'", $client->realm->internalName, $client->integrationId));
         }
 
         return self::SUCCESS;

@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Keycloak;
 
-use App\Keycloak\Client\KeycloakClientWithBearer;
-use App\Keycloak\Client\KeycloakClientWithoutBearer;
-use App\Keycloak\Service\ApiClient;
+use App\Keycloak\Client\KeycloakHttpClient;
+use App\Keycloak\Service\KeycloakApiClient;
 use App\Keycloak\TokenStrategy\ClientCredentials;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
@@ -18,26 +17,16 @@ final class KeycloakServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->app->singleton(ApiClient::class, function () {
-            $client = new Client([RequestOptions::HTTP_ERRORS => false]);
-
-            $keycloakClientWithoutBearer = new KeycloakClientWithoutBearer(
-                $client,
-                $this->app->get(Config::class)
-            );
-
-            $keycloakClient = new KeycloakClientWithBearer(
-                $client,
-                $this->app->get(Config::class),
-                new ClientCredentials(
-                    $keycloakClientWithoutBearer,
+        $this->app->singleton(KeycloakApiClient::class, function () {
+            return new KeycloakApiClient(
+                new KeycloakHttpClient(
+                    new Client([RequestOptions::HTTP_ERRORS => false]),
                     $this->app->get(Config::class),
-                    $this->app->get(LoggerInterface::class)
-                )
-            );
-
-            return new ApiClient(
-                $keycloakClient,
+                    new ClientCredentials(
+                        $this->app->get(Config::class),
+                        $this->app->get(LoggerInterface::class)
+                    )
+                ),
                 $this->app->get(LoggerInterface::class),
             );
         });
@@ -48,7 +37,7 @@ final class KeycloakServiceProvider extends ServiceProvider
                 config('keycloak.base_url'),
                 config('keycloak.client_id'),
                 config('keycloak.client_secret'),
-                RealmCollection::getDefaultRealms(),
+                RealmCollection::getRealms(),
             );
         });
 

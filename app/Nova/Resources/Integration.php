@@ -152,6 +152,7 @@ final class Integration extends Resource
 
             HasMany::make('UiTiD v1 Consumer Credentials', 'uiTiDv1Consumers', UiTiDv1::class),
             HasMany::make('UiTiD v2 Client Credentials (Auth0)', 'auth0Clients', Auth0Client::class),
+            HasMany::make('Keycloak client Credentials', 'keycloakClients', KeycloakClient::class),
 
             HasMany::make('Contacts'),
 
