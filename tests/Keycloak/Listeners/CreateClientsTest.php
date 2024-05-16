@@ -2,23 +2,26 @@
 
 declare(strict_types=1);
 
-namespace Tests\Keycloak\Service;
+namespace Tests\Keycloak\Listeners;
 
+use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client;
 use App\Keycloak\Config;
+use App\Keycloak\Listeners\CreateClients;
 use App\Keycloak\Realm;
 use App\Keycloak\RealmCollection;
+use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Keycloak\ScopeConfig;
 use App\Keycloak\Service\ApiClientInterface;
-use App\Keycloak\Service\CreateClientHandler;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Tests\IntegrationHelper;
 use Tests\Keycloak\KeycloakHelper;
 
-final class CreateClientHandlerTest extends TestCase
+final class CreateClientsTest extends TestCase
 {
     use IntegrationHelper;
     use KeycloakHelper;
@@ -89,21 +92,45 @@ final class CreateClientHandlerTest extends TestCase
                 }
             );
 
-        $flow = new CreateClientHandler(
+        $integrationRepository = $this->createMock(IntegrationRepository::class);
+        $integrationRepository->expects($this->once())
+            ->method('getById')
+            ->with($this->integration->id)
+            ->willReturn($this->integration);
+
+        $keycloakClientRepository = $this->createMock(KeycloakClientRepository::class);
+        $keycloakClientRepository->expects($this->once())
+            ->method('save');
+
+        //Check if clients where created for all realms
+        $realmHits = [];
+
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->exactly($this->config->realms->count()))
+            ->method('info')
+            ->willReturnCallback(function ($message, $options) use (&$realmHits) {
+                $this->assertEquals('Keycloak client created', $message);
+                $this->assertArrayHasKey('integration_id', $options);
+                $this->assertArrayHasKey('realm', $options);
+
+                $this->assertEquals($this->integration->id->toString(), $options['integration_id']);
+
+                $realmHits[$options['realm']] = true;
+            });
+
+        $createClients = new CreateClients(
+            $integrationRepository,
+            $keycloakClientRepository,
             $apiClient,
             $this->config,
             $this->scopeConfig,
-            $this->createMock(LoggerInterface::class)
+            $logger
         );
 
-        $clients = $flow->handle($this->integration);
+        $createClients->handle(new IntegrationCreated($this->integration->id));
 
-        $this->assertCount($this->config->realms->count(), $clients);
-
-        foreach ($clients as $i => $client) {
-            $this->assertEquals($this->integration->id->toString(), $client->integrationId->toString());
-            $this->assertEquals(self::SECRET, $client->clientSecret);
-            $this->assertEquals($this->config->realms->get($i)?->internalName, $client->realm->internalName);
+        foreach ($this->config->realms as $realm) {
+            $this->assertArrayHasKey($realm->internalName, $realmHits, 'Client was not created for realm ' . $realm->internalName);
         }
     }
 }
