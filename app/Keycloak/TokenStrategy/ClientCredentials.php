@@ -32,7 +32,7 @@ final class ClientCredentials implements TokenStrategy
     {
         $key = $realm->internalName . $this->config->clientId;
 
-        if ($this->accessToken[$key] !== null) {
+        if (isset($this->accessToken[$key])) {
             return $this->accessToken[$key];
         }
 
