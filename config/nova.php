@@ -89,34 +89,7 @@ return [
 
     'passwords' => env('NOVA_PASSWORDS', null),
 
-    'users' => [
-        'dev+e2etest-admin@publiq.be',
-        'simon.debruijn@publiq.be',
-        'hande.vanhove@publiq.be',
-        'luc@madewithlove.be',
-        'corneel.wille@publiq.be',
-        'jonas@cultuurnet.be',
-        'koen.eelen@publiq.be',
-        'paul@herbosch.be',
-        'emma@madewithlove.be',
-        'corneel.wille@cultuurnet.be',
-        'wannes.van.ingelghem@publiq.be',
-        'robin.geldhof@publiq.be',
-        'bram.pauwelyn@publiq.be',
-        'kristof@publiq.be',
-        'manon@cultuurnet.be',
-        'emile.dekeyser@publiq.be',
-        'renate@bill.be',
-        'renate.neven@publiq.be',
-        'tessa@publiq.be',
-        'tessa.depauw@publiq.be',
-        'delfien@publiq.be',
-        'delfien.delputte@publiq.be',
-        'amel.ahdour@publiq.be',
-        'helene@publiq.be',
-        'toon.beullens@cultuurnet.be',
-        'karen.schilders@cultuurnet.be',
-    ],
+    'users' => file_exists(__DIR__ . '/../nova_users.php') ? require __DIR__ . '/../nova_users.php' : [],
 
     /*
     |--------------------------------------------------------------------------
