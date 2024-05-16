@@ -7,7 +7,7 @@ namespace App\Console\Commands;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Config;
 use App\Keycloak\ScopeConfig;
-use App\Keycloak\Service\ApiClient;
+use App\Keycloak\Service\KeycloakApiClient;
 use App\Keycloak\Service\CreateClientHandler;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -22,7 +22,7 @@ final class KeycloakCreateClient extends Command
 
     public function __construct(
         private readonly IntegrationRepository $integrationRepository,
-        private readonly ApiClient $apiClient,
+        private readonly KeycloakApiClient $apiClient,
         private readonly Config $config,
         private readonly ScopeConfig $scopeConfig,
         private readonly LoggerInterface $logger

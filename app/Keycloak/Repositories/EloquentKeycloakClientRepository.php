@@ -23,13 +23,13 @@ final class EloquentKeycloakClientRepository implements KeycloakClientRepository
         DB::transaction(static function () use ($clients) {
             foreach ($clients as $client) {
                 KeycloakClientModel::query()
+                    ->create()
                     ->updateOrCreate(
                         [
-                            'client_secret' => $client->clientSecret, // secret could actually change because of secret rotation
-                            'realm' => $client->realm->internalName,
+                            'id' => $client->id->toString(),
+
                         ],
                         [
-                            'id' => $client->id->toString(),
                             'integration_id' => $client->integrationId->toString(),
                             'client_secret' => $client->clientSecret,
                             'realm' => $client->realm->internalName,
