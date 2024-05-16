@@ -44,7 +44,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
             'client-secret-2',
             $realm
         );
-        $this->repository->save($client1, $client2);
+        $this->repository->create($client1, $client2);
 
         $this->assertDatabaseHas('keycloak_clients', [
             'integration_id' => $integrationId->toString(),
@@ -77,7 +77,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
             'client-secret-1',
             Realm::getMasterRealm()
         );
-        $this->repository->save($client1, $client2);
+        $this->repository->create($client1, $client2);
 
         $expected = [$client1, $client2];
         $actual = $this->repository->getByIntegrationId($integrationId);
@@ -113,7 +113,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
             }
         }
 
-        $this->repository->save(...$clients);
+        $this->repository->create(...$clients);
 
         $expected = $clients;
 
@@ -145,7 +145,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
             }
         }
 
-        $this->repository->save(...$clients);
+        $this->repository->create(...$clients);
 
         $noSecondIntegrationClients = array_filter(
             $clients,
@@ -181,7 +181,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
                 $realm
             );
         }
-        $this->repository->save(...$clients);
+        $this->repository->create(...$clients);
 
         $this->assertEquals(
             $missing,
