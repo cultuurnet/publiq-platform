@@ -14,7 +14,7 @@ use Ramsey\Uuid\UuidInterface;
 
 final class EloquentKeycloakClientRepository implements KeycloakClientRepository
 {
-    public function create(Client ...$clients): void
+    public function save(Client ...$clients): void
     {
         if (count($clients) === 0) {
             return;
