@@ -100,7 +100,7 @@ final class CreateClientsTest extends TestCase
 
         $keycloakClientRepository = $this->createMock(KeycloakClientRepository::class);
         $keycloakClientRepository->expects($this->once())
-            ->method('save');
+            ->method('create');
 
         //Check if clients where created for all realms
         $realmHits = [];
