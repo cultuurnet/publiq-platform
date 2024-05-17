@@ -80,6 +80,16 @@ final class SubscriptionsSeeder extends Seeder
                 0,
                 0
             ),
+            SubscriptionUuid::FREE_UITPAS_API_PLAN => new Subscription(
+                $subscriptionId,
+                'UiTPAS API - Free Plan',
+                'Free Plan for integrating with UiTPAS API',
+                SubscriptionCategory::Free,
+                IntegrationType::UiTPAS,
+                Currency::EUR,
+                0,
+                0
+            ),
         };
     }
 
