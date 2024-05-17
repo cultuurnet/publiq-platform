@@ -12,7 +12,7 @@ use Ramsey\Uuid\UuidInterface;
 
 interface KeycloakClientRepository
 {
-    public function save(Client ...$clients): void;
+    public function create(Client ...$clients): void;
 
     /**
      * @return Client[]

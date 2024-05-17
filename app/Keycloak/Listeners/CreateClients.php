@@ -36,7 +36,7 @@ final class CreateClients implements ShouldQueue
     {
         $clients = $this->createClients($this->integrationRepository->getById($integrationCreated->id));
 
-        $this->keycloakClientRepository->save(...$clients);
+        $this->keycloakClientRepository->create(...$clients);
 
         foreach ($clients as $client) {
             $this->logger->info('Keycloak client created', [
