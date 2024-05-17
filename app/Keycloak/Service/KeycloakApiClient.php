@@ -16,6 +16,7 @@ use GuzzleHttp\Psr7\Request;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
+use Throwable;
 
 final readonly class KeycloakApiClient implements ApiClient
 {
@@ -89,6 +90,68 @@ final readonly class KeycloakApiClient implements ApiClient
             return Client::createFromJson($realm, $integration->id, $data[0]);
         } catch (Exception $e) {
             throw KeyCloakApiFailed::failedToFetchClient($realm, $e->getMessage());
+        }
+    }
+
+    public function fetchIsClientEnabled(Realm $realm, UuidInterface $integrationId): bool
+    {
+        try {
+            $response = $this->client->sendWithBearer(
+                new Request(
+                    'GET',
+                    'admin/realms/' . $realm->internalName . '/clients?' . http_build_query(['clientId' => $integrationId->toString()])
+                )
+            );
+
+            $body = $response->getBody()->getContents();
+
+            if (empty($body) || $response->getStatusCode() !== 200) {
+                throw KeyCloakApiFailed::failedToFetchClient($realm, $body);
+            }
+
+            $data = Json::decodeAssociatively($body);
+
+            $this->logger->info('Response: ' . $body);
+
+            return $data[0]['enabled'];
+        } catch (Throwable $e) {
+            throw KeyCloakApiFailed::failedToFetchClient($realm, $e->getMessage());
+        }
+    }
+
+    /**
+     * @throws KeyCloakApiFailed
+     */
+    public function enableClient(Client $client): void
+    {
+        $this->updateClient($client, ['enabled' => true]);
+    }
+
+    /**
+     * @throws KeyCloakApiFailed
+     */
+    public function disableClient(Client $client): void
+    {
+        $this->updateClient($client, ['enabled' => false]);
+    }
+
+    private function updateClient(Client $client, array $body): void
+    {
+        try {
+            $response = $this->client->sendWithBearer(
+                new Request(
+                    'PUT',
+                    'admin/realms/' . $client->realm->internalName . '/clients/' . $client->id->toString(),
+                    [],
+                    Json::encode($body)
+                )
+            );
+
+            if ($response->getStatusCode() !== 204) {
+                throw KeyCloakApiFailed::failedToUpdateClient($client);
+            }
+        } catch (Throwable) {
+            throw KeyCloakApiFailed::failedToUpdateClient($client);
         }
     }
 }
