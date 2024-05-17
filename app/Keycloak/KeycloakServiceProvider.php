@@ -11,6 +11,7 @@ use App\Keycloak\Repositories\EloquentKeycloakClientRepository;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Keycloak\Service\ApiClient;
 use App\Keycloak\Service\ApiClientInterface;
+use App\Keycloak\Service\KeycloakApiClient;
 use App\Keycloak\TokenStrategy\ClientCredentials;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
@@ -23,8 +24,8 @@ final class KeycloakServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->app->singleton(ApiClientInterface::class, function () {
-            return new ApiClient(
+        $this->app->singleton(KeycloakApiClient::class, function () {
+            return new KeycloakApiClient(
                 new KeycloakHttpClient(
                     new Client([RequestOptions::HTTP_ERRORS => false]),
                     $this->app->get(Config::class),

@@ -19,6 +19,10 @@ final class KeycloakCreateClient extends Command
 
     public function __construct(
         private readonly IntegrationRepository $integrationRepository,
+        private readonly KeycloakApiClient $apiClient,
+        private readonly Config $config,
+        private readonly ScopeConfig $scopeConfig,
+        private readonly LoggerInterface $logger,
         private readonly CreateClients $createClients,
     ) {
         parent::__construct();

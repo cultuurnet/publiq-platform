@@ -49,6 +49,7 @@ final class Auth0TenantSDK
         $apis = match ($integration->type) {
             IntegrationType::SearchApi, IntegrationType::Widgets => 'sapi',
             IntegrationType::EntryApi => 'entry sapi',
+            IntegrationType::UiTPAS => 'ups entry sapi',
         };
 
         $clientResponse = $this->management->clients()->create(

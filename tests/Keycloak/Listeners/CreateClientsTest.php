@@ -14,6 +14,8 @@ use App\Keycloak\Realm;
 use App\Keycloak\RealmCollection;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Keycloak\ScopeConfig;
+use App\Keycloak\Service\ApiClient;
+use App\Keycloak\Service\CreateClientHandler;
 use App\Keycloak\Service\ApiClientInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -56,7 +58,7 @@ final class CreateClientsTest extends TestCase
     {
         $clientIds = [];
 
-        $apiClient = $this->createMock(ApiClientInterface::class);
+        $apiClient = $this->createMock(ApiClient::class);
         foreach ($this->config->realms as $realm) {
             $clientIds[$realm->internalName] = Uuid::uuid4();
 

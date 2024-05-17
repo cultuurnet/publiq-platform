@@ -14,7 +14,7 @@ use Ramsey\Uuid\UuidInterface;
 
 final class EloquentKeycloakClientRepository implements KeycloakClientRepository
 {
-    public function save(Client ...$clients): void
+    public function create(Client ...$clients): void
     {
         if (count($clients) === 0) {
             return;
@@ -23,11 +23,7 @@ final class EloquentKeycloakClientRepository implements KeycloakClientRepository
         DB::transaction(static function () use ($clients) {
             foreach ($clients as $client) {
                 KeycloakClientModel::query()
-                    ->updateOrCreate(
-                        [
-                            'client_secret' => $client->clientSecret, // secret could actually change because of secret rotation
-                            'realm' => $client->realm->internalName,
-                        ],
+                    ->create(
                         [
                             'id' => $client->id->toString(),
                             'integration_id' => $client->integrationId->toString(),
