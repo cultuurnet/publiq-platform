@@ -21,6 +21,7 @@ task :build_artifact do |task|
     -x docker-compose.yml \
     --prefix /var/www/platform-api \
     --config-files /var/www/platform-api/.env \
+    --config-files /var/www/platform-api/nova_users.php \
     --deb-user www-data --deb-group www-data \
     --before-remove lib/tasks/prerm \
     --description '#{description}' --url '#{source}' --vendor '#{vendor}' \

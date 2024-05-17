@@ -25,6 +25,7 @@ final class IntegrationTypeSerializer
             IntegrationType::EntryApi => 'Entry API V3',
             IntegrationType::SearchApi => 'Publicatie Search API V3',
             IntegrationType::Widgets => 'Publicatie Widgets V3',
+            IntegrationType::UiTPAS => 'UiTPAS API',
         };
     }
 }
