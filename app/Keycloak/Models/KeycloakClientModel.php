@@ -7,16 +7,13 @@ namespace App\Keycloak\Models;
 use App\Keycloak\Client;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Keycloak\RealmCollection;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 
-final class KeycloakClientModel extends Model
+final class KeycloakClientModel extends UuidModel
 {
-    use HasFactory;
-
     use SoftDeletes;
 
     protected $table = 'keycloak_clients';
@@ -33,8 +30,8 @@ final class KeycloakClientModel extends Model
     {
         return new Client(
             // Trying to use magic getters for eg $this->id gives a 0 back
-            Uuid::fromString($this->attributes['id']),
-            Uuid::fromString($this->attributes['integration_id']),
+            Uuid::fromString($this->id),
+            Uuid::fromString($this->integration_id),
             $this->client_secret,
             RealmCollection::fromInternalName($this->realm)
         );
