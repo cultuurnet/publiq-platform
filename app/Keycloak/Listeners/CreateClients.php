@@ -12,7 +12,7 @@ use App\Keycloak\Config;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Keycloak\ScopeConfig;
-use App\Keycloak\Service\ApiClientInterface;
+use App\Keycloak\Service\ApiClient;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
@@ -25,7 +25,7 @@ final class CreateClients implements ShouldQueue
     public function __construct(
         private readonly IntegrationRepository $integrationRepository,
         private readonly KeycloakClientRepository $keycloakClientRepository,
-        private readonly ApiClientInterface $client,
+        private readonly ApiClient $client,
         private readonly Config $config,
         private readonly ScopeConfig $scopeConfig,
         private readonly LoggerInterface $logger

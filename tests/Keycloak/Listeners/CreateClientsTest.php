@@ -15,8 +15,6 @@ use App\Keycloak\RealmCollection;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Keycloak\ScopeConfig;
 use App\Keycloak\Service\ApiClient;
-use App\Keycloak\Service\CreateClientHandler;
-use App\Keycloak\Service\ApiClientInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
