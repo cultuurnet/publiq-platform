@@ -52,6 +52,7 @@ final class KeycloakServiceProvider extends ServiceProvider
                 Uuid::fromString(config('keycloak.scope.search_api_id')),
                 Uuid::fromString(config('keycloak.scope.entry_api_id')),
                 Uuid::fromString(config('keycloak.scope.widgets_id')),
+                Uuid::fromString(config('keycloak.scope.uitpas_id')),
             );
         });
 

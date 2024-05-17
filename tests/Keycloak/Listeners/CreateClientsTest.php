@@ -49,6 +49,7 @@ final class CreateClientsTest extends TestCase
             Uuid::fromString(self::SEARCH_SCOPE_ID),
             Uuid::fromString('d8a54568-26da-412b-a441-d5e2fad84478'),
             Uuid::fromString('123ae05d-1c41-40c8-8716-c4654a3bfd98'),
+            Uuid::fromString('0743b1c7-0ea2-46af-906e-fbb6c0317514'),
         );
     }
 
