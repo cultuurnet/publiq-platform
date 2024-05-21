@@ -57,7 +57,7 @@ final class IntegrationModel extends UuidModel
         'status',
         'partner_status',
         'key_visibility',
-        'website'
+        'website',
     ];
 
     protected $attributes = [
