@@ -14,6 +14,7 @@ use App\Keycloak\Service\KeycloakApiClient;
 use App\Keycloak\TokenStrategy\ClientCredentials;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Psr\Log\LoggerInterface;
@@ -58,6 +59,13 @@ final class KeycloakServiceProvider extends ServiceProvider
 
         $this->app->singleton(KeycloakClientRepository::class, function () {
             return $this->app->get(EloquentKeycloakClientRepository::class);
+        });
+
+        $this->app->singleton(CachedKeycloakClientStatus::class, function () {
+            return new CachedKeycloakClientStatus(
+                App::get(ApiClient::class),
+                App::get(LoggerInterface::class),
+            );
         });
 
         $this->bootstrapEventHandling();
