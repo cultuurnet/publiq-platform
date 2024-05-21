@@ -13,7 +13,6 @@ final class IntegrationToKeycloakClientConverter
     public static function convert(UuidInterface $id, Integration $integration): array
     {
         return [
-            /** @todo Ask Erwin how to set Metadata to mark this as created by Publiq Platform */
             'protocol' => 'openid-connect',
             'id' => $id->toString(),
             'clientId' => $integration->id->toString(),
