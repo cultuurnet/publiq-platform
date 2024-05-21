@@ -59,6 +59,16 @@ final class Integration extends Resource
      */
     public function fields(NovaRequest $request): array
     {
+        $integrationTypes = [
+            IntegrationType::EntryApi->value => IntegrationType::EntryApi->name,
+            IntegrationType::SearchApi->value => IntegrationType::SearchApi->name,
+            IntegrationType::Widgets->value => IntegrationType::Widgets->name,
+        ];
+
+        if (config('uitpas.enabled')) {
+            $integrationTypes[IntegrationType::UiTPAS->value] = IntegrationType::UiTPAS->name;
+        }
+
         return [
             ID::make()
                 ->readonly()
@@ -71,11 +81,7 @@ final class Integration extends Resource
             Select::make('Type')
                 ->filterable()
                 ->sortable()
-                ->options([
-                    IntegrationType::EntryApi->value => IntegrationType::EntryApi->name,
-                    IntegrationType::SearchApi->value => IntegrationType::SearchApi->name,
-                    IntegrationType::Widgets->value => IntegrationType::Widgets->name,
-                ])
+                ->options($integrationTypes)
                 ->rules('required'),
 
             Select::make('Partner status')
