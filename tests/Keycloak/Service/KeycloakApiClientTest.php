@@ -20,7 +20,7 @@ use Ramsey\Uuid\UuidInterface;
 use Tests\IntegrationHelper;
 use Tests\Keycloak\KeycloakHelper;
 
-final class ApiClientTest extends TestCase
+final class KeycloakApiClientTest extends TestCase
 {
     use KeycloakHelper;
     use IntegrationHelper;
