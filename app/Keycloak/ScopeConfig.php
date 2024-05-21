@@ -13,7 +13,8 @@ final readonly class ScopeConfig
     public function __construct(
         public UuidInterface $searchApiScopeId,
         public UuidInterface $entryApiScopeId,
-        public UuidInterface $ScopeId,
+        public UuidInterface $widgetScopeId,
+        public UuidInterface $uitpasScopeId,
     ) {
     }
 
@@ -21,9 +22,9 @@ final readonly class ScopeConfig
     {
         return match ($integration->type) {
             IntegrationType::EntryApi => $this->entryApiScopeId,
-            IntegrationType::Widgets => $this->ScopeId,
+            IntegrationType::Widgets => $this->widgetScopeId,
             IntegrationType::SearchApi => $this->searchApiScopeId,
-            IntegrationType::UiTPAS => throw new \Exception('To be implemented') //@todo will come in future pr
+            IntegrationType::UiTPAS => $this->uitpasScopeId
         };
     }
 }

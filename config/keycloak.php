@@ -11,5 +11,6 @@ return [
         'search_api_id' => env('KEYCLOAK_SCOPE_SEARCH_API_ID', ''),
         'entry_api_id' => env('KEYCLOAK_SCOPE_ENTRY_API_ID', ''),
         'widgets_id' => env('KEYCLOAK_SCOPE_WIDGETS_ID', ''),
+        'uitpas_id' => env('KEYCLOAK_SCOPE_UITPAS_ID', ''),
     ],
 ];
