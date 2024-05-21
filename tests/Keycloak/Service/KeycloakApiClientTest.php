@@ -9,7 +9,6 @@ use App\Keycloak\Config;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realm;
 use App\Keycloak\RealmCollection;
-use App\Keycloak\ScopeConfig;
 use App\Keycloak\Service\KeycloakApiClient;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
@@ -33,7 +32,6 @@ final class ApiClientTest extends TestCase
     private Realm $realm;
     private Integration $integration;
     private LoggerInterface&MockObject $logger;
-    private ScopeConfig $scopeConfig;
 
     protected function setUp(): void
     {
@@ -48,7 +46,6 @@ final class ApiClientTest extends TestCase
         $this->realm = new Realm('uitidpoc', 'Acceptance');
         $this->integration = $this->givenThereIsAnIntegration(Uuid::fromString(self::INTEGRATION_ID));
         $this->logger = $this->createMock(LoggerInterface::class);
-        $this->scopeConfig = new ScopeConfig(Uuid::uuid4(), Uuid::uuid4(), Uuid::uuid4(), Uuid::uuid4());
     }
 
     public function test_can_create_client(): void
@@ -60,7 +57,6 @@ final class ApiClientTest extends TestCase
 
         $apiClient = new KeycloakApiClient(
             $this->givenKeycloakHttpClient($this->logger, $mock),
-            $this->scopeConfig,
             $this->logger
         );
 
@@ -81,7 +77,6 @@ final class ApiClientTest extends TestCase
 
         $apiClient = new KeycloakApiClient(
             $this->givenKeycloakHttpClient($this->logger, $mock),
-            $this->scopeConfig,
             $this->logger
         );
 
@@ -106,7 +101,6 @@ final class ApiClientTest extends TestCase
 
         $apiClient = new KeycloakApiClient(
             $this->givenKeycloakHttpClient($this->logger, $mock),
-            $this->scopeConfig,
             $this->logger
         );
 
@@ -140,7 +134,6 @@ final class ApiClientTest extends TestCase
 
         $apiClient = new KeycloakApiClient(
             $this->givenKeycloakHttpClient($this->logger, $mock),
-            $this->scopeConfig,
             $this->logger
         );
 
@@ -164,7 +157,6 @@ final class ApiClientTest extends TestCase
 
         $apiClient = new KeycloakApiClient(
             $this->givenKeycloakHttpClient($this->logger, $mock),
-            $this->scopeConfig,
             $this->logger
         );
 
