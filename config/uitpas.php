@@ -3,5 +3,5 @@
 declare(strict_types=1);
 
 return [
-    'enabled' => env('UITPAS_CONSUMER_CREATION_ENABLED', false),
+    'enabled' => env('UITPAS_INTEGRATION_TYPE_ENABLED', false),
 ];

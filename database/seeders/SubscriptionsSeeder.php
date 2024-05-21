@@ -22,7 +22,7 @@ final class SubscriptionsSeeder extends Seeder
         return match ($subscriptionUuid) {
             SubscriptionUuid::FREE_ENTRY_API_PLAN => new Subscription(
                 $subscriptionId,
-                'Free Plan - Entry API',
+                'Entry API - Free Plan',
                 'Free Plan for integrating with Entry API',
                 SubscriptionCategory::Free,
                 IntegrationType::EntryApi,
@@ -32,8 +32,8 @@ final class SubscriptionsSeeder extends Seeder
             ),
             SubscriptionUuid::BASIC_SEARCH_API_PLAN => new Subscription(
                 $subscriptionId,
-                'Basic Plan - Search API - Monthly',
-                'Basic Plan for integrating with Search API, billed monthly',
+                'Search API - Basic Plan',
+                'Basic Plan for integrating with Search API',
                 SubscriptionCategory::Basic,
                 IntegrationType::SearchApi,
                 Currency::EUR,
@@ -42,8 +42,8 @@ final class SubscriptionsSeeder extends Seeder
             ),
             SubscriptionUuid::CUSTOM_SEARCH_API_PLAN => new Subscription(
                 $subscriptionId,
-                'Custom Plan - Search API - Monthly',
-                'Custom Plan for integrating with Search API, billed monthly and with a onetime fee.',
+                'Search API - Custom',
+                'Custom Plan for integrating with Search API',
                 SubscriptionCategory::Custom,
                 IntegrationType::SearchApi,
                 Currency::EUR,
@@ -52,8 +52,8 @@ final class SubscriptionsSeeder extends Seeder
             ),
             SubscriptionUuid::BASIC_WIDGETS_PLAN => new Subscription(
                 $subscriptionId,
-                'Basic Plan - Widgets - Monthly',
-                'Basic Plan for integrating Widgets, billed monthly.',
+                'Widgets - Basic plan',
+                'Basic Plan for integrating Widgets',
                 SubscriptionCategory::Basic,
                 IntegrationType::Widgets,
                 Currency::EUR,
@@ -62,8 +62,8 @@ final class SubscriptionsSeeder extends Seeder
             ),
             SubscriptionUuid::PLUS_WIDGETS_PLAN => new Subscription(
                 $subscriptionId,
-                'Plus Plan - Widgets - Monthly',
-                'Plus Plan for integrating with Widgets, billed monthly and with a onetime fee.',
+                'Widgets - Plus plan',
+                'Plus Plan for integrating with Widgets',
                 SubscriptionCategory::Plus,
                 IntegrationType::Widgets,
                 Currency::EUR,
@@ -72,10 +72,20 @@ final class SubscriptionsSeeder extends Seeder
             ),
             SubscriptionUuid::CUSTOM_WIDGETS_PLAN => new Subscription(
                 $subscriptionId,
-                'Custom Plan - Widgets - Monthly',
-                'Custom Plan for integrating with Widgets, billed monthly and with a onetime fee.',
+                'Widgets - Custom plan',
+                'Custom Plan for integrating with Widgets',
                 SubscriptionCategory::Custom,
                 IntegrationType::Widgets,
+                Currency::EUR,
+                0,
+                0
+            ),
+            SubscriptionUuid::FREE_UITPAS_API_PLAN => new Subscription(
+                $subscriptionId,
+                'UiTPAS API - Free Plan',
+                'Free Plan for integrating with UiTPAS API',
+                SubscriptionCategory::Free,
+                IntegrationType::UiTPAS,
                 Currency::EUR,
                 0,
                 0
