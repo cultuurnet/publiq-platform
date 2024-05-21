@@ -218,4 +218,25 @@ final class KeycloakApiClientTest extends TestCase
 
         $apiClient->updateClient($client, []);
     }
+
+    public function test_reset_scopes_throws_exception_when_api_call_fails(): void
+    {
+        $mock = new MockHandler([
+            new Response(200, [], json_encode(['access_token' => 'pqeaefosdfhbsdq'], JSON_THROW_ON_ERROR)),
+            new Response(500),
+        ]);
+
+        $apiClient = new KeycloakApiClient(
+            $this->givenKeycloakHttpClient($this->logger, $mock),
+            $this->scopeConfig,
+            $this->logger
+        );
+
+        $client = new Client(Uuid::uuid4(), $this->integration->id, self::SECRET, $this->realm);
+
+        $this->expectException(KeyCloakApiFailed::class);
+        $this->expectExceptionCode(KeyCloakApiFailed::FAILED_TO_RESET_SCOPE);
+
+        $apiClient->resetScopes($client);
+    }
 }

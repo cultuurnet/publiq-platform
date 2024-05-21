@@ -20,6 +20,8 @@ final class KeyCloakApiFailed extends Exception
     public const FAILED_TO_ADD_SCOPE_WITH_RESPONSE = 6;
     public const FAILED_TO_FETCH_CLIENT = 7;
     public const FAILED_TO_UPDATE_CLIENT = 8;
+    public const FAILED_TO_RESET_SCOPE = 9;
+
     private function __construct(
         string $message,
         int $code = 0
@@ -69,11 +71,11 @@ final class KeyCloakApiFailed extends Exception
 
     public static function failedToResetScope(Client $client, UuidInterface $scope): self
     {
-        return new self(sprintf('Failed to reset scope for client %s, scope %s', $client->id, $scope->toString()));
+        return new self(sprintf('Failed to reset scope for client %s, scope %s', $client->id, $scope->toString()), self::FAILED_TO_RESET_SCOPE);
     }
 
     public static function failedToResetScopeWithResponse(Client $client, UuidInterface $scope, string $body): self
     {
-        return new self(sprintf('Failed to reset scope for client %s, scope %s: %s', $client->id, $scope->toString(), $body));
+        return new self(sprintf('Failed to reset scope for client %s, scope %s: %s', $client->id, $scope->toString(), $body), self::FAILED_TO_RESET_SCOPE);
     }
 }
