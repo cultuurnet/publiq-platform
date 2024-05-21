@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Keycloak\Service;
 
 use App\Domain\Integrations\Integration;
+use App\Keycloak\Client;
 use App\Keycloak\Config;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realm;
@@ -182,6 +183,7 @@ final class KeycloakApiClientTest extends TestCase
 
         $apiClient = new KeycloakApiClient(
             $this->givenKeycloakHttpClient($this->logger, $mock),
+            $this->scopeConfig,
             $this->logger
         );
 
@@ -205,6 +207,7 @@ final class KeycloakApiClientTest extends TestCase
 
         $apiClient = new KeycloakApiClient(
             $this->givenKeycloakHttpClient($this->logger, $mock),
+            $this->scopeConfig,
             $this->logger
         );
 
@@ -215,6 +218,4 @@ final class KeycloakApiClientTest extends TestCase
 
         $apiClient->updateClient($client, []);
     }
-
-
 }
