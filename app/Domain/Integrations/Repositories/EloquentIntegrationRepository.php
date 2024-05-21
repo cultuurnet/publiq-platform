@@ -158,6 +158,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
                 'status' => $integration->status,
                 'partner_status' => $integration->partnerStatus,
                 'key_visibility' => $integration->getKeyVisibility(),
+                'website' => $integration->website()?->value,
             ]);
 
             foreach ($integration->contacts() as $contact) {
