@@ -49,7 +49,7 @@ final class UpdateClients implements ShouldQueue
 
     public function failed(IntegrationUpdated $integrationUpdated, Throwable $throwable): void
     {
-        $this->logger->error('Failed to create Keycloak client(s)', [
+        $this->logger->error('Failed to update Keycloak client(s)', [
             'integration_id' => $integrationUpdated->id->toString(),
             'exception' => $throwable,
         ]);

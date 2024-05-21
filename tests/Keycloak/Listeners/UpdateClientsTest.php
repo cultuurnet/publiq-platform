@@ -59,7 +59,7 @@ final class UpdateClientsTest extends TestCase
         $this->logger = $this->createMock(LoggerInterface::class);
     }
 
-    public function test_create_client_for_integration(): void
+    public function test_update_client_for_integration(): void
     {
         $integrationRepository = $this->createMock(IntegrationRepository::class);
         $integrationRepository->expects($this->once())
