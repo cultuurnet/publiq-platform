@@ -50,10 +50,10 @@ export const IntegrationTypeCard = ({
       <div className="flex flex-col flex-1 justify-between min-h-[10rem] gap-7">
         <ul className="flex flex-col gap-3">
           {features.map((feature) => (
-            <li key={feature} className="flex items-center gap-2">
+            <li key={feature} className="flex items-start gap-2">
               <FontAwesomeIcon
                 icon={faCheckSquare}
-                className="text-green-500"
+                className="text-green-500 mt-1"
                 size="lg"
               />
               {feature}
