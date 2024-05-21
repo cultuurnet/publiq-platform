@@ -99,7 +99,13 @@ export const IntegrationTypes = () => {
 
   return (
     <div>
-      <ul className="w-full flex gap-5 max-md:flex-col">
+      <ul
+        className={classNames(
+          !uitpasEnabled && "w-full flex gap-5 max-md:flex-col",
+          uitpasEnabled &&
+            "grid grid-cols-4 gap-4 max-lg:grid-cols-2 max-md:grid-cols-1"
+        )}
+      >
         {filteredIntegrationTypes.map((integrationTypeInfo) => (
           <IntegrationTypeCard
             key={integrationTypeInfo.title}
