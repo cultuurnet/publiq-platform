@@ -60,10 +60,10 @@ final class KeycloakServiceProvider extends ServiceProvider
             return $this->app->get(EloquentKeycloakClientRepository::class);
         });
 
-        $this->applyEvents();
+        $this->bootstrapEventHandling();
     }
 
-    private function applyEvents(): void
+    private function bootstrapEventHandling(): void
     {
         if (!$this->app->get(Config::class)->isEnabled) {
             return;

@@ -12,4 +12,5 @@ enum SubscriptionUuid: string
     case CUSTOM_WIDGETS_PLAN = '9bb5ad2a-0d11-4f50-8602-f84ed27c7e92';
     case FREE_ENTRY_API_PLAN = '6311ba66-91c2-4905-a182-150f1cdf4825';
     case PLUS_WIDGETS_PLAN = 'df21535b-ebc2-42dd-bf4c-2e50caf8af02';
+    case FREE_UITPAS_API_PLAN = '52bb667f-d4da-47cd-9a76-f8896be410bd';
 }
