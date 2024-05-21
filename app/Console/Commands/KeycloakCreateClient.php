@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Keycloak\Config;
-use App\Keycloak\ScopeConfig;
-use App\Keycloak\Service\KeycloakApiClient;
-use App\Keycloak\Service\CreateClientHandler;
+use App\Keycloak\Listeners\CreateClients;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 
 final class KeycloakCreateClient extends Command
@@ -22,10 +19,7 @@ final class KeycloakCreateClient extends Command
 
     public function __construct(
         private readonly IntegrationRepository $integrationRepository,
-        private readonly KeycloakApiClient $apiClient,
-        private readonly Config $config,
-        private readonly ScopeConfig $scopeConfig,
-        private readonly LoggerInterface $logger
+        private readonly CreateClients $createClients,
     ) {
         parent::__construct();
     }
@@ -41,18 +35,7 @@ final class KeycloakCreateClient extends Command
             return self::FAILURE;
         }
 
-        $createClientHandler = new CreateClientHandler(
-            $this->apiClient,
-            $this->config,
-            $this->scopeConfig,
-            $this->logger
-        );
-
-        $clients = $createClientHandler->handle($integration);
-
-        foreach ($clients as $client) {
-            $this->info(sprintf("Created Keycloak client for realm '%s' for integration '%s'", $client->realm->internalName, $client->integrationId));
-        }
+        $this->createClients->handle(new IntegrationCreated($integration->id));
 
         return self::SUCCESS;
     }

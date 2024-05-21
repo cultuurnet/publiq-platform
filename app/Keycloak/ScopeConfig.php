@@ -22,7 +22,8 @@ final readonly class ScopeConfig
         return match ($integration->type) {
             IntegrationType::EntryApi => $this->entryApiScopeId,
             IntegrationType::Widgets => $this->ScopeId,
-            IntegrationType::SearchApi => $this->searchApiScopeId
+            IntegrationType::SearchApi => $this->searchApiScopeId,
+            IntegrationType::UiTPAS => throw new \Exception('To be implemented') //@todo will come in future pr
         };
     }
 }

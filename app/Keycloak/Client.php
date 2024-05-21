@@ -14,7 +14,7 @@ final readonly class Client
         public UuidInterface $id,
         public UuidInterface $integrationId,
         public string $clientSecret,
-        public Realm $realm
+        public Realm $realm,
     ) {
     }
 
@@ -34,6 +34,6 @@ final readonly class Client
 
     public function getKeycloakUrl(string $baseUrl): string
     {
-        return sprintf('%s/admin/master/console/#/%s/clients/%s/settings', $baseUrl, $this->realm->internalName, $this->integrationId->toString());
+        return $baseUrl . 'admin/master/console/#/' . $this->realm->internalName . '/clients/' . $this->id->toString() . '/settings';
     }
 }
