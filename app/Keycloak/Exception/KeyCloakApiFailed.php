@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Keycloak\Exception;
 
+use App\Keycloak\Client;
 use App\Keycloak\Realm;
 use Exception;
 use Psr\Http\Message\ResponseInterface;
@@ -17,6 +18,7 @@ final class KeyCloakApiFailed extends Exception
     public const FAILED_TO_ADD_SCOPE = 5;
     public const FAILED_TO_ADD_SCOPE_WITH_RESPONSE = 6;
     public const FAILED_TO_FETCH_CLIENT = 7;
+    public const FAILED_TO_UPDATE_CLIENT = 8;
 
     private function __construct(
         string $message,
@@ -58,5 +60,10 @@ final class KeyCloakApiFailed extends Exception
     public static function failedToFetchClient(Realm $realm, string $body): self
     {
         return new self(sprintf('Failed to fetch client for realm %s: %s', $realm->internalName, $body), self::FAILED_TO_FETCH_CLIENT);
+    }
+
+    public static function failedToUpdateClient(Client $client): self
+    {
+        return new self(sprintf('Failed to update client %s', $client->id), self::FAILED_TO_UPDATE_CLIENT);
     }
 }
