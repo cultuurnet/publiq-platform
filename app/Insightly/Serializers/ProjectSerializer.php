@@ -9,6 +9,7 @@ use App\Insightly\Objects\ProjectStage;
 use App\Insightly\Objects\ProjectState;
 use App\Insightly\Pipelines;
 use App\Insightly\Serializers\CustomFields\IntegrationTypeSerializer;
+use App\Insightly\Serializers\CustomFields\WebsiteSerializer;
 
 final class ProjectSerializer
 {
@@ -18,7 +19,7 @@ final class ProjectSerializer
 
     public function toInsightlyArray(Integration $integration): array
     {
-        return [
+        $insightlyArray = [
             'PROJECT_NAME' => $integration->name,
             'STATUS' => ProjectState::NOT_STARTED->value,
             'PROJECT_DETAILS' => $integration->description,
@@ -28,6 +29,12 @@ final class ProjectSerializer
                 (new IntegrationTypeSerializer())->toInsightlyArray($integration->type),
             ],
         ];
+
+        if ($integration->website()) {
+            $insightlyArray['CUSTOMFIELDS'][] = (new WebsiteSerializer())->toInsightlyArray($integration->website());
+        }
+
+        return $insightlyArray;
     }
 
     public function toInsightlyArrayForUpdate(Integration $integration, int $insightlyId): array
