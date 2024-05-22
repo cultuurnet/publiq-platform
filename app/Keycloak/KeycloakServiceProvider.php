@@ -8,7 +8,7 @@ use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Keycloak\Client\KeycloakHttpClient;
-use App\Keycloak\Listeners\BlockClients;
+use App\Keycloak\Listeners\DisableClients;
 use App\Keycloak\Listeners\CreateClients;
 use App\Keycloak\Listeners\UpdateClients;
 use App\Keycloak\Repositories\EloquentKeycloakClientRepository;
@@ -84,6 +84,6 @@ final class KeycloakServiceProvider extends ServiceProvider
 
         Event::listen(IntegrationCreated::class, [CreateClients::class, 'handle']);
         Event::listen(IntegrationUpdated::class, [UpdateClients::class, 'handle']);
-        Event::listen(IntegrationBlocked::class, [BlockClients::class, 'handle']);
+        Event::listen(IntegrationBlocked::class, [DisableClients::class, 'handle']);
     }
 }

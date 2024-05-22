@@ -9,7 +9,7 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client;
 use App\Keycloak\Config;
-use App\Keycloak\Listeners\BlockClients;
+use App\Keycloak\Listeners\DisableClients;
 use App\Keycloak\RealmCollection;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Keycloak\Service\ApiClient;
@@ -81,7 +81,7 @@ final class BlockClientsTest extends TestCase
             ->with($this->integration->id)
             ->willReturn($clients);
 
-        $createClients = new BlockClients(
+        $createClients = new DisableClients(
             $integrationRepository,
             $keycloakClientRepository,
             $this->apiClient,

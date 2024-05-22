@@ -14,7 +14,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
-final class BlockClients implements ShouldQueue
+final class DisableClients implements ShouldQueue
 {
     use Queueable;
 
