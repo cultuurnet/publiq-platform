@@ -6,6 +6,6 @@ namespace App\Insightly\Objects;
 
 enum Role: string
 {
-    case Technical = 'Technisch';
-    case Applicant = 'Aanvrager';
+    case Technical = 'Technisch contact';
+    case Applicant = 'Inhoudelijk contact';
 }
