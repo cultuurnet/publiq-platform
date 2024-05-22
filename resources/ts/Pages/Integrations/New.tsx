@@ -59,6 +59,7 @@ const New = ({ subscriptions }: Props) => {
         : "",
     integrationName: "",
     description: "",
+    website: "",
     organizationFunctionalContact: "",
     firstNameFunctionalContact: "",
     lastNameFunctionalContact: "",
@@ -199,6 +200,22 @@ const New = ({ subscriptions }: Props) => {
                 />
               }
               error={errors.description}
+            />
+          </Card>
+          <Card>
+            <FormElement
+              label={t("integration_form.website.label")}
+              labelSize="2xl"
+              info={t("integration_form.website.info")}
+              component={
+                <Input
+                  type="text"
+                  name="website"
+                  value={data.website}
+                  onChange={(e) => setData("website", e.target.value)}
+                />
+              }
+              error={errors.website}
             />
           </Card>
           <Card
