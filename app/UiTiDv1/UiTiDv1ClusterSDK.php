@@ -57,17 +57,17 @@ final class UiTiDv1ClusterSDK
         return $this->uitidv1EnvironmentSDKs[$environment->value]->createConsumerForIntegration($integration);
     }
 
-    public function blockConsumers(UiTiDv1Consumer ...$uiTiDv1Consumers): void
+    public function blockConsumers(Integration $integration, UiTiDv1Consumer ...$uiTiDv1Consumers): void
     {
         foreach ($uiTiDv1Consumers as $uiTiDv1Consumer) {
-            $this->uitidv1EnvironmentSDKs[$uiTiDv1Consumer->environment->value]->blockConsumer($uiTiDv1Consumer);
+            $this->uitidv1EnvironmentSDKs[$uiTiDv1Consumer->environment->value]->blockConsumer($integration, $uiTiDv1Consumer);
         }
     }
 
-    public function activateConsumers(UiTiDv1Consumer ...$uiTiDv1Consumers): void
+    public function activateConsumers(Integration $integration, UiTiDv1Consumer ...$uiTiDv1Consumers): void
     {
         foreach ($uiTiDv1Consumers as $uiTiDv1Consumer) {
-            $this->uitidv1EnvironmentSDKs[$uiTiDv1Consumer->environment->value]->activateConsumer($uiTiDv1Consumer);
+            $this->uitidv1EnvironmentSDKs[$uiTiDv1Consumer->environment->value]->activateConsumer($integration, $uiTiDv1Consumer);
         }
     }
 

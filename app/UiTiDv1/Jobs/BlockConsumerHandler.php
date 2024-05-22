@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\UiTiDv1\Jobs;
 
+use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\UiTiDv1\Events\ConsumerBlocked;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use App\UiTiDv1\UiTiDv1ClusterSDK;
@@ -21,6 +22,7 @@ final class BlockConsumerHandler implements ShouldQueue
     public function __construct(
         private readonly UiTiDv1ClusterSDK $clusterSDK,
         private readonly UiTiDv1ConsumerRepository $consumerRepository,
+        private readonly IntegrationRepository $integrationRepository,
         private readonly LoggerInterface $logger,
     ) {
     }
@@ -28,7 +30,9 @@ final class BlockConsumerHandler implements ShouldQueue
     public function handle(BlockConsumer $event): void
     {
         try {
-            $this->clusterSDK->blockConsumers($this->consumerRepository->getById($event->id));
+            $uiTiDv1Consumer = $this->consumerRepository->getById($event->id);
+            $integration = $this->integrationRepository->getById($uiTiDv1Consumer->integrationId);
+            $this->clusterSDK->blockConsumers($integration, $uiTiDv1Consumer);
         } catch (ModelNotFoundException|UiTiDv1SDKException $e) {
             $this->logger->error(
                 'Failed to block UiTiD v1 client: ' . $e->getMessage(),
