@@ -78,7 +78,7 @@ final readonly class KeycloakApiClient implements ApiClient
     }
 
 
-    public function resetScopes(Client $client): void
+    public function deleteScopes(Client $client): void
     {
         foreach ($this->scopeConfig->getAll() as $scope) {
             try {

@@ -29,6 +29,7 @@ type Props = Integration &
   };
 
 const productTypeToPath = {
+  "uitpas-api": "/",
   "entry-api": "/uitdatabank/entry-api/introduction",
   "search-api": "/uitdatabank/search-api/introduction",
   widgets: "/widgets/aan-de-slag",

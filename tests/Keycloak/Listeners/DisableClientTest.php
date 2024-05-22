@@ -9,7 +9,7 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client;
 use App\Keycloak\Config;
-use App\Keycloak\Listeners\BlockClients;
+use App\Keycloak\Listeners\DisableClients;
 use App\Keycloak\RealmCollection;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Keycloak\Service\ApiClient;
@@ -20,7 +20,7 @@ use Ramsey\Uuid\Uuid;
 use Tests\IntegrationHelper;
 use Tests\Keycloak\KeycloakHelper;
 
-final class BlockClientsTest extends TestCase
+final class DisableClientTest extends TestCase
 {
     use IntegrationHelper;
     use KeycloakHelper;
@@ -48,7 +48,7 @@ final class BlockClientsTest extends TestCase
         $this->logger = $this->createMock(LoggerInterface::class);
     }
 
-    public function test_block_clients_when_integration_is_blocked(): void
+    public function test_disable_clients_when_integration_is_blocked(): void
     {
         $integrationRepository = $this->createMock(IntegrationRepository::class);
         $integrationRepository->expects($this->once())
@@ -66,7 +66,7 @@ final class BlockClientsTest extends TestCase
 
             $this->logger->expects($this->once())
                 ->method('info')
-                ->with('Keycloak client blocked', [
+                ->with('Keycloak client disabled', [
                     'integration_id' => $this->integration->id->toString(),
                     'client_id' => $client->id->toString(),
                     'realm' => $client->realm->internalName,
@@ -81,7 +81,7 @@ final class BlockClientsTest extends TestCase
             ->with($this->integration->id)
             ->willReturn($clients);
 
-        $createClients = new BlockClients(
+        $createClients = new DisableClients(
             $integrationRepository,
             $keycloakClientRepository,
             $this->apiClient,

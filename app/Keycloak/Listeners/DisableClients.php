@@ -14,7 +14,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
-final class BlockClients implements ShouldQueue
+final class DisableClients implements ShouldQueue
 {
     use Queueable;
 
@@ -35,7 +35,7 @@ final class BlockClients implements ShouldQueue
             try {
                 $this->client->disableClient($keycloakClient);
 
-                $this->logger->info('Keycloak client blocked', [
+                $this->logger->info('Keycloak client disabled', [
                     'integration_id' => $integration->id->toString(),
                     'client_id' => $keycloakClient->id->toString(),
                     'realm' => $keycloakClient->realm->internalName,
@@ -48,7 +48,7 @@ final class BlockClients implements ShouldQueue
 
     public function failed(IntegrationBlocked $integrationBlocked, Throwable $throwable): void
     {
-        $this->logger->error('Failed to block Keycloak client(s)', [
+        $this->logger->error('Failed to disable Keycloak client(s)', [
             'integration_id' => $integrationBlocked->id->toString(),
             'exception' => $throwable,
         ]);

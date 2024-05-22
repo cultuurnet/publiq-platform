@@ -93,7 +93,7 @@ final class UpdateClientsTest extends TestCase
                     )
                 );
             $this->apiClient->expects($this->once())
-                ->method('resetScopes')
+                ->method('deleteScopes')
                 ->with($client);
 
             $this->apiClient->expects($this->once())

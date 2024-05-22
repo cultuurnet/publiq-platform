@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Keycloak;
 
+use App\Auth0\Listeners\BlockClients;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationUpdated;
@@ -11,7 +12,6 @@ use App\Domain\Integrations\Events\IntegrationUrlCreated;
 use App\Domain\Integrations\Events\IntegrationUrlDeleted;
 use App\Domain\Integrations\Events\IntegrationUrlUpdated;
 use App\Keycloak\Client\KeycloakHttpClient;
-use App\Keycloak\Listeners\BlockClients;
 use App\Keycloak\Listeners\CreateClients;
 use App\Keycloak\Listeners\UpdateClients;
 use App\Keycloak\Repositories\EloquentKeycloakClientRepository;
