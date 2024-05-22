@@ -10,6 +10,7 @@ use App\Keycloak\Config;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realm;
 use App\Keycloak\RealmCollection;
+use App\Keycloak\ScopeConfig;
 use App\Keycloak\Service\KeycloakApiClient;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
@@ -33,6 +34,7 @@ final class KeycloakApiClientTest extends TestCase
     private Realm $realm;
     private Integration $integration;
     private LoggerInterface&MockObject $logger;
+    private ScopeConfig $scopeConfig;
 
     protected function setUp(): void
     {
@@ -47,6 +49,12 @@ final class KeycloakApiClientTest extends TestCase
         $this->realm = new Realm('uitidpoc', 'Acceptance');
         $this->integration = $this->givenThereIsAnIntegration(Uuid::fromString(self::INTEGRATION_ID));
         $this->logger = $this->createMock(LoggerInterface::class);
+        $this->scopeConfig = new ScopeConfig(
+            Uuid::fromString('824c09c0-2f3a-4fa0-bde2-8bf25c9a5b74'),
+            Uuid::fromString('d8a54568-26da-412b-a441-d5e2fad84478'),
+            Uuid::fromString('123ae05d-1c41-40c8-8716-c4654a3bfd98'),
+            Uuid::fromString('0743b1c7-0ea2-46af-906e-fbb6c0317514'),
+        );
     }
 
     public function test_can_create_client(): void
@@ -58,6 +66,7 @@ final class KeycloakApiClientTest extends TestCase
 
         $apiClient = new KeycloakApiClient(
             $this->givenKeycloakHttpClient($this->logger, $mock),
+            $this->scopeConfig,
             $this->logger
         );
 
@@ -78,6 +87,7 @@ final class KeycloakApiClientTest extends TestCase
 
         $apiClient = new KeycloakApiClient(
             $this->givenKeycloakHttpClient($this->logger, $mock),
+            $this->scopeConfig,
             $this->logger
         );
 
@@ -102,6 +112,7 @@ final class KeycloakApiClientTest extends TestCase
 
         $apiClient = new KeycloakApiClient(
             $this->givenKeycloakHttpClient($this->logger, $mock),
+            $this->scopeConfig,
             $this->logger
         );
 
@@ -135,6 +146,7 @@ final class KeycloakApiClientTest extends TestCase
 
         $apiClient = new KeycloakApiClient(
             $this->givenKeycloakHttpClient($this->logger, $mock),
+            $this->scopeConfig,
             $this->logger
         );
 
@@ -158,6 +170,7 @@ final class KeycloakApiClientTest extends TestCase
 
         $apiClient = new KeycloakApiClient(
             $this->givenKeycloakHttpClient($this->logger, $mock),
+            $this->scopeConfig,
             $this->logger
         );
 

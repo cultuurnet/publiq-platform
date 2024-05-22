@@ -66,7 +66,7 @@ final class DisableClientTest extends TestCase
 
             $this->logger->expects($this->once())
                 ->method('info')
-                ->with('Keycloak client blocked', [
+                ->with('Keycloak client disabled', [
                     'integration_id' => $this->integration->id->toString(),
                     'client_id' => $client->id->toString(),
                     'realm' => $client->realm->internalName,
