@@ -26,6 +26,7 @@ use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\URL;
 use Laravel\Nova\Http\Requests\ActionRequest;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\ResourceTool;
@@ -127,6 +128,11 @@ final class Integration extends Resource
                 ->sortable()
                 ->withoutTrashed()
                 ->rules('required'),
+
+            URL::make('Website')
+                ->displayUsing(fn () => $this->website)
+                ->showOnIndex(false)
+                ->rules('url:http,https', 'max:255'),
 
             BelongsTo::make('Organization')
                 ->withoutTrashed()

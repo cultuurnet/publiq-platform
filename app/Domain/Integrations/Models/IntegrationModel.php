@@ -19,6 +19,7 @@ use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\KeyVisibility;
+use App\Domain\Integrations\Website;
 use App\Domain\KeyVisibilityUpgrades\Models\KeyVisibilityUpgradeModel;
 use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
@@ -38,6 +39,7 @@ use Ramsey\Uuid\UuidInterface;
  * @property CouponModel|null $coupon
  * @property SubscriptionModel|null $subscription
  * @property KeyVisibilityUpgradeModel|null $keyVisibilityUpgrade
+ * @property string $website
  */
 final class IntegrationModel extends UuidModel
 {
@@ -55,6 +57,7 @@ final class IntegrationModel extends UuidModel
         'status',
         'partner_status',
         'key_visibility',
+        'website',
     ];
 
     protected $attributes = [
@@ -293,6 +296,10 @@ final class IntegrationModel extends UuidModel
 
         if ($this->subscription) {
             $integration = $integration->withSubscription($this->subscription->toDomain());
+        }
+
+        if ($this->website) {
+            $integration = $integration->withWebsite(new Website($this->website));
         }
 
         if ($this->coupon) {

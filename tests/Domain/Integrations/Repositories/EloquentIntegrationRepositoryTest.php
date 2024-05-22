@@ -16,6 +16,7 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\EloquentIntegrationRepository;
+use App\Domain\Integrations\Website;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
@@ -77,7 +78,9 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             $subscriptionId,
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::THIRD_PARTY,
-        ))->withContacts(...$contacts);
+        ))
+            ->withContacts(...$contacts)
+            ->withWebsite(new Website('https://www.publiq.be'));
 
         $this->integrationRepository->save($integration);
 
@@ -88,6 +91,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'description' => $integration->description,
             'subscription_id' => $subscriptionId,
             'status' => $integration->status,
+            'website' => 'https://www.publiq.be',
         ]);
 
         foreach ($integration->contacts() as $contact) {
