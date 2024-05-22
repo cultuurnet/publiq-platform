@@ -9,6 +9,7 @@ use App\Insightly\Objects\OpportunityStage;
 use App\Insightly\Objects\OpportunityState;
 use App\Insightly\Pipelines;
 use App\Insightly\Serializers\CustomFields\IntegrationTypeSerializer;
+use App\Insightly\Serializers\CustomFields\WebsiteSerializer;
 
 final class OpportunitySerializer
 {
@@ -18,7 +19,7 @@ final class OpportunitySerializer
 
     public function toInsightlyArray(Integration $integration): array
     {
-        return [
+        $insightlyArray = [
             'OPPORTUNITY_NAME' => $integration->name,
             'OPPORTUNITY_STATE' => OpportunityState::OPEN->value,
             'OPPORTUNITY_DETAILS' => $integration->description,
@@ -28,6 +29,12 @@ final class OpportunitySerializer
                 (new IntegrationTypeSerializer())->toInsightlyArray($integration->type),
             ],
         ];
+
+        if ($integration->website()) {
+            $insightlyArray['CUSTOMFIELDS'][] = (new WebsiteSerializer())->toInsightlyArray($integration->website());
+        }
+
+        return $insightlyArray;
     }
 
     public function toInsightlyArrayForUpdate(Integration $integration, int $insightlyId): array

@@ -47,20 +47,22 @@ export const IntegrationTypeCard = ({
       headingStyles="group-hover:text-publiq-blue-dark"
       textCenter
     >
-      <div className="flex flex-col flex-1 justify-between min-h-[10rem] gap-7">
-        <ul className="flex flex-col gap-3">
-          {features.map((feature) => (
-            <li key={feature} className="flex items-center gap-2">
-              <FontAwesomeIcon
-                icon={faCheckSquare}
-                className="text-green-500"
-                size="lg"
-              />
-              {feature}
-            </li>
-          ))}
-        </ul>
-        <div className="self-center flex items-center gap-2 text-publiq-blue group-hover:text-publiq-blue-dark group-hover:underline">
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-col flex-1 justify-between min-h-[10rem] gap-7">
+          <ul className="flex flex-col gap-3">
+            {features.map((feature) => (
+              <li key={feature} className="flex items-start gap-2">
+                <FontAwesomeIcon
+                  icon={faCheckSquare}
+                  className="text-green-500 mt-1"
+                  size="lg"
+                />
+                {feature}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="flex items-center justify-center gap-2 text-publiq-blue group-hover:text-publiq-blue-dark group-hover:underline">
           {t("home.integration_types.action", { type: title })}
           <FontAwesomeIcon icon={faChevronRight} size="xs" />
         </div>
