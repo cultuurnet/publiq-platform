@@ -76,7 +76,7 @@ final class UpdateClientsTest extends TestCase
                 ->with($client, IntegrationToKeycloakClientConverter::convert($client->id, $this->integration));
 
             $this->apiClient->expects($this->once())
-                ->method('resetScopes')
+                ->method('deleteScopes')
                 ->with($client);
 
             $this->apiClient->expects($this->once())

@@ -237,6 +237,6 @@ final class KeycloakApiClientTest extends TestCase
         $this->expectException(KeyCloakApiFailed::class);
         $this->expectExceptionCode(KeyCloakApiFailed::FAILED_TO_RESET_SCOPE);
 
-        $apiClient->resetScopes($client);
+        $apiClient->deleteScopes($client);
     }
 }
