@@ -30,20 +30,20 @@ final class IntegrationUrlModel extends UuidModel
     {
         self::created(
             static fn (IntegrationUrlModel $integrationUrlModel) => IntegrationUrlCreated::dispatch(
+                Uuid::fromString($integrationUrlModel->integration_id),
                 Uuid::fromString($integrationUrlModel->id),
-                Uuid::fromString($integrationUrlModel->integration_id)
             )
         );
         self::updated(
             static fn (IntegrationUrlModel $integrationUrlModel) => IntegrationUrlUpdated::dispatch(
+                Uuid::fromString($integrationUrlModel->integration_id),
                 Uuid::fromString($integrationUrlModel->id),
-                Uuid::fromString($integrationUrlModel->integration_id)
             )
         );
         self::deleted(
             static fn (IntegrationUrlModel $integrationUrlModel) => IntegrationUrlDeleted::dispatch(
+                Uuid::fromString($integrationUrlModel->integration_id),
                 Uuid::fromString($integrationUrlModel->id),
-                Uuid::fromString($integrationUrlModel->integration_id)
             )
         );
     }

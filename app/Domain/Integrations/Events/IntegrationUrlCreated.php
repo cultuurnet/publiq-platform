@@ -13,7 +13,7 @@ final class IntegrationUrlCreated
 
     public function __construct(
         public readonly UuidInterface $id,
-        public readonly UuidInterface $integrationId
+        public readonly UuidInterface $integrationUrlId,
     ) {
     }
 }
