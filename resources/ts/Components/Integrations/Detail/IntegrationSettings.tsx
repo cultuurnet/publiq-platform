@@ -115,6 +115,7 @@ export const IntegrationSettings = ({
     integrationName: name,
     description,
     website,
+    integrationType: type,
   });
 
   const urlsForm = useUrlsForm({
