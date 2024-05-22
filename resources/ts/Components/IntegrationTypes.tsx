@@ -90,6 +90,7 @@ export type IntegrationTypesInfo = ReturnType<
 export const IntegrationTypes = () => {
   const integrationTypesInfo = useIntegrationTypesInfo();
 
+  // See https://jira.publiq.be/browse/PPF-481
   const filteredIntegrationTypes = uitpasEnabled
     ? integrationTypesInfo
     : integrationTypesInfo.filter(
