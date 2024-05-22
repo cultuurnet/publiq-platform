@@ -9,6 +9,7 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\Website;
 use App\Domain\Subscriptions\Currency;
 use App\Domain\Subscriptions\Subscription;
 use App\Domain\Subscriptions\SubscriptionCategory;
@@ -65,7 +66,7 @@ final class InsightlyProjectResourceTest extends TestCase
         $description = 'description';
         $insightlyId = 42;
 
-        $integration = new Integration(
+        $integration = (new Integration(
             Uuid::uuid4(),
             $integrationType,
             $name,
@@ -73,7 +74,7 @@ final class InsightlyProjectResourceTest extends TestCase
             Uuid::uuid4(),
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::THIRD_PARTY,
-        );
+        ))->withWebsite(new Website('https://www.publiq.be'));
 
         $expectedCreateRequest = new Request(
             'POST',
@@ -360,6 +361,11 @@ final class InsightlyProjectResourceTest extends TestCase
                     'CUSTOM_FIELD_ID' => 'Product__c',
                     'FIELD_VALUE' => 'Entry API V3',
                 ],
+                [
+                    'FIELD_NAME' => 'URL_agenda__c',
+                    'CUSTOM_FIELD_ID' => 'URL_agenda__c',
+                    'FIELD_VALUE' => 'https://www.publiq.be',
+                ],
             ],
         ];
 
@@ -371,6 +377,11 @@ final class InsightlyProjectResourceTest extends TestCase
                     'CUSTOM_FIELD_ID' => 'Product__c',
                     'FIELD_VALUE' => 'Publicatie Search API V3',
                 ],
+                [
+                    'FIELD_NAME' => 'URL_agenda__c',
+                    'CUSTOM_FIELD_ID' => 'URL_agenda__c',
+                    'FIELD_VALUE' => 'https://www.publiq.be',
+                ],
             ],
         ];
 
@@ -381,6 +392,11 @@ final class InsightlyProjectResourceTest extends TestCase
                     'FIELD_NAME' => 'Product__c',
                     'CUSTOM_FIELD_ID' => 'Product__c',
                     'FIELD_VALUE' => 'Publicatie Widgets V3',
+                ],
+                [
+                    'FIELD_NAME' => 'URL_agenda__c',
+                    'CUSTOM_FIELD_ID' => 'URL_agenda__c',
+                    'FIELD_VALUE' => 'https://www.publiq.be',
                 ],
             ],
         ];

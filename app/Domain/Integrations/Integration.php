@@ -35,6 +35,8 @@ final class Integration
 
     private ?Subscription $subscription;
 
+    private ?Website $website;
+
     private ?Coupon $coupon;
 
     public function __construct(
@@ -53,6 +55,7 @@ final class Integration
         $this->organization = null;
         $this->keyVisibility = KeyVisibility::v2;
         $this->keyVisibilityUpgrade = null;
+        $this->website = null;
     }
 
     public function withKeyVisibility(KeyVisibility $keyVisibility): self
@@ -112,6 +115,18 @@ final class Integration
         $clone = clone $this;
         $clone->subscription = $subscription;
         return $clone;
+    }
+
+    public function withWebsite(Website $website): self
+    {
+        $clone = clone $this;
+        $clone->website = $website;
+        return $clone;
+    }
+
+    public function website(): ?Website
+    {
+        return $this->website;
     }
 
     public function withCoupon(Coupon $coupon): self
@@ -195,6 +210,7 @@ final class Integration
             'authClients' => $this->auth0Clients,
             'legacyAuthConsumers' => $this->uiTiDv1Consumers,
             'subscription' => $this->subscription,
+            'website' => $this->website->value ?? null,
             'coupon' => $this->coupon ?? null,
         ];
     }
