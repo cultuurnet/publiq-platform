@@ -38,8 +38,8 @@ final class UpdateClients implements ShouldQueue
 
     public function handle(IntegrationUpdated|IntegrationUrlCreated|IntegrationUrlUpdated|IntegrationUrlDeleted $event): void
     {
-        $integration = $this->integrationRepository->getById($event->getIntegrationId());
-        $keycloakClients = $this->keycloakClientRepository->getByIntegrationId($event->getIntegrationId());
+        $integration = $this->integrationRepository->getById($event->id);
+        $keycloakClients = $this->keycloakClientRepository->getByIntegrationId($event->id);
         $scopeId = $this->scopeConfig->getScopeIdFromIntegrationType($integration);
 
         foreach ($keycloakClients as $keycloakClient) {
@@ -54,7 +54,7 @@ final class UpdateClients implements ShouldQueue
     public function failed(IntegrationUpdated|IntegrationUrlCreated|IntegrationUrlUpdated|IntegrationUrlDeleted $integrationUpdated, Throwable $throwable): void
     {
         $this->logger->error('Failed to update Keycloak client(s)', [
-            'integration_id' => $integrationUpdated->getIntegrationId()->toString(),
+            'integration_id' => $integrationUpdated->id->toString(),
             'exception' => $throwable,
         ]);
     }

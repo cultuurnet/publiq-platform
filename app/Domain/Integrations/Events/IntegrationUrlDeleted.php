@@ -16,9 +16,4 @@ final class IntegrationUrlDeleted
         public readonly UuidInterface $integrationUrlId,
     ) {
     }
-
-    public function getIntegrationId(): UuidInterface
-    {
-        return $this->integrationId;
-    }
 }
