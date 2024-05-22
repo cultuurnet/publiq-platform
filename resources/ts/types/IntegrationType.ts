@@ -4,7 +4,7 @@ export const IntegrationType = {
   EntryApi: "entry-api",
   SearchApi: "search-api",
   Widgets: "widgets",
-  UiTPAS: "uitpas-api",
+  UiTPAS: "uitpas",
 } as const;
 
 export type IntegrationType = Values<typeof IntegrationType>;
