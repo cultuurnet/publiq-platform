@@ -27,4 +27,15 @@ final readonly class ScopeConfig
             IntegrationType::UiTPAS => $this->uitpasScopeId
         };
     }
+
+    /** @return UuidInterface[] */
+    public function getAll(): array
+    {
+        return [
+            $this->searchApiScopeId,
+            $this->entryApiScopeId,
+            $this->widgetScopeId,
+            $this->uitpasScopeId,
+        ];
+    }
 }

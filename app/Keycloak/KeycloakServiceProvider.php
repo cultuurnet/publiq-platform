@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Keycloak;
 
 use App\Domain\Integrations\Events\IntegrationCreated;
-use App\Keycloak\Listeners\CreateClients;
+use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Keycloak\Client\KeycloakHttpClient;
+use App\Keycloak\Listeners\CreateClients;
+use App\Keycloak\Listeners\UpdateClients;
 use App\Keycloak\Repositories\EloquentKeycloakClientRepository;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Keycloak\Service\ApiClient;
@@ -34,6 +36,7 @@ final class KeycloakServiceProvider extends ServiceProvider
                         $this->app->get(LoggerInterface::class)
                     )
                 ),
+                $this->app->get(ScopeConfig::class),
                 $this->app->get(LoggerInterface::class),
             );
         });
@@ -78,5 +81,6 @@ final class KeycloakServiceProvider extends ServiceProvider
         }
 
         Event::listen(IntegrationCreated::class, [CreateClients::class, 'handle']);
+        Event::listen(IntegrationUpdated::class, [UpdateClients::class, 'handle']);
     }
 }

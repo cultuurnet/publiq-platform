@@ -22,4 +22,8 @@ interface ApiClient
     public function enableClient(Client $client): void;
 
     public function disableClient(Client $client): void;
+
+    public function updateClient(Client $client, array $body): void;
+
+    public function deleteScopes(Client $client): void;
 }

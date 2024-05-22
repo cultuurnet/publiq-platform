@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Keycloak\Service;
 
 use App\Domain\Integrations\Integration;
+use App\Keycloak\Client;
 use App\Keycloak\Config;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realm;
@@ -162,5 +163,72 @@ final class KeycloakApiClientTest extends TestCase
 
         $client = $apiClient->fetchClient($this->realm, $this->integration);
         $this->assertEmpty($client);
+    }
+
+    /** @dataProvider dataProviderIsClientEnabled */
+    public function test_fetch_is_client_enabled(bool $enabled): void
+    {
+        $mock = new MockHandler([
+            new Response(200, [], json_encode(['access_token' => 'pqeaefosdfhbsdq'], JSON_THROW_ON_ERROR)),
+            new Response(200, [], json_encode([['enabled' => $enabled]], JSON_THROW_ON_ERROR)),
+        ]);
+
+        $apiClient = new KeycloakApiClient(
+            $this->givenKeycloakHttpClient($this->logger, $mock),
+            $this->scopeConfig,
+            $this->logger
+        );
+
+        $this->assertEquals($enabled, $apiClient->fetchIsClientEnabled($this->realm, $this->integration->id));
+    }
+
+    public static function dataProviderIsClientEnabled(): array
+    {
+        return [
+            [true],
+            [false],
+        ];
+    }
+
+    public function test_update_client_throws_exception_when_api_call_fails(): void
+    {
+        $mock = new MockHandler([
+            new Response(200, [], json_encode(['access_token' => 'pqeaefosdfhbsdq'], JSON_THROW_ON_ERROR)),
+            new Response(500),
+        ]);
+
+        $apiClient = new KeycloakApiClient(
+            $this->givenKeycloakHttpClient($this->logger, $mock),
+            $this->scopeConfig,
+            $this->logger
+        );
+
+        $client = new Client(Uuid::uuid4(), $this->integration->id, self::SECRET, $this->realm);
+
+        $this->expectException(KeyCloakApiFailed::class);
+        $this->expectExceptionCode(KeyCloakApiFailed::FAILED_TO_UPDATE_CLIENT);
+
+        $apiClient->updateClient($client, []);
+    }
+
+    public function test_reset_scopes_throws_exception_when_api_call_fails(): void
+    {
+        $mock = new MockHandler([
+            new Response(200, [], json_encode(['access_token' => 'pqeaefosdfhbsdq'], JSON_THROW_ON_ERROR)),
+            new Response(500),
+        ]);
+
+        $apiClient = new KeycloakApiClient(
+            $this->givenKeycloakHttpClient($this->logger, $mock),
+            $this->scopeConfig,
+            $this->logger
+        );
+
+        $client = new Client(Uuid::uuid4(), $this->integration->id, self::SECRET, $this->realm);
+
+        $this->expectException(KeyCloakApiFailed::class);
+        $this->expectExceptionCode(KeyCloakApiFailed::FAILED_TO_RESET_SCOPE);
+
+        $apiClient->deleteScopes($client);
     }
 }

@@ -10,7 +10,7 @@ use App\Keycloak\Client;
 use App\Keycloak\Client\KeycloakHttpClient;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realm;
-use Exception;
+use App\Keycloak\ScopeConfig;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 use Psr\Log\LoggerInterface;
@@ -22,10 +22,14 @@ final readonly class KeycloakApiClient implements ApiClient
 {
     public function __construct(
         private KeycloakHttpClient $client,
-        private LoggerInterface $logger
+        private ScopeConfig $scopeConfig,
+        private LoggerInterface $logger,
     ) {
     }
 
+    /**
+     * @throws KeyCloakApiFailed
+     */
     public function createClient(Realm $realm, Integration $integration): UuidInterface
     {
         $id = Uuid::uuid4();
@@ -39,7 +43,7 @@ final readonly class KeycloakApiClient implements ApiClient
                     Json::encode(IntegrationToKeycloakClientConverter::convert($id, $integration))
                 )
             );
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             throw KeyCloakApiFailed::failedToCreateClient($e->getMessage());
         }
 
@@ -52,6 +56,9 @@ final readonly class KeycloakApiClient implements ApiClient
         return $id;
     }
 
+    /**
+     * @throws KeyCloakApiFailed
+     */
     public function addScopeToClient(Realm $realm, UuidInterface $clientId, UuidInterface $scopeId): void
     {
         try {
@@ -70,6 +77,31 @@ final readonly class KeycloakApiClient implements ApiClient
         }
     }
 
+
+    public function deleteScopes(Client $client): void
+    {
+        foreach ($this->scopeConfig->getAll() as $scope) {
+            try {
+                $response = $this->client->sendWithBearer(
+                    new Request(
+                        'DELETE',
+                        sprintf('admin/realms/%s/clients/%s/default-client-scopes/%s', $client->realm->internalName, $client->id->toString(), $scope->toString()),
+                    )
+                );
+
+                // Will throw a 404 when scope not attached to client, but this is no problem.
+                if ($response->getStatusCode() !== 204 && $response->getStatusCode() !== 404) {
+                    throw KeyCloakApiFailed::failedToResetScopeWithResponse($client, $scope, $response->getBody()->getContents());
+                }
+            } catch (Throwable) {
+                throw KeyCloakApiFailed::failedToResetScope($client, $scope);
+            }
+        }
+    }
+
+    /**
+     * @throws KeyCloakApiFailed
+     */
     public function fetchClient(Realm $realm, Integration $integration): Client
     {
         try {
@@ -88,11 +120,14 @@ final readonly class KeycloakApiClient implements ApiClient
 
             $data = Json::decodeAssociatively($body);
             return Client::createFromJson($realm, $integration->id, $data[0]);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             throw KeyCloakApiFailed::failedToFetchClient($realm, $e->getMessage());
         }
     }
 
+    /**
+     * @throws KeyCloakApiFailed
+     */
     public function fetchIsClientEnabled(Realm $realm, UuidInterface $integrationId): bool
     {
         try {
@@ -135,7 +170,10 @@ final readonly class KeycloakApiClient implements ApiClient
         $this->updateClient($client, ['enabled' => false]);
     }
 
-    private function updateClient(Client $client, array $body): void
+    /**
+     * @throws KeyCloakApiFailed
+     */
+    public function updateClient(Client $client, array $body): void
     {
         try {
             $response = $this->client->sendWithBearer(
