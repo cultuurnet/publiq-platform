@@ -31,10 +31,8 @@ final class UpdateClients implements ShouldQueue
     public function handle(
         IntegrationUpdated|IntegrationUrlCreated|IntegrationUrlDeleted|IntegrationUrlUpdated $event
     ): void {
-        $integrationId = $event->integrationId ?? $event->id;
-
-        $integration = $this->integrationRepository->getById($integrationId);
-        $auth0Clients = $this->auth0ClientRepository->getByIntegrationId($integrationId);
+        $integration = $this->integrationRepository->getById($event->id);
+        $auth0Clients = $this->auth0ClientRepository->getByIntegrationId($event->id);
 
         $this->clusterSDK->updateClientsForIntegration($integration, ...$auth0Clients);
 
@@ -42,7 +40,7 @@ final class UpdateClients implements ShouldQueue
             'Auth0 client(s) updated',
             [
                 'domain' => 'auth0',
-                'integration_id' => $integrationId->toString(),
+                'integration_id' => $event->id->toString(),
             ]
         );
     }
@@ -51,10 +49,8 @@ final class UpdateClients implements ShouldQueue
         IntegrationUpdated|IntegrationUrlCreated|IntegrationUrlDeleted|IntegrationUrlUpdated $event,
         Throwable $throwable
     ): void {
-        $integrationId = $event->integrationId ?? $event->id;
-
         $this->logger->error('Failed to update Auth0 client(s)', [
-            'integration_id' => $integrationId->toString(),
+            'integration_id' => $event->id->toString(),
             'exception' => $throwable,
         ]);
     }

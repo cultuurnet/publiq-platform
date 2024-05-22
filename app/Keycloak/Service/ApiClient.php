@@ -25,5 +25,5 @@ interface ApiClient
 
     public function updateClient(Client $client, array $body): void;
 
-    public function resetScopes(Client $client): void;
+    public function deleteScopes(Client $client): void;
 }

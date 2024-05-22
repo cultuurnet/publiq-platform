@@ -61,7 +61,7 @@ final class UpdateClients implements ShouldQueue
             $keycloakClient,
             IntegrationToKeycloakClientConverter::convert($keycloakClient->id, $integration)
         );
-        $this->client->resetScopes($keycloakClient);
+        $this->client->deleteScopes($keycloakClient);
         $this->client->addScopeToClient($keycloakClient->realm, $keycloakClient->id, $scopeId);
 
         $this->logger->info('Keycloak client updated', [
