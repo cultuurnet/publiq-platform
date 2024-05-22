@@ -20,7 +20,7 @@ use Ramsey\Uuid\Uuid;
 use Tests\IntegrationHelper;
 use Tests\Keycloak\KeycloakHelper;
 
-final class BlockClientsTest extends TestCase
+final class DisableClientTest extends TestCase
 {
     use IntegrationHelper;
     use KeycloakHelper;
@@ -48,7 +48,7 @@ final class BlockClientsTest extends TestCase
         $this->logger = $this->createMock(LoggerInterface::class);
     }
 
-    public function test_block_clients_when_integration_is_blocked(): void
+    public function test_disable_clients_when_integration_is_blocked(): void
     {
         $integrationRepository = $this->createMock(IntegrationRepository::class);
         $integrationRepository->expects($this->once())
