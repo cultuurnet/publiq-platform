@@ -18,6 +18,7 @@ final class StoreIntegrationRequest extends FormRequest
             'subscriptionId' => ['required', 'string'],
             'integrationName' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string', 'max:255'],
+            'website' => ['required_if:integrationType,uitpas-api', 'nullable', 'url:http,https', 'max:255'],
             'firstNameFunctionalContact' => ['required', 'string', 'max:255'],
             'lastNameFunctionalContact' => ['required', 'string', 'max:255'],
             'emailFunctionalContact' => ['required', 'string', 'email', 'max:255'],
