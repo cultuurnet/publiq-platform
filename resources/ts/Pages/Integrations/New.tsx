@@ -138,7 +138,7 @@ const New = ({ subscriptions }: Props) => {
           </Card>
 
           {pricingPlans.length > 0 && (
-            <Card title={t("integration_form.pricing_plan")}>
+            <Card title={t("integration_form.pricing_plan.label")}>
               <RadioButtonGroup
                 orientation="vertical"
                 name="subscriptionId"
@@ -162,7 +162,7 @@ const New = ({ subscriptions }: Props) => {
                 )}
                 {data.integrationType !== IntegrationType.EntryApi && (
                   <span className="text-gray-500 text-sm mt-3 inline-block">
-                    {t("integration_form.price_info")}
+                    {t("integration_form.pricing_plan.info")}
                   </span>
                 )}
               </div>
@@ -186,9 +186,9 @@ const New = ({ subscriptions }: Props) => {
           </Card>
           <Card>
             <FormElement
-              label={t("integration_form.aim")}
+              label={t("integration_form.aim.label")}
               labelSize="2xl"
-              info={t("integration_form.description_aim")}
+              info={t("integration_form.aim.info")}
               component={
                 <textarea
                   rows={3}
@@ -202,7 +202,7 @@ const New = ({ subscriptions }: Props) => {
             />
           </Card>
           <Card
-            title={t("integration_form.contact_label_functional")}
+            title={t("integration_form.contact_functional.label")}
             contentStyles="flex flex-col gap-5"
           >
             <div className="flex flex-col gap-5">
@@ -254,13 +254,13 @@ const New = ({ subscriptions }: Props) => {
                 />
               </div>
               <span className="text-gray-500 text-sm">
-                {t("integration_form.contact_label_functional_info")}
+                {t("integration_form.contact_functional.info")}
               </span>
             </div>
           </Card>
 
           <Card
-            title={t("integration_form.contact_label_technical")}
+            title={t("integration_form.contact_technical.label")}
             contentStyles="flex flex-col gap-5"
           >
             <div className="grid grid-cols-3 max-md:flex max-md:flex-col gap-5">
@@ -312,7 +312,7 @@ const New = ({ subscriptions }: Props) => {
               />
             </div>
             <span className="text-gray-500 text-sm">
-              {t("integration_form.contact_label_technical_info")}
+              {t("integration_form.contact_technical.info")}
             </span>
           </Card>
 
