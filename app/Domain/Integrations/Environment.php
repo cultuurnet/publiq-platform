@@ -9,4 +9,5 @@ enum Environment: string
     case Acceptance = 'acc';
     case Testing = 'test';
     case Production = 'prod';
+    case Unknown = 'unknown';
 }
