@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Keycloak\Listeners;
 
+use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationUrl;
+use App\Domain\Integrations\IntegrationUrlType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client;
 use App\Keycloak\Config;
@@ -15,6 +18,7 @@ use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Keycloak\ScopeConfig;
 use App\Keycloak\Service\ApiClient;
 use App\Keycloak\Service\IntegrationToKeycloakClientConverter;
+use App\Keycloak\Service\IntegrationUrlConverter;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -48,6 +52,14 @@ final class UpdateClientsTest extends TestCase
         // This is a search API integration
         $this->integration = $this->givenThereIsAnIntegration(Uuid::uuid4());
 
+        $this->integration = $this->integration->withUrls(
+            new IntegrationUrl(Uuid::uuid4(), $this->integration->id, Environment::Acceptance, IntegrationUrlType::Callback, 'https://example.com/callback'),
+            new IntegrationUrl(Uuid::uuid4(), $this->integration->id, Environment::Acceptance, IntegrationUrlType::Login, 'https://example.com/login1'),
+            new IntegrationUrl(Uuid::uuid4(), $this->integration->id, Environment::Acceptance, IntegrationUrlType::Login, 'https://example.com/login2'),
+            new IntegrationUrl(Uuid::uuid4(), $this->integration->id, Environment::Acceptance, IntegrationUrlType::Logout, 'https://example.com/logout1'),
+            new IntegrationUrl(Uuid::uuid4(), $this->integration->id, Environment::Acceptance, IntegrationUrlType::Logout, 'https://example.com/logout2'),
+        );
+
         $this->scopeConfig = new ScopeConfig(
             Uuid::fromString(self::SEARCH_SCOPE_ID),
             Uuid::fromString('d8a54568-26da-412b-a441-d5e2fad84478'),
@@ -73,8 +85,13 @@ final class UpdateClientsTest extends TestCase
 
             $this->apiClient->expects($this->once())
                 ->method('updateClient')
-                ->with($client, IntegrationToKeycloakClientConverter::convert($client->id, $this->integration));
-
+                ->with(
+                    $client,
+                    array_merge(
+                        IntegrationToKeycloakClientConverter::convert($client->id, $this->integration),
+                        IntegrationUrlConverter::convert($this->integration, $client)
+                    )
+                );
             $this->apiClient->expects($this->once())
                 ->method('resetScopes')
                 ->with($client);

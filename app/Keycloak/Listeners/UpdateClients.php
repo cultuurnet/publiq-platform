@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App\Keycloak\Listeners;
 
 use App\Domain\Integrations\Events\IntegrationUpdated;
+use App\Domain\Integrations\Events\IntegrationUrlCreated;
+use App\Domain\Integrations\Events\IntegrationUrlDeleted;
+use App\Domain\Integrations\Events\IntegrationUrlUpdated;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client;
@@ -13,6 +16,7 @@ use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Keycloak\ScopeConfig;
 use App\Keycloak\Service\ApiClient;
 use App\Keycloak\Service\IntegrationToKeycloakClientConverter;
+use App\Keycloak\Service\IntegrationUrlConverter;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
@@ -32,25 +36,25 @@ final class UpdateClients implements ShouldQueue
     ) {
     }
 
-    public function handle(IntegrationUpdated $integrationUpdated): void
+    public function handle(IntegrationUpdated|IntegrationUrlCreated|IntegrationUrlUpdated|IntegrationUrlDeleted $event): void
     {
-        $integration = $this->integrationRepository->getById($integrationUpdated->id);
-        $keycloakClients = $this->keycloakClientRepository->getByIntegrationId($integrationUpdated->id);
+        $integration = $this->integrationRepository->getById($event->getIntegrationId());
+        $keycloakClients = $this->keycloakClientRepository->getByIntegrationId($event->getIntegrationId());
         $scopeId = $this->scopeConfig->getScopeIdFromIntegrationType($integration);
 
         foreach ($keycloakClients as $keycloakClient) {
             try {
                 $this->updateClient($integration, $keycloakClient, $scopeId);
             } catch (KeyCloakApiFailed $e) {
-                $this->failed($integrationUpdated, $e);
+                $this->failed($event, $e);
             }
         }
     }
 
-    public function failed(IntegrationUpdated $integrationUpdated, Throwable $throwable): void
+    public function failed(IntegrationUpdated|IntegrationUrlCreated|IntegrationUrlUpdated|IntegrationUrlDeleted $integrationUpdated, Throwable $throwable): void
     {
         $this->logger->error('Failed to update Keycloak client(s)', [
-            'integration_id' => $integrationUpdated->id->toString(),
+            'integration_id' => $integrationUpdated->getIntegrationId()->toString(),
             'exception' => $throwable,
         ]);
     }
@@ -59,7 +63,10 @@ final class UpdateClients implements ShouldQueue
     {
         $this->client->updateClient(
             $keycloakClient,
-            IntegrationToKeycloakClientConverter::convert($keycloakClient->id, $integration)
+            array_merge(
+                IntegrationToKeycloakClientConverter::convert($keycloakClient->id, $integration),
+                IntegrationUrlConverter::convert($integration, $keycloakClient)
+            )
         );
         $this->client->resetScopes($keycloakClient);
         $this->client->addScopeToClient($keycloakClient->realm, $keycloakClient->id, $scopeId);
