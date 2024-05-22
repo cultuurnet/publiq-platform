@@ -60,6 +60,15 @@
     },
     "integration_types": {
       "action": "Try {{type}}",
+      "uitpas_api": {
+        "title": "UiTPAS API",
+        "description": "Register discounts, trade rewards and save points for UiTPAS passholders",
+        "features": [
+          "Solution for ticketing systems",
+          "Step by step guides",
+          "REST-API with JSON standard"
+        ]
+      },
       "entry_api": {
         "title": "Entry API",
         "description": "Via Entry API, you can create, modify, and delete items in the UiTdatabank.",

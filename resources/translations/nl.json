@@ -60,6 +60,15 @@
     },
     "integration_types": {
       "action": "Probeer {{type}}",
+      "uitpas_api": {
+        "title": "UiTPAS API",
+        "description": "Ken kortingen toe, ruil voordelen om en spaar punten voor UiTPAS-houders",
+        "features": [
+          "Oplossing voor koppeling met ticketing systemen",
+          "Uitgebreide stap-voor-stap gidsen",
+          "REST-API met JSON standaard"
+        ]
+      },
       "entry_api": {
         "title": "Entry API",
         "description": "Via Entry API kan je items in de UiTdatabank aanmaken, aanpassen en verwijderen.",
