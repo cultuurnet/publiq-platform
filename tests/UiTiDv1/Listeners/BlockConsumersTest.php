@@ -16,13 +16,13 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
-use Tests\IntegrationHelper;
+use Tests\CreateIntegration;
 use Tests\UiTiDv1\CreatesMockUiTiDv1ClusterSDK;
 
 final class BlockConsumersTest extends TestCase
 {
     use CreatesMockUiTiDv1ClusterSDK;
-    use IntegrationHelper;
+    use CreateIntegration;
 
     private ClientInterface&MockObject $httpClient;
     private UiTiDv1ConsumerRepository&MockObject $consumerRepository;

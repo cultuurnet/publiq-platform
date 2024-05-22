@@ -17,7 +17,7 @@ use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
-use Tests\IntegrationHelper;
+use Tests\CreateIntegration;
 use Tests\TestCase;
 use Tests\UiTiDv1\CreatesMockUiTiDv1ClusterSDK;
 use Tests\UiTiDv1\CreatesMockUiTiDv1Consumer;
@@ -26,7 +26,7 @@ final class BlockConsumerHandlerTest extends TestCase
 {
     use CreatesMockUiTiDv1ClusterSDK;
     use CreatesMockUiTiDv1Consumer;
-    use IntegrationHelper;
+    use CreateIntegration;
 
     private ClientInterface&MockObject $httpClient;
     private UiTiDv1ConsumerRepository&MockObject $clientRepository;
