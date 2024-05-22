@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\UiTiDv1\Listeners;
 
 use App\Domain\Integrations\Events\IntegrationBlocked;
+use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\UiTiDv1\Listeners\BlockConsumers;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use App\UiTiDv1\UiTiDv1Consumer;
@@ -15,26 +16,29 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
+use Tests\CreateIntegration;
 use Tests\UiTiDv1\CreatesMockUiTiDv1ClusterSDK;
 
 final class BlockConsumersTest extends TestCase
 {
     use CreatesMockUiTiDv1ClusterSDK;
+    use CreateIntegration;
 
     private ClientInterface&MockObject $httpClient;
-
     private UiTiDv1ConsumerRepository&MockObject $consumerRepository;
-
+    private IntegrationRepository&MockObject $integrationRepository;
     private BlockConsumers $blockConsumers;
 
     protected function setUp(): void
     {
         $this->httpClient = $this->createMock(ClientInterface::class);
         $this->consumerRepository = $this->createMock(UiTiDv1ConsumerRepository::class);
+        $this->integrationRepository = $this->createMock(IntegrationRepository::class);
 
         $this->blockConsumers = new BlockConsumers(
             $this->createMockUiTiDv1ClusterSDK($this->httpClient),
             $this->consumerRepository,
+            $this->integrationRepository,
             $this->createMock(LoggerInterface::class)
         );
     }
@@ -78,6 +82,10 @@ final class BlockConsumersTest extends TestCase
             ->with($integrationId)
             ->willReturn($consumers);
 
+        $this->integrationRepository->expects($this->once())
+            ->method('getById')
+            ->willReturn($this->givenThereIsAnIntegration($integrationId));
+
         $this->httpClient->expects($this->exactly(3))
             ->method('request')
             ->willReturnCallback(
@@ -89,7 +97,7 @@ final class BlockConsumersTest extends TestCase
                         [
                             'http_errors' => false,
                             'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
-                            'body' => 'status=BLOCKED',
+                            'body' => 'status=BLOCKED&group=3',
                         ],
                     ],
                     [
@@ -98,7 +106,7 @@ final class BlockConsumersTest extends TestCase
                         [
                             'http_errors' => false,
                             'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
-                            'body' => 'status=BLOCKED',
+                            'body' => 'status=BLOCKED&group=9',
                         ],
                     ],
                     [
@@ -107,7 +115,7 @@ final class BlockConsumersTest extends TestCase
                         [
                             'http_errors' => false,
                             'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
-                            'body' => 'status=BLOCKED',
+                            'body' => 'status=BLOCKED&group=15',
                         ],
                     ] => new Response(200, [], ''),
                     default => throw new \LogicException('Invalid arguments received'),
