@@ -166,6 +166,9 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'website' => [
+            'required_if' => 'Website is verplicht.'
+        ]
     ],
 
     /*
