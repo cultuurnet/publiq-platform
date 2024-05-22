@@ -132,7 +132,7 @@ final class Integration extends Resource
             URL::make('Website')
                 ->displayUsing(fn () => $this->website)
                 ->showOnIndex(false)
-                ->rules('url:http,https', 'max:255'),
+                ->rules('nullable', 'url:http,https', 'max:255'),
 
             BelongsTo::make('Organization')
                 ->withoutTrashed()
