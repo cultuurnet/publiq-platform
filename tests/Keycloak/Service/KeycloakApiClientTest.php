@@ -20,7 +20,7 @@ use Ramsey\Uuid\UuidInterface;
 use Tests\IntegrationHelper;
 use Tests\Keycloak\KeycloakHelper;
 
-final class ApiClientTest extends TestCase
+final class KeycloakApiClientTest extends TestCase
 {
     use KeycloakHelper;
     use IntegrationHelper;
@@ -46,7 +46,6 @@ final class ApiClientTest extends TestCase
         $this->realm = new Realm('uitidpoc', 'Acceptance');
         $this->integration = $this->givenThereIsAnIntegration(Uuid::fromString(self::INTEGRATION_ID));
         $this->logger = $this->createMock(LoggerInterface::class);
-        ;
     }
 
     public function test_can_create_client(): void
