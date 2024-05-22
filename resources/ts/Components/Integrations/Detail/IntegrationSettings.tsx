@@ -99,6 +99,7 @@ export const IntegrationSettings = ({
   name,
   type,
   description,
+  website,
   urls,
   keyVisibility,
   onChangeIsFormDirty,
@@ -113,6 +114,7 @@ export const IntegrationSettings = ({
   const basicInfoForm = useBasicInfoForm({
     integrationName: name,
     description,
+    website,
   });
 
   const urlsForm = useUrlsForm({
@@ -192,7 +194,7 @@ export const IntegrationSettings = ({
           resolve(undefined);
           basicInfoForm.setDefaults();
         },
-        only: ["name", "description", "errors"],
+        only: ["name", "description", "website", "errors"],
       });
     });
   };
@@ -242,10 +244,12 @@ export const IntegrationSettings = ({
       <BasicInfo
         name={basicInfoForm.data.integrationName}
         description={basicInfoForm.data.description}
+        website={basicInfoForm.data.website}
         onChangeName={(name) => basicInfoForm.setData("integrationName", name)}
         onChangeDescription={(description) =>
           basicInfoForm.setData("description", description)
         }
+        onChangeWebsite={(website) => basicInfoForm.setData("website", website)}
         errors={basicInfoForm.errors}
       />
 
