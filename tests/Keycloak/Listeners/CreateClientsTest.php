@@ -8,7 +8,6 @@ use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client;
-use App\Keycloak\ClientCollection;
 use App\Keycloak\Config;
 use App\Keycloak\Listeners\CreateClients;
 use App\Keycloak\Realm;
