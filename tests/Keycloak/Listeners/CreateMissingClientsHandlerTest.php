@@ -8,8 +8,8 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client;
 use App\Keycloak\ClientCollection;
-use App\Keycloak\Jobs\CreateMissingClients;
-use App\Keycloak\Listeners\CreateMissingClientsHandler;
+use App\Keycloak\Jobs\MissingClientsDetected;
+use App\Keycloak\Listeners\CreateMissingClients;
 use App\Keycloak\Realm;
 use App\Keycloak\RealmCollection;
 use App\Keycloak\Repositories\KeycloakClientRepository;
@@ -29,7 +29,7 @@ final class CreateMissingClientsHandlerTest extends TestCase
     private const SEARCH_SCOPE_ID = '06059529-74b5-422a-a499-ffcaf065d437';
     private const SECRET = 'abra_kadabra_alakazam_gotta_get_em_all';
 
-    private CreateMissingClientsHandler $handler;
+    private CreateMissingClients $handler;
     private IntegrationRepository&MockObject $integrationRepository;
     private KeycloakClientRepository&MockObject $keycloakClientRepository;
     private ApiClient&MockObject $apiClient;
@@ -49,7 +49,7 @@ final class CreateMissingClientsHandlerTest extends TestCase
         $this->keycloakClientRepository = $this->createMock(KeycloakClientRepository::class);
         $this->logger = $this->createMock(LoggerInterface::class);
 
-        $this->handler = new CreateMissingClientsHandler(
+        $this->handler = new CreateMissingClients(
             $this->integrationRepository,
             $this->keycloakClientRepository,
             $this->logger,
@@ -129,7 +129,7 @@ final class CreateMissingClientsHandlerTest extends TestCase
                 $this->assertEquals($clientIds[$options['realm']], $options['client_id']);
             });
 
-        $this->handler->handle(new CreateMissingClients($integrationId));
+        $this->handler->handle(new MissingClientsDetected($integrationId));
     }
 
     public function test_handle_no_missing_realms(): void
@@ -144,7 +144,7 @@ final class CreateMissingClientsHandlerTest extends TestCase
             ->method('info')
             ->with(sprintf('%s - already has all Keycloak clients', $integrationId));
 
-        $this->handler->handle(new CreateMissingClients($integrationId));
+        $this->handler->handle(new MissingClientsDetected($integrationId));
     }
 
     public function test_failed(): void
@@ -159,6 +159,6 @@ final class CreateMissingClientsHandlerTest extends TestCase
                 'exception' => $throwable,
             ]);
 
-        $this->handler->failed(new CreateMissingClients($integrationId), $throwable);
+        $this->handler->failed(new MissingClientsDetected($integrationId), $throwable);
     }
 }
