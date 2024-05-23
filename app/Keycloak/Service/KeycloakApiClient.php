@@ -48,7 +48,10 @@ final readonly class KeycloakApiClient implements ApiClient
         }
 
         if ($response->getStatusCode() === 409) {
-            // When doing the action "create missing clients" it could be that the client already exists in Keycloak, but not in Platform. In this case we do not fail, we will just connect both sides.
+            /*
+            When using the action "create missing clients" it could be that the client already exists in Keycloak, but not in Publiq Platform.
+            In this case we do not fail, we will just connect both sides and make sure the scopes are configured correctly.
+            */
 
             $this->logger->info(sprintf('Client %s already exists', $integration->id->toString()));
 
