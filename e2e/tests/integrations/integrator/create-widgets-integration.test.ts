@@ -4,7 +4,7 @@ import { IntegrationType } from "@app-types/IntegrationType";
 
 test.use({ storageState: "playwright/.auth/user.json" });
 
-test("As an integrator I can create a new integration", async ({
+test("As an integrator I can create a new widget integration", async ({
   page,
   context,
 }) => {
