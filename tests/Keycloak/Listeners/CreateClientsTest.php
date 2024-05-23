@@ -140,4 +140,19 @@ final class CreateClientsTest extends TestCase
             $this->assertArrayHasKey($realm->internalName, $realmHits, 'Client was not created for realm ' . $realm->internalName);
         }
     }
+
+    public function test_failed(): void
+    {
+        $integrationId = Uuid::uuid4();
+        $throwable = new \Exception('Test exception');
+
+        $this->logger->expects($this->once())
+            ->method('error')
+            ->with('Failed to create Keycloak clients', [
+                'integration_id' => $integrationId,
+                'exception' => $throwable,
+            ]);
+
+        $this->handler->failed(new IntegrationCreated($integrationId), $throwable);
+    }
 }
