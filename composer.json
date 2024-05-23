@@ -8,6 +8,7 @@
         "php": "^8.2.0",
         "ext-simplexml": "*",
         "auth0/auth0-php": "^8.6",
+        "cultuurnet/search-v3": "dev-main",
         "guzzlehttp/guzzle": "^7.2",
         "guzzlehttp/oauth-subscriber": "^0.6",
         "inertiajs/inertia-laravel": "^1.0.0",
