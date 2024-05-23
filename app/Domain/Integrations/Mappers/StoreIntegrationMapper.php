@@ -48,8 +48,6 @@ final class StoreIntegrationMapper
             $currentUser->lastName()
         );
 
-        $website = !is_null($request->input('website')) ? new Website($request->input('website')) : null;
-
         $integration = new Integration(
             $integrationId,
             IntegrationType::from($request->input('integrationType')),
@@ -61,8 +59,8 @@ final class StoreIntegrationMapper
         );
         $integration = $integration->withContacts($functionalContact, $technicalContact, $contributorContact);
 
-        if ($website !== null) {
-            $integration = $integration->withWebsite($website);
+        if (!is_null($request->input('website'))) {
+            $integration = $integration->withWebsite(new Website($request->input('website')));
         }
 
         return $integration;
