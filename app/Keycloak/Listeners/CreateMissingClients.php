@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Keycloak\Listeners;
 
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Keycloak\Jobs\CreateMissingClients;
+use App\Keycloak\Jobs\MissingClientsDetected;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Keycloak\Service\CreateClientForRealms;
 use Illuminate\Bus\Queueable;
@@ -13,7 +13,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
-final class CreateMissingClientsHandler implements ShouldQueue
+final class CreateMissingClients implements ShouldQueue
 {
     use Queueable;
 
@@ -25,7 +25,7 @@ final class CreateMissingClientsHandler implements ShouldQueue
     ) {
     }
 
-    public function handle(CreateMissingClients $event): void
+    public function handle(MissingClientsDetected $event): void
     {
         $missingRealms = $this->keycloakClientRepository->getMissingRealmsByIntegrationId($event->id);
 
@@ -50,7 +50,7 @@ final class CreateMissingClientsHandler implements ShouldQueue
         }
     }
 
-    public function failed(CreateMissingClients $event, Throwable $throwable): void
+    public function failed(MissingClientsDetected $event, Throwable $throwable): void
     {
         $this->logger->error('Failed to create missing Keycloak clients', [
             'integration_id' => $event->id->toString(),
