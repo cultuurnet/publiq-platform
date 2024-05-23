@@ -114,8 +114,8 @@ final class CreateMissingClientsHandlerTest extends TestCase
             );
 
         $this->keycloakClientRepository->expects($this->once())
-            ->method('create');
-        //            ->with(... $clients);
+            ->method('create')
+            ->with(... $clients);
 
         $this->logger->expects($this->exactly($missingRealms->count()))
             ->method('info')
