@@ -28,10 +28,13 @@ final readonly class CreateClientForRealms
 
         foreach ($realms as $realm) {
             try {
-                $clientId = $this->client->createClient($realm, $integration);
-                $this->client->addScopeToClient($realm, $clientId, $scopeId);
+                $this->client->createClient($realm, $integration);
 
                 $client = $this->client->fetchClient($realm, $integration);
+
+                $this->client->addScopeToClient($realm, $client->id, $scopeId);
+
+
                 $clientCollection->add($client);
             } catch (KeyCloakApiFailed $e) {
                 $this->logger->error($e->getMessage());

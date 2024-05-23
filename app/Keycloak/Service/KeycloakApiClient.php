@@ -30,7 +30,7 @@ final readonly class KeycloakApiClient implements ApiClient
     /**
      * @throws KeyCloakApiFailed
      */
-    public function createClient(Realm $realm, Integration $integration): UuidInterface
+    public function createClient(Realm $realm, Integration $integration): void
     {
         $id = Uuid::uuid4();
 
@@ -47,13 +47,19 @@ final readonly class KeycloakApiClient implements ApiClient
             throw KeyCloakApiFailed::failedToCreateClient($e->getMessage());
         }
 
+        if ($response->getStatusCode() === 409) {
+            // When doing the action "create missing clients" it could be that the client already exists in Keycloak, but not in Platform. In this case we do not fail, we will just connect both sides.
+
+            $this->logger->info(sprintf('Client %s already exists', $integration->id->toString()));
+
+            return;
+        }
+
         if ($response->getStatusCode() !== 201) {
             throw KeyCloakApiFailed::failedToCreateClientWithResponse($response);
         }
 
         $this->logger->info(sprintf('Client %s, client id %s created with id %s', $integration->name, $integration->id->toString(), $id->toString()));
-
-        return $id;
     }
 
     /**
