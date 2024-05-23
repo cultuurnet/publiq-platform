@@ -80,7 +80,17 @@ export const getIntegrationTypesInfo = (t: TFunction) => [
 export const useIntegrationTypesInfo = () => {
   const { t } = useTranslation();
 
-  return useMemo(() => getIntegrationTypesInfo(t), [t]);
+  return useMemo(() => {
+    const integrationTypesInfo = getIntegrationTypesInfo(t);
+
+    // See https://jira.publiq.be/browse/PPF-481
+    return uitpasEnabled
+      ? integrationTypesInfo
+      : integrationTypesInfo.filter(
+          (integrationTypesInfo) =>
+            integrationTypesInfo.type !== IntegrationType.UiTPAS
+        );
+  }, [t]);
 };
 
 export type IntegrationTypesInfo = ReturnType<
@@ -88,15 +98,7 @@ export type IntegrationTypesInfo = ReturnType<
 >[number];
 
 export const IntegrationTypes = () => {
-  const integrationTypesInfo = useIntegrationTypesInfo();
-
-  // See https://jira.publiq.be/browse/PPF-481
-  const filteredIntegrationTypes = uitpasEnabled
-    ? integrationTypesInfo
-    : integrationTypesInfo.filter(
-        (integrationTypesInfo) =>
-          integrationTypesInfo.type !== IntegrationType.UiTPAS
-      );
+  const filteredIntegrationTypes = useIntegrationTypesInfo();
 
   return (
     <div>
