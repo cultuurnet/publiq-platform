@@ -88,7 +88,7 @@ final class KeycloakServiceProvider extends ServiceProvider
         Event::listen(IntegrationCreated::class, [CreateClients::class, 'handle']);
         Event::listen(IntegrationUpdated::class, [UpdateClients::class, 'handle']);
         Event::listen(IntegrationBlocked::class, [DisableClients::class, 'handle']);
-        
+
         Event::listen(IntegrationUrlCreated::class, [UpdateClients::class, 'handle']);
         Event::listen(IntegrationUrlUpdated::class, [UpdateClients::class, 'handle']);
         Event::listen(IntegrationUrlDeleted::class, [UpdateClients::class, 'handle']);
