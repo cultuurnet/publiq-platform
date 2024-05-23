@@ -27,9 +27,20 @@ final class SearchUiTPASOrganizer extends Command
 
         $organizers = $this->searchService->searchUiTPASOrganizer($name);
 
+        if ($organizers->getMember() === null) {
+            $this->info('No organizer found.');
+            return 0;
+        }
+
         /** @var Organizer $organizer */
         foreach ($organizers->getMember()->getItems() as $organizer) {
-            $this->info($organizer->getName()->getValueForLanguage('nl'));
+            if ($organizer->getName() === null) {
+                $this->info('No name found for organizer.');
+                continue;
+            }
+
+            $values = $organizer->getName()->getValues();
+            $this->info('Organizer found: ' . current($values));
         }
 
         return 0;
