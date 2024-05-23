@@ -21,5 +21,7 @@ test("As an integrator I can create a new integration", async ({
     .locator("button")
     .click();
   const newPage = await pagePromise;
-  await newPage.getByRole("button", { name: "Nieuwe widget maken" }).click();
+  await expect(
+    newPage.getByRole("button", { name: "Nieuwe widget maken" })
+  ).toBeVisible();
 });
