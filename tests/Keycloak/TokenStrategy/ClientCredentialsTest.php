@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Keycloak\TokenStrategy;
 
+use App\Domain\Integrations\Environment;
 use App\Keycloak\Config;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realm;
@@ -30,7 +31,7 @@ final class ClientCredentialsTest extends TestCase
             'https://keycloak.example.com/',
             'php_client',
             'a_true_secret',
-            new RealmCollection([new Realm('uitidpoc', 'Acceptance')])
+            new RealmCollection([new Realm('uitidpoc', 'Acceptance', Environment::Acceptance)])
         );
         $this->logger = $this->createMock(LoggerInterface::class);
     }

@@ -8,12 +8,12 @@ use App\Domain\Integrations\Environment;
 
 final readonly class Realm
 {
-    public function __construct(public string $internalName, public string $publicName, public Environment $environment = Environment::Unknown)
+    public function __construct(public string $internalName, public string $publicName, public Environment $environment)
     {
     }
 
     public static function getMasterRealm(): self
     {
-        return new self('master', 'Master');
+        return new self('master', 'Master', Environment::Production);
     }
 }

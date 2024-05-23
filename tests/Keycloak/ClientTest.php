@@ -9,12 +9,13 @@ use App\Keycloak\Realm;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
+use App\Domain\Integrations\Environment;
 
 final class ClientTest extends TestCase
 {
     public function test_create_from_json(): void
     {
-        $realm = new Realm('uitidpoc', 'acceptance');
+        $realm = new Realm('uitidpoc', 'acceptance', Environment::Acceptance);
         $integrationId = Uuid::uuid4();
         $data = [
             'id' => Uuid::uuid4()->toString(),
@@ -31,7 +32,7 @@ final class ClientTest extends TestCase
 
     public function test_throws_when_missing_secret(): void
     {
-        $realm = new Realm('uitidpoc', 'acceptance');
+        $realm = new Realm('uitidpoc', 'acceptance', Environment::Acceptance);
         $integrationId = Uuid::uuid4();
         $data = [
             'id' => Uuid::uuid4()->toString(),
