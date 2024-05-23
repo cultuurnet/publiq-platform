@@ -14,6 +14,7 @@ use App\Nova\Actions\ActivateIntegration;
 use App\Nova\Actions\ApproveIntegration;
 use App\Nova\Actions\Auth0\CreateMissingAuth0Clients;
 use App\Nova\Actions\BlockIntegration;
+use App\Nova\Actions\Keycloak\CreateMissingKeycloakClients;
 use App\Nova\Actions\OpenWidgetManager;
 use App\Nova\Actions\UiTiDv1\CreateMissingUiTiDv1Consumers;
 use App\Nova\Resource;
@@ -209,6 +210,15 @@ final class Integration extends Resource
                 ->cancelButtonText('Cancel')
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeBlocked())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeBlocked()),
+
+            (new CreateMissingKeycloakClients())
+                ->withName('Create missing Keycloak clients')
+                ->exceptOnIndex()
+                ->confirmText('Are you sure you want to create missing Keycloak clients for this integration?')
+                ->confirmButtonText('Create')
+                ->cancelButtonText('Cancel')
+                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->hasMissingKeycloakConsumers())
+                ->canRun(fn (Request $request, IntegrationModel $model) => $model->hasMissingKeycloakConsumers()),
 
             (new CreateMissingAuth0Clients())
                 ->withName('Create missing Auth0 Clients')

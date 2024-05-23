@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Nova\Actions\Keycloak;
 
 use App\Domain\Integrations\Models\IntegrationModel;
-use App\Keycloak\Jobs\CreateMissingClients;
+use App\Keycloak\Jobs\MissingClientsDetected;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Event;
@@ -30,7 +30,7 @@ final class CreateMissingKeycloakClients extends Action
                 continue;
             }
 
-            Event::dispatch(new CreateMissingClients(Uuid::fromString($integrationModel->id)));
+            Event::dispatch(new MissingClientsDetected(Uuid::fromString($integrationModel->id)));
         }
     }
 }
