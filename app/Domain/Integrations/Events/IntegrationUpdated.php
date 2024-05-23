@@ -14,9 +14,4 @@ final class IntegrationUpdated
     public function __construct(public readonly UuidInterface $id)
     {
     }
-
-    public function getIntegrationId(): UuidInterface
-    {
-        return $this->id;
-    }
 }
