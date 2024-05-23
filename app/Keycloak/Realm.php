@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace App\Keycloak;
 
+use App\Domain\Integrations\Environment;
+
 final readonly class Realm
 {
-    public function __construct(public string $internalName, public string $publicName)
+    public function __construct(public string $internalName, public string $publicName, public Environment $environment)
     {
     }
 
     public static function getMasterRealm(): self
     {
-        return new self('master', 'Master');
+        return new self('master', 'Master', Environment::Production);
     }
 }

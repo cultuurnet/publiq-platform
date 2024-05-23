@@ -7,9 +7,12 @@ namespace App\Keycloak;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationUpdated;
+use App\Domain\Integrations\Events\IntegrationUrlCreated;
+use App\Domain\Integrations\Events\IntegrationUrlDeleted;
+use App\Domain\Integrations\Events\IntegrationUrlUpdated;
 use App\Keycloak\Client\KeycloakHttpClient;
-use App\Keycloak\Listeners\DisableClients;
 use App\Keycloak\Listeners\CreateClients;
+use App\Keycloak\Listeners\DisableClients;
 use App\Keycloak\Listeners\UpdateClients;
 use App\Keycloak\Repositories\EloquentKeycloakClientRepository;
 use App\Keycloak\Repositories\KeycloakClientRepository;
@@ -85,5 +88,9 @@ final class KeycloakServiceProvider extends ServiceProvider
         Event::listen(IntegrationCreated::class, [CreateClients::class, 'handle']);
         Event::listen(IntegrationUpdated::class, [UpdateClients::class, 'handle']);
         Event::listen(IntegrationBlocked::class, [DisableClients::class, 'handle']);
+
+        Event::listen(IntegrationUrlCreated::class, [UpdateClients::class, 'handle']);
+        Event::listen(IntegrationUrlUpdated::class, [UpdateClients::class, 'handle']);
+        Event::listen(IntegrationUrlDeleted::class, [UpdateClients::class, 'handle']);
     }
 }

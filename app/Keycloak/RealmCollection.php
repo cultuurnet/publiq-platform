@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Keycloak;
 
+use App\Domain\Integrations\Environment;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
 
@@ -15,7 +16,7 @@ final class RealmCollection extends Collection
     public static function getRealms(): RealmCollection
     {
         //@todo Change this once all Realms have been configured
-        return new self([new Realm('uitidpoc', 'Acceptance')]);
+        return new self([new Realm('uitidpoc', 'Acceptance', Environment::Acceptance)]);
     }
 
     public static function fromInternalName(string $internalName): Realm

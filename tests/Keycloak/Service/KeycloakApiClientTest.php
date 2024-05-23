@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Keycloak\Service;
 
+use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Integration;
 use App\Keycloak\Client;
 use App\Keycloak\Config;
@@ -38,15 +39,16 @@ final class KeycloakApiClientTest extends TestCase
 
     protected function setUp(): void
     {
+        $this->realm = new Realm('uitidpoc', 'Acceptance', Environment::Acceptance);
+
         $this->config = new Config(
             true,
             'https://keycloak.example.com/',
             'php_client',
             'a_true_secret',
-            new RealmCollection([new Realm('uitidpoc', 'Acceptance')])
+            new RealmCollection([$this->realm])
         );
 
-        $this->realm = new Realm('uitidpoc', 'Acceptance');
         $this->integration = $this->givenThereIsAnIntegration(Uuid::fromString(self::INTEGRATION_ID));
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->scopeConfig = new ScopeConfig(
