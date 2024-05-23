@@ -101,16 +101,28 @@
   "integration_form": {
     "title": "Add integration",
     "type": "Integration type",
-    "pricing_plan": "Pricing plan",
-    "price_info": "You only pay when you want to use real data. You can explore all possibilities with test events first.",
+    "pricing_plan": {
+      "label": "Pricing plan",
+      "info": "You only pay when you want to use real data. You can explore all possibilities with test events first."
+    },
     "integration_name": "Integration name",
     "description_name": "Give a clear title to your integration and mention the name of the organization or municipality for which the integration is built",
-    "aim": "Integration purpose",
-    "description_aim": "Provide a clear, motivated description of the integration you want to set up with the publiq platform (max. 200 characters)",
-    "contact_label_functional": "Functional contact",
-    "contact_label_functional_info": "The functional contact is the functional point of contact for the integration (e.g., an employee of the organization or municipality for which the integration is intended).",
-    "contact_label_technical": "Technical contact",
-    "contact_label_technical_info": "The technical contact is the technical point of contact for the integration (e.g., the developer of the integration).",
+    "aim": {
+      "label": "Integration purpose",
+      "info": "Provide a clear, motivated description of the integration you want to set up with the publiq platform (max. 200 characters)"
+    },
+    "website": {
+      "label": "Website",
+      "info": "De URL van de website of app waarvoor de integratie gebouwd wordt."
+    },
+    "contact_functional": {
+      "label": "Functional contact",
+      "info": "The functional contact is the functional point of contact for the integration (e.g., an employee of the organization or municipality for which the integration is intended)."
+    },
+    "contact_technical": {
+      "label": "Technical contact",
+      "info": "The technical contact is the technical point of contact for the integration (e.g., the developer of the integration)."
+    },
     "contact_label_contributor": "Employee",
     "add": "Add employee",
     "contact": {
@@ -184,7 +196,8 @@
     "basic_info": {
       "title": "Basic information",
       "name": "Integration name",
-      "description": "Description"
+      "description": "Description",
+      "website": "Website"
     },
     "contact_info": {
       "title": "Contacts",

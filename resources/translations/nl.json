@@ -101,16 +101,28 @@
   "integration_form": {
     "title": "Integratie toevoegen",
     "type": "Type integratie",
-    "pricing_plan": "Prijsplan",
-    "price_info": "Je betaalt pas wanneer je gebruik wilt maken van echte data. Je probeert eerst alle mogelijkheden met testevenementen.",
+    "pricing_plan": {
+      "label": "Prijsplan",
+      "info": "Je betaalt pas wanneer je gebruik wilt maken van echte data. Je probeert eerst alle mogelijkheden met testevenementen."
+    },
     "integration_name": "Naam integratie",
     "description_name": "Geef een duidelijk titel aan je integratie en vermeld de naam van de organisatie of gemeente waarvoor de integratie gebouwd wordt",
-    "aim": "Doel van de integratie",
-    "description_aim": "Geef een duidelijke, gemotiveerde beschrijving van de integratie die je met het publiq platform wil opzetten (max. 200 karakters)",
-    "contact_label_functional": "Inhoudelijk contact",
-    "contact_label_functional_info": "Het inhoudelijk contact is het inhoudelijk aanspreekpunt voor de integratie (bvb. een medewerker van de organisatie of gemeente waarvoor de integratie is).",
-    "contact_label_technical": "Technisch contact",
-    "contact_label_technical_info": "Het technisch contact is het technische aanspreekpunt voor de integratie (bvb. de ontwikkelaar van de integratie).",
+    "aim": {
+      "label": "Doel van de integratie",
+      "info": "Geef een duidelijke, gemotiveerde beschrijving van de integratie die je met het publiq platform wil opzetten (max. 200 karakters)"
+    },
+    "website": {
+      "label": "Website",
+      "info": "De URL van de website of app waarvoor de integratie gebouwd wordt."
+    },
+    "contact_functional": {
+      "label": "Inhoudelijk contact",
+      "info": "Het inhoudelijk contact is het inhoudelijk aanspreekpunt voor de integratie (bvb. een medewerker van de organisatie of gemeente waarvoor de integratie is)."
+    },
+    "contact_technical": {
+      "label": "Technisch contact",
+      "info": "Het technisch contact is het technische aanspreekpunt voor de integratie (bvb. de ontwikkelaar van de integratie)."
+    },
     "contact_label_contributor": "Medewerker",
     "add": "Medewerker toevoegen",
     "contact": {
@@ -184,7 +196,8 @@
     "basic_info": {
       "title": "Basisgegevens",
       "name": "Integratienaam",
-      "description": "Beschrijving"
+      "description": "Beschrijving",
+      "website": "Website"
     },
     "contact_info": {
       "title": "Contacten",

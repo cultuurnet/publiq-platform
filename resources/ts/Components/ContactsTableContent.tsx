@@ -70,7 +70,7 @@ export const ContactsTableContent = ({
                   mobile && "text-xs"
                 )}
               >
-                {t(`integration_form.contact_label_${type.label}`)}
+                {t(`integration_form.contact_${type.label}.label`)}
               </div>
             </td>
             {desktop && (
