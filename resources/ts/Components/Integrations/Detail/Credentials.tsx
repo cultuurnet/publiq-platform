@@ -32,6 +32,7 @@ export const Credentials = ({
   subscription,
   type,
   keyVisibility,
+  keyVisibilityUpgrade,
   legacyAuthConsumers,
   authClients,
   oldCredentialsExpirationDate,
@@ -40,7 +41,11 @@ export const Credentials = ({
   const hasAnyCredentials = Boolean(
     legacyAuthConsumers.length || authClients.length
   );
-  usePolling(!hasAnyCredentials, { only: ["integration"] });
+  usePolling(
+    !hasAnyCredentials ||
+      (keyVisibility === KeyVisibility.v1 && !!keyVisibilityUpgrade),
+    { only: ["integration"] }
+  );
   const credentials = useMemo(
     () => ({
       legacyTestConsumer: legacyAuthConsumers.find(
@@ -96,6 +101,7 @@ export const Credentials = ({
         type={type}
         subscription={subscription}
         keyVisibility={keyVisibility}
+        keyVisibilityUpgrade={keyVisibilityUpgrade}
       />
     </>
   );
