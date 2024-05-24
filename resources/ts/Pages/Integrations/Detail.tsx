@@ -23,6 +23,7 @@ import { PricingPlanProvider } from "../../Context/PricingPlan";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { CouponInfoProvider } from "../../Context/CouponInfo";
 import type { Integration } from "../../types/Integration";
+import { OrganizersInfo } from "../../Components/Integrations/Detail/OrganizersInfo";
 
 type Props = {
   integration: Integration;
@@ -174,6 +175,12 @@ const Detail = ({
                     isMobile={isMobile}
                     duplicateContactErrorMessage={duplicateContactErrorMessage}
                   />
+                </Tabs.Item>
+                <Tabs.Item
+                  type="organisations"
+                  label={t("details.organizers_info.title")}
+                >
+                  <OrganizersInfo {...integration} />
                 </Tabs.Item>
                 <Tabs.Item
                   type="billing"
