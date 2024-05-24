@@ -12,6 +12,7 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\Website;
 use Ramsey\Uuid\Uuid;
 
 final class StoreIntegrationMapper
@@ -47,7 +48,7 @@ final class StoreIntegrationMapper
             $currentUser->lastName()
         );
 
-        return (new Integration(
+        $integration = new Integration(
             $integrationId,
             IntegrationType::from($request->input('integrationType')),
             $request->input('integrationName'),
@@ -55,6 +56,13 @@ final class StoreIntegrationMapper
             Uuid::fromString($request->input('subscriptionId')),
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::THIRD_PARTY,
-        ))->withContacts($functionalContact, $technicalContact, $contributorContact);
+        );
+        $integration = $integration->withContacts($functionalContact, $technicalContact, $contributorContact);
+
+        if (!is_null($request->input('website'))) {
+            $integration = $integration->withWebsite(new Website($request->input('website')));
+        }
+
+        return $integration;
     }
 }
