@@ -39,10 +39,13 @@ const getPricingPlans = (
         `pricing_plan.${categoryLowercase}.description.${integrationType}`,
         data.description
       ),
-      price: t(`pricing_plan.${categoryLowercase}.price`, {
-        price: formatCurrency(data.currency, data.price),
-        fee: formatCurrency(data.currency, data.fee),
-      }),
+      price:
+        data.category === "Free"
+          ? ""
+          : t(`pricing_plan.${categoryLowercase}.price`, {
+              price: formatCurrency(data.currency, data.price),
+              fee: formatCurrency(data.currency, data.fee),
+            }),
     };
   };
 
