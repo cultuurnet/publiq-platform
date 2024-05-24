@@ -13,7 +13,7 @@ use InvalidArgumentException;
  */
 final class RealmCollection extends Collection
 {
-    public static function getRealms(): RealmCollection
+    private static function getRealms(): RealmCollection
     {
         //@todo Change this once all Realms have been configured
         return new self([new Realm('uitidpoc', 'Acceptance', Environment::Acceptance)]);

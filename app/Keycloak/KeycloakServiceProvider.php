@@ -48,13 +48,7 @@ final class KeycloakServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(Config::class, function () {
-            return new Config(
-                config('keycloak.enabled'),
-                config('keycloak.base_url'),
-                config('keycloak.client_id'),
-                config('keycloak.client_secret'),
-                RealmCollection::getRealms(),
-            );
+            return ConfigFactory::build();
         });
 
         $this->app->singleton(ScopeConfig::class, function () {
