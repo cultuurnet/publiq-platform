@@ -154,7 +154,8 @@
     "products": {
       "search-api": "Search API",
       "entry-api": "Entry API",
-      "widgets": "Widgets"
+      "widgets": "Widgets",
+      "uitpas": "UiTPAS API"
     },
     "status": {
       "draft": "Niet actief",
@@ -188,7 +189,8 @@
       "title": "Documentatie",
       "action_title": "Aan de slag met {{product}}",
       "action_url": "https://docs.publiq.be/docs{{product}}",
-      "requirements": "Vereisten om live te gaan"
+      "requirements": "Vereisten om live te gaan",
+      "test_dataset": "Test dataset"
     }
   },
   "details": {
