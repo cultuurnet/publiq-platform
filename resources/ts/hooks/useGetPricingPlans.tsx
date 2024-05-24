@@ -9,6 +9,7 @@ import { formatCurrency } from "../utils/formatCurrency";
 export type PricingPlan = {
   id: string;
   title: string;
+  label: string;
   price: string;
   description: string;
 };
@@ -32,20 +33,21 @@ const getPricingPlans = (
 
     const categoryLowercase = category.toLowerCase();
 
+    const title = t(`pricing_plan.${categoryLowercase}.title`);
+    const price = t(`pricing_plan.${categoryLowercase}.price`, {
+      price: formatCurrency(data.currency, data.price),
+      fee: formatCurrency(data.currency, data.fee),
+    });
+
     return {
       id: data.id,
-      title: t(`pricing_plan.${categoryLowercase}.title`),
+      title: title,
+      label: data.category === "Free" ? title : `${title} (${price})`,
       description: t(
         `pricing_plan.${categoryLowercase}.description.${integrationType}`,
         data.description
       ),
-      price:
-        data.category === "Free"
-          ? ""
-          : t(`pricing_plan.${categoryLowercase}.price`, {
-              price: formatCurrency(data.currency, data.price),
-              fee: formatCurrency(data.currency, data.fee),
-            }),
+      price,
     };
   };
 
