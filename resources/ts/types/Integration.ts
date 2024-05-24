@@ -21,6 +21,7 @@ export type Integration = {
   type: Values<typeof IntegrationType>;
   name: string;
   description: string;
+  website: string;
   subscriptionId: string;
   coupon: Coupon | null;
   status: IntegrationStatus;
