@@ -161,7 +161,9 @@ const New = ({ subscriptions }: Props) => {
                     {errors.subscriptionId}
                   </span>
                 )}
-                {data.integrationType !== IntegrationType.EntryApi && (
+                {![IntegrationType.UiTPAS, IntegrationType.EntryApi].includes(
+                  data.integrationType
+                ) && (
                   <span className="text-gray-500 text-sm mt-3 inline-block">
                     {t("integration_form.pricing_plan.info")}
                   </span>
