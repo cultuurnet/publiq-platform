@@ -25,6 +25,7 @@
       "title": "Free",
       "price": "Free",
       "description": {
+        "uitpas": "You are responsible for building the integration yourself, with support from our documentation.",
         "entry-api": "You are responsible for building the integration yourself, with support from our documentation."
       }
     },
