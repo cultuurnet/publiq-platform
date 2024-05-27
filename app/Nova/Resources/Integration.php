@@ -16,6 +16,7 @@ use App\Nova\Actions\Auth0\CreateMissingAuth0Clients;
 use App\Nova\Actions\BlockIntegration;
 use App\Nova\Actions\OpenWidgetManager;
 use App\Nova\Actions\UiTiDv1\CreateMissingUiTiDv1Consumers;
+use App\Nova\Actions\UnblockIntegration;
 use App\Nova\Resource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -205,6 +206,14 @@ final class Integration extends Resource
                 ->cancelButtonText('Cancel')
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeBlocked())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeBlocked()),
+
+            (new UnblockIntegration())
+            ->exceptOnIndex()
+                ->confirmText('Are you sure you want to unblock this integration?')
+                ->confirmButtonText('Unblock')
+                ->cancelButtonText('Cancel')
+                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeUnblocked())
+                ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeUnblocked()),
 
             (new CreateMissingAuth0Clients())
                 ->withName('Create missing Auth0 Clients')
