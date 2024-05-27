@@ -19,7 +19,7 @@ final class UnblockKeycloakClient extends Action
     use InteractsWithQueue;
     use Queueable;
 
-    public $name = 'Enable Keycloak client';
+    public $name = 'Unblock Keycloak client';
 
     public function __construct(private readonly Dispatcher $dispatcher, private readonly UnblockClientHandler $listener)
     {

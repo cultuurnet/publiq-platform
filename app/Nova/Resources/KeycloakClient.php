@@ -98,7 +98,7 @@ final class KeycloakClient extends Resource
             App::make(UnblockKeycloakClient::class)
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to unblock this client?')
-                ->confirmButtonText('Enable')
+                ->confirmButtonText('Unblock')
                 ->cancelButtonText('Cancel')
                 ->canSee(fn (Request $request) => $this->canEnable($request, $this->resource))
                 ->canRun(fn (Request $request, KeycloakClientModel $model) => $this->canEnable($request, $model)),
