@@ -182,6 +182,7 @@ final class SyncWidget implements ShouldQueue
         ConsumerCreated|
         IntegrationActivated|
         IntegrationBlocked|
+        IntegrationUnblocked|
         IntegrationDeleted|
         IntegrationUpdated $event,
         Throwable $throwable
