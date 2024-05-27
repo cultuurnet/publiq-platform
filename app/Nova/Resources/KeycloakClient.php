@@ -66,7 +66,7 @@ final class KeycloakClient extends Resource
             Text::make('Status', function (KeycloakClientModel $model) {
                 $client = $model->toDomain();
 
-                if (! $this->getKeycloakClientStatus()->isClientEnabled($client)) {
+                if ($this->getKeycloakClientStatus()->isClientBlocked($client)) {
                     return '<span style="color: red;">Blocked</span>';
                 }
 

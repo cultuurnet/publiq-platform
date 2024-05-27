@@ -216,7 +216,7 @@ final class KeycloakApiClientTest extends TestCase
             $this->logger
         );
 
-        $this->assertEquals($enabled, $apiClient->fetchIsClientEnabled($this->realm, $this->integration->id));
+        $this->assertEquals($enabled, $apiClient->fetchIsClientActive($this->realm, $this->integration->id));
     }
 
     public static function dataProviderIsClientEnabled(): array

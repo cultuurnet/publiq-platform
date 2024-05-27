@@ -21,6 +21,6 @@ final readonly class BlockKeycloakClientGuard implements ActionGuard
             return false;
         }
 
-        return $this->cachedKeycloakClientStatus->isClientEnabled($client);
+        return ! $this->cachedKeycloakClientStatus->isClientBlocked($client);
     }
 }

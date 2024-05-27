@@ -34,16 +34,16 @@ final class CachedKeycloakClientStatusTest extends TestCase
     public function test_does_cache_layer_work(): void
     {
         $this->apiClient->expects($this->once())
-            ->method('fetchIsClientEnabled')
+            ->method('fetchIsClientActive')
             ->with($this->client->realm, $this->client->integrationId)
             ->willReturn(true);
 
-        $receivedGrants = $this->cachedKeycloakClientStatus->isClientEnabled($this->client);
+        $receivedGrants = $this->cachedKeycloakClientStatus->isClientBlocked($this->client);
 
         // Calling a second time to make sure the caching works, the API should only be requested once.
-        $receivedGrants2 = $this->cachedKeycloakClientStatus->isClientEnabled($this->client);
+        $receivedGrants2 = $this->cachedKeycloakClientStatus->isClientBlocked($this->client);
 
-        $this->assertTrue($receivedGrants);
-        $this->assertTrue($receivedGrants2);
+        $this->assertFalse($receivedGrants);
+        $this->assertFalse($receivedGrants2);
     }
 }

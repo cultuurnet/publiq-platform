@@ -37,7 +37,7 @@ final class UnblockKeycloakClientGuardTest extends TestCase
     public function test_can_do(bool $isEnabled, bool $canEnable): void
     {
         $this->apiClient->expects($this->once())
-            ->method('fetchIsClientEnabled')
+            ->method('fetchIsClientActive')
             ->with($this->client->realm, $this->client->integrationId)
             ->willReturn($isEnabled);
 

@@ -15,16 +15,16 @@ final class CachedKeycloakClientStatus
     {
     }
 
-    public function isClientEnabled(Client $client): bool
+    public function isClientBlocked(Client $client): bool
     {
         $uuid = $client->id->toString();
 
         if(! isset($this->statuses[$uuid])) {
-            $this->statuses[$uuid] = $this->apiClient->fetchIsClientEnabled($client->realm, $client->integrationId);
+            $this->statuses[$uuid] = $this->apiClient->fetchIsClientActive($client->realm, $client->integrationId);
         } else {
             $this->logger->info(self::class . '  - ' . $uuid . ': cache hit: ' . ($this->statuses[$uuid] ? 'Active' : 'Blocked'));
         }
 
-        return $this->statuses[$uuid];
+        return ! $this->statuses[$uuid];
     }
 }

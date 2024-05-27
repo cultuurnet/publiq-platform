@@ -137,7 +137,7 @@ final readonly class KeycloakApiClient implements ApiClient
     /**
      * @throws KeyCloakApiFailed
      */
-    public function fetchIsClientEnabled(Realm $realm, UuidInterface $integrationId): bool
+    public function fetchIsClientActive(Realm $realm, UuidInterface $integrationId): bool
     {
         try {
             $response = $this->client->sendWithBearer(
