@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Keycloak\Jobs;
+namespace App\Keycloak\Events;
 
 use Illuminate\Foundation\Events\Dispatchable;
 use Ramsey\Uuid\UuidInterface;

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Nova\Actions\Keycloak;
 
 use App\Domain\Integrations\Models\IntegrationModel;
-use App\Keycloak\Jobs\MissingClientsDetected;
+use App\Keycloak\Events\MissingClientsDetected;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Event;
