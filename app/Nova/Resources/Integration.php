@@ -83,6 +83,7 @@ final class Integration extends Resource
             Select::make('Type')
                 ->filterable()
                 ->sortable()
+                ->readonly(fn (NovaRequest $request) => $request->isUpdateOrUpdateAttachedRequest())
                 ->options($integrationTypes)
                 ->rules('required'),
 
