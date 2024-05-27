@@ -91,7 +91,7 @@ final class CreateClients implements ShouldQueue
         return $clientCollection;
     }
 
-    public function failed(IntegrationCreated $integrationCreated, Throwable $throwable): void
+    public function failed(IntegrationCreated|MissingClientsDetected $integrationCreated, Throwable $throwable): void
     {
         $this->logger->error('Failed to create Keycloak clients', [
             'integration_id' => $integrationCreated->id->toString(),
