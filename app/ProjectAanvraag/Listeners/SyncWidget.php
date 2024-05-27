@@ -12,6 +12,7 @@ use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationDeleted;
+use App\Domain\Integrations\Events\IntegrationUnblocked;
 use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
@@ -67,6 +68,11 @@ final class SyncWidget implements ShouldQueue
     public function handleIntegrationBlocked(IntegrationBlocked $integrationBlocked): void
     {
         $this->handle($integrationBlocked->id);
+    }
+
+    public function handleIntegrationUnblocked(IntegrationUnblocked $integrationUnblocked): void
+    {
+        $this->handle($integrationUnblocked->id);
     }
 
     public function handleIntegrationDeleted(IntegrationDeleted $integrationDeleted): void
@@ -184,6 +190,7 @@ final class SyncWidget implements ShouldQueue
             IntegrationCreated::class,
             IntegrationActivated::class,
             IntegrationBlocked::class,
+            IntegrationUnblocked::class,
             IntegrationDeleted::class,
             IntegrationUpdated::class => 'integration',
             ContactCreated::class => 'contact',
