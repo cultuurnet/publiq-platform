@@ -8,16 +8,20 @@ import { Heading } from "../../Heading";
 type Props = {
   name: string;
   description: string;
+  website: string;
   errors: Record<string, string | undefined>;
   onChangeName: (val: string) => void;
   onChangeDescription: (val: string) => void;
+  onChangeWebsite: (val: string) => void;
 };
 export const BasicInfo = ({
   name,
   description,
+  website,
   errors,
   onChangeName,
   onChangeDescription,
+  onChangeWebsite,
 }: Props) => {
   const { t } = useTranslation();
 
@@ -52,6 +56,19 @@ export const BasicInfo = ({
               name="description"
               value={description}
               onChange={(e) => onChangeDescription(e.target.value)}
+            />
+          }
+        />
+        <FormElement
+          label={`${t("details.basic_info.website")}`}
+          error={errors["website"]}
+          component={
+            <Input
+              type="text"
+              name="website"
+              value={website}
+              onChange={(e) => onChangeWebsite(e.target.value)}
+              className="md:min-w-[40rem]"
             />
           }
         />
