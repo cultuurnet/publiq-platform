@@ -153,8 +153,22 @@ final class IntegrationModel extends UuidModel
 
     public function unblock(): void
     {
-        // TODO: Get Previous status
-        // TODO: Update in all various linked platforms
+        $activities = $this->activityLog()->latest()->get();
+
+        if ($activities->isEmpty()) {
+            return;
+        }
+        $activity = $activities->first(function ($activity) {
+            return $activity->properties !== null && array_key_exists('status', $activity->properties->get('old', []));
+        });
+
+        if ($activity !== null && $activity->properties !== null) {
+            $this->update([
+                'status' => $activity->properties->get('old')['status'],
+            ]);
+        }
+
+        // TODO: also unblock in all various linked platforms
     }
 
     /**

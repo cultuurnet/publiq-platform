@@ -11,8 +11,6 @@ use Laravel\Nova\Fields\ActionFields;
 
 final class UnblockIntegration extends Action
 {
-    public $name = 'Unblock Integration';
-
     public function handle(ActionFields $fields, Collection $integrations): void
     {
         /** @var IntegrationModel $integration */
