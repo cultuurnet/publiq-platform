@@ -8,11 +8,11 @@ use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
-use Tests\IntegrationHelper;
+use Tests\CreatesIntegration;
 
 final class IntegrationToKeycloakClientConverterTest extends TestCase
 {
-    use IntegrationHelper;
+    use CreatesIntegration;
 
     /**
      * @dataProvider integrationDataProvider

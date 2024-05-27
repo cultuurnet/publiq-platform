@@ -8,11 +8,11 @@ use App\Domain\Integrations\IntegrationType;
 use App\Keycloak\ScopeConfig;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
-use Tests\IntegrationHelper;
+use Tests\CreatesIntegration;
 
 final class ScopeConfigTest extends TestCase
 {
-    use IntegrationHelper;
+    use CreatesIntegration;
 
     private const SEARCH_API_ID = '41255857-b8ad-44ce-9a17-db72540461b7';
     private const ENTRY_API_ID = '824c09c0-2f3a-4fa0-bde2-8bf25c9a5b74';

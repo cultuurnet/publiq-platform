@@ -17,12 +17,12 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
-use Tests\IntegrationHelper;
+use Tests\CreatesIntegration;
 use Tests\Keycloak\CreatedKeycloakHttpClient;
 
 final class DisableClientTest extends TestCase
 {
-    use IntegrationHelper;
+    use CreatesIntegration;
     use CreatedKeycloakHttpClient;
 
     private const SECRET = 'my-secret';

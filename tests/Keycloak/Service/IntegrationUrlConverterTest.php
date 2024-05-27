@@ -14,11 +14,11 @@ use App\Keycloak\Converters\IntegrationUrlConverter;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
-use Tests\IntegrationHelper;
+use Tests\CreatesIntegration;
 
 final class IntegrationUrlConverterTest extends TestCase
 {
-    use IntegrationHelper;
+    use CreatesIntegration;
     private Client $client;
     private UuidInterface $integrationId;
 

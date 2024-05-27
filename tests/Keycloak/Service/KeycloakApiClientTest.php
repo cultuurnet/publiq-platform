@@ -19,13 +19,13 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
-use Tests\IntegrationHelper;
+use Tests\CreatesIntegration;
 use Tests\Keycloak\CreatedKeycloakHttpClient;
 
 final class KeycloakApiClientTest extends TestCase
 {
     use CreatedKeycloakHttpClient;
-    use IntegrationHelper;
+    use CreatesIntegration;
 
     private const INTEGRATION_ID = '824c09c0-2f3a-4fa0-bde2-8bf25c9a5b74';
     private const UUID = '824c09c0-2f3a-4fa0-bde2-8bf25c9a5b74';

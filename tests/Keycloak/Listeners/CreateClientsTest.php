@@ -20,12 +20,12 @@ use App\Keycloak\ScopeConfig;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
-use Tests\IntegrationHelper;
+use Tests\CreatesIntegration;
 use Tests\TestCase;
 
 final class CreateClientsTest extends TestCase
 {
-    use IntegrationHelper;
+    use CreatesIntegration;
 
     private const SECRET = 'my-secret';
     private const SEARCH_SCOPE_ID = '06059529-74b5-422a-a499-ffcaf065d437';
