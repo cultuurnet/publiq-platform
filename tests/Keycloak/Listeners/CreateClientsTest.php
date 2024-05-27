@@ -8,6 +8,7 @@ use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client;
+use App\Keycloak\Client\ApiClient;
 use App\Keycloak\ClientCollection;
 use App\Keycloak\Config;
 use App\Keycloak\Events\MissingClientsDetected;
@@ -16,12 +17,11 @@ use App\Keycloak\Realm;
 use App\Keycloak\RealmCollection;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Keycloak\ScopeConfig;
-use App\Keycloak\Service\ApiClient;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Tests\IntegrationHelper;
+use Tests\TestCase;
 
 final class CreateClientsTest extends TestCase
 {

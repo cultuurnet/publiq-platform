@@ -6,9 +6,9 @@ namespace App\Keycloak\Listeners;
 
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Repositories\KeycloakClientRepository;
-use App\Keycloak\Service\ApiClient;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;

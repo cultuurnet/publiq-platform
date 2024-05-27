@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Keycloak\Service;
 
 use App\Domain\Integrations\IntegrationPartnerStatus;
-use App\Keycloak\Service\IntegrationToKeycloakClientConverter;
+use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use Tests\IntegrationHelper;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Keycloak\Service;
+namespace App\Keycloak\Client;
 
 use App\Domain\Integrations\Integration;
 use App\Keycloak\Client;

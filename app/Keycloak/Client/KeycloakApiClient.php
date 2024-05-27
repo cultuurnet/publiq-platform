@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Keycloak\Service;
+namespace App\Keycloak\Client;
 
 use App\Domain\Integrations\Integration;
 use App\Json;
 use App\Keycloak\Client;
-use App\Keycloak\Client\KeycloakHttpClient;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realm;
 use App\Keycloak\ScopeConfig;
+use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 use Psr\Log\LoggerInterface;

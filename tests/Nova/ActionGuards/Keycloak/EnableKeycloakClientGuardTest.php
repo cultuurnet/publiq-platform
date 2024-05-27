@@ -6,15 +6,15 @@ namespace Tests\Nova\ActionGuards\Keycloak;
 
 use App\Keycloak\CachedKeycloakClientStatus;
 use App\Keycloak\Client;
+use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Realm;
-use App\Keycloak\Service\ApiClient;
 use App\Nova\ActionGuards\Keycloak\EnableKeycloakClientGuard;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\NullLogger;
-use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
 use Tests\Auth0\CreatesMockAuth0ClusterSDK;
+use Tests\TestCase;
 
 final class EnableKeycloakClientGuardTest extends TestCase
 {

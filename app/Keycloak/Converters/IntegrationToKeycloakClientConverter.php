@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Keycloak\Service;
+namespace App\Keycloak\Converters;
 
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;

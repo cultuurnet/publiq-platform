@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Tests\Keycloak\Jobs;
 
 use App\Keycloak\Client;
+use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Events\ClientDisabled;
 use App\Keycloak\Jobs\DisableClient;
 use App\Keycloak\Jobs\DisableClientHandler;
 use App\Keycloak\Realm;
 use App\Keycloak\Repositories\KeycloakClientRepository;
-use App\Keycloak\Service\ApiClient;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Event;
 use PHPUnit\Framework\TestCase;
