@@ -19,7 +19,7 @@ final class BlockKeycloakClient extends Action
     use InteractsWithQueue;
     use Queueable;
 
-    public $name = 'Disable Keycloak client';
+    public $name = 'Block Keycloak client';
 
     public function __construct(private readonly Dispatcher $dispatcher, private readonly BlockClientHandler $listener)
     {
