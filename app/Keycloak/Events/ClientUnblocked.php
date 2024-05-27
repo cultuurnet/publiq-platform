@@ -7,7 +7,7 @@ namespace App\Keycloak\Events;
 use Illuminate\Foundation\Events\Dispatchable;
 use Ramsey\Uuid\UuidInterface;
 
-final class ClientEnabled
+final class ClientUnblocked
 {
     use Dispatchable;
 

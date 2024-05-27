@@ -10,7 +10,7 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client;
 use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Config;
-use App\Keycloak\Listeners\DisableClients;
+use App\Keycloak\Listeners\BlockClients;
 use App\Keycloak\RealmCollection;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -20,7 +20,7 @@ use Ramsey\Uuid\Uuid;
 use Tests\CreatesIntegration;
 use Tests\Keycloak\KeycloakHttpClientFactory;
 
-final class DisableClientTest extends TestCase
+final class BlockClientsTest extends TestCase
 {
     use CreatesIntegration;
     use KeycloakHttpClientFactory;
@@ -48,7 +48,7 @@ final class DisableClientTest extends TestCase
         $this->logger = $this->createMock(LoggerInterface::class);
     }
 
-    public function test_disable_clients_when_integration_is_blocked(): void
+    public function test_block_clients_when_integration_is_blocked(): void
     {
         $integrationRepository = $this->createMock(IntegrationRepository::class);
         $integrationRepository->expects($this->once())
@@ -61,12 +61,12 @@ final class DisableClientTest extends TestCase
             $client = new Client(Uuid::uuid4(), $this->integration->id, self::SECRET, $realm);
 
             $this->apiClient->expects($this->once())
-                ->method('disableClient')
+                ->method('blockClient')
                 ->with($client);
 
             $this->logger->expects($this->once())
                 ->method('info')
-                ->with('Keycloak client disabled', [
+                ->with('Keycloak client blocked', [
                     'integration_id' => $this->integration->id->toString(),
                     'client_id' => $client->id->toString(),
                     'realm' => $client->realm->internalName,
@@ -81,7 +81,7 @@ final class DisableClientTest extends TestCase
             ->with($this->integration->id)
             ->willReturn($clients);
 
-        $createClients = new DisableClients(
+        $createClients = new BlockClients(
             $integrationRepository,
             $keycloakClientRepository,
             $this->apiClient,

@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Nova\ActionGuards\Keycloak;
 
 use App\Keycloak\CachedKeycloakClientStatus;
-use App\Keycloak\Client;
 use App\Nova\ActionGuards\ActionGuard;
+use App\Keycloak\Client;
 
-final readonly class DisableKeycloakClientGuard implements ActionGuard
+final readonly class UnblockKeycloakClientGuard implements ActionGuard
 {
     public function __construct(
         private CachedKeycloakClientStatus $cachedKeycloakClientStatus,
@@ -21,6 +21,6 @@ final readonly class DisableKeycloakClientGuard implements ActionGuard
             return false;
         }
 
-        return $this->cachedKeycloakClientStatus->isClientEnabled($client);
+        return $this->cachedKeycloakClientStatus->isClientBlocked($client);
     }
 }

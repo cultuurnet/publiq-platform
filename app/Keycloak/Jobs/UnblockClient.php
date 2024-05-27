@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Keycloak\Events;
+namespace App\Keycloak\Jobs;
 
 use Illuminate\Foundation\Events\Dispatchable;
 use Ramsey\Uuid\UuidInterface;
 
-final class ClientDisabled
+final class UnblockClient
 {
     use Dispatchable;
 

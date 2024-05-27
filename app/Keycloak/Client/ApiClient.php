@@ -17,11 +17,11 @@ interface ApiClient
 
     public function fetchClient(Realm $realm, Integration $integration): Client;
 
-    public function fetchIsClientEnabled(Realm $realm, UuidInterface $integrationId): bool;
+    public function fetchIsClientActive(Realm $realm, UuidInterface $integrationId): bool;
 
-    public function enableClient(Client $client): void;
+    public function unblockClient(Client $client): void;
 
-    public function disableClient(Client $client): void;
+    public function blockClient(Client $client): void;
 
     public function updateClient(Client $client, array $body): void;
 
