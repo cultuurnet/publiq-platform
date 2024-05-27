@@ -13,7 +13,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\RequestOptions;
 use Psr\Log\LoggerInterface;
 
-trait KeycloakHelper
+trait CreatedKeycloakHttpClient
 {
     private Config $config;
 

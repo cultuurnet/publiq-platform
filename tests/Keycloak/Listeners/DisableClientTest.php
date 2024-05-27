@@ -18,12 +18,12 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Tests\IntegrationHelper;
-use Tests\Keycloak\KeycloakHelper;
+use Tests\Keycloak\CreatedKeycloakHttpClient;
 
 final class DisableClientTest extends TestCase
 {
     use IntegrationHelper;
-    use KeycloakHelper;
+    use CreatedKeycloakHttpClient;
 
     private const SECRET = 'my-secret';
 

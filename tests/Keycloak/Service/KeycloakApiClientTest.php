@@ -20,11 +20,11 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Tests\IntegrationHelper;
-use Tests\Keycloak\KeycloakHelper;
+use Tests\Keycloak\CreatedKeycloakHttpClient;
 
 final class KeycloakApiClientTest extends TestCase
 {
-    use KeycloakHelper;
+    use CreatedKeycloakHttpClient;
     use IntegrationHelper;
 
     private const INTEGRATION_ID = '824c09c0-2f3a-4fa0-bde2-8bf25c9a5b74';

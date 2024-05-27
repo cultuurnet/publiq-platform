@@ -16,11 +16,11 @@ use Illuminate\Support\Facades\Event;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
-use Tests\Keycloak\KeycloakHelper;
+use Tests\Keycloak\CreatedKeycloakHttpClient;
 
 final class EnableClientHandlerTest extends TestCase
 {
-    use KeycloakHelper;
+    use CreatedKeycloakHttpClient;
 
     public function test_enable_client_handler(): void
     {
