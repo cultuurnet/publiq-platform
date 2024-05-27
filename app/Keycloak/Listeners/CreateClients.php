@@ -7,12 +7,14 @@ namespace App\Keycloak\Listeners;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Keycloak\Client\ApiClient;
 use App\Keycloak\ClientCollection;
 use App\Keycloak\Config;
+use App\Keycloak\Events\MissingClientsDetected;
 use App\Keycloak\Exception\KeyCloakApiFailed;
+use App\Keycloak\RealmCollection;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Keycloak\ScopeConfig;
-use App\Keycloak\Service\ApiClient;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
@@ -25,47 +27,61 @@ final class CreateClients implements ShouldQueue
     public function __construct(
         private readonly IntegrationRepository $integrationRepository,
         private readonly KeycloakClientRepository $keycloakClientRepository,
-        private readonly ApiClient $client,
         private readonly Config $config,
+        private readonly ApiClient $client,
         private readonly ScopeConfig $scopeConfig,
         private readonly LoggerInterface $logger
     ) {
     }
 
-    public function handle(IntegrationCreated $integrationCreated): void
+    public function handleCreateClients(IntegrationCreated $event): void
     {
-        $clients = $this->createClients($this->integrationRepository->getById($integrationCreated->id));
+        $this->handle($event, $this->config->realms);
+    }
+
+    public function handleCreatingMissingClients(MissingClientsDetected $event): void
+    {
+        $missingRealms = $this->keycloakClientRepository->getMissingRealmsByIntegrationId($event->id);
+
+        if (count($missingRealms) === 0) {
+            $this->logger->info($event->id . ' - already has all Keycloak clients');
+            return;
+        }
+
+        $this->handle($event, $missingRealms);
+    }
+
+
+    private function handle(IntegrationCreated|MissingClientsDetected $event, RealmCollection $realms): void
+    {
+        $clients = $this->createClientsInKeycloak(
+            $this->integrationRepository->getById($event->id),
+            $realms
+        );
 
         $this->keycloakClientRepository->create(...$clients);
 
         foreach ($clients as $client) {
             $this->logger->info('Keycloak client created', [
-                'integration_id' => $integrationCreated->id->toString(),
+                'integration_id' => $event->id->toString(),
+                'client_id' => $client->id->toString(),
                 'realm' => $client->realm->internalName,
             ]);
         }
     }
 
-    public function failed(IntegrationCreated $integrationCreated, Throwable $throwable): void
-    {
-        $this->logger->error('Failed to create Keycloak client(s)', [
-            'integration_id' => $integrationCreated->id->toString(),
-            'exception' => $throwable,
-        ]);
-    }
-
-    private function createClients(Integration $integration): ClientCollection
+    private function createClientsInKeycloak(Integration $integration, RealmCollection $realms): ClientCollection
     {
         $scopeId = $this->scopeConfig->getScopeIdFromIntegrationType($integration);
 
         $clientCollection = new ClientCollection();
 
-        foreach ($this->config->realms as $realm) {
+        foreach ($realms as $realm) {
             try {
-                $clientId = $this->client->createClient($realm, $integration);
-                $this->client->addScopeToClient($realm, $clientId, $scopeId);
-
+                $this->client->createClient($realm, $integration);
                 $client = $this->client->fetchClient($realm, $integration);
+                $this->client->addScopeToClient($realm, $client->id, $scopeId);
+
                 $clientCollection->add($client);
             } catch (KeyCloakApiFailed $e) {
                 $this->logger->error($e->getMessage());
@@ -73,5 +89,13 @@ final class CreateClients implements ShouldQueue
         }
 
         return $clientCollection;
+    }
+
+    public function failed(IntegrationCreated|MissingClientsDetected $integrationCreated, Throwable $throwable): void
+    {
+        $this->logger->error('Failed to create Keycloak clients', [
+            'integration_id' => $integrationCreated->id->toString(),
+            'exception' => $throwable,
+        ]);
     }
 }

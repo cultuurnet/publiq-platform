@@ -7,30 +7,30 @@ namespace Tests\Keycloak\Service;
 use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Integration;
 use App\Keycloak\Client;
+use App\Keycloak\Client\KeycloakApiClient;
 use App\Keycloak\Config;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realm;
 use App\Keycloak\RealmCollection;
 use App\Keycloak\ScopeConfig;
-use App\Keycloak\Service\KeycloakApiClient;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidInterface;
-use Tests\IntegrationHelper;
-use Tests\Keycloak\KeycloakHelper;
+use Tests\CreatesIntegration;
+use Tests\Keycloak\KeycloakHttpClientFactory;
 
 final class KeycloakApiClientTest extends TestCase
 {
-    use KeycloakHelper;
-    use IntegrationHelper;
+    use KeycloakHttpClientFactory;
+    use CreatesIntegration;
 
     private const INTEGRATION_ID = '824c09c0-2f3a-4fa0-bde2-8bf25c9a5b74';
     private const UUID = '824c09c0-2f3a-4fa0-bde2-8bf25c9a5b74';
     public const SECRET = 'abra_kadabra';
+    private const TOKEN = 'pqeaefosdfhbsdq';
 
     private Realm $realm;
     private Integration $integration;
@@ -62,7 +62,7 @@ final class KeycloakApiClientTest extends TestCase
     public function test_can_create_client(): void
     {
         $mock = new MockHandler([
-            new Response(200, [], json_encode(['access_token' => 'pqeaefosdfhbsdq'], JSON_THROW_ON_ERROR)),
+            new Response(200, [], json_encode(['access_token' => self::TOKEN], JSON_THROW_ON_ERROR)),
             new Response(201),
         ]);
 
@@ -72,18 +72,40 @@ final class KeycloakApiClientTest extends TestCase
             $this->logger
         );
 
-        $id = $apiClient->createClient(
+        $counter = 0;
+        $this->logger->expects($this->exactly(2))
+            ->method('info')
+            ->willReturnCallback(function ($message) use (&$counter) {
+                switch ($counter++) {
+                    case 0:
+                        $this->assertEquals('Fetched token for php_client, token starts with ' . substr(self::TOKEN, 0, 6), $message);
+                        break;
+                    case 1:
+
+                        // use contains because we don't know the generated id
+                        $this->assertStringStartsWith(
+                            sprintf('Client %s, client id %s created with id', $this->integration->name, $this->integration->id),
+                            $message
+                        );
+
+                        break;
+                    default:
+                        $this->fail('Unknown message logged: ' . $message);
+                }
+            });
+
+        $apiClient->createClient(
             $this->realm,
             $this->integration
         );
 
-        $this->assertInstanceOf(UuidInterface::class, $id);
+
     }
 
     public function test_fails_to_create_client(): void
     {
         $mock = new MockHandler([
-            new Response(200, [], json_encode(['access_token' => 'pqeaefosdfhbsdq'], JSON_THROW_ON_ERROR)),
+            new Response(200, [], json_encode(['access_token' => self::TOKEN], JSON_THROW_ON_ERROR)),
             new Response(500),
         ]);
 
@@ -108,7 +130,7 @@ final class KeycloakApiClientTest extends TestCase
         $scopeId = Uuid::fromString('123ae05d-1c41-40c8-8716-c4654a3bfd98');
 
         $mock = new MockHandler([
-            new Response(200, [], json_encode(['access_token' => 'pqeaefosdfhbsdq'], JSON_THROW_ON_ERROR)),
+            new Response(200, [], json_encode(['access_token' => self::TOKEN], JSON_THROW_ON_ERROR)),
             new Response(500),
         ]);
 
@@ -131,7 +153,7 @@ final class KeycloakApiClientTest extends TestCase
     public function test_can_fetch_client(): void
     {
         $mock = new MockHandler([
-            new Response(200, [], json_encode(['access_token' => 'pqeaefosdfhbsdq'], JSON_THROW_ON_ERROR)),
+            new Response(200, [], json_encode(['access_token' => self::TOKEN], JSON_THROW_ON_ERROR)),
             new Response(200, [], json_encode(
                 [
                     [
@@ -163,7 +185,7 @@ final class KeycloakApiClientTest extends TestCase
     public function test_client_not_found(): void
     {
         $mock = new MockHandler([
-            new Response(200, [], json_encode(['access_token' => 'pqeaefosdfhbsdq'], JSON_THROW_ON_ERROR)),
+            new Response(200, [], json_encode(['access_token' => self::TOKEN], JSON_THROW_ON_ERROR)),
             new Response(500, [], 'It is broken'),
         ]);
 
@@ -184,7 +206,7 @@ final class KeycloakApiClientTest extends TestCase
     public function test_fetch_is_client_enabled(bool $enabled): void
     {
         $mock = new MockHandler([
-            new Response(200, [], json_encode(['access_token' => 'pqeaefosdfhbsdq'], JSON_THROW_ON_ERROR)),
+            new Response(200, [], json_encode(['access_token' => self::TOKEN], JSON_THROW_ON_ERROR)),
             new Response(200, [], json_encode([['enabled' => $enabled]], JSON_THROW_ON_ERROR)),
         ]);
 
@@ -208,7 +230,7 @@ final class KeycloakApiClientTest extends TestCase
     public function test_update_client_throws_exception_when_api_call_fails(): void
     {
         $mock = new MockHandler([
-            new Response(200, [], json_encode(['access_token' => 'pqeaefosdfhbsdq'], JSON_THROW_ON_ERROR)),
+            new Response(200, [], json_encode(['access_token' => self::TOKEN], JSON_THROW_ON_ERROR)),
             new Response(500),
         ]);
 
@@ -229,7 +251,7 @@ final class KeycloakApiClientTest extends TestCase
     public function test_reset_scopes_throws_exception_when_api_call_fails(): void
     {
         $mock = new MockHandler([
-            new Response(200, [], json_encode(['access_token' => 'pqeaefosdfhbsdq'], JSON_THROW_ON_ERROR)),
+            new Response(200, [], json_encode(['access_token' => self::TOKEN], JSON_THROW_ON_ERROR)),
             new Response(500),
         ]);
 

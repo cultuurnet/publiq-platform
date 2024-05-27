@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Keycloak;
 
-use App\Keycloak\Service\ApiClient;
+use App\Keycloak\Client\ApiClient;
 use Psr\Log\LoggerInterface;
 
 final class CachedKeycloakClientStatus

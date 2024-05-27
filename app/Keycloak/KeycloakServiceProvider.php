@@ -10,14 +10,15 @@ use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Events\IntegrationUrlCreated;
 use App\Domain\Integrations\Events\IntegrationUrlDeleted;
 use App\Domain\Integrations\Events\IntegrationUrlUpdated;
+use App\Keycloak\Client\ApiClient;
+use App\Keycloak\Client\KeycloakApiClient;
 use App\Keycloak\Client\KeycloakHttpClient;
+use App\Keycloak\Events\MissingClientsDetected;
 use App\Keycloak\Listeners\CreateClients;
 use App\Keycloak\Listeners\DisableClients;
 use App\Keycloak\Listeners\UpdateClients;
 use App\Keycloak\Repositories\EloquentKeycloakClientRepository;
 use App\Keycloak\Repositories\KeycloakClientRepository;
-use App\Keycloak\Service\ApiClient;
-use App\Keycloak\Service\KeycloakApiClient;
 use App\Keycloak\TokenStrategy\ClientCredentials;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
@@ -85,9 +86,10 @@ final class KeycloakServiceProvider extends ServiceProvider
             return;
         }
 
-        Event::listen(IntegrationCreated::class, [CreateClients::class, 'handle']);
+        Event::listen(IntegrationCreated::class, [CreateClients::class, 'handleCreateClients']);
         Event::listen(IntegrationUpdated::class, [UpdateClients::class, 'handle']);
         Event::listen(IntegrationBlocked::class, [DisableClients::class, 'handle']);
+        Event::listen(MissingClientsDetected::class, [CreateClients::class, 'handleCreatingMissingClients']);
 
         Event::listen(IntegrationUrlCreated::class, [UpdateClients::class, 'handle']);
         Event::listen(IntegrationUrlUpdated::class, [UpdateClients::class, 'handle']);

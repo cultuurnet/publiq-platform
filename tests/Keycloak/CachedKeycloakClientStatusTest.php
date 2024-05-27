@@ -6,8 +6,8 @@ namespace Tests\Keycloak;
 
 use App\Keycloak\CachedKeycloakClientStatus;
 use App\Keycloak\Client;
+use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Realm;
-use App\Keycloak\Service\ApiClient;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;

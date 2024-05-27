@@ -13,11 +13,11 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\RequestOptions;
 use Psr\Log\LoggerInterface;
 
-trait KeycloakHelper
+trait KeycloakHttpClientFactory
 {
     private Config $config;
 
-    protected function givenKeycloakHttpClient(LoggerInterface $logger, ?MockHandler $mock = null): KeycloakHttpClient
+    protected function givenKeycloakHttpClient(LoggerInterface $logger, MockHandler $mock): KeycloakHttpClient
     {
         return new KeycloakHttpClient(
             $this->givenClient($mock),
@@ -29,8 +29,8 @@ trait KeycloakHelper
         );
     }
 
-    private function givenClient(?MockHandler $mock): Client
+    private function givenClient(MockHandler $mock): Client
     {
-        return new Client($mock ? ['handler' => HandlerStack::create($mock), RequestOptions::HTTP_ERRORS => false] : [RequestOptions::HTTP_ERRORS => false]);
+        return new Client(['handler' => HandlerStack::create($mock), RequestOptions::HTTP_ERRORS => false]);
     }
 }

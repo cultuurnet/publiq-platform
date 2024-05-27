@@ -10,15 +10,15 @@ use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\IntegrationUrlType;
 use App\Keycloak\Client;
 use App\Keycloak\Realm;
-use App\Keycloak\Service\IntegrationUrlConverter;
+use App\Keycloak\Converters\IntegrationUrlConverter;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
-use Tests\IntegrationHelper;
+use Tests\CreatesIntegration;
 
 final class IntegrationUrlConverterTest extends TestCase
 {
-    use IntegrationHelper;
+    use CreatesIntegration;
     private Client $client;
     private UuidInterface $integrationId;
 

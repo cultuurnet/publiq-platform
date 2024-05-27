@@ -11,25 +11,25 @@ use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\IntegrationUrlType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client;
+use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Config;
 use App\Keycloak\Listeners\UpdateClients;
 use App\Keycloak\RealmCollection;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Keycloak\ScopeConfig;
-use App\Keycloak\Service\ApiClient;
-use App\Keycloak\Service\IntegrationToKeycloakClientConverter;
-use App\Keycloak\Service\IntegrationUrlConverter;
+use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
+use App\Keycloak\Converters\IntegrationUrlConverter;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
-use Tests\IntegrationHelper;
-use Tests\Keycloak\KeycloakHelper;
+use Tests\CreatesIntegration;
+use Tests\Keycloak\KeycloakHttpClientFactory;
 
 final class UpdateClientsTest extends TestCase
 {
-    use IntegrationHelper;
-    use KeycloakHelper;
+    use CreatesIntegration;
+    use KeycloakHttpClientFactory;
 
     private const SECRET = 'my-secret';
     private const SEARCH_SCOPE_ID = '06059529-74b5-422a-a499-ffcaf065d437';

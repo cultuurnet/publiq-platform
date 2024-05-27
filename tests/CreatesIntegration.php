@@ -11,7 +11,7 @@ use App\Domain\Integrations\IntegrationType;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-trait IntegrationHelper
+trait CreatesIntegration
 {
     public function givenThereIsAnIntegration(UuidInterface $integrationId, array $options = []): Integration
     {

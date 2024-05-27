@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Keycloak\Service;
+namespace App\Keycloak\Client;
 
 use App\Domain\Integrations\Integration;
 use App\Keycloak\Client;
@@ -11,7 +11,7 @@ use Ramsey\Uuid\UuidInterface;
 
 interface ApiClient
 {
-    public function createClient(Realm $realm, Integration $integration): UuidInterface;
+    public function createClient(Realm $realm, Integration $integration): void;
 
     public function addScopeToClient(Realm $realm, UuidInterface $clientId, UuidInterface $scopeId): void;
 

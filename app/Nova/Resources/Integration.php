@@ -10,10 +10,12 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Keycloak\Config;
 use App\Nova\Actions\ActivateIntegration;
 use App\Nova\Actions\ApproveIntegration;
 use App\Nova\Actions\Auth0\CreateMissingAuth0Clients;
 use App\Nova\Actions\BlockIntegration;
+use App\Nova\Actions\Keycloak\CreateMissingKeycloakClients;
 use App\Nova\Actions\OpenWidgetManager;
 use App\Nova\Actions\UiTiDv1\CreateMissingUiTiDv1Consumers;
 use App\Nova\Resource;
@@ -54,6 +56,16 @@ final class Integration extends Resource
     protected static ?array $defaultSort = [
         'created_at' => 'desc',
     ];
+
+    private Config $keycloakConfig;
+
+    public function __construct($resource = null)
+    {
+        parent::__construct($resource);
+
+        $this->keycloakConfig = App::get(Config::class);
+    }
+
 
     /**
      * @return array<Field|ResourceTool>
@@ -166,7 +178,7 @@ final class Integration extends Resource
             HasMany::make('UiTiD v2 Client Credentials (Auth0)', 'auth0Clients', Auth0Client::class),
         ];
 
-        if (config('keycloak.enabled', false)) {
+        if ($this->keycloakConfig->isEnabled) {
             $fields[] = HasMany::make('Keycloak client Credentials', 'keycloakClients', KeycloakClient::class);
         }
 
@@ -179,7 +191,7 @@ final class Integration extends Resource
 
     public function actions(NovaRequest $request): array
     {
-        return [
+        $actions = [
             (new ActivateIntegration(App::make(IntegrationRepository::class)))
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to activate this integration?')
@@ -228,5 +240,18 @@ final class Integration extends Resource
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->hasMissingUiTiDv1Consumers())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->hasMissingUiTiDv1Consumers()),
         ];
+
+        if ($this->keycloakConfig->isEnabled) {
+            $actions[] = (new CreateMissingKeycloakClients())
+                ->withName('Create missing Keycloak clients')
+                ->exceptOnIndex()
+                ->confirmText('Are you sure you want to create missing Keycloak clients for this integration?')
+                ->confirmButtonText('Create')
+                ->cancelButtonText('Cancel')
+                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->hasMissingKeycloakConsumers())
+                ->canRun(fn (Request $request, IntegrationModel $model) => $model->hasMissingKeycloakConsumers());
+        }
+
+        return $actions;
     }
 }

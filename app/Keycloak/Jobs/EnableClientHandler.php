@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Keycloak\Jobs;
 
+use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Events\ClientEnabled;
 use App\Keycloak\Repositories\KeycloakClientRepository;
-use App\Keycloak\Service\ApiClient;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Psr\Log\LoggerInterface;

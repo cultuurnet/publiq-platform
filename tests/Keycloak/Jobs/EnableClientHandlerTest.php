@@ -5,22 +5,22 @@ declare(strict_types=1);
 namespace Tests\Keycloak\Jobs;
 
 use App\Keycloak\Client;
+use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Events\ClientEnabled;
 use App\Keycloak\Jobs\EnableClient;
 use App\Keycloak\Jobs\EnableClientHandler;
 use App\Keycloak\Realm;
 use App\Keycloak\Repositories\KeycloakClientRepository;
-use App\Keycloak\Service\ApiClient;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Event;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
-use Tests\Keycloak\KeycloakHelper;
+use Tests\Keycloak\KeycloakHttpClientFactory;
 
 final class EnableClientHandlerTest extends TestCase
 {
-    use KeycloakHelper;
+    use KeycloakHttpClientFactory;
 
     public function test_enable_client_handler(): void
     {
