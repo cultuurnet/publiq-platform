@@ -202,6 +202,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\UiTiDv1\UiTiDv1ServiceProvider::class,
         App\ProjectAanvraag\ProjectAanvraagServiceProvider::class,
+        App\Search\SearchServiceProvider::class,
     ],
 
     /*
