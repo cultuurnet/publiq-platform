@@ -13,6 +13,7 @@ use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationDeleted;
+use App\Domain\Integrations\Events\IntegrationUnblocked;
 use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
@@ -167,6 +168,8 @@ final class IntegrationModel extends UuidModel
                 'status' => $activity->properties->get('old')['status'],
             ]);
         }
+
+        IntegrationUnblocked::dispatch(Uuid::fromString($this->id));
 
         // TODO: also unblock in all various linked platforms
     }
