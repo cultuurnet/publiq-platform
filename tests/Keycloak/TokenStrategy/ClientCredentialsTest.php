@@ -15,11 +15,11 @@ use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
-use Tests\Keycloak\CreatedKeycloakHttpClient;
+use Tests\Keycloak\KeycloakHttpClientFactory;
 
 final class ClientCredentialsTest extends TestCase
 {
-    use CreatedKeycloakHttpClient;
+    use KeycloakHttpClientFactory;
     public const ACCESS_TOKEN = 'pqeaefosdfhbsdq';
 
     private LoggerInterface&MockObject $logger;
