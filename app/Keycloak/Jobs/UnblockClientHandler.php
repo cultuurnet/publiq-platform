@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Keycloak\Jobs;
 
 use App\Keycloak\Client\ApiClient;
-use App\Keycloak\Events\ClientDisabled;
+use App\Keycloak\Events\ClientUnblocked;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Psr\Log\LoggerInterface;
 
-final readonly class DisableClientHandler implements ShouldQueue
+final readonly class UnblockClientHandler implements ShouldQueue
 {
     public function __construct(
         private ApiClient $apiClient,
@@ -21,14 +21,14 @@ final readonly class DisableClientHandler implements ShouldQueue
     }
 
     public function handle(
-        DisableClient $event
+        UnblockClient $event
     ): void {
         try {
             $client = $this->keycloakClientRepository->getById($event->id);
-            $this->apiClient->disableClient($client);
+            $this->apiClient->unblockClient($client);
         } catch (ModelNotFoundException $e) {
             $this->logger->error(
-                'Failed to disabled Keycloak client: ' . $e->getMessage(),
+                'Failed to unblock Keycloak client: ' . $e->getMessage(),
                 [
                     'domain' => 'keycloak',
                     'id' => $event->id,
@@ -38,13 +38,13 @@ final readonly class DisableClientHandler implements ShouldQueue
         }
 
         $this->logger->info(
-            'Keycloak client disabled',
+            'Keycloak client unblocked',
             [
                 'domain' => 'keycloak',
                 'id' => $event->id,
             ]
         );
 
-        ClientDisabled::dispatch($event->id);
+        ClientUnblocked::dispatch($event->id);
     }
 }

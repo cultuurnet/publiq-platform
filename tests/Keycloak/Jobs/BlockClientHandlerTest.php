@@ -6,9 +6,9 @@ namespace Tests\Keycloak\Jobs;
 
 use App\Keycloak\Client;
 use App\Keycloak\Client\ApiClient;
-use App\Keycloak\Events\ClientDisabled;
-use App\Keycloak\Jobs\DisableClient;
-use App\Keycloak\Jobs\DisableClientHandler;
+use App\Keycloak\Events\ClientBlocked;
+use App\Keycloak\Jobs\BlockClient;
+use App\Keycloak\Jobs\BlockClientHandler;
 use App\Keycloak\Realm;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -17,9 +17,9 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
 
-final class DisableClientHandlerTest extends TestCase
+final class BlockClientHandlerTest extends TestCase
 {
-    public function test_disable_client_handler(): void
+    public function test_block_client_handler(): void
     {
         Event::fake();
 
@@ -40,18 +40,18 @@ final class DisableClientHandlerTest extends TestCase
 
         $apiClient = $this->createMock(ApiClient::class);
         $apiClient->expects($this->once())
-            ->method('disableClient')
+            ->method('blockClient')
             ->with($client);
 
-        $handler = new DisableClientHandler(
+        $handler = new BlockClientHandler(
             $apiClient,
             $keycloakClientRepository,
             new NullLogger()
         );
 
-        $handler->handle(new DisableClient($client->id));
+        $handler->handle(new BlockClient($client->id));
 
-        Event::assertDispatched(ClientDisabled::class);
+        Event::assertDispatched(ClientBlocked::class);
     }
 
     public function test_handler_fails_when_client_does_not_exists(): void
@@ -71,14 +71,14 @@ final class DisableClientHandlerTest extends TestCase
 
         $apiClient = $this->createMock(ApiClient::class);
         $apiClient->expects($this->never())
-            ->method('disableClient');
+            ->method('blockClient');
 
-        $handler = new DisableClientHandler(
+        $handler = new BlockClientHandler(
             $apiClient,
             $keycloakClientRepository,
             new NullLogger()
         );
 
-        $handler->handle(new DisableClient($client->id));
+        $handler->handle(new BlockClient($client->id));
     }
 }

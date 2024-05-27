@@ -7,7 +7,7 @@ namespace App\Keycloak\Jobs;
 use Illuminate\Foundation\Events\Dispatchable;
 use Ramsey\Uuid\UuidInterface;
 
-final class DisableClient
+final class BlockClient
 {
     use Dispatchable;
 

@@ -15,7 +15,7 @@ use App\Keycloak\Client\KeycloakApiClient;
 use App\Keycloak\Client\KeycloakHttpClient;
 use App\Keycloak\Events\MissingClientsDetected;
 use App\Keycloak\Listeners\CreateClients;
-use App\Keycloak\Listeners\DisableClients;
+use App\Keycloak\Listeners\BlockClients;
 use App\Keycloak\Listeners\UpdateClients;
 use App\Keycloak\Repositories\EloquentKeycloakClientRepository;
 use App\Keycloak\Repositories\KeycloakClientRepository;
@@ -88,7 +88,7 @@ final class KeycloakServiceProvider extends ServiceProvider
 
         Event::listen(IntegrationCreated::class, [CreateClients::class, 'handleCreateClients']);
         Event::listen(IntegrationUpdated::class, [UpdateClients::class, 'handle']);
-        Event::listen(IntegrationBlocked::class, [DisableClients::class, 'handle']);
+        Event::listen(IntegrationBlocked::class, [BlockClients::class, 'handle']);
         Event::listen(MissingClientsDetected::class, [CreateClients::class, 'handleCreatingMissingClients']);
 
         Event::listen(IntegrationUrlCreated::class, [UpdateClients::class, 'handle']);

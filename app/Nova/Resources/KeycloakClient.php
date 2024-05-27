@@ -8,15 +8,14 @@ use App\Keycloak\CachedKeycloakClientStatus;
 use App\Keycloak\Models\KeycloakClientModel;
 use App\Keycloak\RealmCollection;
 use App\Nova\ActionGuards\ActionGuard;
-use App\Nova\ActionGuards\Keycloak\DisableKeycloakClientGuard;
-use App\Nova\ActionGuards\Keycloak\EnableKeycloakClientGuard;
-use App\Nova\Actions\Keycloak\DisableKeycloakClient;
-use App\Nova\Actions\Keycloak\EnableKeycloakClient;
+use App\Nova\ActionGuards\Keycloak\BlockKeycloakClientGuard;
+use App\Nova\ActionGuards\Keycloak\UnblockKeycloakClientGuard;
+use App\Nova\Actions\Keycloak\BlockKeycloakClient;
+use App\Nova\Actions\Keycloak\UnblockKeycloakClient;
 use App\Nova\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Log;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
@@ -68,11 +67,9 @@ final class KeycloakClient extends Resource
                 $client = $model->toDomain();
 
                 if (! $this->getKeycloakClientStatus()->isClientEnabled($client)) {
-                    Log::info('KeycloakClient - status - ' . $client->integrationId . ': blocked');
                     return '<span style="color: red;">Blocked</span>';
                 }
 
-                Log::debug('KeycloakClient - status - ' . $client->integrationId . ': active');
                 return '<span style="color: green;">Active</span>';
             })->asHtml(),
             Text::make('client_id', function (KeycloakClientModel $model) {
@@ -98,17 +95,17 @@ final class KeycloakClient extends Resource
     public function actions(NovaRequest $request): array
     {
         return [
-            App::make(EnableKeycloakClient::class)
+            App::make(UnblockKeycloakClient::class)
                 ->exceptOnIndex()
-                ->confirmText('Are you sure you want to enable this client?')
+                ->confirmText('Are you sure you want to unblock this client?')
                 ->confirmButtonText('Enable')
                 ->cancelButtonText('Cancel')
                 ->canSee(fn (Request $request) => $this->canEnable($request, $this->resource))
                 ->canRun(fn (Request $request, KeycloakClientModel $model) => $this->canEnable($request, $model)),
 
-            App::make(DisableKeycloakClient::class)
+            App::make(BlockKeycloakClient::class)
                 ->exceptOnIndex()
-                ->confirmText('Are you sure you want to disable this client?')
+                ->confirmText('Are you sure you want to block this client?')
                 ->confirmButtonText('Disable')
                 ->cancelButtonText('Cancel')
                 ->canSee(fn (Request $request) => $this->canDisable($request, $this->resource))
@@ -118,12 +115,12 @@ final class KeycloakClient extends Resource
 
     private function canEnable(Request $request, ?KeycloakClientModel $model): bool
     {
-        return $this->can($request, $model, App::make(EnableKeycloakClientGuard::class));
+        return $this->can($request, $model, App::make(UnblockKeycloakClientGuard::class));
     }
 
     private function canDisable(Request $request, ?KeycloakClientModel $model): bool
     {
-        return $this->can($request, $model, App::make(DisableKeycloakClientGuard::class));
+        return $this->can($request, $model, App::make(BlockKeycloakClientGuard::class));
     }
 
     private function can(Request $request, ?KeycloakClientModel $model, ActionGuard $guard): bool

@@ -166,7 +166,7 @@ final readonly class KeycloakApiClient implements ApiClient
     /**
      * @throws KeyCloakApiFailed
      */
-    public function enableClient(Client $client): void
+    public function unblockClient(Client $client): void
     {
         $this->updateClient($client, ['enabled' => true]);
     }
@@ -174,7 +174,7 @@ final readonly class KeycloakApiClient implements ApiClient
     /**
      * @throws KeyCloakApiFailed
      */
-    public function disableClient(Client $client): void
+    public function blockClient(Client $client): void
     {
         $this->updateClient($client, ['enabled' => false]);
     }

@@ -22,7 +22,7 @@ final class CachedKeycloakClientStatus
         if(! isset($this->statuses[$uuid])) {
             $this->statuses[$uuid] = $this->apiClient->fetchIsClientEnabled($client->realm, $client->integrationId);
         } else {
-            $this->logger->info(self::class . '  - ' . $uuid . ': cache hit: ' . ($this->statuses[$uuid] ? 'Enabled' : 'Disabled'));
+            $this->logger->info(self::class . '  - ' . $uuid . ': cache hit: ' . ($this->statuses[$uuid] ? 'Active' : 'Blocked'));
         }
 
         return $this->statuses[$uuid];

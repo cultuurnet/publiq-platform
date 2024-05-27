@@ -6,9 +6,9 @@ namespace Tests\Keycloak\Jobs;
 
 use App\Keycloak\Client;
 use App\Keycloak\Client\ApiClient;
-use App\Keycloak\Events\ClientEnabled;
-use App\Keycloak\Jobs\EnableClient;
-use App\Keycloak\Jobs\EnableClientHandler;
+use App\Keycloak\Events\ClientUnblocked;
+use App\Keycloak\Jobs\UnblockClient;
+use App\Keycloak\Jobs\UnblockClientHandler;
 use App\Keycloak\Realm;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -18,11 +18,11 @@ use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
 use Tests\Keycloak\CreatedKeycloakHttpClient;
 
-final class EnableClientHandlerTest extends TestCase
+final class UnblockClientHandlerTest extends TestCase
 {
     use CreatedKeycloakHttpClient;
 
-    public function test_enable_client_handler(): void
+    public function test_unblock_client_handler(): void
     {
         Event::fake();
 
@@ -41,18 +41,18 @@ final class EnableClientHandlerTest extends TestCase
 
         $apiClient = $this->createMock(ApiClient::class);
         $apiClient->expects($this->once())
-            ->method('enableClient')
+            ->method('unblockClient')
             ->with($client);
 
-        $handler = new EnableClientHandler(
+        $handler = new UnblockClientHandler(
             $apiClient,
             $keycloakClientRepository,
             new NullLogger()
         );
 
-        $handler->handle(new EnableClient($client->id));
+        $handler->handle(new UnblockClient($client->id));
 
-        Event::assertDispatched(ClientEnabled::class);
+        Event::assertDispatched(ClientUnblocked::class);
     }
 
     public function test_handler_fails_when_client_does_not_exists(): void
@@ -72,14 +72,14 @@ final class EnableClientHandlerTest extends TestCase
 
         $apiClient = $this->createMock(ApiClient::class);
         $apiClient->expects($this->never())
-            ->method('enableClient');
+            ->method('unblockClient');
 
-        $handler = new EnableClientHandler(
+        $handler = new UnblockClientHandler(
             $apiClient,
             $keycloakClientRepository,
             new NullLogger()
         );
 
-        $handler->handle(new EnableClient($client->id));
+        $handler->handle(new UnblockClient($client->id));
     }
 }
