@@ -18,12 +18,12 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Tests\CreatesIntegration;
-use Tests\Keycloak\CreatedKeycloakHttpClient;
+use Tests\Keycloak\KeycloakHttpClientFactory;
 
 final class BlockClientsTest extends TestCase
 {
     use CreatesIntegration;
-    use CreatedKeycloakHttpClient;
+    use KeycloakHttpClientFactory;
 
     private const SECRET = 'my-secret';
 

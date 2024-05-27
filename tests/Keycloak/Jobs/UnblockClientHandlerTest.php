@@ -16,11 +16,11 @@ use Illuminate\Support\Facades\Event;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
-use Tests\Keycloak\CreatedKeycloakHttpClient;
+use Tests\Keycloak\KeycloakHttpClientFactory;
 
 final class UnblockClientHandlerTest extends TestCase
 {
-    use CreatedKeycloakHttpClient;
+    use KeycloakHttpClientFactory;
 
     public function test_unblock_client_handler(): void
     {

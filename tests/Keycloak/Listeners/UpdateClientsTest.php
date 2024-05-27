@@ -24,12 +24,12 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Tests\CreatesIntegration;
-use Tests\Keycloak\CreatedKeycloakHttpClient;
+use Tests\Keycloak\KeycloakHttpClientFactory;
 
 final class UpdateClientsTest extends TestCase
 {
     use CreatesIntegration;
-    use CreatedKeycloakHttpClient;
+    use KeycloakHttpClientFactory;
 
     private const SECRET = 'my-secret';
     private const SEARCH_SCOPE_ID = '06059529-74b5-422a-a499-ffcaf065d437';
