@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Keycloak\Service;
+namespace Tests\Keycloak\Client;
 
 use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Integration;
@@ -61,6 +61,7 @@ final class KeycloakApiClientTest extends TestCase
 
     public function test_can_create_client(): void
     {
+        $clientId = Uuid::uuid4();
         $mock = new MockHandler([
             new Response(200, [], json_encode(['access_token' => self::TOKEN], JSON_THROW_ON_ERROR)),
             new Response(201),
@@ -96,10 +97,9 @@ final class KeycloakApiClientTest extends TestCase
 
         $apiClient->createClient(
             $this->realm,
-            $this->integration
+            $this->integration,
+            $clientId,
         );
-
-
     }
 
     public function test_fails_to_create_client(): void
@@ -120,7 +120,8 @@ final class KeycloakApiClientTest extends TestCase
 
         $apiClient->createClient(
             $this->realm,
-            $this->integration
+            $this->integration,
+            Uuid::uuid4(),
         );
     }
 
@@ -152,13 +153,15 @@ final class KeycloakApiClientTest extends TestCase
 
     public function test_can_fetch_client(): void
     {
+        $clientId = Uuid::uuid4();
+
         $mock = new MockHandler([
             new Response(200, [], json_encode(['access_token' => self::TOKEN], JSON_THROW_ON_ERROR)),
             new Response(200, [], json_encode(
                 [
                     [
                         'id' => self::UUID,
-                        'clientId' => self::INTEGRATION_ID,
+                        'clientId' => $clientId,
                         'name' => 'test client',
                         'secret' => self::SECRET,
                         'enabled' => true,
@@ -174,10 +177,15 @@ final class KeycloakApiClientTest extends TestCase
             $this->logger
         );
 
-        $client = $apiClient->fetchClient($this->realm, $this->givenThereIsAnIntegration(Uuid::fromString(self::INTEGRATION_ID)));
+        $client = $apiClient->fetchClient(
+            $this->realm,
+            $this->givenThereIsAnIntegration(Uuid::fromString(self::INTEGRATION_ID)),
+            $clientId
+        );
 
         $this->assertEquals(self::UUID, $client->id->toString());
         $this->assertEquals(self::INTEGRATION_ID, $client->integrationId->toString());
+        $this->assertEquals($clientId, $client->clientId->toString());
         $this->assertEquals(self::SECRET, $client->clientSecret);
         $this->assertEquals($this->realm, $client->realm);
     }
@@ -198,7 +206,7 @@ final class KeycloakApiClientTest extends TestCase
             $this->logger
         );
 
-        $client = $apiClient->fetchClient($this->realm, $this->integration);
+        $client = $apiClient->fetchClient($this->realm, $this->integration, Uuid::uuid4());
         $this->assertEmpty($client);
     }
 
@@ -240,7 +248,7 @@ final class KeycloakApiClientTest extends TestCase
             $this->logger
         );
 
-        $client = new Client(Uuid::uuid4(), $this->integration->id, self::SECRET, $this->realm);
+        $client = new Client(Uuid::uuid4(), $this->integration->id, Uuid::uuid4(), self::SECRET, $this->realm);
 
         $this->expectException(KeyCloakApiFailed::class);
         $this->expectExceptionCode(KeyCloakApiFailed::FAILED_TO_UPDATE_CLIENT);
@@ -261,7 +269,7 @@ final class KeycloakApiClientTest extends TestCase
             $this->logger
         );
 
-        $client = new Client(Uuid::uuid4(), $this->integration->id, self::SECRET, $this->realm);
+        $client = new Client(Uuid::uuid4(), $this->integration->id, Uuid::uuid4(), self::SECRET, $this->realm);
 
         $this->expectException(KeyCloakApiFailed::class);
         $this->expectExceptionCode(KeyCloakApiFailed::FAILED_TO_RESET_SCOPE);

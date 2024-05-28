@@ -11,11 +11,11 @@ use Ramsey\Uuid\UuidInterface;
 
 interface ApiClient
 {
-    public function createClient(Realm $realm, Integration $integration): void;
+    public function createClient(Realm $realm, Integration $integration, UuidInterface $clientId): void;
 
     public function addScopeToClient(Realm $realm, UuidInterface $clientId, UuidInterface $scopeId): void;
 
-    public function fetchClient(Realm $realm, Integration $integration): Client;
+    public function fetchClient(Realm $realm, Integration $integration, UuidInterface $clientId): Client;
 
     public function fetchIsClientActive(Realm $realm, UuidInterface $integrationId): bool;
 

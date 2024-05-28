@@ -28,6 +28,7 @@ final class BlockClientHandlerTest extends TestCase
         $client = new Client(
             Uuid::uuid4(),
             Uuid::uuid4(),
+            Uuid::uuid4(),
             'client-secret-1',
             Realm::getMasterRealm()
         );
@@ -57,6 +58,7 @@ final class BlockClientHandlerTest extends TestCase
     public function test_handler_fails_when_client_does_not_exists(): void
     {
         $client = new Client(
+            Uuid::uuid4(),
             Uuid::uuid4(),
             Uuid::uuid4(),
             'client-secret-1',

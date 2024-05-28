@@ -31,16 +31,20 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
         $realm = RealmCollection::getRealms()->first();
 
         $integrationId = Uuid::uuid4();
+        $clientId = Uuid::uuid4();
+        $clientId2 = Uuid::uuid4();
 
         $client1 = new Client(
             Uuid::uuid4(),
             $integrationId,
+            $clientId,
             'client-secret-1',
             Realm::getMasterRealm()
         );
         $client2 = new Client(
             Uuid::uuid4(),
             $integrationId,
+            $clientId2,
             'client-secret-2',
             $realm
         );
@@ -49,11 +53,13 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
         $this->assertDatabaseHas('keycloak_clients', [
             'integration_id' => $integrationId->toString(),
             'client_secret' => 'client-secret-1',
+            'client_id' => $clientId->toString(),
             'realm' => Realm::getMasterRealm()->internalName,
         ]);
         $this->assertDatabaseHas('keycloak_clients', [
             'integration_id' => $integrationId->toString(),
             'client_secret' => 'client-secret-2',
+            'client_id' => $clientId2->toString(),
             'realm' => $realm->internalName,
         ]);
     }
@@ -64,16 +70,20 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
         $realm = RealmCollection::getRealms()->first();
 
         $integrationId = Uuid::uuid4();
+        $clientId = Uuid::uuid4();
+        $clientId2 = Uuid::uuid4();
 
         $client1 = new Client(
             Uuid::uuid4(),
             $integrationId,
+            $clientId,
             'client-secret-1',
             $realm
         );
         $client2 = new Client(
             Uuid::uuid4(),
             $integrationId,
+            $clientId2,
             'client-secret-1',
             Realm::getMasterRealm()
         );
@@ -107,6 +117,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
                 $clients[] = new Client(
                     Uuid::uuid4(),
                     $integrationId,
+                    Uuid::uuid4(),
                     'client-secret-' . $count,
                     $realm
                 );
@@ -139,6 +150,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
                 $clients[] = new Client(
                     Uuid::uuid4(),
                     $integrationId,
+                    Uuid::uuid4(),
                     'client-secret-' . $count,
                     $realm
                 );
@@ -177,6 +189,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
             $clients[] = new Client(
                 Uuid::uuid4(),
                 $integrationId,
+                Uuid::uuid4(),
                 'client-secret',
                 $realm
             );

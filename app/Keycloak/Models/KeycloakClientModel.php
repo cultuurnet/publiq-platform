@@ -32,6 +32,7 @@ final class KeycloakClientModel extends UuidModel
             // Trying to use magic getters for eg $this->id gives a 0 back
             Uuid::fromString($this->id),
             Uuid::fromString($this->integration_id),
+            Uuid::fromString($this->client_id),
             $this->client_secret,
             RealmCollection::fromInternalName($this->realm)
         );

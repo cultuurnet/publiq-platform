@@ -58,7 +58,7 @@ final class BlockClientsTest extends TestCase
 
         $clients = [];
         foreach ($this->config->realms as $realm) {
-            $client = new Client(Uuid::uuid4(), $this->integration->id, self::SECRET, $realm);
+            $client = new Client(Uuid::uuid4(), $this->integration->id, Uuid::uuid4(), self::SECRET, $realm);
 
             $this->apiClient->expects($this->once())
                 ->method('blockClient')

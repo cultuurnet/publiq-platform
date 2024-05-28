@@ -81,14 +81,14 @@ final class UpdateClientsTest extends TestCase
 
         $clients = [];
         foreach ($this->config->realms as $realm) {
-            $client = new Client(Uuid::uuid4(), $this->integration->id, self::SECRET, $realm);
+            $client = new Client(Uuid::uuid4(), $this->integration->id, Uuid::uuid4(), self::SECRET, $realm);
 
             $this->apiClient->expects($this->once())
                 ->method('updateClient')
                 ->with(
                     $client,
                     array_merge(
-                        IntegrationToKeycloakClientConverter::convert($client->id, $this->integration),
+                        IntegrationToKeycloakClientConverter::convert($client->id, $this->integration, $client->clientId),
                         IntegrationUrlConverter::convert($this->integration, $client)
                     )
                 );
@@ -105,6 +105,7 @@ final class UpdateClientsTest extends TestCase
                 ->with('Keycloak client updated', [
                     'integration_id' => $this->integration->id->toString(),
                     'realm' => $client->realm->internalName,
+                    'client_id' => $client->clientId->toString(),
                 ]);
 
             $clients[] = $client;
