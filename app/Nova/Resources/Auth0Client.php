@@ -10,7 +10,7 @@ use App\Auth0\Models\Auth0ClientModel;
 use App\Nova\ActionGuards\ActionGuard;
 use App\Nova\ActionGuards\Auth0\ActivateAuth0ClientGuard;
 use App\Nova\ActionGuards\Auth0\BlockAuth0ClientGuard;
-use App\Nova\Actions\Auth0\ActivateAuth0Client;
+use App\Nova\Actions\Auth0\UnblockAuth0Client;
 use App\Nova\Actions\Auth0\BlockAuth0Client;
 use App\Nova\Resource;
 use Illuminate\Database\Eloquent\Builder;
@@ -113,9 +113,9 @@ final class Auth0Client extends Resource
     public function actions(NovaRequest $request): array
     {
         return [
-            App::make(ActivateAuth0Client::class)
+            App::make(UnblockAuth0Client::class)
                 ->exceptOnIndex()
-                ->confirmText('Are you sure you want to activate this client?')
+                ->confirmText('Are you sure you want to unblock this client?')
                 ->confirmButtonText('Activate')
                 ->cancelButtonText('Cancel')
                 ->canSee(fn (Request $request) => $this->canActivate($request, $this->resource))

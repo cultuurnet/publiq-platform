@@ -15,12 +15,12 @@ use Laravel\Nova\Actions\ActionModelCollection;
 use Laravel\Nova\Fields\ActionFields;
 use Ramsey\Uuid\Uuid;
 
-final class ActivateAuth0Client extends Action
+final class UnblockAuth0Client extends Action
 {
     use InteractsWithQueue;
     use Queueable;
 
-    public $name = 'Activate Auth0 client';
+    public $name = 'Unblock Auth0 client';
 
     public function __construct(private readonly Dispatcher $dispatcher, private readonly ActivateClientHandler $listener)
     {
