@@ -8,7 +8,7 @@ use App\Auth0\Auth0Client;
 use App\Auth0\Auth0Tenant;
 use App\Auth0\Events\ClientActivated;
 use App\Auth0\Jobs\UnblockClient;
-use App\Auth0\Jobs\ActivateClientHandler;
+use App\Auth0\Jobs\UnblockClientHandler;
 use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Json;
 use GuzzleHttp\Psr7\Response;
@@ -23,7 +23,7 @@ use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
 use Tests\Auth0\CreatesMockAuth0ClusterSDK;
 
-final class ActivateClientHandlerTest extends TestCase
+final class UnblockClientHandlerTest extends TestCase
 {
     use CreatesMockAuth0ClusterSDK;
 
@@ -31,7 +31,7 @@ final class ActivateClientHandlerTest extends TestCase
 
     private Auth0ClientRepository&MockObject $clientRepository;
 
-    private ActivateClientHandler $activateClient;
+    private UnblockClientHandler $unblockClientHandler;
 
     protected function setUp(): void
     {
@@ -41,7 +41,7 @@ final class ActivateClientHandlerTest extends TestCase
 
         $this->clientRepository = $this->createMock(Auth0ClientRepository::class);
 
-        $this->activateClient = new ActivateClientHandler(
+        $this->unblockClientHandler = new UnblockClientHandler(
             $this->createMockAuth0ClusterSDK($this->httpClient),
             $this->clientRepository,
             new NullLogger()
@@ -78,7 +78,7 @@ final class ActivateClientHandlerTest extends TestCase
                 }
             );
 
-        $this->activateClient->handle(new UnblockClient($id));
+        $this->unblockClientHandler->handle(new UnblockClient($id));
 
         Event::assertDispatched(ClientActivated::class);
 
@@ -96,6 +96,6 @@ final class ActivateClientHandlerTest extends TestCase
         $this->httpClient->expects($this->exactly(0))
             ->method('sendRequest');
 
-        $this->activateClient->handle(new UnblockClient($id));
+        $this->unblockClientHandler->handle(new UnblockClient($id));
     }
 }
