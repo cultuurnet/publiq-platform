@@ -7,7 +7,7 @@ namespace Tests\Auth0\Jobs;
 use App\Auth0\Auth0Client;
 use App\Auth0\Auth0Tenant;
 use App\Auth0\Events\ClientActivated;
-use App\Auth0\Jobs\ActivateClient;
+use App\Auth0\Jobs\UnblockClient;
 use App\Auth0\Jobs\ActivateClientHandler;
 use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Json;
@@ -78,7 +78,7 @@ final class ActivateClientHandlerTest extends TestCase
                 }
             );
 
-        $this->activateClient->handle(new ActivateClient($id));
+        $this->activateClient->handle(new UnblockClient($id));
 
         Event::assertDispatched(ClientActivated::class);
 
@@ -96,6 +96,6 @@ final class ActivateClientHandlerTest extends TestCase
         $this->httpClient->expects($this->exactly(0))
             ->method('sendRequest');
 
-        $this->activateClient->handle(new ActivateClient($id));
+        $this->activateClient->handle(new UnblockClient($id));
     }
 }

@@ -21,7 +21,7 @@ final class ActivateClientHandler implements ShouldQueue
     }
 
     public function handle(
-        ActivateClient $event
+        UnblockClient $event
     ): void {
         try {
             $this->clusterSDK->activateClients($this->auth0ClientRepository->getById($event->id));

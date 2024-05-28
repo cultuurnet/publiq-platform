@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Auth0;
 
-use App\Auth0\Jobs\ActivateClient;
+use App\Auth0\Jobs\UnblockClient;
 use App\Auth0\Jobs\ActivateClientHandler;
 use App\Auth0\Jobs\BlockClient;
 use App\Auth0\Jobs\BlockClientHandler;
@@ -103,7 +103,7 @@ final class Auth0ServiceProvider extends ServiceProvider
             Event::listen(IntegrationUrlUpdated::class, [UpdateClients::class, 'handle']);
             Event::listen(IntegrationUrlDeleted::class, [UpdateClients::class, 'handle']);
 
-            Event::listen(ActivateClient::class, [ActivateClientHandler::class, 'handle']);
+            Event::listen(UnblockClient::class, [ActivateClientHandler::class, 'handle']);
             Event::listen(BlockClient::class, [BlockClientHandler::class, 'handle']);
         }
     }
