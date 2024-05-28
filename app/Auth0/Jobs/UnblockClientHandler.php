@@ -24,7 +24,7 @@ final class UnblockClientHandler implements ShouldQueue
         UnblockClient $event
     ): void {
         try {
-            $this->clusterSDK->activateClients($this->auth0ClientRepository->getById($event->id));
+            $this->clusterSDK->unblockClients($this->auth0ClientRepository->getById($event->id));
         } catch (ModelNotFoundException $e) {
             $this->logger->error(
                 'Failed to unblock Auth0 client: ' . $e->getMessage(),
