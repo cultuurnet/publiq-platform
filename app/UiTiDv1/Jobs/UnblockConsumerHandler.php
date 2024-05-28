@@ -32,7 +32,7 @@ final class UnblockConsumerHandler implements ShouldQueue
         try {
             $uiTiDv1Consumer = $this->consumerRepository->getById($event->id);
             $integration = $this->integrationRepository->getById($uiTiDv1Consumer->integrationId);
-            $this->clusterSDK->activateConsumers($integration, $uiTiDv1Consumer);
+            $this->clusterSDK->unblockConsumers($integration, $uiTiDv1Consumer);
         } catch (ModelNotFoundException|UiTiDv1SDKException $e) {
             $this->logger->error(
                 'Failed to unblock UiTiD v1 client: ' . $e->getMessage(),
