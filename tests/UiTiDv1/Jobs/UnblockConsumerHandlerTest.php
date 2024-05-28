@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\UiTiDv1\Jobs;
 
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\UiTiDv1\Events\ConsumerActivated;
+use App\UiTiDv1\Events\ConsumerUnblocked;
 use App\UiTiDv1\Jobs\UnblockConsumer;
 use App\UiTiDv1\Jobs\UnblockConsumerHandler;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
@@ -82,7 +82,7 @@ final class UnblockConsumerHandlerTest extends TestCase
 
         $this->unblockConsumerHandler->handle(new UnblockConsumer($id));
 
-        Event::assertDispatched(ConsumerActivated::class);
+        Event::assertDispatched(ConsumerUnblocked::class);
     }
 
     public function test_it_does_not_try_to_block_an_invalid_client(): void
@@ -99,7 +99,7 @@ final class UnblockConsumerHandlerTest extends TestCase
 
         $this->unblockConsumerHandler->handle(new UnblockConsumer($id));
 
-        Event::assertNotDispatched(ConsumerActivated::class);
+        Event::assertNotDispatched(ConsumerUnblocked::class);
     }
 
     public function test_it_stops_on_invalid_request(): void
@@ -124,6 +124,6 @@ final class UnblockConsumerHandlerTest extends TestCase
 
         $this->unblockConsumerHandler->handle(new UnblockConsumer($id));
 
-        Event::assertNotDispatched(ConsumerActivated::class);
+        Event::assertNotDispatched(ConsumerUnblocked::class);
     }
 }

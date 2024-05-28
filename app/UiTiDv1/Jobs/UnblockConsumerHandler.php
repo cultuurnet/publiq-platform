@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\UiTiDv1\Jobs;
 
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\UiTiDv1\Events\ConsumerActivated;
+use App\UiTiDv1\Events\ConsumerUnblocked;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use App\UiTiDv1\UiTiDv1ClusterSDK;
 use App\UiTiDv1\UiTiDv1SDKException;
@@ -52,6 +52,6 @@ final class UnblockConsumerHandler implements ShouldQueue
             ]
         );
 
-        Event::dispatch(new ConsumerActivated($event->id));
+        Event::dispatch(new ConsumerUnblocked($event->id));
     }
 }
