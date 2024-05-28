@@ -34,7 +34,7 @@ final class KeycloakClientModel extends UuidModel
             Uuid::fromString($this->integration_id),
             Uuid::fromString($this->client_id),
             $this->client_secret,
-            RealmCollection::fromInternalName($this->realm)
+            RealmCollection::fromPublicName($this->realm)
         );
     }
 

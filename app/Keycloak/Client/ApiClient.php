@@ -17,7 +17,7 @@ interface ApiClient
 
     public function fetchClient(Realm $realm, Integration $integration, UuidInterface $clientId): Client;
 
-    public function fetchIsClientActive(Realm $realm, UuidInterface $integrationId): bool;
+    public function fetchIsClientActive(Client $client): bool;
 
     public function unblockClient(Client $client): void;
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Nova\Resources;
 
 use App\Keycloak\CachedKeycloakClientStatus;
+use App\Keycloak\Config;
 use App\Keycloak\Models\KeycloakClientModel;
 use App\Keycloak\RealmCollection;
 use App\Nova\ActionGuards\ActionGuard;
@@ -73,7 +74,7 @@ final class KeycloakClient extends Resource
                 return '<span style="color: green;">Active</span>';
             })->asHtml(),
             Text::make('client_id', function (KeycloakClientModel $model) {
-                return $model->toDomain()->integrationId->toString();
+                return $model->toDomain()->clientId->toString();
             })
                 ->readonly(),
             Text::make('client_secret')

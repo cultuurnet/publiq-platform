@@ -19,19 +19,15 @@ final class RealmCollection extends Collection
         return new self([new Realm('uitidpoc', 'Acceptance', Environment::Acceptance)]);
     }
 
-    public static function fromInternalName(string $internalName): Realm
+    public static function fromPublicName(string $publicName): Realm
     {
         foreach (self::getRealms() as $realm) {
-            if ($realm->internalName === $internalName) {
+            if ($realm->publicName === $publicName) {
                 return $realm;
             }
         }
 
-        if ($internalName === Realm::getMasterRealm()->internalName) {
-            return Realm::getMasterRealm();
-        }
-
-        throw new InvalidArgumentException('Invalid realm: ' . $internalName);
+        throw new InvalidArgumentException('Invalid realm: ' . $publicName);
     }
 
     /**
@@ -41,7 +37,7 @@ final class RealmCollection extends Collection
     {
         $output = [];
         foreach (self::getRealms() as $realm) {
-            $output[$realm->internalName] = $realm->publicName;
+            $output[$realm->publicName] = $realm->publicName;
         }
         return $output;
     }

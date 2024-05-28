@@ -29,7 +29,7 @@ final class EloquentKeycloakClientRepository implements KeycloakClientRepository
                             'integration_id' => $client->integrationId->toString(),
                             'client_id' => $client->clientId->toString(),
                             'client_secret' => $client->clientSecret,
-                            'realm' => $client->realm->internalName,
+                            'realm' => $client->realm->publicName,
                         ]
                     );
             }
