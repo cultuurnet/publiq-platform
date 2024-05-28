@@ -8,7 +8,7 @@ use App\Auth0\Auth0Tenant;
 use App\Auth0\CachedAuth0ClientGrants;
 use App\Auth0\Models\Auth0ClientModel;
 use App\Nova\ActionGuards\ActionGuard;
-use App\Nova\ActionGuards\Auth0\ActivateAuth0ClientGuard;
+use App\Nova\ActionGuards\Auth0\UnblockAuth0ClientGuard;
 use App\Nova\ActionGuards\Auth0\BlockAuth0ClientGuard;
 use App\Nova\Actions\Auth0\UnblockAuth0Client;
 use App\Nova\Actions\Auth0\BlockAuth0Client;
@@ -118,8 +118,8 @@ final class Auth0Client extends Resource
                 ->confirmText('Are you sure you want to unblock this client?')
                 ->confirmButtonText('Activate')
                 ->cancelButtonText('Cancel')
-                ->canSee(fn (Request $request) => $this->canActivate($request, $this->resource))
-                ->canRun(fn (Request $request, Auth0ClientModel $model) => $this->canActivate($request, $model)),
+                ->canSee(fn (Request $request) => $this->canUnblock($request, $this->resource))
+                ->canRun(fn (Request $request, Auth0ClientModel $model) => $this->canUnblock($request, $model)),
 
             App::make(BlockAuth0Client::class)
                 ->exceptOnIndex()
@@ -131,9 +131,9 @@ final class Auth0Client extends Resource
         ];
     }
 
-    private function canActivate(Request $request, ?Auth0ClientModel $model): bool
+    private function canUnblock(Request $request, ?Auth0ClientModel $model): bool
     {
-        return $this->can($request, $model, App::make(ActivateAuth0ClientGuard::class));
+        return $this->can($request, $model, App::make(UnblockAuth0ClientGuard::class));
     }
 
     private function canBlock(Request $request, ?Auth0ClientModel $model): bool
