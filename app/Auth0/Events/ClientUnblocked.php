@@ -7,7 +7,7 @@ namespace App\Auth0\Events;
 use Illuminate\Foundation\Events\Dispatchable;
 use Ramsey\Uuid\UuidInterface;
 
-final class ClientActivated
+final class ClientUnblocked
 {
     use Dispatchable;
 

@@ -6,7 +6,7 @@ namespace Tests\Auth0\Jobs;
 
 use App\Auth0\Auth0Client;
 use App\Auth0\Auth0Tenant;
-use App\Auth0\Events\ClientActivated;
+use App\Auth0\Events\ClientUnblocked;
 use App\Auth0\Jobs\UnblockClient;
 use App\Auth0\Jobs\UnblockClientHandler;
 use App\Auth0\Repositories\Auth0ClientRepository;
@@ -80,7 +80,7 @@ final class UnblockClientHandlerTest extends TestCase
 
         $this->unblockClientHandler->handle(new UnblockClient($id));
 
-        Event::assertDispatched(ClientActivated::class);
+        Event::assertDispatched(ClientUnblocked::class);
 
     }
 

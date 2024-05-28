@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Auth0\Jobs;
 
 use App\Auth0\Auth0ClusterSDK;
-use App\Auth0\Events\ClientActivated;
+use App\Auth0\Events\ClientUnblocked;
 use App\Auth0\Repositories\Auth0ClientRepository;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -43,6 +43,6 @@ final class UnblockClientHandler implements ShouldQueue
             ]
         );
 
-        ClientActivated::dispatch($event->id);
+        ClientUnblocked::dispatch($event->id);
     }
 }
