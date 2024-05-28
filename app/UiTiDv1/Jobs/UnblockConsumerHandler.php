@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Event;
 use Psr\Log\LoggerInterface;
 
-final class ActivateConsumerHandler implements ShouldQueue
+final class UnblockConsumerHandler implements ShouldQueue
 {
     use Queueable;
 
@@ -35,7 +35,7 @@ final class ActivateConsumerHandler implements ShouldQueue
             $this->clusterSDK->activateConsumers($integration, $uiTiDv1Consumer);
         } catch (ModelNotFoundException|UiTiDv1SDKException $e) {
             $this->logger->error(
-                'Failed to activate UiTiD v1 client: ' . $e->getMessage(),
+                'Failed to unblock UiTiD v1 client: ' . $e->getMessage(),
                 [
                     'domain' => 'uitid',
                     'id' => $event->id,
@@ -45,7 +45,7 @@ final class ActivateConsumerHandler implements ShouldQueue
         }
 
         $this->logger->info(
-            'UiTiD v1 consumer activated',
+            'UiTiD v1 consumer unblocked',
             [
                 'domain' => 'uitid',
                 'id' => $event->id,

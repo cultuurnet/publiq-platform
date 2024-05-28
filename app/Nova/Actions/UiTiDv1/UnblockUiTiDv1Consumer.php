@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Nova\Actions\UiTiDv1;
 
 use App\UiTiDv1\Jobs\UnblockConsumer;
-use App\UiTiDv1\Jobs\ActivateConsumerHandler;
+use App\UiTiDv1\Jobs\UnblockConsumerHandler;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Bus\Dispatcher;
@@ -22,7 +22,7 @@ final class UnblockUiTiDv1Consumer extends Action
 
     public $name = 'Unblock UiTiD v1 consumer';
 
-    public function __construct(private readonly Dispatcher $dispatcher, private readonly ActivateConsumerHandler $listener)
+    public function __construct(private readonly Dispatcher $dispatcher, private readonly UnblockConsumerHandler $listener)
     {
     }
 

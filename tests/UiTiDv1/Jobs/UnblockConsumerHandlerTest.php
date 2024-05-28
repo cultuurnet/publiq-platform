@@ -7,7 +7,7 @@ namespace Tests\UiTiDv1\Jobs;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\UiTiDv1\Events\ConsumerActivated;
 use App\UiTiDv1\Jobs\UnblockConsumer;
-use App\UiTiDv1\Jobs\ActivateConsumerHandler;
+use App\UiTiDv1\Jobs\UnblockConsumerHandler;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
@@ -22,7 +22,7 @@ use Tests\TestCase;
 use Tests\UiTiDv1\CreatesMockUiTiDv1ClusterSDK;
 use Tests\UiTiDv1\CreatesMockUiTiDv1Consumer;
 
-final class ActivateConsumerHandlerTest extends TestCase
+final class UnblockConsumerHandlerTest extends TestCase
 {
     use CreatesMockUiTiDv1ClusterSDK;
     use CreatesMockUiTiDv1Consumer;
@@ -31,7 +31,7 @@ final class ActivateConsumerHandlerTest extends TestCase
     private ClientInterface&MockObject $httpClient;
     private UiTiDv1ConsumerRepository&MockObject $clientRepository;
     private IntegrationRepository&MockObject $integrationRepository;
-    private ActivateConsumerHandler $activateClient;
+    private UnblockConsumerHandler $unblockConsumerHandler;
 
     protected function setUp(): void
     {
@@ -42,7 +42,7 @@ final class ActivateConsumerHandlerTest extends TestCase
         $this->clientRepository = $this->createMock(UiTiDv1ConsumerRepository::class);
         $this->integrationRepository = $this->createMock(IntegrationRepository::class);
 
-        $this->activateClient = new ActivateConsumerHandler(
+        $this->unblockConsumerHandler = new UnblockConsumerHandler(
             $this->createMockUiTiDv1ClusterSDK($this->httpClient),
             $this->clientRepository,
             $this->integrationRepository,
@@ -80,7 +80,7 @@ final class ActivateConsumerHandlerTest extends TestCase
                 }
             );
 
-        $this->activateClient->handle(new UnblockConsumer($id));
+        $this->unblockConsumerHandler->handle(new UnblockConsumer($id));
 
         Event::assertDispatched(ConsumerActivated::class);
     }
@@ -97,7 +97,7 @@ final class ActivateConsumerHandlerTest extends TestCase
         $this->httpClient->expects($this->exactly(0))
             ->method('request');
 
-        $this->activateClient->handle(new UnblockConsumer($id));
+        $this->unblockConsumerHandler->handle(new UnblockConsumer($id));
 
         Event::assertNotDispatched(ConsumerActivated::class);
     }
@@ -122,7 +122,7 @@ final class ActivateConsumerHandlerTest extends TestCase
                 new Response(400)
             );
 
-        $this->activateClient->handle(new UnblockConsumer($id));
+        $this->unblockConsumerHandler->handle(new UnblockConsumer($id));
 
         Event::assertNotDispatched(ConsumerActivated::class);
     }
