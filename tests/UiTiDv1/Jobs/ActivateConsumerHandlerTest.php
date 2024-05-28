@@ -6,7 +6,7 @@ namespace Tests\UiTiDv1\Jobs;
 
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\UiTiDv1\Events\ConsumerActivated;
-use App\UiTiDv1\Jobs\ActivateConsumer;
+use App\UiTiDv1\Jobs\UnblockConsumer;
 use App\UiTiDv1\Jobs\ActivateConsumerHandler;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use GuzzleHttp\ClientInterface;
@@ -80,7 +80,7 @@ final class ActivateConsumerHandlerTest extends TestCase
                 }
             );
 
-        $this->activateClient->handle(new ActivateConsumer($id));
+        $this->activateClient->handle(new UnblockConsumer($id));
 
         Event::assertDispatched(ConsumerActivated::class);
     }
@@ -97,7 +97,7 @@ final class ActivateConsumerHandlerTest extends TestCase
         $this->httpClient->expects($this->exactly(0))
             ->method('request');
 
-        $this->activateClient->handle(new ActivateConsumer($id));
+        $this->activateClient->handle(new UnblockConsumer($id));
 
         Event::assertNotDispatched(ConsumerActivated::class);
     }
@@ -122,7 +122,7 @@ final class ActivateConsumerHandlerTest extends TestCase
                 new Response(400)
             );
 
-        $this->activateClient->handle(new ActivateConsumer($id));
+        $this->activateClient->handle(new UnblockConsumer($id));
 
         Event::assertNotDispatched(ConsumerActivated::class);
     }

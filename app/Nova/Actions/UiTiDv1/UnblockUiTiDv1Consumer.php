@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Nova\Actions\UiTiDv1;
 
-use App\UiTiDv1\Jobs\ActivateConsumer;
+use App\UiTiDv1\Jobs\UnblockConsumer;
 use App\UiTiDv1\Jobs\ActivateConsumerHandler;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use Illuminate\Bus\Queueable;
@@ -33,7 +33,7 @@ final class UnblockUiTiDv1Consumer extends Action
                 continue;
             }
 
-            $this->dispatcher->dispatchSync(new ActivateConsumer(Uuid::fromString($uiTiDv1ConsumerModel->id)), $this->listener);
+            $this->dispatcher->dispatchSync(new UnblockConsumer(Uuid::fromString($uiTiDv1ConsumerModel->id)), $this->listener);
         }
     }
 }

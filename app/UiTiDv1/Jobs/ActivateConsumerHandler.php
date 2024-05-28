@@ -27,7 +27,7 @@ final class ActivateConsumerHandler implements ShouldQueue
     ) {
     }
 
-    public function handle(ActivateConsumer $event): void
+    public function handle(UnblockConsumer $event): void
     {
         try {
             $uiTiDv1Consumer = $this->consumerRepository->getById($event->id);

@@ -7,7 +7,7 @@ namespace App\UiTiDv1;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationUpdated;
-use App\UiTiDv1\Jobs\ActivateConsumer;
+use App\UiTiDv1\Jobs\UnblockConsumer;
 use App\UiTiDv1\Jobs\ActivateConsumerHandler;
 use App\UiTiDv1\Jobs\BlockConsumer;
 use App\UiTiDv1\Jobs\BlockConsumerHandler;
@@ -77,7 +77,7 @@ final class UiTiDv1ServiceProvider extends ServiceProvider
             Event::listen(IntegrationUpdated::class, [UpdateConsumers::class, 'handle']);
             Event::listen(IntegrationBlocked::class, [BlockConsumers::class, 'handle']);
 
-            Event::listen(ActivateConsumer::class, [ActivateConsumerHandler::class, 'handle']);
+            Event::listen(UnblockConsumer::class, [ActivateConsumerHandler::class, 'handle']);
             Event::listen(BlockConsumer::class, [BlockConsumerHandler::class, 'handle']);
         }
     }
