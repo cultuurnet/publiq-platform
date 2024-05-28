@@ -7,7 +7,7 @@ namespace App\Nova\Resources;
 use App\Nova\ActionGuards\ActionGuard;
 use App\Nova\ActionGuards\UiTiDv1\UnblockUiTiDv1ConsumerGuard;
 use App\Nova\ActionGuards\UiTiDv1\BlockUiTiDv1ConsumerGuard;
-use App\Nova\Actions\UiTiDv1\ActivateUiTiDv1Consumer;
+use App\Nova\Actions\UiTiDv1\UnblockUiTiDv1Consumer;
 use App\Nova\Actions\UiTiDv1\BlockUiTiDv1Consumer;
 use App\Nova\Resource;
 use App\UiTiDv1\CachedUiTiDv1Status;
@@ -114,7 +114,7 @@ final class UiTiDv1 extends Resource
     public function actions(NovaRequest $request): array
     {
         return [
-            App::make(ActivateUiTiDv1Consumer::class)
+            App::make(UnblockUiTiDv1Consumer::class)
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to activate this consumer?')
                 ->confirmButtonText('Activate')

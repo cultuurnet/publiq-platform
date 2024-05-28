@@ -15,12 +15,12 @@ use Laravel\Nova\Actions\ActionModelCollection;
 use Laravel\Nova\Fields\ActionFields;
 use Ramsey\Uuid\Uuid;
 
-final class ActivateUiTiDv1Consumer extends Action
+final class UnblockUiTiDv1Consumer extends Action
 {
     use InteractsWithQueue;
     use Queueable;
 
-    public $name = 'Activate UiTiD v1 consumer';
+    public $name = 'Unblock UiTiD v1 consumer';
 
     public function __construct(private readonly Dispatcher $dispatcher, private readonly ActivateConsumerHandler $listener)
     {
