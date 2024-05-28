@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Nova\Resources;
 
 use App\Nova\ActionGuards\ActionGuard;
-use App\Nova\ActionGuards\UiTiDv1\ActivateUiTiDv1ConsumerGuard;
+use App\Nova\ActionGuards\UiTiDv1\UnblockUiTiDv1ConsumerGuard;
 use App\Nova\ActionGuards\UiTiDv1\BlockUiTiDv1ConsumerGuard;
 use App\Nova\Actions\UiTiDv1\ActivateUiTiDv1Consumer;
 use App\Nova\Actions\UiTiDv1\BlockUiTiDv1Consumer;
@@ -134,7 +134,7 @@ final class UiTiDv1 extends Resource
 
     private function canActivate(Request $request, ?UiTiDv1ConsumerModel $model): bool
     {
-        return $this->can($request, $model, App::make(ActivateUiTiDv1ConsumerGuard::class));
+        return $this->can($request, $model, App::make(UnblockUiTiDv1ConsumerGuard::class));
     }
 
     private function canBlock(Request $request, ?UiTiDv1ConsumerModel $model): bool
