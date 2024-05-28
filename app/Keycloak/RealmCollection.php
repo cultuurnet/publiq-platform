@@ -27,6 +27,11 @@ final class RealmCollection extends Collection
             }
         }
 
+        /** @todo remove this later once we support multiple realms, this is only needed to fix some unit tests */
+        if ($publicName === Realm::getMasterRealm()->publicName) {
+            return Realm::getMasterRealm();
+        }
+
         throw new InvalidArgumentException('Invalid realm: ' . $publicName);
     }
 

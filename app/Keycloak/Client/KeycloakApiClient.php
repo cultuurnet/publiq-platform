@@ -131,8 +131,6 @@ final readonly class KeycloakApiClient implements ApiClient
             $data = Json::decodeAssociatively($body);
             return Client::createFromJson($realm, $integration->id, $clientId, $data[0]);
         } catch (Throwable $e) {
-            Log::error($e->getLine() . '/' . $e->getMessage());
-
             throw KeyCloakApiFailed::failedToFetchClient($realm, $e->getMessage());
         }
     }
