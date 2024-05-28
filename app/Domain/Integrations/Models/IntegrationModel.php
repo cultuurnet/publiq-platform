@@ -39,6 +39,7 @@ use Ramsey\Uuid\UuidInterface;
  * @property CouponModel|null $coupon
  * @property SubscriptionModel|null $subscription
  * @property KeyVisibilityUpgradeModel|null $keyVisibilityUpgrade
+ * @property string $type
  * @property string $website
  */
 final class IntegrationModel extends UuidModel
