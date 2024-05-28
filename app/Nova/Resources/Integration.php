@@ -132,6 +132,7 @@ final class Integration extends Resource
 
             URL::make('Website')
                 ->displayUsing(fn () => $this->website)
+                ->required(fn () => $this->type === IntegrationType::UiTPAS->value)
                 ->showOnIndex(false)
                 ->rules('nullable', 'url:http,https', 'max:255'),
 
