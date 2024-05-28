@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Keycloak\Repositories;
 
+use App\Domain\Integrations\Environment;
 use App\Keycloak\Client;
 use App\Keycloak\Realm;
 use App\Keycloak\RealmCollection;
@@ -50,17 +51,19 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
         );
         $this->repository->create($client1, $client2);
 
+        $realm = new Realm('uitidpoc', 'Acceptance', Environment::Acceptance);
+
         $this->assertDatabaseHas('keycloak_clients', [
             'integration_id' => $integrationId->toString(),
             'client_secret' => 'client-secret-1',
             'client_id' => $clientId->toString(),
-            'realm' => Realm::getMasterRealm()->internalName,
+            'realm' => Realm::getMasterRealm()->publicName,
         ]);
         $this->assertDatabaseHas('keycloak_clients', [
             'integration_id' => $integrationId->toString(),
             'client_secret' => 'client-secret-2',
             'client_id' => $clientId2->toString(),
-            'realm' => $realm->internalName,
+            'realm' => $realm->publicName,
         ]);
     }
 
@@ -106,7 +109,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
 
         /** @var Realm $realm */
         $realm = RealmCollection::getRealms()->first();
-        $realms = [Realm::getMasterRealm(), $realm];
+        $realms = [new Realm('uitidpoc', 'Acceptance', Environment::Acceptance), $realm];
 
         $clients = [];
 

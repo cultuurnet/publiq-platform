@@ -35,7 +35,7 @@ final class CachedKeycloakClientStatusTest extends TestCase
     {
         $this->apiClient->expects($this->once())
             ->method('fetchIsClientActive')
-            ->with($this->client->realm, $this->client->integrationId)
+            ->with($this->client)
             ->willReturn(true);
 
         $receivedGrants = $this->cachedKeycloakClientStatus->isClientBlocked($this->client);
