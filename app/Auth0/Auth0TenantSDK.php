@@ -125,7 +125,7 @@ final class Auth0TenantSDK
         );
     }
 
-    public function activateClient(Auth0Client $auth0Client): void
+    public function unblockClient(Auth0Client $auth0Client): void
     {
         $this->callApiWithTokenRefresh(
             fn () => $this->management->clients()->update(

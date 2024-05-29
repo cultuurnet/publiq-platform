@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Auth0\Events;
+namespace App\Auth0\Jobs;
 
 use Illuminate\Foundation\Events\Dispatchable;
 use Ramsey\Uuid\UuidInterface;
 
-final class ClientActivated
+final class UnblockClient
 {
     use Dispatchable;
 
