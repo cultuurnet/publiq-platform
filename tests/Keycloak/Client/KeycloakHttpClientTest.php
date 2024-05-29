@@ -36,7 +36,7 @@ final class KeycloakHttpClientTest extends TestCase
 
         $this->tokenStrategy->expects($this->once())
             ->method('fetchToken')
-            ->with($keycloakClient, $this->givenAcceptanceRealm())
+            ->with($keycloakClient, $this->givenAcceptanceRealm()->getMasterRealm())
             ->willReturn(self::MY_SECRET_TOKEN);
 
         $request = new Request('GET', '/endpoint');
@@ -46,12 +46,12 @@ final class KeycloakHttpClientTest extends TestCase
             ->expects($this->once())
             ->method('send')
             ->with($this->callback(function (RequestInterface $request) {
-                return $request->getUri()->__toString() === $this->givenTestRealm()->baseUrl . '/endpoint'
+                return $request->getUri()->__toString() === $this->givenAcceptanceRealm()->getMasterRealm()->baseUrl . '/endpoint'
                     && $request->getHeader('Authorization')[0] === 'Bearer ' . self::MY_SECRET_TOKEN;
             }))
             ->willReturn($response);
 
-        $result = $keycloakClient->sendWithBearer($request, $this->givenTestRealm());
+        $result = $keycloakClient->sendWithBearer($request, $this->givenAcceptanceRealm());
 
         $this->assertEquals('Response body', $result->getBody()->getContents());
     }
@@ -65,13 +65,13 @@ final class KeycloakHttpClientTest extends TestCase
             ->expects($this->once())
             ->method('send')
             ->with($this->callback(function (RequestInterface $request) {
-                return $request->getUri()->__toString() === $this->givenTestRealm()->baseUrl . '/endpoint';
+                return $request->getUri()->__toString() === $this->givenAcceptanceRealm()->baseUrl . '/endpoint';
             }))
             ->willReturn($response);
 
         $keycloakClient = new KeycloakHttpClient($this->clientMock, $this->tokenStrategy);
 
-        $result = $keycloakClient->sendWithoutBearer($request, $this->givenTestRealm());
+        $result = $keycloakClient->sendWithoutBearer($request, $this->givenAcceptanceRealm());
 
         $this->assertEquals('Response body', $result->getBody()->getContents());
     }
