@@ -9,7 +9,7 @@ use App\UiTiDv1\UiTiDv1ClusterSDK;
 use App\UiTiDv1\UiTiDv1Consumer;
 use App\UiTiDv1\UiTiDv1ConsumerStatus;
 
-final readonly class ActivateUiTiDv1ConsumerGuard implements ActionGuard
+final readonly class UnblockUiTiDv1ConsumerGuard implements ActionGuard
 {
     public function __construct(
         private UiTiDv1ClusterSDK $sdk,

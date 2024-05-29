@@ -7,7 +7,7 @@ namespace App\UiTiDv1\Jobs;
 use Illuminate\Foundation\Events\Dispatchable;
 use Ramsey\Uuid\UuidInterface;
 
-final readonly class ActivateConsumer
+final readonly class UnblockConsumer
 {
     use Dispatchable;
 

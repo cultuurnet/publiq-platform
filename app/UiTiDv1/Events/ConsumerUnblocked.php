@@ -7,7 +7,7 @@ namespace App\UiTiDv1\Events;
 use Illuminate\Foundation\Events\Dispatchable;
 use Ramsey\Uuid\UuidInterface;
 
-final readonly class ConsumerActivated
+final readonly class ConsumerUnblocked
 {
     use Dispatchable;
 
