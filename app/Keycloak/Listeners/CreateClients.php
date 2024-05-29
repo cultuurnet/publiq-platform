@@ -18,6 +18,7 @@ use App\Keycloak\ScopeConfig;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 use Throwable;
 
 final class CreateClients implements ShouldQueue
@@ -78,8 +79,10 @@ final class CreateClients implements ShouldQueue
 
         foreach ($realms as $realm) {
             try {
-                $this->client->createClient($realm, $integration);
-                $client = $this->client->fetchClient($realm, $integration);
+                $clientId = Uuid::uuid4();
+
+                $this->client->createClient($realm, $integration, $clientId);
+                $client = $this->client->fetchClient($realm, $integration, $clientId);
                 $this->client->addScopeToClient($realm, $client->id, $scopeId);
 
                 $clientCollection->add($client);

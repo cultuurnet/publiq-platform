@@ -13,13 +13,18 @@ final readonly class Client
     public function __construct(
         public UuidInterface $id,
         public UuidInterface $integrationId,
+        public UuidInterface $clientId,
         public string $clientSecret,
         public Realm $realm,
     ) {
     }
 
-    public static function createFromJson(Realm $realm, UuidInterface $integrationId, array $data): self
-    {
+    public static function createFromJson(
+        Realm $realm,
+        UuidInterface $integrationId,
+        UuidInterface $clientId,
+        array $data
+    ): self {
         if (empty($data['secret'])) {
             throw new InvalidArgumentException('Missing secret');
         }
@@ -27,6 +32,7 @@ final readonly class Client
         return new self(
             Uuid::fromString($data['id']),
             $integrationId,
+            $clientId,
             $data['secret'],
             $realm,
         );

@@ -13,6 +13,7 @@ use App\Keycloak\ScopeConfig;
 use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
+use Illuminate\Support\Facades\Log;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -30,7 +31,7 @@ final readonly class KeycloakApiClient implements ApiClient
     /**
      * @throws KeyCloakApiFailed
      */
-    public function createClient(Realm $realm, Integration $integration): void
+    public function createClient(Realm $realm, Integration $integration, UuidInterface $clientId): void
     {
         $id = Uuid::uuid4();
 
@@ -40,7 +41,7 @@ final readonly class KeycloakApiClient implements ApiClient
                     'POST',
                     sprintf('admin/realms/%s/clients', $realm->internalName),
                     [],
-                    Json::encode(IntegrationToKeycloakClientConverter::convert($id, $integration))
+                    Json::encode(IntegrationToKeycloakClientConverter::convert($id, $integration, $clientId))
                 )
             );
         } catch (Throwable $e) {
@@ -111,13 +112,13 @@ final readonly class KeycloakApiClient implements ApiClient
     /**
      * @throws KeyCloakApiFailed
      */
-    public function fetchClient(Realm $realm, Integration $integration): Client
+    public function fetchClient(Realm $realm, Integration $integration, UuidInterface $clientId): Client
     {
         try {
             $response = $this->client->sendWithBearer(
                 new Request(
                     'GET',
-                    'admin/realms/' . $realm->internalName . '/clients?' . http_build_query(['clientId' => $integration->id->toString()])
+                    'admin/realms/' . $realm->internalName . '/clients?' . http_build_query(['clientId' => $clientId->toString()])
                 )
             );
 
@@ -128,7 +129,7 @@ final readonly class KeycloakApiClient implements ApiClient
             }
 
             $data = Json::decodeAssociatively($body);
-            return Client::createFromJson($realm, $integration->id, $data[0]);
+            return Client::createFromJson($realm, $integration->id, $clientId, $data[0]);
         } catch (Throwable $e) {
             throw KeyCloakApiFailed::failedToFetchClient($realm, $e->getMessage());
         }
@@ -137,20 +138,20 @@ final readonly class KeycloakApiClient implements ApiClient
     /**
      * @throws KeyCloakApiFailed
      */
-    public function fetchIsClientActive(Realm $realm, UuidInterface $integrationId): bool
+    public function fetchIsClientActive(Client $client): bool
     {
         try {
             $response = $this->client->sendWithBearer(
                 new Request(
                     'GET',
-                    'admin/realms/' . $realm->internalName . '/clients?' . http_build_query(['clientId' => $integrationId->toString()])
+                    'admin/realms/' . $client->realm->internalName . '/clients?' . http_build_query(['clientId' => $client->clientId->toString()])
                 )
             );
 
             $body = $response->getBody()->getContents();
 
             if (empty($body) || $response->getStatusCode() !== 200) {
-                throw KeyCloakApiFailed::failedToFetchClient($realm, $body);
+                throw KeyCloakApiFailed::failedToFetchClient($client->realm, $body);
             }
 
             $data = Json::decodeAssociatively($body);
@@ -159,7 +160,8 @@ final readonly class KeycloakApiClient implements ApiClient
 
             return $data[0]['enabled'];
         } catch (Throwable $e) {
-            throw KeyCloakApiFailed::failedToFetchClient($realm, $e->getMessage());
+            Log::error($e->getLine() . '/' . $e->getMessage());
+            throw KeyCloakApiFailed::failedToFetchClient($client->realm, $e->getMessage());
         }
     }
 

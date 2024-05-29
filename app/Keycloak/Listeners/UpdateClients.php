@@ -64,7 +64,11 @@ final class UpdateClients implements ShouldQueue
         $this->client->updateClient(
             $keycloakClient,
             array_merge(
-                IntegrationToKeycloakClientConverter::convert($keycloakClient->id, $integration),
+                IntegrationToKeycloakClientConverter::convert(
+                    $keycloakClient->id,
+                    $integration,
+                    $keycloakClient->clientId
+                ),
                 IntegrationUrlConverter::convert($integration, $keycloakClient)
             )
         );
@@ -73,6 +77,7 @@ final class UpdateClients implements ShouldQueue
 
         $this->logger->info('Keycloak client updated', [
             'integration_id' => $integration->id->toString(),
+            'client_id' => $keycloakClient->clientId->toString(),
             'realm' => $keycloakClient->realm->internalName,
         ]);
     }

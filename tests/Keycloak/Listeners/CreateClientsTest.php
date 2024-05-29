@@ -81,6 +81,7 @@ final class CreateClientsTest extends TestCase
             $clients[$realm->internalName] = new Client(
                 Uuid::uuid4(),
                 $this->integration->id,
+                Uuid::uuid4(),
                 self::SECRET,
                 $realm
             );
@@ -206,6 +207,7 @@ final class CreateClientsTest extends TestCase
                     $client = new Client(
                         $clientIds[$realm->internalName],
                         $integration->id,
+                        Uuid::uuid4(),
                         self::SECRET,
                         $realm
                     );

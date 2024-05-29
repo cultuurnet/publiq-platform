@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Keycloak\Service;
+namespace Tests\Keycloak\Converters;
 
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
@@ -20,15 +20,16 @@ final class IntegrationToKeycloakClientConverterTest extends TestCase
     public function test_integration_converted_to_keycloak_format(IntegrationPartnerStatus $partnerStatus, bool $serviceAccountsEnabled, bool $standardFlowEnabled): void
     {
         $id = Uuid::uuid4();
+        $clientId = Uuid::uuid4();
 
         $integration = $this->givenThereIsAnIntegration($id, ['partnerStatus' => $partnerStatus]);
 
-        $convertedData = IntegrationToKeycloakClientConverter::convert($id, $integration);
+        $convertedData = IntegrationToKeycloakClientConverter::convert($id, $integration, $clientId);
 
         $this->assertIsArray($convertedData);
         $this->assertEquals('openid-connect', $convertedData['protocol']);
         $this->assertEquals($id->toString(), $convertedData['id']);
-        $this->assertEquals($integration->id->toString(), $convertedData['clientId']);
+        $this->assertEquals($clientId->toString(), $convertedData['clientId']);
         $this->assertEquals($integration->name, $convertedData['name']);
         $this->assertEquals($integration->description, $convertedData['description']);
         $this->assertEquals($serviceAccountsEnabled, $convertedData['serviceAccountsEnabled']);

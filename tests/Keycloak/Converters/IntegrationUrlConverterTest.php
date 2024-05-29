@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Keycloak\Service;
+namespace Tests\Keycloak\Converters;
 
 use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\IntegrationPartnerStatus;
@@ -28,6 +28,7 @@ final class IntegrationUrlConverterTest extends TestCase
         $this->client = new Client(
             Uuid::uuid4(),
             $this->integrationId,
+            Uuid::uuid4(),
             'my-secret',
             new Realm('Acc', 'Acc', Environment::Acceptance)
         );

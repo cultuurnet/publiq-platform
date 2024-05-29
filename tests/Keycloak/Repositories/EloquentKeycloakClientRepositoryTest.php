@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Keycloak\Repositories;
 
+use App\Domain\Integrations\Environment;
 use App\Keycloak\Client;
 use App\Keycloak\Realm;
 use App\Keycloak\RealmCollection;
@@ -31,30 +32,38 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
         $realm = RealmCollection::getRealms()->first();
 
         $integrationId = Uuid::uuid4();
+        $clientId = Uuid::uuid4();
+        $clientId2 = Uuid::uuid4();
 
         $client1 = new Client(
             Uuid::uuid4(),
             $integrationId,
+            $clientId,
             'client-secret-1',
             Realm::getMasterRealm()
         );
         $client2 = new Client(
             Uuid::uuid4(),
             $integrationId,
+            $clientId2,
             'client-secret-2',
             $realm
         );
         $this->repository->create($client1, $client2);
 
+        $realm = new Realm('uitidpoc', 'Acceptance', Environment::Acceptance);
+
         $this->assertDatabaseHas('keycloak_clients', [
             'integration_id' => $integrationId->toString(),
             'client_secret' => 'client-secret-1',
-            'realm' => Realm::getMasterRealm()->internalName,
+            'client_id' => $clientId->toString(),
+            'realm' => Realm::getMasterRealm()->publicName,
         ]);
         $this->assertDatabaseHas('keycloak_clients', [
             'integration_id' => $integrationId->toString(),
             'client_secret' => 'client-secret-2',
-            'realm' => $realm->internalName,
+            'client_id' => $clientId2->toString(),
+            'realm' => $realm->publicName,
         ]);
     }
 
@@ -64,16 +73,20 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
         $realm = RealmCollection::getRealms()->first();
 
         $integrationId = Uuid::uuid4();
+        $clientId = Uuid::uuid4();
+        $clientId2 = Uuid::uuid4();
 
         $client1 = new Client(
             Uuid::uuid4(),
             $integrationId,
+            $clientId,
             'client-secret-1',
             $realm
         );
         $client2 = new Client(
             Uuid::uuid4(),
             $integrationId,
+            $clientId2,
             'client-secret-1',
             Realm::getMasterRealm()
         );
@@ -96,7 +109,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
 
         /** @var Realm $realm */
         $realm = RealmCollection::getRealms()->first();
-        $realms = [Realm::getMasterRealm(), $realm];
+        $realms = [new Realm('uitidpoc', 'Acceptance', Environment::Acceptance), $realm];
 
         $clients = [];
 
@@ -107,6 +120,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
                 $clients[] = new Client(
                     Uuid::uuid4(),
                     $integrationId,
+                    Uuid::uuid4(),
                     'client-secret-' . $count,
                     $realm
                 );
@@ -139,6 +153,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
                 $clients[] = new Client(
                     Uuid::uuid4(),
                     $integrationId,
+                    Uuid::uuid4(),
                     'client-secret-' . $count,
                     $realm
                 );
@@ -177,6 +192,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
             $clients[] = new Client(
                 Uuid::uuid4(),
                 $integrationId,
+                Uuid::uuid4(),
                 'client-secret',
                 $realm
             );
