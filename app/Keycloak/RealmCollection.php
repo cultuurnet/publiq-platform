@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Keycloak;
 
-use App\Domain\Integrations\Environment;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
 
@@ -13,23 +12,12 @@ use InvalidArgumentException;
  */
 final class RealmCollection extends Collection
 {
-    private static function getRealms(): RealmCollection
+    public function fromPublicName(string $publicName): Realm
     {
-        //@todo Change this once all Realms have been configured
-        return new self([new Realm('uitidpoc', 'Acceptance', Environment::Acceptance)]);
-    }
-
-    public static function fromPublicName(string $publicName): Realm
-    {
-        foreach (self::getRealms() as $realm) {
+        foreach ($this->all() as $realm) {
             if ($realm->publicName === $publicName) {
                 return $realm;
             }
-        }
-
-        /** @todo remove this later once we support multiple realms, this is only needed to fix some unit tests */
-        if ($publicName === Realm::getMasterRealm()->publicName) {
-            return Realm::getMasterRealm();
         }
 
         throw new InvalidArgumentException('Invalid realm: ' . $publicName);
@@ -38,10 +26,10 @@ final class RealmCollection extends Collection
     /**
      * @return array<string, string>
      */
-    public static function asArray(): array
+    public function asArray(): array
     {
         $output = [];
-        foreach (self::getRealms() as $realm) {
+        foreach ($this->all() as $realm) {
             $output[$realm->publicName] = $realm->publicName;
         }
         return $output;

@@ -21,11 +21,7 @@ trait KeycloakHttpClientFactory
     {
         return new KeycloakHttpClient(
             $this->givenClient($mock),
-            $this->config,
-            new ClientCredentials(
-                $this->config,
-                $logger
-            )
+            new ClientCredentials($logger)
         );
     }
 

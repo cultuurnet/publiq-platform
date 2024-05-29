@@ -7,7 +7,6 @@ namespace App\Nova\Resources;
 use App\Keycloak\CachedKeycloakClientStatus;
 use App\Keycloak\Config;
 use App\Keycloak\Models\KeycloakClientModel;
-use App\Keycloak\RealmCollection;
 use App\Nova\ActionGuards\ActionGuard;
 use App\Nova\ActionGuards\Keycloak\BlockKeycloakClientGuard;
 use App\Nova\ActionGuards\Keycloak\UnblockKeycloakClientGuard;
@@ -63,7 +62,7 @@ final class KeycloakClient extends Resource
             Select::make('realm')
                 ->readonly()
                 ->filterable()
-                ->options(RealmCollection::asArray()),
+                ->options($this->getConfig()->realms->asArray()),
             Text::make('Status', function (KeycloakClientModel $model) {
                 $client = $model->toDomain();
 
@@ -80,8 +79,7 @@ final class KeycloakClient extends Resource
             Text::make('client_secret')
                 ->readonly(),
             Text::make('Open', function (KeycloakClientModel $model) {
-                // I wish I could use my config object, but don't know how to get access to it from here
-                $baseUrl = config('keycloak.base_url');
+                $baseUrl = $model->toDomain()->realm->baseUrl;
 
                 return sprintf('<a href="%s" class="link-default" target="_blank">Open in Keycloak</a>', $model->toDomain()->getKeycloakUrl($baseUrl));
             })->asHtml(),
@@ -140,5 +138,10 @@ final class KeycloakClient extends Resource
     private function getKeycloakClientStatus(): CachedKeycloakClientStatus
     {
         return App::get(CachedKeycloakClientStatus::class);
+    }
+
+    private function getConfig(): Config
+    {
+        return App::get(Config::class);
     }
 }

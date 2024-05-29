@@ -25,8 +25,8 @@ use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Insightly\Models\InsightlyMappingModel;
 use App\Insightly\Resources\ResourceType;
+use App\Keycloak\Config;
 use App\Keycloak\Models\KeycloakClientModel;
-use App\Keycloak\RealmCollection;
 use App\Models\UuidModel;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use App\UiTiDv1\UiTiDv1Environment;
@@ -34,6 +34,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\App;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
@@ -266,7 +267,9 @@ final class IntegrationModel extends UuidModel
 
     public function hasMissingKeycloakConsumers(): bool
     {
-        return $this->keycloakClients()->count() < count(RealmCollection::getRealms());
+        /** @var Config $config */
+        $config = App::get('config');
+        return $this->keycloakClients()->count() < $config->realms->count();
     }
 
     public function toDomain(): Integration

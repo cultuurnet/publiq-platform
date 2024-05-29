@@ -4,33 +4,35 @@ declare(strict_types=1);
 
 namespace Tests\Keycloak\Repositories;
 
-use App\Domain\Integrations\Environment;
 use App\Keycloak\Client;
+use App\Keycloak\Config;
 use App\Keycloak\Realm;
 use App\Keycloak\RealmCollection;
 use App\Keycloak\Repositories\EloquentKeycloakClientRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
+use Tests\Keycloak\ConfigFactory;
+use Tests\Keycloak\RealmFactory;
 use Tests\TestCase;
 
 final class EloquentKeycloakClientRepositoryTest extends TestCase
 {
     use RefreshDatabase;
+    use ConfigFactory;
+    use RealmFactory;
 
     private EloquentKeycloakClientRepository $repository;
-
+    private Config $config;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->repository = new EloquentKeycloakClientRepository();
+        $this->config = $this->givenKeycloakConfig($this->givenTestRealm());
     }
 
     public function test_it_can_save_one_or_more_clients(): void
     {
-        /** @var Realm $realm */
-        $realm = RealmCollection::getRealms()->first();
-
         $integrationId = Uuid::uuid4();
         $clientId = Uuid::uuid4();
         $clientId2 = Uuid::uuid4();
@@ -40,37 +42,35 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
             $integrationId,
             $clientId,
             'client-secret-1',
-            Realm::getMasterRealm()
+            $this->givenAcceptanceRealm()
         );
         $client2 = new Client(
             Uuid::uuid4(),
             $integrationId,
             $clientId2,
             'client-secret-2',
-            $realm
+            $this->givenTestRealm()
         );
         $this->repository->create($client1, $client2);
-
-        $realm = new Realm('uitidpoc', 'Acceptance', Environment::Acceptance);
 
         $this->assertDatabaseHas('keycloak_clients', [
             'integration_id' => $integrationId->toString(),
             'client_secret' => 'client-secret-1',
             'client_id' => $clientId->toString(),
-            'realm' => Realm::getMasterRealm()->publicName,
+            'realm' => $this->givenAcceptanceRealm()->publicName,
         ]);
         $this->assertDatabaseHas('keycloak_clients', [
             'integration_id' => $integrationId->toString(),
             'client_secret' => 'client-secret-2',
             'client_id' => $clientId2->toString(),
-            'realm' => $realm->publicName,
+            'realm' => $this->givenTestRealm()->publicName,
         ]);
     }
 
     public function test_it_can_get_all_clients_for_an_integration_id(): void
     {
         /** @var Realm $realm */
-        $realm = RealmCollection::getRealms()->first();
+        $realm = $this->config->realms->first();
 
         $integrationId = Uuid::uuid4();
         $clientId = Uuid::uuid4();
@@ -88,7 +88,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
             $integrationId,
             $clientId2,
             'client-secret-1',
-            Realm::getMasterRealm()
+            $this->givenAcceptanceRealm()
         );
         $this->repository->create($client1, $client2);
 
@@ -107,9 +107,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
         $secondIntegrationId = Uuid::uuid4();
         $integrationIds = [$firstIntegrationId, $secondIntegrationId];
 
-        /** @var Realm $realm */
-        $realm = RealmCollection::getRealms()->first();
-        $realms = [new Realm('uitidpoc', 'Acceptance', Environment::Acceptance), $realm];
+        $realms = [$this->givenAcceptanceRealm(), $this->givenTestRealm()];
 
         $clients = [];
 
@@ -146,7 +144,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
         $integrationIds = [$firstIntegrationId, $secondIntegrationId];
 
         $clients = [];
-        foreach (RealmCollection::getRealms() as $realm) {
+        foreach ($this->config->realms as $realm) {
             foreach ($integrationIds as $integrationId) {
                 $count = count($clients) + 1;
 
@@ -183,7 +181,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
         $clients = [];
 
         $missing = new RealmCollection();
-        foreach (RealmCollection::getRealms() as $realm) {
+        foreach ($this->config->realms as $realm) {
             if ($missing->isEmpty()) {
                 $missing->add($realm);
                 continue;
@@ -201,7 +199,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
 
         $this->assertEquals(
             $missing,
-            $this->repository->getMissingRealmsByIntegrationId($integrationId)
+            $this->repository->getMissingRealmsByIntegrationId($integrationId, $this->config->realms)
         );
     }
 }

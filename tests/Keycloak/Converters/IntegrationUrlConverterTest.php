@@ -9,16 +9,20 @@ use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\IntegrationUrlType;
 use App\Keycloak\Client;
-use App\Keycloak\Realm;
 use App\Keycloak\Converters\IntegrationUrlConverter;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Tests\CreatesIntegration;
+use Tests\Keycloak\ConfigFactory;
+use Tests\Keycloak\RealmFactory;
 
 final class IntegrationUrlConverterTest extends TestCase
 {
     use CreatesIntegration;
+    use ConfigFactory;
+    use RealmFactory;
+
     private Client $client;
     private UuidInterface $integrationId;
 
@@ -30,7 +34,7 @@ final class IntegrationUrlConverterTest extends TestCase
             $this->integrationId,
             Uuid::uuid4(),
             'my-secret',
-            new Realm('Acc', 'Acc', Environment::Acceptance)
+            $this->givenAcceptanceRealm()
         );
     }
 

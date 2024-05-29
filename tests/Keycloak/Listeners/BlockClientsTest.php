@@ -9,21 +9,24 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client;
 use App\Keycloak\Client\ApiClient;
-use App\Keycloak\Config;
 use App\Keycloak\Listeners\BlockClients;
-use App\Keycloak\RealmCollection;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Tests\CreatesIntegration;
+use Tests\Keycloak\ConfigFactory;
 use Tests\Keycloak\KeycloakHttpClientFactory;
+use Tests\Keycloak\RealmFactory;
 
 final class BlockClientsTest extends TestCase
 {
     use CreatesIntegration;
     use KeycloakHttpClientFactory;
+
+    use ConfigFactory;
+    use RealmFactory;
 
     private const SECRET = 'my-secret';
 
@@ -33,13 +36,7 @@ final class BlockClientsTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->config = new Config(
-            true,
-            'https://example.com/',
-            'client_name',
-            self::SECRET,
-            RealmCollection::getRealms(),
-        );
+        $this->config = $this->givenKeycloakConfig($this->givenTestRealm());
 
         // This is a search API integration
         $this->integration = $this->givenThereIsAnIntegration(Uuid::uuid4());

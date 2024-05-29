@@ -36,10 +36,8 @@ final class KeycloakServiceProvider extends ServiceProvider
             return new KeycloakApiClient(
                 new KeycloakHttpClient(
                     new Client([RequestOptions::HTTP_ERRORS => false]),
-                    $this->app->get(Config::class),
                     new ClientCredentials(
                         $this->app->get(Config::class),
-                        $this->app->get(LoggerInterface::class)
                     )
                 ),
                 $this->app->get(ScopeConfig::class),

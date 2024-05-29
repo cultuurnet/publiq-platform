@@ -14,11 +14,17 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
 use Tests\Auth0\CreatesMockAuth0ClusterSDK;
+use Tests\Keycloak\ConfigFactory;
+use Tests\Keycloak\RealmFactory;
 use Tests\TestCase;
 
 final class BlockKeycloakClientGuardTest extends TestCase
 {
     use CreatesMockAuth0ClusterSDK;
+
+    use ConfigFactory;
+    use RealmFactory;
+
 
     private ApiClient&MockObject $apiClient;
     private BlockKeycloakClientGuard $guard;
@@ -30,7 +36,10 @@ final class BlockKeycloakClientGuardTest extends TestCase
 
         $this->apiClient = $this->createMock(ApiClient::class);
         $this->guard = new BlockKeycloakClientGuard(new CachedKeycloakClientStatus($this->apiClient, new NullLogger()));
-        $this->client = new Client(Uuid::uuid4(), Uuid::uuid4(), Uuid::uuid4(), 'client-id-1', Realm::getMasterRealm());
+
+        /** @var Realm $realm */
+        $realm = $this->givenKeycloakConfig($this->givenTestRealm())->realms->first();
+        $this->client = new Client(Uuid::uuid4(), Uuid::uuid4(), Uuid::uuid4(), 'client-id-1', $realm);
     }
 
     #[DataProvider('dataProvider')]

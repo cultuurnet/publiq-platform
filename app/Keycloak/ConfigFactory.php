@@ -6,7 +6,7 @@ namespace App\Keycloak;
 
 use App\Domain\Integrations\Environment;
 
-class ConfigFactory
+final class ConfigFactory
 {
     public static function build(): Config
     {

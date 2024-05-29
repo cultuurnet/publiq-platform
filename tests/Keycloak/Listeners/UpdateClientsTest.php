@@ -12,9 +12,7 @@ use App\Domain\Integrations\IntegrationUrlType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client;
 use App\Keycloak\Client\ApiClient;
-use App\Keycloak\Config;
 use App\Keycloak\Listeners\UpdateClients;
-use App\Keycloak\RealmCollection;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Keycloak\ScopeConfig;
 use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
@@ -24,12 +22,17 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Tests\CreatesIntegration;
+use Tests\Keycloak\ConfigFactory;
 use Tests\Keycloak\KeycloakHttpClientFactory;
+use Tests\Keycloak\RealmFactory;
 
 final class UpdateClientsTest extends TestCase
 {
     use CreatesIntegration;
     use KeycloakHttpClientFactory;
+    use ConfigFactory;
+    use RealmFactory;
+
 
     private const SECRET = 'my-secret';
     private const SEARCH_SCOPE_ID = '06059529-74b5-422a-a499-ffcaf065d437';
@@ -41,13 +44,7 @@ final class UpdateClientsTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->config = new Config(
-            true,
-            'https://example.com/',
-            'client_name',
-            self::SECRET,
-            RealmCollection::getRealms(),
-        );
+        $this->config = $this->givenKeycloakConfig($this->givenTestRealm());
 
         // This is a search API integration
         $this->integration = $this->givenThereIsAnIntegration(Uuid::uuid4());

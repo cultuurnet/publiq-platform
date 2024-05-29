@@ -6,7 +6,6 @@ namespace App\Keycloak\TokenStrategy;
 
 use App\Json;
 use App\Keycloak\Client\KeycloakHttpClient;
-use App\Keycloak\Config;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realm;
 use GuzzleHttp\Exception\GuzzleException;
@@ -23,14 +22,13 @@ final class ClientCredentials implements TokenStrategy
     private array $accessToken = [];
 
     public function __construct(
-        private readonly Config $config,
         private readonly LoggerInterface $logger,
     ) {
     }
 
     public function fetchToken(KeycloakHttpClient $client, Realm $realm): string
     {
-        $key = $realm->internalName . $this->config->clientId;
+        $key = $realm->internalName . $realm->clientId;
 
         if (isset($this->accessToken[$key])) {
             return $this->accessToken[$key];
@@ -43,11 +41,11 @@ final class ClientCredentials implements TokenStrategy
                 ['Content-Type' => 'application/x-www-form-urlencoded'],
                 http_build_query([
                     'grant_type' => 'client_credentials',
-                    'client_id' => $this->config->clientId,
-                    'client_secret' => $this->config->clientSecret,
+                    'client_id' => $realm->clientId,
+                    'client_secret' => $realm->clientSecret,
                 ])
             );
-            $response = $client->sendWithoutBearer($request);
+            $response = $client->sendWithoutBearer($request, $realm);
         } catch (GuzzleException $e) {
             $this->logger->error($e->getMessage());
             throw KeyCloakApiFailed::couldNotFetchAccessToken($e->getMessage());
@@ -64,7 +62,7 @@ final class ClientCredentials implements TokenStrategy
             throw KeyCloakApiFailed::unexpectedTokenResponse();
         }
 
-        $this->logger->info('Fetched token for ' . $this->config->clientId . ', token starts with ' . substr($json['access_token'], 0, 6));
+        $this->logger->info('Fetched token for ' . $realm->clientId . ', token starts with ' . substr($json['access_token'], 0, 6));
         $this->accessToken[$key] = $json['access_token'];
 
         return $this->accessToken[$key];

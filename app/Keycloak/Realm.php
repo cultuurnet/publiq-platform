@@ -16,17 +16,22 @@ final readonly class Realm
         string $baseUrl,
         public string $clientId,
         public string $clientSecret,
-        public Environment $environment)
-    {
+        public Environment $environment
+    ) {
         $this->baseUrl = $this->addTrailingSlash($baseUrl);
     }
 
-    public static function getMasterRealm(): self
+    public function getMasterRealm(): self
     {
-        return new self('master', 'Master', Environment::Production);
+        return new self(
+            'master',
+            'Master',
+            $this->baseUrl,
+            $this->clientId,
+            $this->clientSecret,
+            $this->environment
+        );
     }
-
-
 
     private function addTrailingSlash(string $uri): string
     {

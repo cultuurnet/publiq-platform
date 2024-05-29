@@ -21,11 +21,16 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Tests\CreatesIntegration;
+use Tests\Keycloak\ConfigFactory;
+use Tests\Keycloak\RealmFactory;
 use Tests\TestCase;
 
 final class CreateClientsTest extends TestCase
 {
     use CreatesIntegration;
+    use ConfigFactory;
+    use RealmFactory;
+
 
     private const SECRET = 'my-secret';
     private const SEARCH_SCOPE_ID = '06059529-74b5-422a-a499-ffcaf065d437';
@@ -40,13 +45,7 @@ final class CreateClientsTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->config = new Config(
-            true,
-            'https://example.com/',
-            'client_name',
-            self::SECRET,
-            RealmCollection::getRealms(),
-        );
+        $this->config = $this->givenKeycloakConfig($this->givenTestRealm());
 
         // This is a search API integration
         $this->integration = $this->givenThereIsAnIntegration(Uuid::uuid4());
@@ -162,7 +161,7 @@ final class CreateClientsTest extends TestCase
     public function test_handle_creating_missing_clients(): void
     {
         $integrationId = Uuid::uuid4();
-        $missingRealms = RealmCollection::getRealms();
+        $missingRealms = $this->config->realms;
         $integration = $this->givenThereIsAnIntegration($integrationId);
 
         $this->keycloakClientRepository->expects($this->once())

@@ -42,7 +42,10 @@ final class CreateClients implements ShouldQueue
 
     public function handleCreatingMissingClients(MissingClientsDetected $event): void
     {
-        $missingRealms = $this->keycloakClientRepository->getMissingRealmsByIntegrationId($event->id);
+        $missingRealms = $this->keycloakClientRepository->getMissingRealmsByIntegrationId(
+            $event->id,
+            $this->config->realms
+        );
 
         if (count($missingRealms) === 0) {
             $this->logger->info($event->id . ' - already has all Keycloak clients');
@@ -83,7 +86,7 @@ final class CreateClients implements ShouldQueue
 
                 $this->client->createClient($realm, $integration, $clientId);
                 $client = $this->client->fetchClient($realm, $integration, $clientId);
-                $this->client->addScopeToClient($realm, $client->id, $scopeId);
+                $this->client->addScopeToClient($client, $scopeId);
 
                 $clientCollection->add($client);
             } catch (KeyCloakApiFailed $e) {

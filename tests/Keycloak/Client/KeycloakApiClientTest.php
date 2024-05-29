@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Keycloak\Client;
 
-use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Integration;
 use App\Keycloak\Client;
 use App\Keycloak\Client\KeycloakApiClient;
-use App\Keycloak\Config;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realm;
-use App\Keycloak\RealmCollection;
 use App\Keycloak\ScopeConfig;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
@@ -20,12 +17,16 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Tests\CreatesIntegration;
+use Tests\Keycloak\ConfigFactory;
 use Tests\Keycloak\KeycloakHttpClientFactory;
+use Tests\Keycloak\RealmFactory;
 
 final class KeycloakApiClientTest extends TestCase
 {
     use KeycloakHttpClientFactory;
     use CreatesIntegration;
+    use RealmFactory;
+    use ConfigFactory;
 
     private const INTEGRATION_ID = '824c09c0-2f3a-4fa0-bde2-8bf25c9a5b74';
     private const UUID = '824c09c0-2f3a-4fa0-bde2-8bf25c9a5b74';
@@ -39,15 +40,8 @@ final class KeycloakApiClientTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->realm = new Realm('uitidpoc', 'Acceptance', Environment::Acceptance);
-
-        $this->config = new Config(
-            true,
-            'https://keycloak.example.com/',
-            'php_client',
-            'a_true_secret',
-            new RealmCollection([$this->realm])
-        );
+        $this->realm = $this->givenTestRealm();
+        $this->config = $this->givenKeycloakConfig($this->realm);
 
         $this->integration = $this->givenThereIsAnIntegration(Uuid::fromString(self::INTEGRATION_ID));
         $this->logger = $this->createMock(LoggerInterface::class);
@@ -127,7 +121,6 @@ final class KeycloakApiClientTest extends TestCase
 
     public function test_fails_to_add_scope_to_client(): void
     {
-        $clientId = Uuid::uuid4();
         $scopeId = Uuid::fromString('123ae05d-1c41-40c8-8716-c4654a3bfd98');
 
         $mock = new MockHandler([
@@ -144,9 +137,10 @@ final class KeycloakApiClientTest extends TestCase
         $this->expectException(KeyCloakApiFailed::class);
         $this->expectExceptionCode(KeyCloakApiFailed::FAILED_TO_ADD_SCOPE_WITH_RESPONSE);
 
+        $client = new Client(Uuid::uuid4(), $this->integration->id, Uuid::uuid4(), self::SECRET, $this->realm);
+
         $apiClient->addScopeToClient(
-            $this->realm,
-            $clientId,
+            $client,
             $scopeId
         );
     }
@@ -224,7 +218,7 @@ final class KeycloakApiClientTest extends TestCase
             $this->logger
         );
 
-        $client = new Client(Uuid::uuid4(), $this->integration->id, Uuid::uuid4(), 'my-secret', new Realm('uitidpoc', 'Acceptance', Environment::Acceptance));
+        $client = new Client(Uuid::uuid4(), $this->integration->id, Uuid::uuid4(), self::SECRET, $this->givenAcceptanceRealm());
 
         $this->assertEquals($enabled, $apiClient->fetchIsClientActive($client));
     }
