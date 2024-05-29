@@ -13,7 +13,7 @@ trait RealmFactory
     {
         return new Realm(
             'uitidpoc',
-            'Acceptange',
+            'Acceptance',
             'https://keycloak.com/api',
             'php_client',
             'dfgopopzjcvijogdrg',
@@ -25,7 +25,7 @@ trait RealmFactory
     {
         return new Realm(
             'mytestrealm',
-            'Test',
+            'Testing',
             'https://keycloak.com/api',
             'php_client',
             'dfgopopzjcvijogdrg',

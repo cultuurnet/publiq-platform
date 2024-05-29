@@ -41,7 +41,7 @@ final class KeycloakApiClientTest extends TestCase
     protected function setUp(): void
     {
         $this->realm = $this->givenTestRealm();
-        $this->config = $this->givenKeycloakConfig($this->realm);
+        $this->config = $this->givenKeycloakConfig();
 
         $this->integration = $this->givenThereIsAnIntegration(Uuid::fromString(self::INTEGRATION_ID));
         $this->logger = $this->createMock(LoggerInterface::class);

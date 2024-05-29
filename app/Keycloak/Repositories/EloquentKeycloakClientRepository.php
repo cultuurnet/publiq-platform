@@ -6,6 +6,7 @@ namespace App\Keycloak\Repositories;
 
 use App\Keycloak\Client;
 use App\Keycloak\Models\KeycloakClientModel;
+use App\Keycloak\Realm;
 use App\Keycloak\RealmCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -90,7 +91,7 @@ final class EloquentKeycloakClientRepository implements KeycloakClientRepository
         return new RealmCollection(array_udiff(
             $realms->toArray(),
             $existingRealms,
-            fn (Client $t1, Client $t2) => strcmp($t1->id->toString(), $t2->id->toString())
+            fn (Realm $t1, Realm $t2) => strcmp($t1->publicName, $t2->publicName)
         ));
     }
 }

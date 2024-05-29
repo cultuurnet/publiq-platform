@@ -7,7 +7,6 @@ namespace Tests\Nova\ActionGuards\Keycloak;
 use App\Keycloak\CachedKeycloakClientStatus;
 use App\Keycloak\Client;
 use App\Keycloak\Client\ApiClient;
-use App\Keycloak\Realm;
 use App\Nova\ActionGuards\Keycloak\BlockKeycloakClientGuard;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -37,9 +36,7 @@ final class BlockKeycloakClientGuardTest extends TestCase
         $this->apiClient = $this->createMock(ApiClient::class);
         $this->guard = new BlockKeycloakClientGuard(new CachedKeycloakClientStatus($this->apiClient, new NullLogger()));
 
-        /** @var Realm $realm */
-        $realm = $this->givenKeycloakConfig($this->givenTestRealm())->realms->first();
-        $this->client = new Client(Uuid::uuid4(), Uuid::uuid4(), Uuid::uuid4(), 'client-id-1', $realm);
+        $this->client = new Client(Uuid::uuid4(), Uuid::uuid4(), Uuid::uuid4(), 'client-id-1', $this->givenAcceptanceRealm());
     }
 
     #[DataProvider('dataProvider')]

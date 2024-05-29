@@ -36,7 +36,7 @@ final class BlockClientsTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->config = $this->givenKeycloakConfig($this->givenTestRealm());
+        $this->config = $this->givenKeycloakConfig();
 
         // This is a search API integration
         $this->integration = $this->givenThereIsAnIntegration(Uuid::uuid4());

@@ -27,7 +27,7 @@ final class ClientCredentialsTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->config = $this->givenKeycloakConfig($this->givenTestRealm());
+        $this->config = $this->givenKeycloakConfig();
         $this->logger = $this->createMock(LoggerInterface::class);
     }
 

@@ -27,14 +27,15 @@ final class ConfigFactory
             }
 
             $realms->add(new Realm(
-                ucfirst($publicName),
                 $environment['internalName'],
+                ucfirst($publicName),
                 $environment['base_url'],
                 $environment['client_id'],
                 $environment['client_secret'],
                 Environment::fromString($publicName)
             ));
         }
+
         return $realms;
     }
 }

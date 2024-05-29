@@ -33,7 +33,6 @@ final class KeycloakClientModel extends UuidModel
         $config = App::get(Config::class);
 
         return new Client(
-            // Trying to use magic getters for eg $this->id gives a 0 back
             Uuid::fromString($this->id),
             Uuid::fromString($this->integration_id),
             Uuid::fromString($this->client_id),
