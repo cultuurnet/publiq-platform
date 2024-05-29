@@ -153,7 +153,7 @@ const New = ({ subscriptions }: Props) => {
                   value: pricingPlan.id,
                   label: (
                     <RadioButtonGroupLabel
-                      name={`${pricingPlan.title} ${pricingPlan.price}`}
+                      name={pricingPlan.label}
                       description={pricingPlan.description}
                     />
                   ),

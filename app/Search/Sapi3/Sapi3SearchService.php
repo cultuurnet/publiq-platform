@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Search\Sapi3;
 
-use App\Search\SearchService;
 use CultuurNet\SearchV3\Parameter\Label;
 use CultuurNet\SearchV3\SearchClientInterface;
 use CultuurNet\SearchV3\SearchQuery;
