@@ -13,7 +13,9 @@ task :build_artifact do |task|
   build_url      = ENV['JOB_DISPLAY_URL'].nil? ? "" : ENV['JOB_DISPLAY_URL']
 
   FileUtils.mkdir_p('pkg')
-  system('cp .env.example .env') or exit 1
+
+  FileUtils.rm(Dir.glob('.env*'))
+  FileUtils.touch('.env')
 
   system("fpm -s dir -t deb -n #{artifact_name} -v #{version} -a all -p pkg \
     -x '.git*' -x pkg -x lib -x Rakefile -x Gemfile -x Gemfile.lock \
