@@ -14,8 +14,8 @@ use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Client\KeycloakApiClient;
 use App\Keycloak\Client\KeycloakHttpClient;
 use App\Keycloak\Events\MissingClientsDetected;
-use App\Keycloak\Listeners\CreateClients;
 use App\Keycloak\Listeners\BlockClients;
+use App\Keycloak\Listeners\CreateClients;
 use App\Keycloak\Listeners\UpdateClients;
 use App\Keycloak\Repositories\EloquentKeycloakClientRepository;
 use App\Keycloak\Repositories\KeycloakClientRepository;
@@ -46,7 +46,10 @@ final class KeycloakServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(Config::class, function () {
-            return ConfigFactory::build();
+            return new Config(
+                config('keycloak.enabled'),
+                RealmCollection::build()
+            );
         });
 
         $this->app->singleton(ScopeConfig::class, function () {

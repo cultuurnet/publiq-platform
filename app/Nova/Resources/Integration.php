@@ -57,16 +57,6 @@ final class Integration extends Resource
         'created_at' => 'desc',
     ];
 
-    private Config $keycloakConfig;
-
-    public function __construct($resource = null)
-    {
-        parent::__construct($resource);
-
-        $this->keycloakConfig = App::get(Config::class);
-    }
-
-
     /**
      * @return array<Field|ResourceTool>
      */
@@ -178,7 +168,7 @@ final class Integration extends Resource
             HasMany::make('UiTiD v2 Client Credentials (Auth0)', 'auth0Clients', Auth0Client::class),
         ];
 
-        if ($this->keycloakConfig->isEnabled) {
+        if (config('keycloak.enabled')) {
             $fields[] = HasMany::make('Keycloak client Credentials', 'keycloakClients', KeycloakClient::class);
         }
 
@@ -241,7 +231,7 @@ final class Integration extends Resource
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->hasMissingUiTiDv1Consumers()),
         ];
 
-        if ($this->keycloakConfig->isEnabled) {
+        if (config('keycloak.enabled')) {
             $actions[] = (new CreateMissingKeycloakClients())
                 ->withName('Create missing Keycloak clients')
                 ->exceptOnIndex()
