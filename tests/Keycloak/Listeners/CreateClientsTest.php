@@ -9,7 +9,6 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client;
 use App\Keycloak\Client\ApiClient;
-use App\Keycloak\ClientCollection;
 use App\Keycloak\Config;
 use App\Keycloak\Events\MissingClientsDetected;
 use App\Keycloak\Listeners\CreateClients;

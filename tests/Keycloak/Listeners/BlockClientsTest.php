@@ -39,6 +39,7 @@ final class BlockClientsTest extends TestCase
         parent::setUp();
 
         $this->config = $this->givenKeycloakConfig();
+        $this->configureKeycloakConfigFacade();
 
         // This is a search API integration
         $this->integration = $this->givenThereIsAnIntegration(Uuid::uuid4());
@@ -59,20 +60,24 @@ final class BlockClientsTest extends TestCase
         foreach ($this->config->realms as $realm) {
             $client = new Client(Uuid::uuid4(), $this->integration->id, Uuid::uuid4(), self::SECRET, $realm);
 
-            $this->apiClient->expects($this->once())
-                ->method('blockClient')
-                ->with($client);
-
-            $this->logger->expects($this->once())
-                ->method('info')
-                ->with('Keycloak client blocked', [
-                    'integration_id' => $this->integration->id->toString(),
-                    'client_id' => $client->id->toString(),
-                    'realm' => $client->realm->internalName,
-                ]);
-
-            $clients[] = $client;
+            $clients[$client->id->toString()] = $client;
         }
+
+        $this->apiClient->expects($this->exactly($this->config->realms->count()))
+            ->method('blockClient')
+            ->willReturnCallback(function (Client $client) use ($clients) {
+                $this->assertArrayHasKey($client->id->toString(), $clients);
+            });
+
+        $this->logger->expects($this->exactly($this->config->realms->count()))
+            ->method('info')
+            ->willReturnCallback(function ($message, $options) {
+                $this->assertEquals('Keycloak client blocked', $message);
+                $this->assertArrayHasKey('integration_id', $options);
+                $this->assertArrayHasKey('realm', $options);
+
+                $this->assertEquals($this->integration->id->toString(), $options['integration_id']);
+            });
 
         $keycloakClientRepository = $this->createMock(KeycloakClientRepository::class);
         $keycloakClientRepository->expects($this->once())
