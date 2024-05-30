@@ -11,6 +11,7 @@ final class IntegrationBlocked
 {
     use Dispatchable;
 
-    public function __construct(public readonly UuidInterface $id) {
+    public function __construct(public readonly UuidInterface $id)
+    {
     }
 }
