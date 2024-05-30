@@ -19,12 +19,4 @@ final class IntegrationPreviousStatusModel extends UuidModel
         'integration_id',
         'status',
     ];
-
-    /**
-     * @return BelongsTo<IntegrationModel, IntegrationPreviousStatusModel>
-     */
-    public function integration(): BelongsTo
-    {
-        return $this->belongsTo(IntegrationModel::class, 'integration_id');
-    }
 }
