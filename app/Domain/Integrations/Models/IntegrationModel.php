@@ -8,6 +8,7 @@ use App\Auth0\Auth0Tenant;
 use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
+use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationBlocked;
@@ -25,7 +26,6 @@ use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Insightly\Models\InsightlyMappingModel;
 use App\Insightly\Resources\ResourceType;
-use App\Keycloak\Config;
 use App\Keycloak\Models\KeycloakClientModel;
 use App\Models\UuidModel;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
@@ -34,7 +34,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\App;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
@@ -267,9 +266,7 @@ final class IntegrationModel extends UuidModel
 
     public function hasMissingKeycloakConsumers(): bool
     {
-        /** @var Config $config */
-        $config = App::get(Config::class);
-        return $this->keycloakClients()->count() < $config->realms->count();
+        return $this->keycloakClients()->count() < count(Environment::cases());
     }
 
     public function toDomain(): Integration
