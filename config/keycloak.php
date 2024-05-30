@@ -5,19 +5,19 @@ declare(strict_types=1);
 return [
     'enabled' => env('KEYCLOAK_ENABLED', false),
     'environments' => [
-        'acceptance' => [
+        'acc' => [
             'internalName' => env('KEYCLOAK_STAG_REALM_NAME', ''),
             'base_url' => env('KEYCLOAK_STAG_BASE_URL', ''),
             'client_id' => env('KEYCLOAK_STAG_CLIENT_ID', ''),
             'client_secret' => env('KEYCLOAK_STAG_CLIENT_SECRET', ''),
         ],
-        'testing' => [
+        'test' => [
             'internalName' => env('KEYCLOAK_TEST_REALM_NAME', ''),
             'base_url' => env('KEYCLOAK_TEST_BASE_URL', ''),
             'client_id' => env('KEYCLOAK_TEST_CLIENT_ID', ''),
             'client_secret' => env('KEYCLOAK_TEST_CLIENT_SECRET', ''),
         ],
-        'production' => [
+        'prod' => [
             'internalName' => env('KEYCLOAK_PROD_REALM_NAME', ''),
             'base_url' => env('KEYCLOAK_PROD_BASE_URL', ''),
             'client_id' => env('KEYCLOAK_PROD_CLIENT_ID', ''),
