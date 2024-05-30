@@ -142,6 +142,7 @@ final class IntegrationModel extends UuidModel
     {
         IntegrationPreviousStatusModel::query()->create(
             [
+                'id' => Uuid::uuid4()->toString(),
                 'integration_id' => $this->id,
                 'status' => $this->status,
             ]

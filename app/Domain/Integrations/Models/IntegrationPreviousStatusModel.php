@@ -15,6 +15,7 @@ final class IntegrationPreviousStatusModel extends UuidModel
     protected $table = 'integrations_previous_statuses';
 
     protected $fillable = [
+        'id',
         'integration_id',
         'status',
     ];
