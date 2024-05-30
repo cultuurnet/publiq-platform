@@ -12,7 +12,7 @@ trait RealmFactory
     public function givenAcceptanceRealm(): Realm
     {
         return new Realm(
-            'uitidpoc',
+            'myAcceptanceRealm',
             'Acceptance',
             'https://keycloak.com/api',
             'php_client',
@@ -24,7 +24,7 @@ trait RealmFactory
     public function givenTestRealm(): Realm
     {
         return new Realm(
-            'mytestrealm',
+            'myTestRealm',
             'Testing',
             'https://keycloak.com/api',
             'php_client',
