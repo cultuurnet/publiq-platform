@@ -10,7 +10,8 @@ return new class () extends Migration {
     public function up(): void
     {
         Schema::create('integrations_previous_statuses', function (Blueprint $table) {
-            $table->uuid('integration_id')->primary();
+            $table->uuid('id')->primary();
+            $table->uuid('integration_id')->unique();
             $table->string('status');
             $table->timestamps();
         });
