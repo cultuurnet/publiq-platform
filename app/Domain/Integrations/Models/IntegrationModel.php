@@ -160,7 +160,21 @@ final class IntegrationModel extends UuidModel
 
     public function unblock(): void
     {
+        $integrationPreviousStatusBuilder = IntegrationPreviousStatusModel::query()
+            ->where('integration_id', '=', $this->id);
 
+        if ($integrationPreviousStatusBuilder->count() === 0) {
+            $this->update([
+                'status' => IntegrationStatus::Draft,
+            ]);
+        } else {
+            /** @var IntegrationPreviousStatusModel $integrationPreviousStatusModel */
+            $integrationPreviousStatusModel = $integrationPreviousStatusBuilder->first();
+            $this->update([
+                'status' => $integrationPreviousStatusModel->status,
+            ]);
+            $integrationPreviousStatusModel->delete();
+        }
     }
 
     /**
