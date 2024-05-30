@@ -29,8 +29,6 @@ final readonly class Client
             throw new InvalidArgumentException('Missing secret');
         }
 
-        Log::debug(json_encode($data), $data);
-
         return new self(
             Uuid::fromString($data['id']),
             $integrationId,

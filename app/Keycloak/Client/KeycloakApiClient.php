@@ -145,7 +145,7 @@ final readonly class KeycloakApiClient implements ApiClient
             $response = $this->client->sendWithBearer(
                 new Request(
                     'GET',
-                    'admin/realms/' . $client->realm->internalName . '/clients/?' . http_build_query(['clientId' => $client->clientId->toString()])
+                    sprintf('admin/realms/%s/clients/%s', $client->realm->internalName, $client->id->toString())
                 ),
                 $client->realm
             );
@@ -158,11 +158,8 @@ final readonly class KeycloakApiClient implements ApiClient
 
             $data = Json::decodeAssociatively($body);
 
-            $this->logger->info('Response: ' . $body);
-
-            return $data[0]['enabled'];
+            return $data['enabled'];
         } catch (Throwable $e) {
-            Log::error($e->getLine() . '/' . $e->getMessage());
             throw KeyCloakApiFailed::failedToFetchClient($client->realm, $e->getMessage());
         }
     }
