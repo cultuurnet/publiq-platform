@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 return new class () extends Migration {
     public function up(): void
     {
-        Schema::create('integration_status_before_block', function (Blueprint $table) {
+        Schema::create('integrations_previous_statuses', function (Blueprint $table) {
             $table->uuid('integration_id')->primary();
             $table->string('status');
             $table->timestamps();
@@ -18,6 +18,6 @@ return new class () extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('integration_status_before_block');
+        Schema::dropIfExists('integrations_previous_statuses');
     }
 };

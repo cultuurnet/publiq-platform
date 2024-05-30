@@ -146,10 +146,21 @@ final class IntegrationModel extends UuidModel
 
     public function block(): void
     {
+        IntegrationPreviousStatusModel::query()->create(
+            [
+                'integration_id' => $this->id,
+                'status' => $this->status,
+            ]
+        );
         $this->update([
             'status' => IntegrationStatus::Blocked,
         ]);
         IntegrationBlocked::dispatch(Uuid::fromString($this->id));
+    }
+
+    public function unblock(): void
+    {
+
     }
 
     /**
