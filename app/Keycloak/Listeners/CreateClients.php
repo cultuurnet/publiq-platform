@@ -82,10 +82,10 @@ final class CreateClients implements ShouldQueue
 
         foreach ($realms as $realm) {
             try {
-                $clientId = Uuid::uuid4();
+                $id = Uuid::uuid4();
 
-                $this->client->createClient($realm, $integration, $clientId);
-                $client = $this->client->fetchClient($realm, $integration, $clientId);
+                $this->client->createClient($realm, $integration, $id);
+                $client = $this->client->fetchClient($realm, $integration, $id);
                 $this->client->addScopeToClient($client, $scopeId);
 
                 $clientCollection->add($client);

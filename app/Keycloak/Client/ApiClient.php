@@ -15,7 +15,7 @@ interface ApiClient
 
     public function addScopeToClient(Client $client, UuidInterface $scopeId): void;
 
-    public function fetchClient(Realm $realm, Integration $integration, UuidInterface $clientId): Client;
+    public function fetchClient(Realm $realm, Integration $integration, UuidInterface $id): Client;
 
     public function fetchIsClientActive(Client $client): bool;
 

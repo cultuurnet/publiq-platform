@@ -37,7 +37,7 @@ final class KeycloakServiceProvider extends ServiceProvider
                 new KeycloakHttpClient(
                     new Client([RequestOptions::HTTP_ERRORS => false]),
                     new ClientCredentials(
-                        $this->app->get(Config::class),
+                        $this->app->get(LoggerInterface::class),
                     )
                 ),
                 $this->app->get(ScopeConfig::class),

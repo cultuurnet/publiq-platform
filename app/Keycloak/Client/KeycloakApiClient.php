@@ -31,17 +31,15 @@ final readonly class KeycloakApiClient implements ApiClient
     /**
      * @throws KeyCloakApiFailed
      */
-    public function createClient(Realm $realm, Integration $integration, UuidInterface $clientId): void
+    public function createClient(Realm $realm, Integration $integration, UuidInterface $id): void
     {
-        $id = Uuid::uuid4();
-
         try {
             $response = $this->client->sendWithBearer(
                 new Request(
                     'POST',
                     sprintf('admin/realms/%s/clients', $realm->internalName),
                     [],
-                    Json::encode(IntegrationToKeycloakClientConverter::convert($id, $integration, $clientId))
+                    Json::encode(IntegrationToKeycloakClientConverter::convert($id, $integration, Uuid::uuid4()))
                 ),
                 $realm
             );
@@ -55,7 +53,7 @@ final readonly class KeycloakApiClient implements ApiClient
             In this case we do not fail, we will just connect both sides and make sure the scopes are configured correctly.
             */
 
-            $this->logger->info(sprintf('Client %s already exists', $integration->id->toString()));
+            $this->logger->info(sprintf('Client %s already exists for realm %s', $integration->name, $realm->publicName));
 
             return;
         }
@@ -64,7 +62,7 @@ final readonly class KeycloakApiClient implements ApiClient
             throw KeyCloakApiFailed::failedToCreateClientWithResponse($response);
         }
 
-        $this->logger->info(sprintf('Client %s, client id %s created with id %s', $integration->name, $integration->id->toString(), $id->toString()));
+        $this->logger->info(sprintf('Client %s for realm %s created with id %s', $integration->name, $realm->publicName, $id->toString()));
     }
 
     /**
@@ -76,7 +74,7 @@ final readonly class KeycloakApiClient implements ApiClient
             $response = $this->client->sendWithBearer(
                 new Request(
                     'PUT',
-                    sprintf('admin/realms/%s/clients/%s/default-client-scopes/%s', $client->realm->internalName, $client->clientId->toString(), $scopeId->toString())
+                    sprintf('admin/realms/%s/clients/%s/default-client-scopes/%s', $client->realm->internalName, $client->id->toString(), $scopeId->toString())
                 ),
                 $client->realm
             );
@@ -115,13 +113,13 @@ final readonly class KeycloakApiClient implements ApiClient
     /**
      * @throws KeyCloakApiFailed
      */
-    public function fetchClient(Realm $realm, Integration $integration, UuidInterface $clientId): Client
+    public function fetchClient(Realm $realm, Integration $integration, UuidInterface $id): Client
     {
         try {
             $response = $this->client->sendWithBearer(
                 new Request(
                     'GET',
-                    sprintf('admin/realms/%s/clients/%s', $realm->internalName, $clientId->toString())
+                    sprintf('admin/realms/%s/clients/%s', $realm->internalName, $id->toString())
                 ),
                 $realm
             );
@@ -132,8 +130,7 @@ final readonly class KeycloakApiClient implements ApiClient
                 throw KeyCloakApiFailed::failedToFetchClient($realm, $body);
             }
 
-            $data = Json::decodeAssociatively($body);
-            return Client::createFromJson($realm, $integration->id, $clientId, $data[0]);
+            return Client::createFromJson($realm, $integration->id, Json::decodeAssociatively($body));
         } catch (Throwable $e) {
             throw KeyCloakApiFailed::failedToFetchClient($realm, $e->getMessage());
         }
@@ -148,7 +145,7 @@ final readonly class KeycloakApiClient implements ApiClient
             $response = $this->client->sendWithBearer(
                 new Request(
                     'GET',
-                    'admin/realms/' . $client->realm->internalName . '/clients?' . http_build_query(['clientId' => $client->clientId->toString()])
+                    'admin/realms/' . $client->realm->internalName . '/clients/?' . http_build_query(['clientId' => $client->clientId->toString()])
                 ),
                 $client->realm
             );

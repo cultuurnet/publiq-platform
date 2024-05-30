@@ -268,7 +268,7 @@ final class IntegrationModel extends UuidModel
     public function hasMissingKeycloakConsumers(): bool
     {
         /** @var Config $config */
-        $config = App::get('config');
+        $config = App::get(Config::class);
         return $this->keycloakClients()->count() < $config->realms->count();
     }
 

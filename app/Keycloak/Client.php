@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Keycloak;
 
+use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -22,17 +23,18 @@ final readonly class Client
     public static function createFromJson(
         Realm $realm,
         UuidInterface $integrationId,
-        UuidInterface $clientId,
         array $data
     ): self {
         if (empty($data['secret'])) {
             throw new InvalidArgumentException('Missing secret');
         }
 
+        Log::debug(json_encode($data), $data);
+
         return new self(
             Uuid::fromString($data['id']),
             $integrationId,
-            $clientId,
+            Uuid::fromString($data['clientId']),
             $data['secret'],
             $realm,
         );
