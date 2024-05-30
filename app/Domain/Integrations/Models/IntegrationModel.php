@@ -81,12 +81,6 @@ final class IntegrationModel extends UuidModel
         return $this->status !== IntegrationStatus::Blocked->value;
     }
 
-    public function canBeUnblocked(): bool
-    {
-        return $this->status === IntegrationStatus::Blocked->value;
-    }
-
-
     public function isWidgets(): bool
     {
         return $this->type === IntegrationType::Widgets->value;
@@ -156,11 +150,6 @@ final class IntegrationModel extends UuidModel
             'status' => IntegrationStatus::Blocked,
         ]);
         IntegrationBlocked::dispatch(Uuid::fromString($this->id));
-    }
-
-    public function unblock(): void
-    {
-
     }
 
     /**
