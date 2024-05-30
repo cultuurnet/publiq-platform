@@ -18,13 +18,14 @@ use App\Keycloak\ScopeConfig;
 use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
 use App\Keycloak\Converters\IntegrationUrlConverter;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use Tests\CreatesIntegration;
 use Tests\Keycloak\ConfigFactory;
 use Tests\Keycloak\KeycloakHttpClientFactory;
 use Tests\Keycloak\RealmFactory;
+use Tests\TestCase;
 
 final class UpdateClientsTest extends TestCase
 {
@@ -33,7 +34,6 @@ final class UpdateClientsTest extends TestCase
     use ConfigFactory;
     use RealmFactory;
 
-
     private const SECRET = 'my-secret';
     private const SEARCH_SCOPE_ID = '06059529-74b5-422a-a499-ffcaf065d437';
 
@@ -41,10 +41,14 @@ final class UpdateClientsTest extends TestCase
     private ScopeConfig $scopeConfig;
     private ApiClient&MockObject $apiClient;
     private LoggerInterface&MockObject $logger;
+    private IntegrationRepository&MockObject $integrationRepository;
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->config = $this->givenKeycloakConfig();
+        $this->configureKeycloakConfigFacade();
 
         // This is a search API integration
         $this->integration = $this->givenThereIsAnIntegration(Uuid::uuid4());
@@ -66,47 +70,66 @@ final class UpdateClientsTest extends TestCase
 
         $this->apiClient = $this->createMock(ApiClient::class);
         $this->logger = $this->createMock(LoggerInterface::class);
+        $this->integrationRepository = $this->createMock(IntegrationRepository::class);
+
+        $this->integrationRepository->expects($this->once())
+            ->method('getById')
+            ->with($this->integration->id)
+            ->willReturn($this->integration);
     }
 
     public function test_update_client_for_integration(): void
     {
-        $integrationRepository = $this->createMock(IntegrationRepository::class);
-        $integrationRepository->expects($this->once())
-            ->method('getById')
-            ->with($this->integration->id)
-            ->willReturn($this->integration);
-
         $clients = [];
         foreach ($this->config->realms as $realm) {
-            $client = new Client(Uuid::uuid4(), $this->integration->id, Uuid::uuid4(), self::SECRET, $realm);
+            $id = Uuid::uuid4();
+            $clients[$id->toString()] = new Client($id, $this->integration->id, Uuid::uuid4(), self::SECRET, $realm);
+        }
 
-            $this->apiClient->expects($this->once())
-                ->method('updateClient')
-                ->with(
-                    $client,
-                    array_merge(
-                        IntegrationToKeycloakClientConverter::convert($client->id, $this->integration, $client->clientId),
-                        IntegrationUrlConverter::convert($this->integration, $client)
-                    )
+        $activeId = null; // Which client are we updating?
+        $this->apiClient->expects($this->exactly(2))
+            ->method('updateClient')
+            ->willReturnCallback(function (Client $client, array $body) use (&$activeId) {
+                $expectedBody = array_merge(
+                    IntegrationToKeycloakClientConverter::convert($client->id, $this->integration, $client->clientId),
+                    IntegrationUrlConverter::convert($this->integration, $client)
                 );
-            $this->apiClient->expects($this->once())
-                ->method('deleteScopes')
-                ->with($client);
 
-            $this->apiClient->expects($this->once())
-                ->method('addScopeToClient')
-                ->with($client->realm, $client->id, Uuid::fromString(self::SEARCH_SCOPE_ID));
+                $this->assertEquals($expectedBody, $body);
 
-            $this->logger->expects($this->once())
-                ->method('info')
-                ->with('Keycloak client updated', [
+                $activeId = $client->id;
+            });
+
+        $this->apiClient->expects($this->exactly(2))
+            ->method('deleteScopes')
+            ->willReturnCallback(function (Client $client) use (&$activeId) {
+                $this->assertEquals($activeId, $client->id);
+            });
+
+        $this->apiClient->expects($this->exactly(2))
+            ->method('addScopeToClient')
+            ->willReturnCallback(function (Client $client, UuidInterface $scopeId) use (&$activeId) {
+                $this->assertEquals($activeId, $client->id);
+                $this->assertEquals(Uuid::fromString(self::SEARCH_SCOPE_ID), $scopeId);
+            });
+
+        $this->logger->expects($this->exactly(2))
+            ->method('info')
+            ->willReturnCallback(function (string $message, array $params) use (&$activeId, $clients) {
+                $this->assertEquals('Keycloak client updated', $message);
+
+                if ($activeId === null || !isset($clients[$activeId->toString()])) {
+                    $this->fail('Logging client that does not exist');
+                }
+
+                $client = $clients[$activeId->toString()];
+
+                $this->assertEquals([
                     'integration_id' => $this->integration->id->toString(),
                     'realm' => $client->realm->internalName,
                     'client_id' => $client->clientId->toString(),
-                ]);
-
-            $clients[] = $client;
-        }
+                ], $params);
+            });
 
         $keycloakClientRepository = $this->createMock(KeycloakClientRepository::class);
         $keycloakClientRepository->expects($this->once())
@@ -115,7 +138,7 @@ final class UpdateClientsTest extends TestCase
             ->willReturn($clients);
 
         $createClients = new UpdateClients(
-            $integrationRepository,
+            $this->integrationRepository,
             $keycloakClientRepository,
             $this->apiClient,
             $this->scopeConfig,
