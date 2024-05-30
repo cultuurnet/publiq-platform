@@ -48,7 +48,7 @@ final class IntegrationModelTest extends TestCase
             'status' => IntegrationStatus::Blocked,
         ]);
         $this->assertDatabaseHas('integrations_previous_statuses', [
-            'integration_id' =>  $this->integrationModel->id,
+            'id' =>  $this->integrationModel->id,
             'status' => IntegrationStatus::Draft,
         ]);
     }

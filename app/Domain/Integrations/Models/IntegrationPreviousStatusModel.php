@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Domain\Integrations\Models;
 
 use App\Models\UuidModel;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property string $status
@@ -16,7 +15,6 @@ final class IntegrationPreviousStatusModel extends UuidModel
 
     protected $fillable = [
         'id',
-        'integration_id',
         'status',
     ];
 }
