@@ -6,6 +6,7 @@ namespace App\Domain\Integrations\Repositories;
 
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\Models\IntegrationPreviousStatusModel;
+use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 final class EloquentIntegrationPreviousStatusRepository implements IntegrationPreviousStatusRepository
@@ -13,6 +14,7 @@ final class EloquentIntegrationPreviousStatusRepository implements IntegrationPr
     public function save(UuidInterface $integrationId, IntegrationStatus $status): void
     {
         IntegrationPreviousStatusModel::query()->create([
+            'id' => Uuid::uuid4()->toString(),
             'integration_id' => $integrationId->toString(),
             'status' => $status->value,
          ]);
