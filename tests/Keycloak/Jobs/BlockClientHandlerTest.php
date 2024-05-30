@@ -15,12 +15,10 @@ use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
-use Tests\Keycloak\ConfigFactory;
 use Tests\Keycloak\RealmFactory;
 
 final class BlockClientHandlerTest extends TestCase
 {
-    use ConfigFactory;
     use RealmFactory;
 
     public function test_block_client_handler(): void

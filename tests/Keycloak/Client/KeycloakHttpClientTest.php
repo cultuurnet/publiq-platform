@@ -12,12 +12,10 @@ use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
 use Tests\TestCase;
 use Psr\Http\Message\RequestInterface;
-use Tests\Keycloak\ConfigFactory;
 use Tests\Keycloak\RealmFactory;
 
 final class KeycloakHttpClientTest extends TestCase
 {
-    use ConfigFactory;
     use RealmFactory;
 
     public const MY_SECRET_TOKEN = 'my-secret-token';

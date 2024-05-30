@@ -13,6 +13,7 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client;
 use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Listeners\UpdateClients;
+use App\Keycloak\RealmCollection;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Keycloak\ScopeConfig;
 use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
@@ -22,7 +23,6 @@ use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Tests\CreatesIntegration;
-use Tests\Keycloak\ConfigFactory;
 use Tests\Keycloak\KeycloakHttpClientFactory;
 use Tests\Keycloak\RealmFactory;
 use Tests\TestCase;
@@ -31,7 +31,7 @@ final class UpdateClientsTest extends TestCase
 {
     use CreatesIntegration;
     use KeycloakHttpClientFactory;
-    use ConfigFactory;
+
     use RealmFactory;
 
     private const SECRET = 'my-secret';
@@ -42,13 +42,11 @@ final class UpdateClientsTest extends TestCase
     private ApiClient&MockObject $apiClient;
     private LoggerInterface&MockObject $logger;
     private IntegrationRepository&MockObject $integrationRepository;
+    private RealmCollection $realms;
 
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->config = $this->givenKeycloakConfig();
-        $this->configureKeycloakConfigFacade();
 
         // This is a search API integration
         $this->integration = $this->givenThereIsAnIntegration(Uuid::uuid4());
@@ -76,18 +74,19 @@ final class UpdateClientsTest extends TestCase
             ->method('getById')
             ->with($this->integration->id)
             ->willReturn($this->integration);
+        $this->realms = $this->givenAllRealms();
     }
 
     public function test_update_client_for_integration(): void
     {
         $clients = [];
-        foreach ($this->config->realms as $realm) {
+        foreach ($this->realms as $realm) {
             $id = Uuid::uuid4();
             $clients[$id->toString()] = new Client($id, $this->integration->id, Uuid::uuid4(), self::SECRET, $realm);
         }
 
         $activeId = null; // Which client are we updating?
-        $this->apiClient->expects($this->exactly(2))
+        $this->apiClient->expects($this->exactly($this->realms->count()))
             ->method('updateClient')
             ->willReturnCallback(function (Client $client, array $body) use (&$activeId) {
                 $expectedBody = array_merge(
@@ -100,20 +99,20 @@ final class UpdateClientsTest extends TestCase
                 $activeId = $client->id;
             });
 
-        $this->apiClient->expects($this->exactly(2))
+        $this->apiClient->expects($this->exactly($this->realms->count()))
             ->method('deleteScopes')
             ->willReturnCallback(function (Client $client) use (&$activeId) {
                 $this->assertEquals($activeId, $client->id);
             });
 
-        $this->apiClient->expects($this->exactly(2))
+        $this->apiClient->expects($this->exactly($this->realms->count()))
             ->method('addScopeToClient')
             ->willReturnCallback(function (Client $client, UuidInterface $scopeId) use (&$activeId) {
                 $this->assertEquals($activeId, $client->id);
                 $this->assertEquals(Uuid::fromString(self::SEARCH_SCOPE_ID), $scopeId);
             });
 
-        $this->logger->expects($this->exactly(2))
+        $this->logger->expects($this->exactly($this->realms->count()))
             ->method('info')
             ->willReturnCallback(function (string $message, array $params) use (&$activeId, $clients) {
                 $this->assertEquals('Keycloak client updated', $message);

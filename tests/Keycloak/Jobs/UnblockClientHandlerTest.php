@@ -15,14 +15,13 @@ use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
-use Tests\Keycloak\ConfigFactory;
 use Tests\Keycloak\KeycloakHttpClientFactory;
 use Tests\Keycloak\RealmFactory;
 
 final class UnblockClientHandlerTest extends TestCase
 {
     use KeycloakHttpClientFactory;
-    use ConfigFactory;
+
     use RealmFactory;
 
     public function test_unblock_client_handler(): void

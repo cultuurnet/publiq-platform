@@ -9,7 +9,6 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client\ApiClient;
 use App\Keycloak\ClientCollection;
-use App\Keycloak\Config;
 use App\Keycloak\Events\MissingClientsDetected;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\RealmCollection;
@@ -28,7 +27,7 @@ final class CreateClients implements ShouldQueue
     public function __construct(
         private readonly IntegrationRepository $integrationRepository,
         private readonly KeycloakClientRepository $keycloakClientRepository,
-        private readonly Config $config,
+        private readonly RealmCollection $realms,
         private readonly ApiClient $client,
         private readonly ScopeConfig $scopeConfig,
         private readonly LoggerInterface $logger
@@ -37,14 +36,14 @@ final class CreateClients implements ShouldQueue
 
     public function handleCreateClients(IntegrationCreated $event): void
     {
-        $this->handle($event, $this->config->realms);
+        $this->handle($event, $this->realms);
     }
 
     public function handleCreatingMissingClients(MissingClientsDetected $event): void
     {
         $missingRealms = $this->keycloakClientRepository->getMissingRealmsByIntegrationId(
             $event->id,
-            $this->config->realms
+            $this->realms
         );
 
         if (count($missingRealms) === 0) {

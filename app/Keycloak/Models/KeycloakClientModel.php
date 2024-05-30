@@ -6,11 +6,10 @@ namespace App\Keycloak\Models;
 
 use App\Keycloak\Client;
 use App\Domain\Integrations\Models\IntegrationModel;
-use App\Keycloak\Config;
+use App\Keycloak\RealmCollection;
 use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\App;
 use Ramsey\Uuid\Uuid;
 
 final class KeycloakClientModel extends UuidModel
@@ -29,15 +28,14 @@ final class KeycloakClientModel extends UuidModel
 
     public function toDomain(): Client
     {
-        /** @var Config $config */
-        $config = App::get(Config::class);
+        $realms = RealmCollection::build();
 
         return new Client(
             Uuid::fromString($this->id),
             Uuid::fromString($this->integration_id),
             Uuid::fromString($this->client_id),
             $this->client_secret,
-            $config->realms->fromPublicName($this->realm)
+            $realms->fromPublicName($this->realm)
         );
     }
 

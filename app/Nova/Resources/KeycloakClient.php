@@ -6,7 +6,6 @@ namespace App\Nova\Resources;
 
 use App\Domain\Integrations\Environment;
 use App\Keycloak\CachedKeycloakClientStatus;
-use App\Keycloak\Config;
 use App\Keycloak\Models\KeycloakClientModel;
 use App\Nova\ActionGuards\ActionGuard;
 use App\Nova\ActionGuards\Keycloak\BlockKeycloakClientGuard;
@@ -143,10 +142,5 @@ final class KeycloakClient extends Resource
     private function getKeycloakClientStatus(): CachedKeycloakClientStatus
     {
         return App::get(CachedKeycloakClientStatus::class);
-    }
-
-    private function getConfig(): Config
-    {
-        return App::get(Config::class);
     }
 }

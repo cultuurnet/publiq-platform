@@ -11,14 +11,13 @@ use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
 use Tests\TestCase;
 use Psr\Log\LoggerInterface;
-use Tests\Keycloak\ConfigFactory;
 use Tests\Keycloak\KeycloakHttpClientFactory;
 use Tests\Keycloak\RealmFactory;
 
 final class ClientCredentialsTest extends TestCase
 {
     use KeycloakHttpClientFactory;
-    use ConfigFactory;
+
     use RealmFactory;
 
     public const ACCESS_TOKEN = 'pqeaefosdfhbsdq';
@@ -29,7 +28,6 @@ final class ClientCredentialsTest extends TestCase
     {
         parent::setUp();
 
-        $this->config = $this->givenKeycloakConfig();
         $this->logger = $this->createMock(LoggerInterface::class);
     }
 

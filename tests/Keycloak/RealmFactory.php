@@ -6,14 +6,24 @@ namespace Tests\Keycloak;
 
 use App\Domain\Integrations\Environment;
 use App\Keycloak\Realm;
+use App\Keycloak\RealmCollection;
 
 trait RealmFactory
 {
+    public function givenAllRealms(): RealmCollection
+    {
+        return new RealmCollection([
+            $this->givenAcceptanceRealm(),
+            $this->givenTestRealm(),
+            $this->givenProductionRealm(),
+        ]);
+    }
+
     public function givenAcceptanceRealm(): Realm
     {
         return new Realm(
             'myAcceptanceRealm',
-            'Acceptance',
+            'Acc',
             'https://keycloak.com/api',
             'php_client',
             'dfgopopzjcvijogdrg',
@@ -25,11 +35,24 @@ trait RealmFactory
     {
         return new Realm(
             'myTestRealm',
-            'Testing',
+            'Test',
             'https://keycloak.com/api',
             'php_client',
             'dfgopopzjcvijogdrg',
             Environment::Testing,
         );
     }
+
+    public function givenProductionRealm(): Realm
+    {
+        return new Realm(
+            'myProductRealm',
+            'Prod',
+            'https://keycloak.com/api',
+            'php_client',
+            'dfgopopzjcvijogdrg',
+            Environment::Production,
+        );
+    }
+
 }

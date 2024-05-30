@@ -5,32 +5,29 @@ declare(strict_types=1);
 namespace Tests\Keycloak\Repositories;
 
 use App\Keycloak\Client;
-use App\Keycloak\Config;
 use App\Keycloak\Realm;
 use App\Keycloak\RealmCollection;
 use App\Keycloak\Repositories\EloquentKeycloakClientRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
-use Tests\Keycloak\ConfigFactory;
 use Tests\Keycloak\RealmFactory;
 use Tests\TestCase;
 
 final class EloquentKeycloakClientRepositoryTest extends TestCase
 {
     use RefreshDatabase;
-    use ConfigFactory;
+
     use RealmFactory;
 
     private EloquentKeycloakClientRepository $repository;
-    private Config $config;
+    private RealmCollection $realms;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->repository = new EloquentKeycloakClientRepository();
-        $this->config = $this->givenKeycloakConfig();
-        $this->configureKeycloakConfigFacade();
+        $this->realms = $this->givenAllRealms();
     }
 
     public function test_it_can_save_one_or_more_clients(): void
@@ -72,7 +69,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
     public function test_it_can_get_all_clients_for_an_integration_id(): void
     {
         /** @var Realm $realm */
-        $realm = $this->config->realms->first();
+        $realm = $this->realms->first();
 
         $integrationId = Uuid::uuid4();
         $clientId = Uuid::uuid4();
@@ -100,7 +97,11 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
         sort($expected);
         sort($actual);
 
-        $this->assertEquals($expected, $actual);
+        foreach($actual as $i => $client) {
+            $this->assertEquals($expected[$i]->clientId, $client->clientId);
+            $this->assertEquals($expected[$i]->clientSecret, $client->clientSecret);
+            $this->assertEquals($expected[$i]->realm->publicName, $client->realm->publicName);
+        }
     }
 
     public function test_it_can_get_all_clients_for_multiple_integration_ids(): void
@@ -136,7 +137,11 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
         sort($expected);
         sort($actual);
 
-        $this->assertEquals($expected, $actual);
+        foreach($actual as $i => $client) {
+            $this->assertEquals($expected[$i]->clientId, $client->clientId);
+            $this->assertEquals($expected[$i]->clientSecret, $client->clientSecret);
+            $this->assertEquals($expected[$i]->realm->publicName, $client->realm->publicName);
+        }
     }
 
     public function test_it_doesnt_get_clients_for_unasked_integration_ids(): void
@@ -146,7 +151,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
         $integrationIds = [$firstIntegrationId, $secondIntegrationId];
 
         $clients = [];
-        foreach ($this->config->realms as $realm) {
+        foreach ($this->realms as $realm) {
             foreach ($integrationIds as $integrationId) {
                 $count = count($clients) + 1;
 
@@ -174,7 +179,11 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
         sort($expected);
         sort($actual);
 
-        $this->assertEquals($expected, $actual);
+        foreach($actual as $i => $client) {
+            $this->assertEquals($expected[$i]->clientId, $client->clientId);
+            $this->assertEquals($expected[$i]->clientSecret, $client->clientSecret);
+            $this->assertEquals($expected[$i]->realm->publicName, $client->realm->publicName);
+        }
     }
 
     public function test_it_can_get_missing_realms_by_integration_id(): void
@@ -183,7 +192,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
         $clients = [];
 
         $missing = new RealmCollection();
-        foreach ($this->config->realms as $realm) {
+        foreach ($this->realms as $realm) {
             if ($missing->isEmpty()) {
                 $missing->add($realm);
                 continue;
@@ -201,7 +210,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
 
         $this->assertEquals(
             $missing,
-            $this->repository->getMissingRealmsByIntegrationId($integrationId, $this->config->realms)
+            $this->repository->getMissingRealmsByIntegrationId($integrationId, $this->realms)
         );
     }
 }

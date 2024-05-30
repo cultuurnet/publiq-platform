@@ -45,13 +45,6 @@ final class KeycloakServiceProvider extends ServiceProvider
             );
         });
 
-        $this->app->singleton(Config::class, function () {
-            return new Config(
-                config('keycloak.enabled'),
-                RealmCollection::build()
-            );
-        });
-
         $this->app->singleton(ScopeConfig::class, function () {
             return new ScopeConfig(
                 Uuid::fromString(config('keycloak.scope.search_api_id')),
@@ -77,7 +70,7 @@ final class KeycloakServiceProvider extends ServiceProvider
 
     private function bootstrapEventHandling(): void
     {
-        if (!$this->app->get(Config::class)->isEnabled) {
+        if (!config(KeycloakConfig::isEnabled->value)) {
             return;
         }
 

@@ -17,7 +17,7 @@ final class CachedKeycloakClientStatusTest extends TestCase
 {
     use CreatesMockAuth0ClusterSDK;
 
-    use ConfigFactory;
+
     use RealmFactory;
 
     private ApiClient&MockObject $apiClient;

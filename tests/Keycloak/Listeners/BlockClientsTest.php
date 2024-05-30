@@ -15,7 +15,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Tests\CreatesIntegration;
-use Tests\Keycloak\ConfigFactory;
 use Tests\Keycloak\KeycloakHttpClientFactory;
 use Tests\Keycloak\RealmFactory;
 use Tests\TestCase;
@@ -25,7 +24,7 @@ final class BlockClientsTest extends TestCase
     use CreatesIntegration;
     use KeycloakHttpClientFactory;
 
-    use ConfigFactory;
+
     use RealmFactory;
 
     private const SECRET = 'my-secret';
@@ -37,9 +36,6 @@ final class BlockClientsTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->config = $this->givenKeycloakConfig();
-        $this->configureKeycloakConfigFacade();
 
         // This is a search API integration
         $this->integration = $this->givenThereIsAnIntegration(Uuid::uuid4());
@@ -57,19 +53,20 @@ final class BlockClientsTest extends TestCase
             ->willReturn($this->integration);
 
         $clients = [];
-        foreach ($this->config->realms as $realm) {
+        foreach ($this->givenAllRealms()
+                 as $realm) {
             $client = new Client(Uuid::uuid4(), $this->integration->id, Uuid::uuid4(), self::SECRET, $realm);
 
             $clients[$client->id->toString()] = $client;
         }
 
-        $this->apiClient->expects($this->exactly($this->config->realms->count()))
+        $this->apiClient->expects($this->exactly($this->givenAllRealms()->count()))
             ->method('blockClient')
             ->willReturnCallback(function (Client $client) use ($clients) {
                 $this->assertArrayHasKey($client->id->toString(), $clients);
             });
 
-        $this->logger->expects($this->exactly($this->config->realms->count()))
+        $this->logger->expects($this->exactly($this->givenAllRealms()->count()))
             ->method('info')
             ->willReturnCallback(function ($message, $options) {
                 $this->assertEquals('Keycloak client blocked', $message);

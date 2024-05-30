@@ -9,7 +9,6 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client;
 use App\Keycloak\Client\ApiClient;
-use App\Keycloak\Config;
 use App\Keycloak\Events\MissingClientsDetected;
 use App\Keycloak\Listeners\CreateClients;
 use App\Keycloak\Realm;
@@ -21,34 +20,29 @@ use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Tests\CreatesIntegration;
-use Tests\Keycloak\ConfigFactory;
 use Tests\Keycloak\RealmFactory;
 use Tests\TestCase;
 
 final class CreateClientsTest extends TestCase
 {
     use CreatesIntegration;
-    use ConfigFactory;
-    use RealmFactory;
 
+    use RealmFactory;
 
     private const SECRET = 'my-secret';
     private const SEARCH_SCOPE_ID = '06059529-74b5-422a-a499-ffcaf065d437';
 
-    private Config $config;
     private Integration $integration;
     private CreateClients $handler;
     private IntegrationRepository&MockObject $integrationRepository;
     private KeycloakClientRepository&MockObject $keycloakClientRepository;
     private ApiClient&MockObject $apiClient;
     private LoggerInterface&MockObject $logger;
+    private RealmCollection $realms;
 
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->config = $this->givenKeycloakConfig();
-        $this->configureKeycloakConfigFacade();
 
         // This is a search API integration
         $this->integration = $this->givenThereIsAnIntegration(Uuid::uuid4());
@@ -65,10 +59,12 @@ final class CreateClientsTest extends TestCase
             Uuid::fromString('0743b1c7-0ea2-46af-906e-fbb6c0317514'),
         );
 
+        $this->realms = $this->givenAllRealms();
+
         $this->handler = new CreateClients(
             $this->integrationRepository,
             $this->keycloakClientRepository,
-            $this->config,
+            $this->realms,
             $this->apiClient,
             $scopeConfig,
             $this->logger,
@@ -79,7 +75,7 @@ final class CreateClientsTest extends TestCase
     {
         $clients = [];
 
-        foreach ($this->config->realms as $realm) {
+        foreach ($this->realms as $realm) {
             $clients[$realm->internalName] = new Client(
                 Uuid::uuid4(),
                 $this->integration->id,
@@ -90,7 +86,7 @@ final class CreateClientsTest extends TestCase
         }
 
         $activeId = null;
-        $this->apiClient->expects($this->exactly($this->config->realms->count()))
+        $this->apiClient->expects($this->exactly($this->realms->count()))
             ->method('createClient')
             ->willReturnCallback(
                 function (Realm $realm, Integration $integrationArgument) use ($clients, &$activeId) {
@@ -102,14 +98,14 @@ final class CreateClientsTest extends TestCase
                 }
             );
 
-        $this->apiClient->expects($this->exactly(2))
+        $this->apiClient->expects($this->exactly($this->realms->count()))
             ->method('addScopeToClient')
             ->willReturnCallback(function (Client $client, UuidInterface $scopeId) use (&$activeId) {
                 $this->assertEquals($activeId, $client->id);
                 $this->assertEquals(Uuid::fromString(self::SEARCH_SCOPE_ID), $scopeId);
             });
 
-        $this->apiClient->expects($this->exactly($this->config->realms->count()))
+        $this->apiClient->expects($this->exactly($this->realms->count()))
             ->method('fetchClient')
             ->willReturnCallback(
                 function (Realm $realm, Integration $integrationArgument) use ($clients) {
@@ -132,7 +128,7 @@ final class CreateClientsTest extends TestCase
         //Check if clients where created for all realms
         $realmHits = [];
 
-        $this->logger->expects($this->exactly($this->config->realms->count()))
+        $this->logger->expects($this->exactly($this->realms->count()))
             ->method('info')
             ->willReturnCallback(function ($message, $options) use (&$realmHits) {
                 $this->assertEquals('Keycloak client created', $message);
@@ -146,7 +142,7 @@ final class CreateClientsTest extends TestCase
 
         $this->handler->handleCreateClients(new IntegrationCreated($this->integration->id));
 
-        foreach ($this->config->realms as $realm) {
+        foreach ($this->realms as $realm) {
             $this->assertArrayHasKey($realm->internalName, $realmHits, 'Client was not created for realm ' . $realm->internalName);
         }
     }
@@ -174,7 +170,7 @@ final class CreateClientsTest extends TestCase
 
         $this->keycloakClientRepository->expects($this->once())
             ->method('getMissingRealmsByIntegrationId')
-            ->with($this->integration->id, $this->config->realms)
+            ->with($this->integration->id, $this->givenAllRealms())
             ->willReturn($missingRealms);
 
         foreach ($missingRealms as $realm) {
