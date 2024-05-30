@@ -43,9 +43,9 @@ final class KeycloakClient extends Resource
         /** @var Builder $query */
         return $query->orderByRaw(
             'CASE
-                WHEN realm = \'acc\' THEN 1
+                WHEN realm = \'acceptance\' THEN 1
                 WHEN realm = \'test\' THEN 2
-                WHEN realm = \'prod\' THEN 3
+                WHEN realm = \'production\' THEN 3
             END'
         );
     }
