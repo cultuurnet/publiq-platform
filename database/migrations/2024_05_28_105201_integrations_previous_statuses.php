@@ -11,7 +11,6 @@ return new class () extends Migration {
     {
         Schema::create('integrations_previous_statuses', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('integration_id')->unique();
             $table->string('status');
             $table->timestamps();
         });

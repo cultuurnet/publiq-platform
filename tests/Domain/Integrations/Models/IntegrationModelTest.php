@@ -49,11 +49,26 @@ final class IntegrationModelTest extends TestCase
             'status' => IntegrationStatus::Blocked,
         ]);
         $this->assertDatabaseHas('integrations_previous_statuses', [
-            'integration_id' =>  $this->integrationModel->id,
+            'id' =>  $this->integrationModel->id,
             'status' => IntegrationStatus::Draft,
         ]);
     }
 
+    public function test_it_handles_unblock(): void
+    {
+        $this->integrationModel->activate();
+        $this->integrationModel->block();
+        $this->integrationModel->unblock();
+
+        $this->assertDatabaseHas('integrations', [
+            'id' =>  $this->integrationModel->id,
+            'status' => IntegrationStatus::Active,
+        ]);
+        $this->assertDatabaseMissing('integrations_previous_statuses', [
+            'id' =>  $this->integrationModel->id,
+            'status' => IntegrationStatus::Active,
+        ]);
+    }
 
     public function test_it_handles_unblock(): void
     {

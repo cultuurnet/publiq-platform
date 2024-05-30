@@ -149,8 +149,7 @@ final class IntegrationModel extends UuidModel
     {
         IntegrationPreviousStatusModel::query()->create(
             [
-                'id' => Uuid::uuid4()->toString(),
-                'integration_id' => $this->id,
+                'id' => $this->id,
                 'status' => $this->status,
             ]
         );
@@ -163,7 +162,7 @@ final class IntegrationModel extends UuidModel
     public function unblock(): void
     {
         $integrationPreviousStatusBuilder = IntegrationPreviousStatusModel::query()
-            ->where('integration_id', '=', $this->id);
+            ->where('id', '=', $this->id);
 
         if ($integrationPreviousStatusBuilder->count() === 0) {
             $this->update([
