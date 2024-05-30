@@ -137,7 +137,7 @@ final class UpdateClientsTest extends TestCase
             ->with($this->integration->id)
             ->willReturn($clients);
 
-        $createClients = new UpdateClients(
+        $updateClients = new UpdateClients(
             $this->integrationRepository,
             $keycloakClientRepository,
             $this->apiClient,
@@ -145,6 +145,6 @@ final class UpdateClientsTest extends TestCase
             $this->logger
         );
 
-        $createClients->handle(new IntegrationUpdated($this->integration->id));
+        $updateClients->handle(new IntegrationUpdated($this->integration->id));
     }
 }
