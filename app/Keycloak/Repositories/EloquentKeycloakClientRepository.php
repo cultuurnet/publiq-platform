@@ -75,9 +75,11 @@ final class EloquentKeycloakClientRepository implements KeycloakClientRepository
             ->toArray();
     }
 
-    public function getMissingRealmsByIntegrationId(UuidInterface $integrationId, RealmCollection $realms): RealmCollection
+    public function getMissingRealmsByIntegrationId(UuidInterface $integrationId): RealmCollection
     {
         $clients = $this->getByIntegrationId($integrationId);
+
+        $realms = RealmCollection::build();
 
         if (count($clients) === $realms->count()) {
             return new RealmCollection();

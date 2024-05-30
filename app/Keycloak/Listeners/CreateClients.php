@@ -41,10 +41,7 @@ final class CreateClients implements ShouldQueue
 
     public function handleCreatingMissingClients(MissingClientsDetected $event): void
     {
-        $missingRealms = $this->keycloakClientRepository->getMissingRealmsByIntegrationId(
-            $event->id,
-            $this->realms
-        );
+        $missingRealms = $this->keycloakClientRepository->getMissingRealmsByIntegrationId($event->id);
 
         if (count($missingRealms) === 0) {
             $this->logger->info($event->id . ' - already has all Keycloak clients');

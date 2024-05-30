@@ -30,5 +30,5 @@ interface KeycloakClientRepository
      */
     public function getByIntegrationIds(array $integrationIds): array;
 
-    public function getMissingRealmsByIntegrationId(UuidInterface $integrationId, RealmCollection $realms): RealmCollection;
+    public function getMissingRealmsByIntegrationId(UuidInterface $integrationId): RealmCollection;
 }

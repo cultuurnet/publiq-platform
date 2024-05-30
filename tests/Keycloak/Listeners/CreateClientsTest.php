@@ -170,7 +170,7 @@ final class CreateClientsTest extends TestCase
 
         $this->keycloakClientRepository->expects($this->once())
             ->method('getMissingRealmsByIntegrationId')
-            ->with($this->integration->id, $this->givenAllRealms())
+            ->with($this->integration->id)
             ->willReturn($missingRealms);
 
         foreach ($missingRealms as $realm) {
