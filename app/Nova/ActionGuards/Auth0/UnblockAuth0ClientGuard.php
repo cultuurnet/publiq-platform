@@ -8,7 +8,7 @@ use App\Auth0\Auth0Client;
 use App\Auth0\CachedAuth0ClientGrants;
 use App\Nova\ActionGuards\ActionGuard;
 
-final readonly class ActivateAuth0ClientGuard implements ActionGuard
+final readonly class UnblockAuth0ClientGuard implements ActionGuard
 {
     public function __construct(
         private CachedAuth0ClientGrants $cachedAuth0ClientGrants,

@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Auth0\Jobs;
+namespace App\UiTiDv1\Jobs;
 
 use Illuminate\Foundation\Events\Dispatchable;
 use Ramsey\Uuid\UuidInterface;
 
-final class ActivateClient
+final readonly class UnblockConsumer
 {
     use Dispatchable;
 
-    public function __construct(public readonly UuidInterface $id)
+    public function __construct(public UuidInterface $id)
     {
     }
 }

@@ -61,10 +61,10 @@ final class Auth0ClusterSDK
         }
     }
 
-    public function activateClients(Auth0Client ...$auth0Clients): void
+    public function unblockClients(Auth0Client ...$auth0Clients): void
     {
         foreach ($auth0Clients as $auth0Client) {
-            $this->auth0TenantSDKs[$auth0Client->tenant->value]->activateClient($auth0Client);
+            $this->auth0TenantSDKs[$auth0Client->tenant->value]->unblockClient($auth0Client);
         }
     }
 

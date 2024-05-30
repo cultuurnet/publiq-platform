@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Nova\ActionGuards\UiTiDv1;
 
-use App\Nova\ActionGuards\UiTiDv1\ActivateUiTiDv1ConsumerGuard;
+use App\Nova\ActionGuards\UiTiDv1\UnblockUiTiDv1ConsumerGuard;
 use App\UiTiDv1\UiTiDv1Consumer;
 use App\UiTiDv1\UiTiDv1ConsumerStatus;
 use App\UiTiDv1\UiTiDv1Environment;
@@ -17,12 +17,12 @@ use Ramsey\Uuid\Uuid;
 use SimpleXMLElement;
 use Tests\UiTiDv1\CreatesMockUiTiDv1ClusterSDK;
 
-final class ActivateUiTiDv1ConsumerGuardTest extends TestCase
+final class UnblockUiTiDv1ConsumerGuardTest extends TestCase
 {
     use CreatesMockUiTiDv1ClusterSDK;
 
     private ClientInterface&MockObject $httpClient;
-    private ActivateUiTiDv1ConsumerGuard $guard;
+    private UnblockUiTiDv1ConsumerGuard $guard;
 
     public function setUp(): void
     {
@@ -30,7 +30,7 @@ final class ActivateUiTiDv1ConsumerGuardTest extends TestCase
 
         $this->httpClient = $this->createMock(ClientInterface::class);
 
-        $this->guard = new ActivateUiTiDv1ConsumerGuard(
+        $this->guard = new UnblockUiTiDv1ConsumerGuard(
             $this->createMockUiTiDv1ClusterSDK($this->httpClient)
         );
     }
