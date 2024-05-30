@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Keycloak;
 
-use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;

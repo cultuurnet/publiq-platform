@@ -13,7 +13,6 @@ use App\Keycloak\ScopeConfig;
 use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
-use Illuminate\Support\Facades\Log;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
