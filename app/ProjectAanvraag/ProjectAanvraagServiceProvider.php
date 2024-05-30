@@ -11,6 +11,7 @@ use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationDeleted;
+use App\Domain\Integrations\Events\IntegrationUnblocked;
 use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\ProjectAanvraag\Listeners\SyncWidget;
@@ -62,6 +63,7 @@ final class ProjectAanvraagServiceProvider extends ServiceProvider
 
             Event::listen(IntegrationActivated::class, [SyncWidget::class, 'handleIntegrationActivated']);
             Event::listen(IntegrationBlocked::class, [SyncWidget::class, 'handleIntegrationBlocked']);
+            Event::listen(IntegrationUnblocked::class, [SyncWidget::class, 'handleIntegrationUnblocked']);
             Event::listen(IntegrationDeleted::class, [SyncWidget::class, 'handleIntegrationDeleted']);
 
             Event::listen(IntegrationUpdated::class, [SyncWidget::class, 'handleIntegrationUpdated']);
