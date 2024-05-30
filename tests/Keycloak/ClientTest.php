@@ -16,18 +16,18 @@ final class ClientTest extends TestCase
     public function test_create_from_json(): void
     {
         $integrationId = Uuid::uuid4();
-        $clientId = Uuid::uuid4();
         $data = [
             'id' => Uuid::uuid4()->toString(),
             'secret' => 'testSecret',
+            'clientId' => Uuid::uuid4()->toString(),
         ];
 
-        $client = Client::createFromJson($this->givenTestRealm(), $integrationId, $clientId, $data);
+        $client = Client::createFromJson($this->givenTestRealm(), $integrationId, $data);
 
         $this->assertEquals($data['id'], $client->id->toString());
         $this->assertEquals($data['secret'], $client->clientSecret);
+        $this->assertEquals($data['clientId'], $client->clientId);
         $this->assertEquals($integrationId, $client->integrationId);
-        $this->assertEquals($clientId, $client->clientId);
         $this->assertEquals($this->givenTestRealm(), $client->realm);
     }
 
@@ -41,6 +41,6 @@ final class ClientTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
-        Client::createFromJson($this->givenTestRealm(), $integrationId, Uuid::uuid4(), $data);
+        Client::createFromJson($this->givenTestRealm(), $integrationId, $data);
     }
 }

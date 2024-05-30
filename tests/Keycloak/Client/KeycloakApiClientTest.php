@@ -57,7 +57,7 @@ final class KeycloakApiClientTest extends TestCase
 
     public function test_can_create_client(): void
     {
-        $clientId = Uuid::uuid4();
+        $id = Uuid::uuid4();
         $mock = new MockHandler([
             new Response(200, [], json_encode(['access_token' => self::TOKEN], JSON_THROW_ON_ERROR)),
             new Response(201),
@@ -72,19 +72,13 @@ final class KeycloakApiClientTest extends TestCase
         $counter = 0;
         $this->logger->expects($this->exactly(2))
             ->method('info')
-            ->willReturnCallback(function ($message) use (&$counter) {
+            ->willReturnCallback(function ($message) use (&$counter, $id) {
                 switch ($counter++) {
                     case 0:
                         $this->assertEquals('Fetched token for php_client, token starts with ' . substr(self::TOKEN, 0, 6), $message);
                         break;
                     case 1:
-
-                        // use contains because we don't know the generated id
-                        $this->assertStringStartsWith(
-                            sprintf('Client %s, client id %s created with id', $this->integration->name, $this->integration->id),
-                            $message
-                        );
-
+                        $this->assertEquals(sprintf('Client %s for realm %s created with id %s', $this->integration->name, $this->realm->publicName, $id->toString()), $message);
                         break;
                     default:
                         $this->fail('Unknown message logged: ' . $message);
@@ -94,7 +88,7 @@ final class KeycloakApiClientTest extends TestCase
         $apiClient->createClient(
             $this->realm,
             $this->integration,
-            $clientId,
+            $id,
         );
     }
 
@@ -155,13 +149,11 @@ final class KeycloakApiClientTest extends TestCase
             new Response(200, [], json_encode(['access_token' => self::TOKEN], JSON_THROW_ON_ERROR)),
             new Response(200, [], json_encode(
                 [
-                    [
-                        'id' => self::UUID,
-                        'clientId' => $clientId,
-                        'name' => 'test client',
-                        'secret' => self::SECRET,
-                        'enabled' => true,
-                    ],
+                    'id' => self::UUID,
+                    'clientId' => $clientId,
+                    'name' => 'test client',
+                    'secret' => self::SECRET,
+                    'enabled' => true,
                 ],
                 JSON_THROW_ON_ERROR
             )),
@@ -211,7 +203,7 @@ final class KeycloakApiClientTest extends TestCase
     {
         $mock = new MockHandler([
             new Response(200, [], json_encode(['access_token' => self::TOKEN], JSON_THROW_ON_ERROR)),
-            new Response(200, [], json_encode([['enabled' => $enabled]], JSON_THROW_ON_ERROR)),
+            new Response(200, [], json_encode(['enabled' => $enabled], JSON_THROW_ON_ERROR)),
         ]);
 
         $apiClient = new KeycloakApiClient(
