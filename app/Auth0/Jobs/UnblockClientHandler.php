@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Auth0\Jobs;
 
 use App\Auth0\Auth0ClusterSDK;
-use App\Auth0\Events\ClientActivated;
+use App\Auth0\Events\ClientUnblocked;
 use App\Auth0\Repositories\Auth0ClientRepository;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Psr\Log\LoggerInterface;
 
-final class ActivateClientHandler implements ShouldQueue
+final class UnblockClientHandler implements ShouldQueue
 {
     public function __construct(
         private readonly Auth0ClusterSDK $clusterSDK,
@@ -21,13 +21,13 @@ final class ActivateClientHandler implements ShouldQueue
     }
 
     public function handle(
-        ActivateClient $event
+        UnblockClient $event
     ): void {
         try {
-            $this->clusterSDK->activateClients($this->auth0ClientRepository->getById($event->id));
+            $this->clusterSDK->unblockClients($this->auth0ClientRepository->getById($event->id));
         } catch (ModelNotFoundException $e) {
             $this->logger->error(
-                'Failed to activate Auth0 client: ' . $e->getMessage(),
+                'Failed to unblock Auth0 client: ' . $e->getMessage(),
                 [
                     'domain' => 'auth0',
                     'id' => $event->id,
@@ -36,13 +36,13 @@ final class ActivateClientHandler implements ShouldQueue
             return;
         }
         $this->logger->info(
-            'Auth0 client activated',
+            'Auth0 client unblocked',
             [
                 'domain' => 'auth0',
                 'id' => $event->id,
             ]
         );
 
-        ClientActivated::dispatch($event->id);
+        ClientUnblocked::dispatch($event->id);
     }
 }

@@ -70,7 +70,7 @@ final class UiTiDv1EnvironmentSDK
         ]);
     }
 
-    public function activateConsumer(Integration $integration, UiTiDv1Consumer $consumer): void
+    public function unblockConsumer(Integration $integration, UiTiDv1Consumer $consumer): void
     {
         $this->sendPostRequest('serviceconsumer/' . $consumer->consumerKey, [
             'status' => UiTiDv1ConsumerStatus::Active->value,

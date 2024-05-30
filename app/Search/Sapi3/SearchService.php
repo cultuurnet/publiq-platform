@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Search;
+namespace App\Search\Sapi3;
 
 use CultuurNet\SearchV3\ValueObjects\PagedCollection;
 

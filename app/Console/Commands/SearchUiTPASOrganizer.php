@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Search\SearchService;
+use App\Search\Sapi3\SearchService;
 use CultuurNet\SearchV3\ValueObjects\Organizer;
 use Illuminate\Console\Command;
 
