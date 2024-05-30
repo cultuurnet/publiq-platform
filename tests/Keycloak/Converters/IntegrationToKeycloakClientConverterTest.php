@@ -6,7 +6,7 @@ namespace Tests\Keycloak\Converters;
 
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
 use Tests\CreatesIntegration;
 

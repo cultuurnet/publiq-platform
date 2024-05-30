@@ -45,7 +45,10 @@ final class CreateClientsTest extends TestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->config = $this->givenKeycloakConfig();
+        $this->configureKeycloakConfigFacade();
 
         // This is a search API integration
         $this->integration = $this->givenThereIsAnIntegration(Uuid::uuid4());

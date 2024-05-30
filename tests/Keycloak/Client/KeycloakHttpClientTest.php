@@ -10,7 +10,7 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Tests\Keycloak\ConfigFactory;
 use Tests\Keycloak\RealmFactory;
@@ -26,6 +26,8 @@ final class KeycloakHttpClientTest extends TestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->clientMock = $this->createMock(ClientInterface::class);
         $this->tokenStrategy = $this->createMock(TokenStrategy::class);
     }

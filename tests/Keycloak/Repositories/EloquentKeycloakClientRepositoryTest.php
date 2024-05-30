@@ -27,8 +27,10 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->repository = new EloquentKeycloakClientRepository();
         $this->config = $this->givenKeycloakConfig();
+        $this->configureKeycloakConfigFacade();
     }
 
     public function test_it_can_save_one_or_more_clients(): void

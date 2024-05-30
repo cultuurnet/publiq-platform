@@ -12,7 +12,7 @@ use App\Keycloak\Jobs\UnblockClientHandler;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Event;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
 use Tests\Keycloak\ConfigFactory;

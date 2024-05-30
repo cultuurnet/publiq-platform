@@ -9,7 +9,7 @@ use App\Keycloak\TokenStrategy\ClientCredentials;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use Psr\Log\LoggerInterface;
 use Tests\Keycloak\ConfigFactory;
 use Tests\Keycloak\KeycloakHttpClientFactory;
@@ -27,6 +27,8 @@ final class ClientCredentialsTest extends TestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->config = $this->givenKeycloakConfig();
         $this->logger = $this->createMock(LoggerInterface::class);
     }

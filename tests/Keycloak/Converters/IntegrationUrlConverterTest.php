@@ -10,7 +10,7 @@ use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\IntegrationUrlType;
 use App\Keycloak\Client;
 use App\Keycloak\Converters\IntegrationUrlConverter;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Tests\CreatesIntegration;
@@ -28,6 +28,8 @@ final class IntegrationUrlConverterTest extends TestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->integrationId = Uuid::uuid4();
         $this->client = new Client(
             Uuid::uuid4(),

@@ -13,13 +13,13 @@ use App\Keycloak\ScopeConfig;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Tests\CreatesIntegration;
 use Tests\Keycloak\ConfigFactory;
 use Tests\Keycloak\KeycloakHttpClientFactory;
 use Tests\Keycloak\RealmFactory;
+use Tests\TestCase;
 
 final class KeycloakApiClientTest extends TestCase
 {
@@ -40,6 +40,8 @@ final class KeycloakApiClientTest extends TestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->realm = $this->givenTestRealm();
         $this->config = $this->givenKeycloakConfig();
 

@@ -6,7 +6,7 @@ namespace Tests\Keycloak;
 
 use App\Keycloak\Client;
 use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
 
 final class ClientTest extends TestCase

@@ -8,10 +8,10 @@ use App\Keycloak\CachedKeycloakClientStatus;
 use App\Keycloak\Client;
 use App\Keycloak\Client\ApiClient;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
 use Tests\Auth0\CreatesMockAuth0ClusterSDK;
+use Tests\TestCase;
 
 final class CachedKeycloakClientStatusTest extends TestCase
 {

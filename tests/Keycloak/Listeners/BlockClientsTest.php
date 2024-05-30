@@ -12,13 +12,13 @@ use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Listeners\BlockClients;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Tests\CreatesIntegration;
 use Tests\Keycloak\ConfigFactory;
 use Tests\Keycloak\KeycloakHttpClientFactory;
 use Tests\Keycloak\RealmFactory;
+use Tests\TestCase;
 
 final class BlockClientsTest extends TestCase
 {
@@ -36,6 +36,8 @@ final class BlockClientsTest extends TestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->config = $this->givenKeycloakConfig();
 
         // This is a search API integration
