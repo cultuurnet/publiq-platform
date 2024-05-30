@@ -20,6 +20,7 @@ use App\Keycloak\ScopeConfig;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use Tests\CreatesIntegration;
 use Tests\Keycloak\ConfigFactory;
 use Tests\Keycloak\RealmFactory;
@@ -87,22 +88,27 @@ final class CreateClientsTest extends TestCase
                 self::SECRET,
                 $realm
             );
-
-            $this->apiClient->expects($this->once())
-                ->method('addScopeToClient')
-                ->with($realm, $clients[$realm->internalName]->id, Uuid::fromString(self::SEARCH_SCOPE_ID));
         }
 
+        $activeId = null;
         $this->apiClient->expects($this->exactly($this->config->realms->count()))
             ->method('createClient')
             ->willReturnCallback(
-                function (Realm $realm, Integration $integrationArgument) use ($clients) {
+                function (Realm $realm, Integration $integrationArgument) use ($clients, &$activeId) {
                     $this->assertEquals($this->integration->id, $integrationArgument->id);
                     $this->assertArrayHasKey($realm->internalName, $clients);
 
+                    $activeId = $clients[$realm->internalName]->id;
                     return $clients[$realm->internalName]->id;
                 }
             );
+
+        $this->apiClient->expects($this->exactly(2))
+            ->method('addScopeToClient')
+            ->willReturnCallback(function (Client $client, UuidInterface $scopeId) use (&$activeId) {
+                $this->assertEquals($activeId, $client->id);
+                $this->assertEquals(Uuid::fromString(self::SEARCH_SCOPE_ID), $scopeId);
+            });
 
         $this->apiClient->expects($this->exactly($this->config->realms->count()))
             ->method('fetchClient')
@@ -163,78 +169,85 @@ final class CreateClientsTest extends TestCase
 
     public function test_handle_creating_missing_clients(): void
     {
-        $integrationId = Uuid::uuid4();
-        $missingRealms = $this->config->realms;
-        $integration = $this->givenThereIsAnIntegration($integrationId);
+        $clients = [];
+
+        $missingRealms = new RealmCollection([$this->givenTestRealm()]);
 
         $this->keycloakClientRepository->expects($this->once())
             ->method('getMissingRealmsByIntegrationId')
-            ->with($integrationId)
+            ->with($this->integration->id, $this->config->realms)
             ->willReturn($missingRealms);
 
-        $this->integrationRepository->expects($this->once())
-            ->method('getById')
-            ->with($integrationId)
-            ->willReturn($integration);
-
-        $clientIds = [];
         foreach ($missingRealms as $realm) {
-            $clientIds[$realm->internalName] = Uuid::uuid4();
-
-            $this->apiClient->expects($this->once())
-                ->method('addScopeToClient')
-                ->with($realm, $clientIds[$realm->internalName], Uuid::fromString(self::SEARCH_SCOPE_ID));
+            $clients[$realm->internalName] = new Client(
+                Uuid::uuid4(),
+                $this->integration->id,
+                Uuid::uuid4(),
+                self::SECRET,
+                $realm
+            );
         }
 
+        $activeId = null;
         $this->apiClient->expects($this->exactly($missingRealms->count()))
             ->method('createClient')
             ->willReturnCallback(
-                function (Realm $realm, Integration $integrationArgument) use ($clientIds, $integration) {
-                    $this->assertEquals($integration->id, $integrationArgument->id);
+                function (Realm $realm, Integration $integrationArgument) use ($clients, &$activeId) {
+                    $this->assertEquals($this->integration->id, $integrationArgument->id);
+                    $this->assertArrayHasKey($realm->internalName, $clients);
 
-                    if (!isset($clientIds[$realm->internalName])) {
-                        $this->fail('Unknown realm, could not match with id: ' . $realm->internalName);
-                    }
-
-                    return $clientIds[$realm->internalName];
+                    $activeId = $clients[$realm->internalName]->id;
+                    return $clients[$realm->internalName]->id;
                 }
             );
 
-        $clients = new ClientCollection();
+        $this->apiClient->expects($this->exactly($missingRealms->count()))
+            ->method('addScopeToClient')
+            ->willReturnCallback(function (Client $client, UuidInterface $scopeId) use (&$activeId) {
+                $this->assertEquals($activeId, $client->id);
+                $this->assertEquals(Uuid::fromString(self::SEARCH_SCOPE_ID), $scopeId);
+            });
 
         $this->apiClient->expects($this->exactly($missingRealms->count()))
             ->method('fetchClient')
             ->willReturnCallback(
-                function (Realm $realm, Integration $integration) use ($clients, $clientIds) {
-                    $client = new Client(
-                        $clientIds[$realm->internalName],
-                        $integration->id,
-                        Uuid::uuid4(),
-                        self::SECRET,
-                        $realm
-                    );
-                    $clients->add($client);
-                    return $client;
+                function (Realm $realm, Integration $integrationArgument) use ($clients) {
+                    $this->assertEquals($this->integration->id, $integrationArgument->id);
+                    $this->assertArrayHasKey($realm->internalName, $clients);
+
+                    return $clients[$realm->internalName];
                 }
             );
+
+        $this->integrationRepository->expects($this->once())
+            ->method('getById')
+            ->with($this->integration->id)
+            ->willReturn($this->integration);
 
         $this->keycloakClientRepository->expects($this->once())
             ->method('create')
             ->with(... $clients);
 
+        //Check if clients where created for all realms
+        $realmHits = [];
+
         $this->logger->expects($this->exactly($missingRealms->count()))
             ->method('info')
-            ->willReturnCallback(function ($message, $options) use ($integration, $clientIds) {
+            ->willReturnCallback(function ($message, $options) use (&$realmHits) {
                 $this->assertEquals('Keycloak client created', $message);
                 $this->assertArrayHasKey('integration_id', $options);
                 $this->assertArrayHasKey('realm', $options);
-                $this->assertArrayHasKey('client_id', $options);
 
-                $this->assertEquals($integration->id->toString(), $options['integration_id']);
-                $this->assertEquals($clientIds[$options['realm']], $options['client_id']);
+                $this->assertEquals($this->integration->id->toString(), $options['integration_id']);
+
+                $realmHits[$options['realm']] = true;
             });
 
-        $this->handler->handleCreatingMissingClients(new MissingClientsDetected($integrationId));
+        $this->handler->handleCreatingMissingClients(new MissingClientsDetected($this->integration->id));
+
+        foreach ($missingRealms as $realm) {
+            $this->assertArrayHasKey($realm->internalName, $realmHits, 'Client was not created for realm ' . $realm->publicName);
+        }
     }
 
     public function test_handle_creating_missing_clients_no_missing_realms(): void
