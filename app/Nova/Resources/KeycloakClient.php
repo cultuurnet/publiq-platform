@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Nova\Resources;
 
+use App\Domain\Integrations\Environment;
 use App\Keycloak\CachedKeycloakClientStatus;
 use App\Keycloak\Config;
 use App\Keycloak\Models\KeycloakClientModel;
@@ -62,7 +63,11 @@ final class KeycloakClient extends Resource
             Select::make('realm')
                 ->readonly()
                 ->filterable()
-                ->options($this->getConfig()->realms->asArray()),
+                ->options([
+                    Environment::Acceptance->value => Environment::Acceptance->name,
+                    Environment::Testing->value => Environment::Testing->name,
+                    Environment::Production->value => Environment::Production->name,
+                ]),
             Text::make('Status', function (KeycloakClientModel $model) {
                 $client = $model->toDomain();
 

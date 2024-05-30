@@ -6,10 +6,10 @@ return [
     'enabled' => env('KEYCLOAK_ENABLED', false),
     'environments' => [
         'acc' => [
-            'internalName' => env('KEYCLOAK_STAG_REALM_NAME', ''),
-            'base_url' => env('KEYCLOAK_STAG_BASE_URL', ''),
-            'client_id' => env('KEYCLOAK_STAG_CLIENT_ID', ''),
-            'client_secret' => env('KEYCLOAK_STAG_CLIENT_SECRET', ''),
+            'internalName' => env('KEYCLOAK_ACC_REALM_NAME', ''),
+            'base_url' => env('KEYCLOAK_ACC_BASE_URL', ''),
+            'client_id' => env('KEYCLOAK_ACC_CLIENT_ID', ''),
+            'client_secret' => env('KEYCLOAK_ACC_CLIENT_SECRET', ''),
         ],
         'test' => [
             'internalName' => env('KEYCLOAK_TEST_REALM_NAME', ''),
