@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Search;
 
 use App\Search\Sapi3\Sapi3SearchService;
+use App\Search\Sapi3\SearchService;
 use CultuurNet\SearchV3\SearchClient;
 use CultuurNet\SearchV3\Serializer\Serializer;
 use GuzzleHttp\Client;
