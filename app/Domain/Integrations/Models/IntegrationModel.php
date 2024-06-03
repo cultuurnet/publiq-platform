@@ -146,6 +146,12 @@ final class IntegrationModel extends UuidModel
 
     public function block(): void
     {
+        IntegrationPreviousStatusModel::query()->create(
+            [
+                'id' => $this->id,
+                'status' => $this->status,
+            ]
+        );
         $this->update([
             'status' => IntegrationStatus::Blocked,
         ]);
