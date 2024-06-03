@@ -144,32 +144,32 @@ final class SyncContactTest extends TestCase
     public static function provideExistingEmailCases(): Iterator
     {
         yield 'one contact found' => [
-            'insightlyContacts' => [
+            [
                 new InsightlyContact(42, 0),
             ],
-            'expectedMappedInsightlyContactId' => 42,
+            42,
         ];
 
         yield 'multiple contacts found, single one with most links' => [
-            'insightlyContacts' => [
+            [
                 new InsightlyContact(13, 0),
                 new InsightlyContact(42, 1),
                 new InsightlyContact(14, 0),
                 new InsightlyContact(57, 0),
                 new InsightlyContact(63, 0),
             ],
-            'expectedMappedInsightlyContacts' => 42, // The one with the most links is chosen
+            42, // The one with the most links is chosen
         ];
 
         yield 'multiple contacts found, multiple with most links' => [
-            'insightlyContacts' => [
+            [
                 new InsightlyContact(13, 0),
                 new InsightlyContact(42, 1),
                 new InsightlyContact(14, 1),
                 new InsightlyContact(57, 0),
                 new InsightlyContact(63, 0),
             ],
-            'expectedMappedInsightlyContactId' => 14, // The one with the lowest id is chosen when links are equal
+            14, // The one with the lowest id is chosen when links are equal
         ];
     }
 
