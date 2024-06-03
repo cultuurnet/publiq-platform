@@ -65,7 +65,6 @@ final class IntegrationModelTest extends TestCase
         ]);
         $this->assertDatabaseMissing('integrations_previous_statuses', [
             'id' =>  $this->integrationModel->id,
-            'status' => IntegrationStatus::Active,
         ]);
     }
 
