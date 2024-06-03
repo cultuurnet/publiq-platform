@@ -13,7 +13,6 @@ use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationDeleted;
-use App\Domain\Integrations\Events\IntegrationUnblocked;
 use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
@@ -93,6 +92,11 @@ final class IntegrationModel extends UuidModel
         return $this->type === IntegrationType::Widgets->value;
     }
 
+    public function isUiTPAS(): bool
+    {
+        return $this->type === IntegrationType::UiTPAS->value;
+    }
+
     protected static function booted(): void
     {
         self::created(
@@ -161,22 +165,14 @@ final class IntegrationModel extends UuidModel
 
     public function unblock(): void
     {
-        $integrationPreviousStatusBuilder = IntegrationPreviousStatusModel::query()
-            ->where('id', '=', $this->id);
+        /** @var ?IntegrationPreviousStatusModel $integrationPreviousStatus */
+        $integrationPreviousStatus = IntegrationPreviousStatusModel::query()->find($this->id);
 
-        if ($integrationPreviousStatusBuilder->count() === 0) {
-            $this->update([
-                'status' => IntegrationStatus::Draft,
-            ]);
-        } else {
-            /** @var IntegrationPreviousStatusModel $integrationPreviousStatusModel */
-            $integrationPreviousStatusModel = $integrationPreviousStatusBuilder->first();
-            $this->update([
-                'status' => $integrationPreviousStatusModel->status,
-            ]);
-            $integrationPreviousStatusModel->delete();
-        }
-        IntegrationUnblocked::dispatch(Uuid::fromString($this->id));
+        $this->update([
+            'status' => $integrationPreviousStatus ? $integrationPreviousStatus->status : IntegrationStatus::Draft,
+        ]);
+
+        $integrationPreviousStatus?->delete();
     }
 
     /**
@@ -185,6 +181,14 @@ final class IntegrationModel extends UuidModel
     public function keyVisibilityUpgrade(): HasOne
     {
         return $this->hasOne(KeyVisibilityUpgradeModel::class, 'integration_id');
+    }
+
+    /**
+     * @return HasMany<OrganizerModel>
+     */
+    public function organizers(): HasMany
+    {
+        return $this->hasMany(OrganizerModel::class, 'integration_id');
     }
 
     /**
