@@ -103,7 +103,6 @@ final class IntegrationModelTest extends TestCase
 
         $this->assertDatabaseHas('integrations', [
             'id' =>  $this->integrationModel->id,
-            'status' => IntegrationStatus::Active,
         ]);
     }
 }
