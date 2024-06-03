@@ -87,6 +87,11 @@ final class IntegrationModel extends UuidModel
         return $this->type === IntegrationType::Widgets->value;
     }
 
+    public function isUiTPAS(): bool
+    {
+        return $this->type === IntegrationType::UiTPAS->value;
+    }
+
     protected static function booted(): void
     {
         self::created(
@@ -159,6 +164,14 @@ final class IntegrationModel extends UuidModel
     public function keyVisibilityUpgrade(): HasOne
     {
         return $this->hasOne(KeyVisibilityUpgradeModel::class, 'integration_id');
+    }
+
+    /**
+     * @return HasMany<OrganizerModel>
+     */
+    public function organizers(): HasMany
+    {
+        return $this->hasMany(OrganizerModel::class, 'integration_id');
     }
 
     /**
