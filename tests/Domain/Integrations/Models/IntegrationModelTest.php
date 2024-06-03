@@ -53,6 +53,21 @@ final class IntegrationModelTest extends TestCase
         ]);
     }
 
+    public function test_it_handles_unblock(): void
+    {
+        $this->integrationModel->activate();
+        $this->integrationModel->block();
+        $this->integrationModel->unblock();
+
+        $this->assertDatabaseHas('integrations', [
+            'id' =>  $this->integrationModel->id,
+            'status' => IntegrationStatus::Active,
+        ]);
+        $this->assertDatabaseMissing('integrations_previous_statuses', [
+            'id' =>  $this->integrationModel->id,
+        ]);
+    }
+
     public function test_it_handles_request_activation(): void
     {
         $organizationId = Uuid::uuid4();
