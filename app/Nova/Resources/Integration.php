@@ -143,7 +143,7 @@ final class Integration extends Resource
                         $rules = ['url:http,https', 'max:255'];
                         $required = true;
 
-                        if ($formData->type !== IntegrationType::UiTPAS->value) {
+                        if ($formData->string('type')->toString() !== IntegrationType::UiTPAS->value) {
                             $rules[] = 'nullable';
                             $required = false;
                         }
