@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Insightly\Listeners;
 
 use App\Domain\Integrations\Events\IntegrationUnblocked;
+use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Insightly\InsightlyClient;
 use App\Insightly\IntegrationStatusConverter;
 use App\Insightly\Objects\ProjectState;
@@ -20,6 +21,7 @@ final class UnblockProject implements ShouldQueue
     public function __construct(
         private readonly InsightlyClient $insightlyClient,
         private readonly InsightlyMappingRepository $insightlyMappingRepository,
+        private readonly IntegrationRepository $integrationRepository,
         private readonly LoggerInterface $logger
     ) {
     }
@@ -36,7 +38,9 @@ final class UnblockProject implements ShouldQueue
 
             $this->insightlyClient->projects()->updateState(
                 $insightlyMapping->insightlyId,
-                IntegrationStatusConverter::getProjectState($integrationUnblocked->status) ?? ProjectState::COMPLETED,
+                IntegrationStatusConverter::getProjectState(
+                    ($this->integrationRepository->getById($integrationId))->status
+                ),
             );
 
             $this->logger->info(

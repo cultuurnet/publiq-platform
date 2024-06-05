@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Insightly\Listeners;
 
 use App\Domain\Integrations\Events\IntegrationUnblocked;
+use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Insightly\InsightlyClient;
 use App\Insightly\IntegrationStatusConverter;
-use App\Insightly\Objects\OpportunityState;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -20,7 +20,8 @@ final class UnblockOpportunity implements ShouldQueue
     public function __construct(
         private readonly InsightlyClient $insightlyClient,
         private readonly InsightlyMappingRepository $insightlyMappingRepository,
-        private readonly LoggerInterface $logger
+        private readonly IntegrationRepository $integrationRepository,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -36,7 +37,9 @@ final class UnblockOpportunity implements ShouldQueue
 
             $this->insightlyClient->opportunities()->updateState(
                 $insightlyMapping->insightlyId,
-                IntegrationStatusConverter::getOpportunitySate($integrationUnblocked->status) ?? OpportunityState::OPEN
+                IntegrationStatusConverter::getOpportunityState(
+                    ($this->integrationRepository->getById($integrationId))->status
+                )
             );
 
             $this->logger->info(
