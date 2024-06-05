@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Insightly\Listeners;
 
 use App\Domain\Integrations\Events\IntegrationUnblocked;
+use App\Domain\Integrations\IntegrationStatus;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Listeners\UnblockOpportunity;
 use App\Insightly\Objects\OpportunityState;
@@ -56,6 +57,6 @@ final class UnblockOpportunityTest extends TestCase
             ->method('updateState')
             ->with($insightlyMapping->insightlyId, OpportunityState::OPEN);
 
-        $this->unblockOpportunity->handle(new IntegrationUnblocked($integrationId));
+        $this->unblockOpportunity->handle(new IntegrationUnblocked($integrationId, IntegrationStatus::Draft));
     }
 }

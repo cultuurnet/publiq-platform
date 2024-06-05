@@ -168,14 +168,19 @@ final class IntegrationModel extends UuidModel
     {
         /** @var ?IntegrationPreviousStatusModel $integrationPreviousStatus */
         $integrationPreviousStatus = IntegrationPreviousStatusModel::query()->find($this->id);
+        $previousStatus = $integrationPreviousStatus ?
+            IntegrationStatus::from($integrationPreviousStatus->status) : IntegrationStatus::Draft;
 
         $this->update([
-            'status' => $integrationPreviousStatus ? $integrationPreviousStatus->status : IntegrationStatus::Draft,
+            'status' => $previousStatus->value,
         ]);
 
         $integrationPreviousStatus?->delete();
 
-        IntegrationUnblocked::dispatch(Uuid::fromString($this->id));
+        IntegrationUnblocked::dispatch(
+            Uuid::fromString($this->id),
+            $previousStatus
+        );
     }
 
     /**

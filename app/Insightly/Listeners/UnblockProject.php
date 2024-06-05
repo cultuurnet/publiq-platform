@@ -6,6 +6,7 @@ namespace App\Insightly\Listeners;
 
 use App\Domain\Integrations\Events\IntegrationUnblocked;
 use App\Insightly\InsightlyClient;
+use App\Insightly\IntegrationStatusConverter;
 use App\Insightly\Objects\ProjectState;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
@@ -33,7 +34,10 @@ final class UnblockProject implements ShouldQueue
                 ResourceType::Project
             );
 
-            $this->insightlyClient->projects()->updateState($insightlyMapping->insightlyId, ProjectState::COMPLETED);
+            $this->insightlyClient->projects()->updateState(
+                $insightlyMapping->insightlyId,
+                IntegrationStatusConverter::getProjectState($integrationUnblocked->status) ?? ProjectState::COMPLETED,
+            );
 
             $this->logger->info(
                 'Project unblocked',

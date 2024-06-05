@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Insightly\Listeners;
 
 use App\Domain\Integrations\Events\IntegrationUnblocked;
+use App\Domain\Integrations\IntegrationStatus;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Listeners\UnblockProject;
 use App\Insightly\Objects\ProjectState;
@@ -56,6 +57,6 @@ final class UnblockProjectTest extends TestCase
             ->method('updateState')
             ->with($insightlyMapping->insightlyId, ProjectState::COMPLETED);
 
-        $this->unblockProject->handle(new IntegrationUnblocked($integrationId));
+        $this->unblockProject->handle(new IntegrationUnblocked($integrationId, IntegrationStatus::Active));
     }
 }
