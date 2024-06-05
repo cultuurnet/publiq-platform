@@ -21,14 +21,6 @@ final class IntegrationStatusConverter
         };
     }
 
-    public static function getProjectStage(IntegrationStatus $status): ?ProjectStage
-    {
-        return match ($status) {
-            IntegrationStatus::Active => ProjectStage::LIVE,
-            default => null,
-        };
-    }
-
     public static function getProjectState(IntegrationStatus $status): ?ProjectState
     {
         return match ($status) {
