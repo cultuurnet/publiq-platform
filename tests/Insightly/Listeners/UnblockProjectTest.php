@@ -5,7 +5,11 @@ declare(strict_types=1);
 namespace Tests\Insightly\Listeners;
 
 use App\Domain\Integrations\Events\IntegrationUnblocked;
+use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
+use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Insightly\InsightlyMapping;
 use App\Insightly\Listeners\UnblockProject;
 use App\Insightly\Objects\ProjectState;
@@ -23,17 +27,22 @@ final class UnblockProjectTest extends TestCase
 
     private InsightlyMappingRepository&MockObject $insightlyMappingRepository;
 
+    private IntegrationRepository&MockObject $integrationRepository;
+
     private UnblockProject $unblockProject;
 
     protected function setUp(): void
     {
         $this->insightlyMappingRepository = $this->createMock(InsightlyMappingRepository::class);
 
+        $this->integrationRepository = $this->createMock(IntegrationRepository::class);
+
         $this->mockCrmClient();
 
         $this->unblockProject = new UnblockProject(
             $this->insightlyClient,
             $this->insightlyMappingRepository,
+            $this->integrationRepository,
             $this->createMock(LoggerInterface::class)
         );
     }
@@ -57,6 +66,22 @@ final class UnblockProjectTest extends TestCase
             ->method('updateState')
             ->with($insightlyMapping->insightlyId, ProjectState::COMPLETED);
 
-        $this->unblockProject->handle(new IntegrationUnblocked($integrationId, IntegrationStatus::Active));
+        $this->integrationRepository->expects($this->once())
+            ->method('getById')
+            ->with($integrationId)
+            ->willReturn(
+                new Integration(
+                    $integrationId,
+                    IntegrationType::EntryApi,
+                    'foo',
+                    'bar',
+                    Uuid::uuid4(),
+                    IntegrationStatus::Active,
+                    IntegrationPartnerStatus::THIRD_PARTY
+                )
+            );
+
+
+        $this->unblockProject->handle(new IntegrationUnblocked($integrationId));
     }
 }
