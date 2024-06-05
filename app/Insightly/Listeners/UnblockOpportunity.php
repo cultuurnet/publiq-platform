@@ -6,6 +6,7 @@ namespace App\Insightly\Listeners;
 
 use App\Domain\Integrations\Events\IntegrationUnblocked;
 use App\Insightly\InsightlyClient;
+use App\Insightly\IntegrationStatusConverter;
 use App\Insightly\Objects\OpportunityState;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
@@ -35,7 +36,7 @@ final class UnblockOpportunity implements ShouldQueue
 
             $this->insightlyClient->opportunities()->updateState(
                 $insightlyMapping->insightlyId,
-                OpportunityState::OPEN
+                IntegrationStatusConverter::getOpportunitySate($integrationUnblocked->status) ?? OpportunityState::OPEN
             );
 
             $this->logger->info(
