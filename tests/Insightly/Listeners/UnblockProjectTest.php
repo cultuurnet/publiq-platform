@@ -62,6 +62,10 @@ final class UnblockProjectTest extends TestCase
             ->with($integrationId, ResourceType::Project)
             ->willReturn($insightlyMapping);
 
+        $this->insightlyClient->expects($this->once())
+            ->method('projects')
+            ->willReturn($this->projectResource);
+
         $this->projectResource->expects($this->once())
             ->method('updateState')
             ->with($insightlyMapping->insightlyId, ProjectState::COMPLETED);
