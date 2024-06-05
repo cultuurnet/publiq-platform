@@ -8,7 +8,6 @@ use App\Domain\Integrations\Events\IntegrationUnblocked;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Insightly\InsightlyClient;
 use App\Insightly\IntegrationStatusConverter;
-use App\Insightly\Objects\ProjectState;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use Illuminate\Contracts\Queue\ShouldQueue;
