@@ -6,27 +6,24 @@ namespace App\Insightly;
 
 use App\Domain\Integrations\IntegrationStatus;
 use App\Insightly\Objects\OpportunityState;
-use App\Insightly\Objects\ProjectStage;
 use App\Insightly\Objects\ProjectState;
 
 final class IntegrationStatusConverter
 {
-    public static function getOpportunityState(IntegrationStatus $status): ?OpportunityState
+    public static function getOpportunityState(IntegrationStatus $status): OpportunityState
     {
         return match ($status) {
-            IntegrationStatus::Draft, IntegrationStatus::PendingApprovalIntegration, IntegrationStatus::PendingApprovalPayment => OpportunityState::OPEN,
             IntegrationStatus::Active => OpportunityState::WON,
             IntegrationStatus::Blocked => OpportunityState::SUSPENDED,
-            default => null,
+            default => OpportunityState::OPEN,
         };
     }
 
-    public static function getProjectState(IntegrationStatus $status): ?ProjectState
+    public static function getProjectState(IntegrationStatus $status): ProjectState
     {
         return match ($status) {
-            IntegrationStatus::Active => ProjectState::COMPLETED,
             IntegrationStatus::Blocked => ProjectState::CANCELLED,
-            default => null,
+            default => ProjectState::COMPLETED,
         };
     }
 }
