@@ -40,7 +40,7 @@ final class UnblockClients implements ShouldQueue
 
     public function failed(IntegrationUnblocked $integrationUnblocked, Throwable $throwable): void
     {
-        $this->logger->error('Failed to block Auth0 client(s)', [
+        $this->logger->error('Failed to unblock Auth0 client(s)', [
             'integration_id' => $integrationUnblocked->id->toString(),
             'exception' => $throwable,
         ]);
