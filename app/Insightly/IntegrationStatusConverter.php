@@ -11,7 +11,7 @@ use App\Insightly\Objects\ProjectState;
 
 final class IntegrationStatusConverter
 {
-    public static function getOpportunitySate(IntegrationStatus $status): ?OpportunityState
+    public static function getOpportunityState(IntegrationStatus $status): ?OpportunityState
     {
         return match ($status) {
             IntegrationStatus::Draft, IntegrationStatus::PendingApprovalIntegration, IntegrationStatus::PendingApprovalPayment => OpportunityState::OPEN,
