@@ -6,7 +6,6 @@ namespace App\Auth0\Listeners;
 
 use App\Auth0\Auth0ClusterSDK;
 use App\Auth0\Repositories\Auth0ClientRepository;
-use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationUnblocked;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
