@@ -16,9 +16,7 @@ use App\UiTiDv1\UiTiDv1Consumer;
 use App\UiTiDv1\UiTiDv1Environment;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
-use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
-use Psr\Http\Message\RequestInterface;
 use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
@@ -109,34 +107,34 @@ final class UnblockConsumersTest extends TestCase
             ->expects($this->exactly(3))
             ->method('request')
             ->willReturnCallback(
-                fn (string $actualMethod, string $actualUri) =>
-                match ([$actualMethod, $actualUri]) {
+                fn (string $actualMethod, string $actualUri, array $actualOptions) =>
+                match ([$actualMethod, $actualUri, $actualOptions]) {
                     [
                         'POST',
                         'serviceconsumer/mock-consumer-key-1',
-                        /*[
+                        [
                             'http_errors' => false,
                             'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
                             'body' => 'status=ACTIVE&group=1&group=2',
-                        ],*/
+                        ],
                     ],
                     [
                         'POST',
                         'serviceconsumer/mock-consumer-key-2',
-                        /*[
+                        [
                             'http_errors' => false,
                             'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
-                            'body' => 'status=ACTIVE&group=1&group=2',
-                        ],*/
+                            'body' => 'status=ACTIVE&group=7&group=8',
+                        ],
                     ],
                     [
                         'POST',
                         'serviceconsumer/mock-consumer-key-3',
-                        /*[
+                        [
                             'http_errors' => false,
                             'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
-                            'body' => 'status=ACTIVE&group=1&group=2',
-                        ],*/
+                            'body' => 'status=ACTIVE&group=13&group=14',
+                        ],
                     ] => new Response(200, [], ''),
                     default => throw new \LogicException('Invalid arguments received'),
                 }
