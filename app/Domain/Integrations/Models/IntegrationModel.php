@@ -13,6 +13,7 @@ use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationDeleted;
+use App\Domain\Integrations\Events\IntegrationUnblocked;
 use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
@@ -82,6 +83,11 @@ final class IntegrationModel extends UuidModel
         return $this->status !== IntegrationStatus::Blocked->value;
     }
 
+    public function canBeUnblocked(): bool
+    {
+        return $this->status === IntegrationStatus::Blocked->value;
+    }
+
     public function isWidgets(): bool
     {
         return $this->type === IntegrationType::Widgets->value;
@@ -146,10 +152,32 @@ final class IntegrationModel extends UuidModel
 
     public function block(): void
     {
+        IntegrationPreviousStatusModel::query()->create(
+            [
+                'id' => $this->id,
+                'status' => $this->status,
+            ]
+        );
         $this->update([
             'status' => IntegrationStatus::Blocked,
         ]);
         IntegrationBlocked::dispatch(Uuid::fromString($this->id));
+    }
+
+    public function unblock(): void
+    {
+        /** @var ?IntegrationPreviousStatusModel $integrationPreviousStatus */
+        $integrationPreviousStatus = IntegrationPreviousStatusModel::query()->find($this->id);
+
+        $this->update([
+            'status' => $integrationPreviousStatus ? $integrationPreviousStatus->status : IntegrationStatus::Draft,
+        ]);
+
+        $integrationPreviousStatus?->delete();
+
+        IntegrationUnblocked::dispatch(
+            Uuid::fromString($this->id)
+        );
     }
 
     /**

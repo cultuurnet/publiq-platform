@@ -12,5 +12,7 @@ parameters:
         - routes/
         - tests/
     level: 8
-    checkGenericClassInNonGenericObjectType: false
-    checkMissingIterableValueType: false
+    ignoreErrors:
+        - identifier: missingType.generics
+        - identifier: missingType.iterableValue
+

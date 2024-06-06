@@ -47,7 +47,7 @@ test-filter:
 	vendor/bin/sail composer test -- --filter=$(filter)
 
 test-insightly:
-	vendor/bin/sail composer test tests/Insightly/InsightlyClientTest.php
+	vendor/bin/sail composer test tests/Insightly/HttpInsightlyClientTest.php
 
 ci: lint stan test
 

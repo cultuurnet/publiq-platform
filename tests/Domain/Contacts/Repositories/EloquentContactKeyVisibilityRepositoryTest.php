@@ -7,6 +7,7 @@ namespace Tests\Domain\Contacts\Repositories;
 use App\Domain\Contacts\Models\ContactKeyVisibilityModel;
 use App\Domain\Contacts\Repositories\EloquentContactKeyVisibilityRepository;
 use App\Domain\Integrations\KeyVisibility;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidFactory;
 use Tests\TestCase;
@@ -14,6 +15,8 @@ use Tests\UuidTestFactory;
 
 final class EloquentContactKeyVisibilityRepositoryTest extends TestCase
 {
+    use RefreshDatabase;
+
     private const ID = 'a40a0c9d-988e-48da-8543-fc74510ea495';
 
     private EloquentContactKeyVisibilityRepository $repository;

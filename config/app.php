@@ -203,6 +203,7 @@ return [
         App\UiTiDv1\UiTiDv1ServiceProvider::class,
         App\ProjectAanvraag\ProjectAanvraagServiceProvider::class,
         App\Search\SearchServiceProvider::class,
+        \App\Notifications\NotificationsProvider::class,
     ],
 
     /*
