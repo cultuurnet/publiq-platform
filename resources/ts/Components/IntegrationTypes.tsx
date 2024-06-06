@@ -9,6 +9,9 @@ import { IconWidgets } from "./icons/IconWidgets";
 import { classNames } from "../utils/classNames";
 import { uitpasEnabled } from "../constants/uitpas";
 import { IconUiTPAS } from "./icons/IconUiTPAS";
+import { usePage } from "@inertiajs/react";
+import { PageProps } from "../types/PageProps";
+import { useRuntimeConfig } from "../hooks/useRuntimeConfig";
 
 export const integrationIconClasses =
   "h-full w-auto aspect-square max-h-[10rem] object-contain";
@@ -79,12 +82,13 @@ export const getIntegrationTypesInfo = (t: TFunction) => [
 
 export const useIntegrationTypesInfo = () => {
   const { t } = useTranslation();
+  const config = useRuntimeConfig();
 
   return useMemo(() => {
     const integrationTypesInfo = getIntegrationTypesInfo(t);
 
     // See https://jira.publiq.be/browse/PPF-481
-    return uitpasEnabled
+    return config.VITE_UITPAS_INTEGRATION_TYPE_ENABLED
       ? integrationTypesInfo
       : integrationTypesInfo.filter(
           (integrationTypesInfo) =>
@@ -98,7 +102,9 @@ export type IntegrationTypesInfo = ReturnType<
 >[number];
 
 export const IntegrationTypes = () => {
+  const config = useRuntimeConfig();
   const filteredIntegrationTypes = useIntegrationTypesInfo();
+  const uitpasEnabled = config.VITE_UITPAS_INTEGRATION_TYPE_ENABLED;
 
   return (
     <div>

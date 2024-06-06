@@ -4,12 +4,8 @@ import { useTranslation } from "react-i18next";
 import { usePage } from "@inertiajs/react";
 import { useTranslateRoute } from "../hooks/useTranslateRoute";
 import type { Integration } from "../types/Integration";
-
-export type WidgetConfigVariables = {
-  profileUrl: string;
-  registerUrl: string;
-  auth0Domain: string;
-};
+import { PageProps, WidgetConfigVariables } from "../types/PageProps";
+import { useRuntimeConfig } from "../hooks/useRuntimeConfig";
 
 export const UitIdWidget = ({
   profileUrl,
@@ -19,10 +15,12 @@ export const UitIdWidget = ({
   const { i18n } = useTranslation();
   const translateRoute = useTranslateRoute();
   const { component } = usePage();
-  const { props } = usePage<{
-    integration?: Integration;
-  }>();
-  const widgetUrl = import.meta.env.VITE_UITID_WIDGET_URL;
+  const { props } = usePage<
+    PageProps & {
+      integration?: Integration;
+    }
+  >();
+  const widgetUrl = props.config.VITE_UITID_WIDGET_URL;
 
   const widgetConfig = useMemo(
     () =>
