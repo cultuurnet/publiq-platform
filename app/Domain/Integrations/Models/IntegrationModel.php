@@ -13,6 +13,7 @@ use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationDeleted;
+use App\Domain\Integrations\Events\IntegrationUnblocked;
 use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
@@ -173,6 +174,10 @@ final class IntegrationModel extends UuidModel
         ]);
 
         $integrationPreviousStatus?->delete();
+
+        IntegrationUnblocked::dispatch(
+            Uuid::fromString($this->id)
+        );
     }
 
     /**
