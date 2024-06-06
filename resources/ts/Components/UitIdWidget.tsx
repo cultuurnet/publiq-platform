@@ -7,6 +7,7 @@ import type { Integration } from "../types/Integration";
 import type { PageProps, WidgetConfigVariables } from "../types/PageProps";
 
 export const UitIdWidget = ({
+  url,
   profileUrl,
   registerUrl,
   auth0Domain,
@@ -20,11 +21,10 @@ export const UitIdWidget = ({
     }
   >();
 
-  const widgetUrl = props.config.VITE_UITID_WIDGET_URL;
   const widgetConfig = useMemo(
     () =>
       JSON.stringify({
-        $schema: `${widgetUrl}config-schema.json`,
+        $schema: `${url}config-schema.json`,
         applicationName: "publiq platform",
         uitidProfileUrl: profileUrl,
         uitidRegisterUrl: registerUrl,
@@ -47,7 +47,7 @@ export const UitIdWidget = ({
           },
         ],
       }),
-    [auth0Domain, profileUrl, registerUrl, widgetUrl]
+    [auth0Domain, profileUrl, registerUrl, url]
   );
 
   const currentPage = useMemo(

@@ -12,13 +12,16 @@ const Main = ({ children }: { children: ReactNode }) => (
 );
 
 export default function Layout({ children }: { children: ReactNode }) {
-  const { widgetConfig, config } = usePage<PageProps>().props;
-  const widgetUrl = config.VITE_UITID_WIDGET_URL;
+  const { widgetConfig } = usePage<PageProps>().props;
 
   return (
     <div className="flex flex-col flex-1 items-center text-publiq-gray-900 bg-publiq-gray-75">
       <Head>
-        <script type="module" src={`${widgetUrl}index.js`} async></script>
+        <script
+          type="module"
+          src={`${widgetConfig.url}index.js`}
+          async
+        ></script>
       </Head>
 
       <UitIdWidget {...widgetConfig} />

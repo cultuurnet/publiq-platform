@@ -1,4 +1,5 @@
 export type WidgetConfigVariables = {
+  url: string;
   profileUrl: string;
   registerUrl: string;
   auth0Domain: string;
@@ -6,7 +7,7 @@ export type WidgetConfigVariables = {
 export type PageProps = {
   widgetConfig: WidgetConfigVariables;
   config: { [key: string]: string } & {
-    VITE_SENTRY_ENABLED: boolean;
-    VITE_UITPAS_INTEGRATION_TYPE_ENABLED: boolean;
+    sentryEnabled: boolean;
+    uitpasEnabled: boolean;
   };
 };

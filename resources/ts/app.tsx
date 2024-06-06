@@ -17,9 +17,9 @@ createInertiaApp<PageProps>({
     const config = props.initialPage.props.config;
 
     Sentry.init({
-      dsn: config.VITE_SENTRY_DSN,
-      environment: config.VITE_APP_ENV,
-      enabled: config.VITE_SENTRY_ENABLED,
+      dsn: config.sentryDsn,
+      environment: config.env,
+      enabled: config.sentryEnabled,
     });
 
     initializeI18n().then(() => {
