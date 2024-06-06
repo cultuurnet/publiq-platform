@@ -62,10 +62,6 @@ final class UnblockOpportunityTest extends TestCase
             ->with($integrationId, ResourceType::Opportunity)
             ->willReturn($insightlyMapping);
 
-        $this->insightlyClient->expects($this->once())
-            ->method('opportunities')
-            ->willReturn($this->opportunityResource);
-
         $this->opportunityResource->expects($this->once())
             ->method('updateState')
             ->with($insightlyMapping->insightlyId, OpportunityState::OPEN);
