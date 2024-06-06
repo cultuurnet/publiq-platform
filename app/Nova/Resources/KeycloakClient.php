@@ -83,9 +83,7 @@ final class KeycloakClient extends Resource
             Text::make('client_secret')
                 ->readonly(),
             Text::make('Open', function (KeycloakClientModel $model) {
-                $baseUrl = $model->toDomain()->realm->baseUrl;
-
-                return sprintf('<a href="%s" class="link-default" target="_blank">Open in Keycloak</a>', $model->toDomain()->getKeycloakUrl($baseUrl));
+                return sprintf('<a href="%s" class="link-default" target="_blank">Open in Keycloak</a>', $model->toDomain()->getKeycloakUrl());
             })->asHtml(),
         ];
     }

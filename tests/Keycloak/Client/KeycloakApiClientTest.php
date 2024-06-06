@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Keycloak\Client;
 
+use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Integration;
 use App\Keycloak\Client;
 use App\Keycloak\Client\KeycloakApiClient;
@@ -131,7 +132,7 @@ final class KeycloakApiClientTest extends TestCase
         $this->expectException(KeyCloakApiFailed::class);
         $this->expectExceptionCode(KeyCloakApiFailed::FAILED_TO_ADD_SCOPE_WITH_RESPONSE);
 
-        $client = new Client(Uuid::uuid4(), $this->integration->id, Uuid::uuid4(), self::SECRET, $this->realm);
+        $client = new Client(Uuid::uuid4(), $this->integration->id, Uuid::uuid4(), self::SECRET, Environment::Acceptance);
 
         $apiClient->addScopeToClient(
             $client,
@@ -173,7 +174,7 @@ final class KeycloakApiClientTest extends TestCase
         $this->assertEquals(self::INTEGRATION_ID, $client->integrationId->toString());
         $this->assertEquals($clientId, $client->clientId->toString());
         $this->assertEquals(self::SECRET, $client->clientSecret);
-        $this->assertEquals($this->realm, $client->realm);
+        $this->assertEquals($this->realm->environment, $client->environment);
     }
 
     public function test_client_not_found(): void
@@ -210,7 +211,7 @@ final class KeycloakApiClientTest extends TestCase
             $this->logger
         );
 
-        $client = new Client(Uuid::uuid4(), $this->integration->id, Uuid::uuid4(), self::SECRET, $this->givenAcceptanceRealm());
+        $client = new Client(Uuid::uuid4(), $this->integration->id, Uuid::uuid4(), self::SECRET, Environment::Acceptance);
 
         $this->assertEquals($enabled, $apiClient->fetchIsClientActive($client));
     }
@@ -236,7 +237,7 @@ final class KeycloakApiClientTest extends TestCase
             $this->logger
         );
 
-        $client = new Client(Uuid::uuid4(), $this->integration->id, Uuid::uuid4(), self::SECRET, $this->realm);
+        $client = new Client(Uuid::uuid4(), $this->integration->id, Uuid::uuid4(), self::SECRET, Environment::Acceptance);
 
         $this->expectException(KeyCloakApiFailed::class);
         $this->expectExceptionCode(KeyCloakApiFailed::FAILED_TO_UPDATE_CLIENT);
@@ -257,7 +258,7 @@ final class KeycloakApiClientTest extends TestCase
             $this->logger
         );
 
-        $client = new Client(Uuid::uuid4(), $this->integration->id, Uuid::uuid4(), self::SECRET, $this->realm);
+        $client = new Client(Uuid::uuid4(), $this->integration->id, Uuid::uuid4(), self::SECRET, Environment::Acceptance);
 
         $this->expectException(KeyCloakApiFailed::class);
         $this->expectExceptionCode(KeyCloakApiFailed::FAILED_TO_RESET_SCOPE);

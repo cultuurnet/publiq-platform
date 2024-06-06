@@ -6,7 +6,6 @@ namespace Tests\Keycloak\Repositories;
 
 use App\Domain\Integrations\Environment;
 use App\Keycloak\Client;
-use App\Keycloak\Realm;
 use App\Keycloak\RealmCollection;
 use App\Keycloak\Repositories\EloquentKeycloakClientRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -42,14 +41,14 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
             $integrationId,
             $clientId,
             'client-secret-1',
-            $this->givenAcceptanceRealm()
+            Environment::Acceptance
         );
         $client2 = new Client(
             Uuid::uuid4(),
             $integrationId,
             $clientId2,
             'client-secret-2',
-            $this->givenTestRealm()
+            Environment::Testing
         );
         $this->repository->create($client1, $client2);
 
@@ -57,21 +56,18 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
             'integration_id' => $integrationId->toString(),
             'client_secret' => 'client-secret-1',
             'client_id' => $clientId->toString(),
-            'realm' => $this->givenAcceptanceRealm()->publicName,
+            'realm' => Environment::Acceptance->value,
         ]);
         $this->assertDatabaseHas('keycloak_clients', [
             'integration_id' => $integrationId->toString(),
             'client_secret' => 'client-secret-2',
             'client_id' => $clientId2->toString(),
-            'realm' => $this->givenTestRealm()->publicName,
+            'realm' => Environment::Testing->value,
         ]);
     }
 
     public function test_it_can_get_all_clients_for_an_integration_id(): void
     {
-        /** @var Realm $realm */
-        $realm = $this->realms->first();
-
         $integrationId = Uuid::uuid4();
         $clientId = Uuid::uuid4();
         $clientId2 = Uuid::uuid4();
@@ -81,14 +77,14 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
             $integrationId,
             $clientId,
             'client-secret-1',
-            $realm
+            Environment::Acceptance
         );
         $client2 = new Client(
             Uuid::uuid4(),
             $integrationId,
             $clientId2,
             'client-secret-1',
-            $this->givenAcceptanceRealm()
+            Environment::Testing
         );
         $this->repository->create($client1, $client2);
 
@@ -98,11 +94,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
         sort($expected);
         sort($actual);
 
-        foreach ($actual as $i => $client) {
-            $this->assertEquals($expected[$i]->clientId, $client->clientId);
-            $this->assertEquals($expected[$i]->clientSecret, $client->clientSecret);
-            $this->assertEquals($expected[$i]->realm->publicName, $client->realm->publicName);
-        }
+        $this->assertClientMatches($actual, $expected);
     }
 
     public function test_it_can_get_all_clients_for_multiple_integration_ids(): void
@@ -111,7 +103,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
         $secondIntegrationId = Uuid::uuid4();
         $integrationIds = [$firstIntegrationId, $secondIntegrationId];
 
-        $realms = [$this->givenAcceptanceRealm(), $this->givenTestRealm()];
+        $realms = new RealmCollection([$this->givenAcceptanceRealm(), $this->givenTestRealm()]);
 
         $clients = [];
 
@@ -124,7 +116,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
                     $integrationId,
                     Uuid::uuid4(),
                     'client-secret-' . $count,
-                    $realm
+                    $realm->environment
                 );
             }
         }
@@ -138,11 +130,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
         sort($expected);
         sort($actual);
 
-        foreach ($actual as $i => $client) {
-            $this->assertEquals($expected[$i]->clientId, $client->clientId);
-            $this->assertEquals($expected[$i]->clientSecret, $client->clientSecret);
-            $this->assertEquals($expected[$i]->realm->publicName, $client->realm->publicName);
-        }
+        $this->assertClientMatches($actual, $expected);
     }
 
     public function test_it_doesnt_get_clients_for_unasked_integration_ids(): void
@@ -161,7 +149,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
                     $integrationId,
                     Uuid::uuid4(),
                     'client-secret-' . $count,
-                    $realm
+                    $realm->environment
                 );
             }
         }
@@ -180,11 +168,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
         sort($expected);
         sort($actual);
 
-        foreach ($actual as $i => $client) {
-            $this->assertEquals($expected[$i]->clientId, $client->clientId);
-            $this->assertEquals($expected[$i]->clientSecret, $client->clientSecret);
-            $this->assertEquals($expected[$i]->realm->publicName, $client->realm->publicName);
-        }
+        $this->assertClientMatches($actual, $expected);
     }
 
     public function test_it_can_get_missing_realms_by_integration_id(): void
@@ -201,18 +185,30 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
                 $integrationId,
                 Uuid::uuid4(),
                 'client-secret',
-                $realm
+                $realm->environment,
             );
         }
         $this->repository->create(...$clients);
 
-        $missingRealms = $this->repository->getMissingRealmsByIntegrationId($integrationId);
+        $missingEnvironments = $this->repository->getMissingEnvironmentsByIntegrationId($integrationId);
 
-        $this->assertCount(2, $missingRealms);
-        $this->assertInstanceOf(Realm::class, $missingRealms->get(1));
-        $this->assertInstanceOf(Realm::class, $missingRealms->get(2));
+        $this->assertCount(2, $missingEnvironments);
+        $this->assertInstanceOf(Environment::class, $missingEnvironments->get(1));
+        $this->assertInstanceOf(Environment::class, $missingEnvironments->get(2));
 
-        $this->assertEquals(Environment::Testing->value, mb_strtolower($missingRealms->get(1)->publicName));
-        $this->assertEquals(Environment::Production->value, mb_strtolower($missingRealms->get(2)->publicName));
+        $this->assertEquals(Environment::Testing->value, $missingEnvironments->get(1)->value);
+        $this->assertEquals(Environment::Production->value, $missingEnvironments->get(2)->value);
+    }
+
+
+    private function assertClientMatches(array $actual, array $expected): void
+    {
+        foreach ($actual as $i => $client) {
+            $expectedClient = $expected[$i];
+            $this->assertInstanceOf(Client::class, $expectedClient);
+            $this->assertEquals($expectedClient->clientId, $client->clientId);
+            $this->assertEquals($expectedClient->clientSecret, $client->clientSecret);
+            $this->assertEquals($expectedClient->environment, $client->environment);
+        }
     }
 }

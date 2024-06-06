@@ -6,7 +6,6 @@ namespace App\Keycloak;
 
 use App\Domain\Integrations\Environment;
 use Illuminate\Support\Collection;
-use InvalidArgumentException;
 
 /**
  * @extends Collection<int, Realm>

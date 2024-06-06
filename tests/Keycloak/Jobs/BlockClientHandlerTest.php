@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Keycloak\Jobs;
 
+use App\Domain\Integrations\Environment;
 use App\Keycloak\Client;
 use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Events\ClientBlocked;
@@ -32,7 +33,7 @@ final class BlockClientHandlerTest extends TestCase
             Uuid::uuid4(),
             Uuid::uuid4(),
             'client-secret-1',
-            $this->givenAcceptanceRealm()
+            Environment::Acceptance
         );
 
         $keycloakClientRepository = $this->createMock(KeycloakClientRepository::class);
@@ -64,7 +65,7 @@ final class BlockClientHandlerTest extends TestCase
             Uuid::uuid4(),
             Uuid::uuid4(),
             'client-secret-1',
-            $this->givenAcceptanceRealm()
+            Environment::Acceptance
         );
 
         $keycloakClientRepository = $this->createMock(KeycloakClientRepository::class);

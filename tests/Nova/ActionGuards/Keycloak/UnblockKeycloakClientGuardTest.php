@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Nova\ActionGuards\Keycloak;
 
+use App\Domain\Integrations\Environment;
 use App\Keycloak\CachedKeycloakClientStatus;
 use App\Keycloak\Client;
 use App\Keycloak\Client\ApiClient;
@@ -33,7 +34,7 @@ final class UnblockKeycloakClientGuardTest extends TestCase
 
         $this->apiClient = $this->createMock(ApiClient::class);
         $this->guard = new UnblockKeycloakClientGuard(new CachedKeycloakClientStatus($this->apiClient, new NullLogger()));
-        $this->client = new Client(Uuid::uuid4(), Uuid::uuid4(), Uuid::uuid4(), 'client-id-1', $this->givenAcceptanceRealm());
+        $this->client = new Client(Uuid::uuid4(), Uuid::uuid4(), Uuid::uuid4(), 'client-id-1', Environment::Acceptance);
     }
 
     #[DataProvider('dataProvider')]

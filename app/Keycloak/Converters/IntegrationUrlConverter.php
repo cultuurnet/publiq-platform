@@ -37,7 +37,7 @@ final readonly class IntegrationUrlConverter
 
     private static function buildCallbackUrl(Integration $integration, Client $client, array $urls): array
     {
-        $callbackUrl = $integration->urlsForTypeAndEnvironment(IntegrationUrlType::Callback, $client->realm->environment);
+        $callbackUrl = $integration->urlsForTypeAndEnvironment(IntegrationUrlType::Callback, $client->environment);
         if (isset($callbackUrl[0]) && $callbackUrl[0] instanceof IntegrationUrl) {
             $urls['baseUrl'] = $callbackUrl[0]->url;
         }
@@ -47,7 +47,7 @@ final readonly class IntegrationUrlConverter
 
     private static function buildLoginUrls(Integration $integration, Client $client, array $urls): array
     {
-        $loginUrls = $integration->urlsForTypeAndEnvironment(IntegrationUrlType::Login, $client->realm->environment);
+        $loginUrls = $integration->urlsForTypeAndEnvironment(IntegrationUrlType::Login, $client->environment);
         foreach ($loginUrls as $loginUrl) {
             $urls['redirectUris'][] = $loginUrl->url;
         }
@@ -57,7 +57,7 @@ final readonly class IntegrationUrlConverter
 
     private static function buildLogoutUrls(Integration $integration, Client $client, array $urls): array
     {
-        $logoutUrls = $integration->urlsForTypeAndEnvironment(IntegrationUrlType::Logout, $client->realm->environment);
+        $logoutUrls = $integration->urlsForTypeAndEnvironment(IntegrationUrlType::Logout, $client->environment);
         $urls['attributes']['post.logout.redirect.uris'] = implode('#', array_map(static fn ($url) => $url->url, $logoutUrls));
 
         return $urls;

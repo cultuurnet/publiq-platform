@@ -28,7 +28,7 @@ final class ClientTest extends TestCase
         $this->assertEquals($data['secret'], $client->clientSecret);
         $this->assertEquals($data['clientId'], $client->clientId);
         $this->assertEquals($integrationId, $client->integrationId);
-        $this->assertEquals($this->givenTestRealm(), $client->realm);
+        $this->assertEquals($this->givenTestRealm()->environment, $client->environment);
     }
 
     public function test_throws_when_missing_secret(): void
