@@ -5,7 +5,7 @@ import { createInertiaApp } from "@inertiajs/react";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { initializeI18n } from "./i18n/initializeI18n";
 import * as Sentry from "@sentry/browser";
-import { PageProps } from "./types/PageProps";
+import type { PageProps } from "./types/PageProps";
 
 createInertiaApp<PageProps>({
   resolve: (name) =>

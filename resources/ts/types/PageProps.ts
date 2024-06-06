@@ -5,8 +5,7 @@ export type WidgetConfigVariables = {
 };
 export type PageProps = {
   widgetConfig: WidgetConfigVariables;
-  config: {
-    [key: string]: any;
+  config: { [key: string]: string } & {
     VITE_SENTRY_ENABLED: boolean;
     VITE_UITPAS_INTEGRATION_TYPE_ENABLED: boolean;
   };

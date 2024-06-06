@@ -4,8 +4,7 @@ import { useTranslation } from "react-i18next";
 import { usePage } from "@inertiajs/react";
 import { useTranslateRoute } from "../hooks/useTranslateRoute";
 import type { Integration } from "../types/Integration";
-import { PageProps, WidgetConfigVariables } from "../types/PageProps";
-import { useRuntimeConfig } from "../hooks/useRuntimeConfig";
+import type { PageProps, WidgetConfigVariables } from "../types/PageProps";
 
 export const UitIdWidget = ({
   profileUrl,
@@ -20,8 +19,8 @@ export const UitIdWidget = ({
       integration?: Integration;
     }
   >();
-  const widgetUrl = props.config.VITE_UITID_WIDGET_URL;
 
+  const widgetUrl = props.config.VITE_UITID_WIDGET_URL;
   const widgetConfig = useMemo(
     () =>
       JSON.stringify({

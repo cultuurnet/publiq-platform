@@ -7,10 +7,7 @@ import { IconEntryApi } from "./icons/IconEntryApi";
 import { IconSearchApi } from "./icons/IconSearchApi";
 import { IconWidgets } from "./icons/IconWidgets";
 import { classNames } from "../utils/classNames";
-import { uitpasEnabled } from "../constants/uitpas";
 import { IconUiTPAS } from "./icons/IconUiTPAS";
-import { usePage } from "@inertiajs/react";
-import { PageProps } from "../types/PageProps";
 import { useRuntimeConfig } from "../hooks/useRuntimeConfig";
 
 export const integrationIconClasses =
@@ -94,7 +91,7 @@ export const useIntegrationTypesInfo = () => {
           (integrationTypesInfo) =>
             integrationTypesInfo.type !== IntegrationType.UiTPAS
         );
-  }, [t]);
+  }, [t, config]);
 };
 
 export type IntegrationTypesInfo = ReturnType<
