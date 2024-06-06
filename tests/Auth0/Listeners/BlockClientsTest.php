@@ -9,8 +9,10 @@ use App\Auth0\Auth0Tenant;
 use App\Auth0\Listeners\BlockClients;
 use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Domain\Integrations\Events\IntegrationBlocked;
+use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Json;
 use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Tests\TestCase;
 use Psr\Http\Client\ClientInterface;
@@ -44,9 +46,16 @@ final class BlockClientsTest extends TestCase
         );
     }
 
-    public function test_it_blocks_clients(): void
+    public static function integrationEventsProvider(): \Generator
     {
-        $integrationId = Uuid::uuid4();
+        yield 'Integration blocked' => [new IntegrationBlocked(Uuid::uuid4())];
+        yield 'Integration deleted' => [new IntegrationDeleted(Uuid::uuid4())];
+    }
+
+    #[dataProvider('integrationEventsProvider')]
+    public function test_it_blocks_clients(IntegrationBlocked|IntegrationDeleted $event): void
+    {
+        $integrationId = $event->id;
 
         $clients = [
             new Auth0Client(Uuid::uuid4(), $integrationId, 'client-id-1', 'client-secret-1', Auth0Tenant::Acceptance),
@@ -83,6 +92,6 @@ final class BlockClientsTest extends TestCase
                 }
             );
 
-        $this->blockClients->handle(new IntegrationBlocked($integrationId));
+        $this->blockClients->handle($event);
     }
 }
