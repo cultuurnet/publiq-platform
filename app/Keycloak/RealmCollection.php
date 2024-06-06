@@ -34,27 +34,4 @@ final class RealmCollection extends Collection
 
         return $realms;
     }
-
-    public function fromPublicName(string $publicName): Realm
-    {
-        foreach ($this->all() as $realm) {
-            if ($realm->publicName === $publicName) {
-                return $realm;
-            }
-        }
-
-        throw new InvalidArgumentException('Invalid realm: ' . $publicName);
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    public function asArray(): array
-    {
-        $output = [];
-        foreach ($this->all() as $realm) {
-            $output[$realm->publicName] = $realm->publicName;
-        }
-        return $output;
-    }
 }

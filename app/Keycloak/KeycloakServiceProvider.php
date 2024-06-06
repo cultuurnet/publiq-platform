@@ -58,6 +58,10 @@ final class KeycloakServiceProvider extends ServiceProvider
             return $this->app->get(EloquentKeycloakClientRepository::class);
         });
 
+        $this->app->singleton(RealmCollection::class, function () {
+            return RealmCollection::build();
+        });
+
         $this->app->singleton(CachedKeycloakClientStatus::class, function () {
             return new CachedKeycloakClientStatus(
                 App::get(ApiClient::class),
