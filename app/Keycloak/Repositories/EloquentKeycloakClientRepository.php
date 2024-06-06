@@ -75,25 +75,25 @@ final class EloquentKeycloakClientRepository implements KeycloakClientRepository
             ->toArray();
     }
 
-    public function getMissingRealmsByIntegrationId(UuidInterface $integrationId): RealmCollection
+    public function getMissingEnvironmentsByIntegrationId(UuidInterface $integrationId): EnvironmentCollection
     {
         $clients = $this->getByIntegrationId($integrationId);
 
-        $realms = RealmCollection::build();
+        $environments = Environment::cases();
 
-        if (count($clients) === $realms->count()) {
-            return new RealmCollection();
+        if (count($clients) === count($environments)) {
+            return new EnvironmentCollection();
         }
 
-        $existingRealms = array_map(
-            static fn (Client $client) => $client->realm,
+        $existingEnvironments = array_map(
+            static fn (Client $client) => $client->environment,
             $clients
         );
 
-        return new RealmCollection(array_udiff(
-            $realms->toArray(),
-            $existingRealms,
-            fn (Realm $t1, Realm $t2) => strcmp($t1->publicName, $t2->publicName)
+        return new EnvironmentCollection(array_udiff(
+            $environments,
+            $existingEnvironments,
+            static fn (Environment $t1, Environment $t2) => strcmp($t1->value, $t2->value)
         ));
     }
 }

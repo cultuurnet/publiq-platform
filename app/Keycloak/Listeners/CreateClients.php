@@ -14,6 +14,7 @@ use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\RealmCollection;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Keycloak\ScopeConfig;
+use App\Models\EnvironmentCollection;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
@@ -41,16 +42,18 @@ final class CreateClients implements ShouldQueue
 
     public function handleCreatingMissingClients(MissingClientsDetected $event): void
     {
-        $missingRealms = $this->keycloakClientRepository->getMissingRealmsByIntegrationId($event->id);
+        $missingEnvironments = $this->keycloakClientRepository->getMissingEnvironmentsByIntegrationId($event->id);
 
-        if (count($missingRealms) === 0) {
+        if (count($missingEnvironments) === 0) {
             $this->logger->info($event->id . ' - already has all Keycloak clients');
             return;
         }
 
-        $this->handle($event, $missingRealms);
+        $this->handle(
+            $event,
+            $this->convertMissingEnvironmentsToMissingRealms($missingEnvironments)
+        );
     }
-
 
     private function handle(IntegrationCreated|MissingClientsDetected $event, RealmCollection $realms): void
     {
@@ -99,5 +102,19 @@ final class CreateClients implements ShouldQueue
             'integration_id' => $integrationCreated->id->toString(),
             'exception' => $throwable,
         ]);
+    }
+
+    private function convertMissingEnvironmentsToMissingRealms(EnvironmentCollection $missingEnvironments): RealmCollection
+    {
+        $missingEnvValues = array_column($missingEnvironments->toArray(), 'value');
+
+        $missingRealms = new RealmCollection();
+        foreach ($this->realms as $realm) {
+            if (in_array($realm->environment->value, $missingEnvValues, true)) {
+                $missingRealms->add($realm);
+            }
+        }
+
+        return $missingRealms;
     }
 }

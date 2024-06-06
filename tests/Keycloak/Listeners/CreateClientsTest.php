@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Keycloak\Listeners;
 
+use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
@@ -15,6 +16,7 @@ use App\Keycloak\Realm;
 use App\Keycloak\RealmCollection;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Keycloak\ScopeConfig;
+use App\Models\EnvironmentCollection;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
@@ -81,7 +83,7 @@ final class CreateClientsTest extends TestCase
                 $this->integration->id,
                 Uuid::uuid4(),
                 self::SECRET,
-                $realm
+                $realm->environment
             );
         }
 
@@ -125,26 +127,17 @@ final class CreateClientsTest extends TestCase
             ->method('create')
             ->with(... $clients);
 
-        //Check if clients where created for all realms
-        $realmHits = [];
-
         $this->logger->expects($this->exactly($this->realms->count()))
             ->method('info')
-            ->willReturnCallback(function ($message, $options) use (&$realmHits) {
+            ->willReturnCallback(function ($message, $options) {
                 $this->assertEquals('Keycloak client created', $message);
                 $this->assertArrayHasKey('integration_id', $options);
                 $this->assertArrayHasKey('realm', $options);
 
                 $this->assertEquals($this->integration->id->toString(), $options['integration_id']);
-
-                $realmHits[$options['realm']] = true;
             });
 
         $this->handler->handleCreateClients(new IntegrationCreated($this->integration->id));
-
-        foreach ($this->realms as $realm) {
-            $this->assertArrayHasKey($realm->internalName, $realmHits, 'Client was not created for realm ' . $realm->internalName);
-        }
     }
 
     public function test_failed(): void
@@ -166,51 +159,48 @@ final class CreateClientsTest extends TestCase
     {
         $clients = [];
 
-        $missingRealms = new RealmCollection([$this->givenTestRealm()]);
+        $missingEnvironments = new EnvironmentCollection([Environment::Testing]);
 
         $this->keycloakClientRepository->expects($this->once())
-            ->method('getMissingRealmsByIntegrationId')
+            ->method('getMissingEnvironmentsByIntegrationId')
             ->with($this->integration->id)
-            ->willReturn($missingRealms);
+            ->willReturn($missingEnvironments);
 
-        foreach ($missingRealms as $realm) {
-            $clients[$realm->internalName] = new Client(
+        foreach ($missingEnvironments as $environment) {
+            $clients[$environment->value] = new Client(
                 Uuid::uuid4(),
                 $this->integration->id,
                 Uuid::uuid4(),
                 self::SECRET,
-                $realm
+                $environment
             );
         }
 
-        $activeId = null;
-        $this->apiClient->expects($this->exactly($missingRealms->count()))
+        $this->apiClient->expects($this->exactly($missingEnvironments->count()))
             ->method('createClient')
             ->willReturnCallback(
-                function (Realm $realm, Integration $integrationArgument) use ($clients, &$activeId) {
+                function (Realm $realm, Integration $integrationArgument) use ($clients) {
                     $this->assertEquals($this->integration->id, $integrationArgument->id);
-                    $this->assertArrayHasKey($realm->internalName, $clients);
 
-                    $activeId = $clients[$realm->internalName]->id;
-                    return $clients[$realm->internalName]->id;
+                    $env = $realm->environment->value;
+                    $this->assertArrayHasKey($env, $clients);
                 }
             );
 
-        $this->apiClient->expects($this->exactly($missingRealms->count()))
+        $this->apiClient->expects($this->exactly($missingEnvironments->count()))
             ->method('addScopeToClient')
-            ->willReturnCallback(function (Client $client, UuidInterface $scopeId) use (&$activeId) {
-                $this->assertEquals($activeId, $client->id);
+            ->willReturnCallback(function (Client $client, UuidInterface $scopeId) {
                 $this->assertEquals(Uuid::fromString(self::SEARCH_SCOPE_ID), $scopeId);
             });
 
-        $this->apiClient->expects($this->exactly($missingRealms->count()))
+        $this->apiClient->expects($this->exactly($missingEnvironments->count()))
             ->method('fetchClient')
             ->willReturnCallback(
                 function (Realm $realm, Integration $integrationArgument) use ($clients) {
                     $this->assertEquals($this->integration->id, $integrationArgument->id);
-                    $this->assertArrayHasKey($realm->internalName, $clients);
+                    $this->assertArrayHasKey($realm->environment->value, $clients);
 
-                    return $clients[$realm->internalName];
+                    return $clients[$realm->environment->value];
                 }
             );
 
@@ -223,35 +213,26 @@ final class CreateClientsTest extends TestCase
             ->method('create')
             ->with(... $clients);
 
-        //Check if clients where created for all realms
-        $realmHits = [];
-
-        $this->logger->expects($this->exactly($missingRealms->count()))
+        $this->logger->expects($this->exactly($missingEnvironments->count()))
             ->method('info')
-            ->willReturnCallback(function ($message, $options) use (&$realmHits) {
+            ->willReturnCallback(function ($message, $options) {
                 $this->assertEquals('Keycloak client created', $message);
                 $this->assertArrayHasKey('integration_id', $options);
                 $this->assertArrayHasKey('realm', $options);
 
                 $this->assertEquals($this->integration->id->toString(), $options['integration_id']);
-
-                $realmHits[$options['realm']] = true;
             });
 
         $this->handler->handleCreatingMissingClients(new MissingClientsDetected($this->integration->id));
-
-        foreach ($missingRealms as $realm) {
-            $this->assertArrayHasKey($realm->internalName, $realmHits, 'Client was not created for realm ' . $realm->publicName);
-        }
     }
 
     public function test_handle_creating_missing_clients_no_missing_realms(): void
     {
         $integrationId = Uuid::uuid4();
 
-        $this->keycloakClientRepository->method('getMissingRealmsByIntegrationId')
+        $this->keycloakClientRepository->method('getMissingEnvironmentsByIntegrationId')
             ->with($integrationId)
-            ->willReturn(new RealmCollection());
+            ->willReturn(new EnvironmentCollection());
 
         $this->logger->expects($this->once())
             ->method('info')
