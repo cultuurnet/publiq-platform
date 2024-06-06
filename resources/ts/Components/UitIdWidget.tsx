@@ -4,14 +4,10 @@ import { useTranslation } from "react-i18next";
 import { usePage } from "@inertiajs/react";
 import { useTranslateRoute } from "../hooks/useTranslateRoute";
 import type { Integration } from "../types/Integration";
-
-export type WidgetConfigVariables = {
-  profileUrl: string;
-  registerUrl: string;
-  auth0Domain: string;
-};
+import type { PageProps, WidgetConfigVariables } from "../types/PageProps";
 
 export const UitIdWidget = ({
+  url,
   profileUrl,
   registerUrl,
   auth0Domain,
@@ -19,15 +15,16 @@ export const UitIdWidget = ({
   const { i18n } = useTranslation();
   const translateRoute = useTranslateRoute();
   const { component } = usePage();
-  const { props } = usePage<{
-    integration?: Integration;
-  }>();
-  const widgetUrl = import.meta.env.VITE_UITID_WIDGET_URL;
+  const { props } = usePage<
+    PageProps & {
+      integration?: Integration;
+    }
+  >();
 
   const widgetConfig = useMemo(
     () =>
       JSON.stringify({
-        $schema: `${widgetUrl}config-schema.json`,
+        $schema: `${url}config-schema.json`,
         applicationName: "publiq platform",
         uitidProfileUrl: profileUrl,
         uitidRegisterUrl: registerUrl,
@@ -50,7 +47,7 @@ export const UitIdWidget = ({
           },
         ],
       }),
-    [auth0Domain, profileUrl, registerUrl, widgetUrl]
+    [auth0Domain, profileUrl, registerUrl, url]
   );
 
   const currentPage = useMemo(
