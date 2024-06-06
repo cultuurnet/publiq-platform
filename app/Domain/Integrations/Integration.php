@@ -204,10 +204,11 @@ final class Integration
      */
     public function urlsForTypeAndEnvironment(IntegrationUrlType $type, Environment $environment): array
     {
-        return array_filter(
+        // Wrapped this with array_values, so we don't retain the indexes
+        return array_values(array_filter(
             $this->urls,
             fn (IntegrationUrl $url) => $url->type->value === $type->value && $url->environment->value === $environment->value
-        );
+        ));
     }
 
     public function toArray(): array

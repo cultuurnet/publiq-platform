@@ -35,7 +35,7 @@ final class IntegrationUrlConverterTest extends TestCase
             $this->integrationId,
             Uuid::uuid4(),
             'my-secret',
-            $this->givenAcceptanceRealm()
+            Environment::Acceptance
         );
     }
 
@@ -59,11 +59,11 @@ final class IntegrationUrlConverterTest extends TestCase
     {
         $integration = $this->givenThereIsAnIntegration($this->integrationId, ['partnerStatus' => IntegrationPartnerStatus::FIRST_PARTY]);
         $integration = $integration->withUrls(
-            new IntegrationUrl(Uuid::uuid4(), $integration->id, Environment::Acceptance, IntegrationUrlType::Callback, 'https://example.com/callback'),
             new IntegrationUrl(Uuid::uuid4(), $integration->id, Environment::Acceptance, IntegrationUrlType::Login, 'https://example.com/login1'),
             new IntegrationUrl(Uuid::uuid4(), $integration->id, Environment::Acceptance, IntegrationUrlType::Login, 'https://example.com/login2'),
             new IntegrationUrl(Uuid::uuid4(), $integration->id, Environment::Acceptance, IntegrationUrlType::Logout, 'https://example.com/logout1'),
             new IntegrationUrl(Uuid::uuid4(), $integration->id, Environment::Acceptance, IntegrationUrlType::Logout, 'https://example.com/logout2'),
+            new IntegrationUrl(Uuid::uuid4(), $integration->id, Environment::Acceptance, IntegrationUrlType::Callback, 'https://example.com/callback'),
 
             // These urls below should NOT be shown!
             new IntegrationUrl(Uuid::uuid4(), $integration->id, Environment::Production, IntegrationUrlType::Logout, 'https://wrong.com/'),
