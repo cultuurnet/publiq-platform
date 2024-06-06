@@ -8,7 +8,7 @@ import { IconSearchApi } from "./icons/IconSearchApi";
 import { IconWidgets } from "./icons/IconWidgets";
 import { classNames } from "../utils/classNames";
 import { IconUiTPAS } from "./icons/IconUiTPAS";
-import { useRuntimeConfig } from "../hooks/useRuntimeConfig";
+import { usePageProps } from "../hooks/usePageProps";
 
 export const integrationIconClasses =
   "h-full w-auto aspect-square max-h-[10rem] object-contain";
@@ -79,7 +79,7 @@ export const getIntegrationTypesInfo = (t: TFunction) => [
 
 export const useIntegrationTypesInfo = () => {
   const { t } = useTranslation();
-  const config = useRuntimeConfig();
+  const { config } = usePageProps();
 
   return useMemo(() => {
     const integrationTypesInfo = getIntegrationTypesInfo(t);
@@ -99,7 +99,7 @@ export type IntegrationTypesInfo = ReturnType<
 >[number];
 
 export const IntegrationTypes = () => {
-  const config = useRuntimeConfig();
+  const { config } = usePageProps();
   const filteredIntegrationTypes = useIntegrationTypesInfo();
   const uitpasEnabled = config.uitpasEnabled;
 
