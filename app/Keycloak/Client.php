@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Keycloak;
 
+use App\Domain\Integrations\Environment;
+use Illuminate\Support\Facades\App;
 use InvalidArgumentException;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -15,7 +17,7 @@ final readonly class Client
         public UuidInterface $integrationId,
         public UuidInterface $clientId,
         public string $clientSecret,
-        public Realm $realm,
+        public Environment $environment,
     ) {
     }
 
@@ -33,12 +35,30 @@ final readonly class Client
             $integrationId,
             Uuid::fromString($data['clientId']),
             $data['secret'],
-            $realm,
+            $realm->environment,
         );
     }
 
-    public function getKeycloakUrl(string $baseUrl): string
+    public function getKeycloakUrl(): string
     {
-        return $baseUrl . 'admin/master/console/#/' . $this->realm->internalName . '/clients/' . $this->id->toString() . '/settings';
+        $baseUrl = $this->getRealm()->baseUrl;
+
+        return $baseUrl . 'admin/master/console/#/' . $this->getRealm()->internalName . '/clients/' . $this->id->toString() . '/settings';
+    }
+
+    public function getRealm(): Realm
+    {
+        /** @var RealmCollection $realmCollection */
+        $realmCollection = App::get(RealmCollection::class);
+
+        foreach ($realmCollection as $realm) {
+            if ($realm->environment === $this->environment) {
+                return $realm;
+            }
+        }
+
+        throw new InvalidArgumentException(
+            sprintf('Could not convert environment %s to realm:', $this->environment->value)
+        );
     }
 }
