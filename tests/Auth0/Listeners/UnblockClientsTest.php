@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Auth0\Listeners;
 
 use App\Auth0\Listeners\UnblockClients;
@@ -7,11 +9,10 @@ use App\Auth0\Repositories\Auth0ClientRepository;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Http\Client\ClientInterface;
 use Psr\Log\LoggerInterface;
-use Ramsey\Uuid\Uuid;
 use Tests\Auth0\CreatesMockAuth0ClusterSDK;
 use Tests\TestCase;
 
-class UnblockClientsTest extends TestCase
+final class UnblockClientsTest extends TestCase
 {
     use CreatesMockAuth0ClusterSDK;
 
