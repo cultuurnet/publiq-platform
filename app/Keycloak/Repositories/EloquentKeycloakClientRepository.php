@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Keycloak\Repositories;
 
+use App\Domain\Integrations\Environment;
 use App\Keycloak\Client;
 use App\Keycloak\Models\KeycloakClientModel;
-use App\Keycloak\Realm;
-use App\Keycloak\RealmCollection;
+use App\Models\EnvironmentCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
@@ -30,7 +30,7 @@ final class EloquentKeycloakClientRepository implements KeycloakClientRepository
                             'integration_id' => $client->integrationId->toString(),
                             'client_id' => $client->clientId->toString(),
                             'client_secret' => $client->clientSecret,
-                            'realm' => $client->realm->publicName,
+                            'realm' => $client->getRealm()->publicName,
                         ]
                     );
             }

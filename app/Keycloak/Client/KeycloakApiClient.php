@@ -73,9 +73,9 @@ final readonly class KeycloakApiClient implements ApiClient
             $response = $this->client->sendWithBearer(
                 new Request(
                     'PUT',
-                    sprintf('admin/realms/%s/clients/%s/default-client-scopes/%s', $client->realm->internalName, $client->id->toString(), $scopeId->toString())
+                    sprintf('admin/realms/%s/clients/%s/default-client-scopes/%s', $client->getRealm()->internalName, $client->id->toString(), $scopeId->toString())
                 ),
-                $client->realm
+                $client->getRealm()
             );
         } catch (GuzzleException $e) {
             throw KeyCloakApiFailed::failedToAddScopeToClient($e->getMessage());
@@ -94,9 +94,9 @@ final readonly class KeycloakApiClient implements ApiClient
                 $response = $this->client->sendWithBearer(
                     new Request(
                         'DELETE',
-                        sprintf('admin/realms/%s/clients/%s/default-client-scopes/%s', $client->realm->internalName, $client->id->toString(), $scope->toString()),
+                        sprintf('admin/realms/%s/clients/%s/default-client-scopes/%s', $client->getRealm()->internalName, $client->id->toString(), $scope->toString()),
                     ),
-                    $client->realm
+                    $client->getRealm()
                 );
 
                 // Will throw a 404 when scope not attached to client, but this is no problem.
@@ -144,22 +144,22 @@ final readonly class KeycloakApiClient implements ApiClient
             $response = $this->client->sendWithBearer(
                 new Request(
                     'GET',
-                    sprintf('admin/realms/%s/clients/%s', $client->realm->internalName, $client->id->toString())
+                    sprintf('admin/realms/%s/clients/%s', $client->getRealm()->internalName, $client->id->toString())
                 ),
-                $client->realm
+                $client->getRealm()
             );
 
             $body = $response->getBody()->getContents();
 
             if (empty($body) || $response->getStatusCode() !== 200) {
-                throw KeyCloakApiFailed::failedToFetchClient($client->realm, $body);
+                throw KeyCloakApiFailed::failedToFetchClient($client->getRealm(), $body);
             }
 
             $data = Json::decodeAssociatively($body);
 
             return $data['enabled'];
         } catch (Throwable $e) {
-            throw KeyCloakApiFailed::failedToFetchClient($client->realm, $e->getMessage());
+            throw KeyCloakApiFailed::failedToFetchClient($client->getRealm(), $e->getMessage());
         }
     }
 
@@ -188,11 +188,11 @@ final readonly class KeycloakApiClient implements ApiClient
             $response = $this->client->sendWithBearer(
                 new Request(
                     'PUT',
-                    'admin/realms/' . $client->realm->internalName . '/clients/' . $client->id->toString(),
+                    'admin/realms/' . $client->getRealm()->internalName . '/clients/' . $client->id->toString(),
                     [],
                     Json::encode($body)
                 ),
-                $client->realm
+                $client->getRealm()
             );
 
             if ($response->getStatusCode() !== 204) {
