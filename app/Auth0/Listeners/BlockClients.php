@@ -7,6 +7,7 @@ namespace App\Auth0\Listeners;
 use App\Auth0\Auth0ClusterSDK;
 use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Domain\Integrations\Events\IntegrationBlocked;
+use App\Domain\Integrations\Events\IntegrationDeleted;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
@@ -23,9 +24,9 @@ final class BlockClients implements ShouldQueue
     ) {
     }
 
-    public function handle(IntegrationBlocked $integrationBlocked): void
+    public function handle(IntegrationBlocked|IntegrationDeleted $event): void
     {
-        $auth0Clients = $this->auth0ClientRepository->getByIntegrationId($integrationBlocked->id);
+        $auth0Clients = $this->auth0ClientRepository->getByIntegrationId($event->id);
 
         $this->clusterSDK->blockClients(...$auth0Clients);
 
@@ -33,15 +34,15 @@ final class BlockClients implements ShouldQueue
             'Auth0 client(s) blocked',
             [
                 'domain' => 'auth0',
-                'integration_id' => $integrationBlocked->id->toString(),
+                'integration_id' => $event->id->toString(),
             ]
         );
     }
 
-    public function failed(IntegrationBlocked $integrationBlocked, Throwable $throwable): void
+    public function failed(IntegrationBlocked|IntegrationDeleted $event, Throwable $throwable): void
     {
         $this->logger->error('Failed to block Auth0 client(s)', [
-            'integration_id' => $integrationBlocked->id->toString(),
+            'integration_id' => $event->id->toString(),
             'exception' => $throwable,
         ]);
     }

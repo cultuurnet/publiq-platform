@@ -20,6 +20,7 @@ use App\Auth0\Repositories\Auth0UserRepository;
 use App\Auth0\Repositories\EloquentAuth0ClientRepository;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
+use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Events\IntegrationUnblocked;
 use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Events\IntegrationUrlCreated;
@@ -97,10 +98,10 @@ final class Auth0ServiceProvider extends ServiceProvider
             // May always be registered even if there are no configured tenants, because in that case the cluster SDK will
             // just not have any tenant SDKs to loop over and so it simply won't do anything. But it won't crash either.
             Event::listen(IntegrationCreated::class, [CreateClients::class, 'handle']);
-            Event::listen(CreateMissingClients::class, [CreateMissingClientsHandler::class, 'handle']);
             Event::listen(IntegrationUpdated::class, [UpdateClients::class, 'handle']);
             Event::listen(IntegrationBlocked::class, [BlockClients::class, 'handle']);
             Event::listen(IntegrationUnblocked::class, [UnblockClients::class, 'handle']);
+            Event::listen(IntegrationDeleted::class, [BlockClients::class, 'handle']);
 
             Event::listen(IntegrationUrlCreated::class, [UpdateClients::class, 'handle']);
             Event::listen(IntegrationUrlUpdated::class, [UpdateClients::class, 'handle']);
@@ -108,6 +109,8 @@ final class Auth0ServiceProvider extends ServiceProvider
 
             Event::listen(UnblockClient::class, [UnblockClientHandler::class, 'handle']);
             Event::listen(BlockClient::class, [BlockClientHandler::class, 'handle']);
+
+            Event::listen(CreateMissingClients::class, [CreateMissingClientsHandler::class, 'handle']);
         }
     }
 }
