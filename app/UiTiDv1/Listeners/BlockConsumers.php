@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\UiTiDv1\Listeners;
 
 use App\Domain\Integrations\Events\IntegrationBlocked;
+use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use App\UiTiDv1\UiTiDv1ClusterSDK;
@@ -25,26 +26,26 @@ final class BlockConsumers implements ShouldQueue
     ) {
     }
 
-    public function handle(IntegrationBlocked $integrationBlocked): void
+    public function handle(IntegrationBlocked|IntegrationDeleted $event): void
     {
-        $consumers = $this->consumerRepository->getByIntegrationId($integrationBlocked->id);
+        $consumers = $this->consumerRepository->getByIntegrationId($event->id);
 
-        $integration = $this->integrationRepository->getById($integrationBlocked->id);
+        $integration = $this->integrationRepository->getByIdWithTrashed($event->id);
         $this->clusterSDK->blockConsumers($integration, ... $consumers);
 
         $this->logger->info(
             'UiTiD v1 consumer(s) blocked',
             [
                 'domain' => 'uitid',
-                'integration_id' => $integrationBlocked->id->toString(),
+                'integration_id' => $event->id->toString(),
             ]
         );
     }
 
-    public function failed(IntegrationBlocked $integrationBlocked, Throwable $throwable): void
+    public function failed(IntegrationBlocked|IntegrationDeleted $event, Throwable $throwable): void
     {
         $this->logger->error('Failed to block UiTiD v1 consumer(s)', [
-            'integration_id' => $integrationBlocked->id->toString(),
+            'integration_id' => $event->id->toString(),
             'exception' => $throwable,
         ]);
     }
