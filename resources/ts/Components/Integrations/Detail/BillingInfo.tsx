@@ -44,7 +44,7 @@ export const BillingInfo = ({
             <Input
               type="text"
               name="price"
-              value={`${pricingPlan.title} (${pricingPlan.price})`}
+              value={pricingPlan.label}
               className="md:min-w-[40rem]"
               disabled
             />

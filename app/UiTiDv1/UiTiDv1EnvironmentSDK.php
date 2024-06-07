@@ -56,22 +56,25 @@ final class UiTiDv1EnvironmentSDK
     {
         $formData = [
             'name' => $this->consumerName($integration),
+            'group' => $this->permissionGroupsPerIntegrationType[$integration->type->value] ?? [],
         ];
 
         $this->sendPostRequest('serviceconsumer/' . $consumer->consumerKey, $formData);
     }
 
-    public function blockConsumer(UiTiDv1Consumer $consumer): void
+    public function blockConsumer(Integration $integration, UiTiDv1Consumer $consumer): void
     {
         $this->sendPostRequest('serviceconsumer/' . $consumer->consumerKey, [
             'status' => UiTiDv1ConsumerStatus::Blocked->value,
+            'group' => $this->permissionGroupsPerIntegrationType[$integration->type->value] ?? [],
         ]);
     }
 
-    public function activateConsumer(UiTiDv1Consumer $consumer): void
+    public function unblockConsumer(Integration $integration, UiTiDv1Consumer $consumer): void
     {
         $this->sendPostRequest('serviceconsumer/' . $consumer->consumerKey, [
             'status' => UiTiDv1ConsumerStatus::Active->value,
+            'group' => $this->permissionGroupsPerIntegrationType[$integration->type->value] ?? [],
         ]);
     }
 

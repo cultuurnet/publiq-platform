@@ -14,6 +14,7 @@ use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationDeleted;
+use App\Domain\Integrations\Events\IntegrationUnblocked;
 use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
@@ -41,6 +42,7 @@ use Ramsey\Uuid\UuidInterface;
  * @property CouponModel|null $coupon
  * @property SubscriptionModel|null $subscription
  * @property KeyVisibilityUpgradeModel|null $keyVisibilityUpgrade
+ * @property string $type
  * @property string $website
  */
 final class IntegrationModel extends UuidModel
@@ -83,9 +85,19 @@ final class IntegrationModel extends UuidModel
         return $this->status !== IntegrationStatus::Blocked->value;
     }
 
+    public function canBeUnblocked(): bool
+    {
+        return $this->status === IntegrationStatus::Blocked->value;
+    }
+
     public function isWidgets(): bool
     {
         return $this->type === IntegrationType::Widgets->value;
+    }
+
+    public function isUiTPAS(): bool
+    {
+        return $this->type === IntegrationType::UiTPAS->value;
     }
 
     protected static function booted(): void
@@ -142,10 +154,32 @@ final class IntegrationModel extends UuidModel
 
     public function block(): void
     {
+        IntegrationPreviousStatusModel::query()->create(
+            [
+                'id' => $this->id,
+                'status' => $this->status,
+            ]
+        );
         $this->update([
             'status' => IntegrationStatus::Blocked,
         ]);
         IntegrationBlocked::dispatch(Uuid::fromString($this->id));
+    }
+
+    public function unblock(): void
+    {
+        /** @var ?IntegrationPreviousStatusModel $integrationPreviousStatus */
+        $integrationPreviousStatus = IntegrationPreviousStatusModel::query()->find($this->id);
+
+        $this->update([
+            'status' => $integrationPreviousStatus ? $integrationPreviousStatus->status : IntegrationStatus::Draft,
+        ]);
+
+        $integrationPreviousStatus?->delete();
+
+        IntegrationUnblocked::dispatch(
+            Uuid::fromString($this->id)
+        );
     }
 
     /**
@@ -154,6 +188,14 @@ final class IntegrationModel extends UuidModel
     public function keyVisibilityUpgrade(): HasOne
     {
         return $this->hasOne(KeyVisibilityUpgradeModel::class, 'integration_id');
+    }
+
+    /**
+     * @return HasMany<OrganizerModel>
+     */
+    public function organizers(): HasMany
+    {
+        return $this->hasMany(OrganizerModel::class, 'integration_id');
     }
 
     /**

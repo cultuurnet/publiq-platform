@@ -27,12 +27,9 @@ final class ProjectSerializer
             'STAGE_ID' => $this->pipelines->getProjectStageId(ProjectStage::TEST),
             'CUSTOMFIELDS' => [
                 (new IntegrationTypeSerializer())->toInsightlyArray($integration->type),
+                (new WebsiteSerializer())->toInsightlyArray($integration->website()),
             ],
         ];
-
-        if ($integration->website()) {
-            $insightlyArray['CUSTOMFIELDS'][] = (new WebsiteSerializer())->toInsightlyArray($integration->website());
-        }
 
         return $insightlyArray;
     }

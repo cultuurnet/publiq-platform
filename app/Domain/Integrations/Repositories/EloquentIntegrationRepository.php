@@ -34,6 +34,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
             'type' => $integration->type,
             'name' => $integration->name,
             'description' => $integration->description,
+            'website' => $integration->website() ? $integration->website()->value : null,
             'subscription_id' => $integration->subscriptionId,
             'status' => $integration->status,
             'partner_status' => $integration->partnerStatus,

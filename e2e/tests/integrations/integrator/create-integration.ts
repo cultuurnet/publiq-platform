@@ -23,7 +23,7 @@ export async function createIntegrationAsIntegrator(
   if (integrationType === IntegrationType.Widgets) {
     await page
       .locator("li")
-      .filter({ hasText: /^WIDGETS/ })
+      .filter({ hasText: /^Widgets/ })
       .click();
   }
 
@@ -58,7 +58,7 @@ export async function createIntegrationAsIntegrator(
   await page.getByLabel("Ik ga akkoord met de").check();
 
   if (couponCode && integrationType !== IntegrationType.EntryApi) {
-    await page.getByLabel('Ik heb een coupon').check();
+    await page.getByLabel("Ik heb een coupon").check();
     await page.locator('input[name="coupon"]').fill(couponCode);
   }
 

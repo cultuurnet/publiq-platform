@@ -7,8 +7,8 @@ import { IconEntryApi } from "./icons/IconEntryApi";
 import { IconSearchApi } from "./icons/IconSearchApi";
 import { IconWidgets } from "./icons/IconWidgets";
 import { classNames } from "../utils/classNames";
-import { uitpasEnabled } from "../constants/uitpas";
 import { IconUiTPAS } from "./icons/IconUiTPAS";
+import { usePageProps } from "../hooks/usePageProps";
 
 export const integrationIconClasses =
   "h-full w-auto aspect-square max-h-[10rem] object-contain";
@@ -79,8 +79,19 @@ export const getIntegrationTypesInfo = (t: TFunction) => [
 
 export const useIntegrationTypesInfo = () => {
   const { t } = useTranslation();
+  const { config } = usePageProps();
 
-  return useMemo(() => getIntegrationTypesInfo(t), [t]);
+  return useMemo(() => {
+    const integrationTypesInfo = getIntegrationTypesInfo(t);
+
+    // See https://jira.publiq.be/browse/PPF-481
+    return config.uitpasEnabled
+      ? integrationTypesInfo
+      : integrationTypesInfo.filter(
+          (integrationTypesInfo) =>
+            integrationTypesInfo.type !== IntegrationType.UiTPAS
+        );
+  }, [t, config]);
 };
 
 export type IntegrationTypesInfo = ReturnType<
@@ -88,15 +99,9 @@ export type IntegrationTypesInfo = ReturnType<
 >[number];
 
 export const IntegrationTypes = () => {
-  const integrationTypesInfo = useIntegrationTypesInfo();
-
-  // See https://jira.publiq.be/browse/PPF-481
-  const filteredIntegrationTypes = uitpasEnabled
-    ? integrationTypesInfo
-    : integrationTypesInfo.filter(
-        (integrationTypesInfo) =>
-          integrationTypesInfo.type !== IntegrationType.UiTPAS
-      );
+  const { config } = usePageProps();
+  const filteredIntegrationTypes = useIntegrationTypesInfo();
+  const uitpasEnabled = config.uitpasEnabled;
 
   return (
     <div>
