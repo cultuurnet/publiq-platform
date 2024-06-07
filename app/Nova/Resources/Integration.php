@@ -33,6 +33,7 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\URL;
 use Laravel\Nova\Http\Requests\ActionRequest;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Query\Search\SearchableRelation;
 use Laravel\Nova\ResourceTool;
 use Publiq\InsightlyLink\InsightlyLink;
 use Publiq\InsightlyLink\InsightlyType;
@@ -46,18 +47,20 @@ final class Integration extends Resource
 
     public static $title = 'name';
 
-    /**
-     * @var array<string>
-     */
-    public static $search = [
-        'id',
-        'name',
-        'description',
-    ];
-
     protected static ?array $defaultSort = [
         'created_at' => 'desc',
     ];
+
+    public static function searchableColumns(): array
+    {
+        return [
+            'id',
+            'name',
+            'description',
+            new SearchableRelation('auth0Clients', 'auth0_client_id'),
+            new SearchableRelation('uiTiDv1Consumers', 'consumer_key'),
+        ];
+    }
 
     /**
      * @return array<Field|ResourceTool>
