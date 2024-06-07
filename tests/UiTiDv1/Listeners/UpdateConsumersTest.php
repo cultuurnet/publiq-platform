@@ -113,7 +113,7 @@ final class UpdateConsumersTest extends TestCase
                         [
                             'http_errors' => false,
                             'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
-                            'body' => 'name=Mock%20Integration%20%28via%20publiq%20platform%29',
+                            'body' => 'name=Mock%20Integration%20%28via%20publiq%20platform%29&group=1&group=2',
                         ],
                     ],
                     [
@@ -122,7 +122,7 @@ final class UpdateConsumersTest extends TestCase
                         [
                             'http_errors' => false,
                             'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
-                            'body' => 'name=Mock%20Integration%20%28via%20publiq%20platform%29',
+                            'body' => 'name=Mock%20Integration%20%28via%20publiq%20platform%29&group=7&group=8',
                         ],
                     ],
                     [
@@ -131,7 +131,7 @@ final class UpdateConsumersTest extends TestCase
                         [
                             'http_errors' => false,
                             'headers' => ['content-type' => 'application/x-www-form-urlencoded'],
-                            'body' => 'name=Mock%20Integration%20%28via%20publiq%20platform%29',
+                            'body' => 'name=Mock%20Integration%20%28via%20publiq%20platform%29&group=13&group=14',
                         ],
                     ] => new Response(200, [], ''),
                     default => throw new \LogicException('Invalid arguments received'),
