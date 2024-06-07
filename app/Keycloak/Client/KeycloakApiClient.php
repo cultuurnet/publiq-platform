@@ -36,6 +36,7 @@ final readonly class KeycloakApiClient implements ApiClient
         ClientIdFactory $clientIdFactory
     ): Client {
         $clientId = $clientIdFactory->create();
+        $id = Uuid::uuid4();
 
         try {
             $response = $this->client->sendWithBearer(
@@ -44,7 +45,7 @@ final readonly class KeycloakApiClient implements ApiClient
                     sprintf('admin/realms/%s/clients', $realm->internalName),
                     [],
                     Json::encode(IntegrationToKeycloakClientConverter::convert(
-                        Uuid::uuid4(),
+                        $id,
                         $integration,
                         $clientId
                     ))
@@ -61,7 +62,7 @@ final readonly class KeycloakApiClient implements ApiClient
 
         $this->logger->info(sprintf('Client %s for realm %s created with client id %s', $integration->name, $realm->publicName, $clientId));
 
-        return $this->fetchClient($realm, $integration, $clientId);
+        return $this->fetchClient($realm, $integration, $id->toString());
     }
 
     /**
@@ -111,13 +112,13 @@ final readonly class KeycloakApiClient implements ApiClient
     /**
      * @throws KeyCloakApiFailed
      */
-    private function fetchClient(Realm $realm, Integration $integration, string $clientId): Client
+    private function fetchClient(Realm $realm, Integration $integration, string $id): Client
     {
         try {
             $response = $this->client->sendWithBearer(
                 new Request(
                     'GET',
-                    sprintf('admin/realms/%s/clients/%s', $realm->internalName, $clientId)
+                    sprintf('admin/realms/%s/clients/%s', $realm->internalName, $id)
                 ),
                 $realm
             );
@@ -129,7 +130,7 @@ final readonly class KeycloakApiClient implements ApiClient
             }
 
             return Client::createFromJson($realm, $integration->id, Json::decodeAssociatively($body));
-        } catch (Throwable $e) {
+        } catch (KeyCloakApiFailed $e) {
             throw KeyCloakApiFailed::failedToFetchClient($realm, $e->getMessage());
         }
     }
