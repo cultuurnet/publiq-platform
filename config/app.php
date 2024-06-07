@@ -43,7 +43,7 @@ return [
     |
     */
 
-    'debug' => (bool) env('APP_DEBUG', false),
+    'debug' => (bool)env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -202,6 +202,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\UiTiDv1\UiTiDv1ServiceProvider::class,
         App\ProjectAanvraag\ProjectAanvraagServiceProvider::class,
+        App\Keycloak\KeycloakServiceProvider::class,
         App\Search\SearchServiceProvider::class,
         \App\Notifications\NotificationsProvider::class,
     ],

@@ -11,11 +11,13 @@ use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\OrganizerRepository;
+use App\Keycloak\KeycloakConfig;
 use App\Nova\Actions\ActivateIntegration;
 use App\Nova\Actions\AddOrganizer;
 use App\Nova\Actions\ApproveIntegration;
 use App\Nova\Actions\Auth0\CreateMissingAuth0Clients;
 use App\Nova\Actions\BlockIntegration;
+use App\Nova\Actions\Keycloak\CreateMissingKeycloakClients;
 use App\Nova\Actions\OpenWidgetManager;
 use App\Nova\Actions\UiTiDv1\CreateMissingUiTiDv1Consumers;
 use App\Nova\Actions\UnblockIntegration;
@@ -77,7 +79,7 @@ final class Integration extends Resource
             $integrationTypes[IntegrationType::UiTPAS->value] = IntegrationType::UiTPAS->name;
         }
 
-        return [
+        $fields = [
             ID::make()
                 ->readonly()
                 ->onlyOnDetail(),
@@ -187,20 +189,23 @@ final class Integration extends Resource
 
             HasMany::make('UiTiD v1 Consumer Credentials', 'uiTiDv1Consumers', UiTiDv1::class),
             HasMany::make('UiTiD v2 Client Credentials (Auth0)', 'auth0Clients', Auth0Client::class),
-
-            HasMany::make('Organizers'),
-
-            HasMany::make('Contacts'),
-
-            HasMany::make('Urls', 'urls', IntegrationUrl::class),
-
-            HasMany::make('Activity Log'),
         ];
+
+        if (config(KeycloakConfig::isEnabled->value)) {
+            $fields[] = HasMany::make('Keycloak client Credentials', 'keycloakClients', KeycloakClient::class);
+        }
+
+        return array_merge($fields, [
+            HasMany::make('Organizers'),
+            HasMany::make('Contacts'),
+            HasMany::make('Urls', 'urls', IntegrationUrl::class),
+            HasMany::make('Activity Log'),
+        ]);
     }
 
     public function actions(NovaRequest $request): array
     {
-        return [
+        $actions = [
             (new ActivateIntegration(App::make(IntegrationRepository::class)))
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to activate this integration?')
@@ -265,5 +270,18 @@ final class Integration extends Resource
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->isUiTPAS())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->isUiTPAS()),
         ];
+
+        if (config(KeycloakConfig::isEnabled->value)) {
+            $actions[] = (new CreateMissingKeycloakClients())
+                ->withName('Create missing Keycloak clients')
+                ->exceptOnIndex()
+                ->confirmText('Are you sure you want to create missing Keycloak clients for this integration?')
+                ->confirmButtonText('Create')
+                ->cancelButtonText('Cancel')
+                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->hasMissingKeycloakConsumers())
+                ->canRun(fn (Request $request, IntegrationModel $model) => $model->hasMissingKeycloakConsumers());
+        }
+
+        return $actions;
     }
 }

@@ -23,6 +23,8 @@ use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Domain\Subscriptions\Policies\SubscriptionPolicy;
 use App\Domain\KeyVisibilityUpgrades\Models\KeyVisibilityUpgradeModel;
 use App\Domain\KeyVisibilityUpgrades\Policies\KeyVisibilityUpgradePolicy;
+use App\Keycloak\Models\KeycloakClientModel;
+use App\Keycloak\Policies\KeycloakClientPolicy;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use App\UiTiDv1\Policies\UiTiDv1ConsumerPolicy;
 use Auth0\SDK\Auth0;
@@ -43,6 +45,7 @@ final class AuthServiceProvider extends ServiceProvider
         SubscriptionModel::class => SubscriptionPolicy::class,
         UiTiDv1ConsumerModel::class => UiTiDv1ConsumerPolicy::class,
         Auth0ClientModel::class => Auth0ClientPolicy::class,
+        KeycloakClientModel::class => KeycloakClientPolicy::class,
         KeyVisibilityUpgradeModel::class => KeyVisibilityUpgradePolicy::class,
     ];
 
