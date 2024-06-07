@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Keycloak\Repositories;
 
 use App\Domain\Integrations\Environment;
+use App\Domain\Integrations\Environments;
 use App\Keycloak\Client;
 use App\Keycloak\Models\KeycloakClientModel;
-use App\Models\EnvironmentCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
@@ -75,14 +75,14 @@ final class EloquentKeycloakClientRepository implements KeycloakClientRepository
             ->toArray();
     }
 
-    public function getMissingEnvironmentsByIntegrationId(UuidInterface $integrationId): EnvironmentCollection
+    public function getMissingEnvironmentsByIntegrationId(UuidInterface $integrationId): Environments
     {
         $clients = $this->getByIntegrationId($integrationId);
 
         $environments = Environment::cases();
 
         if (count($clients) === count($environments)) {
-            return new EnvironmentCollection();
+            return new Environments();
         }
 
         $existingEnvironments = array_map(
@@ -90,7 +90,7 @@ final class EloquentKeycloakClientRepository implements KeycloakClientRepository
             $clients
         );
 
-        return new EnvironmentCollection(array_udiff(
+        return new Environments(array_udiff(
             $environments,
             $existingEnvironments,
             static fn (Environment $t1, Environment $t2) => strcmp($t1->value, $t2->value)

@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Models;
+namespace App\Domain\Integrations;
 
-use App\Domain\Integrations\Environment;
 use Illuminate\Support\Collection;
 
 /**
  * @extends Collection<int, Environment>
  */
-final class EnvironmentCollection extends Collection
+final class Environments extends Collection
 {
 }

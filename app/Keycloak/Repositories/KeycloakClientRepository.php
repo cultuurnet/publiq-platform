@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Keycloak\Repositories;
 
+use App\Domain\Integrations\Environments;
 use App\Keycloak\Client;
-use App\Models\EnvironmentCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Ramsey\Uuid\UuidInterface;
@@ -30,5 +30,5 @@ interface KeycloakClientRepository
      */
     public function getByIntegrationIds(array $integrationIds): array;
 
-    public function getMissingEnvironmentsByIntegrationId(UuidInterface $integrationId): EnvironmentCollection;
+    public function getMissingEnvironmentsByIntegrationId(UuidInterface $integrationId): Environments;
 }

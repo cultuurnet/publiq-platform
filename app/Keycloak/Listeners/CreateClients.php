@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Keycloak\Listeners;
 
+use App\Domain\Integrations\Environments;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
@@ -11,10 +12,9 @@ use App\Keycloak\Client\ApiClient;
 use App\Keycloak\ClientCollection;
 use App\Keycloak\Events\MissingClientsDetected;
 use App\Keycloak\Exception\KeyCloakApiFailed;
-use App\Keycloak\RealmCollection;
+use App\Keycloak\Realms;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Keycloak\ScopeConfig;
-use App\Models\EnvironmentCollection;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
@@ -28,7 +28,7 @@ final class CreateClients implements ShouldQueue
     public function __construct(
         private readonly IntegrationRepository $integrationRepository,
         private readonly KeycloakClientRepository $keycloakClientRepository,
-        private readonly RealmCollection $realms,
+        private readonly Realms $realms,
         private readonly ApiClient $client,
         private readonly ScopeConfig $scopeConfig,
         private readonly LoggerInterface $logger
@@ -55,7 +55,7 @@ final class CreateClients implements ShouldQueue
         );
     }
 
-    private function handle(IntegrationCreated|MissingClientsDetected $event, RealmCollection $realms): void
+    private function handle(IntegrationCreated|MissingClientsDetected $event, Realms $realms): void
     {
         $clients = $this->createClientsInKeycloak(
             $this->integrationRepository->getById($event->id),
@@ -73,7 +73,7 @@ final class CreateClients implements ShouldQueue
         }
     }
 
-    private function createClientsInKeycloak(Integration $integration, RealmCollection $realms): ClientCollection
+    private function createClientsInKeycloak(Integration $integration, Realms $realms): ClientCollection
     {
         $scopeId = $this->scopeConfig->getScopeIdFromIntegrationType($integration);
 
@@ -104,11 +104,11 @@ final class CreateClients implements ShouldQueue
         ]);
     }
 
-    private function convertMissingEnvironmentsToMissingRealms(EnvironmentCollection $missingEnvironments): RealmCollection
+    private function convertMissingEnvironmentsToMissingRealms(Environments $missingEnvironments): Realms
     {
         $missingEnvValues = array_column($missingEnvironments->toArray(), 'value');
 
-        $missingRealms = new RealmCollection();
+        $missingRealms = new Realms();
         foreach ($this->realms as $realm) {
             if (in_array($realm->environment->value, $missingEnvValues, true)) {
                 $missingRealms->add($realm);

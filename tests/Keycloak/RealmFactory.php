@@ -6,13 +6,13 @@ namespace Tests\Keycloak;
 
 use App\Domain\Integrations\Environment;
 use App\Keycloak\Realm;
-use App\Keycloak\RealmCollection;
+use App\Keycloak\Realms;
 
 trait RealmFactory
 {
-    public function givenAllRealms(): RealmCollection
+    public function givenAllRealms(): Realms
     {
-        return new RealmCollection([
+        return new Realms([
             $this->givenAcceptanceRealm(),
             $this->givenTestRealm(),
             $this->givenProductionRealm(),

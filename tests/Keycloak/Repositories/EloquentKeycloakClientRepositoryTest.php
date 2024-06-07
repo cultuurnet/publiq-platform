@@ -6,7 +6,7 @@ namespace Tests\Keycloak\Repositories;
 
 use App\Domain\Integrations\Environment;
 use App\Keycloak\Client;
-use App\Keycloak\RealmCollection;
+use App\Keycloak\Realms;
 use App\Keycloak\Repositories\EloquentKeycloakClientRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
@@ -20,7 +20,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
     use RealmFactory;
 
     private EloquentKeycloakClientRepository $repository;
-    private RealmCollection $realms;
+    private Realms $realms;
 
     protected function setUp(): void
     {
@@ -103,7 +103,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
         $secondIntegrationId = Uuid::uuid4();
         $integrationIds = [$firstIntegrationId, $secondIntegrationId];
 
-        $realms = new RealmCollection([$this->givenAcceptanceRealm(), $this->givenTestRealm()]);
+        $realms = new Realms([$this->givenAcceptanceRealm(), $this->givenTestRealm()]);
 
         $clients = [];
 
@@ -176,8 +176,8 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
         $integrationId = Uuid::uuid4();
         $clients = [];
 
-        $missingRealmCollection = new RealmCollection();
-        foreach (new RealmCollection([$this->givenAcceptanceRealm()]) as $realm) {
+        $missingRealmCollection = new Realms();
+        foreach (new Realms([$this->givenAcceptanceRealm()]) as $realm) {
             $missingRealmCollection->add($realm);
 
             $clients[] = new Client(

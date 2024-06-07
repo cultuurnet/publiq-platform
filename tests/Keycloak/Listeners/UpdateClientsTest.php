@@ -13,7 +13,7 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client;
 use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Listeners\UpdateClients;
-use App\Keycloak\RealmCollection;
+use App\Keycloak\Realms;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Keycloak\ScopeConfig;
 use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
@@ -42,7 +42,7 @@ final class UpdateClientsTest extends TestCase
     private ApiClient&MockObject $apiClient;
     private LoggerInterface&MockObject $logger;
     private IntegrationRepository&MockObject $integrationRepository;
-    private RealmCollection $realms;
+    private Realms $realms;
 
     protected function setUp(): void
     {

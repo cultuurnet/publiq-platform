@@ -10,18 +10,13 @@ use Illuminate\Support\Collection;
 /**
  * @extends Collection<int, Realm>
  */
-final class RealmCollection extends Collection
+final class Realms extends Collection
 {
-    public static function build(): RealmCollection
+    public static function build(): self
     {
-        $realms = new RealmCollection();
+        $realms = new self();
 
         foreach (config('keycloak.environments') as $publicName => $environment) {
-            if (empty($environment['internalName']) || empty($environment['base_url']) || empty($environment['client_id']) || empty($environment['client_secret'])) {
-                // If any of the fields are missing, do not create that realm.
-                continue;
-            }
-
             $realms->add(new Realm(
                 $environment['internalName'],
                 ucfirst($publicName),

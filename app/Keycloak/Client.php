@@ -48,8 +48,8 @@ final readonly class Client
 
     public function getRealm(): Realm
     {
-        /** @var RealmCollection $realmCollection */
-        $realmCollection = App::get(RealmCollection::class);
+        /** @var Realms $realmCollection */
+        $realmCollection = App::get(Realms::class);
 
         foreach ($realmCollection as $realm) {
             if ($realm->environment === $this->environment) {

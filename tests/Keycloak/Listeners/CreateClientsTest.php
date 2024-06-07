@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Keycloak\Listeners;
 
 use App\Domain\Integrations\Environment;
+use App\Domain\Integrations\Environments;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
@@ -13,10 +14,9 @@ use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Events\MissingClientsDetected;
 use App\Keycloak\Listeners\CreateClients;
 use App\Keycloak\Realm;
-use App\Keycloak\RealmCollection;
+use App\Keycloak\Realms;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Keycloak\ScopeConfig;
-use App\Models\EnvironmentCollection;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
@@ -40,7 +40,7 @@ final class CreateClientsTest extends TestCase
     private KeycloakClientRepository&MockObject $keycloakClientRepository;
     private ApiClient&MockObject $apiClient;
     private LoggerInterface&MockObject $logger;
-    private RealmCollection $realms;
+    private Realms $realms;
 
     protected function setUp(): void
     {
@@ -159,7 +159,7 @@ final class CreateClientsTest extends TestCase
     {
         $clients = [];
 
-        $missingEnvironments = new EnvironmentCollection([Environment::Testing]);
+        $missingEnvironments = new Environments([Environment::Testing]);
 
         $this->keycloakClientRepository->expects($this->once())
             ->method('getMissingEnvironmentsByIntegrationId')
@@ -232,7 +232,7 @@ final class CreateClientsTest extends TestCase
 
         $this->keycloakClientRepository->method('getMissingEnvironmentsByIntegrationId')
             ->with($integrationId)
-            ->willReturn(new EnvironmentCollection());
+            ->willReturn(new Environments());
 
         $this->logger->expects($this->once())
             ->method('info')
