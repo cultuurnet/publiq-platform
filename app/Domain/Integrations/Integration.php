@@ -228,6 +228,7 @@ final class Integration
             'organization' => $this->organization,
             'authClients' => $this->auth0Clients,
             'legacyAuthConsumers' => $this->uiTiDv1Consumers,
+            'keycloakClients' => $this->keycloakClients,
             'subscription' => $this->subscription,
             'website' => $this->website->value ?? null,
             'coupon' => $this->coupon ?? null,
