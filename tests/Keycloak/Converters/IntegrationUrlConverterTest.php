@@ -33,7 +33,7 @@ final class IntegrationUrlConverterTest extends TestCase
         $this->client = new Client(
             Uuid::uuid4(),
             $this->integrationId,
-            Uuid::uuid4(),
+            Uuid::uuid4()->toString(),
             'my-secret',
             Environment::Acceptance
         );

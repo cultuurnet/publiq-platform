@@ -77,7 +77,7 @@ final class UpdateClients implements ShouldQueue
 
         $this->logger->info('Keycloak client updated', [
             'integration_id' => $integration->id->toString(),
-            'client_id' => $keycloakClient->clientId->toString(),
+            'client_id' => $keycloakClient->clientId,
             'environment' => $keycloakClient->environment->value,
         ]);
     }

@@ -7,11 +7,11 @@ namespace App\Keycloak\Client;
 use App\Domain\Integrations\Integration;
 use App\Json;
 use App\Keycloak\Client;
+use App\Keycloak\ClientId\ClientIdFactory;
+use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realm;
 use App\Keycloak\ScopeConfig;
-use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
-use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
@@ -30,15 +30,24 @@ final readonly class KeycloakApiClient implements ApiClient
     /**
      * @throws KeyCloakApiFailed
      */
-    public function createClient(Realm $realm, Integration $integration, UuidInterface $id): void
-    {
+    public function createClient(
+        Realm $realm,
+        Integration $integration,
+        ClientIdFactory $clientIdFactory
+    ): Client {
+        $clientId = $clientIdFactory->create();
+
         try {
             $response = $this->client->sendWithBearer(
                 new Request(
                     'POST',
                     sprintf('admin/realms/%s/clients', $realm->internalName),
                     [],
-                    Json::encode(IntegrationToKeycloakClientConverter::convert($id, $integration, Uuid::uuid4()))
+                    Json::encode(IntegrationToKeycloakClientConverter::convert(
+                        Uuid::uuid4(),
+                        $integration,
+                        $clientId
+                    ))
                 ),
                 $realm
             );
@@ -46,22 +55,13 @@ final readonly class KeycloakApiClient implements ApiClient
             throw KeyCloakApiFailed::failedToCreateClient($e->getMessage());
         }
 
-        if ($response->getStatusCode() === 409) {
-            /*
-            When using the action "create missing clients" it could be that the client already exists in Keycloak, but not in Publiq Platform.
-            In this case we do not fail, we will just connect both sides and make sure the scopes are configured correctly.
-            */
-
-            $this->logger->info(sprintf('Client %s already exists for realm %s', $integration->name, $realm->publicName));
-
-            return;
-        }
-
         if ($response->getStatusCode() !== 201) {
             throw KeyCloakApiFailed::failedToCreateClientWithResponse($response);
         }
 
-        $this->logger->info(sprintf('Client %s for realm %s created with id %s', $integration->name, $realm->publicName, $id->toString()));
+        $this->logger->info(sprintf('Client %s for realm %s created with client id %s', $integration->name, $realm->publicName, $clientId));
+
+        return $this->fetchClient($realm, $integration, $clientId);
     }
 
     /**
@@ -77,7 +77,7 @@ final readonly class KeycloakApiClient implements ApiClient
                 ),
                 $client->getRealm()
             );
-        } catch (GuzzleException $e) {
+        } catch (Throwable $e) {
             throw KeyCloakApiFailed::failedToAddScopeToClient($e->getMessage());
         }
 
@@ -85,7 +85,6 @@ final readonly class KeycloakApiClient implements ApiClient
             throw KeyCloakApiFailed::failedToAddScopeToClientWithResponse($response);
         }
     }
-
 
     public function deleteScopes(Client $client): void
     {
@@ -112,13 +111,13 @@ final readonly class KeycloakApiClient implements ApiClient
     /**
      * @throws KeyCloakApiFailed
      */
-    public function fetchClient(Realm $realm, Integration $integration, UuidInterface $id): Client
+    private function fetchClient(Realm $realm, Integration $integration, string $clientId): Client
     {
         try {
             $response = $this->client->sendWithBearer(
                 new Request(
                     'GET',
-                    sprintf('admin/realms/%s/clients/%s', $realm->internalName, $id->toString())
+                    sprintf('admin/realms/%s/clients/%s', $realm->internalName, $clientId)
                 ),
                 $realm
             );

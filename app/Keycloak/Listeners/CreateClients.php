@@ -10,6 +10,7 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client\ApiClient;
 use App\Keycloak\ClientCollection;
+use App\Keycloak\ClientId\ClientIdUuidStrategy;
 use App\Keycloak\Events\MissingClientsDetected;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realms;
@@ -18,7 +19,6 @@ use App\Keycloak\ScopeConfig;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
-use Ramsey\Uuid\Uuid;
 use Throwable;
 
 final class CreateClients implements ShouldQueue
@@ -81,10 +81,7 @@ final class CreateClients implements ShouldQueue
 
         foreach ($realms as $realm) {
             try {
-                $id = Uuid::uuid4();
-
-                $this->client->createClient($realm, $integration, $id);
-                $client = $this->client->fetchClient($realm, $integration, $id);
+                $client = $this->client->createClient($realm, $integration, new ClientIdUuidStrategy());
                 $this->client->addScopeToClient($client, $scopeId);
 
                 $clientCollection->add($client);

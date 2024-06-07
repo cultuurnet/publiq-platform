@@ -15,7 +15,7 @@ final readonly class Client
     public function __construct(
         public UuidInterface $id,
         public UuidInterface $integrationId,
-        public UuidInterface $clientId,
+        public string $clientId,
         public string $clientSecret,
         public Environment $environment,
     ) {
@@ -33,7 +33,7 @@ final readonly class Client
         return new self(
             Uuid::fromString($data['id']),
             $integrationId,
-            Uuid::fromString($data['clientId']),
+            $data['clientId'],
             $data['secret'],
             $realm->environment,
         );

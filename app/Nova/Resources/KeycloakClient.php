@@ -77,7 +77,7 @@ final class KeycloakClient extends Resource
                 return '<span style="color: green;">Active</span>';
             })->asHtml(),
             Text::make('client_id', function (KeycloakClientModel $model) {
-                return $model->toDomain()->clientId->toString();
+                return $model->toDomain()->clientId;
             })
                 ->readonly(),
             Text::make('client_secret')

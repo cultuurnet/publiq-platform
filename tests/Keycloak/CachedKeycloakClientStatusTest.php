@@ -31,7 +31,7 @@ final class CachedKeycloakClientStatusTest extends TestCase
 
         $this->apiClient = $this->createMock(ApiClient::class);
         $this->cachedKeycloakClientStatus = new CachedKeycloakClientStatus($this->apiClient, new NullLogger());
-        $this->client = new Client(Uuid::uuid4(), Uuid::uuid4(), Uuid::uuid4(), 'client-id-1', Environment::Acceptance);
+        $this->client = new Client(Uuid::uuid4(), Uuid::uuid4(), Uuid::uuid4()->toString(), 'client-id-1', Environment::Acceptance);
     }
 
     public function test_does_cache_layer_work(): void

@@ -32,7 +32,7 @@ final class UnblockClientHandlerTest extends TestCase
         $client = new Client(
             Uuid::uuid4(),
             Uuid::uuid4(),
-            Uuid::uuid4(),
+            Uuid::uuid4()->toString(),
             'client-secret-1',
             Environment::Acceptance
         );
@@ -64,7 +64,7 @@ final class UnblockClientHandlerTest extends TestCase
         $client = new Client(
             Uuid::uuid4(),
             Uuid::uuid4(),
-            Uuid::uuid4(),
+            Uuid::uuid4()->toString(),
             'client-secret-1',
             Environment::Acceptance
         );

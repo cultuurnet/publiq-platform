@@ -55,7 +55,7 @@ final class BlockClientsTest extends TestCase
         $clients = [];
         foreach ($this->givenAllRealms()
                  as $realm) {
-            $client = new Client(Uuid::uuid4(), $this->integration->id, Uuid::uuid4(), self::SECRET, $realm->environment);
+            $client = new Client(Uuid::uuid4(), $this->integration->id, Uuid::uuid4()->toString(), self::SECRET, $realm->environment);
 
             $clients[$client->id->toString()] = $client;
         }

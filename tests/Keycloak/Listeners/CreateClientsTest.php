@@ -81,42 +81,31 @@ final class CreateClientsTest extends TestCase
             $clients[$realm->internalName] = new Client(
                 Uuid::uuid4(),
                 $this->integration->id,
-                Uuid::uuid4(),
+                Uuid::uuid4()->toString(),
                 self::SECRET,
                 $realm->environment
             );
         }
 
-        $activeId = null;
         $this->apiClient->expects($this->exactly($this->realms->count()))
             ->method('createClient')
             ->willReturnCallback(
-                function (Realm $realm, Integration $integrationArgument) use ($clients, &$activeId) {
+                function (Realm $realm, Integration $integrationArgument) use ($clients) {
                     $this->assertEquals($this->integration->id, $integrationArgument->id);
                     $this->assertArrayHasKey($realm->internalName, $clients);
 
-                    $activeId = $clients[$realm->internalName]->id;
-                    return $clients[$realm->internalName]->id;
-                }
-            );
-
-        $this->apiClient->expects($this->exactly($this->realms->count()))
-            ->method('addScopeToClient')
-            ->willReturnCallback(function (Client $client, UuidInterface $scopeId) use (&$activeId) {
-                $this->assertEquals($activeId, $client->id);
-                $this->assertEquals(Uuid::fromString(self::SEARCH_SCOPE_ID), $scopeId);
-            });
-
-        $this->apiClient->expects($this->exactly($this->realms->count()))
-            ->method('fetchClient')
-            ->willReturnCallback(
-                function (Realm $realm, Integration $integrationArgument) use ($clients) {
                     $this->assertEquals($this->integration->id, $integrationArgument->id);
                     $this->assertArrayHasKey($realm->internalName, $clients);
 
                     return $clients[$realm->internalName];
                 }
             );
+
+        $this->apiClient->expects($this->exactly($this->realms->count()))
+            ->method('addScopeToClient')
+            ->willReturnCallback(function (Client $client, UuidInterface $scopeId) {
+                $this->assertEquals(Uuid::fromString(self::SEARCH_SCOPE_ID), $scopeId);
+            });
 
         $this->integrationRepository->expects($this->once())
             ->method('getById')
@@ -170,7 +159,7 @@ final class CreateClientsTest extends TestCase
             $clients[$environment->value] = new Client(
                 Uuid::uuid4(),
                 $this->integration->id,
-                Uuid::uuid4(),
+                Uuid::uuid4()->toString(),
                 self::SECRET,
                 $environment
             );
@@ -184,6 +173,11 @@ final class CreateClientsTest extends TestCase
 
                     $env = $realm->environment->value;
                     $this->assertArrayHasKey($env, $clients);
+
+                    $this->assertEquals($this->integration->id, $integrationArgument->id);
+                    $this->assertArrayHasKey($realm->environment->value, $clients);
+
+                    return $clients[$realm->environment->value];
                 }
             );
 
@@ -192,17 +186,6 @@ final class CreateClientsTest extends TestCase
             ->willReturnCallback(function (Client $client, UuidInterface $scopeId) {
                 $this->assertEquals(Uuid::fromString(self::SEARCH_SCOPE_ID), $scopeId);
             });
-
-        $this->apiClient->expects($this->exactly($missingEnvironments->count()))
-            ->method('fetchClient')
-            ->willReturnCallback(
-                function (Realm $realm, Integration $integrationArgument) use ($clients) {
-                    $this->assertEquals($this->integration->id, $integrationArgument->id);
-                    $this->assertArrayHasKey($realm->environment->value, $clients);
-
-                    return $clients[$realm->environment->value];
-                }
-            );
 
         $this->integrationRepository->expects($this->once())
             ->method('getById')

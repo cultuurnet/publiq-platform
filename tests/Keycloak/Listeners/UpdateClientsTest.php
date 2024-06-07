@@ -82,7 +82,7 @@ final class UpdateClientsTest extends TestCase
         $clients = [];
         foreach ($this->realms as $realm) {
             $id = Uuid::uuid4();
-            $clients[$id->toString()] = new Client($id, $this->integration->id, Uuid::uuid4(), self::SECRET, $realm->environment);
+            $clients[$id->toString()] = new Client($id, $this->integration->id, Uuid::uuid4()->toString(), self::SECRET, $realm->environment);
         }
 
         $activeId = null; // Which client are we updating?
@@ -126,7 +126,7 @@ final class UpdateClientsTest extends TestCase
                 $this->assertEquals([
                     'integration_id' => $this->integration->id->toString(),
                     'environment' => $client->environment->value,
-                    'client_id' => $client->clientId->toString(),
+                    'client_id' => $client->clientId,
                 ], $params);
             });
 
