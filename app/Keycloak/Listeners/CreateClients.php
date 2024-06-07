@@ -9,7 +9,7 @@ use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client\ApiClient;
-use App\Keycloak\ClientCollection;
+use App\Keycloak\Clients;
 use App\Keycloak\ClientId\ClientIdUuidStrategy;
 use App\Keycloak\Events\MissingClientsDetected;
 use App\Keycloak\Exception\KeyCloakApiFailed;
@@ -73,11 +73,11 @@ final class CreateClients implements ShouldQueue
         }
     }
 
-    private function createClientsInKeycloak(Integration $integration, Realms $realms): ClientCollection
+    private function createClientsInKeycloak(Integration $integration, Realms $realms): Clients
     {
         $scopeId = $this->scopeConfig->getScopeIdFromIntegrationType($integration);
 
-        $clientCollection = new ClientCollection();
+        $clientCollection = new Clients();
 
         foreach ($realms as $realm) {
             try {
