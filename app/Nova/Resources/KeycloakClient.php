@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Nova\Resources;
 
+use App\Domain\Integrations\Environment;
 use App\Keycloak\CachedKeycloakClientStatus;
-use App\Keycloak\Config;
 use App\Keycloak\Models\KeycloakClientModel;
-use App\Keycloak\RealmCollection;
 use App\Nova\ActionGuards\ActionGuard;
 use App\Nova\ActionGuards\Keycloak\BlockKeycloakClientGuard;
 use App\Nova\ActionGuards\Keycloak\UnblockKeycloakClientGuard;
@@ -63,7 +62,11 @@ final class KeycloakClient extends Resource
             Select::make('realm')
                 ->readonly()
                 ->filterable()
-                ->options(RealmCollection::asArray()),
+                ->options([
+                    Environment::Acceptance->value => Environment::Acceptance->name,
+                    Environment::Testing->value => Environment::Testing->name,
+                    Environment::Production->value => Environment::Production->name,
+                ]),
             Text::make('Status', function (KeycloakClientModel $model) {
                 $client = $model->toDomain();
 
@@ -74,16 +77,13 @@ final class KeycloakClient extends Resource
                 return '<span style="color: green;">Active</span>';
             })->asHtml(),
             Text::make('client_id', function (KeycloakClientModel $model) {
-                return $model->toDomain()->clientId->toString();
+                return $model->toDomain()->clientId;
             })
                 ->readonly(),
             Text::make('client_secret')
                 ->readonly(),
             Text::make('Open', function (KeycloakClientModel $model) {
-                // I wish I could use my config object, but don't know how to get access to it from here
-                $baseUrl = config('keycloak.base_url');
-
-                return sprintf('<a href="%s" class="link-default" target="_blank">Open in Keycloak</a>', $model->toDomain()->getKeycloakUrl($baseUrl));
+                return sprintf('<a href="%s" class="link-default" target="_blank">Open in Keycloak</a>', $model->toDomain()->getKeycloakUrl());
             })->asHtml(),
         ];
     }
@@ -107,7 +107,7 @@ final class KeycloakClient extends Resource
             App::make(BlockKeycloakClient::class)
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to block this client?')
-                ->confirmButtonText('Disable')
+                ->confirmButtonText('Block')
                 ->cancelButtonText('Cancel')
                 ->canSee(fn (Request $request) => $this->canDisable($request, $this->resource))
                 ->canRun(fn (Request $request, KeycloakClientModel $model) => $this->canDisable($request, $model)),

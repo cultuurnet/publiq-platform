@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace App\Keycloak\Listeners;
 
+use App\Domain\Integrations\Environments;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client\ApiClient;
-use App\Keycloak\ClientCollection;
-use App\Keycloak\Config;
+use App\Keycloak\Clients;
+use App\Keycloak\ClientId\ClientIdUuidStrategy;
 use App\Keycloak\Events\MissingClientsDetected;
 use App\Keycloak\Exception\KeyCloakApiFailed;
-use App\Keycloak\RealmCollection;
+use App\Keycloak\Realms;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Keycloak\ScopeConfig;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
-use Ramsey\Uuid\Uuid;
 use Throwable;
 
 final class CreateClients implements ShouldQueue
@@ -28,7 +28,7 @@ final class CreateClients implements ShouldQueue
     public function __construct(
         private readonly IntegrationRepository $integrationRepository,
         private readonly KeycloakClientRepository $keycloakClientRepository,
-        private readonly Config $config,
+        private readonly Realms $realms,
         private readonly ApiClient $client,
         private readonly ScopeConfig $scopeConfig,
         private readonly LoggerInterface $logger
@@ -37,23 +37,25 @@ final class CreateClients implements ShouldQueue
 
     public function handleCreateClients(IntegrationCreated $event): void
     {
-        $this->handle($event, $this->config->realms);
+        $this->handle($event, $this->realms);
     }
 
     public function handleCreatingMissingClients(MissingClientsDetected $event): void
     {
-        $missingRealms = $this->keycloakClientRepository->getMissingRealmsByIntegrationId($event->id);
+        $missingEnvironments = $this->keycloakClientRepository->getMissingEnvironmentsByIntegrationId($event->id);
 
-        if (count($missingRealms) === 0) {
+        if (count($missingEnvironments) === 0) {
             $this->logger->info($event->id . ' - already has all Keycloak clients');
             return;
         }
 
-        $this->handle($event, $missingRealms);
+        $this->handle(
+            $event,
+            $this->convertMissingEnvironmentsToMissingRealms($missingEnvironments)
+        );
     }
 
-
-    private function handle(IntegrationCreated|MissingClientsDetected $event, RealmCollection $realms): void
+    private function handle(IntegrationCreated|MissingClientsDetected $event, Realms $realms): void
     {
         $clients = $this->createClientsInKeycloak(
             $this->integrationRepository->getById($event->id),
@@ -66,24 +68,21 @@ final class CreateClients implements ShouldQueue
             $this->logger->info('Keycloak client created', [
                 'integration_id' => $event->id->toString(),
                 'client_id' => $client->id->toString(),
-                'realm' => $client->realm->internalName,
+                'realm' => $client->getRealm()->internalName,
             ]);
         }
     }
 
-    private function createClientsInKeycloak(Integration $integration, RealmCollection $realms): ClientCollection
+    private function createClientsInKeycloak(Integration $integration, Realms $realms): Clients
     {
         $scopeId = $this->scopeConfig->getScopeIdFromIntegrationType($integration);
 
-        $clientCollection = new ClientCollection();
+        $clientCollection = new Clients();
 
         foreach ($realms as $realm) {
             try {
-                $clientId = Uuid::uuid4();
-
-                $this->client->createClient($realm, $integration, $clientId);
-                $client = $this->client->fetchClient($realm, $integration, $clientId);
-                $this->client->addScopeToClient($realm, $client->id, $scopeId);
+                $client = $this->client->createClient($realm, $integration, new ClientIdUuidStrategy());
+                $this->client->addScopeToClient($client, $scopeId);
 
                 $clientCollection->add($client);
             } catch (KeyCloakApiFailed $e) {
@@ -100,5 +99,19 @@ final class CreateClients implements ShouldQueue
             'integration_id' => $integrationCreated->id->toString(),
             'exception' => $throwable,
         ]);
+    }
+
+    private function convertMissingEnvironmentsToMissingRealms(Environments $missingEnvironments): Realms
+    {
+        $missingEnvValues = array_column($missingEnvironments->toArray(), 'value');
+
+        $missingRealms = new Realms();
+        foreach ($this->realms as $realm) {
+            if (in_array($realm->environment->value, $missingEnvValues, true)) {
+                $missingRealms->add($realm);
+            }
+        }
+
+        return $missingRealms;
     }
 }

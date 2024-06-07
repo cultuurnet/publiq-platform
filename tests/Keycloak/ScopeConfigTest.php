@@ -6,7 +6,7 @@ namespace Tests\Keycloak;
 
 use App\Domain\Integrations\IntegrationType;
 use App\Keycloak\ScopeConfig;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
 use Tests\CreatesIntegration;
 
@@ -23,6 +23,8 @@ final class ScopeConfigTest extends TestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->scopeConfig = new ScopeConfig(
             Uuid::fromString(self::SEARCH_API_ID),
             Uuid::fromString(self::ENTRY_API_ID),

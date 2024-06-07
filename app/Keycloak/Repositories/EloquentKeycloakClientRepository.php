@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Keycloak\Repositories;
 
+use App\Domain\Integrations\Environment;
+use App\Domain\Integrations\Environments;
 use App\Keycloak\Client;
 use App\Keycloak\Models\KeycloakClientModel;
-use App\Keycloak\RealmCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
@@ -27,9 +28,9 @@ final class EloquentKeycloakClientRepository implements KeycloakClientRepository
                         [
                             'id' => $client->id->toString(),
                             'integration_id' => $client->integrationId->toString(),
-                            'client_id' => $client->clientId->toString(),
+                            'client_id' => $client->clientId,
                             'client_secret' => $client->clientSecret,
-                            'realm' => $client->realm->publicName,
+                            'realm' => $client->getRealm()->publicName,
                         ]
                     );
             }
@@ -74,23 +75,25 @@ final class EloquentKeycloakClientRepository implements KeycloakClientRepository
             ->toArray();
     }
 
-    public function getMissingRealmsByIntegrationId(UuidInterface $integrationId): RealmCollection
+    public function getMissingEnvironmentsByIntegrationId(UuidInterface $integrationId): Environments
     {
         $clients = $this->getByIntegrationId($integrationId);
 
-        if (count($clients) === count(RealmCollection::getRealms())) {
-            return new RealmCollection();
+        $environments = Environment::cases();
+
+        if (count($clients) === count($environments)) {
+            return new Environments();
         }
 
-        $existingRealms = array_map(
-            static fn (Client $client) => $client->realm,
+        $existingEnvironments = array_map(
+            static fn (Client $client) => $client->environment,
             $clients
         );
 
-        return new RealmCollection(array_udiff(
-            RealmCollection::getRealms()->toArray(),
-            $existingRealms,
-            fn (Client $t1, Client $t2) => strcmp($t1->id->toString(), $t2->id->toString())
+        return new Environments(array_udiff(
+            $environments,
+            $existingEnvironments,
+            static fn (Environment $t1, Environment $t2) => strcmp($t1->value, $t2->value)
         ));
     }
 }

@@ -9,6 +9,6 @@ use Illuminate\Support\Collection;
 /**
  * @extends Collection<int, Client>
  */
-final class ClientCollection extends Collection
+final class Clients extends Collection
 {
 }

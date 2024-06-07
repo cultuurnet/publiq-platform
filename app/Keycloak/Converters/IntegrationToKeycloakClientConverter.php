@@ -10,12 +10,12 @@ use Ramsey\Uuid\UuidInterface;
 
 final class IntegrationToKeycloakClientConverter
 {
-    public static function convert(UuidInterface $id, Integration $integration, UuidInterface $clientId): array
+    public static function convert(UuidInterface $id, Integration $integration, string $clientId): array
     {
         return [
             'protocol' => 'openid-connect',
             'id' => $id->toString(),
-            'clientId' => $clientId->toString(),
+            'clientId' => $clientId,
             'name' => $integration->name,
             'description' => $integration->description,
             'publicClient' => false,

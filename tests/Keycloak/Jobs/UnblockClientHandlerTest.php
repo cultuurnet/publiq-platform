@@ -4,23 +4,26 @@ declare(strict_types=1);
 
 namespace Tests\Keycloak\Jobs;
 
+use App\Domain\Integrations\Environment;
 use App\Keycloak\Client;
 use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Events\ClientUnblocked;
 use App\Keycloak\Jobs\UnblockClient;
 use App\Keycloak\Jobs\UnblockClientHandler;
-use App\Keycloak\Realm;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Event;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
 use Tests\Keycloak\KeycloakHttpClientFactory;
+use Tests\Keycloak\RealmFactory;
 
 final class UnblockClientHandlerTest extends TestCase
 {
     use KeycloakHttpClientFactory;
+
+    use RealmFactory;
 
     public function test_unblock_client_handler(): void
     {
@@ -29,9 +32,9 @@ final class UnblockClientHandlerTest extends TestCase
         $client = new Client(
             Uuid::uuid4(),
             Uuid::uuid4(),
-            Uuid::uuid4(),
+            Uuid::uuid4()->toString(),
             'client-secret-1',
-            Realm::getMasterRealm()
+            Environment::Acceptance
         );
 
         $keycloakClientRepository = $this->createMock(KeycloakClientRepository::class);
@@ -61,9 +64,9 @@ final class UnblockClientHandlerTest extends TestCase
         $client = new Client(
             Uuid::uuid4(),
             Uuid::uuid4(),
-            Uuid::uuid4(),
+            Uuid::uuid4()->toString(),
             'client-secret-1',
-            Realm::getMasterRealm()
+            Environment::Acceptance
         );
 
         $keycloakClientRepository = $this->createMock(KeycloakClientRepository::class);

@@ -7,13 +7,12 @@ namespace App\Keycloak\Client;
 use App\Domain\Integrations\Integration;
 use App\Json;
 use App\Keycloak\Client;
+use App\Keycloak\ClientId\ClientIdFactory;
+use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realm;
 use App\Keycloak\ScopeConfig;
-use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
-use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
-use Illuminate\Support\Facades\Log;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -31,8 +30,12 @@ final readonly class KeycloakApiClient implements ApiClient
     /**
      * @throws KeyCloakApiFailed
      */
-    public function createClient(Realm $realm, Integration $integration, UuidInterface $clientId): void
-    {
+    public function createClient(
+        Realm $realm,
+        Integration $integration,
+        ClientIdFactory $clientIdFactory
+    ): Client {
+        $clientId = $clientIdFactory->create();
         $id = Uuid::uuid4();
 
         try {
@@ -41,44 +44,41 @@ final readonly class KeycloakApiClient implements ApiClient
                     'POST',
                     sprintf('admin/realms/%s/clients', $realm->internalName),
                     [],
-                    Json::encode(IntegrationToKeycloakClientConverter::convert($id, $integration, $clientId))
-                )
+                    Json::encode(IntegrationToKeycloakClientConverter::convert(
+                        $id,
+                        $integration,
+                        $clientId
+                    ))
+                ),
+                $realm
             );
         } catch (Throwable $e) {
             throw KeyCloakApiFailed::failedToCreateClient($e->getMessage());
-        }
-
-        if ($response->getStatusCode() === 409) {
-            /*
-            When using the action "create missing clients" it could be that the client already exists in Keycloak, but not in Publiq Platform.
-            In this case we do not fail, we will just connect both sides and make sure the scopes are configured correctly.
-            */
-
-            $this->logger->info(sprintf('Client %s already exists', $integration->id->toString()));
-
-            return;
         }
 
         if ($response->getStatusCode() !== 201) {
             throw KeyCloakApiFailed::failedToCreateClientWithResponse($response);
         }
 
-        $this->logger->info(sprintf('Client %s, client id %s created with id %s', $integration->name, $integration->id->toString(), $id->toString()));
+        $this->logger->info(sprintf('Client %s for realm %s created with client id %s', $integration->name, $realm->publicName, $clientId));
+
+        return $this->fetchClient($realm, $integration, $id->toString());
     }
 
     /**
      * @throws KeyCloakApiFailed
      */
-    public function addScopeToClient(Realm $realm, UuidInterface $clientId, UuidInterface $scopeId): void
+    public function addScopeToClient(Client $client, UuidInterface $scopeId): void
     {
         try {
             $response = $this->client->sendWithBearer(
                 new Request(
                     'PUT',
-                    sprintf('admin/realms/%s/clients/%s/default-client-scopes/%s', $realm->internalName, $clientId->toString(), $scopeId->toString())
-                )
+                    sprintf('admin/realms/%s/clients/%s/default-client-scopes/%s', $client->getRealm()->internalName, $client->id->toString(), $scopeId->toString())
+                ),
+                $client->getRealm()
             );
-        } catch (GuzzleException $e) {
+        } catch (Throwable $e) {
             throw KeyCloakApiFailed::failedToAddScopeToClient($e->getMessage());
         }
 
@@ -87,7 +87,6 @@ final readonly class KeycloakApiClient implements ApiClient
         }
     }
 
-
     public function deleteScopes(Client $client): void
     {
         foreach ($this->scopeConfig->getAll() as $scope) {
@@ -95,8 +94,9 @@ final readonly class KeycloakApiClient implements ApiClient
                 $response = $this->client->sendWithBearer(
                     new Request(
                         'DELETE',
-                        sprintf('admin/realms/%s/clients/%s/default-client-scopes/%s', $client->realm->internalName, $client->id->toString(), $scope->toString()),
-                    )
+                        sprintf('admin/realms/%s/clients/%s/default-client-scopes/%s', $client->getRealm()->internalName, $client->id->toString(), $scope->toString()),
+                    ),
+                    $client->getRealm()
                 );
 
                 // Will throw a 404 when scope not attached to client, but this is no problem.
@@ -112,14 +112,15 @@ final readonly class KeycloakApiClient implements ApiClient
     /**
      * @throws KeyCloakApiFailed
      */
-    public function fetchClient(Realm $realm, Integration $integration, UuidInterface $clientId): Client
+    private function fetchClient(Realm $realm, Integration $integration, string $id): Client
     {
         try {
             $response = $this->client->sendWithBearer(
                 new Request(
                     'GET',
-                    'admin/realms/' . $realm->internalName . '/clients?' . http_build_query(['clientId' => $clientId->toString()])
-                )
+                    sprintf('admin/realms/%s/clients/%s', $realm->internalName, $id)
+                ),
+                $realm
             );
 
             $body = $response->getBody()->getContents();
@@ -128,9 +129,8 @@ final readonly class KeycloakApiClient implements ApiClient
                 throw KeyCloakApiFailed::failedToFetchClient($realm, $body);
             }
 
-            $data = Json::decodeAssociatively($body);
-            return Client::createFromJson($realm, $integration->id, $clientId, $data[0]);
-        } catch (Throwable $e) {
+            return Client::createFromJson($realm, $integration->id, Json::decodeAssociatively($body));
+        } catch (KeyCloakApiFailed $e) {
             throw KeyCloakApiFailed::failedToFetchClient($realm, $e->getMessage());
         }
     }
@@ -144,24 +144,22 @@ final readonly class KeycloakApiClient implements ApiClient
             $response = $this->client->sendWithBearer(
                 new Request(
                     'GET',
-                    'admin/realms/' . $client->realm->internalName . '/clients?' . http_build_query(['clientId' => $client->clientId->toString()])
-                )
+                    sprintf('admin/realms/%s/clients/%s', $client->getRealm()->internalName, $client->id->toString())
+                ),
+                $client->getRealm()
             );
 
             $body = $response->getBody()->getContents();
 
             if (empty($body) || $response->getStatusCode() !== 200) {
-                throw KeyCloakApiFailed::failedToFetchClient($client->realm, $body);
+                throw KeyCloakApiFailed::failedToFetchClient($client->getRealm(), $body);
             }
 
             $data = Json::decodeAssociatively($body);
 
-            $this->logger->info('Response: ' . $body);
-
-            return $data[0]['enabled'];
+            return $data['enabled'];
         } catch (Throwable $e) {
-            Log::error($e->getLine() . '/' . $e->getMessage());
-            throw KeyCloakApiFailed::failedToFetchClient($client->realm, $e->getMessage());
+            throw KeyCloakApiFailed::failedToFetchClient($client->getRealm(), $e->getMessage());
         }
     }
 
@@ -190,10 +188,11 @@ final readonly class KeycloakApiClient implements ApiClient
             $response = $this->client->sendWithBearer(
                 new Request(
                     'PUT',
-                    'admin/realms/' . $client->realm->internalName . '/clients/' . $client->id->toString(),
+                    'admin/realms/' . $client->getRealm()->internalName . '/clients/' . $client->id->toString(),
                     [],
                     Json::encode($body)
-                )
+                ),
+                $client->getRealm()
             );
 
             if ($response->getStatusCode() !== 204) {

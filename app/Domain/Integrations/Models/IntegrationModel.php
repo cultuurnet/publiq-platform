@@ -8,6 +8,7 @@ use App\Auth0\Auth0Tenant;
 use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
+use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationBlocked;
@@ -26,7 +27,6 @@ use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Insightly\Models\InsightlyMappingModel;
 use App\Insightly\Resources\ResourceType;
 use App\Keycloak\Models\KeycloakClientModel;
-use App\Keycloak\RealmCollection;
 use App\Models\UuidModel;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use App\UiTiDv1\UiTiDv1Environment;
@@ -266,7 +266,7 @@ final class IntegrationModel extends UuidModel
 
     public function hasMissingKeycloakConsumers(): bool
     {
-        return $this->keycloakClients()->count() < count(RealmCollection::getRealms());
+        return $this->keycloakClients()->count() < count(Environment::cases());
     }
 
     public function toDomain(): Integration

@@ -9,28 +9,33 @@ use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\IntegrationUrlType;
 use App\Keycloak\Client;
-use App\Keycloak\Realm;
 use App\Keycloak\Converters\IntegrationUrlConverter;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Tests\CreatesIntegration;
+use Tests\Keycloak\RealmFactory;
 
 final class IntegrationUrlConverterTest extends TestCase
 {
     use CreatesIntegration;
+
+    use RealmFactory;
+
     private Client $client;
     private UuidInterface $integrationId;
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->integrationId = Uuid::uuid4();
         $this->client = new Client(
             Uuid::uuid4(),
             $this->integrationId,
-            Uuid::uuid4(),
+            Uuid::uuid4()->toString(),
             'my-secret',
-            new Realm('Acc', 'Acc', Environment::Acceptance)
+            Environment::Acceptance
         );
     }
 
@@ -54,11 +59,11 @@ final class IntegrationUrlConverterTest extends TestCase
     {
         $integration = $this->givenThereIsAnIntegration($this->integrationId, ['partnerStatus' => IntegrationPartnerStatus::FIRST_PARTY]);
         $integration = $integration->withUrls(
-            new IntegrationUrl(Uuid::uuid4(), $integration->id, Environment::Acceptance, IntegrationUrlType::Callback, 'https://example.com/callback'),
             new IntegrationUrl(Uuid::uuid4(), $integration->id, Environment::Acceptance, IntegrationUrlType::Login, 'https://example.com/login1'),
             new IntegrationUrl(Uuid::uuid4(), $integration->id, Environment::Acceptance, IntegrationUrlType::Login, 'https://example.com/login2'),
             new IntegrationUrl(Uuid::uuid4(), $integration->id, Environment::Acceptance, IntegrationUrlType::Logout, 'https://example.com/logout1'),
             new IntegrationUrl(Uuid::uuid4(), $integration->id, Environment::Acceptance, IntegrationUrlType::Logout, 'https://example.com/logout2'),
+            new IntegrationUrl(Uuid::uuid4(), $integration->id, Environment::Acceptance, IntegrationUrlType::Callback, 'https://example.com/callback'),
 
             // These urls below should NOT be shown!
             new IntegrationUrl(Uuid::uuid4(), $integration->id, Environment::Production, IntegrationUrlType::Logout, 'https://wrong.com/'),

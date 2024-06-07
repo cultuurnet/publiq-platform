@@ -14,8 +14,8 @@ use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Client\KeycloakApiClient;
 use App\Keycloak\Client\KeycloakHttpClient;
 use App\Keycloak\Events\MissingClientsDetected;
-use App\Keycloak\Listeners\CreateClients;
 use App\Keycloak\Listeners\BlockClients;
+use App\Keycloak\Listeners\CreateClients;
 use App\Keycloak\Listeners\UpdateClients;
 use App\Keycloak\Repositories\EloquentKeycloakClientRepository;
 use App\Keycloak\Repositories\KeycloakClientRepository;
@@ -36,24 +36,12 @@ final class KeycloakServiceProvider extends ServiceProvider
             return new KeycloakApiClient(
                 new KeycloakHttpClient(
                     new Client([RequestOptions::HTTP_ERRORS => false]),
-                    $this->app->get(Config::class),
                     new ClientCredentials(
-                        $this->app->get(Config::class),
-                        $this->app->get(LoggerInterface::class)
+                        $this->app->get(LoggerInterface::class),
                     )
                 ),
                 $this->app->get(ScopeConfig::class),
                 $this->app->get(LoggerInterface::class),
-            );
-        });
-
-        $this->app->singleton(Config::class, function () {
-            return new Config(
-                config('keycloak.enabled'),
-                config('keycloak.base_url'),
-                config('keycloak.client_id'),
-                config('keycloak.client_secret'),
-                RealmCollection::getRealms(),
             );
         });
 
@@ -70,6 +58,10 @@ final class KeycloakServiceProvider extends ServiceProvider
             return $this->app->get(EloquentKeycloakClientRepository::class);
         });
 
+        $this->app->singleton(Realms::class, function () {
+            return Realms::build();
+        });
+
         $this->app->singleton(CachedKeycloakClientStatus::class, function () {
             return new CachedKeycloakClientStatus(
                 App::get(ApiClient::class),
@@ -82,7 +74,7 @@ final class KeycloakServiceProvider extends ServiceProvider
 
     private function bootstrapEventHandling(): void
     {
-        if (!$this->app->get(Config::class)->isEnabled) {
+        if (!config(KeycloakConfig::isEnabled->value)) {
             return;
         }
 

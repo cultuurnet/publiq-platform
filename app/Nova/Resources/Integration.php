@@ -10,7 +10,7 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Keycloak\Config;
+use App\Keycloak\KeycloakConfig;
 use App\Nova\Actions\ActivateIntegration;
 use App\Nova\Actions\ApproveIntegration;
 use App\Nova\Actions\Auth0\CreateMissingAuth0Clients;
@@ -56,16 +56,6 @@ final class Integration extends Resource
     protected static ?array $defaultSort = [
         'created_at' => 'desc',
     ];
-
-    private Config $keycloakConfig;
-
-    public function __construct($resource = null)
-    {
-        parent::__construct($resource);
-
-        $this->keycloakConfig = App::get(Config::class);
-    }
-
 
     /**
      * @return array<Field|ResourceTool>
@@ -178,7 +168,7 @@ final class Integration extends Resource
             HasMany::make('UiTiD v2 Client Credentials (Auth0)', 'auth0Clients', Auth0Client::class),
         ];
 
-        if ($this->keycloakConfig->isEnabled) {
+        if (config(KeycloakConfig::isEnabled->value)) {
             $fields[] = HasMany::make('Keycloak client Credentials', 'keycloakClients', KeycloakClient::class);
         }
 
@@ -241,7 +231,7 @@ final class Integration extends Resource
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->hasMissingUiTiDv1Consumers()),
         ];
 
-        if ($this->keycloakConfig->isEnabled) {
+        if (config(KeycloakConfig::isEnabled->value)) {
             $actions[] = (new CreateMissingKeycloakClients())
                 ->withName('Create missing Keycloak clients')
                 ->exceptOnIndex()

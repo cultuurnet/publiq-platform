@@ -4,19 +4,22 @@ declare(strict_types=1);
 
 namespace Tests\Keycloak;
 
+use App\Domain\Integrations\Environment;
 use App\Keycloak\CachedKeycloakClientStatus;
 use App\Keycloak\Client;
 use App\Keycloak\Client\ApiClient;
-use App\Keycloak\Realm;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
 use Tests\Auth0\CreatesMockAuth0ClusterSDK;
+use Tests\TestCase;
 
 final class CachedKeycloakClientStatusTest extends TestCase
 {
     use CreatesMockAuth0ClusterSDK;
+
+
+    use RealmFactory;
 
     private ApiClient&MockObject $apiClient;
     private CachedKeycloakClientStatus $cachedKeycloakClientStatus;
@@ -28,7 +31,7 @@ final class CachedKeycloakClientStatusTest extends TestCase
 
         $this->apiClient = $this->createMock(ApiClient::class);
         $this->cachedKeycloakClientStatus = new CachedKeycloakClientStatus($this->apiClient, new NullLogger());
-        $this->client = new Client(Uuid::uuid4(), Uuid::uuid4(), Uuid::uuid4(), 'client-id-1', Realm::getMasterRealm());
+        $this->client = new Client(Uuid::uuid4(), Uuid::uuid4(), Uuid::uuid4()->toString(), 'client-id-1', Environment::Acceptance);
     }
 
     public function test_does_cache_layer_work(): void
