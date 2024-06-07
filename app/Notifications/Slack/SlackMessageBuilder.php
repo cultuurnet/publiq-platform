@@ -38,7 +38,7 @@ final readonly class SlackMessageBuilder implements MessageBuilder
     private function getStatusEmoji(IntegrationStatus $integrationStatus): string
     {
         return match ($integrationStatus) {
-            IntegrationStatus::Draft => ':construction:',
+            IntegrationStatus::Draft => ':tada:',
             IntegrationStatus::Active => ':white_check_mark:',
             IntegrationStatus::Blocked => ':no_entry:',
             IntegrationStatus::Deleted => ':x:',
