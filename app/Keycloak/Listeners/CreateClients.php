@@ -15,7 +15,6 @@ use App\Keycloak\Events\MissingClientsDetected;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realms;
 use App\Keycloak\Repositories\KeycloakClientRepository;
-use App\Keycloak\ScopeConfig;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
@@ -30,7 +29,6 @@ final class CreateClients implements ShouldQueue
         private readonly KeycloakClientRepository $keycloakClientRepository,
         private readonly Realms $realms,
         private readonly ApiClient $client,
-        private readonly ScopeConfig $scopeConfig,
         private readonly LoggerInterface $logger
     ) {
     }
@@ -75,14 +73,15 @@ final class CreateClients implements ShouldQueue
 
     private function createClientsInKeycloak(Integration $integration, Realms $realms): Clients
     {
-        $scopeId = $this->scopeConfig->getScopeIdFromIntegrationType($integration);
-
         $clientCollection = new Clients();
 
         foreach ($realms as $realm) {
             try {
                 $client = $this->client->createClient($realm, $integration, new ClientIdUuidStrategy());
-                $this->client->addScopeToClient($client, $scopeId);
+                $this->client->addScopeToClient(
+                    $client,
+                    $realm->scopeConfig->getScopeIdFromIntegrationType($integration)
+                );
 
                 $clientCollection->add($client);
             } catch (KeyCloakApiFailed $e) {

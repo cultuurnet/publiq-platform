@@ -16,7 +16,6 @@ use App\Keycloak\Listeners\CreateClients;
 use App\Keycloak\Realm;
 use App\Keycloak\Realms;
 use App\Keycloak\Repositories\KeycloakClientRepository;
-use App\Keycloak\ScopeConfig;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
@@ -32,7 +31,6 @@ final class CreateClientsTest extends TestCase
     use RealmFactory;
 
     private const SECRET = 'my-secret';
-    private const SEARCH_SCOPE_ID = '06059529-74b5-422a-a499-ffcaf065d437';
 
     private Integration $integration;
     private CreateClients $handler;
@@ -54,13 +52,6 @@ final class CreateClientsTest extends TestCase
         $this->keycloakClientRepository = $this->createMock(KeycloakClientRepository::class);
         $this->apiClient = $this->createMock(ApiClient::class);
 
-        $scopeConfig = new ScopeConfig(
-            Uuid::fromString(self::SEARCH_SCOPE_ID),
-            Uuid::fromString('d8a54568-26da-412b-a441-d5e2fad84478'),
-            Uuid::fromString('123ae05d-1c41-40c8-8716-c4654a3bfd98'),
-            Uuid::fromString('0743b1c7-0ea2-46af-906e-fbb6c0317514'),
-        );
-
         $this->realms = $this->givenAllRealms();
 
         $this->handler = new CreateClients(
@@ -68,7 +59,6 @@ final class CreateClientsTest extends TestCase
             $this->keycloakClientRepository,
             $this->realms,
             $this->apiClient,
-            $scopeConfig,
             $this->logger,
         );
     }

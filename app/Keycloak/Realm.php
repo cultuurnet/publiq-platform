@@ -16,7 +16,8 @@ final readonly class Realm
         string $baseUrl,
         public string $clientId,
         public string $clientSecret,
-        public Environment $environment
+        public Environment $environment,
+        public ScopeConfig $scopeConfig,
     ) {
         $this->baseUrl = $this->addTrailingSlash($baseUrl);
     }
@@ -29,7 +30,8 @@ final readonly class Realm
             $this->baseUrl,
             $this->clientId,
             $this->clientSecret,
-            $this->environment
+            $this->environment,
+            $this->scopeConfig,
         );
     }
 

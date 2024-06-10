@@ -26,7 +26,6 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Psr\Log\LoggerInterface;
-use Ramsey\Uuid\Uuid;
 
 final class KeycloakServiceProvider extends ServiceProvider
 {
@@ -40,17 +39,7 @@ final class KeycloakServiceProvider extends ServiceProvider
                         $this->app->get(LoggerInterface::class),
                     )
                 ),
-                $this->app->get(ScopeConfig::class),
                 $this->app->get(LoggerInterface::class),
-            );
-        });
-
-        $this->app->singleton(ScopeConfig::class, function () {
-            return new ScopeConfig(
-                Uuid::fromString(config('keycloak.scope.search_api_id')),
-                Uuid::fromString(config('keycloak.scope.entry_api_id')),
-                Uuid::fromString(config('keycloak.scope.widgets_id')),
-                Uuid::fromString(config('keycloak.scope.uitpas_id')),
             );
         });
 

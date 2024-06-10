@@ -11,7 +11,6 @@ use App\Keycloak\ClientId\ClientIdFactory;
 use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realm;
-use App\Keycloak\ScopeConfig;
 use GuzzleHttp\Psr7\Request;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
@@ -22,7 +21,6 @@ final readonly class KeycloakApiClient implements ApiClient
 {
     public function __construct(
         private KeycloakHttpClient $client,
-        private ScopeConfig $scopeConfig,
         private LoggerInterface $logger,
     ) {
     }
@@ -89,7 +87,7 @@ final readonly class KeycloakApiClient implements ApiClient
 
     public function deleteScopes(Client $client): void
     {
-        foreach ($this->scopeConfig->getAll() as $scope) {
+        foreach ($client->getRealm()->scopeConfig->getAll() as $scope) {
             try {
                 $response = $this->client->sendWithBearer(
                     new Request(

@@ -14,7 +14,6 @@ use App\Keycloak\Client;
 use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Repositories\KeycloakClientRepository;
-use App\Keycloak\ScopeConfig;
 use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
 use App\Keycloak\Converters\IntegrationUrlConverter;
 use Illuminate\Bus\Queueable;
@@ -31,7 +30,6 @@ final class UpdateClients implements ShouldQueue
         private readonly IntegrationRepository $integrationRepository,
         private readonly KeycloakClientRepository $keycloakClientRepository,
         private readonly ApiClient $client,
-        private readonly ScopeConfig $scopeConfig,
         private readonly LoggerInterface $logger
     ) {
     }
@@ -40,11 +38,14 @@ final class UpdateClients implements ShouldQueue
     {
         $integration = $this->integrationRepository->getById($event->id);
         $keycloakClients = $this->keycloakClientRepository->getByIntegrationId($event->id);
-        $scopeId = $this->scopeConfig->getScopeIdFromIntegrationType($integration);
 
         foreach ($keycloakClients as $keycloakClient) {
             try {
-                $this->updateClient($integration, $keycloakClient, $scopeId);
+                $this->updateClient(
+                    $integration,
+                    $keycloakClient,
+                    $keycloakClient->getRealm()->scopeConfig->getScopeIdFromIntegrationType($integration)
+                );
             } catch (KeyCloakApiFailed $e) {
                 $this->failed($event, $e);
             }

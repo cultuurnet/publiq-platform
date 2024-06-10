@@ -6,6 +6,7 @@ namespace App\Keycloak;
 
 use App\Domain\Integrations\Environment;
 use Illuminate\Support\Collection;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @extends Collection<int, Realm>
@@ -23,7 +24,13 @@ final class Realms extends Collection
                 $environment['base_url'],
                 $environment['client_id'],
                 $environment['client_secret'],
-                Environment::from($publicName)
+                Environment::from($publicName),
+                new ScopeConfig(
+                    Uuid::fromString($environment['scope']['search_api_id']),
+                    Uuid::fromString($environment['scope']['entry_api_id']),
+                    Uuid::fromString($environment['scope']['widgets_id']),
+                    Uuid::fromString($environment['scope']['uitpas_id'])
+                )
             ));
         }
 
