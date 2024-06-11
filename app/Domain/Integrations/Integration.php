@@ -177,6 +177,14 @@ final class Integration
         return $this->organization;
     }
 
+    /**
+     * @return array<Organizer>
+     */
+    public function organizers(): array
+    {
+        return $this->organizers;
+    }
+
     /** @return array<UiTiDv1Consumer> */
     public function uiTiDv1Consumers(): array
     {
