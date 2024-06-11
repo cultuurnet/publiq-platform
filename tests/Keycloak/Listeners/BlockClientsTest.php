@@ -71,7 +71,7 @@ final class BlockClientsTest extends TestCase
             ->willReturnCallback(function ($message, $options) {
                 $this->assertEquals('Keycloak client blocked', $message);
                 $this->assertArrayHasKey('integration_id', $options);
-                $this->assertArrayHasKey('realm', $options);
+                $this->assertArrayHasKey('environment', $options);
 
                 $this->assertEquals($this->integration->id->toString(), $options['integration_id']);
             });

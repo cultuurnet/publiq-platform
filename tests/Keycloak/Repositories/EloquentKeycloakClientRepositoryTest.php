@@ -6,6 +6,7 @@ namespace Tests\Keycloak\Repositories;
 
 use App\Domain\Integrations\Environment;
 use App\Keycloak\Client;
+use App\Keycloak\Realm;
 use App\Keycloak\Realms;
 use App\Keycloak\Repositories\EloquentKeycloakClientRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -176,10 +177,11 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
         $integrationId = Uuid::uuid4();
         $clients = [];
 
-        $missingRealmCollection = new Realms();
-        foreach (new Realms([$this->givenAcceptanceRealm()]) as $realm) {
-            $missingRealmCollection->add($realm);
+        $missingRealmCollection = Realms::getInstance()->filter(function (Realm $realm) {
+            return $realm->environment === Environment::Acceptance;
+        });
 
+        foreach ($missingRealmCollection as $realm) {
             $clients[] = new Client(
                 Uuid::uuid4(),
                 $integrationId,

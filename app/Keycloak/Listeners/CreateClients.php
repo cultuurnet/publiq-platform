@@ -66,7 +66,7 @@ final class CreateClients implements ShouldQueue
             $this->logger->info('Keycloak client created', [
                 'integration_id' => $event->id->toString(),
                 'client_id' => $client->id->toString(),
-                'realm' => $client->getRealm()->internalName,
+                'environment' => $client->environment->value,
             ]);
         }
     }

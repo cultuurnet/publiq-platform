@@ -38,7 +38,7 @@ final class BlockClients implements ShouldQueue
                 $this->logger->info('Keycloak client blocked', [
                     'integration_id' => $integration->id->toString(),
                     'client_id' => $keycloakClient->id->toString(),
-                    'realm' => $keycloakClient->getRealm()->internalName,
+                    'environment' => $keycloakClient->environment->value,
                 ]);
             } catch (KeyCloakApiFailed $e) {
                 $this->failed($integrationBlocked, $e);

@@ -13,6 +13,22 @@ use Ramsey\Uuid\Uuid;
  */
 final class Realms extends Collection
 {
+    private static ?self $instance = null;
+
+    public function __construct(array $realms=[])
+    {
+        parent::__construct($realms);
+    }
+
+    public static function getInstance(): self
+    {
+        if (self::$instance === null) {
+            self::$instance = self::build();
+        }
+
+        return self::$instance;
+    }
+
     public static function build(): self
     {
         $realms = new self();
@@ -35,5 +51,16 @@ final class Realms extends Collection
         }
 
         return $realms;
+    }
+
+    public function getRealmByEnvironment(Environment $environment): Realm
+    {
+        foreach ($this->items as $realm) {
+            if ($realm->environment === $environment) {
+                return $realm;
+            }
+        }
+
+        throw new \InvalidArgumentException(sprintf('Could not determine realm with the provided environment %s', $environment->value));
     }
 }

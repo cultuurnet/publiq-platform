@@ -111,7 +111,7 @@ final class CreateClientsTest extends TestCase
             ->willReturnCallback(function ($message, $options) {
                 $this->assertEquals('Keycloak client created', $message);
                 $this->assertArrayHasKey('integration_id', $options);
-                $this->assertArrayHasKey('realm', $options);
+                $this->assertArrayHasKey('environment', $options);
 
                 $this->assertEquals($this->integration->id->toString(), $options['integration_id']);
             });
@@ -191,7 +191,7 @@ final class CreateClientsTest extends TestCase
             ->willReturnCallback(function ($message, $options) {
                 $this->assertEquals('Keycloak client created', $message);
                 $this->assertArrayHasKey('integration_id', $options);
-                $this->assertArrayHasKey('realm', $options);
+                $this->assertArrayHasKey('environment', $options);
 
                 $this->assertEquals($this->integration->id->toString(), $options['integration_id']);
             });

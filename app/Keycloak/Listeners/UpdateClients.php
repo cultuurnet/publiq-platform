@@ -13,6 +13,7 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client;
 use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Exception\KeyCloakApiFailed;
+use App\Keycloak\Realms;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
 use App\Keycloak\Converters\IntegrationUrlConverter;
@@ -41,10 +42,12 @@ final class UpdateClients implements ShouldQueue
 
         foreach ($keycloakClients as $keycloakClient) {
             try {
+                $realm = Realms::getInstance()->getRealmByEnvironment($keycloakClient->environment);
+
                 $this->updateClient(
                     $integration,
                     $keycloakClient,
-                    $keycloakClient->getRealm()->scopeConfig->getScopeIdFromIntegrationType($integration)
+                    $realm->scopeConfig->getScopeIdFromIntegrationType($integration)
                 );
             } catch (KeyCloakApiFailed $e) {
                 $this->failed($event, $e);

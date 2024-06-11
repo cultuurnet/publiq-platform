@@ -11,6 +11,7 @@ use App\Keycloak\ClientId\ClientIdFactory;
 use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realm;
+use App\Keycloak\Realms;
 use GuzzleHttp\Psr7\Request;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
@@ -21,6 +22,7 @@ final readonly class KeycloakApiClient implements ApiClient
 {
     public function __construct(
         private KeycloakHttpClient $client,
+        private Realms $realms,
         private LoggerInterface $logger,
     ) {
     }
@@ -68,13 +70,15 @@ final readonly class KeycloakApiClient implements ApiClient
      */
     public function addScopeToClient(Client $client, UuidInterface $scopeId): void
     {
+        $realm = $this->realms->getRealmByEnvironment($client->environment);
+
         try {
             $response = $this->client->sendWithBearer(
                 new Request(
                     'PUT',
-                    sprintf('admin/realms/%s/clients/%s/default-client-scopes/%s', $client->getRealm()->internalName, $client->id->toString(), $scopeId->toString())
+                    sprintf('admin/realms/%s/clients/%s/default-client-scopes/%s', $realm->internalName, $client->id->toString(), $scopeId->toString())
                 ),
-                $client->getRealm()
+                $realm
             );
         } catch (Throwable $e) {
             throw KeyCloakApiFailed::failedToAddScopeToClient($e->getMessage());
@@ -87,14 +91,16 @@ final readonly class KeycloakApiClient implements ApiClient
 
     public function deleteScopes(Client $client): void
     {
-        foreach ($client->getRealm()->scopeConfig->getAll() as $scope) {
+        $realm = $this->realms->getRealmByEnvironment($client->environment);
+
+        foreach ($realm->scopeConfig->getAll() as $scope) {
             try {
                 $response = $this->client->sendWithBearer(
                     new Request(
                         'DELETE',
-                        sprintf('admin/realms/%s/clients/%s/default-client-scopes/%s', $client->getRealm()->internalName, $client->id->toString(), $scope->toString()),
+                        sprintf('admin/realms/%s/clients/%s/default-client-scopes/%s', $realm->internalName, $client->id->toString(), $scope->toString()),
                     ),
-                    $client->getRealm()
+                    $realm
                 );
 
                 // Will throw a 404 when scope not attached to client, but this is no problem.
@@ -138,26 +144,28 @@ final readonly class KeycloakApiClient implements ApiClient
      */
     public function fetchIsClientActive(Client $client): bool
     {
+        $realm = $this->realms->getRealmByEnvironment($client->environment);
+
         try {
             $response = $this->client->sendWithBearer(
                 new Request(
                     'GET',
-                    sprintf('admin/realms/%s/clients/%s', $client->getRealm()->internalName, $client->id->toString())
+                    sprintf('admin/realms/%s/clients/%s', $realm->internalName, $client->id->toString())
                 ),
-                $client->getRealm()
+                $realm
             );
 
             $body = $response->getBody()->getContents();
 
             if (empty($body) || $response->getStatusCode() !== 200) {
-                throw KeyCloakApiFailed::failedToFetchClient($client->getRealm(), $body);
+                throw KeyCloakApiFailed::failedToFetchClient($realm, $body);
             }
 
             $data = Json::decodeAssociatively($body);
 
             return $data['enabled'];
         } catch (Throwable $e) {
-            throw KeyCloakApiFailed::failedToFetchClient($client->getRealm(), $e->getMessage());
+            throw KeyCloakApiFailed::failedToFetchClient($realm, $e->getMessage());
         }
     }
 
@@ -182,15 +190,17 @@ final readonly class KeycloakApiClient implements ApiClient
      */
     public function updateClient(Client $client, array $body): void
     {
+        $realm = $this->realms->getRealmByEnvironment($client->environment);
+
         try {
             $response = $this->client->sendWithBearer(
                 new Request(
                     'PUT',
-                    'admin/realms/' . $client->getRealm()->internalName . '/clients/' . $client->id->toString(),
+                    'admin/realms/' . $realm->internalName . '/clients/' . $client->id->toString(),
                     [],
                     Json::encode($body)
                 ),
-                $client->getRealm()
+                $realm
             );
 
             if ($response->getStatusCode() !== 204) {
