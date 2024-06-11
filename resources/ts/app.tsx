@@ -5,20 +5,23 @@ import { createInertiaApp } from "@inertiajs/react";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { initializeI18n } from "./i18n/initializeI18n";
 import * as Sentry from "@sentry/browser";
+import type { PageProps } from "./types/PageProps";
 
-Sentry.init({
-  dsn: import.meta.env.VITE_SENTRY_DSN,
-  environment: import.meta.env.VITE_APP_ENV,
-  enabled: import.meta.env.VITE_SENTRY_ENABLED === "true",
-});
-
-createInertiaApp({
+createInertiaApp<PageProps>({
   resolve: (name) =>
     resolvePageComponent(
       `./Pages/${name}.tsx`,
       import.meta.glob("./Pages/**/*.tsx")
     ),
   setup({ el, App, props }) {
+    const config = props.initialPage.props.config;
+
+    Sentry.init({
+      dsn: config.sentryDsn,
+      environment: config.env,
+      enabled: config.sentryEnabled,
+    });
+
     initializeI18n().then(() => {
       const root = createRoot(el);
       root.render(<App {...props} />);

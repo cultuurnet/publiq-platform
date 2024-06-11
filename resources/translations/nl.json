@@ -25,6 +25,7 @@
       "title": "Free",
       "price": "Gratis",
       "description": {
+        "uitpas": "Je staat zelf in voor het bouwen van de koppeling, met ondersteuning van onze documentatie.",
         "entry-api": "Je staat zelf in voor het bouwen van de koppeling, met ondersteuning van onze documentatie."
       }
     },

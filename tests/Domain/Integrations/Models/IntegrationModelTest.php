@@ -7,6 +7,7 @@ namespace Tests\Domain\Integrations\Models;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationBlocked;
+use App\Domain\Integrations\Events\IntegrationUnblocked;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
@@ -46,6 +47,27 @@ final class IntegrationModelTest extends TestCase
         $this->assertDatabaseHas('integrations', [
             'id' =>  $this->integrationModel->id,
             'status' => IntegrationStatus::Blocked,
+        ]);
+        $this->assertDatabaseHas('integrations_previous_statuses', [
+            'id' =>  $this->integrationModel->id,
+            'status' => IntegrationStatus::Draft,
+        ]);
+    }
+
+    public function test_it_handles_unblock(): void
+    {
+        $this->integrationModel->activate();
+        $this->integrationModel->block();
+        $this->integrationModel->unblock();
+
+        Event::assertDispatched(IntegrationUnblocked::class);
+
+        $this->assertDatabaseHas('integrations', [
+            'id' =>  $this->integrationModel->id,
+            'status' => IntegrationStatus::Active,
+        ]);
+        $this->assertDatabaseMissing('integrations_previous_statuses', [
+            'id' =>  $this->integrationModel->id,
         ]);
     }
 
