@@ -45,11 +45,13 @@ const New = ({ subscriptions }: Props) => {
     )
     .map((subscription) => subscription.id);
 
+  const integrationTypesInfo = useIntegrationTypesInfo();
+
   const url = new URL(document.location.href);
   const activeTypeFromUrl = url.searchParams.get("type");
   const activeType = isIntegrationType(activeTypeFromUrl)
     ? activeTypeFromUrl
-    : IntegrationType.EntryApi;
+    : integrationTypesInfo[0].type;
 
   const initialFormValues = {
     integrationType: activeType,
@@ -95,7 +97,6 @@ const New = ({ subscriptions }: Props) => {
     [IntegrationType.SearchApi, IntegrationType.Widgets] as IntegrationType[]
   ).includes(data.integrationType);
 
-  const integrationTypesInfo = useIntegrationTypesInfo();
   const pricingPlans = useGetPricingPlans(data.integrationType, subscriptions);
 
   return (
