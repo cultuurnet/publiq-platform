@@ -38,6 +38,7 @@ const Detail = ({
   email,
   subscriptions,
   oldCredentialsExpirationDate,
+  organizers,
   errors,
 }: Props) => {
   const { t } = useTranslation();
@@ -180,7 +181,7 @@ const Detail = ({
                   type="organisations"
                   label={t("details.organizers_info.title")}
                 >
-                  <OrganizersInfo {...integration} />
+                  <OrganizersInfo {...integration} organizers={organizers} />
                 </Tabs.Item>
                 <Tabs.Item
                   type="billing"
