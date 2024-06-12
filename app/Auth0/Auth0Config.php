@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Auth0;
 
-enum Auth0Config: string
+final class Auth0Config
 {
-    case isEnabled = 'auth0.enabled';
+    public const IS_ENABLED = 'auth0.enabled';
 }

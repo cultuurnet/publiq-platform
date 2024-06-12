@@ -63,11 +63,11 @@ final class Integration extends Resource
             new SearchableRelation('uiTiDv1Consumers', 'consumer_key'),
         ];
 
-        if (config(Auth0Config::isEnabled->value)) {
+        if (config(Auth0Config::IS_ENABLED)) {
             $output[] = new SearchableRelation('auth0Clients', 'auth0_client_id');
         }
 
-        if (config(KeycloakConfig::isEnabled->value)) {
+        if (config(KeycloakConfig::IS_ENABLED)) {
             $output[] = new SearchableRelation('keycloakClients', 'client_id');
         }
 
@@ -200,11 +200,11 @@ final class Integration extends Resource
             HasMany::make('UiTiD v1 Consumer Credentials', 'uiTiDv1Consumers', UiTiDv1::class),
         ];
 
-        if (config(Auth0Config::isEnabled->value)) {
+        if (config(Auth0Config::IS_ENABLED)) {
             $fields[] = HasMany::make('UiTiD v2 Client Credentials (Auth0)', 'auth0Clients', Auth0Client::class);
         }
 
-        if (config(KeycloakConfig::isEnabled->value)) {
+        if (config(KeycloakConfig::IS_ENABLED)) {
             $fields[] = HasMany::make('Keycloak client Credentials', 'keycloakClients', KeycloakClient::class);
         }
 
@@ -278,7 +278,7 @@ final class Integration extends Resource
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->hasMissingUiTiDv1Consumers()),
         ];
 
-        if (config(Auth0Config::isEnabled->value)) {
+        if (config(Auth0Config::IS_ENABLED)) {
             $actions[] =(new CreateMissingAuth0Clients())
                 ->withName('Create missing Auth0 Clients')
                 ->exceptOnIndex()
@@ -289,7 +289,7 @@ final class Integration extends Resource
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->hasMissingAuth0Clients());
         }
 
-        if (config(KeycloakConfig::isEnabled->value)) {
+        if (config(KeycloakConfig::IS_ENABLED)) {
             $actions[] = (new CreateMissingKeycloakClients())
                 ->withName('Create missing Keycloak clients')
                 ->exceptOnIndex()
