@@ -30,8 +30,19 @@ final class MigrateAuth0ToKeycloakClientsTest extends TestCase
 
     public function test_no_clients_to_migrate_with_date(): void
     {
-        $this->getPendingCommand('migrate:keycloak', ['updated_at' => '2023-01-01'])
-            ->expectsOutput('No clients found to migrate starting from 2023-01-01')
+        DB::table('auth0_clients')->insert([
+            'id' => 'client2',
+            'integration_id' => 'integration1',
+            'auth0_client_id' => 'auth0_client1',
+            'auth0_client_secret' => 'secret1',
+            'auth0_tenant' => 'tenant1',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        // This will be updated at the start of the next century
+        $this->getPendingCommand('migrate:keycloak', ['updated_at' => '2100-01-01'])
+            ->expectsOutput('No clients found to migrate starting from 2100-01-01')
             ->assertExitCode(Command::FAILURE);
     }
 
@@ -64,6 +75,7 @@ final class MigrateAuth0ToKeycloakClientsTest extends TestCase
     protected function tearDown(): void
     {
         DB::table('auth0_clients')->where('id', 'client1')->delete();
+        DB::table('auth0_clients')->where('id', 'client2')->delete();
         DB::table('keycloak_clients')->where('id', 'client1')->delete();
 
         parent::tearDown();
