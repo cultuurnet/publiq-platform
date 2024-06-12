@@ -15,7 +15,6 @@ use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Listeners\UpdateClients;
 use App\Keycloak\Realms;
 use App\Keycloak\Repositories\KeycloakClientRepository;
-use App\Keycloak\ScopeConfig;
 use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
 use App\Keycloak\Converters\IntegrationUrlConverter;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -35,10 +34,8 @@ final class UpdateClientsTest extends TestCase
     use RealmFactory;
 
     private const SECRET = 'my-secret';
-    private const SEARCH_SCOPE_ID = '06059529-74b5-422a-a499-ffcaf065d437';
 
     private Integration $integration;
-    private ScopeConfig $scopeConfig;
     private ApiClient&MockObject $apiClient;
     private LoggerInterface&MockObject $logger;
     private IntegrationRepository&MockObject $integrationRepository;
@@ -57,13 +54,6 @@ final class UpdateClientsTest extends TestCase
             new IntegrationUrl(Uuid::uuid4(), $this->integration->id, Environment::Acceptance, IntegrationUrlType::Login, 'https://example.com/login2'),
             new IntegrationUrl(Uuid::uuid4(), $this->integration->id, Environment::Acceptance, IntegrationUrlType::Logout, 'https://example.com/logout1'),
             new IntegrationUrl(Uuid::uuid4(), $this->integration->id, Environment::Acceptance, IntegrationUrlType::Logout, 'https://example.com/logout2'),
-        );
-
-        $this->scopeConfig = new ScopeConfig(
-            Uuid::fromString(self::SEARCH_SCOPE_ID),
-            Uuid::fromString('d8a54568-26da-412b-a441-d5e2fad84478'),
-            Uuid::fromString('123ae05d-1c41-40c8-8716-c4654a3bfd98'),
-            Uuid::fromString('0743b1c7-0ea2-46af-906e-fbb6c0317514'),
         );
 
         $this->apiClient = $this->createMock(ApiClient::class);
@@ -140,8 +130,8 @@ final class UpdateClientsTest extends TestCase
             $this->integrationRepository,
             $keycloakClientRepository,
             $this->apiClient,
-            $this->scopeConfig,
-            $this->logger
+            $this->realms,
+            $this->logger,
         );
 
         $updateClients->handle(new IntegrationUpdated($this->integration->id));
