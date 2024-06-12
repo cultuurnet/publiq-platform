@@ -7,6 +7,7 @@ namespace App\Nova\Resources;
 use App\Domain\Integrations\Environment;
 use App\Keycloak\CachedKeycloakClientStatus;
 use App\Keycloak\Models\KeycloakClientModel;
+use App\Keycloak\Realms;
 use App\Nova\ActionGuards\ActionGuard;
 use App\Nova\ActionGuards\Keycloak\BlockKeycloakClientGuard;
 use App\Nova\ActionGuards\Keycloak\UnblockKeycloakClientGuard;
@@ -83,7 +84,11 @@ final class KeycloakClient extends Resource
             Text::make('client_secret')
                 ->readonly(),
             Text::make('Open', function (KeycloakClientModel $model) {
-                return sprintf('<a href="%s" class="link-default" target="_blank">Open in Keycloak</a>', $model->toDomain()->getKeycloakUrl());
+                $client = $model->toDomain();
+                $realm = App::get(Realms::class)->getRealmByEnvironment($client->environment);
+                $url = $realm->baseUrl . 'admin/master/console/#/' . $realm->internalName . '/clients/' . $client->id->toString() . '/settings';
+
+                return sprintf('<a href="%s" class="link-default" target="_blank">Open in Keycloak</a>', $url);
             })->asHtml(),
         ];
     }
