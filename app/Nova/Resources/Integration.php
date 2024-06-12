@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Nova\Resources;
 
+use App\Auth0\Auth0Config;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
@@ -55,13 +56,22 @@ final class Integration extends Resource
 
     public static function searchableColumns(): array
     {
-        return [
+        $output = [
             'id',
             'name',
             'description',
-            new SearchableRelation('auth0Clients', 'auth0_client_id'),
             new SearchableRelation('uiTiDv1Consumers', 'consumer_key'),
         ];
+
+        if (config(Auth0Config::isEnabled->value)) {
+            $output[] = new SearchableRelation('auth0Clients', 'auth0_client_id');
+        }
+
+        if (config(KeycloakConfig::isEnabled->value)) {
+            $output[] = new SearchableRelation('keycloakClients', 'client_id');
+        }
+
+        return $output;
     }
 
     /**
@@ -188,8 +198,11 @@ final class Integration extends Resource
                 ->onlyOnDetail(),
 
             HasMany::make('UiTiD v1 Consumer Credentials', 'uiTiDv1Consumers', UiTiDv1::class),
-            HasMany::make('UiTiD v2 Client Credentials (Auth0)', 'auth0Clients', Auth0Client::class),
         ];
+
+        if (config(Auth0Config::isEnabled->value)) {
+            $fields[] = HasMany::make('UiTiD v2 Client Credentials (Auth0)', 'auth0Clients', Auth0Client::class);
+        }
 
         if (config(KeycloakConfig::isEnabled->value)) {
             $fields[] = HasMany::make('Keycloak client Credentials', 'keycloakClients', KeycloakClient::class);
@@ -247,14 +260,13 @@ final class Integration extends Resource
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeUnblocked())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeUnblocked()),
 
-            (new CreateMissingAuth0Clients())
-                ->withName('Create missing Auth0 Clients')
+            (new AddOrganizer(App::make(OrganizerRepository::class)))
                 ->exceptOnIndex()
-                ->confirmText('Are you sure you want to create missing Auth0 clients for this integration?')
-                ->confirmButtonText('Create')
+                ->confirmText('Are you sure you want to add an organizer?')
+                ->confirmButtonText('Add')
                 ->cancelButtonText('Cancel')
-                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->hasMissingAuth0Clients())
-                ->canRun(fn (Request $request, IntegrationModel $model) => $model->hasMissingAuth0Clients()),
+                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->isUiTPAS())
+                ->canRun(fn (Request $request, IntegrationModel $model) => $model->isUiTPAS()),
 
             (new CreateMissingUiTiDv1Consumers())
                 ->withName('Create missing UiTiD v1 Consumers')
@@ -264,15 +276,18 @@ final class Integration extends Resource
                 ->cancelButtonText('Cancel')
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->hasMissingUiTiDv1Consumers())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->hasMissingUiTiDv1Consumers()),
-
-            (new AddOrganizer(App::make(OrganizerRepository::class)))
-                ->exceptOnIndex()
-                ->confirmText('Are you sure you want to add an organizer?')
-                ->confirmButtonText('Add')
-                ->cancelButtonText('Cancel')
-                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->isUiTPAS())
-                ->canRun(fn (Request $request, IntegrationModel $model) => $model->isUiTPAS()),
         ];
+
+        if (config(Auth0Config::isEnabled->value)) {
+            $actions[] =(new CreateMissingAuth0Clients())
+                ->withName('Create missing Auth0 Clients')
+                ->exceptOnIndex()
+                ->confirmText('Are you sure you want to create missing Auth0 clients for this integration?')
+                ->confirmButtonText('Create')
+                ->cancelButtonText('Cancel')
+                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->hasMissingAuth0Clients())
+                ->canRun(fn (Request $request, IntegrationModel $model) => $model->hasMissingAuth0Clients());
+        }
 
         if (config(KeycloakConfig::isEnabled->value)) {
             $actions[] = (new CreateMissingKeycloakClients())
