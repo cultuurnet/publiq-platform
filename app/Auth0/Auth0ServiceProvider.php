@@ -26,6 +26,7 @@ use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Events\IntegrationUrlCreated;
 use App\Domain\Integrations\Events\IntegrationUrlDeleted;
 use App\Domain\Integrations\Events\IntegrationUrlUpdated;
+use App\Keycloak\KeycloakConfig;
 use Auth0\SDK\Configuration\SdkConfiguration;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
@@ -92,7 +93,7 @@ final class Auth0ServiceProvider extends ServiceProvider
             );
         });
 
-        if (config('auth0.enabled')) {
+        if (config(KeycloakConfig::IS_ENABLED)) {
             // By default, the Auth0 integration is enabled. For testing purposes this can be disabled inside the .env file.
 
             // May always be registered even if there are no configured tenants, because in that case the cluster SDK will
