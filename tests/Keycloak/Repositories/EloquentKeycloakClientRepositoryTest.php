@@ -6,7 +6,6 @@ namespace Tests\Keycloak\Repositories;
 
 use App\Domain\Integrations\Environment;
 use App\Keycloak\Client;
-use App\Keycloak\Realm;
 use App\Keycloak\Realms;
 use App\Keycloak\Repositories\EloquentKeycloakClientRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -27,8 +26,8 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
     {
         parent::setUp();
 
-        $this->repository = new EloquentKeycloakClientRepository();
         $this->realms = $this->givenAllRealms();
+        $this->repository = new EloquentKeycloakClientRepository($this->realms);
     }
 
     public function test_it_can_save_one_or_more_clients(): void
@@ -177,10 +176,7 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
         $integrationId = Uuid::uuid4();
         $clients = [];
 
-        $missingRealmCollection = Realms::getInstance()->filter(function (Realm $realm) {
-            return $realm->environment === Environment::Acceptance;
-        });
-
+        $missingRealmCollection = new Realms([$this->givenAcceptanceRealm()]);
         foreach ($missingRealmCollection as $realm) {
             $clients[] = new Client(
                 Uuid::uuid4(),

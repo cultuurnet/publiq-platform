@@ -130,7 +130,8 @@ final class UpdateClientsTest extends TestCase
             $this->integrationRepository,
             $keycloakClientRepository,
             $this->apiClient,
-            $this->logger
+            $this->realms,
+            $this->logger,
         );
 
         $updateClients->handle(new IntegrationUpdated($this->integration->id));

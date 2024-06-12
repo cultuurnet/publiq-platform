@@ -13,20 +13,9 @@ use Ramsey\Uuid\Uuid;
  */
 final class Realms extends Collection
 {
-    private static ?self $instance = null;
-
     public function __construct(array $realms=[])
     {
         parent::__construct($realms);
-    }
-
-    public static function getInstance(): self
-    {
-        if (self::$instance === null) {
-            self::$instance = self::build();
-        }
-
-        return self::$instance;
     }
 
     public static function build(): self

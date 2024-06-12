@@ -12,7 +12,6 @@ use App\Keycloak\ClientId\ClientIdFreeStringStrategy;
 use App\Keycloak\ClientId\ClientIdUuidStrategy;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realm;
-use App\Keycloak\Realms;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -69,7 +68,7 @@ final class KeycloakApiClientTest extends TestCase
 
         $apiClient = new KeycloakApiClient(
             $this->givenKeycloakHttpClient($this->logger, $mock),
-            Realms::getInstance(),
+            $this->givenAllRealms(),
             $this->logger
         );
 
@@ -105,7 +104,7 @@ final class KeycloakApiClientTest extends TestCase
 
         $apiClient = new KeycloakApiClient(
             $this->givenKeycloakHttpClient($this->logger, $mock),
-            Realms::getInstance(),
+            $this->givenAllRealms(),
             $this->logger
         );
 
@@ -130,7 +129,7 @@ final class KeycloakApiClientTest extends TestCase
 
         $apiClient = new KeycloakApiClient(
             $this->givenKeycloakHttpClient($this->logger, $mock),
-            Realms::getInstance(),
+            $this->givenAllRealms(),
             $this->logger
         );
 
@@ -155,7 +154,7 @@ final class KeycloakApiClientTest extends TestCase
 
         $apiClient = new KeycloakApiClient(
             $this->givenKeycloakHttpClient($this->logger, $mock),
-            Realms::getInstance(),
+            $this->givenAllRealms(),
             $this->logger
         );
 
@@ -181,7 +180,7 @@ final class KeycloakApiClientTest extends TestCase
 
         $apiClient = new KeycloakApiClient(
             $this->givenKeycloakHttpClient($this->logger, $mock),
-            Realms::getInstance(),
+            $this->givenAllRealms(),
             $this->logger
         );
 
@@ -202,7 +201,7 @@ final class KeycloakApiClientTest extends TestCase
 
         $apiClient = new KeycloakApiClient(
             $this->givenKeycloakHttpClient($this->logger, $mock),
-            Realms::getInstance(),
+            $this->givenAllRealms(),
             $this->logger
         );
 

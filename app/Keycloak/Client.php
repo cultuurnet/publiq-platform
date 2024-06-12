@@ -37,10 +37,4 @@ final readonly class Client
             $realm->environment,
         );
     }
-
-    public function getKeycloakUrl(): string
-    {
-        $realm = Realms::getInstance()->getRealmByEnvironment($this->environment);
-        return $realm->baseUrl . 'admin/master/console/#/' . $realm->internalName . '/clients/' . $this->id->toString() . '/settings';
-    }
 }

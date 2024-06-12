@@ -31,6 +31,7 @@ final class UpdateClients implements ShouldQueue
         private readonly IntegrationRepository $integrationRepository,
         private readonly KeycloakClientRepository $keycloakClientRepository,
         private readonly ApiClient $client,
+        private readonly Realms $realms,
         private readonly LoggerInterface $logger
     ) {
     }
@@ -42,7 +43,7 @@ final class UpdateClients implements ShouldQueue
 
         foreach ($keycloakClients as $keycloakClient) {
             try {
-                $realm = Realms::getInstance()->getRealmByEnvironment($keycloakClient->environment);
+                $realm = $this->realms->getRealmByEnvironment($keycloakClient->environment);
 
                 $this->updateClient(
                     $integration,

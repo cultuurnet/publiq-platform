@@ -39,13 +39,17 @@ final class KeycloakServiceProvider extends ServiceProvider
                         $this->app->get(LoggerInterface::class),
                     )
                 ),
-                Realms::getInstance(),
+                $this->app->get(Realms::class),
                 $this->app->get(LoggerInterface::class),
             );
         });
 
+        $this->app->singleton(Realms::class, function () {
+            return Realms::build();
+        });
+
         $this->app->singleton(KeycloakClientRepository::class, function () {
-            return $this->app->get(EloquentKeycloakClientRepository::class);
+            return new EloquentKeycloakClientRepository($this->app->get(Realms::class));
         });
 
         $this->app->singleton(CachedKeycloakClientStatus::class, function () {
