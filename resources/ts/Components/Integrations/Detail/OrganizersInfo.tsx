@@ -18,10 +18,7 @@ export const OrganizersInfo = ({ organizers }: Props) => {
       <Heading level={4} className="font-semibold">
         {t("details.organizers_info.title")}
       </Heading>
-      <p>
-        Hieronder vind je een overzicht van de UiTdatabank organisaties waarvoor
-        je acties kan uitvoeren in de UiTPAS API.
-      </p>
+      <p>{t("details.organizers_info.description")}</p>
       {organizers.map((organizer) => (
         <Card key={organizer.id}>
           <div className="grid grid-cols-[1fr,2fr,auto] gap-x-4 items-center">
