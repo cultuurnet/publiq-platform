@@ -75,15 +75,6 @@ final class MigrateAuth0ToKeycloakClientsTest extends TestCase
         ]);
     }
 
-    protected function tearDown(): void
-    {
-        DB::table('auth0_clients')->where('id', self::CLIENT_ID_1)->delete();
-        DB::table('auth0_clients')->where('id', self::CLIENT_ID_2)->delete();
-        DB::table('keycloak_clients')->where('id', self::CLIENT_ID_1)->delete();
-
-        parent::tearDown();
-    }
-
     private function getPendingCommand(string $command, array $params = []): PendingCommand
     {
         $command = $this->artisan($command, $params);
