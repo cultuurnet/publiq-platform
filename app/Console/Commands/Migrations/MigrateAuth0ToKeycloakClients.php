@@ -4,16 +4,20 @@ declare(strict_types=1);
 
 namespace App\Console\Commands\Migrations;
 
+use App\Domain\Integrations\Environment;
+use App\Keycloak\Client;
+use App\Keycloak\Repositories\KeycloakClientRepository;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Ramsey\Uuid\Uuid;
 
 final class MigrateAuth0ToKeycloakClients extends Command
 {
     protected $signature = 'migrate:keycloak {updated_at?}';//updated_at format =
     protected $description = 'Copy all auth0 clients to keycloak clients - does NOT remove the auth0 clients.';
 
-    public function __construct()
+    public function __construct(private readonly KeycloakClientRepository $keycloakClientRepository)
     {
         parent::__construct();
     }
@@ -47,19 +51,17 @@ final class MigrateAuth0ToKeycloakClients extends Command
         $bar = $this->output->createProgressBar($total);
         $bar->start();
 
-        foreach ($auth0Clients as $client) {
-            DB::table('keycloak_clients')->insert([
-                'id' => $client->id,
-                'integration_id' => $client->integration_id,
-                'client_id' => $client->auth0_client_id,
-                'client_secret' => $client->auth0_client_secret,
-                'realm' => $client->auth0_tenant,
-                'created_at' => $client->created_at,
-                'updated_at' => $client->updated_at,
-                'deleted_at' => $client->deleted_at,
-            ]);
+        foreach ($auth0Clients as $auth0Client) {
+            $client = new Client(
+                Uuid::fromString($auth0Client->id),
+                Uuid::fromString($auth0Client->integration_id),
+                $auth0Client->auth0_client_id,
+                $auth0Client->auth0_client_secret,
+                Environment::from($auth0Client->auth0_tenant),
+            );
+            $this->keycloakClientRepository->create($client);
 
-            $this->info(sprintf('Converted client %s - last updated at %s', $client->id, $client->updated_at));
+            $this->info(sprintf('Converted client %s - last updated at %s', $auth0Client->id, $auth0Client->updated_at));
 
             $bar->advance();
         }

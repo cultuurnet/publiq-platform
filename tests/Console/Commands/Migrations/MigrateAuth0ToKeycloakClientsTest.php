@@ -14,6 +14,9 @@ final class MigrateAuth0ToKeycloakClientsTest extends TestCase
 {
     use RefreshDatabase;
 
+    private const CLIENT_ID_1 = '27c500be-4cc4-4cb2-97d6-c966a27716c4';
+    private const CLIENT_ID_2 = 'a1905caa-3bca-4ea0-bd60-aa0a13e844a5';
+
     public function test_invalid_date_format(): void
     {
         $this->getPendingCommand('migrate:keycloak', ['updated_at' => 'invalid-date'])
@@ -31,8 +34,8 @@ final class MigrateAuth0ToKeycloakClientsTest extends TestCase
     public function test_no_clients_to_migrate_with_date(): void
     {
         DB::table('auth0_clients')->insert([
-            'id' => 'client2',
-            'integration_id' => 'integration1',
+            'id' => self::CLIENT_ID_2,
+            'integration_id' => '3c570fb7-ff26-4284-a848-ae8c9c8e205d',
             'auth0_client_id' => 'auth0_client1',
             'auth0_client_secret' => 'secret1',
             'auth0_tenant' => 'tenant1',
@@ -49,34 +52,34 @@ final class MigrateAuth0ToKeycloakClientsTest extends TestCase
     public function test_migration_with_clients(): void
     {
         DB::table('auth0_clients')->insert([
-            'id' => 'client1',
-            'integration_id' => 'integration1',
+            'id' => self::CLIENT_ID_1,
+            'integration_id' => '3c570fb7-ff26-4284-a848-ae8c9c8e205d',
             'auth0_client_id' => 'auth0_client1',
             'auth0_client_secret' => 'secret1',
-            'auth0_tenant' => 'tenant1',
+            'auth0_tenant' => 'acc',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
         $this->getPendingCommand('migrate:keycloak')
             ->expectsConfirmation('Are you sure you want to copy 1 auth0 clients to Keycloak ?', 'yes')
-            ->expectsOutput('Converted client client1 - last updated at ' . now())
+            ->expectsOutput('Converted client 27c500be-4cc4-4cb2-97d6-c966a27716c4 - last updated at ' . now())
             ->assertExitCode(Command::SUCCESS);
 
         $this->assertDatabaseHas('keycloak_clients', [
-            'id' => 'client1',
-            'integration_id' => 'integration1',
+            'id' => self::CLIENT_ID_1,
+            'integration_id' => '3c570fb7-ff26-4284-a848-ae8c9c8e205d',
             'client_id' => 'auth0_client1',
             'client_secret' => 'secret1',
-            'realm' => 'tenant1',
+            'realm' => 'acc',
         ]);
     }
 
     protected function tearDown(): void
     {
-        DB::table('auth0_clients')->where('id', 'client1')->delete();
-        DB::table('auth0_clients')->where('id', 'client2')->delete();
-        DB::table('keycloak_clients')->where('id', 'client1')->delete();
+        DB::table('auth0_clients')->where('id', self::CLIENT_ID_1)->delete();
+        DB::table('auth0_clients')->where('id', self::CLIENT_ID_2)->delete();
+        DB::table('keycloak_clients')->where('id', self::CLIENT_ID_1)->delete();
 
         parent::tearDown();
     }
