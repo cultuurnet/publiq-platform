@@ -6,13 +6,13 @@ import { Card } from "../../Card";
 import { CopyText } from "../../CopyText";
 import { ButtonIcon } from "../../ButtonIcon";
 import { faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { Organizer } from "../../../types/Organizer";
 
-type Props = Integration;
+type Props = Integration & { organizers: Organizer[] };
 
-export const OrganizersInfo = (props: Props) => {
+export const OrganizersInfo = ({ organizers }: Props) => {
   const { t, i18n } = useTranslation();
 
-  console.log(props);
   return (
     <>
       <Heading level={4} className="font-semibold">
@@ -22,25 +22,16 @@ export const OrganizersInfo = (props: Props) => {
         Hieronder vind je een overzicht van de UiTdatabank organisaties waarvoor
         je acties kan uitvoeren in de UiTPAS API.
       </p>
-
-      {props.organizers.map((organizer) => (
-        <Card>
-          <div className="grid grid-cols-3 gap-4">
+      {organizers.map((organizer) => (
+        <Card key={organizer.id}>
+          <div className="grid grid-cols-[1fr,2fr,auto] gap-x-4 items-center">
             <h1 className={"font-bold"}>{organizer.name[i18n.language]}</h1>
-            <CopyText>{organizer.id}</CopyText>
+            <div>
+              <CopyText>{organizer.id}</CopyText>
+            </div>
             <div>
               <ButtonIcon icon={faPencil} className="text-icon-gray" />
               <ButtonIcon icon={faTrash} className="text-icon-gray" />
-            </div>
-            <div className="font-bold">Permissies</div>
-            <div>
-              <ul className="list-disc list-inside space-y-1 text-gray-700">
-                <li>Tarieven opvragen</li>
-                <li>UITPAS prijzen ophalen</li>
-                <li>Organisatoren zoeken</li>
-                <li>Voordelen zoeken</li>
-                <li>Voordelen aanmaken en aanpassen</li>
-              </ul>
             </div>
           </div>
         </Card>

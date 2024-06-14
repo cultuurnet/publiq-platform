@@ -1,5 +1,5 @@
 export type Organizer = {
   id: string;
-  name: string;
+  name: { [key: string]: string };
   description: string;
 };
