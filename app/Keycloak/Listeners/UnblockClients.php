@@ -48,7 +48,7 @@ final class UnblockClients implements ShouldQueue
 
     public function failed(IntegrationUnblocked $integrationUnblocked, Throwable $throwable): void
     {
-        $this->logger->error('Failed to block Keycloak client(s)', [
+        $this->logger->error('Failed to unblock Keycloak client(s)', [
             'integration_id' => $integrationUnblocked->id->toString(),
             'exception' => $throwable,
         ]);
