@@ -16,7 +16,6 @@ final class MigrateAuth0ToKeycloakClientsTest extends TestCase
     use RefreshDatabase;
 
     private const CLIENT_ID_1 = '27c500be-4cc4-4cb2-97d6-c966a27716c4';
-    private const CLIENT_ID_2 = 'a1905caa-3bca-4ea0-bd60-aa0a13e844a5';
 
     public function test_no_clients_to_migrate(): void
     {
