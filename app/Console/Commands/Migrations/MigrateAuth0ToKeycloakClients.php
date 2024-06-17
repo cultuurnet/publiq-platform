@@ -14,7 +14,7 @@ use Ramsey\Uuid\Uuid;
 
 final class MigrateAuth0ToKeycloakClients extends Command
 {
-    protected $signature = 'migrate:keycloak {updated_at?}';//updated_at format =
+    protected $signature = 'migrate:keycloak';
     protected $description = 'Copy all auth0 clients to keycloak clients - does NOT remove the auth0 clients.';
 
     public function __construct(private readonly KeycloakClientRepository $keycloakClientRepository)
@@ -24,25 +24,18 @@ final class MigrateAuth0ToKeycloakClients extends Command
 
     public function handle(): int
     {
-        $updatedAt = $this->argument('updated_at');
-        $auth0Clients = $this->findAuth0Clients($updatedAt);
-
-        if ($updatedAt !== null && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $updatedAt)) {
-            $this->warn('Invalid format used for updated at, use the format YYYY-MM-DD');
-            return self::FAILURE;
-        }
+        $auth0Clients = $this->findAuth0Clients();
 
         $total = count($auth0Clients);
         if ($total <= 0) {
-            $this->warn($updatedAt ? 'No clients found to migrate starting from ' . $updatedAt : 'No clients found to migrate ');
-            return self::FAILURE;
+            $this->warn('No clients found to migrate');
+            return self::SUCCESS;
         }
 
         if (!$this->confirm(
             sprintf(
-                'Are you sure you want to copy %s auth0 clients to Keycloak %s?',
-                $total,
-                $updatedAt ? 'starting from ' . $updatedAt : ''
+                'Are you sure you want to copy %s auth0 clients to Keycloak?',
+                $total
             )
         )) {
             return self::FAILURE;
@@ -61,7 +54,7 @@ final class MigrateAuth0ToKeycloakClients extends Command
             );
             $this->keycloakClientRepository->create($client);
 
-            $this->info(sprintf('Converted client %s - last updated at %s', $auth0Client->id, $auth0Client->updated_at));
+            $this->info(sprintf('Converted client %s', $auth0Client->id));
 
             $bar->advance();
         }
@@ -71,7 +64,7 @@ final class MigrateAuth0ToKeycloakClients extends Command
         return self::SUCCESS;
     }
 
-    private function findAuth0Clients(?string $updatedAt): Collection
+    private function findAuth0Clients(): Collection
     {
         $query = DB::table('auth0_clients')
             ->orderBy('updated_at', 'asc')
@@ -80,10 +73,6 @@ final class MigrateAuth0ToKeycloakClients extends Command
                     ->from('keycloak_clients');
             })
             ->whereNull('deleted_at');
-
-        if ($updatedAt !== null) {
-            $query->where('updated_at', '>', $updatedAt);
-        }
 
         return $query->get();
     }
