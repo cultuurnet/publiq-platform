@@ -6,7 +6,6 @@ namespace App\Keycloak\Listeners;
 
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationDeleted;
-use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Repositories\KeycloakClientRepository;
@@ -20,7 +19,6 @@ final class BlockClients implements ShouldQueue
     use Queueable;
 
     public function __construct(
-        private readonly IntegrationRepository $integrationRepository,
         private readonly KeycloakClientRepository $keycloakClientRepository,
         private readonly ApiClient $client,
         private readonly LoggerInterface $logger
@@ -29,7 +27,6 @@ final class BlockClients implements ShouldQueue
 
     public function handle(IntegrationBlocked|IntegrationDeleted $integrationBlocked): void
     {
-        $integration = $this->integrationRepository->getById($integrationBlocked->id);
         $keycloakClients = $this->keycloakClientRepository->getByIntegrationId($integrationBlocked->id);
 
         foreach ($keycloakClients as $keycloakClient) {
@@ -37,7 +34,7 @@ final class BlockClients implements ShouldQueue
                 $this->client->blockClient($keycloakClient);
 
                 $this->logger->info('Keycloak client blocked', [
-                    'integration_id' => $integration->id->toString(),
+                    'integration_id' => $integrationBlocked->id->toString(),
                     'client_id' => $keycloakClient->id->toString(),
                     'environment' => $keycloakClient->environment->value,
                 ]);
