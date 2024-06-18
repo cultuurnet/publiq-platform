@@ -95,7 +95,7 @@ final class BlockClientsTest extends TestCase
         $createClients->handle($event);
     }
 
-    public static function differentWaysToBlockClients() : array
+    public static function differentWaysToBlockClients(): array
     {
         return [
             [new IntegrationBlocked(Uuid::fromString(self::INTEGRATION_ID))],
