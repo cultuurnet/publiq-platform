@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Domain\Auth\Controllers;
 
-use Auth0\SDK\Auth0;
+use App\Domain\Auth\AuthenticationStrategy\AuthenticationStrategy;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -13,18 +14,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 final readonly class LoginController
 {
+    private AuthenticationStrategy $authenticationStrategy;
+
     /** @param array<string> $loginParams */
     public function __construct(private array $loginParams)
     {
-    }
-
-    private function getAuth0LoginUrl(): string
-    {
-        /** @var Auth0 $auth0 */
-        $auth0 = app(Auth0::class);
-        $auth0->clear();
-
-        return $auth0->login(null, $this->loginParams);
+        $this->authenticationStrategy = App::get(AuthenticationStrategy::class);
     }
 
     public function adminLogin(): RedirectResponse
@@ -33,7 +28,7 @@ final readonly class LoginController
             return Redirect::intended(config('auth0.routes.home', '/'));
         }
 
-        return Redirect::to($this->getAuth0LoginUrl());
+        return Redirect::to($this->authenticationStrategy->getLoginUrl($this->loginParams));
     }
 
     public function inertiaLogin(): Response
@@ -42,6 +37,6 @@ final readonly class LoginController
             return Redirect::intended(config('auth0.routes.home', '/'));
         }
 
-        return Inertia::location($this->getAuth0LoginUrl());
+        return Inertia::location($this->authenticationStrategy->getLoginUrl($this->loginParams));
     }
 }

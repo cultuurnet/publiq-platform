@@ -13,6 +13,7 @@ use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realm;
 use App\Keycloak\Realms;
 use GuzzleHttp\Psr7\Request;
+use Illuminate\Support\Facades\Session;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -209,5 +210,41 @@ final readonly class KeycloakApiClient implements ApiClient
         } catch (Throwable) {
             throw KeyCloakApiFailed::failedToUpdateClient($client);
         }
+    }
+
+    public function exchangeToken(Realm $realm, string $authorizationCode): bool
+    {
+        try {
+            $request = new Request(
+                'POST',
+                'realms/' . $realm->internalName . '/protocol/openid-connect/token',
+                ['Content-Type' => 'application/x-www-form-urlencoded'],
+                http_build_query([
+                    'grant_type' => 'client_credentials',
+                    'client_id' => $realm->clientId,
+                    'client_secret' => $realm->clientSecret,
+                    'code' => $authorizationCode,
+                ])
+            );
+
+            $response = $this->client->sendWithoutBearer(
+                $request,
+                $realm
+            );
+
+            if ($response->getStatusCode() !== 200) {
+                throw KeyCloakApiFailed::failedToExchangeToken($response->getBody()->getContents());
+            }
+        } catch (Throwable $e) {
+            throw KeyCloakApiFailed::failedToExchangeToken($e->getMessage());
+        }
+
+        $body = Json::decodeAssociatively($response->getBody()->getContents());
+
+        //@ todo check scope ? - difference for admin / frontend
+
+        Session::put('token', $body['access_token']);
+
+        return true;
     }
 }
