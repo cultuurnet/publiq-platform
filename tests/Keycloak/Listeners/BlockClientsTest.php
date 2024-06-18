@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Tests\Keycloak\Listeners;
 
 use App\Domain\Integrations\Events\IntegrationBlocked;
-use App\Domain\Integrations\Integration;
-use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Keycloak\Client;
 use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Listeners\BlockClients;
@@ -23,13 +22,11 @@ final class BlockClientsTest extends TestCase
 {
     use CreatesIntegration;
     use KeycloakHttpClientFactory;
-
-
     use RealmFactory;
 
     private const SECRET = 'my-secret';
+    private const INTEGRATION_ID = '3f2c8aa3-6d5d-4a72-ba41-ab26bc8e591d';
 
-    private Integration $integration;
     private ApiClient&MockObject $apiClient;
     private LoggerInterface&MockObject $logger;
 
@@ -37,25 +34,20 @@ final class BlockClientsTest extends TestCase
     {
         parent::setUp();
 
-        // This is a search API integration
-        $this->integration = $this->givenThereIsAnIntegration(Uuid::uuid4());
-
         $this->apiClient = $this->createMock(ApiClient::class);
         $this->logger = $this->createMock(LoggerInterface::class);
     }
 
-    public function test_block_clients_when_integration_is_blocked(): void
+    /**
+     * @dataProvider differentWaysToBlockClients
+     */
+    public function test_block_clients_when_integration_is_blocked_or_deleted(IntegrationBlocked|IntegrationDeleted $event): void
     {
-        $integrationRepository = $this->createMock(IntegrationRepository::class);
-        $integrationRepository->expects($this->once())
-            ->method('getById')
-            ->with($this->integration->id)
-            ->willReturn($this->integration);
+        $integrationId = Uuid::fromString(self::INTEGRATION_ID);
 
         $clients = [];
-        foreach ($this->givenAllRealms()
-                 as $realm) {
-            $client = new Client(Uuid::uuid4(), $this->integration->id, Uuid::uuid4()->toString(), self::SECRET, $realm->environment);
+        foreach ($this->givenAllRealms() as $realm) {
+            $client = new Client(Uuid::uuid4(), $integrationId, Uuid::uuid4()->toString(), self::SECRET, $realm->environment);
 
             $clients[$client->id->toString()] = $client;
         }
@@ -73,22 +65,29 @@ final class BlockClientsTest extends TestCase
                 $this->assertArrayHasKey('integration_id', $options);
                 $this->assertArrayHasKey('environment', $options);
 
-                $this->assertEquals($this->integration->id->toString(), $options['integration_id']);
+                $this->assertEquals(self::INTEGRATION_ID, $options['integration_id']);
             });
 
         $keycloakClientRepository = $this->createMock(KeycloakClientRepository::class);
         $keycloakClientRepository->expects($this->once())
             ->method('getByIntegrationId')
-            ->with($this->integration->id)
+            ->with($integrationId)
             ->willReturn($clients);
 
         $createClients = new BlockClients(
-            $integrationRepository,
             $keycloakClientRepository,
             $this->apiClient,
             $this->logger
         );
 
-        $createClients->handle(new IntegrationBlocked($this->integration->id));
+        $createClients->handle($event);
+    }
+
+    public static function differentWaysToBlockClients(): array
+    {
+        return [
+            [new IntegrationBlocked(Uuid::fromString(self::INTEGRATION_ID))],
+            [new IntegrationDeleted(Uuid::fromString(self::INTEGRATION_ID))],
+        ];
     }
 }
