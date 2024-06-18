@@ -6,6 +6,7 @@ namespace App\Keycloak;
 
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
+use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Events\IntegrationUnblocked;
 use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Events\IntegrationUrlCreated;
@@ -74,6 +75,7 @@ final class KeycloakServiceProvider extends ServiceProvider
         Event::listen(IntegrationUpdated::class, [UpdateClients::class, 'handle']);
         Event::listen(IntegrationBlocked::class, [BlockClients::class, 'handle']);
         Event::listen(IntegrationUnblocked::class, [UnblockClients::class, 'handle']);
+        Event::listen(IntegrationDeleted::class, [BlockClients::class, 'handle']);
 
         Event::listen(MissingClientsDetected::class, [CreateClients::class, 'handleCreatingMissingClients']);
 

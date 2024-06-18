@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Keycloak\Listeners;
 
 use App\Domain\Integrations\Events\IntegrationBlocked;
+use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client;
@@ -23,11 +24,10 @@ final class BlockClientsTest extends TestCase
 {
     use CreatesIntegration;
     use KeycloakHttpClientFactory;
-
-
     use RealmFactory;
 
     private const SECRET = 'my-secret';
+    private const INTEGRATION_ID = '3f2c8aa3-6d5d-4a72-ba41-ab26bc8e591d';
 
     private Integration $integration;
     private ApiClient&MockObject $apiClient;
@@ -38,13 +38,16 @@ final class BlockClientsTest extends TestCase
         parent::setUp();
 
         // This is a search API integration
-        $this->integration = $this->givenThereIsAnIntegration(Uuid::uuid4());
+        $this->integration = $this->givenThereIsAnIntegration(Uuid::fromString(self::INTEGRATION_ID));
 
         $this->apiClient = $this->createMock(ApiClient::class);
         $this->logger = $this->createMock(LoggerInterface::class);
     }
 
-    public function test_block_clients_when_integration_is_blocked(): void
+    /**
+     *@dataProvider differentWaysToBlockClients
+     */
+    public function test_block_clients_when_integration_is_blocked_or_deleted(IntegrationBlocked|IntegrationDeleted $event): void
     {
         $integrationRepository = $this->createMock(IntegrationRepository::class);
         $integrationRepository->expects($this->once())
@@ -89,6 +92,14 @@ final class BlockClientsTest extends TestCase
             $this->logger
         );
 
-        $createClients->handle(new IntegrationBlocked($this->integration->id));
+        $createClients->handle($event);
+    }
+
+    public static function differentWaysToBlockClients() : array
+    {
+        return [
+            [new IntegrationBlocked(Uuid::fromString(self::INTEGRATION_ID))],
+            [new IntegrationDeleted(Uuid::fromString(self::INTEGRATION_ID))],
+        ];
     }
 }

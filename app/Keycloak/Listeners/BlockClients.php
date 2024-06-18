@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Keycloak\Listeners;
 
 use App\Domain\Integrations\Events\IntegrationBlocked;
+use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Exception\KeyCloakApiFailed;
@@ -26,7 +27,7 @@ final class BlockClients implements ShouldQueue
     ) {
     }
 
-    public function handle(IntegrationBlocked $integrationBlocked): void
+    public function handle(IntegrationBlocked|IntegrationDeleted $integrationBlocked): void
     {
         $integration = $this->integrationRepository->getById($integrationBlocked->id);
         $keycloakClients = $this->keycloakClientRepository->getByIntegrationId($integrationBlocked->id);
@@ -46,7 +47,7 @@ final class BlockClients implements ShouldQueue
         }
     }
 
-    public function failed(IntegrationBlocked $integrationBlocked, Throwable $throwable): void
+    public function failed(IntegrationBlocked|IntegrationDeleted $integrationBlocked, Throwable $throwable): void
     {
         $this->logger->error('Failed to block Keycloak client(s)', [
             'integration_id' => $integrationBlocked->id->toString(),
