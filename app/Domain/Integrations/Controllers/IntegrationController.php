@@ -10,6 +10,7 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\ContactKeyVisibilityRepository;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Coupons\Repositories\CouponRepository;
+use App\Domain\Integrations\FormRequests\GetOrganizersRequest;
 use App\Domain\Integrations\FormRequests\RequestActivationRequest;
 use App\Domain\Integrations\FormRequests\StoreContactRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationRequest;
@@ -42,6 +43,7 @@ use App\ProjectAanvraag\ProjectAanvraagUrl;
 use App\Router\TranslatedRoute;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use Carbon\Carbon;
+use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\RedirectResponse;
@@ -172,6 +174,7 @@ final class IntegrationController extends Controller
             'oldCredentialsExpirationDate' => $oldCredentialsExpirationDate,
             'email' => Auth::user()?->email,
             'subscriptions' => $this->subscriptionRepository->all(),
+            'organizers' => session('organizers'),
         ]);
     }
 
@@ -309,6 +312,34 @@ final class IntegrationController extends Controller
                 'id' => $id,
             ]
         );
+    }
+
+    public function getOrganizers(string $id, GetOrganizersRequest $request): RedirectResponse
+    {
+        $organizerName = $request->input('organizer');
+        $apiKey = config('search.api_key');
+        $baseUrl = config('search.base_uri');
+        $endpoint = 'organizers';
+        $client = new Client();
+        try {
+            $response = $client->request('GET', $baseUrl . $endpoint, [
+                'query' => [
+                    'embed' => 'true',
+                    'limit' => 5,
+                    'apiKey' => $apiKey,
+                    'name' => $organizerName,
+                ],
+            ]);
+            $body = $response->getBody()->getContents();
+            $data = json_decode($body, true);
+            $organizerNames = array_map(function ($member) {
+                return $member['name'] ?? [];
+            }, $data['member']);
+            return redirect()->back()->with('organizers', $organizerNames);
+
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors('Failed to fetch organizers: ' . $e->getMessage());
+        }
     }
 
     private function getKeyVisibility(Integration $integration): KeyVisibility
