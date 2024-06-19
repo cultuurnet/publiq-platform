@@ -24,10 +24,16 @@ final class RequestActivationRequest extends FormRequest
         $rules = collect([
             ...(new CreateOrganizationRequest())->rules(),
             'coupon' => ['nullable', 'string', 'max:255'],
+            'organizers' => ['required','array'],
+            'organizers.*' => ['string'],
         ]);
 
-        if (!$this->isAccountingInfoRequired()) {
+        if (!$this->isAccountingInfoRequired() || $this->isUITPAS()) {
             $rules->forget(['organization.invoiceEmail', 'organization.vat', 'coupon']);
+        }
+
+        if (!$this->isUITPAS()) {
+            $rules->forget(['organizers']);
         }
 
         return $rules->toArray();
@@ -44,5 +50,13 @@ final class RequestActivationRequest extends FormRequest
         $subscription = $subscriptionRepository->getById($integration->subscriptionId);
 
         return $integration->type !== IntegrationType::EntryApi || $subscription->price > 0.0;
+    }
+
+    private function isUITPAS(): bool
+    {
+        /** @var IntegrationRepository $integrationRepository */
+        $integrationRepository = App::get(IntegrationRepository::class);
+        $integration = $integrationRepository->getById(Uuid::fromString($this->id));
+        return $integration->type === IntegrationType::UiTPAS;
     }
 }
