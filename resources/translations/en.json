@@ -184,6 +184,14 @@
         "coupon": "Coupon",
         "plan": "Subscription",
         "year": "year"
+      },
+      "uitpas": {
+        "partner": "Partner",
+        "organizers": {
+          "title": "UiTdatabank organizers",
+          "info": "Enter the UiTdatabank organizers for which you want to execute actions in UiTPAS.",
+          "label": "Organizers"
+        }
       }
     },
     "documentation": {
