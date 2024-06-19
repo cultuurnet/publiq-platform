@@ -1,10 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import { Dialog } from "./Dialog";
 import { ButtonSecondary } from "./ButtonSecondary";
 import { ButtonPrimary } from "./ButtonPrimary";
 import { FormElement } from "./FormElement";
 import { Input } from "./Input";
-import { useForm } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 import { useTranslation } from "react-i18next";
 import { IntegrationType } from "../types/IntegrationType";
 import { useIsMobile } from "../hooks/useIsMobile";
@@ -13,6 +13,9 @@ import type { PricingPlan } from "../hooks/useGetPricingPlans";
 import { formatCurrency } from "../utils/formatCurrency";
 import { Heading } from "./Heading";
 import { CouponInfoContext } from "../Context/CouponInfo";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { ButtonIcon } from "./ButtonIcon";
+import { debounce } from "lodash";
 
 const PriceOverview = ({
   coupon,
@@ -81,6 +84,26 @@ type Props = {
   email: string;
 };
 
+type Address = {
+  street: string;
+  zip: string;
+  city: string;
+  country: string;
+};
+
+type Organization = {
+  name: string;
+  invoiceEmail: string;
+  vat: string;
+  address: Address;
+};
+
+type InitialValues = {
+  organization: Organization;
+  organizers: string[];
+  coupon: string;
+};
+
 export const ActivationDialog = ({
   isVisible,
   onClose,
@@ -93,7 +116,7 @@ export const ActivationDialog = ({
 
   const isMobile = useIsMobile();
 
-  const initialValuesOrganization = {
+  const initialValuesOrganization: InitialValues = {
     organization: {
       name: "",
       invoiceEmail: "",
@@ -105,6 +128,7 @@ export const ActivationDialog = ({
         country: "Belgium",
       },
     },
+    organizers: [],
     coupon: "",
   };
 
@@ -120,6 +144,60 @@ export const ActivationDialog = ({
     string,
     string | undefined
   >;
+
+  const isBillingInfoAndPriceOverviewVisible =
+    type !== IntegrationType.EntryApi && type !== IntegrationType.UiTPAS;
+
+  const [isSearchListVisible, setIsSearchListVisible] = useState(false);
+
+  const [organizerList, setOrganizerList] = useState<string[]>([]);
+
+  const handleGetOrganizers = debounce(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setOrganizerList([]);
+      router.post(
+        `/integrations/${id}/organizers`,
+        {
+          organizer: e.target.value,
+        },
+        {
+          preserveScroll: true,
+          preserveState: true,
+          onSuccess: (page) => {
+            if (Array.isArray(page.props.organizers)) {
+              const organizers = page.props.organizers.map((organizer) => {
+                if (typeof organizer === "object" && "nl" in organizer) {
+                  return organizer.nl;
+                }
+                return organizer;
+              });
+              setOrganizerList(organizers);
+            }
+          },
+          onError: (errors) => {
+            console.error(errors);
+          },
+        }
+      );
+    },
+    250
+  );
+
+  const handleAddOrganizers = (e: React.MouseEvent<HTMLLIElement>) => {
+    const target = e.target as HTMLLIElement;
+    const newOrganizer = target.innerText;
+    let updatedOrganizers = [...organizationForm.data.organizers, newOrganizer];
+    updatedOrganizers = [...new Set(updatedOrganizers)];
+    organizationForm.setData("organizers", updatedOrganizers);
+    setIsSearchListVisible(false);
+  };
+
+  const handleDeleteOrganizer = (deletedOrganizer: string) => {
+    const updatedOrganizers = organizationForm.data.organizers.filter(
+      (organizer) => organizer !== deletedOrganizer
+    );
+    organizationForm.setData("organizers", updatedOrganizers);
+  };
 
   if (!isVisible) {
     return null;
@@ -144,6 +222,11 @@ export const ActivationDialog = ({
       contentStyles="gap-3"
     >
       <>
+        {type === IntegrationType.UiTPAS && (
+          <Heading level={5} className="font-semibold">
+            {t("integrations.activation_dialog.uitpas.partner")}
+          </Heading>
+        )}
         <FormElement
           label={`${t("details.billing_info.name")}`}
           required
@@ -235,7 +318,76 @@ export const ActivationDialog = ({
             }
           />
         </div>
-        {type !== IntegrationType.EntryApi && (
+        {type === IntegrationType.UiTPAS && (
+          <>
+            <div className="flex flex-col gap-1">
+              <Heading level={5} className="font-semibold">
+                {t("integrations.activation_dialog.uitpas.organizers.title")}
+              </Heading>
+              <Heading level={5}>
+                {t("integrations.activation_dialog.uitpas.organizers.info")}
+              </Heading>
+            </div>
+            <div className="flex gap-2 flex-wrap">
+              {organizationForm.data.organizers.length > 0 &&
+                organizationForm.data.organizers.map((organizer) => (
+                  <div className="border rounded px-2 py-1 flex gap-1">
+                    <p>{organizer}</p>
+                    <ButtonIcon
+                      icon={faTrash}
+                      size="sm"
+                      className="text-icon-gray"
+                      onClick={() => handleDeleteOrganizer(organizer)}
+                    />
+                  </div>
+                ))}
+            </div>
+            <FormElement
+              label={t(
+                "integrations.activation_dialog.uitpas.organizers.label"
+              )}
+              required
+              error={organizationFormErrors["organizers"]}
+              className="w-full"
+              component={
+                <>
+                  <Input
+                    type="text"
+                    name="organizers"
+                    onChange={(e) => {
+                      e.target.value !== ""
+                        ? (setIsSearchListVisible(true), handleGetOrganizers(e))
+                        : setIsSearchListVisible(false);
+                    }}
+                    onBlur={(e) => {
+                      e.target.value = "";
+                      const timeoutId = setTimeout(() => {
+                        setIsSearchListVisible(false);
+                        clearTimeout(timeoutId);
+                      }, 200);
+                    }}
+                  />
+                  {organizerList &&
+                    organizerList.length > 0 &&
+                    isSearchListVisible && (
+                      <ul className="border rounded">
+                        {organizerList.map((organizer, index) => (
+                          <li
+                            key={`${organizer}${index}`}
+                            onClick={handleAddOrganizers}
+                            className="border-b px-3 py-1 hover:bg-gray-100"
+                          >
+                            {organizer}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                </>
+              }
+            />
+          </>
+        )}
+        {isBillingInfoAndPriceOverviewVisible && (
           <>
             <FormElement
               label={`${t("details.billing_info.vat")}`}
@@ -294,7 +446,7 @@ export const ActivationDialog = ({
             />
           </>
         )}
-        {type !== IntegrationType.EntryApi && (
+        {isBillingInfoAndPriceOverviewVisible && (
           <PriceOverview
             subscription={subscription}
             pricingPlan={pricingPlan}
