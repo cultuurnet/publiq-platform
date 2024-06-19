@@ -78,10 +78,13 @@ final class CreateClients implements ShouldQueue
         foreach ($realms as $realm) {
             try {
                 $client = $this->client->createClient($realm, $integration, new ClientIdUuidStrategy());
-                $this->client->addScopeToClient(
-                    $client,
-                    $realm->scopeConfig->getScopeIdFromIntegrationType($integration)
-                );
+
+                foreach($realm->scopeConfig->getScopeIdsFromIntegrationType($integration) as $scopeId) {
+                    $this->client->addScopeToClient(
+                        $client,
+                        $scopeId
+                    );
+                }
 
                 $clientCollection->add($client);
             } catch (KeyCloakApiFailed $e) {
