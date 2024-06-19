@@ -48,7 +48,7 @@ final class UpdateClients implements ShouldQueue
                 $this->updateClient(
                     $integration,
                     $keycloakClient,
-                    $realm->scopeConfig->getScopeIdFromIntegrationType($integration)
+                    $realm->scopeConfig->getScopeIdsFromIntegrationType($integration)
                 );
             } catch (KeyCloakApiFailed $e) {
                 $this->failed($event, $e);
@@ -64,7 +64,10 @@ final class UpdateClients implements ShouldQueue
         ]);
     }
 
-    private function updateClient(Integration $integration, Client $keycloakClient, UuidInterface $scopeId): void
+    /**
+     * @param UuidInterface[] $scopeIds
+     */
+    private function updateClient(Integration $integration, Client $keycloakClient, array $scopeIds): void
     {
         $this->client->updateClient(
             $keycloakClient,
@@ -78,7 +81,9 @@ final class UpdateClients implements ShouldQueue
             )
         );
         $this->client->deleteScopes($keycloakClient);
-        $this->client->addScopeToClient($keycloakClient, $scopeId);
+        foreach($scopeIds as $scopeId) {
+            $this->client->addScopeToClient($keycloakClient, $scopeId);
+        }
 
         $this->logger->info('Keycloak client updated', [
             'integration_id' => $integration->id->toString(),

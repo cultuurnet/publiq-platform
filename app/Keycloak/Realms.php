@@ -33,7 +33,6 @@ final class Realms extends Collection
                 new ScopeConfig(
                     Uuid::fromString($environment['scope']['search_api_id']),
                     Uuid::fromString($environment['scope']['entry_api_id']),
-                    Uuid::fromString($environment['scope']['widgets_id']),
                     Uuid::fromString($environment['scope']['uitpas_id'])
                 )
             ));
