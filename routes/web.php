@@ -98,6 +98,8 @@ Route::group(['middleware' => 'auth'], static function () {
         Route::get('/integrations/{id}/widget', [IntegrationController::class, 'showWidget']);
 
         Route::post('/integrations/{id}/upgrade', [IntegrationController::class, 'storeKeyVisibilityUpgrade']);
+
+        Route::post('/integrations/{id}/organizers', [IntegrationController::class, 'getOrganizers']);
     });
 
     Route::fallback(function () {
