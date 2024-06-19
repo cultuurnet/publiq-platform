@@ -196,6 +196,7 @@ return [
         'organization.address.zip' => 'postcode',
         'organization.address.city' => 'city',
         'organization.vat' => 'VAT or company number',
+        'organizers' => 'organizers'
     ],
 
 ];

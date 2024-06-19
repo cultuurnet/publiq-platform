@@ -211,6 +211,7 @@ return [
         'organization.address.zip' => 'postcode',
         'organization.address.city' => 'gemeente',
         'organization.vat' => 'BTW of ondernemingsnummer',
+        'organizers' => 'organisaties'
     ],
 
 ];
