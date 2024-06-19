@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Dialog } from "./Dialog";
 import { ButtonSecondary } from "./ButtonSecondary";
 import { ButtonPrimary } from "./ButtonPrimary";
@@ -330,8 +330,11 @@ export const ActivationDialog = ({
             </div>
             <div className="flex gap-2 flex-wrap">
               {organizationForm.data.organizers.length > 0 &&
-                organizationForm.data.organizers.map((organizer) => (
-                  <div className="border rounded px-2 py-1 flex gap-1">
+                organizationForm.data.organizers.map((organizer, index) => (
+                  <div
+                    key={`${organizer}${index}`}
+                    className="border rounded px-2 py-1 flex gap-1"
+                  >
                     <p>{organizer}</p>
                     <ButtonIcon
                       icon={faTrash}
