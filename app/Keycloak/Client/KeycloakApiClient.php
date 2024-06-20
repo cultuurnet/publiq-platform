@@ -10,21 +10,26 @@ use App\Keycloak\Client;
 use App\Keycloak\ClientId\ClientIdFactory;
 use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
 use App\Keycloak\Exception\KeyCloakApiFailed;
+use App\Keycloak\JsonWebToken;
+use App\Keycloak\KeycloakConfig;
 use App\Keycloak\Realm;
+use App\Keycloak\RealmWithScopeConfig;
 use App\Keycloak\Realms;
 use GuzzleHttp\Psr7\Request;
-use Illuminate\Support\Facades\Session;
+use Lcobucci\JWT\Token\InvalidTokenStructure;
+use Lcobucci\JWT\UnencryptedToken;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Throwable;
 
-final readonly class KeycloakApiClient implements ApiClient
+final class KeycloakApiClient implements ApiClient
 {
     public function __construct(
-        private KeycloakHttpClient $client,
-        private Realms $realms,
-        private LoggerInterface $logger,
+        private readonly KeycloakHttpClient $client,
+        private readonly Realms $realms,
+        private readonly LoggerInterface $logger,
+        private readonly string $certificate,
     ) {
     }
 
@@ -32,7 +37,7 @@ final readonly class KeycloakApiClient implements ApiClient
      * @throws KeyCloakApiFailed
      */
     public function createClient(
-        Realm $realm,
+        RealmWithScopeConfig $realm,
         Integration $integration,
         ClientIdFactory $clientIdFactory
     ): Client {
@@ -117,7 +122,7 @@ final readonly class KeycloakApiClient implements ApiClient
     /**
      * @throws KeyCloakApiFailed
      */
-    private function fetchClient(Realm $realm, Integration $integration, string $id): Client
+    private function fetchClient(RealmWithScopeConfig $realm, Integration $integration, string $id): Client
     {
         try {
             $response = $this->client->sendWithBearer(
@@ -212,7 +217,7 @@ final readonly class KeycloakApiClient implements ApiClient
         }
     }
 
-    public function exchangeToken(Realm $realm, string $authorizationCode): bool
+    public function exchangeToken(Realm $realm, string $authorizationCode): ?UnencryptedToken
     {
         try {
             $request = new Request(
@@ -220,10 +225,11 @@ final readonly class KeycloakApiClient implements ApiClient
                 'realms/' . $realm->internalName . '/protocol/openid-connect/token',
                 ['Content-Type' => 'application/x-www-form-urlencoded'],
                 http_build_query([
-                    'grant_type' => 'client_credentials',
+                    'grant_type' => 'authorization_code',
+                    'code' => $authorizationCode,
                     'client_id' => $realm->clientId,
                     'client_secret' => $realm->clientSecret,
-                    'code' => $authorizationCode,
+                    'redirect_uri' => config(KeycloakConfig::REDIRECT_URI),
                 ])
             );
 
@@ -241,10 +247,17 @@ final readonly class KeycloakApiClient implements ApiClient
 
         $body = Json::decodeAssociatively($response->getBody()->getContents());
 
-        //@ todo check scope ? - difference for admin / frontend
+        try {
+            $jwt = new JsonWebToken($body['access_token']);
+            $isJwtTokenValid = $jwt->validate($this->certificate);
+        } catch (InvalidTokenStructure $e) {
+            throw KeyCloakApiFailed::invalidJwtToken($e->getMessage());
+        }
 
-        Session::put('token', $body['access_token']);
+        if(!$isJwtTokenValid) {
+            throw KeyCloakApiFailed::invalidJwtToken('Signature is invalid');
+        }
 
-        return true;
+        return $jwt->getToken();
     }
 }

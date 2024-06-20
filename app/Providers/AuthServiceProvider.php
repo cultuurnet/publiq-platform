@@ -25,6 +25,7 @@ use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Domain\Subscriptions\Policies\SubscriptionPolicy;
 use App\Domain\KeyVisibilityUpgrades\Models\KeyVisibilityUpgradeModel;
 use App\Domain\KeyVisibilityUpgrades\Policies\KeyVisibilityUpgradePolicy;
+use App\Keycloak\KeycloakUserProvider;
 use App\Keycloak\Models\KeycloakClientModel;
 use App\Keycloak\Policies\KeycloakClientPolicy;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
@@ -32,6 +33,7 @@ use App\UiTiDv1\Policies\UiTiDv1ConsumerPolicy;
 use Auth0\SDK\Auth0;
 use Auth0\SDK\Configuration\SdkConfiguration;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Session\SessionManager;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Activitylog\Models\Activity;
 
@@ -56,10 +58,17 @@ final class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Auth::provider(
-            'auth0',
-            fn ($app, array $config) => new UserProvider()
-        );
+        if (config('auth.mode') === 'keycloak') {
+            Auth::provider(
+                'auth0',
+                fn ($app, array $config) => new KeycloakUserProvider($this->app->get(SessionManager::class))
+            );
+        } else {
+            Auth::provider(
+                'auth0',
+                fn ($app, array $config) => new UserProvider()
+            );
+        }
 
         $this->app->singleton(
             Auth0::class,

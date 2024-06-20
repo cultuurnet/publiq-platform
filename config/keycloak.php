@@ -4,6 +4,14 @@ declare(strict_types=1);
 
 return [
     'enabled' => env('KEYCLOAK_ENABLED', false),
+    'certificate' => __DIR__ . '/../publiq-keycloak.pem',
+    'login' => [
+        'internalName' => env('KEYCLOAK_LOGIN_REALM_NAME', ''),
+        'base_url' => env('KEYCLOAK_LOGIN_BASE_URL', ''),
+        'client_id' => env('KEYCLOAK_LOGIN_CLIENT_ID', ''),
+        'client_secret' => env('KEYCLOAK_LOGIN_SECRET', ''),
+        'redirect_uri' => env('KEYCLOAK_LOGIN_REDIRECT_URI', ''),
+    ],
     'environments' => [
         'acc' => [
             'internalName' => env('KEYCLOAK_ACC_REALM_NAME', ''),

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Keycloak\Client;
 
 use App\Keycloak\Realm;
+use App\Keycloak\RealmWithScopeConfig;
 use App\Keycloak\TokenStrategy\TokenStrategy;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
@@ -21,7 +22,7 @@ final readonly class KeycloakHttpClient
     /**
      * @throws GuzzleException
      */
-    public function sendWithoutBearer(RequestInterface $request, Realm $realm): ResponseInterface
+    public function sendWithoutBearer(RequestInterface $request, RealmWithScopeConfig|Realm $realm): ResponseInterface
     {
         $request = $request
             ->withUri(new Uri($realm->baseUrl . $request->getUri()));
@@ -32,7 +33,7 @@ final readonly class KeycloakHttpClient
     /**
      * @throws GuzzleException
      */
-    public function sendWithBearer(RequestInterface $request, Realm $realm): ResponseInterface
+    public function sendWithBearer(RequestInterface $request, RealmWithScopeConfig $realm): ResponseInterface
     {
         $request = $request
             ->withUri(new Uri($realm->baseUrl . $request->getUri()))

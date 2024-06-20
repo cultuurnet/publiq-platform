@@ -12,9 +12,11 @@ use App\Domain\Auth\Models\UserModel;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Integrations\Environment;
 use App\Keycloak\Client\ApiClient;
-use App\Keycloak\Realms;
+use App\Keycloak\KeycloakConfig;
+use App\Keycloak\Realm;
 use Auth0\SDK\Auth0;
 use Auth0\SDK\Contract\Auth0Interface;
+use Illuminate\Session\SessionManager;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -26,14 +28,20 @@ final class AuthServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(AuthenticationStrategy::class, function () {
-            if (env('AUTHENTICATION_MODE', 'auth0') === 'keycloak') {
-                /** @var Realms $realms */
-                $realms = App::get(Realms::class);
-
+            if (config('auth.mode') === 'keycloak') {
                 return new KeycloakAuthenticationStrategy(
-                    $realms->getRealmByEnvironment(Environment::Acceptance),
+                    new Realm(
+                        config(KeycloakConfig::LOGIN_REALM_NAME),
+                        config(KeycloakConfig::LOGIN_REALM_NAME),
+                        config(KeycloakConfig::LOGIN_BASE_URL),
+                        config(KeycloakConfig::LOGIN_CLIENT_ID),
+                        config(KeycloakConfig::LOGIN_CLIENT_SECRET),
+                        Environment::fromName(env('APP_ENV'))
+                    ),
                     App::get(ApiClient::class),
-                    App::get(LoggerInterface::class)
+                    App::get(LoggerInterface::class),
+                    config(KeycloakConfig::REDIRECT_URI),
+                    $this->app->get(SessionManager::class)
                 );
             }
 

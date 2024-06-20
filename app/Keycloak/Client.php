@@ -21,7 +21,7 @@ final readonly class Client
     }
 
     public static function createFromJson(
-        Realm $realm,
+        RealmWithScopeConfig $realm,
         UuidInterface $integrationId,
         array $data
     ): self {

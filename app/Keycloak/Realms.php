@@ -9,7 +9,7 @@ use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
 
 /**
- * @extends Collection<int, Realm>
+ * @extends Collection<int, RealmWithScopeConfig>
  */
 final class Realms extends Collection
 {
@@ -23,7 +23,7 @@ final class Realms extends Collection
         $realms = new self();
 
         foreach (config('keycloak.environments') as $publicName => $environment) {
-            $realms->add(new Realm(
+            $realms->add(new RealmWithScopeConfig(
                 $environment['internalName'],
                 ucfirst($publicName),
                 $environment['base_url'],
@@ -42,7 +42,7 @@ final class Realms extends Collection
         return $realms;
     }
 
-    public function getRealmByEnvironment(Environment $environment): Realm
+    public function getRealmByEnvironment(Environment $environment): RealmWithScopeConfig
     {
         foreach ($this->items as $realm) {
             if ($realm->environment === $environment) {

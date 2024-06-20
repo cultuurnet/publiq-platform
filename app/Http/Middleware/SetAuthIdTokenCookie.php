@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use Auth0\SDK\Auth0;
+use App\Domain\Auth\AuthenticationStrategy\AuthenticationStrategy;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
@@ -16,13 +16,13 @@ final class SetAuthIdTokenCookie
 
     public function handle(Request $request, Closure $next): Response
     {
-        /** @var Auth0 $auth0 */
-        $auth0 = app(Auth0::class);
+        /** @var AuthenticationStrategy $authenticationStrategy */
+        $authenticationStrategy = app(AuthenticationStrategy::class);
 
-        if ($auth0->getUser() !== null && $auth0->getIdToken() !== null) {
+        if ($authenticationStrategy->getUser() !== null && $authenticationStrategy->getIdToken() !== null) {
             Cookie::queue(Cookie::make(
                 name: self::COOKIE,
-                value: $auth0->getIdToken(),
+                value: $authenticationStrategy->getIdToken(),
                 minutes: 3600 * 60 * 24,
                 httpOnly: false,
             ));

@@ -43,6 +43,7 @@ final class KeycloakServiceProvider extends ServiceProvider
                 ),
                 $this->app->get(Realms::class),
                 $this->app->get(LoggerInterface::class),
+                (string)file_get_contents(config(KeycloakConfig::CERTIFICATE)),
             );
         });
 

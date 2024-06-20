@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Keycloak;
 
 use App\Domain\Integrations\Environment;
-use App\Keycloak\Realm;
+use App\Keycloak\RealmWithScopeConfig;
 use App\Keycloak\Realms;
 use App\Keycloak\ScopeConfig;
 use Illuminate\Support\Facades\Config;
@@ -69,7 +69,7 @@ final class RealmsTest extends TestCase
         foreach (Environment::cases() as $i => $environment) {
             $realm = $realms->get($i);
 
-            $this->assertInstanceOf(Realm::class, $realm);
+            $this->assertInstanceOf(RealmWithScopeConfig::class, $realm);
             $this->assertEquals('internal_name_' . $i, $realm->internalName);
             $this->assertEquals(ucfirst($environment->value), $realm->publicName);
             $this->assertEquals('https://publiq-platform.be/' . $i . '/', $realm->baseUrl);  // This tests if a trailing slash is added

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Keycloak;
 
 use App\Domain\Integrations\Environment;
-use App\Keycloak\Realm;
+use App\Keycloak\RealmWithScopeConfig;
 use App\Keycloak\Realms;
 use App\Keycloak\ScopeConfig;
 use Ramsey\Uuid\Uuid;
@@ -26,9 +26,9 @@ trait RealmFactory
         ]);
     }
 
-    public function givenAcceptanceRealm(): Realm
+    public function givenAcceptanceRealm(): RealmWithScopeConfig
     {
-        return new Realm(
+        return new RealmWithScopeConfig(
             'myAcceptanceRealm',
             'Acc',
             'https://keycloak.com/api',
@@ -39,9 +39,9 @@ trait RealmFactory
         );
     }
 
-    public function givenTestRealm(): Realm
+    public function givenTestRealm(): RealmWithScopeConfig
     {
-        return new Realm(
+        return new RealmWithScopeConfig(
             'myTestRealm',
             'Test',
             'https://keycloak.com/api',
@@ -52,9 +52,9 @@ trait RealmFactory
         );
     }
 
-    public function givenProductionRealm(): Realm
+    public function givenProductionRealm(): RealmWithScopeConfig
     {
-        return new Realm(
+        return new RealmWithScopeConfig(
             'myProductRealm',
             'Prod',
             'https://keycloak.com/api',

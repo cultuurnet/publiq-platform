@@ -13,7 +13,7 @@ use App\Keycloak\Client;
 use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Events\MissingClientsDetected;
 use App\Keycloak\Listeners\CreateClients;
-use App\Keycloak\Realm;
+use App\Keycloak\RealmWithScopeConfig;
 use App\Keycloak\Realms;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -80,7 +80,7 @@ final class CreateClientsTest extends TestCase
         $this->apiClient->expects($this->exactly($this->realms->count()))
             ->method('createClient')
             ->willReturnCallback(
-                function (Realm $realm, Integration $integrationArgument) use ($clients) {
+                function (RealmWithScopeConfig $realm, Integration $integrationArgument) use ($clients) {
                     $this->assertEquals($this->integration->id, $integrationArgument->id);
                     $this->assertArrayHasKey($realm->internalName, $clients);
 
@@ -158,7 +158,7 @@ final class CreateClientsTest extends TestCase
         $this->apiClient->expects($this->exactly($missingEnvironments->count()))
             ->method('createClient')
             ->willReturnCallback(
-                function (Realm $realm, Integration $integrationArgument) use ($clients) {
+                function (RealmWithScopeConfig $realm, Integration $integrationArgument) use ($clients) {
                     $this->assertEquals($this->integration->id, $integrationArgument->id);
 
                     $env = $realm->environment->value;

@@ -16,6 +16,8 @@
         "laravel/horizon": "^5.10",
         "laravel/nova": "^4.0",
         "laravel/tinker": "^2.7",
+        "lcobucci/clock": "^3.2",
+        "lcobucci/jwt": "^5.3",
         "mailjet/mailjet-apiv3-php": "^1.6",
         "publiq/insightly-link": "*",
         "sentry/sentry-laravel": "^4.1",

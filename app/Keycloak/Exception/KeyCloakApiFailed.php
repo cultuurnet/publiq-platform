@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Keycloak\Exception;
 
 use App\Keycloak\Client;
-use App\Keycloak\Realm;
+use App\Keycloak\RealmWithScopeConfig;
 use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Ramsey\Uuid\UuidInterface;
@@ -22,6 +22,7 @@ final class KeyCloakApiFailed extends Exception
     public const FAILED_TO_UPDATE_CLIENT = 8;
     public const FAILED_TO_RESET_SCOPE = 9;
     public const FAILED_TO_EXCHANGE_TOKEN = 10;
+    public const INVALID_JWT_TOKEN = 11;
 
     private function __construct(
         string $message,
@@ -60,7 +61,7 @@ final class KeyCloakApiFailed extends Exception
         return new self(sprintf('Failed to add scope to client (status code %d): %s', $response->getStatusCode(), $response->getBody()->getContents()), self::FAILED_TO_ADD_SCOPE_WITH_RESPONSE);
     }
 
-    public static function failedToFetchClient(Realm $realm, string $body): self
+    public static function failedToFetchClient(RealmWithScopeConfig $realm, string $body): self
     {
         return new self(sprintf('Failed to fetch client for realm %s: %s', $realm->internalName, $body), self::FAILED_TO_FETCH_CLIENT);
     }
@@ -83,5 +84,15 @@ final class KeyCloakApiFailed extends Exception
     public static function failedToExchangeToken(string $body): self
     {
         return new self(sprintf('Failed to exchange token: %s', $body), self::FAILED_TO_EXCHANGE_TOKEN);
+    }
+
+    public static function invalidJwtToken(string $body): self
+    {
+        return new self(sprintf('Invalid JWT token: %s', $body), self::INVALID_JWT_TOKEN);
+    }
+
+    public static function noScopesConfigured(): self
+    {
+        return new self(sprintf('No scopes configured'), self::FAILED_TO_ADD_SCOPE);
     }
 }

@@ -106,4 +106,5 @@ return [
     */
 
     'password_timeout' => 10800,
+    'mode' => env('AUTHENTICATION_MODE', 'auth0'),
 ];

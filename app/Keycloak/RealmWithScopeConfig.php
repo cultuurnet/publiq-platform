@@ -6,7 +6,7 @@ namespace App\Keycloak;
 
 use App\Domain\Integrations\Environment;
 
-final readonly class Realm
+final readonly class RealmWithScopeConfig
 {
     public string $baseUrl;
 
@@ -16,9 +16,23 @@ final readonly class Realm
         string $baseUrl,
         public string $clientId,
         public string $clientSecret,
-        public Environment $environment
+        public Environment $environment,
+        public ScopeConfig $scopeConfig,
     ) {
         $this->baseUrl = $this->addTrailingSlash($baseUrl);
+    }
+
+    public function getMasterRealm(): self
+    {
+        return new self(
+            'master',
+            'Master',
+            $this->baseUrl,
+            $this->clientId,
+            $this->clientSecret,
+            $this->environment,
+            $this->scopeConfig,
+        );
     }
 
     private function addTrailingSlash(string $uri): string
