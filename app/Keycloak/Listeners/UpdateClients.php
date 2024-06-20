@@ -12,11 +12,10 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client;
 use App\Keycloak\Client\ApiClient;
+use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realms;
 use App\Keycloak\Repositories\KeycloakClientRepository;
-use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
-use App\Keycloak\Converters\IntegrationUrlConverter;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
@@ -71,17 +70,15 @@ final class UpdateClients implements ShouldQueue
     {
         $this->client->updateClient(
             $keycloakClient,
-            array_merge(
-                IntegrationToKeycloakClientConverter::convert(
-                    $keycloakClient->id,
-                    $integration,
-                    $keycloakClient->clientId
-                ),
-                IntegrationUrlConverter::convert($integration, $keycloakClient)
+            IntegrationToKeycloakClientConverter::convert(
+                $keycloakClient->id,
+                $integration,
+                $keycloakClient->clientId,
+                $keycloakClient->environment
             )
         );
         $this->client->deleteScopes($keycloakClient);
-        foreach($scopeIds as $scopeId) {
+        foreach ($scopeIds as $scopeId) {
             $this->client->addScopeToClient($keycloakClient, $scopeId);
         }
 
