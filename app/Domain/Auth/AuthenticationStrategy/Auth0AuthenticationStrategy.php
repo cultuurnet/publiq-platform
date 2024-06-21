@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Auth\AuthenticationStrategy;
 
 use Auth0\SDK\Auth0;
+use Auth0\SDK\Token;
 use Illuminate\Http\Request;
 
 final readonly class Auth0AuthenticationStrategy implements AuthenticationStrategy
@@ -37,5 +38,21 @@ final readonly class Auth0AuthenticationStrategy implements AuthenticationStrate
     public function getIdToken(): string
     {
         return $this->auth0->getIdToken() ?? '';
+    }
+
+    public function logout(): void
+    {
+        $this->auth0->logout();
+    }
+
+    public function getLogoutLink(string $url): string
+    {
+        return $this->auth0->authentication()->getLogoutLink($url);
+    }
+
+    public function createToken(string $idToken): array
+    {
+        $token = new Token($this->auth0->configuration(), $idToken, Token::TYPE_ID_TOKEN);
+        return $token->toArray();
     }
 }

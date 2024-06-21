@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Auth\Controllers;
 
-use Auth0\SDK\Auth0;
+use App\Domain\Auth\AuthenticationStrategy\AuthenticationStrategy;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -12,17 +12,20 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class LogoutController
 {
+    public function __construct(private readonly AuthenticationStrategy $authenticationStrategy)
+    {
+    }
+
     private function getLogoutLink(): string
     {
-        /** @var Auth0 $auth0 */
-        $auth0 = app(Auth0::class);
+        $this->authenticationStrategy->logout();
 
         if (Auth::check()) {
-            $auth0->logout();
+            $this->authenticationStrategy->logout();
             Auth::guard(config('nova.guard'))->logout();
         }
 
-        return $auth0->authentication()->getLogoutLink(config('app.url'));
+        return $this->authenticationStrategy->getLogoutLink(config('app.url'));
     }
 
     public function adminLogout(): JsonResponse

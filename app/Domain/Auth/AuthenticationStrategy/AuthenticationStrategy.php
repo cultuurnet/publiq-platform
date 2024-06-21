@@ -15,4 +15,10 @@ interface AuthenticationStrategy
     public function getUser(): ?array;
 
     public function getIdToken(): string;
+
+    public function logout(): void;
+
+    public function getLogoutLink(string $url): string;
+
+    public function createToken(string $idToken): array;
 }

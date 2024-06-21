@@ -7,6 +7,7 @@ namespace App\Domain\Auth\AuthenticationStrategy;
 use App\Keycloak\Client\KeycloakApiClient;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Exception\KeycloakLoginFailed;
+use App\Keycloak\JsonWebToken;
 use App\Keycloak\Realm;
 use Illuminate\Http\Request;
 use Illuminate\Session\SessionManager;
@@ -15,6 +16,8 @@ use Psr\Log\LoggerInterface;
 
 final readonly class KeycloakAuthenticationStrategy implements AuthenticationStrategy
 {
+    private const TOKEN = 'token';
+
     public function __construct(
         private Realm $realm,
         private KeycloakApiClient $keycloakApiClient,
@@ -52,13 +55,13 @@ final readonly class KeycloakAuthenticationStrategy implements AuthenticationStr
                 throw KeycloakLoginFailed::missingCode();
             }
 
-            if (empty($request['iss']) || $request['iss'] !== $this->realm->baseUrl) {
+            if ($this->isIssInvalid($request)) {
                 throw KeycloakLoginFailed::issMismatch($request['iss'] ?? '');
             }
 
             $token = $this->keycloakApiClient->exchangeToken($this->realm, $request['code']);
 
-            $this->session->put('token', $token);
+            $this->session->put(self::TOKEN, $token);
 
             return true;
         } catch (KeyCloakApiFailed $e) {
@@ -69,7 +72,7 @@ final readonly class KeycloakAuthenticationStrategy implements AuthenticationStr
 
     public function getUser(): ?array
     {
-        $jwt = $this->session->get('token');
+        $jwt = $this->session->get(self::TOKEN);
 
         if(! $jwt instanceof UnencryptedToken) {
             return null;
@@ -86,12 +89,37 @@ final readonly class KeycloakAuthenticationStrategy implements AuthenticationStr
 
     public function getIdToken(): string
     {
-        $jwt = $this->session->get('token');
+        $jwt = $this->session->get(self::TOKEN);
 
         if(! $jwt instanceof UnencryptedToken) {
             return '';
         }
 
         return $jwt->toString();
+    }
+
+    public function logout(): void
+    {
+        $this->session->forget([self::TOKEN]);
+    }
+
+    public function getLogoutLink(string $url): string
+    {
+        //@todo give redirect uri but this does not work yet from Erwin his side.
+        return $this->realm->baseUrl . 'realms/' . $this->realm->internalName . '/protocol/openid-connect/logout';
+
+        //?redirect_uri=' . $url;
+    }
+
+    public function createToken(string $idToken): array
+    {
+        $jwt = new JsonWebToken($idToken);
+
+        return $jwt->getToken()->claims()->all();
+    }
+
+    private function isIssInvalid(Request $request): bool
+    {
+        return empty($request['iss']) || $request['iss'] . '/' !== $this->realm->baseUrl;
     }
 }
