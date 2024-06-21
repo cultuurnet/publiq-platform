@@ -20,19 +20,16 @@ final class RealmsTest extends TestCase
             Environment::Acceptance->value => [
                 'search_api_id' => Uuid::uuid4()->toString(),
                 'entry_api_id' => Uuid::uuid4()->toString(),
-                'widgets_id' => Uuid::uuid4()->toString(),
                 'uitpas_id' => Uuid::uuid4()->toString(),
             ],
             Environment::Testing->value => [
                 'search_api_id' => Uuid::uuid4()->toString(),
                 'entry_api_id' => Uuid::uuid4()->toString(),
-                'widgets_id' => Uuid::uuid4()->toString(),
                 'uitpas_id' => Uuid::uuid4()->toString(),
             ],
             Environment::Production->value => [
                 'search_api_id' => Uuid::uuid4()->toString(),
                 'entry_api_id' => Uuid::uuid4()->toString(),
-                'widgets_id' => Uuid::uuid4()->toString(),
                 'uitpas_id' => Uuid::uuid4()->toString(),
             ],
         ];
@@ -80,7 +77,6 @@ final class RealmsTest extends TestCase
             $this->assertInstanceOf(ScopeConfig::class, $realm->scopeConfig);
             $this->assertEquals($scopes[$environment->value]['search_api_id'], $realm->scopeConfig->searchApiScopeId->toString());
             $this->assertEquals($scopes[$environment->value]['entry_api_id'], $realm->scopeConfig->entryApiScopeId->toString());
-            $this->assertEquals($scopes[$environment->value]['widgets_id'], $realm->scopeConfig->widgetScopeId->toString());
             $this->assertEquals($scopes[$environment->value]['uitpas_id'], $realm->scopeConfig->uitpasScopeId->toString());
         }
     }

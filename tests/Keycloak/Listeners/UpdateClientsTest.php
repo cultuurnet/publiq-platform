@@ -16,7 +16,6 @@ use App\Keycloak\Listeners\UpdateClients;
 use App\Keycloak\Realms;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
-use App\Keycloak\Converters\IntegrationUrlConverter;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
@@ -79,10 +78,7 @@ final class UpdateClientsTest extends TestCase
         $this->apiClient->expects($this->exactly($this->realms->count()))
             ->method('updateClient')
             ->willReturnCallback(function (Client $client, array $body) use (&$activeId) {
-                $expectedBody = array_merge(
-                    IntegrationToKeycloakClientConverter::convert($client->id, $this->integration, $client->clientId),
-                    IntegrationUrlConverter::convert($this->integration, $client)
-                );
+                $expectedBody = IntegrationToKeycloakClientConverter::convert($client->id, $this->integration, $client->clientId, $client->environment);
 
                 $this->assertEquals($expectedBody, $body);
 
