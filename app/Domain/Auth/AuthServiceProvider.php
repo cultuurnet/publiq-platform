@@ -36,7 +36,7 @@ final class AuthServiceProvider extends ServiceProvider
                         config(KeycloakConfig::LOGIN_BASE_URL),
                         config(KeycloakConfig::LOGIN_CLIENT_ID),
                         config(KeycloakConfig::LOGIN_CLIENT_SECRET),
-                        Environment::fromName(env('APP_ENV'))
+                        Environment::fromName(env('APP_ENV')) ?? throw new \Exception('Could not determine environment')
                     ),
                     App::get(ApiClient::class),
                     App::get(LoggerInterface::class),

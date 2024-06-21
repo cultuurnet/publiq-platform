@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Keycloak;
 
 use App\Domain\Integrations\Environment;
+use App\Keycloak\Realm;
 use App\Keycloak\RealmWithScopeConfig;
 use App\Keycloak\Realms;
 use App\Keycloak\ScopeConfig;
@@ -62,6 +63,18 @@ trait RealmFactory
             'dfgopopzjcvijogdrg',
             Environment::Production,
             $this->getScopeConfig(),
+        );
+    }
+
+    public function givenRealmNoScopeConfig(): Realm
+    {
+        return new Realm(
+            'myAcceptanceRealm',
+            'Prod',
+            'https://keycloak.com/api',
+            'php_client',
+            'dfgopopzjcvijogdrg',
+            Environment::Acceptance,
         );
     }
 

@@ -13,8 +13,8 @@ use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\JsonWebToken;
 use App\Keycloak\KeycloakConfig;
 use App\Keycloak\Realm;
-use App\Keycloak\RealmWithScopeConfig;
 use App\Keycloak\Realms;
+use App\Keycloak\RealmWithScopeConfig;
 use GuzzleHttp\Psr7\Request;
 use Lcobucci\JWT\Token\InvalidTokenStructure;
 use Lcobucci\JWT\UnencryptedToken;
@@ -219,30 +219,26 @@ final class KeycloakApiClient implements ApiClient
 
     public function exchangeToken(Realm $realm, string $authorizationCode): ?UnencryptedToken
     {
-        try {
-            $request = new Request(
-                'POST',
-                'realms/' . $realm->internalName . '/protocol/openid-connect/token',
-                ['Content-Type' => 'application/x-www-form-urlencoded'],
-                http_build_query([
-                    'grant_type' => 'authorization_code',
-                    'code' => $authorizationCode,
-                    'client_id' => $realm->clientId,
-                    'client_secret' => $realm->clientSecret,
-                    'redirect_uri' => config(KeycloakConfig::REDIRECT_URI),
-                ])
-            );
+        $request = new Request(
+            'POST',
+            'realms/' . $realm->internalName . '/protocol/openid-connect/token',
+            ['Content-Type' => 'application/x-www-form-urlencoded'],
+            http_build_query([
+                'grant_type' => 'authorization_code',
+                'code' => $authorizationCode,
+                'client_id' => $realm->clientId,
+                'client_secret' => $realm->clientSecret,
+                'redirect_uri' => config(KeycloakConfig::REDIRECT_URI),
+            ])
+        );
 
-            $response = $this->client->sendWithoutBearer(
-                $request,
-                $realm
-            );
+        $response = $this->client->sendWithoutBearer(
+            $request,
+            $realm
+        );
 
-            if ($response->getStatusCode() !== 200) {
-                throw KeyCloakApiFailed::failedToExchangeToken($response->getBody()->getContents());
-            }
-        } catch (Throwable $e) {
-            throw KeyCloakApiFailed::failedToExchangeToken($e->getMessage());
+        if ($response->getStatusCode() !== 200) {
+            throw KeyCloakApiFailed::failedToExchangeToken($response->getBody()->getContents());
         }
 
         $body = Json::decodeAssociatively($response->getBody()->getContents());
@@ -254,7 +250,7 @@ final class KeycloakApiClient implements ApiClient
             throw KeyCloakApiFailed::invalidJwtToken($e->getMessage());
         }
 
-        if(!$isJwtTokenValid) {
+        if (!$isJwtTokenValid) {
             throw KeyCloakApiFailed::invalidJwtToken('Signature is invalid');
         }
 

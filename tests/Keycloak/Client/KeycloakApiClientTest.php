@@ -6,6 +6,7 @@ namespace Tests\Keycloak\Client;
 
 use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Integration;
+use App\Json;
 use App\Keycloak\Client;
 use App\Keycloak\Client\KeycloakApiClient;
 use App\Keycloak\ClientId\ClientIdFreeStringStrategy;
@@ -15,10 +16,12 @@ use App\Keycloak\KeycloakConfig;
 use App\Keycloak\RealmWithScopeConfig;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
+use Lcobucci\JWT\Token\Plain;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Tests\CreatesIntegration;
+use Tests\Domain\Auth\JwtTestProvider;
 use Tests\Keycloak\KeycloakHttpClientFactory;
 use Tests\Keycloak\RealmFactory;
 use Tests\TestCase;
@@ -220,5 +223,55 @@ final class KeycloakApiClientTest extends TestCase
         $this->expectExceptionCode(KeyCloakApiFailed::FAILED_TO_RESET_SCOPE);
 
         $apiClient->deleteScopes($client);
+    }
+
+    public function test_exchange_token(): void
+    {
+        $jwt = (new JwtTestProvider())->getJwt();
+        $mock = new MockHandler([
+            new Response(200, [], $jwt),
+        ]);
+
+        $apiClient = new KeycloakApiClient(
+            $this->givenKeycloakHttpClient($this->logger, $mock),
+            $this->givenAllRealms(),
+            $this->logger,
+            $this->certificate,
+        );
+
+        $token = $apiClient->exchangeToken($this->givenRealmNoScopeConfig(), 'test');
+        $this->assertInstanceOf(Plain::class, $token);
+
+        $jwtDecoded = Json::decodeAssociatively($jwt);
+        $this->assertEquals($jwtDecoded['access_token'], $token->toString());
+    }
+
+    public function test_exchange_token_is_corrupted(): void
+    {
+        $this->expectException(KeyCloakApiFailed::class);
+        $this->expectExceptionCode(KeycloakApiFailed::INVALID_JWT_TOKEN);
+
+        // Corrupt the Token
+        $jwt = (new JwtTestProvider())->getJwt();
+        $jwt  = Json::decodeAssociatively($jwt);
+        $jwt['access_token'] = base64_encode(base64_decode($jwt['access_token']) . 'corruption');
+        $jwt = Json::encode($jwt);
+
+        $mock = new MockHandler([
+            new Response(200, [], $jwt),
+        ]);
+
+        $apiClient = new KeycloakApiClient(
+            $this->givenKeycloakHttpClient($this->logger, $mock),
+            $this->givenAllRealms(),
+            $this->logger,
+            $this->certificate,
+        );
+
+        $token = $apiClient->exchangeToken($this->givenRealmNoScopeConfig(), 'test');
+        $this->assertInstanceOf(Plain::class, $token);
+
+        $jwtDecoded = Json::decodeAssociatively($jwt);
+        $this->assertEquals($jwtDecoded['access_token'], $token->toString());
     }
 }

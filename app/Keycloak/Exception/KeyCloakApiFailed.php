@@ -90,9 +90,4 @@ final class KeyCloakApiFailed extends Exception
     {
         return new self(sprintf('Invalid JWT token: %s', $body), self::INVALID_JWT_TOKEN);
     }
-
-    public static function noScopesConfigured(): self
-    {
-        return new self(sprintf('No scopes configured'), self::FAILED_TO_ADD_SCOPE);
-    }
 }

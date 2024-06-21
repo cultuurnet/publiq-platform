@@ -10,6 +10,7 @@ use App\Keycloak\Exception\KeycloakLoginFailed;
 use App\Keycloak\Realm;
 use Illuminate\Http\Request;
 use Illuminate\Session\SessionManager;
+use Lcobucci\JWT\UnencryptedToken;
 use Psr\Log\LoggerInterface;
 
 final readonly class KeycloakAuthenticationStrategy implements AuthenticationStrategy
@@ -56,11 +57,12 @@ final readonly class KeycloakAuthenticationStrategy implements AuthenticationStr
             }
 
             $token = $this->keycloakApiClient->exchangeToken($this->realm, $request['code']);
+
             $this->session->put('token', $token);
 
             return true;
         } catch (KeyCloakApiFailed $e) {
-            $this->logger->error($e);
+            $this->logger->error($e->getMessage());
             return false;
         }
     }
@@ -69,7 +71,7 @@ final readonly class KeycloakAuthenticationStrategy implements AuthenticationStr
     {
         $jwt = $this->session->get('token');
 
-        if($jwt === null) {
+        if(! $jwt instanceof UnencryptedToken) {
             return null;
         }
 
@@ -84,6 +86,12 @@ final readonly class KeycloakAuthenticationStrategy implements AuthenticationStr
 
     public function getIdToken(): string
     {
-        return $this->session->get('token')?->payload() ?: '';
+        $jwt = $this->session->get('token');
+
+        if(! $jwt instanceof UnencryptedToken) {
+            return '';
+        }
+
+        return $jwt->toString();
     }
 }
