@@ -248,12 +248,10 @@ final class KeycloakApiClient implements ApiClient
             $jwt = new JsonWebToken($body['access_token']);
             $isJwtTokenValid = $jwt->validate($this->certificate);
         } catch (InvalidTokenStructure $e) {
-            die($e->getMessage());
             throw KeyCloakApiFailed::invalidJwtToken($e->getMessage());
         }
 
         if (!$isJwtTokenValid) {
-            die('invalid');
             throw KeyCloakApiFailed::invalidJwtToken('Signature is invalid');
         }
 
