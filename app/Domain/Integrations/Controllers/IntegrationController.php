@@ -32,8 +32,10 @@ use App\Domain\Integrations\Mappers\KeyVisibilityUpgradeMapper;
 use App\Domain\Integrations\Mappers\UpdateContactInfoMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationUrlsMapper;
+use App\Domain\Integrations\Organizer;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\IntegrationUrlRepository;
+use App\Domain\Integrations\Repositories\OrganizerRepository;
 use App\Domain\KeyVisibilityUpgrades\KeyVisibilityUpgrade;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
@@ -65,6 +67,7 @@ final class IntegrationController extends Controller
         private readonly ContactRepository $contactRepository,
         private readonly ContactKeyVisibilityRepository $contactKeyVisibilityRepository,
         private readonly OrganizationRepository $organizationRepository,
+        private readonly OrganizerRepository $organizerRepository,
         private readonly CouponRepository $couponRepository,
         private readonly Auth0ClientRepository $auth0ClientRepository,
         private readonly UiTiDv1ConsumerRepository $uitidV1ConsumerRepository,
@@ -290,6 +293,17 @@ final class IntegrationController extends Controller
 
         $organization = OrganizationMapper::mapActivationRequest($request);
         $this->organizationRepository->save($organization);
+
+        $organizers = $request->input('organizers') ?? [];
+        foreach ($organizers as $organizer) {
+            $organizer = new Organizer(
+                Uuid::uuid4(),
+                Uuid::fromString($id),
+                Uuid::fromString($organizer['id'])
+            );
+
+            $this->organizerRepository->create($organizer);
+        }
 
         $this->integrationRepository->requestActivation(Uuid::fromString($id), $organization->id, $request->input('coupon'));
 
