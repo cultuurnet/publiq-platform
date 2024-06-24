@@ -25,7 +25,8 @@ final class RequestActivationRequest extends FormRequest
             ...(new CreateOrganizationRequest())->rules(),
             'coupon' => ['nullable', 'string', 'max:255'],
             'organizers' => ['required','array'],
-            'organizers.*' => ['string'],
+            'organizers.*.name' => ['required', 'string'],
+            'organizers.*.id' => ['required', 'string'],
         ]);
 
         if (!$this->isAccountingInfoRequired() || $this->isUITPAS()) {
