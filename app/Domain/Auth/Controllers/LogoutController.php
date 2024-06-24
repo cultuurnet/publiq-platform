@@ -23,8 +23,13 @@ final class LogoutController
         }
 
         if (env('AUTHENTICATION_MODE') === 'keycloak') {
-            return sprintf("https://%s/realms/%s/protocol/openid-connect/logout?client_id=%s&post_logout_redirect_uri=%s", env('AUTH0_LOGIN_MANAGEMENT_DOMAIN'), env('KEYCLOAK_LOGIN_REALM_NAME'),
-                env('AUTH0_LOGIN_CLIENT_ID'), env('APP_URL'));
+            return sprintf(
+                'https://%s/realms/%s/protocol/openid-connect/logout?client_id=%s&post_logout_redirect_uri=%s',
+                env('AUTH0_LOGIN_MANAGEMENT_DOMAIN'),
+                env('KEYCLOAK_LOGIN_REALM_NAME'),
+                env('AUTH0_LOGIN_CLIENT_ID'),
+                env('APP_URL')
+            );
         }
 
         return $auth0->authentication()->getLogoutLink(config('app.url'));
