@@ -332,10 +332,16 @@ final class IntegrationController extends Controller
             ]);
             $body = $response->getBody()->getContents();
             $data = json_decode($body, true);
-            $organizerNames = array_map(function ($member) {
-                return $member['name'] ?? [];
+            $organizers = array_map(function ($member) {
+                $id = null;
+                if (isset($member['@id'])) {
+                    $parts = explode('/', $member['@id']);
+                    $id = end($parts);
+                }
+                $name = $member['name'] ?? null;
+                return ['name' => $name, 'id' => $id];
             }, $data['member']);
-            return redirect()->back()->with('organizers', $organizerNames);
+            return redirect()->back()->with('organizers', $organizers);
 
         } catch (\Exception $e) {
             return redirect()->back()->withErrors('Failed to fetch organizers: ' . $e->getMessage());

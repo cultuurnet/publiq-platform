@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Dialog } from "./Dialog";
 import { ButtonSecondary } from "./ButtonSecondary";
 import { ButtonPrimary } from "./ButtonPrimary";
@@ -100,8 +100,13 @@ type Organization = {
 
 type InitialValues = {
   organization: Organization;
-  organizers: string[];
+  organizers: Organizer[];
   coupon: string;
+};
+
+type Organizer = {
+  name: string;
+  id: string;
 };
 
 export const ActivationDialog = ({
@@ -150,7 +155,7 @@ export const ActivationDialog = ({
 
   const [isSearchListVisible, setIsSearchListVisible] = useState(false);
 
-  const [organizerList, setOrganizerList] = useState<string[]>([]);
+  const [organizerList, setOrganizerList] = useState<Organizer[]>([]);
 
   const handleGetOrganizers = debounce(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -166,8 +171,11 @@ export const ActivationDialog = ({
           onSuccess: (page) => {
             if (Array.isArray(page.props.organizers)) {
               const organizers = page.props.organizers.map((organizer) => {
-                if (typeof organizer === "object" && "nl" in organizer) {
-                  return organizer.nl;
+                if (
+                  typeof organizer.name === "object" &&
+                  "nl" in organizer.name
+                ) {
+                  return { name: organizer.name.nl, id: organizer.id };
                 }
                 return organizer;
               });
@@ -183,10 +191,8 @@ export const ActivationDialog = ({
     250
   );
 
-  const handleAddOrganizers = (e: React.MouseEvent<HTMLLIElement>) => {
-    const target = e.target as HTMLLIElement;
-    const newOrganizer = target.innerText;
-    let updatedOrganizers = [...organizationForm.data.organizers, newOrganizer];
+  const handleAddOrganizers = (organizer: Organizer) => {
+    let updatedOrganizers = [...organizationForm.data.organizers, organizer];
     updatedOrganizers = [...new Set(updatedOrganizers)];
     organizationForm.setData("organizers", updatedOrganizers);
     setIsSearchListVisible(false);
@@ -194,7 +200,7 @@ export const ActivationDialog = ({
 
   const handleDeleteOrganizer = (deletedOrganizer: string) => {
     const updatedOrganizers = organizationForm.data.organizers.filter(
-      (organizer) => organizer !== deletedOrganizer
+      (organizer) => organizer.name !== deletedOrganizer
     );
     organizationForm.setData("organizers", updatedOrganizers);
   };
@@ -335,12 +341,12 @@ export const ActivationDialog = ({
                     key={`${organizer}${index}`}
                     className="border rounded px-2 py-1 flex gap-1"
                   >
-                    <p>{organizer}</p>
+                    <p>{organizer.name}</p>
                     <ButtonIcon
                       icon={faTrash}
                       size="sm"
                       className="text-icon-gray"
-                      onClick={() => handleDeleteOrganizer(organizer)}
+                      onClick={() => handleDeleteOrganizer(organizer.name)}
                     />
                   </div>
                 ))}
@@ -374,13 +380,13 @@ export const ActivationDialog = ({
                     organizerList.length > 0 &&
                     isSearchListVisible && (
                       <ul className="border rounded">
-                        {organizerList.map((organizer, index) => (
+                        {organizerList.map((organizer) => (
                           <li
-                            key={`${organizer}${index}`}
-                            onClick={handleAddOrganizers}
+                            key={`${organizer.id}`}
+                            onClick={() => handleAddOrganizers(organizer)}
                             className="border-b px-3 py-1 hover:bg-gray-100"
                           >
-                            {organizer}
+                            {organizer.name}
                           </li>
                         ))}
                       </ul>
