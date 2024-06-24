@@ -192,10 +192,18 @@ export const ActivationDialog = ({
   );
 
   const handleAddOrganizers = (organizer: Organizer) => {
-    let updatedOrganizers = [...organizationForm.data.organizers, organizer];
-    updatedOrganizers = [...new Set(updatedOrganizers)];
-    organizationForm.setData("organizers", updatedOrganizers);
-    setIsSearchListVisible(false);
+    const isDuplicate =
+      organizationForm.data.organizers.length > 0 &&
+      organizationForm.data.organizers.some(
+        (existingOrganizer) => existingOrganizer.id === organizer.id
+      );
+    if (!isDuplicate) {
+      organizationForm.setData("organizers", [
+        ...organizationForm.data.organizers,
+        organizer,
+      ]);
+      setIsSearchListVisible(false);
+    }
   };
 
   const handleDeleteOrganizer = (deletedOrganizer: string) => {
