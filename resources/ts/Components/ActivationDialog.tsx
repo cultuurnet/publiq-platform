@@ -160,7 +160,7 @@ export const ActivationDialog = ({
   const handleGetOrganizers = debounce(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setOrganizerList([]);
-      router.post(
+      router.get(
         `/integrations/${id}/organizers`,
         {
           organizer: e.target.value,
