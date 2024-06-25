@@ -11,6 +11,7 @@ use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationDeleted;
+use App\Domain\Integrations\Events\IntegrationUnblocked;
 use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Organizations\Events\OrganizationCreated;
 use App\Domain\Organizations\Events\OrganizationDeleted;
@@ -24,6 +25,8 @@ use App\Insightly\Listeners\DeleteOpportunity;
 use App\Insightly\Listeners\DeleteProject;
 use App\Insightly\Listeners\SyncContact;
 use App\Insightly\Listeners\DeleteOrganization;
+use App\Insightly\Listeners\UnblockOpportunity;
+use App\Insightly\Listeners\UnblockProject;
 use App\Insightly\Listeners\UpdateOpportunity;
 use App\Insightly\Listeners\UpdateOrganization;
 use App\Insightly\Listeners\UpdateProject;
@@ -60,6 +63,9 @@ final class InsightlyServiceProvider extends ServiceProvider
 
             Event::listen(IntegrationBlocked::class, [BlockProject::class, 'handle']);
             Event::listen(IntegrationBlocked::class, [BlockOpportunity::class, 'handle']);
+
+            Event::listen(IntegrationUnblocked::class, [UnblockProject::class, 'handle']);
+            Event::listen(IntegrationUnblocked::class, [UnblockOpportunity::class, 'handle']);
 
             Event::listen(IntegrationUpdated::class, [UpdateOpportunity::class, 'handle']);
             Event::listen(IntegrationUpdated::class, [UpdateProject::class, 'handle']);

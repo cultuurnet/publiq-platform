@@ -29,7 +29,7 @@ type Props = Integration &
   };
 
 const productTypeToPath = {
-  uitpas: "/",
+  uitpas: "/uitpas/getting-started",
   "entry-api": "/uitdatabank/entry-api/introduction",
   "search-api": "/uitdatabank/search-api/introduction",
   widgets: "/widgets/aan-de-slag",
@@ -268,10 +268,23 @@ export const IntegrationCard = ({
           </Link>
           {type === IntegrationType.EntryApi && (
             <Link
-              href="https://docs.publiq.be/docs/uitdatabank/entry-api%2Frequirements-before-going-live"
+              href={t("integrations.documentation.action_url", {
+                product:
+                  "/uitdatabank/entry-api%2Frequirements-before-going-live",
+              })}
               className="text-publiq-blue"
             >
               {t("integrations.documentation.requirements")}
+            </Link>
+          )}
+          {type === IntegrationType.UiTPAS && (
+            <Link
+              href={t("integrations.documentation.action_url", {
+                product: "/uitpas/test-dataset",
+              })}
+              className="text-publiq-blue"
+            >
+              {t("integrations.documentation.test_dataset")}
             </Link>
           )}
         </div>

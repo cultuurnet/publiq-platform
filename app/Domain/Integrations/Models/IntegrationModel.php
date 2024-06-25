@@ -8,11 +8,13 @@ use App\Auth0\Auth0Tenant;
 use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
+use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationDeleted;
+use App\Domain\Integrations\Events\IntegrationUnblocked;
 use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
@@ -25,6 +27,7 @@ use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Insightly\Models\InsightlyMappingModel;
 use App\Insightly\Resources\ResourceType;
+use App\Keycloak\Models\KeycloakClientModel;
 use App\Models\UuidModel;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use App\UiTiDv1\UiTiDv1Environment;
@@ -39,6 +42,7 @@ use Ramsey\Uuid\UuidInterface;
  * @property CouponModel|null $coupon
  * @property SubscriptionModel|null $subscription
  * @property KeyVisibilityUpgradeModel|null $keyVisibilityUpgrade
+ * @property string $type
  * @property string $website
  */
 final class IntegrationModel extends UuidModel
@@ -81,9 +85,19 @@ final class IntegrationModel extends UuidModel
         return $this->status !== IntegrationStatus::Blocked->value;
     }
 
+    public function canBeUnblocked(): bool
+    {
+        return $this->status === IntegrationStatus::Blocked->value;
+    }
+
     public function isWidgets(): bool
     {
         return $this->type === IntegrationType::Widgets->value;
+    }
+
+    public function isUiTPAS(): bool
+    {
+        return $this->type === IntegrationType::UiTPAS->value;
     }
 
     protected static function booted(): void
@@ -140,10 +154,32 @@ final class IntegrationModel extends UuidModel
 
     public function block(): void
     {
+        IntegrationPreviousStatusModel::query()->create(
+            [
+                'id' => $this->id,
+                'status' => $this->status,
+            ]
+        );
         $this->update([
             'status' => IntegrationStatus::Blocked,
         ]);
         IntegrationBlocked::dispatch(Uuid::fromString($this->id));
+    }
+
+    public function unblock(): void
+    {
+        /** @var ?IntegrationPreviousStatusModel $integrationPreviousStatus */
+        $integrationPreviousStatus = IntegrationPreviousStatusModel::query()->find($this->id);
+
+        $this->update([
+            'status' => $integrationPreviousStatus ? $integrationPreviousStatus->status : IntegrationStatus::Draft,
+        ]);
+
+        $integrationPreviousStatus?->delete();
+
+        IntegrationUnblocked::dispatch(
+            Uuid::fromString($this->id)
+        );
     }
 
     /**
@@ -152,6 +188,14 @@ final class IntegrationModel extends UuidModel
     public function keyVisibilityUpgrade(): HasOne
     {
         return $this->hasOne(KeyVisibilityUpgradeModel::class, 'integration_id');
+    }
+
+    /**
+     * @return HasMany<OrganizerModel>
+     */
+    public function organizers(): HasMany
+    {
+        return $this->hasMany(OrganizerModel::class, 'integration_id');
     }
 
     /**
@@ -244,6 +288,14 @@ final class IntegrationModel extends UuidModel
         return $this->hasMany(UiTiDv1ConsumerModel::class, 'integration_id');
     }
 
+    /**
+     * @return HasMany<KeycloakClientModel>
+     */
+    public function keycloakClients(): HasMany
+    {
+        return $this->hasMany(KeycloakClientModel::class, 'integration_id');
+    }
+
     public function hasMissingAuth0Clients(): bool
     {
         return $this->auth0Clients()->count() < count(Auth0Tenant::cases());
@@ -252,6 +304,11 @@ final class IntegrationModel extends UuidModel
     public function hasMissingUiTiDv1Consumers(): bool
     {
         return $this->uiTiDv1Consumers()->count() < count(UiTiDv1Environment::cases());
+    }
+
+    public function hasMissingKeycloakConsumers(): bool
+    {
+        return $this->keycloakClients()->count() < count(Environment::cases());
     }
 
     public function toDomain(): Integration
@@ -287,6 +344,11 @@ final class IntegrationModel extends UuidModel
             ...$this->auth0Clients()
             ->get()
             ->map(fn (Auth0ClientModel $auth0ClientModel) => $auth0ClientModel->toDomain())
+            ->toArray()
+        )->withKeycloakClients(
+            ...$this->keycloakClients()
+            ->get()
+            ->map(fn (KeycloakClientModel $keycloakClientModel) => $keycloakClientModel->toDomain())
             ->toArray()
         );
 

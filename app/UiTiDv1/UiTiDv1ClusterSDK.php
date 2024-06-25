@@ -64,10 +64,10 @@ final class UiTiDv1ClusterSDK
         }
     }
 
-    public function activateConsumers(Integration $integration, UiTiDv1Consumer ...$uiTiDv1Consumers): void
+    public function unblockConsumers(Integration $integration, UiTiDv1Consumer ...$uiTiDv1Consumers): void
     {
         foreach ($uiTiDv1Consumers as $uiTiDv1Consumer) {
-            $this->uitidv1EnvironmentSDKs[$uiTiDv1Consumer->environment->value]->activateConsumer($integration, $uiTiDv1Consumer);
+            $this->uitidv1EnvironmentSDKs[$uiTiDv1Consumer->environment->value]->unblockConsumer($integration, $uiTiDv1Consumer);
         }
     }
 

@@ -91,6 +91,10 @@ const New = ({ subscriptions }: Props) => {
       activeType === IntegrationType.Widgets) &&
     basicSubscriptionIds.some((id) => data.subscriptionId === id);
 
+  const isPricingInfoVisible = (
+    [IntegrationType.SearchApi, IntegrationType.Widgets] as IntegrationType[]
+  ).includes(data.integrationType);
+
   const integrationTypesInfo = useIntegrationTypesInfo();
   const pricingPlans = useGetPricingPlans(data.integrationType, subscriptions);
 
@@ -149,7 +153,7 @@ const New = ({ subscriptions }: Props) => {
                   value: pricingPlan.id,
                   label: (
                     <RadioButtonGroupLabel
-                      name={`${pricingPlan.title} ${pricingPlan.price}`}
+                      name={pricingPlan.label}
                       description={pricingPlan.description}
                     />
                   ),
@@ -161,7 +165,7 @@ const New = ({ subscriptions }: Props) => {
                     {errors.subscriptionId}
                   </span>
                 )}
-                {data.integrationType !== IntegrationType.EntryApi && (
+                {isPricingInfoVisible && (
                   <span className="text-gray-500 text-sm mt-3 inline-block">
                     {t("integration_form.pricing_plan.info")}
                   </span>

@@ -25,6 +25,7 @@
       "title": "Free",
       "price": "Free",
       "description": {
+        "uitpas": "You are responsible for building the integration yourself, with support from our documentation.",
         "entry-api": "You are responsible for building the integration yourself, with support from our documentation."
       }
     },
@@ -154,7 +155,8 @@
     "products": {
       "search-api": "Search API",
       "entry-api": "Entry API",
-      "widgets": "Widgets"
+      "widgets": "Widgets",
+      "uitpas": "UiTPAS API"
     },
     "status": {
       "draft": "Not active",
@@ -188,7 +190,8 @@
       "title": "Documentation",
       "action_title": "Get started with {{product}}",
       "action_url": "https://docs.publiq.be/docs{{product}}",
-      "requirements": "Requirements before going live"
+      "requirements": "Requirements before going live",
+      "test_dataset": "Test dataset"
     }
   },
   "details": {
