@@ -43,9 +43,9 @@ use App\Domain\KeyVisibilityUpgrades\Repositories\KeyVisibilityUpgradeRepository
 use App\Http\Controllers\Controller;
 use App\ProjectAanvraag\ProjectAanvraagUrl;
 use App\Router\TranslatedRoute;
+use App\Search\Sapi3\SearchService;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use Carbon\Carbon;
-use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\RedirectResponse;
@@ -72,7 +72,8 @@ final class IntegrationController extends Controller
         private readonly Auth0ClientRepository $auth0ClientRepository,
         private readonly UiTiDv1ConsumerRepository $uitidV1ConsumerRepository,
         private readonly KeyVisibilityUpgradeRepository $keyVisibilityUpgradeRepository,
-        private readonly CurrentUser $currentUser
+        private readonly CurrentUser $currentUser,
+        private readonly SearchService $searchService
     ) {
     }
 
@@ -330,31 +331,19 @@ final class IntegrationController extends Controller
 
     public function getOrganizers(string $id, GetOrganizersRequest $request): RedirectResponse
     {
-        $organizerName = $request->input('organizer');
-        $apiKey = config('search.api_key');
-        $baseUrl = config('search.base_uri');
-        $endpoint = 'organizers';
-        $client = new Client();
         try {
-            $response = $client->request('GET', $baseUrl . $endpoint, [
-                'query' => [
-                    'embed' => 'true',
-                    'limit' => 5,
-                    'apiKey' => $apiKey,
-                    'name' => $organizerName,
-                ],
-            ]);
-            $body = $response->getBody()->getContents();
-            $data = json_decode($body, true);
-            $organizers = array_map(function ($member) {
+            $organizerName = $request->input('organizer');
+            $data = $this->searchService->searchUiTPASOrganizer($organizerName)->getMember()->getItems();
+            $organizers = array_map(function ($organizer) {
                 $id = null;
-                if (isset($member['@id'])) {
-                    $parts = explode('/', $member['@id']);
+                if (($organizer->getId())) {
+                    $parts = explode('/', $organizer->getId());
                     $id = end($parts);
                 }
-                $name = $member['name'] ?? null;
+                $name = $organizer->getName()->getValues() ?? null;
                 return ['name' => $name, 'id' => $id];
-            }, $data['member']);
+            }, $data);
+
             return redirect()->back()->with('organizers', $organizers);
 
         } catch (\Exception $e) {
