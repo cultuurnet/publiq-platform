@@ -333,7 +333,7 @@ final class IntegrationController extends Controller
     {
         try {
             $organizerName = $request->input('organizer');
-            $data = $this->searchService->searchUiTPASOrganizer($organizerName)->getMember()->getItems();
+            $data = $this->searchService->searchUiTPASOrganizer($organizerName)->getMember()?->getItems() ?? [];
             $organizers = array_map(function ($organizer) {
                 $id = null;
                 if (($organizer->getId())) {
