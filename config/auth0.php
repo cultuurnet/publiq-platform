@@ -6,30 +6,33 @@ declare(strict_types=1);
  * Please review available configuration options here:
  * https://github.com/auth0/auth0-PHP#configuration-options.
  */
+$isKeycloakEnabled = env('IS_KEYCLOAK_ENABLED', false);
+
 return [
-    'enabled' => env('AUTH0_CLIENT_ENABLED', true),
+    // You can always login, either with auth0 or Keycloak
+    'enabled' => true,
 
     // Should be assigned either 'api', 'management', or 'webapp' to indicate your application's use case for the SDK.
     // Determines what configuration options will be required.
     'strategy' => env('AUTH0_LOGIN_STRATEGY', \Auth0\SDK\Configuration\SdkConfiguration::STRATEGY_REGULAR),
 
     // Auth0 domain for your tenant, found in your Auth0 Application settings.
-    'domain' => env('AUTH0_LOGIN_DOMAIN'),
+    'domain' => $isKeycloakEnabled ? env('KEYCLOAK_LOGIN_DOMAIN') : env('AUTH0_LOGIN_DOMAIN'),
 
     // Auth0 Management API domain for your tenant, found in your Auth0 Application settings.
-    'managementDomain' => env('AUTH0_LOGIN_MANAGEMENT_DOMAIN'),
+    'managementDomain' => $isKeycloakEnabled ? env('KEYCLOAK_LOGIN_MANAGEMENT_DOMAIN') : env('AUTH0_LOGIN_MANAGEMENT_DOMAIN'),
 
     // If you have configured Auth0 to use a custom domain, configure it here.
     'customDomain' => env('AUTH0_LOGIN_CUSTOM_DOMAIN'),
 
     // Client ID, found in the Auth0 Application settings.
-    'clientId' => env('AUTH0_LOGIN_CLIENT_ID'),
+    'clientId' => $isKeycloakEnabled ? env('KEYCLOAK_LOGIN_CLIENT_ID') : env('AUTH0_LOGIN_CLIENT_ID'),
 
     // Authentication callback URI, as defined in your Auth0 Application settings.
-    'redirectUri' => env('AUTH0_LOGIN_REDIRECT_URI', env('APP_URL') . '/callback'),
+    'redirectUri' => $isKeycloakEnabled ? env('KEYCLOAK_LOGIN_REDIRECT_URI', env('APP_URL') . '/callback') : env('AUTH0_LOGIN_REDIRECT_URI', env('APP_URL') . '/callback'),
 
     // Client Secret, found in the Auth0 Application settings.
-    'clientSecret' => env('AUTH0_LOGIN_CLIENT_SECRET'),
+    'clientSecret' => $isKeycloakEnabled ? env('KEYCLOAK_LOGIN_CLIENT_SECRET') : env('AUTH0_LOGIN_CLIENT_SECRET'),
 
     // One or more API identifiers, found in your Auth0 API settings. The SDK uses the first value for building links. If provided, at least one of these values must match the 'aud' claim to validate an ID Token successfully.
     'audience' => env('AUTH0_LOGIN_AUDIENCE'),
@@ -58,12 +61,12 @@ return [
 
     // Named routes within your Laravel application that the SDK may call during stateful requests for redirections.
     'routes' => [
-        'home'  => env('AUTH0_LOGIN_ROUTE_HOME', '/'),
+        'home' => env('AUTH0_LOGIN_ROUTE_HOME', '/'),
         'login' => env('AUTH0_LOGIN_ROUTE_LOGIN', 'login'),
     ],
 
     // URL parameters to include in the /authorize redirect
-    'login_parameters' => env('AUTH0_LOGIN_PARAMETERS', ''),
+    'login_parameters' => $isKeycloakEnabled ? env('KEYCLOAK_LOGIN_PARAMETERS', '') : env('AUTH0_LOGIN_PARAMETERS', ''),
 
     // Tenant configuration, used to store/update clients in Auth0.
     // Note that local/staging/acceptance/testing environments of publiq platform should actually use the DEV tenant as
