@@ -47,7 +47,8 @@ final readonly class KeycloakApiClient implements ApiClient
                     Json::encode(IntegrationToKeycloakClientConverter::convert(
                         $id,
                         $integration,
-                        $clientId
+                        $clientId,
+                        $realm->environment
                     ))
                 ),
                 $realm
