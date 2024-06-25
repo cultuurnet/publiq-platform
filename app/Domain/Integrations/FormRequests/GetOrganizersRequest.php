@@ -14,7 +14,7 @@ final class GetOrganizersRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'organizer' => ['required', 'string'],
+            'name' => ['required', 'string'],
         ];
     }
 }

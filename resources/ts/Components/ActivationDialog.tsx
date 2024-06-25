@@ -163,7 +163,7 @@ export const ActivationDialog = ({
       router.get(
         `/integrations/${id}/organizers`,
         {
-          organizer: e.target.value,
+          name: e.target.value,
         },
         {
           preserveScroll: true,
