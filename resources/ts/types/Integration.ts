@@ -37,5 +37,5 @@ export type Integration = {
   authClients: AuthClient[];
   legacyAuthConsumers: LegacyAuthConsumer[];
   keyVisibility: KeyVisibility;
-  keyVisibilityUpgrade: KeyVisibilityUpgrade;
+  keyVisibilityUpgrade: KeyVisibilityUpgrade | null;
 };
