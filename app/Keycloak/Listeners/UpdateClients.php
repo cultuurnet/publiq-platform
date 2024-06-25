@@ -12,11 +12,10 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client;
 use App\Keycloak\Client\ApiClient;
-use App\Keycloak\Exception\KeyCloakApiFailed;
-use App\Keycloak\Repositories\KeycloakClientRepository;
-use App\Keycloak\ScopeConfig;
 use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
-use App\Keycloak\Converters\IntegrationUrlConverter;
+use App\Keycloak\Exception\KeyCloakApiFailed;
+use App\Keycloak\Realms;
+use App\Keycloak\Repositories\KeycloakClientRepository;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
@@ -31,7 +30,7 @@ final class UpdateClients implements ShouldQueue
         private readonly IntegrationRepository $integrationRepository,
         private readonly KeycloakClientRepository $keycloakClientRepository,
         private readonly ApiClient $client,
-        private readonly ScopeConfig $scopeConfig,
+        private readonly Realms $realms,
         private readonly LoggerInterface $logger
     ) {
     }
@@ -40,11 +39,16 @@ final class UpdateClients implements ShouldQueue
     {
         $integration = $this->integrationRepository->getById($event->id);
         $keycloakClients = $this->keycloakClientRepository->getByIntegrationId($event->id);
-        $scopeId = $this->scopeConfig->getScopeIdFromIntegrationType($integration);
 
         foreach ($keycloakClients as $keycloakClient) {
             try {
-                $this->updateClient($integration, $keycloakClient, $scopeId);
+                $realm = $this->realms->getRealmByEnvironment($keycloakClient->environment);
+
+                $this->updateClient(
+                    $integration,
+                    $keycloakClient,
+                    $realm->scopeConfig->getScopeIdsFromIntegrationType($integration)
+                );
             } catch (KeyCloakApiFailed $e) {
                 $this->failed($event, $e);
             }
@@ -59,21 +63,24 @@ final class UpdateClients implements ShouldQueue
         ]);
     }
 
-    private function updateClient(Integration $integration, Client $keycloakClient, UuidInterface $scopeId): void
+    /**
+     * @param UuidInterface[] $scopeIds
+     */
+    private function updateClient(Integration $integration, Client $keycloakClient, array $scopeIds): void
     {
         $this->client->updateClient(
             $keycloakClient,
-            array_merge(
-                IntegrationToKeycloakClientConverter::convert(
-                    $keycloakClient->id,
-                    $integration,
-                    $keycloakClient->clientId
-                ),
-                IntegrationUrlConverter::convert($integration, $keycloakClient)
+            IntegrationToKeycloakClientConverter::convert(
+                $keycloakClient->id,
+                $integration,
+                $keycloakClient->clientId,
+                $keycloakClient->environment
             )
         );
         $this->client->deleteScopes($keycloakClient);
-        $this->client->addScopeToClient($keycloakClient, $scopeId);
+        foreach ($scopeIds as $scopeId) {
+            $this->client->addScopeToClient($keycloakClient, $scopeId);
+        }
 
         $this->logger->info('Keycloak client updated', [
             'integration_id' => $integration->id->toString(),
