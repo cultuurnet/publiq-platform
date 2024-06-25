@@ -10,7 +10,6 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\ContactKeyVisibilityRepository;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Coupons\Repositories\CouponRepository;
-use App\Domain\Integrations\FormRequests\GetOrganizersRequest;
 use App\Domain\Integrations\FormRequests\RequestActivationRequest;
 use App\Domain\Integrations\FormRequests\StoreContactRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationRequest;
@@ -43,7 +42,6 @@ use App\Domain\KeyVisibilityUpgrades\Repositories\KeyVisibilityUpgradeRepository
 use App\Http\Controllers\Controller;
 use App\ProjectAanvraag\ProjectAanvraagUrl;
 use App\Router\TranslatedRoute;
-use App\Search\Sapi3\SearchService;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

@@ -26,7 +26,7 @@ final class OrganizerController extends Controller
             $organizers = array_map(function (Organizer $organizer) {
                 return [
                     'id' => $organizer->getCdbid(),
-                    'name' => $organizer->getName()->getValues() ?? null,
+                    'name' => $organizer->getName()?->getValues(),
                 ];
             }, $data);
 
