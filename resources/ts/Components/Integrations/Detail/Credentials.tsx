@@ -41,9 +41,10 @@ export const Credentials = ({
   const hasAnyCredentials = Boolean(
     legacyAuthConsumers.length || authClients.length
   );
+  const isKeyVisibilityV1 = keyVisibility === KeyVisibility.v1
   usePolling(
     !hasAnyCredentials ||
-      (keyVisibility === KeyVisibility.v1 && !!keyVisibilityUpgrade),
+      (isKeyVisibilityV1 && !!keyVisibilityUpgrade),
     { only: ["integration"] }
   );
   const credentials = useMemo(

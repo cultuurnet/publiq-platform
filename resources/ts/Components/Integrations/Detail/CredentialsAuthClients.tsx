@@ -36,6 +36,7 @@ export const CredentialsAuthClients = ({
   keyVisibilityUpgrade,
 }: Props) => {
   const { t } = useTranslation();
+  const isKeyVisibilityV1 = keyVisibility === KeyVisibility.v1;
 
   const auth0TestClientWithLabels = [
     {
@@ -69,8 +70,8 @@ export const CredentialsAuthClients = ({
       <Heading className="font-semibold lg:min-w-60" level={4}>
         {t("details.credentials.uitid_v2")}
       </Heading>
-      {keyVisibility === KeyVisibility.v1 ? (
-        keyVisibility === KeyVisibility.v1 && !!keyVisibilityUpgrade ? (
+      {isKeyVisibilityV1 ? (
+        isKeyVisibilityV1 && !!keyVisibilityUpgrade ? (
           <Alert variant="info">{t("integrations.pending_credentials")}</Alert>
         ) : (
           <div className="flex flex-col flex-1 gap-4">
