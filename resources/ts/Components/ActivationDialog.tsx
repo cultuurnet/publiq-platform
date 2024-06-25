@@ -161,7 +161,7 @@ export const ActivationDialog = ({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setOrganizerList([]);
       router.get(
-        `/integrations/${id}/organizers`,
+        `/organizers`,
         {
           name: e.target.value,
         },
