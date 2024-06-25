@@ -72,8 +72,7 @@ final class IntegrationController extends Controller
         private readonly Auth0ClientRepository $auth0ClientRepository,
         private readonly UiTiDv1ConsumerRepository $uitidV1ConsumerRepository,
         private readonly KeyVisibilityUpgradeRepository $keyVisibilityUpgradeRepository,
-        private readonly CurrentUser $currentUser,
-        private readonly SearchService $searchService
+        private readonly CurrentUser $currentUser
     ) {
     }
 
@@ -327,28 +326,6 @@ final class IntegrationController extends Controller
                 'id' => $id,
             ]
         );
-    }
-
-    public function getOrganizers(string $id, GetOrganizersRequest $request): RedirectResponse
-    {
-        try {
-            $organizerName = $request->input('organizer');
-            $data = $this->searchService->searchUiTPASOrganizer($organizerName)->getMember()?->getItems() ?? [];
-            $organizers = array_map(function ($organizer) {
-                $id = null;
-                if (($organizer->getId())) {
-                    $parts = explode('/', $organizer->getId());
-                    $id = end($parts);
-                }
-                $name = $organizer->getName()->getValues() ?? null;
-                return ['name' => $name, 'id' => $id];
-            }, $data);
-
-            return redirect()->back()->with('organizers', $organizers);
-
-        } catch (\Exception $e) {
-            return redirect()->back()->withErrors('Failed to fetch organizers: ' . $e->getMessage());
-        }
     }
 
     private function getKeyVisibility(Integration $integration): KeyVisibility
