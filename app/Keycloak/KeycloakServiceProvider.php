@@ -6,6 +6,8 @@ namespace App\Keycloak;
 
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
+use App\Domain\Integrations\Events\IntegrationDeleted;
+use App\Domain\Integrations\Events\IntegrationUnblocked;
 use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Events\IntegrationUrlCreated;
 use App\Domain\Integrations\Events\IntegrationUrlDeleted;
@@ -16,6 +18,7 @@ use App\Keycloak\Client\KeycloakHttpClient;
 use App\Keycloak\Events\MissingClientsDetected;
 use App\Keycloak\Listeners\BlockClients;
 use App\Keycloak\Listeners\CreateClients;
+use App\Keycloak\Listeners\UnblockClients;
 use App\Keycloak\Listeners\UpdateClients;
 use App\Keycloak\Repositories\EloquentKeycloakClientRepository;
 use App\Keycloak\Repositories\KeycloakClientRepository;
@@ -26,7 +29,6 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Psr\Log\LoggerInterface;
-use Ramsey\Uuid\Uuid;
 
 final class KeycloakServiceProvider extends ServiceProvider
 {
@@ -40,26 +42,17 @@ final class KeycloakServiceProvider extends ServiceProvider
                         $this->app->get(LoggerInterface::class),
                     )
                 ),
-                $this->app->get(ScopeConfig::class),
+                $this->app->get(Realms::class),
                 $this->app->get(LoggerInterface::class),
             );
         });
 
-        $this->app->singleton(ScopeConfig::class, function () {
-            return new ScopeConfig(
-                Uuid::fromString(config('keycloak.scope.search_api_id')),
-                Uuid::fromString(config('keycloak.scope.entry_api_id')),
-                Uuid::fromString(config('keycloak.scope.widgets_id')),
-                Uuid::fromString(config('keycloak.scope.uitpas_id')),
-            );
+        $this->app->singleton(Realms::class, function () {
+            return Realms::build();
         });
 
         $this->app->singleton(KeycloakClientRepository::class, function () {
-            return $this->app->get(EloquentKeycloakClientRepository::class);
-        });
-
-        $this->app->singleton(Realms::class, function () {
-            return Realms::build();
+            return new EloquentKeycloakClientRepository($this->app->get(Realms::class));
         });
 
         $this->app->singleton(CachedKeycloakClientStatus::class, function () {
@@ -74,13 +67,16 @@ final class KeycloakServiceProvider extends ServiceProvider
 
     private function bootstrapEventHandling(): void
     {
-        if (!config(KeycloakConfig::isEnabled->value)) {
+        if (!config(KeycloakConfig::IS_ENABLED)) {
             return;
         }
 
         Event::listen(IntegrationCreated::class, [CreateClients::class, 'handleCreateClients']);
         Event::listen(IntegrationUpdated::class, [UpdateClients::class, 'handle']);
         Event::listen(IntegrationBlocked::class, [BlockClients::class, 'handle']);
+        Event::listen(IntegrationUnblocked::class, [UnblockClients::class, 'handle']);
+        Event::listen(IntegrationDeleted::class, [BlockClients::class, 'handle']);
+
         Event::listen(MissingClientsDetected::class, [CreateClients::class, 'handleCreatingMissingClients']);
 
         Event::listen(IntegrationUrlCreated::class, [UpdateClients::class, 'handle']);

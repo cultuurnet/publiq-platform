@@ -4,62 +4,56 @@ declare(strict_types=1);
 
 namespace App\Keycloak\Converters;
 
+use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\IntegrationUrlType;
-use App\Keycloak\Client;
 
 /* Converts integration urls in the correct Keycloak API format */
+
 final readonly class IntegrationUrlConverter
 {
-    public static function convert(Integration $integration, Client $client): array
+    public static function buildCallbackUrls(Integration $integration, Environment $environment): array
     {
-        // Empty start construct to make all urls empty at the beginning of each update
-        $urls = [
-            'baseUrl' => '',
-            'redirectUris' => [],
-            'attributes' => ['post.logout.redirect.uris' => ''],
-            'webOrigins' => [
-                '+', // This permits all origins of Valid Redirect URIs for CORS checks
-            ],
-        ];
-
         if ($integration->partnerStatus !== IntegrationPartnerStatus::FIRST_PARTY) {
             // Only first parties can have redirect uri configured.
-            return $urls;
+            return [];
         }
 
-        $urls = self::buildCallbackUrl($integration, $client, $urls);
-        $urls = self::buildLoginUrls($integration, $client, $urls);
-        return self::buildLogoutUrls($integration, $client, $urls);
-    }
+        $urls = [];
 
-    private static function buildCallbackUrl(Integration $integration, Client $client, array $urls): array
-    {
-        $callbackUrl = $integration->urlsForTypeAndEnvironment(IntegrationUrlType::Callback, $client->environment);
-        if (isset($callbackUrl[0]) && $callbackUrl[0] instanceof IntegrationUrl) {
-            $urls['baseUrl'] = $callbackUrl[0]->url;
+        $callbackUrls = $integration->urlsForTypeAndEnvironment(IntegrationUrlType::Callback, $environment);
+        foreach ($callbackUrls as $url) {
+            $urls[] = $url->url;
         }
 
         return $urls;
     }
 
-    private static function buildLoginUrls(Integration $integration, Client $client, array $urls): array
+    public static function buildLoginUrl(Integration $integration, Environment $environment): string
     {
-        $loginUrls = $integration->urlsForTypeAndEnvironment(IntegrationUrlType::Login, $client->environment);
-        foreach ($loginUrls as $loginUrl) {
-            $urls['redirectUris'][] = $loginUrl->url;
+        if ($integration->partnerStatus !== IntegrationPartnerStatus::FIRST_PARTY) {
+            // Only first parties can have redirect uri configured.
+            return '';
         }
 
-        return $urls;
+        $loginUrl = $integration->urlsForTypeAndEnvironment(IntegrationUrlType::Login, $environment);
+        if (!isset($loginUrl[0]) || !$loginUrl[0] instanceof IntegrationUrl) {
+            return '';
+        }
+
+        return $loginUrl[0]->url;
     }
 
-    private static function buildLogoutUrls(Integration $integration, Client $client, array $urls): array
+    public static function buildLogoutUrls(Integration $integration, Environment $environment): string
     {
-        $logoutUrls = $integration->urlsForTypeAndEnvironment(IntegrationUrlType::Logout, $client->environment);
-        $urls['attributes']['post.logout.redirect.uris'] = implode('#', array_map(static fn ($url) => $url->url, $logoutUrls));
+        if ($integration->partnerStatus !== IntegrationPartnerStatus::FIRST_PARTY) {
+            // Only first parties can have redirect uri configured.
+            return '';
+        }
 
-        return $urls;
+        $logoutUrls = $integration->urlsForTypeAndEnvironment(IntegrationUrlType::Logout, $environment);
+        return implode('#', array_map(static fn ($url) => $url->url, $logoutUrls));
     }
 }
