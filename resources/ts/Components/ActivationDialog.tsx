@@ -155,7 +155,7 @@ export const ActivationDialog = ({
       );
       setOrganizerList(organizers);
     },
-    250
+    750
   );
 
   const handleAddOrganizers = (organizer: UiTPASOrganizer) => {
