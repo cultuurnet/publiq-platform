@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Integrations\FormRequests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 final class StoreIntegrationRequest extends FormRequest
 {
@@ -26,6 +27,7 @@ final class StoreIntegrationRequest extends FormRequest
             'lastNameTechnicalContact' => ['required', 'string', 'max:255'],
             'emailTechnicalContact' => ['required', 'string', 'email', 'max:255'],
             'agreement' => ['required', 'string'],
+            'uitpasAgreement' => [Rule::requiredIf($this->input('integrationType') === 'uitpas'), 'nullable', 'string'],
             'coupon' => ['nullable', 'string'],
         ];
     }
