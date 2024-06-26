@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Keycloak;
 
-enum KeycloakConfig: string
+final class KeycloakConfig
 {
-    case isEnabled = 'keycloak.enabled';
+    public const IS_ENABLED = 'keycloak.enabled';
 }
