@@ -17,7 +17,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { ButtonIcon } from "./ButtonIcon";
 import { debounce } from "lodash";
 import { Organization } from "../types/Organization";
-import { UiTPASOrganizer } from "../types/UitpasOrganizer";
+import type { UiTPASOrganizer } from "../types/UitpasOrganizer";
 
 const PriceOverview = ({
   coupon,
@@ -87,7 +87,7 @@ type Props = {
 };
 
 type InitialValues = {
-  organization: Omit<Organization, 'id'>;
+  organization: Omit<Organization, "id">;
   organizers: UiTPASOrganizer[];
   coupon: string;
 };
@@ -138,7 +138,7 @@ export const ActivationDialog = ({
 
   const [isSearchListVisible, setIsSearchListVisible] = useState(false);
 
-  const [organizerList, setOrganizerList] = useState<Organizer[]>([]);
+  const [organizerList, setOrganizerList] = useState<UiTPASOrganizer[]>([]);
 
   const handleGetOrganizers = debounce(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -158,7 +158,7 @@ export const ActivationDialog = ({
     250
   );
 
-  const handleAddOrganizers = (organizer: Organizer) => {
+  const handleAddOrganizers = (organizer: UiTPASOrganizer) => {
     const isDuplicate =
       organizationForm.data.organizers.length > 0 &&
       organizationForm.data.organizers.some(
