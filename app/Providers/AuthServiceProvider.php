@@ -19,12 +19,13 @@ use App\Domain\Integrations\Models\OrganizerModel;
 use App\Domain\Integrations\Policies\IntegrationPolicy;
 use App\Domain\Integrations\Policies\IntegrationUrlPolicy;
 use App\Domain\Integrations\Policies\OrganizerPolicy;
+use App\Domain\KeyVisibilityUpgrades\Models\KeyVisibilityUpgradeModel;
+use App\Domain\KeyVisibilityUpgrades\Policies\KeyVisibilityUpgradePolicy;
 use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\Organizations\Policies\OrganizationPolicy;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Domain\Subscriptions\Policies\SubscriptionPolicy;
-use App\Domain\KeyVisibilityUpgrades\Models\KeyVisibilityUpgradeModel;
-use App\Domain\KeyVisibilityUpgrades\Policies\KeyVisibilityUpgradePolicy;
+use App\Keycloak\KeycloakConfig;
 use App\Keycloak\Models\KeycloakClientModel;
 use App\Keycloak\Policies\KeycloakClientPolicy;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
@@ -63,14 +64,28 @@ final class AuthServiceProvider extends ServiceProvider
 
         $this->app->singleton(
             Auth0::class,
-            static fn (): Auth0 => new Auth0(new SdkConfiguration(config('auth0')))
-        );
+            static function (): Auth0 {
+                if (config(KeycloakConfig::KEYCLOAK_LOGIN_ENABLED)) {
+                    return new Auth0(new SdkConfiguration(config('keycloak.login')));
+                }
 
-        $auth0LoginParameters = [];
-        parse_str(config('auth0.login_parameters'), $auth0LoginParameters);
+                return new Auth0(new SdkConfiguration(config('auth0')));
+            }
+        );
 
         $this->app->when(LoginController::class)
             ->needs('$loginParams')
-            ->give($auth0LoginParameters);
+            ->give($this->getLoginParameters());
+    }
+
+    private function getLoginParameters(): array
+    {
+        $auth0LoginParameters = [];
+        if (config(KeycloakConfig::KEYCLOAK_LOGIN_ENABLED)) {
+            parse_str(config(KeycloakConfig::KEYCLOAK_LOGIN_PARAMETERS), $auth0LoginParameters);
+        } else {
+            parse_str(config('auth0.login_parameters'), $auth0LoginParameters);
+        }
+        return $auth0LoginParameters;
     }
 }
