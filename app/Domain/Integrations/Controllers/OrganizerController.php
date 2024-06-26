@@ -8,7 +8,7 @@ use App\Domain\Integrations\FormRequests\GetOrganizersRequest;
 use App\Http\Controllers\Controller;
 use App\Search\Sapi3\SearchService;
 use CultuurNet\SearchV3\ValueObjects\Organizer;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 
 final class OrganizerController extends Controller
 {
@@ -16,24 +16,28 @@ final class OrganizerController extends Controller
     {
     }
 
-    public function getOrganizers(GetOrganizersRequest $request): RedirectResponse
+    public function getOrganizers(GetOrganizersRequest $request): JsonResponse
     {
         try {
             $organizerName = $request->input('name');
 
             $data = $this->searchService->searchUiTPASOrganizer($organizerName)->getMember()?->getItems() ?? [];
 
-            $organizers = array_map(function (Organizer $organizer) {
-                return [
-                    'id' => $organizer->getCdbid(),
-                    'name' => $organizer->getName()?->getValues(),
-                ];
-            }, $data);
-
-            return redirect()->back()->with('organizers', $organizers);
+            return new JsonResponse(
+                array_map(function (Organizer $organizer) {
+                    return [
+                        'id' => $organizer->getCdbid(),
+                        'name' => $organizer->getName()?->getValues(),
+                    ];
+                }, $data)
+            );
 
         } catch (\Exception $e) {
-            return redirect()->back()->withErrors('Failed to fetch organizers: ' . $e->getMessage());
+            return new JsonResponse(
+                ['exception' => $e->getMessage()],
+                500
+            );
+            ;
         }
     }
 }
