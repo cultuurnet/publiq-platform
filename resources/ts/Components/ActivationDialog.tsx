@@ -16,6 +16,8 @@ import { CouponInfoContext } from "../Context/CouponInfo";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { ButtonIcon } from "./ButtonIcon";
 import { debounce } from "lodash";
+import { Organization } from "../types/Organization";
+import { UiTPASOrganizer } from "../types/UitpasOrganizer";
 
 const PriceOverview = ({
   coupon,
@@ -84,29 +86,10 @@ type Props = {
   email: string;
 };
 
-type Address = {
-  street: string;
-  zip: string;
-  city: string;
-  country: string;
-};
-
-type Organization = {
-  name: string;
-  invoiceEmail: string;
-  vat: string;
-  address: Address;
-};
-
 type InitialValues = {
-  organization: Organization;
-  organizers: Organizer[];
+  organization: Omit<Organization, 'id'>;
+  organizers: UiTPASOrganizer[];
   coupon: string;
-};
-
-type Organizer = {
-  name: string;
-  id: string;
 };
 
 export const ActivationDialog = ({
