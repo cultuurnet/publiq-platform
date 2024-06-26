@@ -16,8 +16,8 @@ import { CouponInfoContext } from "../Context/CouponInfo";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { ButtonIcon } from "./ButtonIcon";
 import { debounce } from "lodash";
-import { Organization } from "../types/Organization";
-import type { UiTPASOrganizer } from "../types/UitpasOrganizer";
+import type { Organization } from "../types/Organization";
+import type { UiTPASOrganizer } from "../types/UiTPASOrganizer";
 
 const PriceOverview = ({
   coupon,
