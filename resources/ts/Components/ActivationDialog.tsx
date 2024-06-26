@@ -4,7 +4,7 @@ import { ButtonSecondary } from "./ButtonSecondary";
 import { ButtonPrimary } from "./ButtonPrimary";
 import { FormElement } from "./FormElement";
 import { Input } from "./Input";
-import { router, useForm } from "@inertiajs/react";
+import { useForm } from "@inertiajs/react";
 import { useTranslation } from "react-i18next";
 import { IntegrationType } from "../types/IntegrationType";
 import { useIsMobile } from "../hooks/useIsMobile";
@@ -158,35 +158,19 @@ export const ActivationDialog = ({
   const [organizerList, setOrganizerList] = useState<Organizer[]>([]);
 
   const handleGetOrganizers = debounce(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
       setOrganizerList([]);
-      router.get(
-        `/organizers`,
-        {
-          name: e.target.value,
-        },
-        {
-          preserveScroll: true,
-          preserveState: true,
-          onSuccess: (page) => {
-            if (Array.isArray(page.props.organizers)) {
-              const organizers = page.props.organizers.map((organizer) => {
-                if (
-                  typeof organizer.name === "object" &&
-                  "nl" in organizer.name
-                ) {
-                  return { name: organizer.name.nl, id: organizer.id };
-                }
-                return organizer;
-              });
-              setOrganizerList(organizers);
-            }
-          },
-          onError: (errors) => {
-            console.error(errors);
-          },
+      const response = await fetch(`/organizers?name=${e.target.value}`);
+      const data = await response.json();
+      const organizers = data.map(
+        (organizer: { name: string | { nl: string }; id: string }) => {
+          if (typeof organizer.name === "object" && "nl" in organizer.name) {
+            return { name: organizer.name.nl, id: organizer.id };
+          }
+          return organizer;
         }
       );
+      setOrganizerList(organizers);
     },
     250
   );
@@ -371,10 +355,13 @@ export const ActivationDialog = ({
                   <Input
                     type="text"
                     name="organizers"
-                    onChange={(e) => {
-                      e.target.value !== ""
-                        ? (setIsSearchListVisible(true), handleGetOrganizers(e))
-                        : setIsSearchListVisible(false);
+                    onChange={async (e) => {
+                      if (e.target.value !== "") {
+                        await handleGetOrganizers(e);
+                        setIsSearchListVisible(true);
+                      } else {
+                        setIsSearchListVisible(false);
+                      }
                     }}
                     onBlur={(e) => {
                       e.target.value = "";
