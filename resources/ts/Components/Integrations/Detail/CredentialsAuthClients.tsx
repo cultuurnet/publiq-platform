@@ -71,7 +71,7 @@ export const CredentialsAuthClients = ({
         {t("details.credentials.uitid_v2")}
       </Heading>
       {isKeyVisibilityV1 ? (
-        isKeyVisibilityV1 && !!keyVisibilityUpgrade ? (
+        !!keyVisibilityUpgrade ? (
           <Alert variant="info">{t("integrations.pending_credentials")}</Alert>
         ) : (
           <div className="flex flex-col flex-1 gap-4">
