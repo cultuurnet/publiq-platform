@@ -290,20 +290,24 @@ final class IntegrationController extends Controller
         }
 
         $organization = OrganizationMapper::mapActivationRequest($request);
-        $this->organizationRepository->save($organization);
-
         $organizers = $request->input('organizers') ?? [];
-        foreach ($organizers as $organizer) {
-            $organizer = new Organizer(
-                Uuid::uuid4(),
-                Uuid::fromString($id),
-                Uuid::fromString($organizer['id'])
-            );
 
-            $this->organizerRepository->create($organizer);
-        }
+        DB::transaction(function () use ($organizers, $id, $organization, $request): void {
+            $this->organizationRepository->save($organization);
 
-        $this->integrationRepository->requestActivation(Uuid::fromString($id), $organization->id, $request->input('coupon'));
+            foreach ($organizers as $organizer) {
+                $organizer = new Organizer(
+                    Uuid::uuid4(),
+                    Uuid::fromString($id),
+                    Uuid::fromString($organizer['id'])
+                );
+                $this->organizerRepository->create($organizer);
+            }
+
+            $this->integrationRepository->requestActivation(Uuid::fromString($id), $organization->id, $request->input('coupon'));
+
+        });
+
 
         return Redirect::back();
     }
