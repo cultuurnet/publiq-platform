@@ -45,9 +45,13 @@ const OrganizersSection = ({
           </div>
         </Card>
       ))}
-      {sectionName === "Live" && (
-        <ButtonPrimary>Organisatie toevoegen</ButtonPrimary>
-      )}
+      <div className="grid lg:grid-cols-3">
+        {sectionName === "Live" && (
+          <ButtonPrimary className="col-span-1">
+            {t("details.organizers_info.add")}
+          </ButtonPrimary>
+        )}
+      </div>
     </>
   );
 };

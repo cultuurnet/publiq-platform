@@ -219,7 +219,8 @@
     },
     "organizers_info": {
       "title": "Organisaties",
-      "description": "Hieronder vind je een overzicht van de UiTdatabank organisaties waarvoor je acties kan uitvoeren in de UiTPAS API."
+      "description": "Hieronder vind je een overzicht van de UiTdatabank organisaties waarvoor je acties kan uitvoeren in de UiTPAS API.",
+      "add": "Organisatie toevoegen"
     },
     "billing_info": {
       "title": {

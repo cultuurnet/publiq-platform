@@ -219,7 +219,8 @@
     },
     "organizers_info": {
       "title": "Organizers",
-      "description": "Below you see an overview of the UiTdatabank organizers for which you can execute actions in the UiTPAS API."
+      "description": "Below you see an overview of the UiTdatabank organizers for which you can execute actions in the UiTPAS API.",
+      "add": "Add organizer"
     },
     "billing_info": {
       "title": {
