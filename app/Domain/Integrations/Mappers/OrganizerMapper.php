@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Mappers;
 
-use App\Domain\Integrations\FormRequests\GetOrganizersRequest;
+use App\Domain\Integrations\FormRequests\RequestActivationRequest;
 use App\Domain\Integrations\Organizer;
 use Ramsey\Uuid\Uuid;
 
@@ -13,7 +13,7 @@ final class OrganizerMapper
     /**
      * @return Organizer[]
      */
-    public static function map(GetOrganizersRequest $request, string $id): array
+    public static function map(RequestActivationRequest $request, string $id): array
     {
         /**
          * @var Organizer[] $organizers

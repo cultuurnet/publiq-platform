@@ -293,7 +293,7 @@ final class IntegrationController extends Controller
         $this->organizationRepository->save($organization);
 
         $organizers = OrganizerMapper::map($request, $id);
-        $this->organizerRepository->save(...$organizers);
+        $this->organizerRepository->create(...$organizers);
 
         $this->integrationRepository->requestActivation(Uuid::fromString($id), $organization->id, $request->input('coupon'));
 
