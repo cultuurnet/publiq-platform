@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { Dialog } from "./Dialog";
 import { ButtonSecondary } from "./ButtonSecondary";
 import { ButtonPrimary } from "./ButtonPrimary";
@@ -140,9 +140,10 @@ export const ActivationDialog = ({
 
   const [organizerList, setOrganizerList] = useState<UiTPASOrganizer[]>([]);
 
+  const organizersInputRef = useRef<HTMLInputElement>(null);
+
   const handleGetOrganizers = debounce(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
-      setOrganizerList([]);
       const response = await fetch(`/organizers?name=${e.target.value}`);
       const data = await response.json();
       const organizers = data.map(
@@ -170,6 +171,10 @@ export const ActivationDialog = ({
         organizer,
       ]);
       setIsSearchListVisible(false);
+      setOrganizerList([]);
+      if (organizersInputRef.current) {
+        organizersInputRef.current.value = "";
+      }
     }
   };
 
@@ -183,6 +188,18 @@ export const ActivationDialog = ({
   if (!isVisible) {
     return null;
   }
+
+  const handleInputOnChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (e.target.value !== "") {
+      await handleGetOrganizers(e);
+      setIsSearchListVisible(true);
+    } else {
+      setIsSearchListVisible(false);
+      setOrganizerList([]);
+    }
+  };
 
   return (
     <Dialog
@@ -332,32 +349,21 @@ export const ActivationDialog = ({
               )}
               required
               error={organizationFormErrors["organizers"]}
-              className="w-full"
+              className="w-full relative"
               component={
                 <>
                   <Input
                     type="text"
                     name="organizers"
+                    ref={organizersInputRef}
                     onChange={async (e) => {
-                      if (e.target.value !== "") {
-                        await handleGetOrganizers(e);
-                        setIsSearchListVisible(true);
-                      } else {
-                        setIsSearchListVisible(false);
-                      }
-                    }}
-                    onBlur={(e) => {
-                      e.target.value = "";
-                      const timeoutId = setTimeout(() => {
-                        setIsSearchListVisible(false);
-                        clearTimeout(timeoutId);
-                      }, 200);
+                      await handleInputOnChange(e);
                     }}
                   />
                   {organizerList &&
                     organizerList.length > 0 &&
                     isSearchListVisible && (
-                      <ul className="border rounded">
+                      <ul className="border rounded absolute bg-white w-full z-50">
                         {organizerList.map((organizer) => (
                           <li
                             key={`${organizer.id}`}
