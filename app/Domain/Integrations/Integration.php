@@ -31,9 +31,6 @@ final class Integration
 
     private ?Organization $organization;
 
-    /** @var array<Organizer> */
-    private array $organizers;
-
     /** @var array<UiTiDv1Consumer> */
     private array $uiTiDv1Consumers;
 
@@ -60,7 +57,6 @@ final class Integration
         $this->uiTiDv1Consumers = [];
         $this->auth0Clients = [];
         $this->keycloakClients = [];
-        $this->organizers = [];
         $this->organization = null;
         $this->keyVisibility = KeyVisibility::v2;
         $this->keyVisibilityUpgrade = null;
@@ -126,13 +122,6 @@ final class Integration
         return $clone;
     }
 
-    public function withOrganizers(Organizer ...$organizers): self
-    {
-        $clone = clone $this;
-        $clone->organizers = $organizers;
-        return $clone;
-    }
-
     public function withSubscription(Subscription $subscription): self
     {
         $clone = clone $this;
@@ -175,14 +164,6 @@ final class Integration
     public function organization(): ?Organization
     {
         return $this->organization;
-    }
-
-    /**
-     * @return array<Organizer>
-     */
-    public function organizers(): array
-    {
-        return $this->organizers;
     }
 
     /** @return array<UiTiDv1Consumer> */
@@ -245,7 +226,6 @@ final class Integration
             'contacts' => $this->contacts,
             'urls' => $this->urls,
             'organization' => $this->organization,
-            'organizers' => $this->organizers,
             'authClients' => $this->auth0Clients,
             'legacyAuthConsumers' => $this->uiTiDv1Consumers,
             'keycloakClients' => $this->keycloakClients,
