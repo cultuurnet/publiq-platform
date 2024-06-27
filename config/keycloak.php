@@ -6,7 +6,7 @@ use Auth0\SDK\Configuration\SdkConfiguration;
 
 return [
 
-    'loginEnabled' => env('KEYCLOAK_ENABLED', false),
+    'loginEnabled' => env('KEYCLOAK_LOGIN_ENABLED', false),
     'creationEnabled' => env('KEYCLOAK_CREATION_ENABLED', false),
     'login' => [
         'strategy' => env('AUTH0_LOGIN_STRATEGY', SdkConfiguration::STRATEGY_REGULAR),
