@@ -209,6 +209,15 @@ export const ActivationDialog = ({
     }
   };
 
+  const handleKeyDown = (
+    event: React.KeyboardEvent<HTMLLIElement>,
+    organizer: UiTPASOrganizer
+  ) => {
+    if (event.key === "Enter") {
+      handleAddOrganizers(organizer);
+    }
+  };
+
   return (
     <Dialog
       title={t("integrations.activation_dialog.title")}
@@ -377,8 +386,10 @@ export const ActivationDialog = ({
                       <ul className="border rounded absolute bg-white w-full z-50">
                         {organizerList.map((organizer) => (
                           <li
+                            tabIndex={0}
                             key={`${organizer.id}`}
                             onClick={() => handleAddOrganizers(organizer)}
+                            onKeyDown={(e) => handleKeyDown(e, organizer)}
                             className="border-b px-3 py-1 hover:bg-gray-100"
                           >
                             {organizer.name}
