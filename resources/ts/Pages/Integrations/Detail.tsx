@@ -38,7 +38,6 @@ const Detail = ({
   email,
   subscriptions,
   oldCredentialsExpirationDate,
-  organizers,
   errors,
 }: Props) => {
   const { t } = useTranslation();

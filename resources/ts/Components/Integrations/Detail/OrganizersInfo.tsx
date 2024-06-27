@@ -6,7 +6,7 @@ import { Card } from "../../Card";
 import { CopyText } from "../../CopyText";
 import { ButtonIcon } from "../../ButtonIcon";
 import { faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { Organizer } from "../../../types/Organizer";
+import type { Organizer } from "../../../types/Organizer";
 import { groupBy } from "lodash";
 import { ButtonPrimary } from "../../ButtonPrimary";
 
