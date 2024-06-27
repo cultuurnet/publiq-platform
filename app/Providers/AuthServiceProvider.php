@@ -83,9 +83,10 @@ final class AuthServiceProvider extends ServiceProvider
         $auth0LoginParameters = [];
         if (config(KeycloakConfig::KEYCLOAK_LOGIN_ENABLED)) {
             parse_str(config(KeycloakConfig::KEYCLOAK_LOGIN_PARAMETERS), $auth0LoginParameters);
-        } else {
-            parse_str(config('auth0.login_parameters'), $auth0LoginParameters);
+            return $auth0LoginParameters;
         }
+
+        parse_str(config('auth0.login_parameters'), $auth0LoginParameters);
         return $auth0LoginParameters;
     }
 }
