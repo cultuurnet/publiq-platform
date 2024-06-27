@@ -72,8 +72,7 @@ final class IntegrationController extends Controller
         private readonly KeyVisibilityUpgradeRepository $keyVisibilityUpgradeRepository,
         private readonly SearchService $searchClient,
         private readonly CurrentUser $currentUser
-    )
-    {
+    ) {
     }
 
     public function index(Request $request): Response
@@ -172,13 +171,14 @@ final class IntegrationController extends Controller
         $integration = $this->integrationRepository->getById(Uuid::fromString($id));
         $oldCredentialsExpirationDate = $this->getExpirationDateForOldCredentials($integration->getKeyVisibilityUpgrade());
 
-        $organizerIds = collect($integration->organizers())->map(fn(Organizer $organizer) => $organizer->organizerId->toString());
-        $organizers = collect($this->searchClient->findUiTPASOrganizers(...$organizerIds)->getMember()->getItems())->map(function (SapiOrganizer $organizer) {
+        $organizerIds = collect($integration->organizers())->map(fn (Organizer $organizer) => $organizer->organizerId->toString());
+        $uitpasOrganizers = $this->searchClient->findUiTPASOrganizers(...$organizerIds)->getMember()?->getItems();
+        $organizers = collect($uitpasOrganizers)->map(function (SapiOrganizer $organizer) {
             $id = explode('/', $organizer->getId() ?? '');
 
             return [
                 'id' => $id[count($id) - 1],
-                'name' => $organizer->getName()->getValues(),
+                'name' => $organizer->getName()?->getValues() ?? $id,
                 'status' => $organizer->getWorkflowStatus() === 'ACTIVE' ? 'Live' : 'Test',
             ];
         });
