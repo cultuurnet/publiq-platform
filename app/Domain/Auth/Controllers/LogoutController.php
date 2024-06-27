@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Auth\Controllers;
 
+use App\Keycloak\KeycloakConfig;
 use Auth0\SDK\Auth0;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -22,17 +23,20 @@ final class LogoutController
             Auth::guard(config('nova.guard'))->logout();
         }
 
-        if (env('AUTHENTICATION_MODE') === 'keycloak') {
+        $url = config('app.url');
+
+        if (config(KeycloakConfig::KEYCLOAK_LOGIN_ENABLED)) {
             return sprintf(
-                'https://%s/realms/%s/protocol/openid-connect/logout?client_id=%s&post_logout_redirect_uri=%s',
-                env('AUTH0_LOGIN_MANAGEMENT_DOMAIN'),
-                env('KEYCLOAK_LOGIN_REALM_NAME'),
-                env('AUTH0_LOGIN_CLIENT_ID'),
-                env('APP_URL')
+                'https://%s/realms/%s/protocol/openid-connect/logout?client_id=%s&post_logout_redirect_uri=%s&id_token_hint=%s',
+                config(KeycloakConfig::KEYCLOAK_DOMAIN),
+                config(KeycloakConfig::KEYCLOAK_REALM_NAME),
+                config(KeycloakConfig::KEYCLOAK_CLIENT_ID),
+                $url,
+                $auth0->getIdToken()
             );
         }
 
-        return $auth0->authentication()->getLogoutLink(config('app.url'));
+        return $auth0->authentication()->getLogoutLink($url);
     }
 
     public function adminLogout(): JsonResponse

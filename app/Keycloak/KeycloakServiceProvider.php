@@ -67,7 +67,7 @@ final class KeycloakServiceProvider extends ServiceProvider
 
     private function bootstrapEventHandling(): void
     {
-        if (!config(KeycloakConfig::IS_ENABLED)) {
+        if (!config(KeycloakConfig::KEYCLOAK_CREATION_ENABLED)) {
             return;
         }
 
