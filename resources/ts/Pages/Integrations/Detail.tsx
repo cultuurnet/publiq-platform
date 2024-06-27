@@ -24,6 +24,7 @@ import { useIsMobile } from "../../hooks/useIsMobile";
 import { CouponInfoProvider } from "../../Context/CouponInfo";
 import type { Integration } from "../../types/Integration";
 import { OrganizersInfo } from "../../Components/Integrations/Detail/OrganizersInfo";
+import type { Organizer } from "../../types/Organizer";
 
 type Props = {
   integration: Integration;
@@ -31,6 +32,7 @@ type Props = {
   subscriptions: Subscription[];
   oldCredentialsExpirationDate: string;
   errors: Record<string, string | undefined>;
+  organizers: Organizer[];
 };
 
 const Detail = ({
@@ -38,6 +40,7 @@ const Detail = ({
   email,
   subscriptions,
   oldCredentialsExpirationDate,
+  organizers,
   errors,
 }: Props) => {
   const { t } = useTranslation();
