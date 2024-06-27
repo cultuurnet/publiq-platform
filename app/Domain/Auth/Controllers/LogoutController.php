@@ -18,6 +18,8 @@ final class LogoutController
         /** @var Auth0 $auth0 */
         $auth0 = app(Auth0::class);
 
+        $idtoken = $auth0->getIdToken();
+
         if (Auth::check()) {
             $auth0->logout();
             Auth::guard(config('nova.guard'))->logout();
@@ -32,7 +34,7 @@ final class LogoutController
                 config(KeycloakConfig::KEYCLOAK_REALM_NAME),
                 config(KeycloakConfig::KEYCLOAK_CLIENT_ID),
                 $url,
-                $auth0->getIdToken()
+                $idtoken
             );
         }
 
