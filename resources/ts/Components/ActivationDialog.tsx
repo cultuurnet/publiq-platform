@@ -147,7 +147,7 @@ export const ActivationDialog = ({
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const response = await fetch(`/organizers?name=${e.target.value}`);
       const data = await response.json();
-      if (data.hasOwnProperty("exception")) {
+      if ("exception" in data) {
         setOrganizerError(true);
         return;
       }
