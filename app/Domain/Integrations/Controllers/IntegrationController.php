@@ -179,7 +179,7 @@ final class IntegrationController extends Controller
             return [
                 'id' => $id[count($id) - 1],
                 'name' => $organizer->getName()->getValues(),
-                'status' => $organizer->getWorkflowStatus() === 'ACTIVE' ? 'LIVE' : 'TEST',
+                'status' => $organizer->getWorkflowStatus() === 'ACTIVE' ? 'Live' : 'Test',
             ];
         });
 
