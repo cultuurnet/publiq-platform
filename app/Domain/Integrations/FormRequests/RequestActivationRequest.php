@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\FormRequests;
 
+use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
@@ -40,7 +41,7 @@ final class RequestActivationRequest extends FormRequest
         return $rules->toArray();
     }
 
-    private function fetchIntegration()
+    private function fetchIntegration(): Integration
     {
         /** @var IntegrationRepository $integrationRepository */
         $integrationRepository = App::get(IntegrationRepository::class);
