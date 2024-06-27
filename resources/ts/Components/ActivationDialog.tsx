@@ -18,6 +18,7 @@ import { ButtonIcon } from "./ButtonIcon";
 import { debounce } from "lodash";
 import type { Organization } from "../types/Organization";
 import type { UiTPASOrganizer } from "../types/UiTPASOrganizer";
+import { Alert } from "./Alert";
 
 const PriceOverview = ({
   coupon,
@@ -137,8 +138,8 @@ export const ActivationDialog = ({
     type !== IntegrationType.EntryApi && type !== IntegrationType.UiTPAS;
 
   const [isSearchListVisible, setIsSearchListVisible] = useState(false);
-
   const [organizerList, setOrganizerList] = useState<UiTPASOrganizer[]>([]);
+  const [organizerError, setOrganizerError] = useState(false);
 
   const organizersInputRef = useRef<HTMLInputElement>(null);
 
@@ -146,6 +147,10 @@ export const ActivationDialog = ({
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const response = await fetch(`/organizers?name=${e.target.value}`);
       const data = await response.json();
+      if (data.hasOwnProperty("exception")) {
+        setOrganizerError(true);
+        return;
+      }
       const organizers = data.map(
         (organizer: { name: string | { nl: string }; id: string }) => {
           if (typeof organizer.name === "object" && "nl" in organizer.name) {
@@ -155,6 +160,9 @@ export const ActivationDialog = ({
         }
       );
       setOrganizerList(organizers);
+      if (organizerError) {
+        setOrganizerError(false);
+      }
     },
     750
   );
@@ -343,6 +351,9 @@ export const ActivationDialog = ({
                   </div>
                 ))}
             </div>
+            {organizerError && (
+              <Alert variant="error">{t("dialog.invite_error")}</Alert>
+            )}
             <FormElement
               label={t(
                 "integrations.activation_dialog.uitpas.organizers.label"

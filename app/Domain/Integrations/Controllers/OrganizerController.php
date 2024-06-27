@@ -34,8 +34,7 @@ final class OrganizerController extends Controller
 
         } catch (\Exception $e) {
             return new JsonResponse(
-                ['exception' => $e->getMessage()],
-                500
+                ['exception' => $e->getMessage()]
             );
             ;
         }
