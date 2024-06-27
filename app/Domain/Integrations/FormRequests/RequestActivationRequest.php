@@ -40,11 +40,17 @@ final class RequestActivationRequest extends FormRequest
         return $rules->toArray();
     }
 
-    private function isAccountingInfoRequired(): bool
+    private function fetchIntegration()
     {
         /** @var IntegrationRepository $integrationRepository */
         $integrationRepository = App::get(IntegrationRepository::class);
-        $integration = $integrationRepository->getById(Uuid::fromString($this->id));
+        return $integrationRepository->getById(Uuid::fromString($this->id));
+    }
+
+
+    private function isAccountingInfoRequired(): bool
+    {
+        $integration = $this->fetchIntegration();
 
         /** @var SubscriptionRepository $subscriptionRepository */
         $subscriptionRepository = App::get(SubscriptionRepository::class);
@@ -55,9 +61,7 @@ final class RequestActivationRequest extends FormRequest
 
     private function isUITPAS(): bool
     {
-        /** @var IntegrationRepository $integrationRepository */
-        $integrationRepository = App::get(IntegrationRepository::class);
-        $integration = $integrationRepository->getById(Uuid::fromString($this->id));
+        $integration = $this->fetchIntegration();
         return $integration->type === IntegrationType::UiTPAS;
     }
 }
