@@ -24,6 +24,7 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Mappers\OrganizationMapper;
+use App\Domain\Integrations\Mappers\OrganizerMapper;
 use App\Domain\Integrations\Mappers\StoreContactMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationUrlMapper;
@@ -31,7 +32,6 @@ use App\Domain\Integrations\Mappers\KeyVisibilityUpgradeMapper;
 use App\Domain\Integrations\Mappers\UpdateContactInfoMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationUrlsMapper;
-use App\Domain\Integrations\Organizer;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\IntegrationUrlRepository;
 use App\Domain\Integrations\Repositories\OrganizerRepository;
@@ -290,24 +290,12 @@ final class IntegrationController extends Controller
         }
 
         $organization = OrganizationMapper::mapActivationRequest($request);
-        $organizers = $request->input('organizers') ?? [];
+        $this->organizationRepository->save($organization);
 
-        DB::transaction(function () use ($organizers, $id, $organization, $request): void {
-            $this->organizationRepository->save($organization);
+        $organizers = OrganizerMapper::map($request, $id);
+        $this->organizerRepository->save(...$organizers);
 
-            foreach ($organizers as $organizer) {
-                $organizer = new Organizer(
-                    Uuid::uuid4(),
-                    Uuid::fromString($id),
-                    Uuid::fromString($organizer['id'])
-                );
-                $this->organizerRepository->create($organizer);
-            }
-
-            $this->integrationRepository->requestActivation(Uuid::fromString($id), $organization->id, $request->input('coupon'));
-
-        });
-
+        $this->integrationRepository->requestActivation(Uuid::fromString($id), $organization->id, $request->input('coupon'));
 
         return Redirect::back();
     }
