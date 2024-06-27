@@ -72,7 +72,7 @@ Route::group(['middleware' => 'auth'], static function () {
 
     Route::post('/integrations', [IntegrationController::class, 'store']);
 
-    Route::get('/organizers', [OrganizerController::class, 'getOrganizers']);
+    Route::get('/organizers', [OrganizerController::class, 'index']);
 
     Route::group(['middleware' => 'can:access-integration,id'], static function () {
         TranslatedRoute::get(

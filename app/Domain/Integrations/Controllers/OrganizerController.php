@@ -16,7 +16,7 @@ final class OrganizerController extends Controller
     {
     }
 
-    public function getOrganizers(GetOrganizersRequest $request): JsonResponse
+    public function index(GetOrganizersRequest $request): JsonResponse
     {
         try {
             $organizerName = $request->input('name');
