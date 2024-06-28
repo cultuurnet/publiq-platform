@@ -199,6 +199,7 @@ return [
         'lastName' => 'achternaam',
         'email' => 'email',
         'agreement' => 'gebruikersvoorwaarden',
+        'uitpasAgreement' => 'verwerkingsvoorwaarden van UiTPAS',
         'functional.email' => 'email',
         'functional.lastName' => 'achternaam',
         'functional.firstName' => 'voornaam',
