@@ -99,7 +99,7 @@ final class IntegrationUrlConverterTest extends TestCase
             new IntegrationUrl(Uuid::uuid4(), $integration->id, Environment::Production, IntegrationUrlType::Logout, 'https://wrong.com/'),
         );
         $this->assertSame(
-            'https://example.com/logout1#https://example.com/logout2',
+            'https://example.com/logout1##https://example.com/logout2',
             IntegrationUrlConverter::buildLogoutUrls($integration, $this->client->environment)
         );
     }
