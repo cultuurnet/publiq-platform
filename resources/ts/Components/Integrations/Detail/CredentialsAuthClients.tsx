@@ -11,10 +11,16 @@ import type { Integration } from "../../../types/Integration";
 import { KeyVisibility } from "../../../types/KeyVisibility";
 import { router } from "@inertiajs/react";
 import { Link } from "../../Link";
+import { Alert } from "../../Alert";
 
 type Props = Pick<
   Integration,
-  "id" | "status" | "subscription" | "type" | "keyVisibility"
+  | "id"
+  | "status"
+  | "subscription"
+  | "type"
+  | "keyVisibility"
+  | "keyVisibilityUpgrade"
 > &
   Credentials & { email: string };
 
@@ -27,8 +33,10 @@ export const CredentialsAuthClients = ({
   subscription,
   type,
   keyVisibility,
+  keyVisibilityUpgrade,
 }: Props) => {
   const { t } = useTranslation();
+  const isKeyVisibilityV1 = keyVisibility === KeyVisibility.v1;
 
   const auth0TestClientWithLabels = [
     {
@@ -62,27 +70,32 @@ export const CredentialsAuthClients = ({
       <Heading className="font-semibold lg:min-w-60" level={4}>
         {t("details.credentials.uitid_v2")}
       </Heading>
-      {keyVisibility === KeyVisibility.v1 ? (
-        <div className="flex flex-col flex-1 gap-4">
-          <div>
-            <Trans
-              i18nKey="details.credentials.uitid_alert"
-              components={[
-                <Link
-                  key={t("details.credentials.uitid_alert")}
-                  href={t("details.credentials.uitid_alert_link")}
-                  className="text-publiq-blue-dark hover:underline mb-3"
-                />,
-              ]}
-            />
+      {isKeyVisibilityV1 ? (
+        keyVisibilityUpgrade ? (
+          <Alert variant="info">{t("integrations.pending_credentials")}</Alert>
+        ) : (
+          <div className="flex flex-col flex-1 gap-4">
+            <div>
+              <Trans
+                i18nKey="details.credentials.uitid_alert"
+                components={[
+                  <Link
+                    key={t("details.credentials.uitid_alert")}
+                    href={t("details.credentials.uitid_alert_link")}
+                    className="text-publiq-blue-dark hover:underline mb-3"
+                  />,
+                ]}
+              />
+            </div>
+
+            <ButtonPrimary
+              className="self-start"
+              onClick={handleKeyVisibilityUpgrade}
+            >
+              {t("details.credentials.action_uitid")}
+            </ButtonPrimary>
           </div>
-          <ButtonPrimary
-            className="self-start"
-            onClick={handleKeyVisibilityUpgrade}
-          >
-            {t("details.credentials.action_uitid")}
-          </ButtonPrimary>
-        </div>
+        )
       ) : (
         <div className="flex flex-col flex-1 gap-4">
           <div className="flex flex-col gap-3">

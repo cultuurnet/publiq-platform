@@ -2,8 +2,25 @@
 
 declare(strict_types=1);
 
+use Auth0\SDK\Configuration\SdkConfiguration;
+
 return [
-    'enabled' => env('KEYCLOAK_ENABLED', false),
+
+    'loginEnabled' => env('KEYCLOAK_LOGIN_ENABLED', false),
+    'creationEnabled' => env('KEYCLOAK_CREATION_ENABLED', false),
+    'login' => [
+        'strategy' => env('AUTH0_LOGIN_STRATEGY', SdkConfiguration::STRATEGY_REGULAR),
+        'domain' => env('KEYCLOAK_LOGIN_DOMAIN'),
+        'managementDomain' => env('KEYCLOAK_LOGIN_MANAGEMENT_DOMAIN'),
+        'clientId' => env('KEYCLOAK_LOGIN_CLIENT_ID'),
+        'clientSecret' => env('KEYCLOAK_LOGIN_CLIENT_SECRET'),
+        'audience' => env('KEYCLOAK_LOGIN_AUDIENCE'),
+        'realmName' => env('KEYCLOAK_LOGIN_REALM_NAME'),
+        'parameters' => env('KEYCLOAK_LOGIN_PARAMETERS'),
+        'cookieSecret' => env('KEYCLOAK_LOGIN_COOKIE_SECRET', env('APP_KEY')),
+        'cookieExpires' => env('COOKIE_EXPIRES', 0),
+        'redirectUri' => env('KEYCLOAK_LOGIN_REDIRECT_URI', env('APP_URL') . '/callback'),
+    ],
     'environments' => [
         'acc' => [
             'internalName' => env('KEYCLOAK_ACC_REALM_NAME', ''),

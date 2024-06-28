@@ -16,6 +16,11 @@ export type Coupon = {
   reduction: number;
 };
 
+type KeyVisibilityUpgrade = {
+  id: string;
+  integrationId: string;
+  keyVisibility: string;
+};
 export type Integration = {
   id: string;
   type: Values<typeof IntegrationType>;
@@ -32,4 +37,5 @@ export type Integration = {
   authClients: AuthClient[];
   legacyAuthConsumers: LegacyAuthConsumer[];
   keyVisibility: KeyVisibility;
+  keyVisibilityUpgrade: KeyVisibilityUpgrade | null;
 };
