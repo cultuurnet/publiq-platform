@@ -23,6 +23,7 @@ export const ButtonIcon = ({
       className={twMerge(
         classNames(
           "hover:bg-icon-gray-light focus:bg-icon-gray-dark group-focus:animate-pulse p-3 rounded-full grow-0 shrink-0 w-[2.8rem] h-[2.8rem] inline-flex items-center justify-center",
+          size === "sm" && "w-[1.2rem] h-[1.2rem]",
           className
         )
       )}

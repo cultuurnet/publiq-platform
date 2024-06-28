@@ -188,6 +188,14 @@
         "coupon": "Coupon",
         "plan": "Abonnement",
         "year": "jaar"
+      },
+      "uitpas": {
+        "partner": "Partner",
+        "organizers": {
+          "title": "UiTdatabank organisaties",
+          "info": "Geef de UiTdatabank organisaties op waarvoor je acties in UiTPAS wilt uitvoeren.",
+          "label": "Organisaties"
+        }
       }
     },
     "documentation": {

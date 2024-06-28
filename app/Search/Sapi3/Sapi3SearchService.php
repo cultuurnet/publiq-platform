@@ -20,6 +20,7 @@ final readonly class Sapi3SearchService implements SearchService
         $searchQuery = new SearchQuery();
         $searchQuery->addParameter(new Label('UiTPAS'));
         $searchQuery->addParameter(new Name($name));
+        $searchQuery->setLimit(5);
         $searchQuery->setEmbed(true);
 
         return $this->searchClient->searchOrganizers($searchQuery);
