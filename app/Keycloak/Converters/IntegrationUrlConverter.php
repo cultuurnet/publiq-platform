@@ -54,6 +54,6 @@ final readonly class IntegrationUrlConverter
         }
 
         $logoutUrls = $integration->urlsForTypeAndEnvironment(IntegrationUrlType::Logout, $environment);
-        return implode('#', array_map(static fn ($url) => $url->url, $logoutUrls));
+        return implode('##', array_map(static fn ($url) => $url->url, $logoutUrls));
     }
 }
