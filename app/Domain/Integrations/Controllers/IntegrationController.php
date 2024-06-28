@@ -24,6 +24,7 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Mappers\OrganizationMapper;
+use App\Domain\Integrations\Mappers\OrganizerMapper;
 use App\Domain\Integrations\Mappers\StoreContactMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationUrlMapper;
@@ -33,6 +34,7 @@ use App\Domain\Integrations\Mappers\UpdateIntegrationMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationUrlsMapper;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\IntegrationUrlRepository;
+use App\Domain\Integrations\Repositories\OrganizerRepository;
 use App\Domain\KeyVisibilityUpgrades\KeyVisibilityUpgrade;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
@@ -63,6 +65,7 @@ final class IntegrationController extends Controller
         private readonly ContactRepository $contactRepository,
         private readonly ContactKeyVisibilityRepository $contactKeyVisibilityRepository,
         private readonly OrganizationRepository $organizationRepository,
+        private readonly OrganizerRepository $organizerRepository,
         private readonly CouponRepository $couponRepository,
         private readonly Auth0ClientRepository $auth0ClientRepository,
         private readonly UiTiDv1ConsumerRepository $uitidV1ConsumerRepository,
@@ -172,6 +175,7 @@ final class IntegrationController extends Controller
             'oldCredentialsExpirationDate' => $oldCredentialsExpirationDate,
             'email' => Auth::user()?->email,
             'subscriptions' => $this->subscriptionRepository->all(),
+            'organizers' => session('organizers'),
         ]);
     }
 
@@ -287,6 +291,9 @@ final class IntegrationController extends Controller
 
         $organization = OrganizationMapper::mapActivationRequest($request);
         $this->organizationRepository->save($organization);
+
+        $organizers = OrganizerMapper::map($request, $id);
+        $this->organizerRepository->create(...$organizers);
 
         $this->integrationRepository->requestActivation(Uuid::fromString($id), $organization->id, $request->input('coupon'));
 
