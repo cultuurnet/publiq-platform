@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\FormRequests;
 
+use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
@@ -24,25 +25,44 @@ final class RequestActivationRequest extends FormRequest
         $rules = collect([
             ...(new CreateOrganizationRequest())->rules(),
             'coupon' => ['nullable', 'string', 'max:255'],
+            'organizers' => ['required','array'],
+            'organizers.*.name' => ['required', 'string'],
+            'organizers.*.id' => ['required', 'string'],
         ]);
 
-        if (!$this->isAccountingInfoRequired()) {
+        if (!$this->isAccountingInfoRequired() || $this->isUITPAS()) {
             $rules->forget(['organization.invoiceEmail', 'organization.vat', 'coupon']);
+        }
+
+        if (!$this->isUITPAS()) {
+            $rules->forget(['organizers']);
         }
 
         return $rules->toArray();
     }
 
-    private function isAccountingInfoRequired(): bool
+    private function fetchIntegration(): Integration
     {
         /** @var IntegrationRepository $integrationRepository */
         $integrationRepository = App::get(IntegrationRepository::class);
-        $integration = $integrationRepository->getById(Uuid::fromString($this->id));
+        return $integrationRepository->getById(Uuid::fromString($this->id));
+    }
+
+
+    private function isAccountingInfoRequired(): bool
+    {
+        $integration = $this->fetchIntegration();
 
         /** @var SubscriptionRepository $subscriptionRepository */
         $subscriptionRepository = App::get(SubscriptionRepository::class);
         $subscription = $subscriptionRepository->getById($integration->subscriptionId);
 
         return $integration->type !== IntegrationType::EntryApi || $subscription->price > 0.0;
+    }
+
+    private function isUITPAS(): bool
+    {
+        $integration = $this->fetchIntegration();
+        return $integration->type === IntegrationType::UiTPAS;
     }
 }

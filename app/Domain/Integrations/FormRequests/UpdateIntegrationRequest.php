@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\FormRequests;
 
+use App\Domain\Integrations\IntegrationType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -18,7 +19,7 @@ final class UpdateIntegrationRequest extends FormRequest
             'integrationName' => ['required_without:description', 'string', 'max:255'],
             'description' => ['required_without:integrationName', 'string', 'max:255'],
             'website' => [
-                Rule::requiredIf($this->input('integrationType') === 'uitpas'),
+                Rule::requiredIf($this->input('integrationType') === IntegrationType::UiTPAS->value),
                 'nullable',
                 'url:http,https',
                 'max:255',

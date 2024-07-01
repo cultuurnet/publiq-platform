@@ -1,6 +1,5 @@
 import type { FormEvent, ReactNode } from "react";
-import React from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { router, useForm } from "@inertiajs/react";
 import Layout from "../../layouts/Layout";
 import { Heading } from "../../Components/Heading";
@@ -33,12 +32,6 @@ const New = ({ subscriptions }: Props) => {
   const { t } = useTranslation();
   const { i18n } = useTranslation();
 
-  const freeSubscriptionId = subscriptions.find(
-    (subscription) =>
-      subscription.integrationType === IntegrationType.EntryApi &&
-      subscription.price === 0
-  )?.id;
-
   const basicSubscriptionIds = subscriptions
     .filter(
       (subscription) => subscription.category === SubscriptionCategory.Basic
@@ -55,10 +48,7 @@ const New = ({ subscriptions }: Props) => {
 
   const initialFormValues = {
     integrationType: activeType,
-    subscriptionId:
-      activeType === IntegrationType.EntryApi && !!freeSubscriptionId
-        ? freeSubscriptionId
-        : "",
+    subscriptionId: "",
     integrationName: "",
     description: "",
     website: "",
@@ -71,6 +61,7 @@ const New = ({ subscriptions }: Props) => {
     lastNameTechnicalContact: "",
     emailTechnicalContact: "",
     agreement: "",
+    uitpasAgreement: "",
     coupon: "",
   };
 
@@ -78,6 +69,17 @@ const New = ({ subscriptions }: Props) => {
 
   const { data, setData, errors, hasErrors, post, processing } =
     useForm(initialFormValues);
+
+  useEffect(() => {
+    const freeSubscriptionId = subscriptions.find(
+      (subscription) =>
+        subscription.integrationType === activeType &&
+        subscription.category === SubscriptionCategory.Free
+    )?.id;
+
+    setData("subscriptionId", freeSubscriptionId ?? "");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeType, subscriptions]);
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -379,6 +381,42 @@ const New = ({ subscriptions }: Props) => {
               }
               error={errors.agreement}
             />
+            {activeType === IntegrationType.UiTPAS && (
+              <FormElement
+                label={
+                  <Trans
+                    i18nKey="integration_form.uitpasAgreement.label"
+                    t={t}
+                    components={{
+                      1: (
+                        <Link
+                          href={t("integration_form.uitpasAgreement.link")}
+                          className="text-publiq-blue-dark hover:underline"
+                        />
+                      ),
+                    }}
+                  />
+                }
+                labelPosition="right"
+                labelSize="base"
+                labelWeight="normal"
+                component={
+                  <input
+                    type="checkbox"
+                    name="uitpasAgreement"
+                    className="text-publiq-blue-dark focus:ring-publiq-blue-dark rounded-sm"
+                    checked={data.uitpasAgreement === "true"}
+                    onChange={() =>
+                      setData(
+                        "uitpasAgreement",
+                        data.uitpasAgreement === "true" ? "" : "true"
+                      )
+                    }
+                  />
+                }
+                error={errors.uitpasAgreement}
+              />
+            )}
             {isCouponFieldVisible && (
               <>
                 <FormElement

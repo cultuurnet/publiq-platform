@@ -83,7 +83,7 @@ final class IntegrationToKeycloakClientConverterTest extends TestCase
         $this->assertEquals([
             'origin' => 'publiq-platform',
             'use.refresh.tokens' => true,
-            'post.logout.redirect.uris' => 'https://example.com/logout1#https://example.com/logout2',
+            'post.logout.redirect.uris' => 'https://example.com/logout1##https://example.com/logout2',
         ], $convertedData['attributes']);
         $this->assertEquals('https://example.com/login1', $convertedData['baseUrl']);
         $this->assertEquals(['https://example.com/callback1', 'https://example.com/callback2'], $convertedData['redirectUris']);

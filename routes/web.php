@@ -6,6 +6,7 @@ use App\Domain\Auth\Controllers\CallbackController;
 use App\Domain\Auth\Controllers\LoginController;
 use App\Domain\Auth\Controllers\LogoutController;
 use App\Domain\Integrations\Controllers\IntegrationController;
+use App\Domain\Integrations\Controllers\OrganizerController;
 use App\Domain\Newsletter\Controllers\NewsletterController;
 use Illuminate\Support\Facades\Route;
 use App\Router\TranslatedRoute;
@@ -70,6 +71,8 @@ Route::group(['middleware' => 'auth'], static function () {
     );
 
     Route::post('/integrations', [IntegrationController::class, 'store']);
+
+    Route::get('/organizers', [OrganizerController::class, 'index']);
 
     Route::group(['middleware' => 'can:access-integration,id'], static function () {
         TranslatedRoute::get(
