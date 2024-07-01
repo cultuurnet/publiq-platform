@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Heading } from "../../Heading";
 import { useTranslation } from "react-i18next";
 import type { Integration } from "../../../types/Integration";
@@ -9,6 +9,7 @@ import { faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
 import type { Organizer } from "../../../types/Organizer";
 import { groupBy } from "lodash";
 import { ButtonPrimary } from "../../ButtonPrimary";
+import { QuestionDialog } from "../../QuestionDialog";
 
 type Props = Integration & { organizers: Organizer[] };
 
@@ -20,6 +21,10 @@ const OrganizersSection = ({
   sectionName: Organizer["status"];
 }) => {
   const { t, i18n } = useTranslation();
+  const [toBeDeletedId, setToBeDeletedId] = useState("");
+
+  const handleDeleteOrganizer = () => {};
+
   if (!organizers.length) {
     return null;
   }
@@ -39,7 +44,11 @@ const OrganizersSection = ({
             {sectionName === "Live" && (
               <div>
                 <ButtonIcon icon={faPencil} className="text-icon-gray" />
-                <ButtonIcon icon={faTrash} className="text-icon-gray" />
+                <ButtonIcon
+                  icon={faTrash}
+                  className="text-icon-gray"
+                  onClick={() => setToBeDeletedId(organizer.id)}
+                />
               </div>
             )}
           </div>
@@ -52,6 +61,19 @@ const OrganizersSection = ({
           </ButtonPrimary>
         )}
       </div>
+      <QuestionDialog
+        isVisible={!!toBeDeletedId}
+        onClose={() => {
+          setToBeDeletedId("");
+        }}
+        title={t("details.organizers_info.delete_dialog.title")}
+        question={t("details.organizers_info.delete_dialog.question", {
+          name: organizers.find((organizer) => organizer.id === toBeDeletedId)
+            ?.name[i18n.language],
+        })}
+        onConfirm={handleDeleteOrganizer}
+        onCancel={() => setToBeDeletedId("")}
+      />
     </>
   );
 };
