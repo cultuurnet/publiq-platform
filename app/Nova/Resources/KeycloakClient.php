@@ -86,7 +86,7 @@ final class KeycloakClient extends Resource
             Text::make('Open', function (KeycloakClientModel $model) {
                 $client = $model->toDomain();
                 $realm = App::get(Realms::class)->getRealmByEnvironment($client->environment);
-                $url = $realm->baseUrl . 'admin/master/console/#/' . $realm->internalName . '/clients/' . $client->id->toString() . '/settings';
+                $url = $realm->baseUrl . 'dashboard/' . $realm->internalName . '/clients/' . urlencode($client->clientId) . '/settings';
 
                 return sprintf('<a href="%s" class="link-default" target="_blank">Open in Keycloak</a>', $url);
             })->asHtml(),

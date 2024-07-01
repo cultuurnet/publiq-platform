@@ -133,6 +133,10 @@
     },
     "error": "Niet alle verplichte velden werden correct ingevuld. Controleer je invoer.",
     "agree": "Ik ga akkoord met de <1>gebruiksvoorwaarden</1> en de <2>privacyverklaring</2>",
+    "uitpasAgreement": {
+      "label": "Ik ga akkoord met de <1>verwerkingsvoorwaarden van UiTPAS<1>",
+      "link": "https://www.publiq.be/nl/projecten/publiq-platform/algemene-verwerkingsvoorwaarden"
+    },
     "terms_of_use_link": "https://docs.publiq.be/docs/uitdatabank/terms-of-use/terms-of-use",
     "privacy_link": "https://www.publiq.be/nl/privacy",
     "coupon": "Ik heb een coupon",
@@ -184,6 +188,14 @@
         "coupon": "Coupon",
         "plan": "Abonnement",
         "year": "jaar"
+      },
+      "uitpas": {
+        "partner": "Partner",
+        "organizers": {
+          "title": "UiTdatabank organisaties",
+          "info": "Geef de UiTdatabank organisaties op waarvoor je acties in UiTPAS wilt uitvoeren.",
+          "label": "Organisaties"
+        }
       }
     },
     "documentation": {

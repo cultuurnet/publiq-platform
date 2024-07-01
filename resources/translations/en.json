@@ -133,6 +133,10 @@
     },
     "error": "Not all mandatory fields were filled in correctly. Check your input.",
     "agree": "I agree to the <1>terms of use</1> and the <2>privacy policy</2>",
+    "uitpasAgreement": {
+      "label": "I agree with the <1>processing conditions of UiTPAS<1>",
+      "link": "https://www.publiq.be/en/projects/publiq-platform/processing-conditions"
+    },
     "terms_of_use_link": "https://docs.publiq.be/docs/uitdatabank/terms-of-use/terms-of-use",
     "privacy_link": "https://www.publiq.be/en/privacy",
     "coupon": "I have a coupon",
@@ -184,6 +188,14 @@
         "coupon": "Coupon",
         "plan": "Subscription",
         "year": "year"
+      },
+      "uitpas": {
+        "partner": "Partner",
+        "organizers": {
+          "title": "UiTdatabank organizers",
+          "info": "Enter the UiTdatabank organizers for which you want to execute actions in UiTPAS.",
+          "label": "Organizers"
+        }
       }
     },
     "documentation": {
