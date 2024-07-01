@@ -256,6 +256,7 @@
       "test": "Test",
       "live": "Live",
       "status_alert": "Approval from publiq is necessary for the live integration of this project. All information to smoothly go live can be found",
+      "in_progress": "Your activation request is being processed.",
       "uitid_alert": "You can switch to authentication with client credentials. Check <0>here</0> whether this method of authentication is suitable for your application. Once you have requested client credentials, your API key remains valid for another 6 months.",
       "uitid_alert_link": "https://docs.publiq.be/docs/authentication/methods/overview",
       "action_status": "Request activation",
