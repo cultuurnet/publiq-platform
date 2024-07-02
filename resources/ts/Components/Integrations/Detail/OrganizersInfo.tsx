@@ -33,7 +33,7 @@ const OrganizersSection = ({
     });
   };
 
-  if (!organizers.length) {
+  if (!organizers?.length) {
     return null;
   }
 
