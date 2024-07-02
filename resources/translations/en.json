@@ -107,10 +107,10 @@
       "info": "You only pay when you want to use real data. You can explore all possibilities with test events first."
     },
     "integration_name": "Integration name",
-    "description_name": "Give a clear title to your integration and mention the name of the organization or municipality for which the integration is built",
+    "description_name": "Give a clear title to your integration and mention the name of the organization or municipality for which the integration is built.",
     "aim": {
       "label": "Integration purpose",
-      "info": "Provide a clear, motivated description of the integration you want to set up with the publiq platform (max. 200 characters)"
+      "info": "Provide a clear, motivated description of the integration you want to set up with the publiq platform (max. 200 characters)."
     },
     "website": {
       "label": "Website",
@@ -169,7 +169,7 @@
       "deleted": "Deleted",
       "pending_approval_integration": "Pending approval",
       "pending_approval_payment": "Pending approval",
-      "pending_approval_integration_description": "Approval from publiq is necessary for the live integration. All information to smoothly go live can be found <0>here</0>",
+      "pending_approval_integration_description": "Approval from publiq is necessary for the live integration. All information to smoothly go live can be found <0>here</0>.",
       "pending_approval_payment_description": "Ready to work with real data and events? Activate your Search API integration (from €125 per year)",
       "here": "here.",
       "activate": "Activate"
@@ -261,6 +261,7 @@
       "test": "Test",
       "live": "Live",
       "status_alert": "Approval from publiq is necessary for the live integration of this project. All information to smoothly go live can be found",
+      "in_progress": "Your activation request is being processed.",
       "uitid_alert": "You can switch to authentication with client credentials. Check <0>here</0> whether this method of authentication is suitable for your application. Once you have requested client credentials, your API key remains valid for another 6 months.",
       "uitid_alert_link": "https://docs.publiq.be/docs/authentication/methods/overview",
       "action_status": "Request activation",

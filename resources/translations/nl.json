@@ -63,7 +63,7 @@
       "action": "Probeer {{type}}",
       "uitpas_api": {
         "title": "UiTPAS API",
-        "description": "Ken kortingen toe, ruil voordelen om en spaar punten voor UiTPAS-houders",
+        "description": "Ken kortingen toe, ruil voordelen om en spaar punten voor UiTPAS-houders.",
         "features": [
           "Oplossing voor koppeling met ticketing systemen",
           "Uitgebreide stap-voor-stap gidsen",
@@ -107,10 +107,10 @@
       "info": "Je betaalt pas wanneer je gebruik wilt maken van echte data. Je probeert eerst alle mogelijkheden met testevenementen."
     },
     "integration_name": "Naam integratie",
-    "description_name": "Geef een duidelijk titel aan je integratie en vermeld de naam van de organisatie of gemeente waarvoor de integratie gebouwd wordt",
+    "description_name": "Geef een duidelijk titel aan je integratie en vermeld de naam van de organisatie of gemeente waarvoor de integratie gebouwd wordt.",
     "aim": {
       "label": "Doel van de integratie",
-      "info": "Geef een duidelijke, gemotiveerde beschrijving van de integratie die je met het publiq platform wil opzetten (max. 200 karakters)"
+      "info": "Geef een duidelijke, gemotiveerde beschrijving van de integratie die je met het publiq platform wil opzetten (max. 200 karakters)."
     },
     "website": {
       "label": "Website",
@@ -171,7 +171,7 @@
       "pending_approval_payment": "In Aanvraag",
       "pending_approval_integration_description": "Voor de live-integratie is goedkeuring van publiq nodig. Alle informatie om vlot live te kunnen gaan vind je <0>hier</0>.",
       "before_going_live_link": "https://docs.publiq.be/docs/uitdatabank/entry-api/requirements-before-going-live",
-      "pending_approval_payment_description": "Aan de slag met echte data en evenementen? Activeer je Search API integratie (vanaf 125 euro per jaar)",
+      "pending_approval_payment_description": "Aan de slag met echte data en evenementen? Activeer je Search API integratie (vanaf 125 euro per jaar).",
       "activate": "Activatie aanvragen"
     },
     "activation_dialog": {
@@ -243,7 +243,7 @@
       "subscription": "Prijsplan",
       "to_pay": "Te betalen",
       "name": "Naam bedrijf, organisatie of gemeente",
-      "free_until_live": "Deze integratie draait momenteel op een testomgeving. Je betaalt pas wanneer je integratie actief is op de live-omgeving",
+      "free_until_live": "Deze integratie draait momenteel op een testomgeving. Je betaalt pas wanneer je integratie actief is op de live-omgeving.",
       "address": {
         "street": "Straat en nummer",
         "postcode": "Postcode",
@@ -267,7 +267,7 @@
       "client_id": "Client id",
       "client_secret": "Client secret",
       "api_key": "API Key",
-      "info": "Deze credentials blijven nog {{amount}} geldig en worden definitief verwijderd op {{date}}"
+      "info": "Deze credentials blijven nog {{amount}} geldig en worden definitief verwijderd op {{date}}."
     },
     "integration_settings": {
       "title": "Instellingen",
