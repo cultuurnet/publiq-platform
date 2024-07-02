@@ -31,6 +31,10 @@ final readonly class Sapi3SearchService implements SearchService
     {
         $searchQuery = new SearchQuery();
         $searchQuery->setEmbed(true);
+        if (empty($ids)) {
+            return new PagedCollection();
+        }
+
         foreach ($ids as $id) {
             $searchQuery->addParameter(new Id($id));
         }

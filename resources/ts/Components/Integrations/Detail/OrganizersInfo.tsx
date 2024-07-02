@@ -20,7 +20,7 @@ const OrganizersSection = ({
   sectionName: Organizer["status"];
 }) => {
   const { t, i18n } = useTranslation();
-  if (!organizers.length) {
+  if (!organizers?.length) {
     return null;
   }
 
