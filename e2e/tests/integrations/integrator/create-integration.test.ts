@@ -3,9 +3,8 @@ import { createIntegrationAsIntegrator } from "./create-integration.js";
 import { IntegrationType } from "@app-types/IntegrationType";
 
 const integrationTypeValues = Object.entries(IntegrationType);
-
-integrationTypeValues.map(([integrationName, integrationType]) => {
-  test.use({ storageState: "playwright/.auth/user.json" });
+test.use({ storageState: "playwright/.auth/user.json" });
+integrationTypeValues.forEach(([integrationName, integrationType]) => {
   test(`As an integrator I can create a new ${integrationName} integration`, async ({
     page,
   }) => {
