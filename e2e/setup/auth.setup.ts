@@ -5,13 +5,13 @@ setup("authenticate as admin", async ({ page }) => {
 
   await page.getByRole("link", { name: "Probeer gratis" }).click();
 
-  await page.waitForURL(/account-acc.uitid.be\/*/);
+  await page.waitForURL(/account-keycloak-acc.uitid.be\/*/);
 
   await page
-    .getByLabel("Je e-mailadres")
+    .locator('input[name="username"]')
     .fill(process.env.E2E_TEST_ADMIN_EMAIL!);
   await page
-    .getByLabel("Je wachtwoord")
+    .locator('input[name="password"]')
     .fill(process.env.E2E_TEST_ADMIN_PASSWORD!);
 
   await page.getByRole("button", { name: "Meld je aan", exact: true }).click();
@@ -27,10 +27,14 @@ setup("authenticate as contributor", async ({ page }) => {
 
   await page.getByRole("link", { name: "Probeer gratis" }).click();
 
-  await page.waitForURL(/account-acc.uitid.be\/*/);
+  await page.waitForURL(/account-keycloak-acc.uitid.be\/*/);
 
-  await page.getByLabel("Je e-mailadres").fill(process.env.E2E_TEST_EMAIL!);
-  await page.getByLabel("Je wachtwoord").fill(process.env.E2E_TEST_PASSWORD!);
+  await page
+    .locator('input[name="username"]')
+    .fill(process.env.E2E_TEST_EMAIL!);
+  await page
+    .locator('input[name="password"]')
+    .fill(process.env.E2E_TEST_PASSWORD!);
 
   await page.getByRole("button", { name: "Meld je aan", exact: true }).click();
 
@@ -47,13 +51,13 @@ setup(
 
     await page.getByRole("link", { name: "Probeer gratis" }).click();
 
-    await page.waitForURL(/account-acc.uitid.be\/*/);
+    await page.waitForURL(/account-keycloak-acc.uitid.be\/*/);
 
     await page
-      .getByLabel("Je e-mailadres")
+      .locator('input[name="username"]')
       .fill(process.env.E2E_TEST_V1_EMAIL!);
     await page
-      .getByLabel("Je wachtwoord")
+      .locator('input[name="password"]')
       .fill(process.env.E2E_TEST_V1_PASSWORD!);
 
     await page

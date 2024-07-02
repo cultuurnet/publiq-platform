@@ -17,7 +17,9 @@ async function addContactToIntegration(
   await page.locator("#type").selectOption(type);
   await page.getByPlaceholder("First Name").fill(faker.person.firstName());
   await page.getByPlaceholder("Last Name").fill(faker.person.lastName());
-  await page.getByTestId("integrations").selectOption(integrationId!);
+  await page
+    .locator("[dusk='integrations-select']")
+    .selectOption(integrationId!);
   await page.getByRole("button", { name: "Create Contact" }).click();
 
   await page.waitForURL(
