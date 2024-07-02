@@ -10,20 +10,28 @@ import type { Organizer } from "../../../types/Organizer";
 import { groupBy } from "lodash";
 import { ButtonPrimary } from "../../ButtonPrimary";
 import { QuestionDialog } from "../../QuestionDialog";
+import { router } from "@inertiajs/react";
 
 type Props = Integration & { organizers: Organizer[] };
 
 const OrganizersSection = ({
+  id,
   sectionName,
   organizers,
 }: {
+  id: string;
   organizers: Organizer[];
   sectionName: Organizer["status"];
 }) => {
   const { t, i18n } = useTranslation();
   const [toBeDeletedId, setToBeDeletedId] = useState("");
 
-  const handleDeleteOrganizer = () => {};
+  const handleDeleteOrganizer = () => {
+    router.delete(`/integrations/${id}/organizers/${toBeDeletedId}`, {
+      preserveScroll: true,
+      preserveState: false,
+    });
+  };
 
   if (!organizers.length) {
     return null;
@@ -78,7 +86,7 @@ const OrganizersSection = ({
   );
 };
 
-export const OrganizersInfo = ({ organizers }: Props) => {
+export const OrganizersInfo = ({ id, organizers }: Props) => {
   const { t } = useTranslation();
   const byStatus = groupBy(organizers, "status");
 
@@ -88,8 +96,16 @@ export const OrganizersInfo = ({ organizers }: Props) => {
         {t("details.organizers_info.title")}
       </Heading>
       <p>{t("details.organizers_info.description")}</p>
-      <OrganizersSection sectionName="Test" organizers={byStatus["Test"]} />
-      <OrganizersSection sectionName="Live" organizers={byStatus["Live"]} />
+      <OrganizersSection
+        id={id}
+        sectionName="Test"
+        organizers={byStatus["Test"]}
+      />
+      <OrganizersSection
+        id={id}
+        sectionName="Live"
+        organizers={byStatus["Live"]}
+      />
     </>
   );
 };
