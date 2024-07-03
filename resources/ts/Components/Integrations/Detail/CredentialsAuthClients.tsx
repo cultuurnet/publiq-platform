@@ -60,6 +60,8 @@ export const CredentialsAuthClients = ({
     },
   ];
 
+  const clientSecretLabel = t("details.credentials.client_secret");
+
   const handleKeyVisibilityUpgrade = () =>
     router.post(`/integrations/${id}/upgrade`, {
       keyVisibility: KeyVisibility.v2,
@@ -110,7 +112,12 @@ export const CredentialsAuthClients = ({
                 <span className="flex items-center whitespace-nowrap">
                   {t(client.label)}
                 </span>
-                <CopyText>{client.value}</CopyText>
+                {client.value && (
+                  <CopyText
+                    secret={t(client.label) === clientSecretLabel}
+                    text={client.value}
+                  />
+                )}
               </div>
             ))}
           </div>
@@ -129,7 +136,12 @@ export const CredentialsAuthClients = ({
                     <span className="flex items-center whitespace-nowrap">
                       {t(client.label)}
                     </span>
-                    <CopyText>{client.value}</CopyText>
+                    {client.value && (
+                      <CopyText
+                        secret={t(client.label) === clientSecretLabel}
+                        text={client.value}
+                      />
+                    )}
                   </div>
                 ))}
               </div>

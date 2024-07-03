@@ -96,6 +96,8 @@ export const IntegrationCard = ({
     },
   ];
 
+  const clientSecretLabel = t("details.credentials.client_secret");
+
   const hasAnyCredentials = Boolean(
     legacyTestConsumer || legacyProdConsumer || testClient || prodClient
   );
@@ -126,7 +128,12 @@ export const IntegrationCard = ({
                     <span className="flex items-center whitespace-nowrap">
                       {t(client.label)}
                     </span>
-                    <CopyText>{client.value}</CopyText>
+                    {client.value && (
+                      <CopyText
+                        secret={t(client.label) === clientSecretLabel}
+                        text={client.value}
+                      />
+                    )}
                   </div>
                 ))}
               </div>
@@ -150,7 +157,7 @@ export const IntegrationCard = ({
             <span className="flex items-center whitespace-nowrap">
               {t("details.credentials.api_key")}
             </span>
-            <CopyText>{legacyTestConsumer.apiKey}</CopyText>
+            <CopyText secret text={legacyTestConsumer.apiKey} />
           </section>
         )}
       {type === IntegrationType.Widgets &&
@@ -190,7 +197,12 @@ export const IntegrationCard = ({
                         <span className="flex items-center whitespace-nowrap">
                           {t(client.label)}
                         </span>
-                        <CopyText>{client.value}</CopyText>
+                        {client.value && (
+                          <CopyText
+                            secret={t(client.label) === clientSecretLabel}
+                            text={client.value}
+                          />
+                        )}
                       </div>
                     ))}
                   </div>
@@ -245,7 +257,7 @@ export const IntegrationCard = ({
                   <span className="flex items-center whitespace-nowrap">
                     {t("details.credentials.api_key")}
                   </span>
-                  <CopyText>{legacyProdConsumer.apiKey}</CopyText>
+                  <CopyText secret text={legacyProdConsumer.apiKey} />
                 </div>
               )}
             </div>
