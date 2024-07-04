@@ -12,7 +12,7 @@ export const Tooltip = ({ visible, text, children, className }: Props) => {
   return (
     <div className={twMerge("w-[2.5rem]", className)}>
       <div>
-        <div className="group relative inline-block">
+        <div className="group relative inline-flex gap-2">
           {children}
           <div
             className={classNames(
