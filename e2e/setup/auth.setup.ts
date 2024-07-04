@@ -1,11 +1,15 @@
 import { test as setup } from "@playwright/test";
 
+const loginDomain = process.env.KEYCLOAK_ENABLED
+  ? /account-keycloak-acc.uitid.be\/*/
+  : /account-acc.uitid.be\/*/;
+
 setup("authenticate as admin", async ({ page }) => {
   await page.goto("/nl");
 
   await page.getByRole("link", { name: "Probeer gratis" }).click();
 
-  await page.waitForURL(/account-keycloak-acc.uitid.be\/*/);
+  await page.waitForURL(loginDomain);
 
   await page
     .locator('input[name="username"]')
@@ -27,7 +31,7 @@ setup("authenticate as contributor", async ({ page }) => {
 
   await page.getByRole("link", { name: "Probeer gratis" }).click();
 
-  await page.waitForURL(/account-keycloak-acc.uitid.be\/*/);
+  await page.waitForURL(loginDomain);
 
   await page
     .locator('input[name="username"]')
@@ -51,7 +55,7 @@ setup(
 
     await page.getByRole("link", { name: "Probeer gratis" }).click();
 
-    await page.waitForURL(/account-keycloak-acc.uitid.be\/*/);
+    await page.waitForURL(loginDomain);
 
     await page
       .locator('input[name="username"]')
