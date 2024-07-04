@@ -33,19 +33,19 @@ final class AddOrganizer extends Action
         /** @var IntegrationModel $integration */
         $integration = $integrations->first();
 
-        /** @var string $organizationIdAsString */
-        $organizationIdAsString = $fields->get('organizer_id');
-        $organizationId = Uuid::fromString($organizationIdAsString);
+        /** @var string $organizerIdAsString */
+        $organizerIdAsString = $fields->get('organizer_id');
+        $organizerId = Uuid::fromString($organizerIdAsString);
 
         $this->organizerRepository->create(
             new Organizer(
                 Uuid::uuid4(),
                 Uuid::fromString($integration->id),
-                $organizationId
+                $organizerId
             )
         );
 
-        return Action::message('Organizer "' . $organizationIdAsString . '" added.');
+        return Action::message('Organizer "' . $organizerIdAsString . '" added.');
     }
 
     public function fields(NovaRequest $request): array
