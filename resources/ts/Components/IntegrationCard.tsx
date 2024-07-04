@@ -68,6 +68,8 @@ export const IntegrationCard = ({
   legacyProdConsumer,
   testClient,
   prodClient,
+  keycloakTestClient,
+  keycloakProdClient,
   keyVisibility,
   onEdit,
 }: Props) => {
@@ -77,32 +79,59 @@ export const IntegrationCard = ({
 
   const integrationTypesInfo = useIntegrationTypesInfo();
 
-  const auth0TestClientWithLabels = [
-    {
-      label: "details.credentials.client_id",
-      value: testClient?.clientId,
-    },
-    {
-      label: "details.credentials.client_secret",
-      value: testClient?.clientSecret,
-    },
-  ];
+  const testClientWithLabels = keycloakEnabled
+    ? [
+        {
+          label: "details.credentials.client_id",
+          value: keycloakTestClient?.clientId,
+        },
+        {
+          label: "details.credentials.client_secret",
+          value: keycloakTestClient?.clientSecret,
+        },
+      ]
+    : [
+        {
+          label: "details.credentials.client_id",
+          value: testClient?.clientId,
+        },
+        {
+          label: "details.credentials.client_secret",
+          value: testClient?.clientSecret,
+        },
+      ];
 
-  const auth0ProdClientWithLabels = [
-    {
-      label: "details.credentials.client_id",
-      value: prodClient?.clientId,
-    },
-    {
-      label: "details.credentials.client_secret",
-      value: prodClient?.clientSecret,
-    },
-  ];
+  const prodClientWithLabels = keycloakEnabled
+    ? [
+        {
+          label: "details.credentials.client_id",
+          value: keycloakProdClient?.clientId,
+        },
+        {
+          label: "details.credentials.client_secret",
+          value: keycloakProdClient?.clientSecret,
+        },
+      ]
+    : [
+        {
+          label: "details.credentials.client_id",
+          value: prodClient?.clientId,
+        },
+        {
+          label: "details.credentials.client_secret",
+          value: prodClient?.clientSecret,
+        },
+      ];
 
   const clientSecretLabel = t("details.credentials.client_secret");
 
   const hasAnyCredentials = Boolean(
-    legacyTestConsumer || legacyProdConsumer || testClient || prodClient
+    legacyTestConsumer ||
+      legacyProdConsumer ||
+      testClient ||
+      prodClient ||
+      keycloakProdClient ||
+      keycloakProdClient
   );
 
   usePolling(!hasAnyCredentials, { only: ["credentials"] });
@@ -123,7 +152,7 @@ export const IntegrationCard = ({
             </Heading>
             <div className="flex flex-col gap-2">
               <div className="flex flex-col gap-2">
-                {auth0TestClientWithLabels.map((client) => (
+                {testClientWithLabels.map((client) => (
                   <div
                     key={`${client.label}-${client.value}`}
                     className="flex gap-1 max-md:flex-col max-md:items-start"
@@ -192,7 +221,7 @@ export const IntegrationCard = ({
                 )}
                 {status === IntegrationStatus.Active && (
                   <div className="flex flex-col gap-2">
-                    {auth0ProdClientWithLabels.map((client) => (
+                    {prodClientWithLabels.map((client) => (
                       <div
                         key={`${client.label}-${client.value}`}
                         className="flex gap-1 max-md:flex-col max-md:items-start"

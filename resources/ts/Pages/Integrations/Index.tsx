@@ -19,6 +19,7 @@ import { UiTiDv1Environment } from "../../types/UiTiDv1Environment";
 import type { Credentials } from "../../types/Credentials";
 import type { Integration } from "../../types/Integration";
 import { router } from "@inertiajs/react";
+import { KeycloakEnvironment } from "../../types/KeycloakEnvironment";
 
 type Props = {
   integrations: Integration[];
@@ -72,9 +73,19 @@ const Index = ({ integrations, paginationInfo, credentials }: Props) => {
               client.integrationId === integration.id &&
               client.environment === UiTiDv1Environment.Production
           ),
+          keycloakTestClient: credentials.keycloak.find(
+            (client) =>
+              client.integrationId === integration.id &&
+              client.environment === KeycloakEnvironment.Testing
+          ),
+          keycloakProdClient: credentials.keycloak.find(
+            (client) =>
+              client.integrationId === integration.id &&
+              client.environment === KeycloakEnvironment.Testing
+          ),
         },
       })),
-    [integrations, credentials.auth0, credentials.uitidV1]
+    [integrations, credentials.auth0, credentials.uitidV1, credentials.keycloak]
   );
 
   const handleDeleteIntegration = () => {

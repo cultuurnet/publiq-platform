@@ -28,6 +28,8 @@ type Props = Pick<
 export const CredentialsAuthClients = ({
   testClient,
   prodClient,
+  keycloakTestClient,
+  keycloakProdClient,
   id,
   status,
   email,
@@ -42,27 +44,49 @@ export const CredentialsAuthClients = ({
 
   const isKeyVisibilityV1 = keyVisibility === KeyVisibility.v1;
 
-  const auth0TestClientWithLabels = [
-    {
-      label: "details.credentials.client_id",
-      value: testClient?.clientId,
-    },
-    {
-      label: "details.credentials.client_secret",
-      value: testClient?.clientSecret,
-    },
-  ];
+  const testClientWithLabels = keycloakEnabled
+    ? [
+        {
+          label: "details.credentials.client_id",
+          value: keycloakTestClient?.clientId,
+        },
+        {
+          label: "details.credentials.client_secret",
+          value: keycloakTestClient?.clientSecret,
+        },
+      ]
+    : [
+        {
+          label: "details.credentials.client_id",
+          value: testClient?.clientId,
+        },
+        {
+          label: "details.credentials.client_secret",
+          value: testClient?.clientSecret,
+        },
+      ];
 
-  const auth0ProdClientWithLabels = [
-    {
-      label: "details.credentials.client_id",
-      value: prodClient?.clientId,
-    },
-    {
-      label: "details.credentials.client_secret",
-      value: prodClient?.clientSecret,
-    },
-  ];
+  const prodClientWithLabels = keycloakEnabled
+    ? [
+        {
+          label: "details.credentials.client_id",
+          value: keycloakProdClient?.clientId,
+        },
+        {
+          label: "details.credentials.client_secret",
+          value: keycloakProdClient?.clientSecret,
+        },
+      ]
+    : [
+        {
+          label: "details.credentials.client_id",
+          value: prodClient?.clientId,
+        },
+        {
+          label: "details.credentials.client_secret",
+          value: prodClient?.clientSecret,
+        },
+      ];
 
   const clientSecretLabel = t("details.credentials.client_secret");
 
@@ -108,7 +132,7 @@ export const CredentialsAuthClients = ({
             <Heading className="font-semibold flex min-w-[5rem]" level={4}>
               {t("details.credentials.test")}
             </Heading>
-            {auth0TestClientWithLabels.map((client) => (
+            {testClientWithLabels.map((client) => (
               <div
                 key={`${client.label}-${client.value}`}
                 className="flex gap-1 max-md:flex-col max-md:items-start"
@@ -132,7 +156,7 @@ export const CredentialsAuthClients = ({
             <StatusLight status={status} />
             {status === IntegrationStatus.Active && (
               <div className="flex flex-col gap-3">
-                {auth0ProdClientWithLabels.map((client) => (
+                {prodClientWithLabels.map((client) => (
                   <div
                     key={`${client.label}-${client.value}`}
                     className="flex gap-1 max-md:flex-col max-md:items-start"
