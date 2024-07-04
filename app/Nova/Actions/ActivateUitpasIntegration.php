@@ -25,8 +25,6 @@ final class ActivateUitpasIntegration extends Action
     use InteractsWithQueue;
     use Queueable;
 
-    public $name = 'Activate Integration';
-
     public function __construct(
         private readonly IntegrationRepository $integrationRepository,
         private readonly OrganizerRepository $organizerRepository
