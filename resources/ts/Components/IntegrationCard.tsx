@@ -130,7 +130,7 @@ export const IntegrationCard = ({
                     </span>
                     {client.value && (
                       <CopyText
-                        secret={t(client.label) === clientSecretLabel}
+                        isSecret={t(client.label) === clientSecretLabel}
                         text={client.value}
                       />
                     )}
@@ -157,7 +157,7 @@ export const IntegrationCard = ({
             <span className="flex items-center whitespace-nowrap">
               {t("details.credentials.api_key")}
             </span>
-            <CopyText secret text={legacyTestConsumer.apiKey} />
+            <CopyText isSecret text={legacyTestConsumer.apiKey} />
           </section>
         )}
       {type === IntegrationType.Widgets &&
@@ -199,7 +199,7 @@ export const IntegrationCard = ({
                         </span>
                         {client.value && (
                           <CopyText
-                            secret={t(client.label) === clientSecretLabel}
+                            isSecret={t(client.label) === clientSecretLabel}
                             text={client.value}
                           />
                         )}
@@ -257,7 +257,7 @@ export const IntegrationCard = ({
                   <span className="flex items-center whitespace-nowrap">
                     {t("details.credentials.api_key")}
                   </span>
-                  <CopyText secret text={legacyProdConsumer.apiKey} />
+                  <CopyText isSecret text={legacyProdConsumer.apiKey} />
                 </div>
               )}
             </div>

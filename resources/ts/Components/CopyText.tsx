@@ -5,9 +5,9 @@ import { useTranslation } from "react-i18next";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { ButtonIcon } from "./ButtonIcon";
 
-type Props = { text: string; secret?: boolean };
+type Props = { text: string; isSecret?: boolean };
 
-export const CopyText = ({ text, secret }: Props) => {
+export const CopyText = ({ text, isSecret }: Props) => {
   const { t } = useTranslation();
 
   const codeFieldRef = useRef<HTMLSpanElement>(null);
@@ -30,14 +30,14 @@ export const CopyText = ({ text, secret }: Props) => {
         className="font-mono whitespace-pre	text-ellipsis overflow-hidden text-sm text-publiq-orange max-md:max-w-[15rem] max-xl:max-w-[30rem]"
         ref={codeFieldRef}
       >
-        {!secret || isSecretVisible ? text : "*".repeat(text?.length ?? 36)}
+        {!isSecret || isSecretVisible ? text : "*".repeat(text?.length ?? 36)}
       </span>
       <Tooltip visible={isVisible} text={t("tooltip.copy")} className="w-auto">
         <ButtonIconCopy
           onClick={() => handleCopyToClipboard(text)}
           className="text-publiq-orange"
         />
-        {secret && (
+        {isSecret && (
           <ButtonIcon
             icon={isSecretVisible ? faEyeSlash : faEye}
             className="text-publiq-orange p-0 h-auto w-auto"

@@ -56,7 +56,7 @@ export const CredentialsLegacyAuthConsumers = ({
             {t("details.credentials.api_key")}
           </span>
           {legacyTestConsumer && (
-            <CopyText secret text={legacyTestConsumer.apiKey} />
+            <CopyText isSecret text={legacyTestConsumer.apiKey} />
           )}
         </div>
         {keyVisibility !== KeyVisibility.v2 && (
@@ -72,7 +72,7 @@ export const CredentialsLegacyAuthConsumers = ({
                     <span className="flex items-center whitespace-nowrap">
                       {t("details.credentials.api_key")}
                     </span>
-                    <CopyText secret text={legacyProdConsumer.apiKey} />
+                    <CopyText isSecret text={legacyProdConsumer.apiKey} />
                   </div>
                 )}
                 {keyVisibility === KeyVisibility.all &&

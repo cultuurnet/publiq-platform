@@ -114,7 +114,7 @@ export const CredentialsAuthClients = ({
                 </span>
                 {client.value && (
                   <CopyText
-                    secret={t(client.label) === clientSecretLabel}
+                    isSecret={t(client.label) === clientSecretLabel}
                     text={client.value}
                   />
                 )}
@@ -138,7 +138,7 @@ export const CredentialsAuthClients = ({
                     </span>
                     {client.value && (
                       <CopyText
-                        secret={t(client.label) === clientSecretLabel}
+                        isSecret={t(client.label) === clientSecretLabel}
                         text={client.value}
                       />
                     )}
