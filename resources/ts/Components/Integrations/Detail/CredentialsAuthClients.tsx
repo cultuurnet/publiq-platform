@@ -12,6 +12,7 @@ import { KeyVisibility } from "../../../types/KeyVisibility";
 import { router } from "@inertiajs/react";
 import { Link } from "../../Link";
 import { Alert } from "../../Alert";
+import { usePageProps } from "../../../hooks/usePageProps";
 
 type Props = Pick<
   Integration,
@@ -36,6 +37,9 @@ export const CredentialsAuthClients = ({
   keyVisibilityUpgrade,
 }: Props) => {
   const { t } = useTranslation();
+  const { config } = usePageProps();
+  const keycloakEnabled = config.keycloakEnabled;
+
   const isKeyVisibilityV1 = keyVisibility === KeyVisibility.v1;
 
   const auth0TestClientWithLabels = [

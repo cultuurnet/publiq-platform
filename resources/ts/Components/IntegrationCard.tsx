@@ -22,6 +22,7 @@ import { Alert } from "./Alert";
 import { classNames } from "../utils/classNames";
 import { usePolling } from "../hooks/usePolling";
 import { ButtonSecondary } from "./ButtonSecondary";
+import { usePageProps } from "../hooks/usePageProps";
 
 type Props = Integration &
   Credentials & {
@@ -71,6 +72,8 @@ export const IntegrationCard = ({
   onEdit,
 }: Props) => {
   const { t } = useTranslation();
+  const { config } = usePageProps();
+  const keycloakEnabled = config.keycloakEnabled;
 
   const integrationTypesInfo = useIntegrationTypesInfo();
 
