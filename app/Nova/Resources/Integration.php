@@ -14,6 +14,7 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\OrganizerRepository;
 use App\Keycloak\KeycloakConfig;
 use App\Nova\Actions\ActivateIntegration;
+use App\Nova\Actions\ActivateUitpasIntegration;
 use App\Nova\Actions\AddOrganizer;
 use App\Nova\Actions\ApproveIntegration;
 use App\Nova\Actions\Auth0\CreateMissingAuth0Clients;
@@ -227,7 +228,15 @@ final class Integration extends Resource
                 ->confirmText('Are you sure you want to activate this integration?')
                 ->confirmButtonText('Activate')
                 ->cancelButtonText('Cancel')
-                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeActivated())
+                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeActivated() && !$this->isUiTPAS())
+                ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeActivated()),
+
+            (new ActivateUitpasIntegration(App::make(IntegrationRepository::class), App::make(OrganizerRepository::class)))
+                ->exceptOnIndex()
+                ->confirmText('Are you sure you want to activate this integration?')
+                ->confirmButtonText('Activate')
+                ->cancelButtonText('Cancel')
+                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeActivated() && $this->isUiTPAS())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeActivated()),
 
             (new ApproveIntegration(App::make(IntegrationRepository::class)))
