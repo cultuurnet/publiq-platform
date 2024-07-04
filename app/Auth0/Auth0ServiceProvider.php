@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Auth0;
 
-use App\Auth0\Jobs\UnblockClient;
-use App\Auth0\Jobs\UnblockClientHandler;
 use App\Auth0\Jobs\BlockClient;
 use App\Auth0\Jobs\BlockClientHandler;
 use App\Auth0\Jobs\CreateMissingClients;
 use App\Auth0\Jobs\CreateMissingClientsHandler;
+use App\Auth0\Jobs\UnblockClient;
+use App\Auth0\Jobs\UnblockClientHandler;
 use App\Auth0\Listeners\BlockClients;
 use App\Auth0\Listeners\CreateClients;
 use App\Auth0\Listeners\UnblockClients;
@@ -26,7 +26,6 @@ use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Events\IntegrationUrlCreated;
 use App\Domain\Integrations\Events\IntegrationUrlDeleted;
 use App\Domain\Integrations\Events\IntegrationUrlUpdated;
-use App\Keycloak\KeycloakConfig;
 use Auth0\SDK\Configuration\SdkConfiguration;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
@@ -56,15 +55,14 @@ final class Auth0ServiceProvider extends ServiceProvider
             // Filter out tenants with missing config (consider them disabled)
             $tenantsConfig = array_filter(
                 config('auth0.tenants'),
-                static fn (array $tenantConfig) =>
-                    $tenantConfig['domain'] !== '' &&
+                static fn (array $tenantConfig) => $tenantConfig['domain'] !== '' &&
                     $tenantConfig['clientId'] !== '' &&
                     $tenantConfig['clientSecret'] !== ''
             );
 
             // Create Auth0Tenant objects based on the tenants config keys
             $tenants = array_map(
-                static fn (string|int $tenant) => Auth0Tenant::from((string) $tenant),
+                static fn (string|int $tenant) => Auth0Tenant::from((string)$tenant),
                 array_keys($tenantsConfig)
             );
 
