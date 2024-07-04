@@ -19,7 +19,7 @@ export const ActivationRequest = ({ id, type }: Props) => {
     );
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-2">
       <div>
         {type === IntegrationType.EntryApi && (
           <Trans
