@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Search\Sapi3;
 
+use CultuurNet\SearchV3\Parameter\Id;
 use CultuurNet\SearchV3\Parameter\Query;
 use CultuurNet\SearchV3\SearchClientInterface;
 use CultuurNet\SearchV3\SearchQuery;
@@ -22,6 +23,21 @@ final readonly class Sapi3SearchService implements SearchService
         $searchQuery->addParameter(new Name($name));
         $searchQuery->setLimit(5);
         $searchQuery->setEmbed(true);
+
+        return $this->searchClient->searchOrganizers($searchQuery);
+    }
+
+    public function findUiTPASOrganizers(string ...$ids): PagedCollection
+    {
+        $searchQuery = new SearchQuery();
+        $searchQuery->setEmbed(true);
+        if (empty($ids)) {
+            return new PagedCollection();
+        }
+
+        foreach ($ids as $id) {
+            $searchQuery->addParameter(new Id($id));
+        }
 
         return $this->searchClient->searchOrganizers($searchQuery);
     }
