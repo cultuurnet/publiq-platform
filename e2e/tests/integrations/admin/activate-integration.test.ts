@@ -28,10 +28,10 @@ test("As an admin I can activate an integration", async ({ page }) => {
 
   // activate integration
   await page.goto(`/admin/resources/integrations/${integrationId}`);
-  await page.getByRole("button", { name: "Actions" }).click();
+  await page.locator("#nova-ui-dropdown-button-5").click();
   await page.getByRole("button", { name: "Activate Integration" }).click();
   await page.locator("#organization").selectOption(organizationId!);
-  await page.getByRole("button", { name: "Activate" }).click();
+  await page.locator("[dusk='confirm-action-button']").click();
 
   await expect(
     page.locator(`a[href="/admin/resources/organizations/${organizationId}"]`)
