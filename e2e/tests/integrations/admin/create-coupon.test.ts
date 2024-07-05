@@ -8,7 +8,7 @@ test("As an admin I can create a coupon)", async ({ page }) => {
   const { couponCode } = await createCoupon(page);
 
   await expect(
-    page.locator("h1").getByText(`Coupon Details: ${couponCode}`)
+    page.getByText(couponCode, { exact: true })
   ).toBeVisible();
 
 });
