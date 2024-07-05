@@ -2,10 +2,9 @@ import { test as setup } from "@playwright/test";
 
 const isKeycloakLoginEnabled = process.env.KEYCLOAK_LOGIN_ENABLED === "true";
 
-const loginDomain =
-  process.env.KEYCLOAK_LOGIN_ENABLED === "true"
-    ? /account-keycloak-acc.uitid.be\/*/
-    : /account-acc.uitid.be\/*/;
+const loginDomain = isKeycloakLoginEnabled
+  ? /account-keycloak-acc.uitid.be\/*/
+  : /account-acc.uitid.be\/*/;
 
 setup("authenticate as admin", async ({ page }) => {
   await page.goto("/nl");
