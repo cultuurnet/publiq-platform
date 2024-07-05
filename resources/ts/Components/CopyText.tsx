@@ -25,7 +25,7 @@ export const CopyText = ({ text, isSecret }: Props) => {
   };
 
   return (
-    <div className="inline-flex self-start gap-2 items-center bg-[#fdf3ef] rounded px-3 p-1">
+    <div className="inline-flex gap-2 items-center bg-[#fdf3ef] rounded px-3 p-1">
       <span
         className="font-mono whitespace-pre	text-ellipsis overflow-hidden text-sm text-publiq-orange max-md:max-w-[15rem] max-xl:max-w-[30rem]"
         ref={codeFieldRef}

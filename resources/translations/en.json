@@ -229,6 +229,11 @@
         "description": "Contacts can edit, activate, and delete the integration. Once deleted, a contact no longer has access to the integration."
       }
     },
+    "organizers_info": {
+      "title": "Organizers",
+      "description": "Below you see an overview of the UiTdatabank organizers for which you can execute actions in the UiTPAS API.",
+      "add": "Add organizer"
+    },
     "billing_info": {
       "title": {
         "billing": "Billing information",
