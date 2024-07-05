@@ -23,7 +23,7 @@ test("As an admin I can edit an existing integration", async ({ page }) => {
 
   const newIntegrationName = faker.word.adjective();
 
-  await page.getByTestId('edit-resource').click();
+  await page.locator("[dusk='edit-resource-button']").click();
   await page.getByPlaceholder('Name').fill(newIntegrationName);
   await page.getByPlaceholder('Description').fill(faker.lorem.lines(3));
   await page.getByRole('button', { name: 'Update Integration' }).click();

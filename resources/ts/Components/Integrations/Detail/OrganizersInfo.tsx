@@ -47,7 +47,7 @@ const OrganizersSection = ({
           <div className="grid grid-cols-[1fr,2fr,auto] gap-x-4 items-center">
             <h1 className={"font-bold"}>{organizer.name[i18n.language]}</h1>
             <div>
-              <CopyText>{organizer.id}</CopyText>
+              <CopyText text={organizer.id} />
             </div>
             {sectionName === "Live" && (
               <div>
