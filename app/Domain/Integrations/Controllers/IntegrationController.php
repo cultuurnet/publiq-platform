@@ -284,6 +284,16 @@ final class IntegrationController extends Controller
         return Redirect::back();
     }
 
+    public function storeOrganizers(string $id, $request): RedirectResponse
+    {
+        $integration = $this->integrationRepository->getById(Uuid::fromString($id));
+
+        dd($integration,$request->all());
+        $this->integrationUrlRepository->save($integrationUrl);
+
+        return Redirect::back();
+    }
+
     public function updateOrganization(string $id, UpdateOrganizationRequest $request): RedirectResponse
     {
         $organization = OrganizationMapper::mapUpdate($request);

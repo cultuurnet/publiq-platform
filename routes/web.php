@@ -96,6 +96,8 @@ Route::group(['middleware' => 'auth'], static function () {
 
         Route::patch('/integrations/{id}/organization', [IntegrationController::class, 'updateOrganization']);
 
+        Route::post('/integrations/{id}/organizers', [IntegrationController::class, 'storeOrganizers']);
+
         Route::post('/integrations/{id}/activation', [IntegrationController::class, 'requestActivation']);
 
         Route::get('/integrations/{id}/widget', [IntegrationController::class, 'showWidget']);

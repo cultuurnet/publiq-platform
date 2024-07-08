@@ -26,11 +26,6 @@ const OrganizersSection = ({
 }) => {
   const { t, i18n } = useTranslation();
   const [isModalVisible, setIsModalVisible] = useState(true);
-  const searchResults = [
-    { id: "foo", name: "foo" },
-    { id: "bar", name: "bar" },
-  ];
-
   const form = useForm<{ organizers: UiTPASOrganizer[] }>({
     organizers: [],
   });
@@ -82,7 +77,7 @@ const OrganizersSection = ({
             </ButtonSecondary>
             <ButtonPrimary
               onClick={() => {
-                alert("lol");
+                fetch(`/integrations/${id}/organizers`, form.data);
               }}
             >
               {t("dialog.confirm")}
