@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Heading } from "../../Heading";
 import { useTranslation } from "react-i18next";
 import type { Integration } from "../../../types/Integration";
@@ -9,6 +9,16 @@ import { faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
 import type { Organizer } from "../../../types/Organizer";
 import { groupBy } from "lodash";
 import { ButtonPrimary } from "../../ButtonPrimary";
+import { t } from "i18next";
+import { QuestionDialog } from "../../QuestionDialog";
+import { Dialog } from "../../Dialog";
+import { ButtonSecondary } from "../../ButtonSecondary";
+import { FormElement } from "../../FormElement";
+import { Input } from "../../Input";
+import { Datalist } from "../../Datalist";
+import { ActivationDialog } from "../../ActivationDialog";
+import { router } from "@inertiajs/react";
+import { OrganizersDatalist } from "./OrganizersDatalist";
 
 type Props = Integration & { organizers: Organizer[] };
 
@@ -20,6 +30,11 @@ const OrganizersSection = ({
   sectionName: Organizer["status"];
 }) => {
   const { t, i18n } = useTranslation();
+  const [isModalVisible, setIsModalVisible] = useState(true);
+  const searchResults = [
+    { id: "foo", name: "foo" },
+    { id: "bar", name: "bar" },
+  ];
   if (!organizers?.length) {
     return null;
   }
@@ -47,11 +62,40 @@ const OrganizersSection = ({
       ))}
       <div className="grid lg:grid-cols-3">
         {sectionName === "Live" && (
-          <ButtonPrimary className="col-span-1">
+          <ButtonPrimary
+            className="col-span-1"
+            onClick={() => setIsModalVisible(true)}
+          >
             {t("details.organizers_info.add")}
           </ButtonPrimary>
         )}
       </div>
+      <Dialog
+        isVisible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+        title={t("details.organizers_info.add")}
+        contentStyles="gap-3"
+        actions={
+          <>
+            <ButtonSecondary onClick={() => setIsModalVisible(false)}>
+              {t("dialog.cancel")}
+            </ButtonSecondary>
+            <ButtonPrimary
+              onClick={() => {
+                alert("lol");
+              }}
+            >
+              {t("dialog.confirm")}
+            </ButtonPrimary>
+          </>
+        }
+      >
+        <Heading level={5} className="font-light">
+          Geef de UiTdatabank-organisaties op waarvoor je acties in UiTPAS wilt
+          uitvoeren.
+        </Heading>
+        <OrganizersDatalist onSelect={alert} />
+      </Dialog>
     </>
   );
 };

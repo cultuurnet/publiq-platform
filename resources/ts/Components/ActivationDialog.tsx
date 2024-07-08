@@ -19,6 +19,7 @@ import { debounce } from "lodash";
 import type { Organization } from "../types/Organization";
 import type { UiTPASOrganizer } from "../types/UiTPASOrganizer";
 import { Alert } from "./Alert";
+import { OrganizersDatalist } from "./Integrations/Detail/OrganizersDatalist";
 
 const PriceOverview = ({
   coupon,
@@ -360,15 +361,18 @@ export const ActivationDialog = ({
                   </div>
                 ))}
             </div>
+            <OrganizersDatalist
+              label={t(
+                "integrations.activation_dialog.uitpas.organizers.label"
+              )}
+              error={organizationFormErrors["organizers"]}
+              onSelect={handleAddOrganizers}
+            />
             {organizerError && (
               <Alert variant="error">{t("dialog.invite_error")}</Alert>
             )}
             <FormElement
-              label={t(
-                "integrations.activation_dialog.uitpas.organizers.label"
-              )}
               required
-              error={organizationFormErrors["organizers"]}
               className="w-full relative"
               component={
                 <>
