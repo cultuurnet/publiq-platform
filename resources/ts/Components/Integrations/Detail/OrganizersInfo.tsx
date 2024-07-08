@@ -116,8 +116,7 @@ const OrganizersSection = ({
         }
       >
         <Heading level={5} className="font-light">
-          Geef de UiTdatabank-organisaties op waarvoor je acties in UiTPAS wilt
-          uitvoeren.
+          {t("details.organizers_info.update_dialog.question")}
         </Heading>
         <OrganizersDatalist
           onChange={(organizers) => form.setData("organizers", organizers)}
