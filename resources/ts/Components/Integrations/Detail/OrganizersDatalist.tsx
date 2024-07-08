@@ -5,11 +5,15 @@ import type { UiTPASOrganizer } from "../../../types/UiTPASOrganizer";
 import { debounce } from "lodash";
 import { useTranslation } from "react-i18next";
 import { Alert } from "../../Alert";
+import { ButtonIcon } from "../../ButtonIcon";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
-export const OrganizersDatalist = ({
-  onSelect,
-  ...props
-}: Omit<FormElementProps, "component">) => {
+type Props = {
+  onChange: (organizers: UiTPASOrganizer[]) => void;
+  value: UiTPASOrganizer[];
+} & Omit<FormElementProps, "onChange" | "component">;
+
+export const OrganizersDatalist = ({ onChange, value, ...props }: Props) => {
   const { t } = useTranslation();
   const [isSearchListVisible, setIsSearchListVisible] = useState(false);
   const [organizerList, setOrganizerList] = useState<UiTPASOrganizer[]>([]);
@@ -52,8 +56,43 @@ export const OrganizersDatalist = ({
     }
   };
 
+  const handleAddOrganizers = (organizer: UiTPASOrganizer) => {
+    const isDuplicate =
+      value.length > 0 &&
+      value.some((existingOrganizer) => existingOrganizer.id === organizer.id);
+
+    if (!isDuplicate) {
+      onChange([...value, organizer]);
+      setIsSearchListVisible(false);
+      setOrganizerList([]);
+      if (organizersInputRef.current) {
+        organizersInputRef.current.value = "";
+      }
+    }
+  };
+
+  const handleDeleteOrganizer = (deletedOrganizer: string) =>
+    onChange(value.filter((organizer) => organizer.name !== deletedOrganizer));
+
   return (
     <>
+      <div className="flex gap-2 flex-wrap">
+        {value.length > 0 &&
+          value.map((organizer, index) => (
+            <div
+              key={`${organizer}${index}`}
+              className="border rounded px-2 py-1 flex gap-1"
+            >
+              <p>{organizer.name}</p>
+              <ButtonIcon
+                icon={faTrash}
+                size="sm"
+                className="text-icon-gray"
+                onClick={() => handleDeleteOrganizer(organizer.name)}
+              />
+            </div>
+          ))}
+      </div>
       {organizerError && (
         <Alert variant="error">{t("dialog.invite_error")}</Alert>
       )}
@@ -80,7 +119,7 @@ export const OrganizersDatalist = ({
                     <li
                       tabIndex={0}
                       key={`${organizer.id}`}
-                      onClick={() => onSelect(organizer)}
+                      onClick={() => handleAddOrganizers(organizer)}
                       onKeyDown={(e) => handleKeyDown(e, organizer)}
                       className="border-b px-3 py-1 hover:bg-gray-100"
                     >

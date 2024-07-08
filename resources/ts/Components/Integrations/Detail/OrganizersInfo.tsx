@@ -9,16 +9,11 @@ import { faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
 import type { Organizer } from "../../../types/Organizer";
 import { groupBy } from "lodash";
 import { ButtonPrimary } from "../../ButtonPrimary";
-import { t } from "i18next";
-import { QuestionDialog } from "../../QuestionDialog";
 import { Dialog } from "../../Dialog";
 import { ButtonSecondary } from "../../ButtonSecondary";
-import { FormElement } from "../../FormElement";
-import { Input } from "../../Input";
-import { Datalist } from "../../Datalist";
-import { ActivationDialog } from "../../ActivationDialog";
-import { router } from "@inertiajs/react";
+import { useForm } from "@inertiajs/react";
 import { OrganizersDatalist } from "./OrganizersDatalist";
+import { UiTPASOrganizer } from "../../../types/UiTPASOrganizer";
 
 type Props = Integration & { organizers: Organizer[] };
 
@@ -35,6 +30,11 @@ const OrganizersSection = ({
     { id: "foo", name: "foo" },
     { id: "bar", name: "bar" },
   ];
+
+  const form = useForm<{ organizers: UiTPASOrganizer[] }>({
+    organizers: [],
+  });
+
   if (!organizers?.length) {
     return null;
   }
@@ -94,7 +94,10 @@ const OrganizersSection = ({
           Geef de UiTdatabank-organisaties op waarvoor je acties in UiTPAS wilt
           uitvoeren.
         </Heading>
-        <OrganizersDatalist onSelect={alert} />
+        <OrganizersDatalist
+          onChange={(organizers) => form.setData("organizers", organizers)}
+          value={form.data.organizers}
+        />
       </Dialog>
     </>
   );
