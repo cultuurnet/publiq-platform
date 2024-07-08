@@ -298,6 +298,17 @@ final class IntegrationController extends Controller
         );
     }
 
+    public function deleteOrganizer(string $integrationId, string $organizerId): RedirectResponse
+    {
+        $this->organizerRepository->delete(new Organizer(
+            Uuid::uuid4(),
+            Uuid::fromString($integrationId),
+            Uuid::fromString($organizerId)
+        ));
+
+        return Redirect::back();
+    }
+
     public function requestActivation(string $id, RequestActivationRequest $request): RedirectResponse
     {
         $guardCouponResult = $this->guardCoupon($request);
