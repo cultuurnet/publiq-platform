@@ -14,7 +14,7 @@ import { router, useForm } from "@inertiajs/react";
 import { Dialog } from "../../Dialog";
 import { ButtonSecondary } from "../../ButtonSecondary";
 import { OrganizersDatalist } from "./OrganizersDatalist";
-import { UiTPASOrganizer } from "../../../types/UiTPASOrganizer";
+import type { UiTPASOrganizer } from "../../../types/UiTPASOrganizer";
 
 type Props = Integration & { organizers: Organizer[] };
 
@@ -42,7 +42,10 @@ const OrganizersSection = ({
   };
 
   const handleUpdateOrganizers = () =>
-    router.post(`/integrations/${id}/organizers`, form.data);
+    router.post(`/integrations/${id}/organizers`, form.data, {
+      preserveScroll: false,
+      preserveState: false,
+    });
 
   if (!organizers?.length) {
     return null;

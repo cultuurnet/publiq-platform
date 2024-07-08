@@ -1,5 +1,6 @@
 import { Input } from "../../Input";
-import { FormElement, Props as FormElementProps } from "../../FormElement";
+import type { Props as FormElementProps } from "../../FormElement";
+import { FormElement } from "../../FormElement";
 import React, { useRef, useState } from "react";
 import type { UiTPASOrganizer } from "../../../types/UiTPASOrganizer";
 import { debounce } from "lodash";
@@ -23,20 +24,26 @@ export const OrganizersDatalist = ({ onChange, value, ...props }: Props) => {
   const handleGetOrganizers = debounce(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const response = await fetch(`/organizers?name=${e.target.value}`);
-      const data = await response.json();
-      if ("exception" in data) {
+      try {
+        const data = await response.json();
+        if ("exception" in data) {
+          setOrganizerError(true);
+          return;
+        }
+        const organizers = data.map(
+          (organizer: { name: string | { nl: string }; id: string }) => {
+            if (typeof organizer.name === "object" && "nl" in organizer.name) {
+              return { name: organizer.name.nl, id: organizer.id };
+            }
+            return organizer;
+          }
+        );
+        setOrganizerList(organizers);
+      } catch (error) {
         setOrganizerError(true);
         return;
       }
-      const organizers = data.map(
-        (organizer: { name: string | { nl: string }; id: string }) => {
-          if (typeof organizer.name === "object" && "nl" in organizer.name) {
-            return { name: organizer.name.nl, id: organizer.id };
-          }
-          return organizer;
-        }
-      );
-      setOrganizerList(organizers);
+
       if (organizerError) {
         setOrganizerError(false);
       }
@@ -68,6 +75,15 @@ export const OrganizersDatalist = ({ onChange, value, ...props }: Props) => {
       if (organizersInputRef.current) {
         organizersInputRef.current.value = "";
       }
+    }
+  };
+
+  const handleKeyDown = (
+    event: React.KeyboardEvent<HTMLLIElement>,
+    organizer: UiTPASOrganizer
+  ) => {
+    if (event.key === "Enter") {
+      handleAddOrganizers(organizer);
     }
   };
 

@@ -96,7 +96,7 @@ Route::group(['middleware' => 'auth'], static function () {
 
         Route::patch('/integrations/{id}/organization', [IntegrationController::class, 'updateOrganization']);
 
-        Route::post('/integrations/{id}/organizers', [IntegrationController::class, 'storeOrganizers']);
+        Route::post('/integrations/{id}/organizers', [IntegrationController::class, 'updateOrganizers']);
         Route::delete('/integrations/{id}/organizers/{organizerId}', [IntegrationController::class, 'deleteOrganizer']);
 
         Route::post('/integrations/{id}/activation', [IntegrationController::class, 'requestActivation']);

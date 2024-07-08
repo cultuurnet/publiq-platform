@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext } from "react";
 import { Dialog } from "./Dialog";
 import { ButtonSecondary } from "./ButtonSecondary";
 import { ButtonPrimary } from "./ButtonPrimary";
@@ -13,12 +13,8 @@ import type { PricingPlan } from "../hooks/useGetPricingPlans";
 import { formatCurrency } from "../utils/formatCurrency";
 import { Heading } from "./Heading";
 import { CouponInfoContext } from "../Context/CouponInfo";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { ButtonIcon } from "./ButtonIcon";
-import { debounce } from "lodash";
 import type { Organization } from "../types/Organization";
 import type { UiTPASOrganizer } from "../types/UiTPASOrganizer";
-import { Alert } from "./Alert";
 import { OrganizersDatalist } from "./Integrations/Detail/OrganizersDatalist";
 
 const PriceOverview = ({

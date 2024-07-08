@@ -76,7 +76,8 @@ final class IntegrationController extends Controller
         private readonly KeyVisibilityUpgradeRepository $keyVisibilityUpgradeRepository,
         private readonly SearchService $searchClient,
         private readonly CurrentUser $currentUser
-    ) {
+    )
+    {
     }
 
     public function index(Request $request): Response
@@ -88,13 +89,13 @@ final class IntegrationController extends Controller
             is_array($search) ? $search[0] : $search
         );
 
-        $integrationIds = array_map(fn ($integration) => $integration->id, $integrationsData->collection->toArray());
+        $integrationIds = array_map(fn($integration) => $integration->id, $integrationsData->collection->toArray());
 
         $auth0Clients = $this->auth0ClientRepository->getByIntegrationIds($integrationIds);
         $uitidV1Consumers = $this->uitidV1ConsumerRepository->getByIntegrationIds($integrationIds);
 
         return Inertia::render('Integrations/Index', [
-            'integrations' => $integrationsData->collection->map(fn (Integration $integration) => $integration->toArray()),
+            'integrations' => $integrationsData->collection->map(fn(Integration $integration) => $integration->toArray()),
             'credentials' => [
                 'auth0' => $auth0Clients,
                 'uitidV1' => $uitidV1Consumers,
@@ -175,7 +176,7 @@ final class IntegrationController extends Controller
         $integration = $this->integrationRepository->getById(Uuid::fromString($id));
         $oldCredentialsExpirationDate = $this->getExpirationDateForOldCredentials($integration->getKeyVisibilityUpgrade());
 
-        $organizerIds = collect($integration->organizers())->map(fn (Organizer $organizer) => $organizer->organizerId->toString());
+        $organizerIds = collect($integration->organizers())->map(fn(Organizer $organizer) => $organizer->organizerId->toString());
         $uitpasOrganizers = $this->searchClient->findUiTPASOrganizers(...$organizerIds)->getMember()?->getItems();
         $organizers = collect($uitpasOrganizers)->map(function (SapiOrganizer $organizer) {
             $id = explode('/', $organizer->getId() ?? '');
@@ -225,9 +226,9 @@ final class IntegrationController extends Controller
 
         $toDeleteUrlIds = $currentUrls
             ->filter(
-                fn (IntegrationUrl $url) => $updatedUrls->doesntContain('id', '=', $url->id)
+                fn(IntegrationUrl $url) => $updatedUrls->doesntContain('id', '=', $url->id)
             )
-            ->map(fn (IntegrationUrl $url) => $url->id);
+            ->map(fn(IntegrationUrl $url) => $url->id);
 
         $this->integrationUrlRepository->deleteByIds($toDeleteUrlIds);
 
@@ -299,9 +300,16 @@ final class IntegrationController extends Controller
         );
     }
 
-    public function storeOrganizers(string $integrationId, UpdateIntegrationOrganizersRequest $request): RedirectResponse
+    public function updateOrganizers(string $integrationId, UpdateIntegrationOrganizersRequest $request): RedirectResponse
     {
-        $this->organizerRepository->create(...OrganizerMapper::map($request, $integrationId));
+        $integration = $this->integrationRepository->getById(Uuid::fromString($integrationId));
+
+        $organizerIds = collect($integration->organizers())->map(fn(Organizer $organizer) => $organizer->organizerId->toString());
+        $newOrganizers = array_filter(OrganizerMapper::map($request, $integrationId), static function (Organizer $organizer) use ($organizerIds) {
+            return !in_array($organizer->organizerId->toString(), $organizerIds->toArray(), true);
+        });
+
+        $this->organizerRepository->create(...$newOrganizers);
 
         return Redirect::back();
     }
