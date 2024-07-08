@@ -16,6 +16,7 @@ use App\Domain\Integrations\FormRequests\StoreContactRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationUrlRequest;
 use App\Domain\Integrations\FormRequests\UpdateContactInfoRequest;
+use App\Domain\Integrations\FormRequests\UpdateIntegrationOrganizersRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationUrlsRequest;
 use App\Domain\Integrations\FormRequests\UpdateOrganizationRequest;
@@ -284,16 +285,6 @@ final class IntegrationController extends Controller
         return Redirect::back();
     }
 
-    public function storeOrganizers(string $id, $request): RedirectResponse
-    {
-        $integration = $this->integrationRepository->getById(Uuid::fromString($id));
-
-        dd($integration,$request->all());
-        $this->integrationUrlRepository->save($integrationUrl);
-
-        return Redirect::back();
-    }
-
     public function updateOrganization(string $id, UpdateOrganizationRequest $request): RedirectResponse
     {
         $organization = OrganizationMapper::mapUpdate($request);
@@ -306,6 +297,24 @@ final class IntegrationController extends Controller
                 'id' => $id,
             ]
         );
+    }
+
+    public function storeOrganizers(string $integrationId, UpdateIntegrationOrganizersRequest $request): RedirectResponse
+    {
+        $this->organizerRepository->create(...OrganizerMapper::map($request, $integrationId));
+
+        return Redirect::back();
+    }
+
+    public function deleteOrganizer(string $integrationId, string $organizerId): RedirectResponse
+    {
+        $this->organizerRepository->delete(new Organizer(
+            Uuid::uuid4(),
+            Uuid::fromString($integrationId),
+            Uuid::fromString($organizerId)
+        ));
+
+        return Redirect::back();
     }
 
     public function requestActivation(string $id, RequestActivationRequest $request): RedirectResponse
