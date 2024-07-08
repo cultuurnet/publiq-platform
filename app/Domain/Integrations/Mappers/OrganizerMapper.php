@@ -25,7 +25,7 @@ final class OrganizerMapper
             $organizers[] = new Organizer(
                 Uuid::uuid4(),
                 Uuid::fromString($id),
-                Uuid::fromString($organizer['id'])
+                $organizer['id']
             );
         }
 
