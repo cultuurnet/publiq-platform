@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Nova\Dashboards\Main;
+use App\Nova\Resources\Integration;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Laravel\Nova\Dashboard;
@@ -53,5 +54,6 @@ final class NovaServiceProvider extends NovaApplicationServiceProvider
 
     public function register(): void
     {
+        Nova::initialPath('/resources/' . Integration::uriKey());
     }
 }
