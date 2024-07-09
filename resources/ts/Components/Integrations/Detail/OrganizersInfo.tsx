@@ -42,26 +42,33 @@ const OrganizersSection = ({
       <Heading level={4} className="font-semibold">
         {sectionName}
       </Heading>
-      {organizers.map((organizer) => (
-        <Card key={organizer.id}>
-          <div className="grid grid-cols-[1fr,2fr,auto] gap-x-4 items-center">
-            <h1 className={"font-bold"}>{organizer.name[i18n.language]}</h1>
-            <div>
-              <CopyText text={organizer.id} />
-            </div>
-            {sectionName === "Live" && (
+      <div className="gap-0">
+        {organizers.map((organizer) => (
+          <Card
+            key={organizer.id}
+            className={
+              "m-0 drop-shadow-none border border-gray-200 border-t-0 first:border-t"
+            }
+          >
+            <div className="grid grid-cols-[1fr,2fr,auto] gap-x-4 items-center">
+              <h1 className={"font-bold"}>{organizer.name[i18n.language]}</h1>
               <div>
-                <ButtonIcon icon={faPencil} className="text-icon-gray" />
-                <ButtonIcon
-                  icon={faTrash}
-                  className="text-icon-gray"
-                  onClick={() => setToBeDeletedId(organizer.id)}
-                />
+                <CopyText text={organizer.id} />
               </div>
-            )}
-          </div>
-        </Card>
-      ))}
+              {sectionName === "Live" && (
+                <div>
+                  <ButtonIcon icon={faPencil} className="text-icon-gray" />
+                  <ButtonIcon
+                    icon={faTrash}
+                    className="text-icon-gray"
+                    onClick={() => setToBeDeletedId(organizer.id)}
+                  />
+                </div>
+              )}
+            </div>
+          </Card>
+        ))}
+      </div>
       <div className="grid lg:grid-cols-3">
         {sectionName === "Live" && (
           <ButtonPrimary className="col-span-1">
