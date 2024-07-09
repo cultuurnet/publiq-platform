@@ -67,7 +67,6 @@ final class IntegrationModel extends UuidModel
     protected $attributes = [
         'status' => IntegrationStatus::Draft,
         'partner_status' => IntegrationPartnerStatus::THIRD_PARTY,
-        'type' => IntegrationType::UiTPAS->value,
     ];
 
     public function canBeActivated(): bool
@@ -98,7 +97,7 @@ final class IntegrationModel extends UuidModel
 
     public function isUiTPAS(): bool
     {
-        return $this->type === IntegrationType::UiTPAS->value;
+        return $this->type === IntegrationType::UiTPAS->value || $this->type === null;
     }
 
     protected static function booted(): void
