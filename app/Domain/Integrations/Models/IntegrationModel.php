@@ -67,6 +67,7 @@ final class IntegrationModel extends UuidModel
     protected $attributes = [
         'status' => IntegrationStatus::Draft,
         'partner_status' => IntegrationPartnerStatus::THIRD_PARTY,
+        'type' => IntegrationType::UiTPAS->value,
     ];
 
     public function canBeActivated(): bool
