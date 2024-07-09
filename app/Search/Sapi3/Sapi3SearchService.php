@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Search\Sapi3;
 
-use CultuurNet\SearchV3\Parameter\Id;
 use CultuurNet\SearchV3\Parameter\Query;
 use CultuurNet\SearchV3\SearchClientInterface;
 use CultuurNet\SearchV3\SearchQuery;
@@ -35,9 +34,8 @@ final readonly class Sapi3SearchService implements SearchService
             return new PagedCollection();
         }
 
-        foreach ($ids as $id) {
-            $searchQuery->addParameter(new Id($id));
-        }
+        $ids = array_map(fn (string $id) => sprintf('id:"%s"', $id), $ids);
+        $searchQuery->addParameter(new Query(implode(' OR ', $ids)));
 
         return $this->searchClient->searchOrganizers($searchQuery);
     }
