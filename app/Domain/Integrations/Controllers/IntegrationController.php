@@ -381,13 +381,10 @@ final class IntegrationController extends Controller
         return null;
     }
 
-    /**
-     * @param Integration $integration
-     * @return Collection
-     */
+
     public function getIntegrationOrganizersWithTestOrganizer(Integration $integration): Collection
     {
-        $organizerIds = collect($integration->organizers())->map(fn(Organizer $organizer) => $organizer->organizerId->toString());
+        $organizerIds = collect($integration->organizers())->map(fn (Organizer $organizer) => $organizer->organizerId->toString());
         $uitpasOrganizers = $this->searchClient->findUiTPASOrganizers(...$organizerIds)->getMember()?->getItems();
 
         $organizers = collect($uitpasOrganizers)->map(function (SapiOrganizer $organizer) {
