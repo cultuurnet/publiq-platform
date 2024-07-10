@@ -178,17 +178,7 @@ final class IntegrationController extends Controller
         $integration = $this->integrationRepository->getById(Uuid::fromString($id));
         $oldCredentialsExpirationDate = $this->getExpirationDateForOldCredentials($integration->getKeyVisibilityUpgrade());
 
-        $organizerIds = collect($integration->organizers())->map(fn (Organizer $organizer) => $organizer->organizerId->toString());
-        $uitpasOrganizers = $this->searchClient->findUiTPASOrganizers(...$organizerIds)->getMember()?->getItems();
-        $organizers = collect($uitpasOrganizers)->map(function (SapiOrganizer $organizer) {
-            $id = explode('/', $organizer->getId() ?? '');
-
-            return [
-                'id' => $id[count($id) - 1],
-                'name' => $organizer->getName()?->getValues() ?? $id,
-                'status' => $organizer->getWorkflowStatus() === 'ACTIVE' ? 'Live' : 'Test',
-            ];
-        });
+        $organizers = $this->getIntegrationOrganizersWithTestOrganizer($integration);
 
         return Inertia::render('Integrations/Detail', [
             'integration' => $integration->toArray(),
@@ -393,5 +383,31 @@ final class IntegrationController extends Controller
         }
 
         return null;
+    }
+
+
+    public function getIntegrationOrganizersWithTestOrganizer(Integration $integration): Collection
+    {
+        $organizerIds = collect($integration->organizers())->map(fn (Organizer $organizer) => $organizer->organizerId->toString());
+        $uitpasOrganizers = $this->searchClient->findUiTPASOrganizers(...$organizerIds)->getMember()?->getItems();
+
+        $organizers = collect($uitpasOrganizers)->map(function (SapiOrganizer $organizer) {
+            $id = explode('/', $organizer->getId() ?? '');
+            $id = $id[count($id) - 1];
+
+            return [
+                'id' => $id,
+                'name' => $organizer->getName()?->getValues() ?? [],
+                'status' => 'Live',
+            ];
+        });
+
+        $organizers->push([
+            'id' => '0ce87cbc-9299-4528-8d35-92225dc9489f',
+            'name' => ['nl' => 'UiTPAS Organisatie (Regio Gent + Paspartoe)'],
+            'status' => 'Test',
+        ]);
+
+        return $organizers;
     }
 }
