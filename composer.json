@@ -17,6 +17,7 @@
         "laravel/nova": "^4.0",
         "laravel/tinker": "^2.7",
         "mailjet/mailjet-apiv3-php": "^1.6",
+        "outl1ne/nova-multiselect-field": "^4.5",
         "publiq/insightly-link": "*",
         "sentry/sentry-laravel": "^4.1",
         "spatie/laravel-activitylog": "^4.7"
