@@ -422,7 +422,7 @@ export const ContactInfo = ({
         onCancel={() => {
           setToBeDeletedId("");
         }}
-      ></QuestionDialog>
+      />
     </>
   );
 };

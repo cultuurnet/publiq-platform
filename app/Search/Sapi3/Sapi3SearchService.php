@@ -25,4 +25,18 @@ final readonly class Sapi3SearchService implements SearchService
 
         return $this->searchClient->searchOrganizers($searchQuery);
     }
+
+    public function findUiTPASOrganizers(string ...$ids): PagedCollection
+    {
+        $searchQuery = new SearchQuery();
+        $searchQuery->setEmbed(true);
+        if (empty($ids)) {
+            return new PagedCollection();
+        }
+
+        $ids = array_map(fn (string $id) => sprintf('id:"%s"', $id), $ids);
+        $searchQuery->addParameter(new Query(implode(' OR ', $ids)));
+
+        return $this->searchClient->searchOrganizers($searchQuery);
+    }
 }

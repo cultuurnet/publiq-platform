@@ -97,7 +97,7 @@ final class IntegrationModel extends UuidModel
 
     public function isUiTPAS(): bool
     {
-        return $this->type === IntegrationType::UiTPAS->value;
+        return $this->type === IntegrationType::UiTPAS->value || $this->type === null;
     }
 
     protected static function booted(): void
@@ -349,6 +349,11 @@ final class IntegrationModel extends UuidModel
             ...$this->keycloakClients()
             ->get()
             ->map(fn (KeycloakClientModel $keycloakClientModel) => $keycloakClientModel->toDomain())
+            ->toArray()
+        )->withOrganizers(
+            ...$this->organizers()
+            ->get()
+            ->map(fn (OrganizerModel $organizerModel) => $organizerModel->toDomain())
             ->toArray()
         );
 

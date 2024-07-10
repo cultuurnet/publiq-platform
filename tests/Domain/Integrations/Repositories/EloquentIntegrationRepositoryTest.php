@@ -561,4 +561,28 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'partner_status' => IntegrationPartnerStatus::FIRST_PARTY,
         ]);
     }
+
+    // https://jira.publiq.be/browse/PPF-555
+    public function test_it_can_save_integration_uitpas_always_with_key_visibility_v2(): void
+    {
+        $integrationId = Uuid::uuid4();
+
+        $searchIntegration = new Integration(
+            $integrationId,
+            IntegrationType::UiTPAS,
+            'First party integration',
+            'First party integration',
+            Uuid::uuid4(),
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::FIRST_PARTY,
+        );
+        $searchIntegration = $searchIntegration->withKeyVisibility(KeyVisibility::v1);
+
+        $this->integrationRepository->save($searchIntegration);
+
+        $this->assertDatabaseHas('integrations', [
+            'id' => $integrationId,
+            'key_visibility' => 'v2',
+        ]);
+    }
 }

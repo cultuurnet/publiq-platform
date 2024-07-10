@@ -229,6 +229,15 @@
         "description": "Contacten kunnen de integratie aanpassen, activeren en verwijderen. Eens verwijderd heeft een contact geen toegang meer tot de integratie."
       }
     },
+    "organizers_info": {
+      "title": "Organisaties",
+      "description": "Hieronder vind je een overzicht van de UiTdatabank organisaties waarvoor je acties kan uitvoeren in de UiTPAS API.",
+      "add": "Organisatie toevoegen",
+      "delete_dialog": {
+        "title": "Organisatie verwijderen",
+        "question": "Ben je zeker dat je {{name}} wilt verwijderen van je integratie?"
+      }
+    },
     "billing_info": {
       "title": {
         "billing": "Facturatiegegevens",

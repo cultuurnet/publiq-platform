@@ -10,11 +10,11 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\ContactKeyVisibilityRepository;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Coupons\Repositories\CouponRepository;
+use App\Domain\Integrations\FormRequests\KeyVisibilityUpgradeRequest;
 use App\Domain\Integrations\FormRequests\RequestActivationRequest;
 use App\Domain\Integrations\FormRequests\StoreContactRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationUrlRequest;
-use App\Domain\Integrations\FormRequests\KeyVisibilityUpgradeRequest;
 use App\Domain\Integrations\FormRequests\UpdateContactInfoRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationUrlsRequest;
@@ -23,28 +23,31 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\KeyVisibility;
+use App\Domain\Integrations\Mappers\KeyVisibilityUpgradeMapper;
 use App\Domain\Integrations\Mappers\OrganizationMapper;
 use App\Domain\Integrations\Mappers\OrganizerMapper;
 use App\Domain\Integrations\Mappers\StoreContactMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationUrlMapper;
-use App\Domain\Integrations\Mappers\KeyVisibilityUpgradeMapper;
 use App\Domain\Integrations\Mappers\UpdateContactInfoMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationUrlsMapper;
+use App\Domain\Integrations\Organizer;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\IntegrationUrlRepository;
 use App\Domain\Integrations\Repositories\OrganizerRepository;
 use App\Domain\KeyVisibilityUpgrades\KeyVisibilityUpgrade;
+use App\Domain\KeyVisibilityUpgrades\Repositories\KeyVisibilityUpgradeRepository;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
-use App\Domain\KeyVisibilityUpgrades\Repositories\KeyVisibilityUpgradeRepository;
 use App\Http\Controllers\Controller;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\ProjectAanvraag\ProjectAanvraagUrl;
 use App\Router\TranslatedRoute;
+use App\Search\Sapi3\SearchService;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use Carbon\Carbon;
+use CultuurNet\SearchV3\ValueObjects\Organizer as SapiOrganizer;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\RedirectResponse;
@@ -72,6 +75,7 @@ final class IntegrationController extends Controller
         private readonly UiTiDv1ConsumerRepository $uitidV1ConsumerRepository,
         private readonly KeycloakClientRepository $keycloakClientRepository,
         private readonly KeyVisibilityUpgradeRepository $keyVisibilityUpgradeRepository,
+        private readonly SearchService $searchClient,
         private readonly CurrentUser $currentUser
     ) {
     }
@@ -174,12 +178,24 @@ final class IntegrationController extends Controller
         $integration = $this->integrationRepository->getById(Uuid::fromString($id));
         $oldCredentialsExpirationDate = $this->getExpirationDateForOldCredentials($integration->getKeyVisibilityUpgrade());
 
+        $organizerIds = collect($integration->organizers())->map(fn (Organizer $organizer) => $organizer->organizerId->toString());
+        $uitpasOrganizers = $this->searchClient->findUiTPASOrganizers(...$organizerIds)->getMember()?->getItems();
+        $organizers = collect($uitpasOrganizers)->map(function (SapiOrganizer $organizer) {
+            $id = explode('/', $organizer->getId() ?? '');
+
+            return [
+                'id' => $id[count($id) - 1],
+                'name' => $organizer->getName()?->getValues() ?? $id,
+                'status' => $organizer->getWorkflowStatus() === 'ACTIVE' ? 'Live' : 'Test',
+            ];
+        });
+
         return Inertia::render('Integrations/Detail', [
             'integration' => $integration->toArray(),
             'oldCredentialsExpirationDate' => $oldCredentialsExpirationDate,
             'email' => Auth::user()?->email,
             'subscriptions' => $this->subscriptionRepository->all(),
-            'organizers' => session('organizers'),
+            'organizers' => $organizers,
         ]);
     }
 
@@ -284,6 +300,17 @@ final class IntegrationController extends Controller
                 'id' => $id,
             ]
         );
+    }
+
+    public function deleteOrganizer(string $integrationId, string $organizerId): RedirectResponse
+    {
+        $this->organizerRepository->delete(new Organizer(
+            Uuid::uuid4(),
+            Uuid::fromString($integrationId),
+            Uuid::fromString($organizerId)
+        ));
+
+        return Redirect::back();
     }
 
     public function requestActivation(string $id, RequestActivationRequest $request): RedirectResponse
