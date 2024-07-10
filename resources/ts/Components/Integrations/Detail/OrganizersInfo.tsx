@@ -51,9 +51,12 @@ const OrganizersSection = ({
             }
           >
             <div className="grid grid-cols-[1fr,1fr,100px] gap-x-4 items-center">
-              <h1 className={"whitespace-nowrap font-bold"}>
+              <Heading
+                level={5}
+                className={"font-semibold text-publiq-gray-600"}
+              >
                 {organizer.name[i18n.language]}
-              </h1>
+              </Heading>
               <div>
                 <CopyText text={organizer.id} />
               </div>
