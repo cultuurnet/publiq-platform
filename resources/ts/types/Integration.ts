@@ -5,7 +5,11 @@ import type { Contact } from "./Contact";
 import type { Organization } from "./Organization";
 import type { Subscription } from "./Subscription";
 import type { IntegrationUrl } from "./IntegrationUrl";
-import type { AuthClient, LegacyAuthConsumer } from "./Credentials";
+import type {
+  AuthClient,
+  KeycloakClient,
+  LegacyAuthConsumer,
+} from "./Credentials";
 import type { KeyVisibility } from "./KeyVisibility";
 
 export type Coupon = {
@@ -36,6 +40,7 @@ export type Integration = {
   urls: IntegrationUrl[];
   authClients: AuthClient[];
   legacyAuthConsumers: LegacyAuthConsumer[];
+  keycloakClients: KeycloakClient[];
   keyVisibility: KeyVisibility;
   keyVisibilityUpgrade: KeyVisibilityUpgrade | null;
 };

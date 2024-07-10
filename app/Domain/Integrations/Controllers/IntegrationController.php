@@ -41,6 +41,7 @@ use App\Domain\KeyVisibilityUpgrades\Repositories\KeyVisibilityUpgradeRepository
 use App\Domain\Organizations\Repositories\OrganizationRepository;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Http\Controllers\Controller;
+use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\ProjectAanvraag\ProjectAanvraagUrl;
 use App\Router\TranslatedRoute;
 use App\Search\Sapi3\SearchService;
@@ -72,6 +73,7 @@ final class IntegrationController extends Controller
         private readonly CouponRepository $couponRepository,
         private readonly Auth0ClientRepository $auth0ClientRepository,
         private readonly UiTiDv1ConsumerRepository $uitidV1ConsumerRepository,
+        private readonly KeycloakClientRepository $keycloakClientRepository,
         private readonly KeyVisibilityUpgradeRepository $keyVisibilityUpgradeRepository,
         private readonly SearchService $searchClient,
         private readonly CurrentUser $currentUser
@@ -91,12 +93,14 @@ final class IntegrationController extends Controller
 
         $auth0Clients = $this->auth0ClientRepository->getByIntegrationIds($integrationIds);
         $uitidV1Consumers = $this->uitidV1ConsumerRepository->getByIntegrationIds($integrationIds);
+        $keycloakClients = $this->keycloakClientRepository->getByIntegrationIds($integrationIds);
 
         return Inertia::render('Integrations/Index', [
             'integrations' => $integrationsData->collection->map(fn (Integration $integration) => $integration->toArray()),
             'credentials' => [
                 'auth0' => $auth0Clients,
                 'uitidV1' => $uitidV1Consumers,
+                'keycloak' => $keycloakClients,
             ],
             'paginationInfo' => $integrationsData->paginationInfo,
         ]);
