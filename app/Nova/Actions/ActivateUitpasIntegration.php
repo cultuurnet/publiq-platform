@@ -9,6 +9,7 @@ use App\Domain\Integrations\Organizer;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\OrganizerRepository;
 use App\Domain\Organizations\Models\OrganizationModel;
+use App\Search\Sapi3\SearchService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Collection;
@@ -16,8 +17,8 @@ use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Actions\ActionResponse;
 use Laravel\Nova\Fields\ActionFields;
 use Laravel\Nova\Fields\Select;
-use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Outl1ne\MultiselectField\Multiselect as Outl1neMultiselect;
 use Ramsey\Uuid\Uuid;
 
 final class ActivateUitpasIntegration extends Action
@@ -27,7 +28,8 @@ final class ActivateUitpasIntegration extends Action
 
     public function __construct(
         private readonly IntegrationRepository $integrationRepository,
-        private readonly OrganizerRepository $organizerRepository
+        private readonly OrganizerRepository $organizerRepository,
+        private readonly SearchService $searchService
     ) {
     }
 
@@ -72,11 +74,27 @@ final class ActivateUitpasIntegration extends Action
                     'required',
                     'exists:organizations,id'
                 ),
-            Text::make('UiTdatabank Organizers', 'organizers')
-                ->rules(
-                    'nullable',
-                    'string',
-                ),
+            Outl1neMultiselect::make('UiTPAS Organizer(s)')
+                ->options(
+                    function (string $input = '') {
+                        $organizers = $this->searchService->searchUiTPASOrganizer($input);
+
+                        $collection = [];
+                        if ($organizers->getMember() === null) {
+                            return $collection;
+                        }
+
+                        /** @var \CultuurNet\SearchV3\ValueObjects\Organizer $organizer */
+                        foreach ($organizers->getMember()->getItems() as $organizer) {
+                            if ($organizer->getName() === null) {
+                                continue;
+                            }
+                            $collection[$organizer->getId()] = $organizer->getName()->getValueForLanguage('nl');
+                        }
+                        return $collection;
+                    }
+                )
+                ->optionsLimit(5),
         ];
     }
 }
