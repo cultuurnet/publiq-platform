@@ -50,8 +50,10 @@ const OrganizersSection = ({
               "m-0 drop-shadow-none border border-gray-200 border-t-0 first:border-t"
             }
           >
-            <div className="grid grid-cols-[1fr,2fr,auto] gap-x-4 items-center">
-              <h1 className={"font-bold"}>{organizer.name[i18n.language]}</h1>
+            <div className="grid grid-cols-[1fr,1fr,100px] gap-x-4 items-center">
+              <h1 className={"whitespace-nowrap font-bold"}>
+                {organizer.name[i18n.language]}
+              </h1>
               <div>
                 <CopyText text={organizer.id} />
               </div>
