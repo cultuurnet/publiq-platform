@@ -229,7 +229,7 @@ final class Integration extends Resource
                 ->confirmButtonText('Activate')
                 ->cancelButtonText('Cancel')
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeActivated() && !$this->isUiTPAS())
-                ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeActivated() && !$this->isUiTPAS()),
+                ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeActivated()),
 
             (new ActivateUitpasIntegration(App::make(IntegrationRepository::class), App::make(OrganizerRepository::class)))
                 ->exceptOnIndex()
