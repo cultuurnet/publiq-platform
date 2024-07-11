@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Auth0\SDK\Configuration\SdkConfiguration;
 
 return [
-
+    'enabled' => env('KEYCLOAK_ENABLED', false),
     'loginEnabled' => env('KEYCLOAK_LOGIN_ENABLED', false),
     'creationEnabled' => env('KEYCLOAK_CREATION_ENABLED', false),
     'login' => [

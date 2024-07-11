@@ -30,7 +30,7 @@ export const CopyText = ({ text, isSecret }: Props) => {
         className="font-mono whitespace-pre	text-ellipsis overflow-hidden text-sm text-publiq-orange max-md:max-w-[15rem] max-xl:max-w-[30rem]"
         ref={codeFieldRef}
       >
-        {!isSecret || isSecretVisible ? text : "*".repeat(text?.length ?? 36)}
+        {!isSecret || isSecretVisible ? text : "•".repeat(text?.length ?? 36)}
       </span>
       <Tooltip visible={isVisible} text={t("tooltip.copy")} className="w-auto">
         <ButtonIconCopy

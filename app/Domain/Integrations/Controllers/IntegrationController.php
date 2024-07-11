@@ -42,6 +42,7 @@ use App\Domain\KeyVisibilityUpgrades\Repositories\KeyVisibilityUpgradeRepository
 use App\Domain\Organizations\Repositories\OrganizationRepository;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Http\Controllers\Controller;
+use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\ProjectAanvraag\ProjectAanvraagUrl;
 use App\Router\TranslatedRoute;
 use App\Search\Sapi3\SearchService;
@@ -73,6 +74,7 @@ final class IntegrationController extends Controller
         private readonly CouponRepository $couponRepository,
         private readonly Auth0ClientRepository $auth0ClientRepository,
         private readonly UiTiDv1ConsumerRepository $uitidV1ConsumerRepository,
+        private readonly KeycloakClientRepository $keycloakClientRepository,
         private readonly KeyVisibilityUpgradeRepository $keyVisibilityUpgradeRepository,
         private readonly SearchService $searchClient,
         private readonly CurrentUser $currentUser
@@ -92,12 +94,14 @@ final class IntegrationController extends Controller
 
         $auth0Clients = $this->auth0ClientRepository->getByIntegrationIds($integrationIds);
         $uitidV1Consumers = $this->uitidV1ConsumerRepository->getByIntegrationIds($integrationIds);
+        $keycloakClients = $this->keycloakClientRepository->getByIntegrationIds($integrationIds);
 
         return Inertia::render('Integrations/Index', [
             'integrations' => $integrationsData->collection->map(fn (Integration $integration) => $integration->toArray()),
             'credentials' => [
                 'auth0' => $auth0Clients,
                 'uitidV1' => $uitidV1Consumers,
+                'keycloak' => $keycloakClients,
             ],
             'paginationInfo' => $integrationsData->paginationInfo,
         ]);
@@ -175,17 +179,7 @@ final class IntegrationController extends Controller
         $integration = $this->integrationRepository->getById(Uuid::fromString($id));
         $oldCredentialsExpirationDate = $this->getExpirationDateForOldCredentials($integration->getKeyVisibilityUpgrade());
 
-        $organizerIds = collect($integration->organizers())->map(fn (Organizer $organizer) => $organizer->organizerId);
-        $uitpasOrganizers = $this->searchClient->findUiTPASOrganizers(...$organizerIds)->getMember()?->getItems();
-        $organizers = collect($uitpasOrganizers)->map(function (SapiOrganizer $organizer) {
-            $id = explode('/', $organizer->getId() ?? '');
-
-            return [
-                'id' => $id[count($id) - 1],
-                'name' => $organizer->getName()?->getValues() ?? $id,
-                'status' => $organizer->getWorkflowStatus() === 'ACTIVE' ? 'Live' : 'Test',
-            ];
-        });
+        $organizers = $this->getIntegrationOrganizersWithTestOrganizer($integration);
 
         return Inertia::render('Integrations/Detail', [
             'integration' => $integration->toArray(),
@@ -404,5 +398,31 @@ final class IntegrationController extends Controller
         }
 
         return null;
+    }
+
+
+    public function getIntegrationOrganizersWithTestOrganizer(Integration $integration): Collection
+    {
+        $organizerIds = collect($integration->organizers())->map(fn (Organizer $organizer) => $organizer->organizerId);
+        $uitpasOrganizers = $this->searchClient->findUiTPASOrganizers(...$organizerIds)->getMember()?->getItems();
+
+        $organizers = collect($uitpasOrganizers)->map(function (SapiOrganizer $organizer) {
+            $id = explode('/', $organizer->getId() ?? '');
+            $id = $id[count($id) - 1];
+
+            return [
+                'id' => $id,
+                'name' => $organizer->getName()?->getValues() ?? [],
+                'status' => 'Live',
+            ];
+        });
+
+        $organizers->push([
+            'id' => '0ce87cbc-9299-4528-8d35-92225dc9489f',
+            'name' => ['nl' => 'UiTPAS Organisatie (Regio Gent + Paspartoe)'],
+            'status' => 'Test',
+        ]);
+
+        return $organizers;
     }
 }
