@@ -299,7 +299,7 @@ final class IntegrationController extends Controller
 
         $organizerIds = collect($integration->organizers())->map(fn (Organizer $organizer) => $organizer->organizerId);
         $newOrganizers = array_filter(
-          OrganizerMapper::map($request, $integrationId),
+          OrganizerMapper::mapUpdateOrganizers($request, $integrationId),
           fn (Organizer $organizer) => !in_array($organizer->organizerId, $organizerIds->toArray(), true)
         );
 
@@ -329,7 +329,7 @@ final class IntegrationController extends Controller
         $organization = OrganizationMapper::mapActivationRequest($request);
         $this->organizationRepository->save($organization);
 
-        $organizers = OrganizerMapper::map($request, $id);
+        $organizers = OrganizerMapper::mapActivationRequest($request, $id);
         $this->organizerRepository->create(...$organizers);
 
         $this->integrationRepository->requestActivation(Uuid::fromString($id), $organization->id, $request->input('coupon'));
