@@ -26,10 +26,11 @@ export const OrganizersDatalist = ({ onChange, value, ...props }: Props) => {
       const response = await fetch(`/organizers?name=${e.target.value}`);
       try {
         const data = await response.json();
-        if ("exception" in data) {
+        if (!data || (typeof data === "object" && "exception" in data)) {
           setOrganizerError(true);
           return;
         }
+
         const organizers = data.map(
           (organizer: { name: string | { nl: string }; id: string }) => {
             if (typeof organizer.name === "object" && "nl" in organizer.name) {
