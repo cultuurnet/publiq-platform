@@ -380,7 +380,7 @@ final class IntegrationController extends Controller
             ]);
         }
 
-        if ($coupon->isDistributed) {
+        if ($coupon->integrationId !== null) {
             return Redirect::back()->withErrors(['coupon' => __('errors.coupon.already_used')]);
         }
 
