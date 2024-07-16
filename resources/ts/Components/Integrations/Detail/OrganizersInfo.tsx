@@ -10,7 +10,11 @@ import type { Organizer } from "../../../types/Organizer";
 import { groupBy } from "lodash";
 import { ButtonPrimary } from "../../ButtonPrimary";
 import { QuestionDialog } from "../../QuestionDialog";
-import { router } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
+import { Dialog } from "../../Dialog";
+import { ButtonSecondary } from "../../ButtonSecondary";
+import { OrganizersDatalist } from "./OrganizersDatalist";
+import type { UiTPASOrganizer } from "../../../types/UiTPASOrganizer";
 
 type Props = Integration & { organizers: Organizer[] };
 
@@ -25,6 +29,10 @@ const OrganizersSection = ({
 }) => {
   const { t, i18n } = useTranslation();
   const [toBeDeletedId, setToBeDeletedId] = useState("");
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const form = useForm<{ organizers: UiTPASOrganizer[] }>({
+    organizers: [],
+  });
 
   const handleDeleteOrganizer = () => {
     router.delete(`/integrations/${id}/organizers/${toBeDeletedId}`, {
@@ -32,6 +40,12 @@ const OrganizersSection = ({
       preserveState: false,
     });
   };
+
+  const handleUpdateOrganizers = () =>
+    router.post(`/integrations/${id}/organizers`, form.data, {
+      preserveScroll: false,
+      preserveState: false,
+    });
 
   if (!organizers?.length) {
     return null;
@@ -76,7 +90,10 @@ const OrganizersSection = ({
       </div>
       <div className="grid lg:grid-cols-3">
         {sectionName === "Live" && (
-          <ButtonPrimary className="col-span-1">
+          <ButtonPrimary
+            className="col-span-1"
+            onClick={() => setIsModalVisible(true)}
+          >
             {t("details.organizers_info.add")}
           </ButtonPrimary>
         )}
@@ -94,6 +111,30 @@ const OrganizersSection = ({
         onConfirm={handleDeleteOrganizer}
         onCancel={() => setToBeDeletedId("")}
       />
+      <Dialog
+        isVisible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+        title={t("details.organizers_info.add")}
+        contentStyles="gap-3"
+        actions={
+          <>
+            <ButtonSecondary onClick={() => setIsModalVisible(false)}>
+              {t("dialog.cancel")}
+            </ButtonSecondary>
+            <ButtonPrimary onClick={handleUpdateOrganizers}>
+              {t("dialog.confirm")}
+            </ButtonPrimary>
+          </>
+        }
+      >
+        <Heading level={5} className="font-light">
+          {t("details.organizers_info.update_dialog.question")}
+        </Heading>
+        <OrganizersDatalist
+          onChange={(organizers) => form.setData("organizers", organizers)}
+          value={form.data.organizers}
+        />
+      </Dialog>
     </>
   );
 };

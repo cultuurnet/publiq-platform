@@ -16,6 +16,7 @@ use App\Domain\Integrations\FormRequests\StoreContactRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationUrlRequest;
 use App\Domain\Integrations\FormRequests\UpdateContactInfoRequest;
+use App\Domain\Integrations\FormRequests\UpdateIntegrationOrganizersRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationUrlsRequest;
 use App\Domain\Integrations\FormRequests\UpdateOrganizationRequest;
@@ -292,12 +293,27 @@ final class IntegrationController extends Controller
         );
     }
 
+    public function updateOrganizers(string $integrationId, UpdateIntegrationOrganizersRequest $request): RedirectResponse
+    {
+        $integration = $this->integrationRepository->getById(Uuid::fromString($integrationId));
+
+        $organizerIds = collect($integration->organizers())->map(fn (Organizer $organizer) => $organizer->organizerId);
+        $newOrganizers = array_filter(
+            OrganizerMapper::mapUpdateOrganizers($request, $integrationId),
+            fn (Organizer $organizer) => !in_array($organizer->organizerId, $organizerIds->toArray(), true)
+        );
+
+        $this->organizerRepository->create(...$newOrganizers);
+
+        return Redirect::back();
+    }
+
     public function deleteOrganizer(string $integrationId, string $organizerId): RedirectResponse
     {
         $this->organizerRepository->delete(new Organizer(
             Uuid::uuid4(),
             Uuid::fromString($integrationId),
-            Uuid::fromString($organizerId)
+            $organizerId
         ));
 
         return Redirect::back();
@@ -313,7 +329,7 @@ final class IntegrationController extends Controller
         $organization = OrganizationMapper::mapActivationRequest($request);
         $this->organizationRepository->save($organization);
 
-        $organizers = OrganizerMapper::map($request, $id);
+        $organizers = OrganizerMapper::mapActivationRequest($request, $id);
         $this->organizerRepository->create(...$organizers);
 
         $this->integrationRepository->requestActivation(Uuid::fromString($id), $organization->id, $request->input('coupon'));
@@ -388,7 +404,7 @@ final class IntegrationController extends Controller
 
     public function getIntegrationOrganizersWithTestOrganizer(Integration $integration): Collection
     {
-        $organizerIds = collect($integration->organizers())->map(fn (Organizer $organizer) => $organizer->organizerId->toString());
+        $organizerIds = collect($integration->organizers())->map(fn (Organizer $organizer) => $organizer->organizerId);
         $uitpasOrganizers = $this->searchClient->findUiTPASOrganizers(...$organizerIds)->getMember()?->getItems();
 
         $organizers = collect($uitpasOrganizers)->map(function (SapiOrganizer $organizer) {
