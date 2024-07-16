@@ -299,8 +299,8 @@ final class IntegrationController extends Controller
 
         $organizerIds = collect($integration->organizers())->map(fn (Organizer $organizer) => $organizer->organizerId);
         $newOrganizers = array_filter(
-          OrganizerMapper::mapUpdateOrganizers($request, $integrationId),
-          fn (Organizer $organizer) => !in_array($organizer->organizerId, $organizerIds->toArray(), true)
+            OrganizerMapper::mapUpdateOrganizers($request, $integrationId),
+            fn (Organizer $organizer) => !in_array($organizer->organizerId, $organizerIds->toArray(), true)
         );
 
         $this->organizerRepository->create(...$newOrganizers);
