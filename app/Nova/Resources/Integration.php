@@ -209,11 +209,13 @@ final class Integration extends Resource
             $fields[] = HasMany::make('Keycloak client Credentials', 'keycloakClients', KeycloakClient::class);
         }
 
-        if ($this->isUiTPAS()) {
-            $fields[] = HasMany::make('UDB3 Organizers', 'organizers', Organizer::class);
-        }
-
         return array_merge($fields, [
+            HasMany::make('UDB3 Organizers', 'organizers', Organizer::class)
+                ->canSee(function () {
+                    /** @var ?IntegrationModel $model */
+                    $model = $this->model();
+                    return $model && $model->isUiTPAS();
+                }),
             HasMany::make('Contacts'),
             HasMany::make('Urls', 'urls', IntegrationUrl::class),
             HasMany::make('Activity Log'),
