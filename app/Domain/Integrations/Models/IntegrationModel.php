@@ -97,7 +97,7 @@ final class IntegrationModel extends UuidModel
 
     public function isUiTPAS(): bool
     {
-        return $this->type === IntegrationType::UiTPAS->value || $this->type === null;
+        return $this->type === IntegrationType::UiTPAS->value;
     }
 
     protected static function booted(): void
