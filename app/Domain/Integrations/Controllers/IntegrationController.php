@@ -298,9 +298,10 @@ final class IntegrationController extends Controller
         $integration = $this->integrationRepository->getById(Uuid::fromString($integrationId));
 
         $organizerIds = collect($integration->organizers())->map(fn (Organizer $organizer) => $organizer->organizerId);
-        $newOrganizers = array_filter(OrganizerMapper::map($request, $integrationId), static function (Organizer $organizer) use ($organizerIds) {
-            return !in_array($organizer->organizerId, $organizerIds->toArray(), true);
-        });
+        $newOrganizers = array_filter(
+          OrganizerMapper::map($request, $integrationId),
+          fn (Organizer $organizer) => !in_array($organizer->organizerId, $organizerIds->toArray(), true)
+        );
 
         $this->organizerRepository->create(...$newOrganizers);
 

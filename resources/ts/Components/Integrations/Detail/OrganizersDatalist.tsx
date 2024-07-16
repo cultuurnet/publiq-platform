@@ -123,9 +123,7 @@ export const OrganizersDatalist = ({ onChange, value, ...props }: Props) => {
               type="text"
               name="organizers"
               ref={organizersInputRef}
-              onChange={async (e) => {
-                await handleInputOnChange(e);
-              }}
+              onChange={(e) => handleInputOnChange(e)}
             />
             {organizerList &&
               organizerList.length > 0 &&
