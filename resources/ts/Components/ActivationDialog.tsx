@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext } from "react";
 import { Dialog } from "./Dialog";
 import { ButtonSecondary } from "./ButtonSecondary";
 import { ButtonPrimary } from "./ButtonPrimary";
@@ -13,12 +13,9 @@ import type { PricingPlan } from "../hooks/useGetPricingPlans";
 import { formatCurrency } from "../utils/formatCurrency";
 import { Heading } from "./Heading";
 import { CouponInfoContext } from "../Context/CouponInfo";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { ButtonIcon } from "./ButtonIcon";
-import { debounce } from "lodash";
 import type { Organization } from "../types/Organization";
 import type { UiTPASOrganizer } from "../types/UiTPASOrganizer";
-import { Alert } from "./Alert";
+import { OrganizersDatalist } from "./Integrations/Detail/OrganizersDatalist";
 
 const PriceOverview = ({
   coupon,
@@ -137,86 +134,9 @@ export const ActivationDialog = ({
   const isBillingInfoAndPriceOverviewVisible =
     type !== IntegrationType.EntryApi && type !== IntegrationType.UiTPAS;
 
-  const [isSearchListVisible, setIsSearchListVisible] = useState(false);
-  const [organizerList, setOrganizerList] = useState<UiTPASOrganizer[]>([]);
-  const [organizerError, setOrganizerError] = useState(false);
-
-  const organizersInputRef = useRef<HTMLInputElement>(null);
-
-  const handleGetOrganizers = debounce(
-    async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const response = await fetch(`/organizers?name=${e.target.value}`);
-      const data = await response.json();
-      if ("exception" in data) {
-        setOrganizerError(true);
-        return;
-      }
-      const organizers = data.map(
-        (organizer: { name: string | { nl: string }; id: string }) => {
-          if (typeof organizer.name === "object" && "nl" in organizer.name) {
-            return { name: organizer.name.nl, id: organizer.id };
-          }
-          return organizer;
-        }
-      );
-      setOrganizerList(organizers);
-      if (organizerError) {
-        setOrganizerError(false);
-      }
-    },
-    750
-  );
-
-  const handleAddOrganizers = (organizer: UiTPASOrganizer) => {
-    const isDuplicate =
-      organizationForm.data.organizers.length > 0 &&
-      organizationForm.data.organizers.some(
-        (existingOrganizer) => existingOrganizer.id === organizer.id
-      );
-    if (!isDuplicate) {
-      organizationForm.setData("organizers", [
-        ...organizationForm.data.organizers,
-        organizer,
-      ]);
-      setIsSearchListVisible(false);
-      setOrganizerList([]);
-      if (organizersInputRef.current) {
-        organizersInputRef.current.value = "";
-      }
-    }
-  };
-
-  const handleDeleteOrganizer = (deletedOrganizer: string) => {
-    const updatedOrganizers = organizationForm.data.organizers.filter(
-      (organizer) => organizer.name !== deletedOrganizer
-    );
-    organizationForm.setData("organizers", updatedOrganizers);
-  };
-
   if (!isVisible) {
     return null;
   }
-
-  const handleInputOnChange = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    if (e.target.value !== "") {
-      await handleGetOrganizers(e);
-      setIsSearchListVisible(true);
-    } else {
-      setIsSearchListVisible(false);
-      setOrganizerList([]);
-    }
-  };
-
-  const handleKeyDown = (
-    event: React.KeyboardEvent<HTMLLIElement>,
-    organizer: UiTPASOrganizer
-  ) => {
-    if (event.key === "Enter") {
-      handleAddOrganizers(organizer);
-    }
-  };
 
   return (
     <Dialog
@@ -343,61 +263,14 @@ export const ActivationDialog = ({
                 {t("integrations.activation_dialog.uitpas.organizers.info")}
               </Heading>
             </div>
-            <div className="flex gap-2 flex-wrap">
-              {organizationForm.data.organizers.length > 0 &&
-                organizationForm.data.organizers.map((organizer, index) => (
-                  <div
-                    key={`${organizer}${index}`}
-                    className="border rounded px-2 py-1 flex gap-1"
-                  >
-                    <p>{organizer.name}</p>
-                    <ButtonIcon
-                      icon={faTrash}
-                      size="sm"
-                      className="text-icon-gray"
-                      onClick={() => handleDeleteOrganizer(organizer.name)}
-                    />
-                  </div>
-                ))}
-            </div>
-            {organizerError && (
-              <Alert variant="error">{t("dialog.invite_error")}</Alert>
-            )}
-            <FormElement
+            <OrganizersDatalist
               label={t(
                 "integrations.activation_dialog.uitpas.organizers.label"
               )}
-              required
               error={organizationFormErrors["organizers"]}
-              className="w-full relative"
-              component={
-                <>
-                  <Input
-                    type="text"
-                    name="organizers"
-                    ref={organizersInputRef}
-                    onChange={async (e) => {
-                      await handleInputOnChange(e);
-                    }}
-                  />
-                  {organizerList &&
-                    organizerList.length > 0 &&
-                    isSearchListVisible && (
-                      <ul className="border rounded absolute bg-white w-full z-50">
-                        {organizerList.map((organizer) => (
-                          <li
-                            tabIndex={0}
-                            key={`${organizer.id}`}
-                            onClick={() => handleAddOrganizers(organizer)}
-                            onKeyDown={(e) => handleKeyDown(e, organizer)}
-                            className="border-b px-3 py-1 hover:bg-gray-100"
-                          >
-                            {organizer.name}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                </>
+              value={organizationForm.data.organizers}
+              onChange={(organizers) =>
+                organizationForm.setData("organizers", organizers)
               }
             />
           </>

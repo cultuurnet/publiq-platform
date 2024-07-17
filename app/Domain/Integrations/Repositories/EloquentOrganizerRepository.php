@@ -17,9 +17,17 @@ final class EloquentOrganizerRepository implements OrganizerRepository
                 OrganizerModel::query()->create([
                     'id' => $organizer->id->toString(),
                     'integration_id' => $organizer->integrationId->toString(),
-                    'organizer_id' => $organizer->organizerId->toString(),
+                    'organizer_id' => $organizer->organizerId,
                 ]);
             }
         });
+    }
+
+    public function delete(Organizer $organizer): void
+    {
+        OrganizerModel::query()
+            ->where('organizer_id', $organizer->organizerId)
+            ->where('integration_id', $organizer->integrationId->toString())
+            ->delete();
     }
 }

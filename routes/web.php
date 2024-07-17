@@ -8,10 +8,10 @@ use App\Domain\Auth\Controllers\LogoutController;
 use App\Domain\Integrations\Controllers\IntegrationController;
 use App\Domain\Integrations\Controllers\OrganizerController;
 use App\Domain\Newsletter\Controllers\NewsletterController;
-use Illuminate\Support\Facades\Route;
-use App\Router\TranslatedRoute;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SupportController;
+use App\Router\TranslatedRoute;
+use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 /*
@@ -95,6 +95,9 @@ Route::group(['middleware' => 'auth'], static function () {
         Route::delete('/integrations/{id}/contacts/{contactId}', [IntegrationController::class, 'deleteContact']);
 
         Route::patch('/integrations/{id}/organization', [IntegrationController::class, 'updateOrganization']);
+
+        Route::post('/integrations/{id}/organizers', [IntegrationController::class, 'updateOrganizers']);
+        Route::delete('/integrations/{id}/organizers/{organizerId}', [IntegrationController::class, 'deleteOrganizer']);
 
         Route::post('/integrations/{id}/activation', [IntegrationController::class, 'requestActivation']);
 

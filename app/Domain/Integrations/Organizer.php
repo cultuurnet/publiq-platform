@@ -11,7 +11,7 @@ final readonly class Organizer
     public function __construct(
         public UuidInterface $id,
         public UuidInterface $integrationId,
-        public UuidInterface $organizerId
+        public string $organizerId
     ) {
     }
 }

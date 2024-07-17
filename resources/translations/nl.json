@@ -232,7 +232,14 @@
     "organizers_info": {
       "title": "Organisaties",
       "description": "Hieronder vind je een overzicht van de UiTdatabank organisaties waarvoor je acties kan uitvoeren in de UiTPAS API.",
-      "add": "Organisatie toevoegen"
+      "add": "Organisatie toevoegen",
+      "update_dialog": {
+        "question": "Geef de UiTdatabank-organisaties op waarvoor je acties in UiTPAS wilt uitvoeren."
+      },
+      "delete_dialog": {
+        "title": "Organisatie verwijderen",
+        "question": "Ben je zeker dat je {{name}} wilt verwijderen van je integratie?"
+      }
     },
     "billing_info": {
       "title": {

@@ -30,6 +30,7 @@ final class HandleInertiaRequests extends Middleware
                 'sentryDsn' => config('sentry.dsn'),
                 'sentryEnabled' => config('app.sentry.enabled'),
                 'uitpasEnabled' => config('uitpas.enabled'),
+                'keycloakEnabled' => config('keycloak.enabled'),
             ],
             'widgetConfig' => [
                 'url' => config('uitidwidget.url'),

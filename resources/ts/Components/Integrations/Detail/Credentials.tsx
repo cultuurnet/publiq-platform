@@ -5,6 +5,7 @@ import { IntegrationType } from "../../../types/IntegrationType";
 import { CredentialsWidgets } from "./CredentialsWidgets";
 import type {
   AuthClient,
+  KeycloakClient,
   LegacyAuthConsumer,
 } from "../../../types/Credentials";
 import type { Integration } from "../../../types/Integration";
@@ -12,6 +13,9 @@ import { Alert } from "../../Alert";
 import { useTranslation } from "react-i18next";
 import { usePolling } from "../../../hooks/usePolling";
 import { KeyVisibility } from "../../../types/KeyVisibility";
+import { UiTiDv1Environment } from "../../../types/UiTiDv1Environment";
+import { Auth0Tenant } from "../../../types/Auth0Tenant";
+import { KeycloakEnvironment } from "../../../types/KeycloakEnvironment";
 
 type Props = Integration & {
   email: string;
@@ -23,6 +27,8 @@ export type Credentials = {
   prodClient?: AuthClient;
   legacyTestConsumer?: LegacyAuthConsumer;
   legacyProdConsumer?: LegacyAuthConsumer;
+  keycloakTestClient?: KeycloakClient;
+  keycloakProdClient?: KeycloakClient;
 };
 
 export const Credentials = ({
@@ -35,6 +41,7 @@ export const Credentials = ({
   keyVisibilityUpgrade,
   legacyAuthConsumers,
   authClients,
+  keycloakClients,
   oldCredentialsExpirationDate,
 }: Props) => {
   const { t } = useTranslation();
@@ -47,15 +54,25 @@ export const Credentials = ({
   const credentials = useMemo(
     () => ({
       legacyTestConsumer: legacyAuthConsumers.find(
-        (consumer) => consumer.environment === "test"
+        (consumer) => consumer.environment === UiTiDv1Environment.Testing
       ),
       legacyProdConsumer: legacyAuthConsumers.find(
-        (consumer) => consumer.environment === "prod"
+        (consumer) => consumer.environment === UiTiDv1Environment.Production
       ),
-      testClient: authClients.find((client) => client.tenant === "test"),
-      prodClient: authClients.find((client) => client.tenant === "prod"),
+      testClient: authClients.find(
+        (client) => client.tenant === Auth0Tenant.Testing
+      ),
+      prodClient: authClients.find(
+        (client) => client.tenant === Auth0Tenant.Production
+      ),
+      keycloakTestClient: keycloakClients.find(
+        (client) => client.environment === KeycloakEnvironment.Testing
+      ),
+      keycloakProdClient: keycloakClients.find(
+        (client) => client.environment === KeycloakEnvironment.Production
+      ),
     }),
-    [legacyAuthConsumers, authClients]
+    [legacyAuthConsumers, authClients, keycloakClients]
   );
 
   if (!hasAnyCredentials) {

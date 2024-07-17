@@ -35,13 +35,12 @@ final class AddOrganizer extends Action
 
         /** @var string $organizationIdAsString */
         $organizationIdAsString = $fields->get('organizer_id');
-        $organizationId = Uuid::fromString($organizationIdAsString);
 
         $this->organizerRepository->create(
             new Organizer(
                 Uuid::uuid4(),
                 Uuid::fromString($integration->id),
-                $organizationId
+                $organizationIdAsString
             )
         );
 
