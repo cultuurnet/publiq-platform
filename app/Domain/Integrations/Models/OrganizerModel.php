@@ -23,7 +23,7 @@ final class OrganizerModel extends UuidModel
         return new Organizer(
             Uuid::fromString($this->id),
             Uuid::fromString($this->integration_id),
-            Uuid::fromString($this->organizer_id),
+            $this->organizer_id,
         );
     }
 }

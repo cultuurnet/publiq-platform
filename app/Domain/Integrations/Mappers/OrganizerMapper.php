@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Domain\Integrations\Mappers;
 
 use App\Domain\Integrations\FormRequests\RequestActivationRequest;
+use App\Domain\Integrations\FormRequests\UpdateIntegrationOrganizersRequest;
 use App\Domain\Integrations\Organizer;
+use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
 
 final class OrganizerMapper
@@ -13,7 +15,7 @@ final class OrganizerMapper
     /**
      * @return Organizer[]
      */
-    public static function map(RequestActivationRequest $request, string $id): array
+    public static function map(Request $request, string $id): array
     {
         /**
          * @var Organizer[] $organizers
@@ -24,10 +26,20 @@ final class OrganizerMapper
             $organizers[] = new Organizer(
                 Uuid::uuid4(),
                 Uuid::fromString($id),
-                Uuid::fromString($organizer['id'])
+                $organizer['id']
             );
         }
 
         return $organizers;
+    }
+
+    public static function mapUpdateOrganizers(UpdateIntegrationOrganizersRequest $request, string $id): array
+    {
+        return self::map($request, $id);
+    }
+
+    public static function mapActivationRequest(RequestActivationRequest $request, string $id): array
+    {
+        return self::map($request, $id);
     }
 }

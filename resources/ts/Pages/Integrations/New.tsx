@@ -77,7 +77,9 @@ const New = ({ subscriptions }: Props) => {
         subscription.category === SubscriptionCategory.Free
     )?.id;
 
-    setData("subscriptionId", freeSubscriptionId ?? "");
+    if (!freeSubscriptionId) return;
+
+    setData("subscriptionId", freeSubscriptionId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeType, subscriptions]);
 

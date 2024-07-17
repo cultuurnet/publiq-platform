@@ -45,12 +45,11 @@ final class ActivateUitpasIntegration extends Action
         $organizerArray = array_map('trim', explode(',', $organizers));
 
         foreach ($organizerArray as $organizer) {
-            $organizerId = Uuid::fromString($organizer);
             $this->organizerRepository->create(
                 new Organizer(
                     Uuid::uuid4(),
                     Uuid::fromString($integration->id),
-                    $organizerId
+                    $organizer
                 )
             );
         }
