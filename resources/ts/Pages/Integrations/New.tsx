@@ -44,7 +44,7 @@ const New = ({ subscriptions }: Props) => {
   const activeTypeFromUrl = url.searchParams.get("type");
   const activeType = isIntegrationType(activeTypeFromUrl)
     ? activeTypeFromUrl
-    : integrationTypesInfo?.[0].type ?? IntegrationType.EntryApi;
+    : (integrationTypesInfo?.[0].type ?? IntegrationType.EntryApi);
 
   const initialFormValues = {
     integrationType: activeType,
