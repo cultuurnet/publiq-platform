@@ -22,7 +22,7 @@ final class NovaServiceProvider extends NovaApplicationServiceProvider
         Schema::morphUsingUuids();
 
         Nova::mainMenu(
-            fn() => array_map(fn($resource) => MenuItem::resource($resource), Nova::$resources)
+            fn () => array_map(fn ($resource) => MenuItem::resource($resource), Nova::$resources)
         );
     }
 
