@@ -9,6 +9,7 @@ use App\Nova\Resources\Integration;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Laravel\Nova\Dashboard;
+use Laravel\Nova\Menu\MenuItem;
 use Laravel\Nova\Nova;
 use Laravel\Nova\NovaApplicationServiceProvider;
 
@@ -19,6 +20,10 @@ final class NovaServiceProvider extends NovaApplicationServiceProvider
         parent::boot();
 
         Schema::morphUsingUuids();
+
+        Nova::mainMenu(
+            fn () => array_map(fn ($resource) => MenuItem::resource($resource), Nova::$resources)
+        );
     }
 
     protected function routes(): void
