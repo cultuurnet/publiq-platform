@@ -76,7 +76,6 @@ const OrganizersSection = ({
               </div>
               {sectionName === "Live" && (
                 <div>
-                  <ButtonIcon icon={faPencil} className="text-icon-gray" />
                   <ButtonIcon
                     icon={faTrash}
                     className="text-icon-gray"
