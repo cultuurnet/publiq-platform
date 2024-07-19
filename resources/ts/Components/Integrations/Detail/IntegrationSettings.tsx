@@ -107,7 +107,6 @@ export const IntegrationSettings = ({
   onConfirmLeaveTab,
   onCancelLeaveTab,
   partnerStatus,
-  ...rest
 }: Props) => {
   const { t } = useTranslation();
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
