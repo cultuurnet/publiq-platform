@@ -13,6 +13,13 @@ export async function createIntegrationAsIntegrator(
     .getByRole("link", { name: "Integratie toevoegen" })
     .click();
 
+  if (integrationType === IntegrationType.EntryApi) {
+    await page
+      .locator("li")
+      .filter({ hasText: /^Entry API/ })
+      .click();
+  }
+
   if (integrationType === IntegrationType.SearchApi) {
     await page
       .locator("li")
