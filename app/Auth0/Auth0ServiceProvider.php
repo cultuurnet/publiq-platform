@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace App\Auth0;
 
-use App\Auth0\Jobs\UnblockClient;
-use App\Auth0\Jobs\UnblockClientHandler;
 use App\Auth0\Jobs\BlockClient;
 use App\Auth0\Jobs\BlockClientHandler;
 use App\Auth0\Jobs\CreateMissingClients;
 use App\Auth0\Jobs\CreateMissingClientsHandler;
+use App\Auth0\Jobs\UnblockClient;
+use App\Auth0\Jobs\UnblockClientHandler;
 use App\Auth0\Listeners\BlockClients;
 use App\Auth0\Listeners\CreateClients;
+use App\Auth0\Listeners\UnblockClients;
 use App\Auth0\Listeners\UpdateClients;
 use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Auth0\Repositories\Auth0ManagementUserRepository;
@@ -19,6 +20,8 @@ use App\Auth0\Repositories\Auth0UserRepository;
 use App\Auth0\Repositories\EloquentAuth0ClientRepository;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
+use App\Domain\Integrations\Events\IntegrationDeleted;
+use App\Domain\Integrations\Events\IntegrationUnblocked;
 use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Events\IntegrationUrlCreated;
 use App\Domain\Integrations\Events\IntegrationUrlDeleted;
@@ -52,15 +55,14 @@ final class Auth0ServiceProvider extends ServiceProvider
             // Filter out tenants with missing config (consider them disabled)
             $tenantsConfig = array_filter(
                 config('auth0.tenants'),
-                static fn (array $tenantConfig) =>
-                    $tenantConfig['domain'] !== '' &&
+                static fn (array $tenantConfig) => $tenantConfig['domain'] !== '' &&
                     $tenantConfig['clientId'] !== '' &&
                     $tenantConfig['clientSecret'] !== ''
             );
 
             // Create Auth0Tenant objects based on the tenants config keys
             $tenants = array_map(
-                static fn (string|int $tenant) => Auth0Tenant::from((string) $tenant),
+                static fn (string|int $tenant) => Auth0Tenant::from((string)$tenant),
                 array_keys($tenantsConfig)
             );
 
@@ -95,9 +97,10 @@ final class Auth0ServiceProvider extends ServiceProvider
             // May always be registered even if there are no configured tenants, because in that case the cluster SDK will
             // just not have any tenant SDKs to loop over and so it simply won't do anything. But it won't crash either.
             Event::listen(IntegrationCreated::class, [CreateClients::class, 'handle']);
-            Event::listen(CreateMissingClients::class, [CreateMissingClientsHandler::class, 'handle']);
             Event::listen(IntegrationUpdated::class, [UpdateClients::class, 'handle']);
             Event::listen(IntegrationBlocked::class, [BlockClients::class, 'handle']);
+            Event::listen(IntegrationUnblocked::class, [UnblockClients::class, 'handle']);
+            Event::listen(IntegrationDeleted::class, [BlockClients::class, 'handle']);
 
             Event::listen(IntegrationUrlCreated::class, [UpdateClients::class, 'handle']);
             Event::listen(IntegrationUrlUpdated::class, [UpdateClients::class, 'handle']);
@@ -105,6 +108,8 @@ final class Auth0ServiceProvider extends ServiceProvider
 
             Event::listen(UnblockClient::class, [UnblockClientHandler::class, 'handle']);
             Event::listen(BlockClient::class, [BlockClientHandler::class, 'handle']);
+
+            Event::listen(CreateMissingClients::class, [CreateMissingClientsHandler::class, 'handle']);
         }
     }
 }

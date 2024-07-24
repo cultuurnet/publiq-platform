@@ -7,8 +7,8 @@ namespace App\Keycloak;
 use Illuminate\Support\Collection;
 
 /**
- * @extends Collection<int, Realm>
+ * @extends Collection<int, Client>
  */
-final class RealmCollection extends Collection
+final class Clients extends Collection
 {
 }

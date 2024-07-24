@@ -14,9 +14,7 @@ test("As an integrator I can create an integration with coupon (so it doesn't ne
 
   const { couponCode } = await createCoupon(adminPage);
 
-  await expect(
-    adminPage.locator("h1").getByText(`Coupon Details: ${couponCode}`)
-  ).toBeVisible();
+  await expect(adminPage.getByText(couponCode, { exact: true })).toBeVisible();
 
   const userContext = await browser.newContext({
     storageState: "playwright/.auth/user.json",
@@ -34,5 +32,5 @@ test("As an integrator I can create an integration with coupon (so it doesn't ne
   await expect(userPage.getByText(integrationName)).toBeVisible();
   await userPage.waitForLoadState("networkidle");
 
-  await expect(userPage.getByText("Actief", { exact: true})).toBeVisible();
+  await expect(userPage.getByText("Actief", { exact: true })).toBeVisible();
 });

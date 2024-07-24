@@ -8,5 +8,7 @@ use App\Domain\Integrations\Organizer;
 
 interface OrganizerRepository
 {
-    public function create(Organizer $organizer): void;
+    public function create(Organizer ...$organizer): void;
+
+    public function delete(Organizer $organizer): void;
 }

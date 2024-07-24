@@ -73,7 +73,7 @@ const InputStyle = {
   right: "flex self-center",
 };
 
-type Props = {
+export type Props = {
   label?: string | ReactElement;
   labelPosition?: LabelPosition;
   labelSize?: LabelSize;

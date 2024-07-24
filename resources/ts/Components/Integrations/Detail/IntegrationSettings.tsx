@@ -106,9 +106,9 @@ export const IntegrationSettings = ({
   isKeepChangesDialogVisible,
   onConfirmLeaveTab,
   onCancelLeaveTab,
+  partnerStatus,
 }: Props) => {
   const { t } = useTranslation();
-
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
 
   const basicInfoForm = useBasicInfoForm({
@@ -230,6 +230,11 @@ export const IntegrationSettings = ({
     }
   };
 
+  const hasUrlSettings =
+    type === IntegrationType.EntryApi &&
+    keyVisibility !== KeyVisibility.v1 &&
+    partnerStatus === "First party";
+
   return (
     <>
       {status !== "idle" && (
@@ -254,8 +259,7 @@ export const IntegrationSettings = ({
         errors={basicInfoForm.errors}
       />
 
-      {type === IntegrationType.EntryApi &&
-        keyVisibility !== KeyVisibility.v1 &&
+      {hasUrlSettings &&
         Object.values(IntegrationUrlType).map((type) => (
           <UrlList
             key={type}

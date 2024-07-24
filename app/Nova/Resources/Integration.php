@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Nova\Resources;
 
+use App\Auth0\Auth0Config;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
@@ -11,11 +12,14 @@ use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\OrganizerRepository;
+use App\Keycloak\KeycloakConfig;
 use App\Nova\Actions\ActivateIntegration;
+use App\Nova\Actions\ActivateUitpasIntegration;
 use App\Nova\Actions\AddOrganizer;
 use App\Nova\Actions\ApproveIntegration;
 use App\Nova\Actions\Auth0\CreateMissingAuth0Clients;
 use App\Nova\Actions\BlockIntegration;
+use App\Nova\Actions\Keycloak\CreateMissingKeycloakClients;
 use App\Nova\Actions\OpenWidgetManager;
 use App\Nova\Actions\UiTiDv1\CreateMissingUiTiDv1Consumers;
 use App\Nova\Actions\UnblockIntegration;
@@ -25,6 +29,7 @@ use Illuminate\Support\Facades\App;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
+use Laravel\Nova\Fields\FormData;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
@@ -32,6 +37,7 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\URL;
 use Laravel\Nova\Http\Requests\ActionRequest;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Query\Search\SearchableRelation;
 use Laravel\Nova\ResourceTool;
 use Publiq\InsightlyLink\InsightlyLink;
 use Publiq\InsightlyLink\InsightlyType;
@@ -45,18 +51,29 @@ final class Integration extends Resource
 
     public static $title = 'name';
 
-    /**
-     * @var array<string>
-     */
-    public static $search = [
-        'id',
-        'name',
-        'description',
-    ];
-
     protected static ?array $defaultSort = [
         'created_at' => 'desc',
     ];
+
+    public static function searchableColumns(): array
+    {
+        $output = [
+            'id',
+            'name',
+            'description',
+            new SearchableRelation('uiTiDv1Consumers', 'consumer_key'),
+        ];
+
+        if (config(Auth0Config::IS_ENABLED)) {
+            $output[] = new SearchableRelation('auth0Clients', 'auth0_client_id');
+        }
+
+        if (config(KeycloakConfig::KEYCLOAK_CREATION_ENABLED)) {
+            $output[] = new SearchableRelation('keycloakClients', 'client_id');
+        }
+
+        return $output;
+    }
 
     /**
      * @return array<Field|ResourceTool>
@@ -73,7 +90,7 @@ final class Integration extends Resource
             $integrationTypes[IntegrationType::UiTPAS->value] = IntegrationType::UiTPAS->name;
         }
 
-        return [
+        $fields = [
             ID::make()
                 ->readonly()
                 ->onlyOnDetail(),
@@ -135,17 +152,23 @@ final class Integration extends Resource
 
             URL::make('Website')
                 ->displayUsing(fn () => $this->website)
-                ->required(fn () => $this->type === IntegrationType::UiTPAS->value)
                 ->showOnIndex(false)
-                ->rules(function () {
-                    $rules = ['url:http,https', 'max:255'];
+                ->dependsOn(
+                    ['type'],
+                    function (Text $field, NovaRequest $request, FormData $formData) {
+                        $rules = ['url:http,https', 'max:255'];
+                        $required = true;
 
-                    if ($this->type !== IntegrationType::UiTPAS->value) {
-                        $rules[] = 'nullable';
+                        if ($formData->string('type')->toString() !== IntegrationType::UiTPAS->value) {
+                            $rules[] = 'nullable';
+                            $required = false;
+                        }
+
+                        $field
+                            ->required($required)
+                            ->rules($rules);
                     }
-
-                    return $rules;
-                }),
+                ),
 
             BelongsTo::make('Organization')
                 ->withoutTrashed()
@@ -176,27 +199,46 @@ final class Integration extends Resource
                 ->onlyOnDetail(),
 
             HasMany::make('UiTiD v1 Consumer Credentials', 'uiTiDv1Consumers', UiTiDv1::class),
-            HasMany::make('UiTiD v2 Client Credentials (Auth0)', 'auth0Clients', Auth0Client::class),
-
-            HasMany::make('Organizers'),
-
-            HasMany::make('Contacts'),
-
-            HasMany::make('Urls', 'urls', IntegrationUrl::class),
-
-            HasMany::make('Activity Log'),
         ];
+
+        if (config(Auth0Config::IS_ENABLED)) {
+            $fields[] = HasMany::make('UiTiD v2 Client Credentials (Auth0)', 'auth0Clients', Auth0Client::class);
+        }
+
+        if (config(KeycloakConfig::KEYCLOAK_CREATION_ENABLED)) {
+            $fields[] = HasMany::make('Keycloak client Credentials', 'keycloakClients', KeycloakClient::class);
+        }
+
+        return array_merge($fields, [
+            HasMany::make('UDB3 Organizers', 'organizers', Organizer::class)
+                ->canSee(function () {
+                    /** @var ?IntegrationModel $model */
+                    $model = $this->model();
+                    return $model && $model->isUiTPAS();
+                }),
+            HasMany::make('Contacts'),
+            HasMany::make('Urls', 'urls', IntegrationUrl::class),
+            HasMany::make('Activity Log'),
+        ]);
     }
 
     public function actions(NovaRequest $request): array
     {
-        return [
+        $actions = [
             (new ActivateIntegration(App::make(IntegrationRepository::class)))
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to activate this integration?')
                 ->confirmButtonText('Activate')
                 ->cancelButtonText('Cancel')
-                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeActivated())
+                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeActivated() && !$this->isUiTPAS())
+                ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeActivated()),
+
+            (new ActivateUitpasIntegration(App::make(IntegrationRepository::class), App::make(OrganizerRepository::class)))
+                ->exceptOnIndex()
+                ->confirmText('Are you sure you want to activate this integration?')
+                ->confirmButtonText('Activate')
+                ->cancelButtonText('Cancel')
+                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeActivated() && $this->isUiTPAS())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeActivated()),
 
             (new ApproveIntegration(App::make(IntegrationRepository::class)))
@@ -229,14 +271,13 @@ final class Integration extends Resource
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeUnblocked())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeUnblocked()),
 
-            (new CreateMissingAuth0Clients())
-                ->withName('Create missing Auth0 Clients')
+            (new AddOrganizer(App::make(OrganizerRepository::class)))
                 ->exceptOnIndex()
-                ->confirmText('Are you sure you want to create missing Auth0 clients for this integration?')
-                ->confirmButtonText('Create')
+                ->confirmText('Are you sure you want to add an organizer?')
+                ->confirmButtonText('Add')
                 ->cancelButtonText('Cancel')
-                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->hasMissingAuth0Clients())
-                ->canRun(fn (Request $request, IntegrationModel $model) => $model->hasMissingAuth0Clients()),
+                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->isUiTPAS())
+                ->canRun(fn (Request $request, IntegrationModel $model) => $model->isUiTPAS()),
 
             (new CreateMissingUiTiDv1Consumers())
                 ->withName('Create missing UiTiD v1 Consumers')
@@ -246,14 +287,30 @@ final class Integration extends Resource
                 ->cancelButtonText('Cancel')
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->hasMissingUiTiDv1Consumers())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->hasMissingUiTiDv1Consumers()),
-
-            (new AddOrganizer(App::make(OrganizerRepository::class)))
-                ->exceptOnIndex()
-                ->confirmText('Are you sure you want to add an organizer?')
-                ->confirmButtonText('Add')
-                ->cancelButtonText('Cancel')
-                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->isUiTPAS())
-                ->canRun(fn (Request $request, IntegrationModel $model) => $model->isUiTPAS()),
         ];
+
+        if (config(Auth0Config::IS_ENABLED)) {
+            $actions[] =(new CreateMissingAuth0Clients())
+                ->withName('Create missing Auth0 Clients')
+                ->exceptOnIndex()
+                ->confirmText('Are you sure you want to create missing Auth0 clients for this integration?')
+                ->confirmButtonText('Create')
+                ->cancelButtonText('Cancel')
+                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->hasMissingAuth0Clients())
+                ->canRun(fn (Request $request, IntegrationModel $model) => $model->hasMissingAuth0Clients());
+        }
+
+        if (config(KeycloakConfig::KEYCLOAK_CREATION_ENABLED)) {
+            $actions[] = (new CreateMissingKeycloakClients())
+                ->withName('Create missing Keycloak clients')
+                ->exceptOnIndex()
+                ->confirmText('Are you sure you want to create missing Keycloak clients for this integration?')
+                ->confirmButtonText('Create')
+                ->cancelButtonText('Cancel')
+                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->hasMissingKeycloakConsumers())
+                ->canRun(fn (Request $request, IntegrationModel $model) => $model->hasMissingKeycloakConsumers());
+        }
+
+        return $actions;
     }
 }

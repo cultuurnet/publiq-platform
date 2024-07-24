@@ -25,7 +25,15 @@ final class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         return array_merge(parent::share($request), [
+            'config' => [
+                'env' => config('app.env'),
+                'sentryDsn' => config('sentry.dsn'),
+                'sentryEnabled' => config('app.sentry.enabled'),
+                'uitpasEnabled' => config('uitpas.enabled'),
+                'keycloakEnabled' => config('keycloak.enabled'),
+            ],
             'widgetConfig' => [
+                'url' => config('uitidwidget.url'),
                 'profileUrl' => config('uitidwidget.profileUrl'),
                 'registerUrl' => config('uitidwidget.registerUrl'),
                 'auth0Domain' => config('uitidwidget.auth0Domain'),

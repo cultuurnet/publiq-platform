@@ -9,4 +9,5 @@ use CultuurNet\SearchV3\ValueObjects\PagedCollection;
 interface SearchService
 {
     public function searchUiTPASOrganizer(string $name): PagedCollection;
+    public function findUiTPASOrganizers(string ...$ids): PagedCollection;
 }

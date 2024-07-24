@@ -27,13 +27,24 @@ export async function createIntegrationAsIntegrator(
       .click();
   }
 
-  if (integrationType !== IntegrationType.EntryApi) {
-    await page.getByText("Basic € 125 / jaar", { exact: true }).click();
+  if (integrationType === IntegrationType.UiTPAS) {
+    await page
+      .locator("li")
+      .filter({ hasText: /^UiTPAS API/ })
+      .click();
+  }
+
+  if (
+    integrationType === IntegrationType.SearchApi ||
+    integrationType === IntegrationType.Widgets
+  ) {
+    await page.getByLabel("Basic (€ 125 / jaar)Je zorgt").check();
   }
 
   const integrationName = faker.word.adjective();
   await page.getByLabel("Naam integratie").fill(integrationName);
   await page.getByLabel("Doel van de integratie").fill(faker.lorem.lines(2));
+  await page.locator('input[name="website"]').fill(faker.internet.url());
   await page
     .locator('input[name="lastNameFunctionalContact"]')
     .fill(faker.person.lastName());
@@ -55,9 +66,17 @@ export async function createIntegrationAsIntegrator(
   await page.locator('input[name="firstNameTechnicalContact"]').press("Tab");
   await page.locator('input[name="emailPartner"]').fill(faker.internet.email());
 
-  await page.getByLabel("Ik ga akkoord met de").check();
+  await page.locator('input[name="agreement"]').check();
 
-  if (couponCode && integrationType !== IntegrationType.EntryApi) {
+  if (integrationType === IntegrationType.UiTPAS) {
+    await page.locator('input[name="uitpasAgreement"]').check();
+  }
+
+  if (
+    couponCode &&
+    (integrationType === IntegrationType.SearchApi ||
+      integrationType === IntegrationType.Widgets)
+  ) {
     await page.getByLabel("Ik heb een coupon").check();
     await page.locator('input[name="coupon"]').fill(couponCode);
   }

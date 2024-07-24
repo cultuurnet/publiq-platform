@@ -10,6 +10,7 @@ use App\Domain\Coupons\Coupon;
 use App\Domain\KeyVisibilityUpgrades\KeyVisibilityUpgrade;
 use App\Domain\Organizations\Organization;
 use App\Domain\Subscriptions\Subscription;
+use App\Keycloak\Client as KeycloakClient;
 use App\UiTiDv1\UiTiDv1Consumer;
 use Ramsey\Uuid\UuidInterface;
 
@@ -25,7 +26,13 @@ final class Integration
     /** @var array<Auth0Client> */
     private array $auth0Clients;
 
+    /** @var array<KeycloakClient> */
+    private array $keycloakClients;
+
     private ?Organization $organization;
+
+    /** @var array<Organizer> */
+    private array $organizers;
 
     /** @var array<UiTiDv1Consumer> */
     private array $uiTiDv1Consumers;
@@ -52,6 +59,8 @@ final class Integration
         $this->urls = [];
         $this->uiTiDv1Consumers = [];
         $this->auth0Clients = [];
+        $this->keycloakClients = [];
+        $this->organizers = [];
         $this->organization = null;
         $this->keyVisibility = KeyVisibility::v2;
         $this->keyVisibilityUpgrade = null;
@@ -110,6 +119,20 @@ final class Integration
         return $clone;
     }
 
+    public function withKeycloakClients(KeycloakClient ...$keycloakClients): self
+    {
+        $clone = clone $this;
+        $clone->keycloakClients = $keycloakClients;
+        return $clone;
+    }
+
+    public function withOrganizers(Organizer ...$organizers): self
+    {
+        $clone = clone $this;
+        $clone->organizers = $organizers;
+        return $clone;
+    }
+
     public function withSubscription(Subscription $subscription): self
     {
         $clone = clone $this;
@@ -154,6 +177,14 @@ final class Integration
         return $this->organization;
     }
 
+    /**
+     * @return array<Organizer>
+     */
+    public function organizers(): array
+    {
+        return $this->organizers;
+    }
+
     /** @return array<UiTiDv1Consumer> */
     public function uiTiDv1Consumers(): array
     {
@@ -164,6 +195,12 @@ final class Integration
     public function auth0Clients(): array
     {
         return $this->auth0Clients;
+    }
+
+    /** @return array<KeycloakClient> */
+    public function keycloakClients(): array
+    {
+        return $this->keycloakClients;
     }
 
     public function withUrls(IntegrationUrl ...$urls): self
@@ -186,10 +223,11 @@ final class Integration
      */
     public function urlsForTypeAndEnvironment(IntegrationUrlType $type, Environment $environment): array
     {
-        return array_filter(
+        // Wrapped this with array_values, so we don't retain the indexes
+        return array_values(array_filter(
             $this->urls,
             fn (IntegrationUrl $url) => $url->type->value === $type->value && $url->environment->value === $environment->value
-        );
+        ));
     }
 
     public function toArray(): array
@@ -207,8 +245,10 @@ final class Integration
             'contacts' => $this->contacts,
             'urls' => $this->urls,
             'organization' => $this->organization,
+            'organizers' => $this->organizers,
             'authClients' => $this->auth0Clients,
             'legacyAuthConsumers' => $this->uiTiDv1Consumers,
+            'keycloakClients' => $this->keycloakClients,
             'subscription' => $this->subscription,
             'website' => $this->website->value ?? null,
             'coupon' => $this->coupon ?? null,

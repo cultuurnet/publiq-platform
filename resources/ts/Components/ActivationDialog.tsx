@@ -13,6 +13,9 @@ import type { PricingPlan } from "../hooks/useGetPricingPlans";
 import { formatCurrency } from "../utils/formatCurrency";
 import { Heading } from "./Heading";
 import { CouponInfoContext } from "../Context/CouponInfo";
+import type { Organization } from "../types/Organization";
+import type { UiTPASOrganizer } from "../types/UiTPASOrganizer";
+import { OrganizersDatalist } from "./Integrations/Detail/OrganizersDatalist";
 
 const PriceOverview = ({
   coupon,
@@ -81,6 +84,12 @@ type Props = {
   email: string;
 };
 
+type InitialValues = {
+  organization: Omit<Organization, "id">;
+  organizers: UiTPASOrganizer[];
+  coupon: string;
+};
+
 export const ActivationDialog = ({
   isVisible,
   onClose,
@@ -93,7 +102,7 @@ export const ActivationDialog = ({
 
   const isMobile = useIsMobile();
 
-  const initialValuesOrganization = {
+  const initialValuesOrganization: InitialValues = {
     organization: {
       name: "",
       invoiceEmail: "",
@@ -105,6 +114,7 @@ export const ActivationDialog = ({
         country: "Belgium",
       },
     },
+    organizers: [],
     coupon: "",
   };
 
@@ -120,6 +130,9 @@ export const ActivationDialog = ({
     string,
     string | undefined
   >;
+
+  const isBillingInfoAndPriceOverviewVisible =
+    type !== IntegrationType.EntryApi && type !== IntegrationType.UiTPAS;
 
   if (!isVisible) {
     return null;
@@ -144,6 +157,11 @@ export const ActivationDialog = ({
       contentStyles="gap-3"
     >
       <>
+        {type === IntegrationType.UiTPAS && (
+          <Heading level={5} className="font-semibold">
+            {t("integrations.activation_dialog.uitpas.partner")}
+          </Heading>
+        )}
         <FormElement
           label={`${t("details.billing_info.name")}`}
           required
@@ -235,7 +253,29 @@ export const ActivationDialog = ({
             }
           />
         </div>
-        {type !== IntegrationType.EntryApi && (
+        {type === IntegrationType.UiTPAS && (
+          <>
+            <div className="flex flex-col gap-1">
+              <Heading level={5} className="font-semibold">
+                {t("integrations.activation_dialog.uitpas.organizers.title")}
+              </Heading>
+              <Heading level={5}>
+                {t("integrations.activation_dialog.uitpas.organizers.info")}
+              </Heading>
+            </div>
+            <OrganizersDatalist
+              label={t(
+                "integrations.activation_dialog.uitpas.organizers.label"
+              )}
+              error={organizationFormErrors["organizers"]}
+              value={organizationForm.data.organizers}
+              onChange={(organizers) =>
+                organizationForm.setData("organizers", organizers)
+              }
+            />
+          </>
+        )}
+        {isBillingInfoAndPriceOverviewVisible && (
           <>
             <FormElement
               label={`${t("details.billing_info.vat")}`}
@@ -294,7 +334,7 @@ export const ActivationDialog = ({
             />
           </>
         )}
-        {type !== IntegrationType.EntryApi && (
+        {isBillingInfoAndPriceOverviewVisible && (
           <PriceOverview
             subscription={subscription}
             pricingPlan={pricingPlan}

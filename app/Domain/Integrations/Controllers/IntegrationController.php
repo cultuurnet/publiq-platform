@@ -10,12 +10,13 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\ContactKeyVisibilityRepository;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Coupons\Repositories\CouponRepository;
+use App\Domain\Integrations\FormRequests\KeyVisibilityUpgradeRequest;
 use App\Domain\Integrations\FormRequests\RequestActivationRequest;
 use App\Domain\Integrations\FormRequests\StoreContactRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationUrlRequest;
-use App\Domain\Integrations\FormRequests\KeyVisibilityUpgradeRequest;
 use App\Domain\Integrations\FormRequests\UpdateContactInfoRequest;
+use App\Domain\Integrations\FormRequests\UpdateIntegrationOrganizersRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationUrlsRequest;
 use App\Domain\Integrations\FormRequests\UpdateOrganizationRequest;
@@ -23,25 +24,31 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\KeyVisibility;
+use App\Domain\Integrations\Mappers\KeyVisibilityUpgradeMapper;
 use App\Domain\Integrations\Mappers\OrganizationMapper;
+use App\Domain\Integrations\Mappers\OrganizerMapper;
 use App\Domain\Integrations\Mappers\StoreContactMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationUrlMapper;
-use App\Domain\Integrations\Mappers\KeyVisibilityUpgradeMapper;
 use App\Domain\Integrations\Mappers\UpdateContactInfoMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationUrlsMapper;
+use App\Domain\Integrations\Organizer;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\IntegrationUrlRepository;
+use App\Domain\Integrations\Repositories\OrganizerRepository;
 use App\Domain\KeyVisibilityUpgrades\KeyVisibilityUpgrade;
+use App\Domain\KeyVisibilityUpgrades\Repositories\KeyVisibilityUpgradeRepository;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
-use App\Domain\KeyVisibilityUpgrades\Repositories\KeyVisibilityUpgradeRepository;
 use App\Http\Controllers\Controller;
+use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\ProjectAanvraag\ProjectAanvraagUrl;
 use App\Router\TranslatedRoute;
+use App\Search\Sapi3\SearchService;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use Carbon\Carbon;
+use CultuurNet\SearchV3\ValueObjects\Organizer as SapiOrganizer;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\RedirectResponse;
@@ -63,10 +70,13 @@ final class IntegrationController extends Controller
         private readonly ContactRepository $contactRepository,
         private readonly ContactKeyVisibilityRepository $contactKeyVisibilityRepository,
         private readonly OrganizationRepository $organizationRepository,
+        private readonly OrganizerRepository $organizerRepository,
         private readonly CouponRepository $couponRepository,
         private readonly Auth0ClientRepository $auth0ClientRepository,
         private readonly UiTiDv1ConsumerRepository $uitidV1ConsumerRepository,
+        private readonly KeycloakClientRepository $keycloakClientRepository,
         private readonly KeyVisibilityUpgradeRepository $keyVisibilityUpgradeRepository,
+        private readonly SearchService $searchClient,
         private readonly CurrentUser $currentUser
     ) {
     }
@@ -84,12 +94,14 @@ final class IntegrationController extends Controller
 
         $auth0Clients = $this->auth0ClientRepository->getByIntegrationIds($integrationIds);
         $uitidV1Consumers = $this->uitidV1ConsumerRepository->getByIntegrationIds($integrationIds);
+        $keycloakClients = $this->keycloakClientRepository->getByIntegrationIds($integrationIds);
 
         return Inertia::render('Integrations/Index', [
             'integrations' => $integrationsData->collection->map(fn (Integration $integration) => $integration->toArray()),
             'credentials' => [
                 'auth0' => $auth0Clients,
                 'uitidV1' => $uitidV1Consumers,
+                'keycloak' => $keycloakClients,
             ],
             'paginationInfo' => $integrationsData->paginationInfo,
         ]);
@@ -167,11 +179,14 @@ final class IntegrationController extends Controller
         $integration = $this->integrationRepository->getById(Uuid::fromString($id));
         $oldCredentialsExpirationDate = $this->getExpirationDateForOldCredentials($integration->getKeyVisibilityUpgrade());
 
+        $organizers = $this->getIntegrationOrganizersWithTestOrganizer($integration);
+
         return Inertia::render('Integrations/Detail', [
             'integration' => $integration->toArray(),
             'oldCredentialsExpirationDate' => $oldCredentialsExpirationDate,
             'email' => Auth::user()?->email,
             'subscriptions' => $this->subscriptionRepository->all(),
+            'organizers' => $organizers,
         ]);
     }
 
@@ -278,6 +293,32 @@ final class IntegrationController extends Controller
         );
     }
 
+    public function updateOrganizers(string $integrationId, UpdateIntegrationOrganizersRequest $request): RedirectResponse
+    {
+        $integration = $this->integrationRepository->getById(Uuid::fromString($integrationId));
+
+        $organizerIds = collect($integration->organizers())->map(fn (Organizer $organizer) => $organizer->organizerId);
+        $newOrganizers = array_filter(
+            OrganizerMapper::mapUpdateOrganizers($request, $integrationId),
+            fn (Organizer $organizer) => !in_array($organizer->organizerId, $organizerIds->toArray(), true)
+        );
+
+        $this->organizerRepository->create(...$newOrganizers);
+
+        return Redirect::back();
+    }
+
+    public function deleteOrganizer(string $integrationId, string $organizerId): RedirectResponse
+    {
+        $this->organizerRepository->delete(new Organizer(
+            Uuid::uuid4(),
+            Uuid::fromString($integrationId),
+            $organizerId
+        ));
+
+        return Redirect::back();
+    }
+
     public function requestActivation(string $id, RequestActivationRequest $request): RedirectResponse
     {
         $guardCouponResult = $this->guardCoupon($request);
@@ -287,6 +328,9 @@ final class IntegrationController extends Controller
 
         $organization = OrganizationMapper::mapActivationRequest($request);
         $this->organizationRepository->save($organization);
+
+        $organizers = OrganizerMapper::mapActivationRequest($request, $id);
+        $this->organizerRepository->create(...$organizers);
 
         $this->integrationRepository->requestActivation(Uuid::fromString($id), $organization->id, $request->input('coupon'));
 
@@ -337,7 +381,7 @@ final class IntegrationController extends Controller
             ]);
         }
 
-        if ($coupon->isDistributed) {
+        if ($coupon->integrationId !== null) {
             return Redirect::back()->withErrors(['coupon' => __('errors.coupon.already_used')]);
         }
 
@@ -355,5 +399,31 @@ final class IntegrationController extends Controller
         }
 
         return null;
+    }
+
+
+    public function getIntegrationOrganizersWithTestOrganizer(Integration $integration): Collection
+    {
+        $organizerIds = collect($integration->organizers())->map(fn (Organizer $organizer) => $organizer->organizerId);
+        $uitpasOrganizers = $this->searchClient->findUiTPASOrganizers(...$organizerIds)->getMember()?->getItems();
+
+        $organizers = collect($uitpasOrganizers)->map(function (SapiOrganizer $organizer) {
+            $id = explode('/', $organizer->getId() ?? '');
+            $id = $id[count($id) - 1];
+
+            return [
+                'id' => $id,
+                'name' => $organizer->getName()?->getValues() ?? [],
+                'status' => 'Live',
+            ];
+        });
+
+        $organizers->push([
+            'id' => '0ce87cbc-9299-4528-8d35-92225dc9489f',
+            'name' => ['nl' => 'UiTPAS Organisatie (Regio Gent + Paspartoe)'],
+            'status' => 'Test',
+        ]);
+
+        return $organizers;
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\UiTiDv1\Listeners;
 
 use App\Domain\Integrations\Events\IntegrationBlocked;
+use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\UiTiDv1\Listeners\BlockConsumers;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
@@ -12,6 +13,7 @@ use App\UiTiDv1\UiTiDv1Consumer;
 use App\UiTiDv1\UiTiDv1Environment;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -43,9 +45,16 @@ final class BlockConsumersTest extends TestCase
         );
     }
 
-    public function test_it_blocks_consumers(): void
+    public static function integrationEventsProvider(): \Generator
     {
-        $integrationId = Uuid::uuid4();
+        yield 'Integration blocked' => [new IntegrationBlocked(Uuid::uuid4())];
+        yield 'Integration deleted' => [new IntegrationDeleted(Uuid::uuid4())];
+    }
+
+    #[dataProvider('integrationEventsProvider')]
+    public function test_it_blocks_consumers(IntegrationBlocked|IntegrationDeleted $event): void
+    {
+        $integrationId = $event->id;
 
         $consumers = [
             new UiTiDv1Consumer(
@@ -83,7 +92,7 @@ final class BlockConsumersTest extends TestCase
             ->willReturn($consumers);
 
         $this->integrationRepository->expects($this->once())
-            ->method('getById')
+            ->method('getByIdWithTrashed')
             ->willReturn($this->givenThereIsAnIntegration($integrationId));
 
         $this->httpClient->expects($this->exactly(3))
@@ -122,6 +131,6 @@ final class BlockConsumersTest extends TestCase
                 }
             );
 
-        $this->blockConsumers->handle(new IntegrationBlocked($integrationId));
+        $this->blockConsumers->handle($event);
     }
 }
