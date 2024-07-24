@@ -25,7 +25,7 @@ task :build_artifact do |task|
     --config-files /var/www/platform-api/.env \
     --config-files /var/www/platform-api/nova_users.php \
     --deb-user www-data --deb-group www-data \
-    --before-remove lib/tasks/prerm \
+    --before-remove lib/tasks/prerm --after-remove lib/tasks/postrm \
     --description '#{description}' --url '#{source}' --vendor '#{vendor}' \
     --license '#{license}' -m '#{maintainer}' \
     --deb-field 'Pipeline-Version: #{calver_version}' \
