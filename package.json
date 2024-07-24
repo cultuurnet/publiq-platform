@@ -13,12 +13,12 @@
         "test:e2e": "playwright test"
     },
     "dependencies": {
-        "@fortawesome/fontawesome-svg-core": "^6.5.2",
+        "@fortawesome/fontawesome-svg-core": "^6.6.0",
         "@fortawesome/free-regular-svg-icons": "^6.5.2",
-        "@fortawesome/free-solid-svg-icons": "^6.5.2",
+        "@fortawesome/free-solid-svg-icons": "^6.6.0",
         "@fortawesome/react-fontawesome": "^0.2.2",
         "@inertiajs/react": "^1.2.0",
-        "@sentry/browser": "^8.11.0",
+        "@sentry/browser": "^8.19.0",
         "date-fns": "^3.6.0",
         "dotenv": "^16.4.5",
         "i18next": "^23.12.1",
@@ -30,9 +30,9 @@
     },
     "devDependencies": {
         "@faker-js/faker": "^8.4.1",
-        "@playwright/test": "^1.45.1",
+        "@playwright/test": "^1.45.2",
         "@tailwindcss/forms": "^0.5.7",
-        "@types/lodash": "^4.17.6",
+        "@types/lodash": "^4.17.7",
         "@types/node": "^20.14.10",
         "@types/react": "^18.3.3",
         "@types/react-dom": "^18.3.0",

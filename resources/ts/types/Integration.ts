@@ -34,6 +34,7 @@ export type Integration = {
   subscriptionId: string;
   coupon: Coupon | null;
   status: IntegrationStatus;
+  partnerStatus: "First party" | "Third party";
   contacts: Contact[];
   organization: Organization | null;
   subscription: Subscription;
