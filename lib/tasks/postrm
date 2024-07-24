@@ -1,0 +1,4 @@
+#!/bin/sh
+set -e
+
+/usr/bin/rm -f /var/www/platform-api/bootstrap/cache/config.php || exit 0
