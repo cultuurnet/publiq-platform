@@ -119,12 +119,24 @@ final class Integration extends Resource
             Select::make('Key Visibility')
                 ->filterable()
                 ->sortable()
-                ->options([
-                    KeyVisibility::v1->value => KeyVisibility::v1->name,
-                    KeyVisibility::v2->value => KeyVisibility::v2->name,
-                    KeyVisibility::all->value => KeyVisibility::all->name,
-                ])
-                ->rules('required'),
+                ->required()
+                ->dependsOn(
+                    ['type'],
+                    function (Select $field, NovaRequest $request, FormData $formData) {
+                        if ($formData->string('type')->toString() !== IntegrationType::UiTPAS->value) {
+                            $field->options([
+                                KeyVisibility::v1->value => KeyVisibility::v1->name,
+                                KeyVisibility::v2->value => KeyVisibility::v2->name,
+                                KeyVisibility::all->value => KeyVisibility::all->name,
+                            ]);
+                            return;
+                        }
+
+                        $field->options([
+                            KeyVisibility::v2->value => KeyVisibility::v2->name,
+                        ]);
+                    }
+                ),
 
             Text::make('Description')
                 ->rules('required', 'max:255')
