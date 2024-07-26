@@ -112,6 +112,13 @@ final class IntegrationModel extends UuidModel
 
     protected static function booted(): void
     {
+        self::creating(
+            static function (IntegrationModel $integrationModel) {
+                if ($integrationModel->type == IntegrationType::UiTPAS) {
+                    $integrationModel->key_visibility = KeyVisibility::v2;
+                }
+            }
+        );
         self::created(
             static fn (IntegrationModel $integrationModel) => IntegrationCreated::dispatch(Uuid::fromString($integrationModel->id))
         );
