@@ -42,7 +42,10 @@ use Ramsey\Uuid\UuidInterface;
  * @property CouponModel|null $coupon
  * @property SubscriptionModel|null $subscription
  * @property KeyVisibilityUpgradeModel|null $keyVisibilityUpgrade
- * @property string $type
+ * @property IntegrationType $type
+ * @property IntegrationStatus $status
+ * @property IntegrationPartnerStatus $partner_status
+ * @property KeyVisibility $key_visibility
  * @property string $website
  */
 final class IntegrationModel extends UuidModel
@@ -69,35 +72,42 @@ final class IntegrationModel extends UuidModel
         'partner_status' => IntegrationPartnerStatus::THIRD_PARTY,
     ];
 
+    protected $casts = [
+        'type' => IntegrationType::class,
+        'status' => IntegrationStatus::class,
+        'partner_status' => IntegrationPartnerStatus::class,
+        'key_visibility' => KeyVisibility::class,
+    ];
+
     public function canBeActivated(): bool
     {
-        return $this->status === IntegrationStatus::Draft->value
-            || $this->status === IntegrationStatus::Blocked->value;
+        return $this->status === IntegrationStatus::Draft
+            || $this->status === IntegrationStatus::Blocked;
     }
 
     public function canBeApproved(): bool
     {
-        return $this->status === IntegrationStatus::PendingApprovalIntegration->value;
+        return $this->status === IntegrationStatus::PendingApprovalIntegration;
     }
 
     public function canBeBlocked(): bool
     {
-        return $this->status !== IntegrationStatus::Blocked->value;
+        return $this->status !== IntegrationStatus::Blocked;
     }
 
     public function canBeUnblocked(): bool
     {
-        return $this->status === IntegrationStatus::Blocked->value;
+        return $this->status === IntegrationStatus::Blocked;
     }
 
     public function isWidgets(): bool
     {
-        return $this->type === IntegrationType::Widgets->value;
+        return $this->type === IntegrationType::Widgets;
     }
 
     public function isUiTPAS(): bool
     {
-        return $this->type === IntegrationType::UiTPAS->value;
+        return $this->type === IntegrationType::UiTPAS;
     }
 
     protected static function booted(): void
@@ -317,14 +327,14 @@ final class IntegrationModel extends UuidModel
 
         $integration = (new Integration(
             Uuid::fromString($this->id),
-            IntegrationType::from($this->type),
+            $this->type,
             $this->name,
             $this->description,
             Uuid::fromString($this->subscription_id),
-            IntegrationStatus::from($this->status),
-            IntegrationPartnerStatus::from($this->partner_status),
+            $this->status,
+            $this->partner_status,
         ))->withKeyVisibility(
-            KeyVisibility::from($this->key_visibility)
+            $this->key_visibility
         )->withContacts(
             ...$this->contacts()
             ->get()
