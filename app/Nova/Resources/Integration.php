@@ -11,7 +11,7 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Domain\Integrations\Repositories\OrganizerRepository;
+use App\Domain\Integrations\Repositories\UiTdatabankOrganizerRepository;
 use App\Keycloak\KeycloakConfig;
 use App\Nova\Actions\ActivateIntegration;
 use App\Nova\Actions\ActivateUitpasIntegration;
@@ -233,7 +233,7 @@ final class Integration extends Resource
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeActivated() && !$this->isUiTPAS())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeActivated()),
 
-            (new ActivateUitpasIntegration(App::make(IntegrationRepository::class), App::make(OrganizerRepository::class)))
+            (new ActivateUitpasIntegration(App::make(IntegrationRepository::class), App::make(UiTdatabankOrganizerRepository::class)))
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to activate this integration?')
                 ->confirmButtonText('Activate')
@@ -271,7 +271,7 @@ final class Integration extends Resource
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeUnblocked())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeUnblocked()),
 
-            (new AddOrganizer(App::make(OrganizerRepository::class)))
+            (new AddOrganizer(App::make(UiTdatabankOrganizerRepository::class)))
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to add an organizer?')
                 ->confirmButtonText('Add')
