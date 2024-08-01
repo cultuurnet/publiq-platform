@@ -15,7 +15,7 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 /**
  * @mixin UiTdatabankOrganizerModel
  */
-final class Organizer extends Resource
+final class UiTdatabankOrganizer extends Resource
 {
     public static string $model = UiTdatabankOrganizerModel::class;
 
