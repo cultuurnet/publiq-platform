@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Integrations\Policies;
 
 use App\Domain\Auth\Models\UserModel;
-use App\Domain\Integrations\Models\UiTdatabankOrganizerModel;
+use App\Domain\Integrations\Models\OrganizerModel;
 
 final class OrganizerPolicy
 {
@@ -14,7 +14,7 @@ final class OrganizerPolicy
         return true;
     }
 
-    public function view(UserModel $userModel, UiTdatabankOrganizerModel $organizerModel): bool
+    public function view(UserModel $userModel, OrganizerModel $organizerModel): bool
     {
         return true;
     }
@@ -24,27 +24,27 @@ final class OrganizerPolicy
         return false;
     }
 
-    public function update(UserModel $userModel, UiTdatabankOrganizerModel $organizerModel): bool
+    public function update(UserModel $userModel, OrganizerModel $organizerModel): bool
     {
         return false;
     }
 
-    public function delete(UserModel $userModel, UiTdatabankOrganizerModel $organizerModel): bool
+    public function delete(UserModel $userModel, OrganizerModel $organizerModel): bool
     {
         return true;
     }
 
-    public function restore(UserModel $userModel, UiTdatabankOrganizerModel $organizerModel): bool
+    public function restore(UserModel $userModel, OrganizerModel $organizerModel): bool
     {
         return false;
     }
 
-    public function replicate(UserModel $userModel, UiTdatabankOrganizerModel $organizerModel): bool
+    public function replicate(UserModel $userModel, OrganizerModel $organizerModel): bool
     {
         return false;
     }
 
-    public function forceDelete(UserModel $userModel, UiTdatabankOrganizerModel $organizerModel): bool
+    public function forceDelete(UserModel $userModel, OrganizerModel $organizerModel): bool
     {
         return false;
     }

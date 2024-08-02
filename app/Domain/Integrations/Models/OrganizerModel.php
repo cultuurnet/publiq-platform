@@ -8,7 +8,7 @@ use App\Domain\Integrations\UiTdatabankOrganizer;
 use App\Models\UuidModel;
 use Ramsey\Uuid\Uuid;
 
-final class UiTdatabankOrganizerModel extends UuidModel
+final class OrganizerModel extends UuidModel
 {
     protected $table = 'organizers';
 
