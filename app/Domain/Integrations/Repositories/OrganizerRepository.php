@@ -6,7 +6,7 @@ namespace App\Domain\Integrations\Repositories;
 
 use App\Domain\Integrations\UiTdatabankOrganizer;
 
-interface UiTdatabankOrganizerRepository
+interface OrganizerRepository
 {
     public function create(UiTdatabankOrganizer ...$organizer): void;
 
