@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Nova\Actions;
 
 use App\Domain\Integrations\Models\IntegrationModel;
-use App\Domain\Integrations\UiTdatabankOrganizer;
+use App\Domain\Integrations\Organizer;
 use App\Domain\Integrations\Repositories\OrganizerRepository;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -37,7 +37,7 @@ final class AddOrganizer extends Action
         $organizationIdAsString = $fields->get('organizer_id');
 
         $this->organizerRepository->create(
-            new UiTdatabankOrganizer(
+            new Organizer(
                 Uuid::uuid4(),
                 Uuid::fromString($integration->id),
                 $organizationIdAsString

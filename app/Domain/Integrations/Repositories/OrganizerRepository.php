@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Repositories;
 
-use App\Domain\Integrations\UiTdatabankOrganizer;
+use App\Domain\Integrations\Organizer;
 
 interface OrganizerRepository
 {
-    public function create(UiTdatabankOrganizer ...$organizer): void;
+    public function create(Organizer ...$organizer): void;
 
-    public function delete(UiTdatabankOrganizer $organizer): void;
+    public function delete(Organizer $organizer): void;
 }

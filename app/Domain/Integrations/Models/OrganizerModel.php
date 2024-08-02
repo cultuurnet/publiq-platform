@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Models;
 
-use App\Domain\Integrations\UiTdatabankOrganizer;
+use App\Domain\Integrations\Organizer;
 use App\Models\UuidModel;
 use Ramsey\Uuid\Uuid;
 
@@ -18,9 +18,9 @@ final class OrganizerModel extends UuidModel
         'organizer_id',
     ];
 
-    public function toDomain(): UiTdatabankOrganizer
+    public function toDomain(): Organizer
     {
-        return new UiTdatabankOrganizer(
+        return new Organizer(
             Uuid::fromString($this->id),
             Uuid::fromString($this->integration_id),
             $this->organizer_id,
