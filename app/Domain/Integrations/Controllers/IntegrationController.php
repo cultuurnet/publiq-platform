@@ -26,7 +26,7 @@ use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Mappers\KeyVisibilityUpgradeMapper;
 use App\Domain\Integrations\Mappers\OrganizationMapper;
-use App\Domain\Integrations\Mappers\OrganizerMapper;
+use App\Domain\Integrations\Mappers\UiTdatabankOrganizerMapper;
 use App\Domain\Integrations\Mappers\StoreContactMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationUrlMapper;
@@ -299,7 +299,7 @@ final class IntegrationController extends Controller
 
         $organizerIds = collect($integration->organizers())->map(fn (UiTdatabankOrganizer $organizer) => $organizer->organizerId);
         $newOrganizers = array_filter(
-            OrganizerMapper::mapUpdateOrganizers($request, $integrationId),
+            UiTdatabankOrganizerMapper::mapUpdateOrganizers($request, $integrationId),
             fn (UiTdatabankOrganizer $organizer) => !in_array($organizer->organizerId, $organizerIds->toArray(), true)
         );
 
@@ -329,7 +329,7 @@ final class IntegrationController extends Controller
         $organization = OrganizationMapper::mapActivationRequest($request);
         $this->organizationRepository->save($organization);
 
-        $organizers = OrganizerMapper::mapActivationRequest($request, $id);
+        $organizers = UiTdatabankOrganizerMapper::mapActivationRequest($request, $id);
         $this->organizerRepository->create(...$organizers);
 
         $this->integrationRepository->requestActivation(Uuid::fromString($id), $organization->id, $request->input('coupon'));
