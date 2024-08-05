@@ -16,7 +16,7 @@ use App\Domain\Integrations\FormRequests\StoreContactRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationUrlRequest;
 use App\Domain\Integrations\FormRequests\UpdateContactInfoRequest;
-use App\Domain\Integrations\FormRequests\UpdateIntegrationOrganizersRequest;
+use App\Domain\Integrations\FormRequests\UpdateIntegrationUiTdatabankOrganizersRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationUrlsRequest;
 use App\Domain\Integrations\FormRequests\UpdateOrganizationRequest;
@@ -293,7 +293,7 @@ final class IntegrationController extends Controller
         );
     }
 
-    public function updateOrganizers(string $integrationId, UpdateIntegrationOrganizersRequest $request): RedirectResponse
+    public function updateOrganizers(string $integrationId, UpdateIntegrationUiTdatabankOrganizersRequest $request): RedirectResponse
     {
         $integration = $this->integrationRepository->getById(Uuid::fromString($integrationId));
 

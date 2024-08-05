@@ -24,7 +24,7 @@ final class RequestActivationRequest extends FormRequest
     {
         $rules = collect([
             ...(new CreateOrganizationRequest())->rules(),
-            ...(new UpdateIntegrationOrganizersRequest())->rules(),
+            ...(new UpdateIntegrationUiTdatabankOrganizersRequest())->rules(),
             'coupon' => ['nullable', 'string', 'max:255'],
         ]);
 
