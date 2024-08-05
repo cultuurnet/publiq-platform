@@ -40,7 +40,7 @@ export const OrganizersDatalist = ({ onChange, value, ...props }: Props) => {
           }
         );
         setOrganizerList(organizers);
-      } catch (error) {
+      } catch {
         setOrganizerError(true);
         return;
       }
