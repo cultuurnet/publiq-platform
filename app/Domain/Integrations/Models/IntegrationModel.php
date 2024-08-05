@@ -360,7 +360,7 @@ final class IntegrationModel extends UuidModel
             ->get()
             ->map(fn (KeycloakClientModel $keycloakClientModel) => $keycloakClientModel->toDomain())
             ->toArray()
-        )->withOrganizers(
+        )->withUiTdatabankOrganizers(
             ...$this->organizers()
             ->get()
             ->map(fn (UiTdatabankOrganizerModel $organizerModel) => $organizerModel->toDomain())

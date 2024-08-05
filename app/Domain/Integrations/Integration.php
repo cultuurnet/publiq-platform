@@ -126,7 +126,7 @@ final class Integration
         return $clone;
     }
 
-    public function withOrganizers(UiTdatabankOrganizer ...$organizers): self
+    public function withUiTdatabankOrganizers(UiTdatabankOrganizer ...$organizers): self
     {
         $clone = clone $this;
         $clone->organizers = $organizers;
