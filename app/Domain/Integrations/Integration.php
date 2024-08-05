@@ -180,7 +180,7 @@ final class Integration
     /**
      * @return array<UiTdatabankOrganizer>
      */
-    public function organizers(): array
+    public function uiTdatabankOrganizers(): array
     {
         return $this->uiTdatabankOrganizers;
     }
