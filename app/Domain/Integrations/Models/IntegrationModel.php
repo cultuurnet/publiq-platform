@@ -203,7 +203,7 @@ final class IntegrationModel extends UuidModel
     /**
      * @return HasMany<UiTdatabankOrganizerModel>
      */
-    public function organizers(): HasMany
+    public function uiTdatabankOrganizers(): HasMany
     {
         return $this->hasMany(UiTdatabankOrganizerModel::class, 'integration_id');
     }
@@ -361,7 +361,7 @@ final class IntegrationModel extends UuidModel
             ->map(fn (KeycloakClientModel $keycloakClientModel) => $keycloakClientModel->toDomain())
             ->toArray()
         )->withUiTdatabankOrganizers(
-            ...$this->organizers()
+            ...$this->uiTdatabankOrganizers()
             ->get()
             ->map(fn (UiTdatabankOrganizerModel $organizerModel) => $organizerModel->toDomain())
             ->toArray()
