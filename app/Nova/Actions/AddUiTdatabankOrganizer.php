@@ -18,7 +18,7 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Ramsey\Uuid\Uuid;
 
-final class AddOrganizer extends Action
+final class AddUiTdatabankOrganizer extends Action
 {
     use InteractsWithQueue;
     use Queueable;
@@ -29,7 +29,7 @@ final class AddOrganizer extends Action
 
     public function handle(ActionFields $fields, Collection $integrations): ActionResponse
     {
-        Log::info('AddOrganizer action started.');
+        Log::info('AddUiTdatabankOrganizer action started.');
         /** @var IntegrationModel $integration */
         $integration = $integrations->first();
 

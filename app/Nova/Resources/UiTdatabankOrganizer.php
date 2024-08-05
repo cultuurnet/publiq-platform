@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Nova\Resources;
 
-use App\Domain\Integrations\Models\UiTdatabankOrganizerModel;
 use App\Nova\Resource;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
