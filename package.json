@@ -14,7 +14,7 @@
     },
     "dependencies": {
         "@fortawesome/fontawesome-svg-core": "^6.6.0",
-        "@fortawesome/free-regular-svg-icons": "^6.5.2",
+        "@fortawesome/free-regular-svg-icons": "^6.6.0",
         "@fortawesome/free-solid-svg-icons": "^6.6.0",
         "@fortawesome/react-fontawesome": "^0.2.2",
         "@inertiajs/react": "^1.2.0",
@@ -25,7 +25,7 @@
         "i18next-browser-languagedetector": "^8.0.0",
         "react": "^18.2.0",
         "react-dom": "^18.3.1",
-        "react-i18next": "^14.1.2",
+        "react-i18next": "^15.0.0",
         "tailwind-merge": "^2.4.0"
     },
     "devDependencies": {
@@ -33,23 +33,23 @@
         "@playwright/test": "^1.45.2",
         "@tailwindcss/forms": "^0.5.7",
         "@types/lodash": "^4.17.7",
-        "@types/node": "^20.14.10",
+        "@types/node": "^22.0.0",
         "@types/react": "^18.3.3",
         "@types/react-dom": "^18.3.0",
-        "@typescript-eslint/eslint-plugin": "^7.15.0",
-        "@typescript-eslint/parser": "^7.15.0",
+        "@typescript-eslint/eslint-plugin": "^8.0.0",
+        "@typescript-eslint/parser": "^8.0.0",
         "@vitejs/plugin-react": "^4.3.1",
         "autoprefixer": "^10.4.19",
-        "axios": "^1.7.2",
+        "axios": "^1.7.3",
         "eslint": "^8.57.0",
-        "eslint-plugin-react": "^7.34.4",
+        "eslint-plugin-react": "^7.35.0",
         "eslint-plugin-react-hooks": "^4.6.2",
         "laravel-vite-plugin": "^1.0.5",
         "lodash": "^4.17.21",
-        "postcss": "^8.4.38",
+        "postcss": "^8.4.40",
         "prettier": "3.3.3",
         "tailwindcss": "^3.4.4",
         "typescript": "5.5.3",
-        "vite": "^5.3.3"
+        "vite": "^5.3.5"
     }
 }
