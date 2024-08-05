@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Nova\Actions;
 
 use App\Domain\Integrations\Models\IntegrationModel;
-use App\Domain\Integrations\Organizer;
+use App\Domain\Integrations\UiTdatabankOrganizer;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\OrganizerRepository;
 use App\Domain\Organizations\Models\OrganizationModel;
@@ -46,7 +46,7 @@ final class ActivateUitpasIntegration extends Action
 
         foreach ($organizerArray as $organizer) {
             $this->organizerRepository->create(
-                new Organizer(
+                new UiTdatabankOrganizer(
                     Uuid::uuid4(),
                     Uuid::fromString($integration->id),
                     $organizer
