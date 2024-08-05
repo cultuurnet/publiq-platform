@@ -15,7 +15,7 @@ use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Coupons\Policies\CouponPolicy;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Models\IntegrationUrlModel;
-use App\Domain\Integrations\Models\OrganizerModel;
+use App\Domain\Integrations\Models\UiTdatabankOrganizerModel;
 use App\Domain\Integrations\Policies\IntegrationPolicy;
 use App\Domain\Integrations\Policies\IntegrationUrlPolicy;
 use App\Domain\Integrations\Policies\OrganizerPolicy;
@@ -45,7 +45,7 @@ final class AuthServiceProvider extends ServiceProvider
         IntegrationModel::class => IntegrationPolicy::class,
         IntegrationUrlModel::class => IntegrationUrlPolicy::class,
         OrganizationModel::class => OrganizationPolicy::class,
-        OrganizerModel::class => OrganizerPolicy::class,
+        UiTdatabankOrganizerModel::class => OrganizerPolicy::class,
         SubscriptionModel::class => SubscriptionPolicy::class,
         UiTiDv1ConsumerModel::class => UiTiDv1ConsumerPolicy::class,
         Auth0ClientModel::class => Auth0ClientPolicy::class,

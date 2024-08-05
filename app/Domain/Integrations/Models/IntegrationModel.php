@@ -201,11 +201,11 @@ final class IntegrationModel extends UuidModel
     }
 
     /**
-     * @return HasMany<OrganizerModel>
+     * @return HasMany<UiTdatabankOrganizerModel>
      */
     public function organizers(): HasMany
     {
-        return $this->hasMany(OrganizerModel::class, 'integration_id');
+        return $this->hasMany(UiTdatabankOrganizerModel::class, 'integration_id');
     }
 
     /**
@@ -363,7 +363,7 @@ final class IntegrationModel extends UuidModel
         )->withOrganizers(
             ...$this->organizers()
             ->get()
-            ->map(fn (OrganizerModel $organizerModel) => $organizerModel->toDomain())
+            ->map(fn (UiTdatabankOrganizerModel $organizerModel) => $organizerModel->toDomain())
             ->toArray()
         );
 
