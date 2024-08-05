@@ -13,11 +13,11 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 /**
- * @mixin UiTdatabankOrganizerModel
+ * @mixin UiTdatabankOrganizer
  */
-final class Organizer extends Resource
+final class UiTdatabankOrganizer extends Resource
 {
-    public static string $model = UiTdatabankOrganizerModel::class;
+    public static string $model = UiTdatabankOrganizer::class;
 
     public static $title = 'organizer_id';
 
