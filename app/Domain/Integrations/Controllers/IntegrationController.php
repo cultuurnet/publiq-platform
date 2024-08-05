@@ -36,7 +36,7 @@ use App\Domain\Integrations\Mappers\UpdateIntegrationUrlsMapper;
 use App\Domain\Integrations\UiTdatabankOrganizer;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\IntegrationUrlRepository;
-use App\Domain\Integrations\Repositories\OrganizerRepository;
+use App\Domain\Integrations\Repositories\UiTdatabankOrganizerRepository;
 use App\Domain\KeyVisibilityUpgrades\KeyVisibilityUpgrade;
 use App\Domain\KeyVisibilityUpgrades\Repositories\KeyVisibilityUpgradeRepository;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
@@ -64,20 +64,20 @@ use Ramsey\Uuid\Uuid;
 final class IntegrationController extends Controller
 {
     public function __construct(
-        private readonly SubscriptionRepository $subscriptionRepository,
-        private readonly IntegrationRepository $integrationRepository,
-        private readonly IntegrationUrlRepository $integrationUrlRepository,
-        private readonly ContactRepository $contactRepository,
+        private readonly SubscriptionRepository         $subscriptionRepository,
+        private readonly IntegrationRepository          $integrationRepository,
+        private readonly IntegrationUrlRepository       $integrationUrlRepository,
+        private readonly ContactRepository              $contactRepository,
         private readonly ContactKeyVisibilityRepository $contactKeyVisibilityRepository,
-        private readonly OrganizationRepository $organizationRepository,
-        private readonly OrganizerRepository $organizerRepository,
-        private readonly CouponRepository $couponRepository,
-        private readonly Auth0ClientRepository $auth0ClientRepository,
-        private readonly UiTiDv1ConsumerRepository $uitidV1ConsumerRepository,
-        private readonly KeycloakClientRepository $keycloakClientRepository,
+        private readonly OrganizationRepository         $organizationRepository,
+        private readonly UiTdatabankOrganizerRepository $organizerRepository,
+        private readonly CouponRepository               $couponRepository,
+        private readonly Auth0ClientRepository          $auth0ClientRepository,
+        private readonly UiTiDv1ConsumerRepository      $uitidV1ConsumerRepository,
+        private readonly KeycloakClientRepository       $keycloakClientRepository,
         private readonly KeyVisibilityUpgradeRepository $keyVisibilityUpgradeRepository,
-        private readonly SearchService $searchClient,
-        private readonly CurrentUser $currentUser
+        private readonly SearchService                  $searchClient,
+        private readonly CurrentUser                    $currentUser
     ) {
     }
 
