@@ -7,8 +7,6 @@ namespace App\Domain\Integrations\Repositories;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Integration;
-use App\Domain\Integrations\IntegrationType;
-use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizers;
@@ -177,11 +175,6 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         DB::transaction(function () use ($integration, $couponCode): void {
             if ($couponCode) {
                 $this->useCouponOnIntegration($integration->id, $couponCode);
-            }
-
-            // https://jira.publiq.be/browse/PPF-555
-            if($integration->type === IntegrationType::UiTPAS) {
-                $integration = $integration->withKeyVisibility(KeyVisibility::v2);
             }
 
             IntegrationModel::query()->create([

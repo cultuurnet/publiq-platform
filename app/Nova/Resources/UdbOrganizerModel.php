@@ -12,11 +12,11 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 /**
- * @mixin UdbOrganizer
+ * @mixin UdbOrganizerModel
  */
-final class UdbOrganizer extends Resource
+final class UdbOrganizerModel extends Resource
 {
-    public static string $model = UdbOrganizer::class;
+    public static string $model = UdbOrganizerModel::class;
 
     public static $title = 'organizer_id';
 

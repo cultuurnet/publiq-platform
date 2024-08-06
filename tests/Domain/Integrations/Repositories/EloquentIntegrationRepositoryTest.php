@@ -586,6 +586,10 @@ final class EloquentIntegrationRepositoryTest extends TestCase
     // https://jira.publiq.be/browse/PPF-555
     public function test_it_can_save_integration_uitpas_always_with_key_visibility_v2(): void
     {
+        Event::fakeExcept([
+            'eloquent.creating: ' . IntegrationModel::class,
+        ]);
+
         $integrationId = Uuid::uuid4();
 
         $searchIntegration = new Integration(
