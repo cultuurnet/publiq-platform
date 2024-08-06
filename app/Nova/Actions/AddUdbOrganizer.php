@@ -18,7 +18,7 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Ramsey\Uuid\Uuid;
 
-final class AddUiTdatabankOrganizer extends Action
+final class AddUdbOrganizer extends Action
 {
     use InteractsWithQueue;
     use Queueable;

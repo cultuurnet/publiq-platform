@@ -15,7 +15,7 @@ use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Keycloak\KeycloakConfig;
 use App\Nova\Actions\ActivateIntegration;
 use App\Nova\Actions\ActivateUitpasIntegration;
-use App\Nova\Actions\AddUiTdatabankOrganizer;
+use App\Nova\Actions\AddUdbOrganizer;
 use App\Nova\Actions\ApproveIntegration;
 use App\Nova\Actions\Auth0\CreateMissingAuth0Clients;
 use App\Nova\Actions\BlockIntegration;
@@ -283,7 +283,7 @@ final class Integration extends Resource
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeUnblocked())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeUnblocked()),
 
-            (new AddUiTdatabankOrganizer(App::make(UdbOrganizerRepository::class)))
+            (new AddUdbOrganizer(App::make(UdbOrganizerRepository::class)))
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to add an organizer?')
                 ->confirmButtonText('Add')
