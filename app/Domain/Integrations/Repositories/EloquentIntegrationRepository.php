@@ -8,14 +8,12 @@ use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Models\IntegrationModel;
-use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizers;
 use App\Pagination\PaginatedCollection;
 use App\Pagination\PaginationInfo;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 final class EloquentIntegrationRepository implements IntegrationRepository
@@ -127,20 +125,13 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         $integrationModel->activate();
     }
 
-    /**
-     * @param string[] $organizers
-     */
-    public function activateWithOrganization(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode, array $organizers=[]): void
+    public function activateWithOrganization(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode, UdbOrganizers $organizers=null): void
     {
         DB::transaction(function () use ($couponCode, $id, $organizationId, $organizers): void {
-            foreach ($organizers as $organizer) {
-                $this->udbOrganizerRepository->create(
-                    new UdbOrganizer(
-                        Uuid::uuid4(),
-                        $id,
-                        $organizer
-                    )
-                );
+            if ($organizers !== null) {
+                foreach ($organizers as $organizer) {
+                    $this->udbOrganizerRepository->create($organizer);
+                }
             }
 
             if ($couponCode) {

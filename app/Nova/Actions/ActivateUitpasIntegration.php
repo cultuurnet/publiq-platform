@@ -6,6 +6,8 @@ namespace App\Nova\Actions;
 
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Domain\Integrations\UdbOrganizer;
+use App\Domain\Integrations\UdbOrganizers;
 use App\Domain\Organizations\Models\OrganizationModel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -44,7 +46,7 @@ final class ActivateUitpasIntegration extends Action
             Uuid::fromString($integration->id),
             $organizationId,
             null,
-            array_map('trim', explode(',', $organizers))
+            $this->getUdbOrganizers($organizers, $integration)
         );
 
         return Action::message('Integration "' . $integration->name . '" activated.');
@@ -67,5 +69,23 @@ final class ActivateUitpasIntegration extends Action
                     'string'
                 ),
         ];
+    }
+
+    private function getUdbOrganizers(string $organizers, IntegrationModel $integration): UdbOrganizers
+    {
+        $organizersAsIds = array_map('trim', explode(',', $organizers));
+        $output = new UdbOrganizers();
+
+        foreach ($organizersAsIds as $id) {
+            $output->add(
+                new UdbOrganizer(
+                    Uuid::uuid4(),
+                    Uuid::fromString($integration->id),
+                    $id
+                )
+            );
+        }
+
+        return $output;
     }
 }
