@@ -297,7 +297,7 @@ final class IntegrationController extends Controller
     {
         $integration = $this->integrationRepository->getById(Uuid::fromString($integrationId));
 
-        $organizerIds = collect($integration->uiTdatabankOrganizers())->map(fn (UdbOrganizer $organizer) => $organizer->organizerId);
+        $organizerIds = collect($integration->udbOrganizers())->map(fn (UdbOrganizer $organizer) => $organizer->organizerId);
         $newOrganizers = array_filter(
             UdbOrganizerMapper::mapUpdateOrganizers($request, $integrationId),
             fn (UdbOrganizer $organizer) => !in_array($organizer->organizerId, $organizerIds->toArray(), true)
@@ -404,7 +404,7 @@ final class IntegrationController extends Controller
 
     public function getIntegrationOrganizersWithTestOrganizer(Integration $integration): Collection
     {
-        $organizerIds = collect($integration->uiTdatabankOrganizers())->map(fn (UdbOrganizer $organizer) => $organizer->organizerId);
+        $organizerIds = collect($integration->udbOrganizers())->map(fn (UdbOrganizer $organizer) => $organizer->organizerId);
         $uitpasOrganizers = $this->searchClient->findUiTPASOrganizers(...$organizerIds)->getMember()?->getItems();
 
         $organizers = collect($uitpasOrganizers)->map(function (SapiOrganizer $organizer) {
