@@ -11,7 +11,7 @@ interface UdbOrganizerRepository
 {
     public function create(UdbOrganizer $organizer): void;
 
-    public function createInBulk(UdbOrganizerCollection $organizer): void;
+    public function createInBulk(UdbOrganizerCollection $organizers): void;
 
     public function delete(UdbOrganizer $organizer): void;
 }
