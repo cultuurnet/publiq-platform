@@ -18,7 +18,7 @@ use App\Domain\Integrations\Models\IntegrationUrlModel;
 use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Domain\Integrations\Policies\IntegrationPolicy;
 use App\Domain\Integrations\Policies\IntegrationUrlPolicy;
-use App\Domain\Integrations\Policies\UiTdatabankOrganizerPolicy;
+use App\Domain\Integrations\Policies\UdbOrganizerPolicy;
 use App\Domain\KeyVisibilityUpgrades\Models\KeyVisibilityUpgradeModel;
 use App\Domain\KeyVisibilityUpgrades\Policies\KeyVisibilityUpgradePolicy;
 use App\Domain\Organizations\Models\OrganizationModel;
@@ -45,7 +45,7 @@ final class AuthServiceProvider extends ServiceProvider
         IntegrationModel::class => IntegrationPolicy::class,
         IntegrationUrlModel::class => IntegrationUrlPolicy::class,
         OrganizationModel::class => OrganizationPolicy::class,
-        UdbOrganizerModel::class => UiTdatabankOrganizerPolicy::class,
+        UdbOrganizerModel::class => UdbOrganizerPolicy::class,
         SubscriptionModel::class => SubscriptionPolicy::class,
         UiTiDv1ConsumerModel::class => UiTiDv1ConsumerPolicy::class,
         Auth0ClientModel::class => Auth0ClientPolicy::class,

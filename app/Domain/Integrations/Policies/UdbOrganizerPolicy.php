@@ -7,7 +7,7 @@ namespace App\Domain\Integrations\Policies;
 use App\Domain\Auth\Models\UserModel;
 use App\Domain\Integrations\Models\UdbOrganizerModel;
 
-final class UiTdatabankOrganizerPolicy
+final class UdbOrganizerPolicy
 {
     public function viewAny(UserModel $userModel): bool
     {
