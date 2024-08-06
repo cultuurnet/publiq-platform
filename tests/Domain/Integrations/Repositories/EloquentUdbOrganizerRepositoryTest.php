@@ -6,7 +6,7 @@ namespace Tests\Domain\Integrations\Repositories;
 
 use App\Domain\Integrations\Repositories\EloquentUdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizer;
-use App\Domain\Integrations\UdbOrganizerCollection;
+use App\Domain\Integrations\UdbOrganizers;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
@@ -51,7 +51,7 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
 
     public function testCreateInBulk(): void
     {
-        $organizers = new UdbOrganizerCollection([
+        $organizers = new UdbOrganizers([
             $this->organizer1,
             $this->organizer2,
         ]);

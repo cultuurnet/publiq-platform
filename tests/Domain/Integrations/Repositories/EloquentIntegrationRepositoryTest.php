@@ -18,7 +18,7 @@ use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\EloquentIntegrationRepository;
 use App\Domain\Integrations\Repositories\EloquentUdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizer;
-use App\Domain\Integrations\UdbOrganizerCollection;
+use App\Domain\Integrations\UdbOrganizers;
 use App\Domain\Integrations\Website;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -343,7 +343,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
 
         $this->integrationRepository->save($searchIntegration);
 
-        $organizers = new UdbOrganizerCollection(
+        $organizers = new UdbOrganizers(
             [new UdbOrganizer(
                 Uuid::uuid4(),
                 Uuid::uuid4(),
