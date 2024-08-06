@@ -334,7 +334,7 @@ final class IntegrationController extends Controller
             Uuid::fromString($id),
             $organization->id,
             $request->input('coupon'),
-            new UdbOrganizers(...UdbOrganizerMapper::mapActivationRequest($request, $id))
+            UdbOrganizerMapper::mapActivationRequest($request, $id)
         );
 
         return Redirect::back();

@@ -7,6 +7,7 @@ namespace App\Domain\Integrations\Mappers;
 use App\Domain\Integrations\FormRequests\RequestActivationRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationUdbOrganizersRequest;
 use App\Domain\Integrations\UdbOrganizer;
+use App\Domain\Integrations\UdbOrganizers;
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
 
@@ -38,8 +39,8 @@ final class UdbOrganizerMapper
         return self::map($request, $id);
     }
 
-    public static function mapActivationRequest(RequestActivationRequest $request, string $id): array
+    public static function mapActivationRequest(RequestActivationRequest $request, string $id): UdbOrganizers
     {
-        return self::map($request, $id);
+        return new UdbOrganizers(self::map($request, $id));
     }
 }
