@@ -10,7 +10,7 @@ use App\Search\Sapi3\SearchService;
 use CultuurNet\SearchV3\ValueObjects\Organizer;
 use Illuminate\Http\JsonResponse;
 
-final class UiTdatabankOrganizerController extends Controller
+final class UdbOrganizerController extends Controller
 {
     public function __construct(private readonly SearchService $searchService)
     {
