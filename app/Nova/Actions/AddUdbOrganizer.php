@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Nova\Actions;
 
 use App\Domain\Integrations\Models\IntegrationModel;
-use App\Domain\Integrations\Organizer;
-use App\Domain\Integrations\Repositories\OrganizerRepository;
+use App\Domain\Integrations\UdbOrganizer;
+use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Collection;
@@ -18,18 +18,18 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Ramsey\Uuid\Uuid;
 
-final class AddOrganizer extends Action
+final class AddUdbOrganizer extends Action
 {
     use InteractsWithQueue;
     use Queueable;
 
-    public function __construct(private readonly OrganizerRepository $organizerRepository)
+    public function __construct(private readonly UdbOrganizerRepository $organizerRepository)
     {
     }
 
     public function handle(ActionFields $fields, Collection $integrations): ActionResponse
     {
-        Log::info('AddOrganizer action started.');
+        Log::info('AddUdbOrganizer action started.');
         /** @var IntegrationModel $integration */
         $integration = $integrations->first();
 
@@ -37,7 +37,7 @@ final class AddOrganizer extends Action
         $organizationIdAsString = $fields->get('organizer_id');
 
         $this->organizerRepository->create(
-            new Organizer(
+            new UdbOrganizer(
                 Uuid::uuid4(),
                 Uuid::fromString($integration->id),
                 $organizationIdAsString

@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Models;
 
-use App\Domain\Integrations\Organizer;
+use App\Domain\Integrations\UdbOrganizer;
 use App\Models\UuidModel;
 use Ramsey\Uuid\Uuid;
 
-final class OrganizerModel extends UuidModel
+final class UdbOrganizerModel extends UuidModel
 {
-    protected $table = 'organizers';
+    protected $table = 'udb_organizers';
 
     protected $fillable = [
         'id',
@@ -18,9 +18,9 @@ final class OrganizerModel extends UuidModel
         'organizer_id',
     ];
 
-    public function toDomain(): Organizer
+    public function toDomain(): UdbOrganizer
     {
-        return new Organizer(
+        return new UdbOrganizer(
             Uuid::fromString($this->id),
             Uuid::fromString($this->integration_id),
             $this->organizer_id,

@@ -16,7 +16,7 @@ use App\Domain\Integrations\FormRequests\StoreContactRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationRequest;
 use App\Domain\Integrations\FormRequests\StoreIntegrationUrlRequest;
 use App\Domain\Integrations\FormRequests\UpdateContactInfoRequest;
-use App\Domain\Integrations\FormRequests\UpdateIntegrationOrganizersRequest;
+use App\Domain\Integrations\FormRequests\UpdateIntegrationUdbOrganizersRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationUrlsRequest;
 use App\Domain\Integrations\FormRequests\UpdateOrganizationRequest;
@@ -26,17 +26,17 @@ use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Mappers\KeyVisibilityUpgradeMapper;
 use App\Domain\Integrations\Mappers\OrganizationMapper;
-use App\Domain\Integrations\Mappers\OrganizerMapper;
+use App\Domain\Integrations\Mappers\UdbOrganizerMapper;
 use App\Domain\Integrations\Mappers\StoreContactMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationMapper;
 use App\Domain\Integrations\Mappers\StoreIntegrationUrlMapper;
 use App\Domain\Integrations\Mappers\UpdateContactInfoMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationUrlsMapper;
-use App\Domain\Integrations\Organizer;
+use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\IntegrationUrlRepository;
-use App\Domain\Integrations\Repositories\OrganizerRepository;
+use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\KeyVisibilityUpgrades\KeyVisibilityUpgrade;
 use App\Domain\KeyVisibilityUpgrades\Repositories\KeyVisibilityUpgradeRepository;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
@@ -70,7 +70,7 @@ final class IntegrationController extends Controller
         private readonly ContactRepository $contactRepository,
         private readonly ContactKeyVisibilityRepository $contactKeyVisibilityRepository,
         private readonly OrganizationRepository $organizationRepository,
-        private readonly OrganizerRepository $organizerRepository,
+        private readonly UdbOrganizerRepository $organizerRepository,
         private readonly CouponRepository $couponRepository,
         private readonly Auth0ClientRepository $auth0ClientRepository,
         private readonly UiTiDv1ConsumerRepository $uitidV1ConsumerRepository,
@@ -293,14 +293,14 @@ final class IntegrationController extends Controller
         );
     }
 
-    public function updateOrganizers(string $integrationId, UpdateIntegrationOrganizersRequest $request): RedirectResponse
+    public function updateOrganizers(string $integrationId, UpdateIntegrationUdbOrganizersRequest $request): RedirectResponse
     {
         $integration = $this->integrationRepository->getById(Uuid::fromString($integrationId));
 
-        $organizerIds = collect($integration->organizers())->map(fn (Organizer $organizer) => $organizer->organizerId);
+        $organizerIds = collect($integration->udbOrganizers())->map(fn (UdbOrganizer $organizer) => $organizer->organizerId);
         $newOrganizers = array_filter(
-            OrganizerMapper::mapUpdateOrganizers($request, $integrationId),
-            fn (Organizer $organizer) => !in_array($organizer->organizerId, $organizerIds->toArray(), true)
+            UdbOrganizerMapper::mapUpdateOrganizers($request, $integrationId),
+            fn (UdbOrganizer $organizer) => !in_array($organizer->organizerId, $organizerIds->toArray(), true)
         );
 
         $this->organizerRepository->create(...$newOrganizers);
@@ -310,7 +310,7 @@ final class IntegrationController extends Controller
 
     public function deleteOrganizer(string $integrationId, string $organizerId): RedirectResponse
     {
-        $this->organizerRepository->delete(new Organizer(
+        $this->organizerRepository->delete(new UdbOrganizer(
             Uuid::uuid4(),
             Uuid::fromString($integrationId),
             $organizerId
@@ -329,7 +329,7 @@ final class IntegrationController extends Controller
         $organization = OrganizationMapper::mapActivationRequest($request);
         $this->organizationRepository->save($organization);
 
-        $organizers = OrganizerMapper::mapActivationRequest($request, $id);
+        $organizers = UdbOrganizerMapper::mapActivationRequest($request, $id);
         $this->organizerRepository->create(...$organizers);
 
         $this->integrationRepository->requestActivation(Uuid::fromString($id), $organization->id, $request->input('coupon'));
@@ -404,7 +404,7 @@ final class IntegrationController extends Controller
 
     public function getIntegrationOrganizersWithTestOrganizer(Integration $integration): Collection
     {
-        $organizerIds = collect($integration->organizers())->map(fn (Organizer $organizer) => $organizer->organizerId);
+        $organizerIds = collect($integration->udbOrganizers())->map(fn (UdbOrganizer $organizer) => $organizer->organizerId);
         $uitpasOrganizers = $this->searchClient->findUiTPASOrganizers(...$organizerIds)->getMember()?->getItems();
 
         $organizers = collect($uitpasOrganizers)->map(function (SapiOrganizer $organizer) {

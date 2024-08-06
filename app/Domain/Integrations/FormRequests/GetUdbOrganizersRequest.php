@@ -6,7 +6,7 @@ namespace App\Domain\Integrations\FormRequests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-final class GetOrganizersRequest extends FormRequest
+final class GetUdbOrganizersRequest extends FormRequest
 {
     /**
      * @return array<string, mixed>

@@ -44,7 +44,7 @@ final class UpdateOrganizationTest extends TestCase
         );
     }
 
-    public function test_it_updates_an_organizer(): void
+    public function test_it_updates_an_organization(): void
     {
         // Given
         $organizationId = Uuid::uuid4();

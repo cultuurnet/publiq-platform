@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Repositories;
 
-use App\Domain\Integrations\Models\OrganizerModel;
-use App\Domain\Integrations\Organizer;
+use App\Domain\Integrations\Models\UdbOrganizerModel;
+use App\Domain\Integrations\UdbOrganizer;
 use Illuminate\Support\Facades\DB;
 
-final class EloquentOrganizerRepository implements OrganizerRepository
+final class EloquentUdbOrganizerRepository implements UdbOrganizerRepository
 {
-    public function create(Organizer ...$organizers): void
+    public function create(UdbOrganizer ...$organizers): void
     {
         DB::transaction(function () use ($organizers): void {
             foreach ($organizers as $organizer) {
-                OrganizerModel::query()->create([
+                UdbOrganizerModel::query()->create([
                     'id' => $organizer->id->toString(),
                     'integration_id' => $organizer->integrationId->toString(),
                     'organizer_id' => $organizer->organizerId,
@@ -23,9 +23,9 @@ final class EloquentOrganizerRepository implements OrganizerRepository
         });
     }
 
-    public function delete(Organizer $organizer): void
+    public function delete(UdbOrganizer $organizer): void
     {
-        OrganizerModel::query()
+        UdbOrganizerModel::query()
             ->where('organizer_id', $organizer->organizerId)
             ->where('integration_id', $organizer->integrationId->toString())
             ->delete();

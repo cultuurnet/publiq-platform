@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Nova\Resources;
 
-use App\Domain\Integrations\Models\OrganizerModel;
 use App\Nova\Resource;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
@@ -13,11 +12,11 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 /**
- * @mixin OrganizerModel
+ * @mixin UdbOrganizerModel
  */
-final class Organizer extends Resource
+final class UdbOrganizerModel extends Resource
 {
-    public static string $model = OrganizerModel::class;
+    public static string $model = UdbOrganizerModel::class;
 
     public static $title = 'organizer_id';
 
