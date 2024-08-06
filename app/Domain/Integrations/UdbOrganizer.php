@@ -6,7 +6,7 @@ namespace App\Domain\Integrations;
 
 use Ramsey\Uuid\UuidInterface;
 
-final readonly class UiTdatabankOrganizer
+final readonly class UdbOrganizer
 {
     public function __construct(
         public UuidInterface $id,

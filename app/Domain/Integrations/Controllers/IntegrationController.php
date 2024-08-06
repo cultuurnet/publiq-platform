@@ -33,7 +33,7 @@ use App\Domain\Integrations\Mappers\StoreIntegrationUrlMapper;
 use App\Domain\Integrations\Mappers\UpdateContactInfoMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationUrlsMapper;
-use App\Domain\Integrations\UiTdatabankOrganizer;
+use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\IntegrationUrlRepository;
 use App\Domain\Integrations\Repositories\UiTdatabankOrganizerRepository;
@@ -297,10 +297,10 @@ final class IntegrationController extends Controller
     {
         $integration = $this->integrationRepository->getById(Uuid::fromString($integrationId));
 
-        $organizerIds = collect($integration->uiTdatabankOrganizers())->map(fn (UiTdatabankOrganizer $organizer) => $organizer->organizerId);
+        $organizerIds = collect($integration->uiTdatabankOrganizers())->map(fn (UdbOrganizer $organizer) => $organizer->organizerId);
         $newOrganizers = array_filter(
             UiTdatabankOrganizerMapper::mapUpdateOrganizers($request, $integrationId),
-            fn (UiTdatabankOrganizer $organizer) => !in_array($organizer->organizerId, $organizerIds->toArray(), true)
+            fn (UdbOrganizer $organizer) => !in_array($organizer->organizerId, $organizerIds->toArray(), true)
         );
 
         $this->organizerRepository->create(...$newOrganizers);
@@ -310,7 +310,7 @@ final class IntegrationController extends Controller
 
     public function deleteOrganizer(string $integrationId, string $organizerId): RedirectResponse
     {
-        $this->organizerRepository->delete(new UiTdatabankOrganizer(
+        $this->organizerRepository->delete(new UdbOrganizer(
             Uuid::uuid4(),
             Uuid::fromString($integrationId),
             $organizerId
@@ -404,7 +404,7 @@ final class IntegrationController extends Controller
 
     public function getIntegrationOrganizersWithTestOrganizer(Integration $integration): Collection
     {
-        $organizerIds = collect($integration->uiTdatabankOrganizers())->map(fn (UiTdatabankOrganizer $organizer) => $organizer->organizerId);
+        $organizerIds = collect($integration->uiTdatabankOrganizers())->map(fn (UdbOrganizer $organizer) => $organizer->organizerId);
         $uitpasOrganizers = $this->searchClient->findUiTPASOrganizers(...$organizerIds)->getMember()?->getItems();
 
         $organizers = collect($uitpasOrganizers)->map(function (SapiOrganizer $organizer) {

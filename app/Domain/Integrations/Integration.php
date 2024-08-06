@@ -31,7 +31,7 @@ final class Integration
 
     private ?Organization $organization;
 
-    /** @var array<UiTdatabankOrganizer> */
+    /** @var array<UdbOrganizer> */
     private array $uiTdatabankOrganizers;
 
     /** @var array<UiTiDv1Consumer> */
@@ -126,7 +126,7 @@ final class Integration
         return $clone;
     }
 
-    public function withUiTdatabankOrganizers(UiTdatabankOrganizer ...$organizers): self
+    public function withUiTdatabankOrganizers(UdbOrganizer ...$organizers): self
     {
         $clone = clone $this;
         $clone->uiTdatabankOrganizers = $organizers;
@@ -178,7 +178,7 @@ final class Integration
     }
 
     /**
-     * @return array<UiTdatabankOrganizer>
+     * @return array<UdbOrganizer>
      */
     public function uiTdatabankOrganizers(): array
     {
