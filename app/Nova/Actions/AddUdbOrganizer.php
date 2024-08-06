@@ -29,7 +29,7 @@ final class AddUdbOrganizer extends Action
 
     public function handle(ActionFields $fields, Collection $integrations): ActionResponse
     {
-        Log::info('AddUiTdatabankOrganizer action started.');
+        Log::info('AddUdbOrganizer action started.');
         /** @var IntegrationModel $integration */
         $integration = $integrations->first();
 
