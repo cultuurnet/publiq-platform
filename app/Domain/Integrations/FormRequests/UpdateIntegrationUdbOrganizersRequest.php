@@ -6,7 +6,7 @@ namespace App\Domain\Integrations\FormRequests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-final class UpdateIntegrationUiTdatabankOrganizersRequest extends FormRequest
+final class UpdateIntegrationUdbOrganizersRequest extends FormRequest
 {
     public function rules(): array
     {
