@@ -10,7 +10,7 @@ use App\Domain\Integrations\UdbOrganizer;
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
 
-final class UiTdatabankOrganizerMapper
+final class UdbOrganizerMapper
 {
     /**
      * @return UdbOrganizer[]
