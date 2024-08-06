@@ -16,6 +16,9 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\EloquentIntegrationRepository;
+use App\Domain\Integrations\Repositories\EloquentUdbOrganizerRepository;
+use App\Domain\Integrations\UdbOrganizer;
+use App\Domain\Integrations\UdbOrganizers;
 use App\Domain\Integrations\Website;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -33,7 +36,9 @@ final class EloquentIntegrationRepositoryTest extends TestCase
     {
         parent::setUp();
 
-        $this->integrationRepository = new EloquentIntegrationRepository();
+        $this->integrationRepository = new EloquentIntegrationRepository(
+            new EloquentUdbOrganizerRepository()
+        );
     }
 
     public function test_it_can_save_an_integration(): void
@@ -338,8 +343,16 @@ final class EloquentIntegrationRepositoryTest extends TestCase
 
         $this->integrationRepository->save($searchIntegration);
 
+        $organizers = new UdbOrganizers(
+            [new UdbOrganizer(
+                Uuid::uuid4(),
+                Uuid::uuid4(),
+                Uuid::uuid4()->toString(),
+            )],
+        );
+
         $organizationId = Uuid::uuid4();
-        $this->integrationRepository->requestActivation($integrationId, $organizationId, null);
+        $this->integrationRepository->requestActivation($integrationId, $organizationId, null, $organizers);
 
         $this->assertDatabaseHas('integrations', [
             'id' => $searchIntegration->id->toString(),
@@ -350,6 +363,14 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'organization_id' => $organizationId,
             'status' => IntegrationStatus::PendingApprovalIntegration,
         ]);
+
+        foreach($organizers as $organizer) {
+            $this->assertDatabaseHas('udb_organizers', [
+                'id' => $organizer->id->toString(),
+                'integration_id' => $organizer->integrationId->toString(),
+                'organizer_id' => $organizer->organizerId,
+            ]);
+        }
 
         Event::assertDispatched(IntegrationActivationRequested::class);
     }

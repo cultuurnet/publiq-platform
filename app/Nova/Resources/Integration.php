@@ -245,7 +245,7 @@ final class Integration extends Resource
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeActivated() && !$this->isUiTPAS())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeActivated()),
 
-            (new ActivateUitpasIntegration(App::make(IntegrationRepository::class), App::make(UdbOrganizerRepository::class)))
+            (new ActivateUitpasIntegration(App::make(IntegrationRepository::class)))
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to activate this integration?')
                 ->confirmButtonText('Activate')

@@ -8,6 +8,7 @@ use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Models\IntegrationModel;
+use App\Domain\Integrations\UdbOrganizers;
 use App\Pagination\PaginatedCollection;
 use App\Pagination\PaginationInfo;
 use Illuminate\Database\Eloquent\Builder;
@@ -17,6 +18,11 @@ use Ramsey\Uuid\UuidInterface;
 
 final class EloquentIntegrationRepository implements IntegrationRepository
 {
+    public function __construct(private readonly EloquentUdbOrganizerRepository $udbOrganizerRepository)
+    {
+
+    }
+
     public function save(Integration $integration): void
     {
         $this->saveTransaction($integration, null);
@@ -93,9 +99,15 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         );
     }
 
-    public function requestActivation(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode): void
+    public function requestActivation(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode, UdbOrganizers $organizers=null): void
     {
-        DB::transaction(function () use ($couponCode, $id, $organizationId): void {
+        DB::transaction(function () use ($couponCode, $id, $organizationId, $organizers): void {
+            if ($organizers !== null) {
+                foreach($organizers as $organizer) {
+                    $this->udbOrganizerRepository->create($organizer);
+                }
+            }
+
             if ($couponCode) {
                 $this->useCouponOnIntegration($id, $couponCode);
             }
@@ -113,9 +125,15 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         $integrationModel->activate();
     }
 
-    public function activateWithOrganization(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode): void
+    public function activateWithOrganization(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode, UdbOrganizers $organizers=null): void
     {
-        DB::transaction(function () use ($couponCode, $id, $organizationId): void {
+        DB::transaction(function () use ($couponCode, $id, $organizationId, $organizers): void {
+            if ($organizers !== null) {
+                foreach ($organizers as $organizer) {
+                    $this->udbOrganizerRepository->create($organizer);
+                }
+            }
+
             if ($couponCode) {
                 $this->useCouponOnIntegration($id, $couponCode);
             }

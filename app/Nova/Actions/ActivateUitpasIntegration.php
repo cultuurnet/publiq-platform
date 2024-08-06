@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Nova\Actions;
 
 use App\Domain\Integrations\Models\IntegrationModel;
-use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
+use App\Domain\Integrations\UdbOrganizer;
+use App\Domain\Integrations\UdbOrganizers;
 use App\Domain\Organizations\Models\OrganizationModel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -26,8 +26,7 @@ final class ActivateUitpasIntegration extends Action
     use Queueable;
 
     public function __construct(
-        private readonly IntegrationRepository $integrationRepository,
-        private readonly UdbOrganizerRepository $organizerRepository
+        private readonly IntegrationRepository $integrationRepository
     ) {
     }
 
@@ -42,22 +41,12 @@ final class ActivateUitpasIntegration extends Action
 
         /** @var string $organizers */
         $organizers = $fields->get('organizers');
-        $organizerArray = array_map('trim', explode(',', $organizers));
-
-        foreach ($organizerArray as $organizer) {
-            $this->organizerRepository->create(
-                new UdbOrganizer(
-                    Uuid::uuid4(),
-                    Uuid::fromString($integration->id),
-                    $organizer
-                )
-            );
-        }
 
         $this->integrationRepository->activateWithOrganization(
             Uuid::fromString($integration->id),
             $organizationId,
-            null
+            null,
+            $this->getUdbOrganizers($organizers, $integration)
         );
 
         return Action::message('Integration "' . $integration->name . '" activated.');
@@ -80,5 +69,23 @@ final class ActivateUitpasIntegration extends Action
                     'string'
                 ),
         ];
+    }
+
+    private function getUdbOrganizers(string $organizers, IntegrationModel $integration): UdbOrganizers
+    {
+        $organizersAsIds = array_map('trim', explode(',', $organizers));
+        $output = new UdbOrganizers();
+
+        foreach ($organizersAsIds as $id) {
+            $output->add(
+                new UdbOrganizer(
+                    Uuid::uuid4(),
+                    Uuid::fromString($integration->id),
+                    $id
+                )
+            );
+        }
+
+        return $output;
     }
 }
