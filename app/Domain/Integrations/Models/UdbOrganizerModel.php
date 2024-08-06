@@ -10,7 +10,7 @@ use Ramsey\Uuid\Uuid;
 
 final class UdbOrganizerModel extends UuidModel
 {
-    protected $table = 'organizers';
+    protected $table = 'udb_organizers';
 
     protected $fillable = [
         'id',
