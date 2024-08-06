@@ -32,7 +32,7 @@ final class Integration
     private ?Organization $organization;
 
     /** @var array<UdbOrganizer> */
-    private array $uiTdatabankOrganizers;
+    private array $udbOrganizers;
 
     /** @var array<UiTiDv1Consumer> */
     private array $uiTiDv1Consumers;
@@ -60,7 +60,7 @@ final class Integration
         $this->uiTiDv1Consumers = [];
         $this->auth0Clients = [];
         $this->keycloakClients = [];
-        $this->uiTdatabankOrganizers = [];
+        $this->udbOrganizers = [];
         $this->organization = null;
         $this->keyVisibility = KeyVisibility::v2;
         $this->keyVisibilityUpgrade = null;
@@ -126,10 +126,10 @@ final class Integration
         return $clone;
     }
 
-    public function withUiTdatabankOrganizers(UdbOrganizer ...$organizers): self
+    public function withUdbOrganizers(UdbOrganizer ...$organizers): self
     {
         $clone = clone $this;
-        $clone->uiTdatabankOrganizers = $organizers;
+        $clone->udbOrganizers = $organizers;
         return $clone;
     }
 
@@ -182,7 +182,7 @@ final class Integration
      */
     public function uiTdatabankOrganizers(): array
     {
-        return $this->uiTdatabankOrganizers;
+        return $this->udbOrganizers;
     }
 
     /** @return array<UiTiDv1Consumer> */
@@ -245,7 +245,7 @@ final class Integration
             'contacts' => $this->contacts,
             'urls' => $this->urls,
             'organization' => $this->organization,
-            'organizers' => $this->uiTdatabankOrganizers,
+            'organizers' => $this->udbOrganizers,
             'authClients' => $this->auth0Clients,
             'legacyAuthConsumers' => $this->uiTiDv1Consumers,
             'keycloakClients' => $this->keycloakClients,
