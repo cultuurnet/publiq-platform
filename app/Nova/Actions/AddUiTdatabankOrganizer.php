@@ -6,7 +6,7 @@ namespace App\Nova\Actions;
 
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\UdbOrganizer;
-use App\Domain\Integrations\Repositories\UiTdatabankOrganizerRepository;
+use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Collection;
@@ -23,7 +23,7 @@ final class AddUiTdatabankOrganizer extends Action
     use InteractsWithQueue;
     use Queueable;
 
-    public function __construct(private readonly UiTdatabankOrganizerRepository $organizerRepository)
+    public function __construct(private readonly UdbOrganizerRepository $organizerRepository)
     {
     }
 

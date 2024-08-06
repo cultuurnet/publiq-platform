@@ -7,7 +7,7 @@ namespace App\Nova\Actions;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Domain\Integrations\Repositories\UiTdatabankOrganizerRepository;
+use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\Organizations\Models\OrganizationModel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -27,7 +27,7 @@ final class ActivateUitpasIntegration extends Action
 
     public function __construct(
         private readonly IntegrationRepository $integrationRepository,
-        private readonly UiTdatabankOrganizerRepository $organizerRepository
+        private readonly UdbOrganizerRepository $organizerRepository
     ) {
     }
 

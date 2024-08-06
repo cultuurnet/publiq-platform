@@ -8,7 +8,7 @@ use App\Domain\Integrations\Models\UiTdatabankOrganizerModel;
 use App\Domain\Integrations\UdbOrganizer;
 use Illuminate\Support\Facades\DB;
 
-final class EloquentUiTdatabankOrganizerRepository implements UiTdatabankOrganizerRepository
+final class EloquentUdbOrganizerRepository implements UdbOrganizerRepository
 {
     public function create(UdbOrganizer ...$organizers): void
     {

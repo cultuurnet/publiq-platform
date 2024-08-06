@@ -36,7 +36,7 @@ use App\Domain\Integrations\Mappers\UpdateIntegrationUrlsMapper;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\IntegrationUrlRepository;
-use App\Domain\Integrations\Repositories\UiTdatabankOrganizerRepository;
+use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\KeyVisibilityUpgrades\KeyVisibilityUpgrade;
 use App\Domain\KeyVisibilityUpgrades\Repositories\KeyVisibilityUpgradeRepository;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
@@ -70,7 +70,7 @@ final class IntegrationController extends Controller
         private readonly ContactRepository              $contactRepository,
         private readonly ContactKeyVisibilityRepository $contactKeyVisibilityRepository,
         private readonly OrganizationRepository         $organizationRepository,
-        private readonly UiTdatabankOrganizerRepository $organizerRepository,
+        private readonly UdbOrganizerRepository         $organizerRepository,
         private readonly CouponRepository               $couponRepository,
         private readonly Auth0ClientRepository          $auth0ClientRepository,
         private readonly UiTiDv1ConsumerRepository      $uitidV1ConsumerRepository,
