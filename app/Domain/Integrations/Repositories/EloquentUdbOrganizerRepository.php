@@ -6,7 +6,7 @@ namespace App\Domain\Integrations\Repositories;
 
 use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Domain\Integrations\UdbOrganizer;
-use App\Domain\Integrations\UdbOrganizerCollection;
+use App\Domain\Integrations\UdbOrganizers;
 use Illuminate\Support\Facades\DB;
 
 final class EloquentUdbOrganizerRepository implements UdbOrganizerRepository
@@ -20,15 +20,11 @@ final class EloquentUdbOrganizerRepository implements UdbOrganizerRepository
         ]);
     }
 
-    public function createInBulk(UdbOrganizerCollection $organizers): void
+    public function createInBulk(UdbOrganizers $organizers): void
     {
         DB::transaction(function () use ($organizers): void {
             foreach ($organizers as $organizer) {
-                UdbOrganizerModel::query()->create([
-                    'id' => $organizer->id->toString(),
-                    'integration_id' => $organizer->integrationId->toString(),
-                    'organizer_id' => $organizer->organizerId,
-                ]);
+                $this->create($organizer);
             }
         });
     }

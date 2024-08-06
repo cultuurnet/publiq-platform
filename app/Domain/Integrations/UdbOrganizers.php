@@ -9,6 +9,6 @@ use Illuminate\Support\Collection;
 /**
  * @extends Collection<int, UdbOrganizer>
  */
-final class UdbOrganizerCollection extends Collection
+final class UdbOrganizers extends Collection
 {
 }

@@ -11,7 +11,7 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\UdbOrganizer;
-use App\Domain\Integrations\UdbOrganizerCollection;
+use App\Domain\Integrations\UdbOrganizers;
 use App\Pagination\PaginatedCollection;
 use App\Pagination\PaginationInfo;
 use Illuminate\Database\Eloquent\Builder;
@@ -103,7 +103,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         );
     }
 
-    public function requestActivation(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode, UdbOrganizerCollection $organizers=null): void
+    public function requestActivation(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode, UdbOrganizers $organizers=null): void
     {
         DB::transaction(function () use ($couponCode, $id, $organizationId, $organizers): void {
             if ($organizers !== null) {
@@ -129,25 +129,28 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         $integrationModel->activate();
     }
 
-    public function activateWithOrganization(UuidInterface $integrationId, UuidInterface $organizationId, ?string $couponCode, array $organizers=[]): void
+    /**
+     * @param string[] $organizers
+     */
+    public function activateWithOrganization(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode, array $organizers=[]): void
     {
-        DB::transaction(function () use ($couponCode, $integrationId, $organizationId, $organizers): void {
+        DB::transaction(function () use ($couponCode, $id, $organizationId, $organizers): void {
             foreach ($organizers as $organizer) {
                 $this->udbOrganizerRepository->create(
                     new UdbOrganizer(
                         Uuid::uuid4(),
-                        $integrationId,
+                        $id,
                         $organizer
                     )
                 );
             }
 
             if ($couponCode) {
-                $this->useCouponOnIntegration($integrationId, $couponCode);
+                $this->useCouponOnIntegration($id, $couponCode);
             }
 
             /** @var IntegrationModel $integrationModel */
-            $integrationModel = IntegrationModel::query()->findOrFail($integrationId->toString());
+            $integrationModel = IntegrationModel::query()->findOrFail($id->toString());
             $integrationModel->activateWithOrganization($organizationId);
         });
     }

@@ -37,7 +37,7 @@ use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\IntegrationUrlRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
-use App\Domain\Integrations\UdbOrganizerCollection;
+use App\Domain\Integrations\UdbOrganizers;
 use App\Domain\KeyVisibilityUpgrades\KeyVisibilityUpgrade;
 use App\Domain\KeyVisibilityUpgrades\Repositories\KeyVisibilityUpgradeRepository;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
@@ -304,7 +304,7 @@ final class IntegrationController extends Controller
             fn (UdbOrganizer $organizer) => !in_array($organizer->organizerId, $organizerIds->toArray(), true)
         );
 
-        $this->organizerRepository->createInBulk(new UdbOrganizerCollection($newOrganizers));
+        $this->organizerRepository->createInBulk(new UdbOrganizers($newOrganizers));
 
         return Redirect::back();
     }
@@ -334,7 +334,7 @@ final class IntegrationController extends Controller
             Uuid::fromString($id),
             $organization->id,
             $request->input('coupon'),
-            new UdbOrganizerCollection(...UdbOrganizerMapper::mapActivationRequest($request, $id))
+            new UdbOrganizers(...UdbOrganizerMapper::mapActivationRequest($request, $id))
         );
 
         return Redirect::back();
