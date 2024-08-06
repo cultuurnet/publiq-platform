@@ -64,20 +64,20 @@ use Ramsey\Uuid\Uuid;
 final class IntegrationController extends Controller
 {
     public function __construct(
-        private readonly SubscriptionRepository         $subscriptionRepository,
-        private readonly IntegrationRepository          $integrationRepository,
-        private readonly IntegrationUrlRepository       $integrationUrlRepository,
-        private readonly ContactRepository              $contactRepository,
+        private readonly SubscriptionRepository $subscriptionRepository,
+        private readonly IntegrationRepository $integrationRepository,
+        private readonly IntegrationUrlRepository $integrationUrlRepository,
+        private readonly ContactRepository $contactRepository,
         private readonly ContactKeyVisibilityRepository $contactKeyVisibilityRepository,
-        private readonly OrganizationRepository         $organizationRepository,
-        private readonly UdbOrganizerRepository         $organizerRepository,
-        private readonly CouponRepository               $couponRepository,
-        private readonly Auth0ClientRepository          $auth0ClientRepository,
-        private readonly UiTiDv1ConsumerRepository      $uitidV1ConsumerRepository,
-        private readonly KeycloakClientRepository       $keycloakClientRepository,
+        private readonly OrganizationRepository $organizationRepository,
+        private readonly UdbOrganizerRepository $organizerRepository,
+        private readonly CouponRepository $couponRepository,
+        private readonly Auth0ClientRepository $auth0ClientRepository,
+        private readonly UiTiDv1ConsumerRepository $uitidV1ConsumerRepository,
+        private readonly KeycloakClientRepository $keycloakClientRepository,
         private readonly KeyVisibilityUpgradeRepository $keyVisibilityUpgradeRepository,
-        private readonly SearchService                  $searchClient,
-        private readonly CurrentUser                    $currentUser
+        private readonly SearchService $searchClient,
+        private readonly CurrentUser $currentUser
     ) {
     }
 
