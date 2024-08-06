@@ -222,7 +222,7 @@ final class Integration extends Resource
         }
 
         return array_merge($fields, [
-            HasMany::make('UDB3 Organizers', 'organizers', UdbOrganizer::class)
+            HasMany::make('UDB3 Organizers', 'organizers', UdbOrganizerModel::class)
                 ->canSee(function () {
                     /** @var ?IntegrationModel $model */
                     $model = $this->model();
