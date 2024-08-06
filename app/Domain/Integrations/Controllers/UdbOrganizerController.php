@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Controllers;
 
-use App\Domain\Integrations\FormRequests\GetUiTdatabankOrganizersRequest;
+use App\Domain\Integrations\FormRequests\GetUdbOrganizersRequest;
 use App\Http\Controllers\Controller;
 use App\Search\Sapi3\SearchService;
 use CultuurNet\SearchV3\ValueObjects\Organizer;
@@ -16,7 +16,7 @@ final class UdbOrganizerController extends Controller
     {
     }
 
-    public function index(GetUiTdatabankOrganizersRequest $request): JsonResponse
+    public function index(GetUdbOrganizersRequest $request): JsonResponse
     {
         try {
             $organizerName = $request->input('name');
