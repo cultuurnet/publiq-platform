@@ -34,7 +34,6 @@ final class RealmsTest extends TestCase
             ],
         ];
 
-        // Arrange
         Config::set('keycloak.environments', [
             Environment::Acceptance->value => [
                 'internalName' => 'internal_name_0',
@@ -79,5 +78,18 @@ final class RealmsTest extends TestCase
             $this->assertEquals($scopes[$environment->value]['entry_api_id'], $realm->scopeConfig->entryApiScopeId->toString());
             $this->assertEquals($scopes[$environment->value]['uitpas_id'], $realm->scopeConfig->uitpasScopeId->toString());
         }
+    }
+
+    public function testSkipEmptyEnvironments(): void
+    {
+        Config::set('keycloak.environments', [
+            Environment::Acceptance->value => [
+                'base_url' => '',
+            ],
+        ]);
+
+        $realms = Realms::build();
+
+        $this->assertCount(0, $realms);
     }
 }
