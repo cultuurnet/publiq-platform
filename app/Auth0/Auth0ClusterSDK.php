@@ -47,7 +47,7 @@ final class Auth0ClusterSDK
         Integration $integration,
         Auth0Tenant $auth0Tenant
     ): Auth0Client {
-        if (!key_exists($auth0Tenant->value, $this->auth0TenantSDKs)) {
+        if (!array_key_exists($auth0Tenant->value, $this->auth0TenantSDKs)) {
             throw new Auth0TenantNotConfigured($auth0Tenant);
         }
 
