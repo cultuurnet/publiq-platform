@@ -26,7 +26,7 @@ final class DeleteOrganizationTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->mockCrmClient(new Pipelines(['opportunities'=>['id' => 3, 'stages' => ['test'=> 4]]]));
+        $this->mockCrmClient(new Pipelines(['opportunities' => ['id' => 3, 'stages' => ['test' => 4]]]));
         $this->insightlyMappingRepository = $this->createMock(InsightlyMappingRepository::class);
 
         $this->listener = new DeleteOrganization(

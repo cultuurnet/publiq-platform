@@ -99,7 +99,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         );
     }
 
-    public function requestActivation(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode, UdbOrganizers $organizers=null): void
+    public function requestActivation(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode, UdbOrganizers $organizers = null): void
     {
         DB::transaction(function () use ($couponCode, $id, $organizationId, $organizers): void {
             if ($organizers !== null) {
@@ -125,7 +125,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         $integrationModel->activate();
     }
 
-    public function activateWithOrganization(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode, UdbOrganizers $organizers=null): void
+    public function activateWithOrganization(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode, UdbOrganizers $organizers = null): void
     {
         DB::transaction(function () use ($couponCode, $id, $organizationId, $organizers): void {
             if ($organizers !== null) {

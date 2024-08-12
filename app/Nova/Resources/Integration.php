@@ -302,7 +302,7 @@ final class Integration extends Resource
         ];
 
         if (config(Auth0Config::IS_ENABLED)) {
-            $actions[] =(new CreateMissingAuth0Clients())
+            $actions[] = (new CreateMissingAuth0Clients())
                 ->withName('Create missing Auth0 Clients')
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to create missing Auth0 clients for this integration?')
