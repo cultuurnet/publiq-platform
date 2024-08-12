@@ -18,8 +18,8 @@ interface IntegrationRepository
     public function getByIdWithTrashed(UuidInterface $id): Integration;
     public function deleteById(UuidInterface $id): ?bool;
     public function getByContactEmail(string $email, ?string $searchQuery): PaginatedCollection;
-    public function requestActivation(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode, UdbOrganizers $organizers=null): void;
+    public function requestActivation(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode, UdbOrganizers $organizers = null): void;
     public function activate(UuidInterface $id): void;
-    public function activateWithOrganization(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode, UdbOrganizers $organizers=null): void;
+    public function activateWithOrganization(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode, UdbOrganizers $organizers = null): void;
     public function approve(UuidInterface $id): void;
 }
