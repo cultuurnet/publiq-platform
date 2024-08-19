@@ -79,7 +79,7 @@ e2e-install:
 	docker-compose exec laravel npx playwright install chromium --with-deps
 
 test-e2e:
-	vendor/bin/sail npx playwright test $(options)
+	docker-compose exec laravel npx playwright test $(options)
 
 test-e2e-filter:
-	vendor/bin/sail npx playwright test "$(filter)" $(options)
+	docker-compose exec laravel playwright test "$(filter)" $(options)
