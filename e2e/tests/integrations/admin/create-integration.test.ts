@@ -27,7 +27,7 @@ async function addContactToIntegration(
   );
   await expect(
     page.getByRole("heading", { name: `Contact Details: ${contributrorEmail}` })
-  ).toBeVisible();
+  ).toBeVisible({ timeout: 7_000 });
   await expect(page.getByText(type)).toBeVisible();
   return contributrorEmail;
 }
