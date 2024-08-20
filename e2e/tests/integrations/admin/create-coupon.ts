@@ -1,4 +1,4 @@
-import { type Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
 import { faker } from "@faker-js/faker";
 
 export async function createCoupon(page: Page) {
@@ -11,7 +11,13 @@ export async function createCoupon(page: Page) {
 
   await page.getByLabel("Coupon code").fill(couponCode);
   await page.getByRole("button", { name: "Create Coupon" }).click();
-  await page.waitForLoadState("networkidle");
+  await page.waitForURL(/\/admin\/resources\/coupons\/(?!new).+/, {
+    waitUntil: "networkidle",
+  });
 
-  return { couponCode, page };
+  await expect(
+    page.getByRole("heading", { name: `Coupon Details: ${couponCode}` })
+  ).toBeVisible({ timeout: 10_000 });
+
+  return { couponCode };
 }

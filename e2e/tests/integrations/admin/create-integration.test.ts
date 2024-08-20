@@ -37,34 +37,26 @@ test.use({ storageState: "playwright/.auth/admin.json" });
 test("create a new integration as an admin (with functional, technical and contributor contact)", async ({
   page,
 }) => {
-  const { page: integrationPage, name: integrationName } =
-    await createIntegration(page, IntegrationType.SearchApi);
-
-  await expect(
-    page.locator("h1").getByText(`Integration Details: ${integrationName}`)
-  ).toBeVisible();
-
-  const url = integrationPage.url();
-  const integrationId = url.split("/").pop();
+  const { id } = await createIntegration(page, IntegrationType.SearchApi);
 
   const contributorEmail = await addContactToIntegration(
     ContactType.Contributor,
-    integrationId!,
+    id,
     page
   );
   const functionalEmail = await addContactToIntegration(
     ContactType.Functional,
-    integrationId!,
+    id,
     page
   );
   const technicalEmail = await addContactToIntegration(
     ContactType.Technical,
-    integrationId!,
+    id,
     page
   );
 
   // Go to overview page and see if the contacts are visible
-  await page.goto(`/admin/resources/integrations/${integrationId}`);
+  await page.goto(`/admin/resources/integrations/${id}`);
   await expect(page.getByText(functionalEmail)).toBeVisible();
   await expect(page.getByText(contributorEmail)).toBeVisible();
   await expect(page.getByText(technicalEmail)).toBeVisible();

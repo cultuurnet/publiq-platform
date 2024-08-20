@@ -14,12 +14,6 @@ test("As an integrator I can create an integration with coupon (so it doesn't ne
 
   const { couponCode } = await createCoupon(adminPage);
 
-  await expect(
-    adminPage.getByRole("heading", { name: couponCode })
-  ).toBeVisible({
-    timeout: 7_000,
-  });
-
   const userContext = await browser.newContext({
     storageState: "playwright/.auth/user.json",
   });

@@ -95,5 +95,5 @@ export async function createIntegrationAsIntegrator(
 
   const integrationId = page.url().split("/").pop()!;
 
-  return { page, integrationName, integrationId };
+  return { integrationName, integrationId };
 }
