@@ -25,7 +25,7 @@ final readonly class MailjetMailer implements Mailer
             'Messages' => [
                 [
                     'From' => [
-                        'Email' => 'noreply@uitid.be',
+                        'Email' => $from->getAddress(),
                         'Name' => $from->getName(),
                     ],
                     'To' => $this->buildReceiverList($to),
