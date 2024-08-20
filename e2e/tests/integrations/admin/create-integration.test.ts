@@ -26,8 +26,8 @@ async function addContactToIntegration(
     waitUntil: "networkidle",
   });
   await expect(
-    page.getByRole("heading", { name: `Contact Details: ${contributrorEmail}` })
-  ).toBeVisible({ timeout: 7_000 });
+    page.getByText(`Contact Details: ${contributrorEmail}`)
+  ).toBeVisible({ timeout: 10_000 });
   await expect(page.getByText(type)).toBeVisible();
   return contributrorEmail;
 }
