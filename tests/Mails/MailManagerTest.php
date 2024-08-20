@@ -1,0 +1,152 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Mails;
+
+use App\Domain\Contacts\Contact;
+use App\Domain\Contacts\ContactType;
+use App\Domain\Integrations\Events\IntegrationActivated;
+use App\Domain\Integrations\Events\IntegrationBlocked;
+use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationPartnerStatus;
+use App\Domain\Integrations\IntegrationStatus;
+use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Domain\Mail\Mailer;
+use App\Mails\Addresses;
+use App\Mails\MailManager;
+use PHPUnit\Framework\MockObject\MockObject;
+use Ramsey\Uuid\Uuid;
+use Symfony\Component\Mime\Address;
+use Tests\TestCase;
+
+final class MailManagerTest extends TestCase
+{
+    private const INTEGRATION_ID = '9e6d778f-ef44-45b3-b842-26b6d71bcad7';
+    private const TEMPLATE_ACTIVATED_ID = 123;
+    private MailManager $mailManager;
+    private Mailer&MockObject $mailer;
+
+    /** @var Contact[] */
+    private array $contacts;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->mailer = $this->createMock(Mailer::class);
+        $integrationRepository = $this->createMock(IntegrationRepository::class);
+
+        $this->mailManager = new MailManager(
+            $this->mailer,
+            $integrationRepository,
+            self::TEMPLATE_ACTIVATED_ID,
+            'http://www.example.com/'
+        );
+
+        // @todo Let add all types of contacts here, it might be the case that we only sent the email to specific type of contacts
+        $this->contacts = [
+            new Contact(
+                Uuid::uuid4(),
+                Uuid::fromString(self::INTEGRATION_ID),
+                'grote.smurf@publiq.be',
+                ContactType::Technical,
+                'Grote',
+                'Smurf'
+            ),
+            new Contact(
+                Uuid::uuid4(),
+                Uuid::fromString(self::INTEGRATION_ID),
+                'brilsmurf@publiq.be',
+                ContactType::Functional,
+                'Bril',
+                'Smurf'
+            ),
+            new Contact(
+                Uuid::uuid4(),
+                Uuid::fromString(self::INTEGRATION_ID),
+                'knutselsmurf@publiq.be',
+                ContactType::Contributor,
+                'Knutsel',
+                'Smurf'
+            ),
+        ];
+
+        $integration = (new Integration(
+            Uuid::fromString(self::INTEGRATION_ID),
+            IntegrationType::SearchApi,
+            'Mock Integration',
+            'Mock description',
+            Uuid::uuid4(),
+            IntegrationStatus::Active,
+            IntegrationPartnerStatus::THIRD_PARTY,
+        ))
+            ->withContacts(...$this->contacts);
+
+        $integrationRepository
+            ->expects($this->once())
+            ->method('getById')
+            ->with(self::INTEGRATION_ID)
+            ->willReturn($integration);
+    }
+
+
+    /**
+     * @dataProvider mailDataProvider
+     */
+    public function testSendMail(
+        object $event,
+        string $method,
+        int $templateId,
+        string $subject,
+        array $expectedParameters
+    ): void {
+        $this->mailer
+            ->expects($this->once())
+            ->method('send')
+            ->with(
+                new Address(config('mail.from.address'), config('mail.from.name')),
+                $this->callback(function (Addresses $addresses) {
+                    foreach ($addresses as $i => $address) {
+                        if ($address->getAddress() !== $this->contacts[$i]->email) {
+                            return false;
+                        }
+
+                        if ($address->getName() !== $this->contacts[$i]->firstName . ' ' . $this->contacts[$i]->lastName) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                }),
+                $templateId,
+                $subject,
+                $this->callback(function ($parameters) use ($expectedParameters) {
+                    $this->assertEquals($expectedParameters, $parameters);
+
+                    return true;
+                })
+            );
+
+        $this->mailManager->$method($event);
+    }
+
+    public static function mailDataProvider(): array
+    {
+        return [
+            'IntegrationActivated' => [
+                'event' => new IntegrationActivated(Uuid::fromString(self::INTEGRATION_ID)),
+                'method' => 'sendIntegrationActivatedMail',
+                'templateId' => self::TEMPLATE_ACTIVATED_ID,
+                'subject' => 'Publiq platform - Integration activated',
+                'expectedParameters' => [
+                    'firstName' => 'Publiq platform',
+                    'url' => 'http://www.example.com//nl/integraties/' . self::INTEGRATION_ID,
+                    'integrationName' => 'Mock Integration',
+                    'type' => 'search-api',
+                ],
+            ],
+        ];
+    }
+}
