@@ -7,7 +7,6 @@ namespace Tests\Mails;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Events\IntegrationActivated;
-use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
