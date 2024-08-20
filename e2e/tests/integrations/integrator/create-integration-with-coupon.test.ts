@@ -20,13 +20,14 @@ test("As an integrator I can create an integration with coupon (so it doesn't ne
 
   const userPage = await userContext.newPage();
 
-  const { integrationName } = await createIntegrationAsIntegrator(
-    userPage,
-    IntegrationType.SearchApi,
-    couponCode
-  );
+  const { integrationName, integrationId } =
+    await createIntegrationAsIntegrator(
+      userPage,
+      IntegrationType.SearchApi,
+      couponCode
+    );
 
-  await userPage.waitForURL(/https?:\/\/[^/]*\/nl\/integraties(\/.*)?/);
+  await userPage.waitForURL(`/nl/integraties/${integrationId}`);
   await expect(userPage.getByText(integrationName)).toBeVisible();
   await userPage.waitForLoadState("networkidle");
 

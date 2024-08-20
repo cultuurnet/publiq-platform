@@ -90,7 +90,9 @@ export async function createIntegrationAsIntegrator(
 
   await page.getByRole("button", { name: "Integratie aanmaken" }).click();
 
-  await page.waitForURL(/https?:\/\/[^/]*\/nl\/integraties(\/.*)?/);
+  await page.waitForURL("/nl/integraties/*", {
+    waitUntil: "networkidle",
+  });
   await expect(page.getByText(integrationName)).toBeVisible();
 
   const integrationId = page.url().split("/").pop()!;

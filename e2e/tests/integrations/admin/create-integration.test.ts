@@ -22,9 +22,9 @@ async function addContactToIntegration(
     .selectOption(integrationId!);
   await page.getByRole("button", { name: "Create Contact" }).click();
 
-  await page.waitForURL(
-    /https?:\/\/[^/]*\/admin\/resources\/contacts\/(\/.*)?/
-  );
+  await page.waitForURL(/\/admin\/resources\/contacts\/(?!new).+$/, {
+    waitUntil: "networkidle",
+  });
   await expect(
     page.getByRole("heading", { name: `Contact Details: ${contributrorEmail}` })
   ).toBeVisible({ timeout: 7_000 });
