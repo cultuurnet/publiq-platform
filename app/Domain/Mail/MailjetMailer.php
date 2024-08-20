@@ -1,0 +1,76 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Domain\Mail;
+
+use App\Mails\Addresses;
+use Mailjet\Client;
+use Mailjet\Resources;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Mime\Address;
+
+final readonly class MailjetMailer implements Mailer
+{
+    public function __construct(
+        private Client $client,
+        private LoggerInterface $logger
+    ) {
+
+    }
+
+    public function send(Address $from, Addresses $to, int $templateId, string $subject, array $variables = []): void
+    {
+        $body = [
+            'Messages' => [
+                [
+                    'From' => [
+                        'Email' => 'noreply@uitid.be',
+                        'Name' => $from->getName(),
+                    ],
+                    'To' => $this->buildReceiverList($to),
+                    'TemplateID' => $templateId,
+                    'TemplateLanguage' => true,
+                    'Subject' => $subject,
+                    'Variables' => $variables,
+                ],
+            ],
+        ];
+
+        $response = $this->client->post(
+            Resources::$Email,
+            ['body' => $body]
+        );
+
+        if (!$response->success()) {
+            $this->logger->debug((string)json_encode($response->getData(), JSON_THROW_ON_ERROR));
+            throw new MailNotSend($response->getReasonPhrase());
+        }
+
+        $this->logger->info(
+            sprintf(
+                'Mail "%s" sent successfully to %s',
+                $subject,
+                implode(', ', $to->map(
+                    function (Address $address) {
+                        return $address->getAddress();
+                    }
+                )->toArray())
+            )
+        );
+    }
+
+    private function buildReceiverList(Addresses $addresses): array
+    {
+        $output = [];
+
+        foreach ($addresses as $address) {
+            $output[] = [
+                'Email' => $address->getAddress(),
+                'Name' => $address->getName(),
+            ];
+        }
+
+        return $output;
+    }
+}
