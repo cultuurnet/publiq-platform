@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Mails;
 
 use App\Domain\Integrations\Events\IntegrationActivated;
+use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Mail\Mailer;
 use App\Domain\Mail\MailjetConfig;
@@ -46,5 +47,6 @@ final class MailServiceProvider extends ServiceProvider
         });
 
         Event::listen(IntegrationActivated::class, [MailManager::class, 'sendIntegrationActivatedMail']);
+        Event::listen(IntegrationBlocked::class, [MailManager::class, 'sendIntegrationBlockedMail']);
     }
 }

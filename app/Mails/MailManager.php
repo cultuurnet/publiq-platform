@@ -6,6 +6,7 @@ namespace App\Mails;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Integrations\Events\IntegrationActivated;
+use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Mail\Mailer;
 use Symfony\Component\Mime\Address;
@@ -45,6 +46,28 @@ final class MailManager
                 ]
             );
         }
+    }
+
+    public function sendIntegrationBlockedMail(IntegrationBlocked $integrationBlocked): void
+    {
+        $integration = $this->integrationRepository->getById($integrationBlocked->id);
+
+        foreach ($integration->contacts() as $contact) {
+
+            $this->mailer->send(
+                $this->getFrom(),
+                $this->getAddresses($contact),
+                $this->templateIntegrationBlocked,
+                self::SUBJECT_INTEGRATION_BLOCKED,
+                [
+                    'firstName' => $contact->firstName,
+                    'lastName' => $contact->lastName,
+                    'contactType' => $contact->type->value,
+                    'integrationName' => $integration->name,
+                ]
+            );
+        }
+
     }
 
     private function getFrom(): Address
