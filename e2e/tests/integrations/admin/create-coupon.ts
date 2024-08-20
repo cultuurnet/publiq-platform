@@ -5,15 +5,12 @@ export async function createCoupon(page: Page) {
   await page.goto("/admin");
   await page.getByRole("link", { name: "Coupons" }).click();
   await page.getByRole("link", { name: "Create Coupon" }).click();
-  await page.waitForLoadState("networkidle");
 
   const couponCode = faker.string.uuid();
 
   await page.getByLabel("Coupon code").fill(couponCode);
   await page.getByRole("button", { name: "Create Coupon" }).click();
-  await page.waitForURL(/\/admin\/resources\/coupons\/(?!new).+/, {
-    waitUntil: "networkidle",
-  });
+  await page.waitForURL(/\/admin\/resources\/coupons\/(?!new).+/);
 
   await expect(
     page.getByRole("heading", { name: `Coupon Details: ${couponCode}` })

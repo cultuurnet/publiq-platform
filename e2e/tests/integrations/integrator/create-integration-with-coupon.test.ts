@@ -28,8 +28,9 @@ test("As an integrator I can create an integration with coupon (so it doesn't ne
     );
 
   await userPage.waitForURL(`/nl/integraties/${integrationId}`);
-  await expect(userPage.getByText(integrationName)).toBeVisible();
-  await userPage.waitForLoadState("networkidle");
+  await expect(
+    userPage.getByRole("heading", { name: integrationName })
+  ).toBeVisible();
 
   await expect(userPage.getByText("Actief", { exact: true })).toBeVisible();
 });
