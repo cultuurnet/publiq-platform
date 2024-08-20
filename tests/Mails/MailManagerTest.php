@@ -104,28 +104,36 @@ final class MailManagerTest extends TestCase
         string $subject,
         array $expectedParameters
     ): void {
+        $counter = 0;
+
         $this->mailer
-            ->expects($this->once())
+            ->expects($this->exactly(count($this->contacts)))
             ->method('send')
             ->with(
                 new Address(config('mail.from.address'), config('mail.from.name')),
-                $this->callback(function (Addresses $addresses) {
-                    foreach ($addresses as $i => $address) {
-                        if ($address->getAddress() !== $this->contacts[$i]->email) {
-                            return false;
-                        }
+                $this->callback(function (Addresses $addresses) use (&$counter) {
+                    /** @var Address $address */
+                    $address = $addresses->first();
+                    if ($address->getAddress() !== $this->contacts[$counter]->email) {
+                        return false;
+                    }
 
-                        if ($address->getName() !== $this->contacts[$i]->firstName . ' ' . $this->contacts[$i]->lastName) {
-                            return false;
-                        }
+                    if ($address->getName() !== $this->contacts[$counter]->firstName . ' ' . $this->contacts[$counter]->lastName) {
+                        return false;
                     }
 
                     return true;
                 }),
                 $templateId,
                 $subject,
-                $this->callback(function ($parameters) use ($expectedParameters) {
+                $this->callback(function ($parameters) use ($expectedParameters, &$counter) {
+                    $expectedParameters['firstName'] = $this->contacts[$counter]->firstName;
+                    $expectedParameters['lastName'] = $this->contacts[$counter]->lastName;
+                    $expectedParameters['contactType'] = $this->contacts[$counter]->type->value;
+
                     $this->assertEquals($expectedParameters, $parameters);
+
+                    $counter++;
 
                     return true;
                 })
@@ -143,7 +151,9 @@ final class MailManagerTest extends TestCase
                 'templateId' => self::TEMPLATE_ACTIVATED_ID,
                 'subject' => 'Publiq platform - Integration activated',
                 'expectedParameters' => [
-                    'firstName' => 'Publiq platform',
+                    'firstName' => 'Grote',
+                    'lastName' => 'Smurf',
+                    'contactType' => 'technical',
                     'url' => 'http://www.example.com//nl/integraties/' . self::INTEGRATION_ID,
                     'integrationName' => 'Mock Integration',
                     'type' => 'search-api',
