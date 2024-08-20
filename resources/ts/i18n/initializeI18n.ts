@@ -23,6 +23,8 @@ export const initializeI18n = async () => {
         detection: {
           lookupCookie: "locale",
           order: ["path", "cookie"],
+          convertDetectedLanguage: (lng: string) =>
+            ["en", "nl"].includes(lng) ? lng : "",
         },
       });
 
