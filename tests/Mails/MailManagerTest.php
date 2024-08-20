@@ -151,9 +151,6 @@ final class MailManagerTest extends TestCase
                 'templateId' => self::TEMPLATE_ACTIVATED_ID,
                 'subject' => 'Publiq platform - Integration activated',
                 'expectedParameters' => [
-                    'firstName' => 'Grote',
-                    'lastName' => 'Smurf',
-                    'contactType' => 'technical',
                     'url' => 'http://www.example.com//nl/integraties/' . self::INTEGRATION_ID,
                     'integrationName' => 'Mock Integration',
                     'type' => 'search-api',
@@ -165,7 +162,6 @@ final class MailManagerTest extends TestCase
                 'templateId' => self::TEMPLATE_BLOCKED_ID,
                 'subject' => 'Publiq platform - Integration blocked',
                 'expectedParameters' => [
-                    'firstName' => 'Publiq platform',
                     'integrationName' => 'Mock Integration',
                 ],
             ],
