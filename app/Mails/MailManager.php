@@ -12,14 +12,12 @@ use Symfony\Component\Mime\Address;
 
 final class MailManager
 {
-    private const SUBJECT_INTEGRATION_BLOCKED = 'Publiq platform - Integration blocked';
     private const SUBJECT_INTEGRATION_ACTIVATED = 'Publiq platform - Integration activated';
 
     public function __construct(
         private readonly Mailer $mailer,
         private readonly IntegrationRepository $integrationRepository,
         private readonly int $templateIntegrationActivated,
-        private readonly int $templateIntegrationBlocked,
         private readonly string $baseUrl
     ) {
     }

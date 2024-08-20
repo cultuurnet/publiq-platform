@@ -40,7 +40,6 @@ final class MailServiceProvider extends ServiceProvider
                 $this->app->get(Mailer::class),
                 $this->app->get(IntegrationRepository::class),
                 (int)config(MailjetConfig::TEMPLATE_INTEGRATION_ACTIVATED),
-                (int)config(MailjetConfig::TEMPLATE_INTEGRATION_BLOCKED),
                 env('APP_URL')
             );
         });
