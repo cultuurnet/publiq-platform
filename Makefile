@@ -82,4 +82,4 @@ test-e2e:
 	docker-compose exec laravel npx playwright test $(options)
 
 test-e2e-filter:
-	docker-compose exec laravel playwright test "$(filter)" $(options)
+	docker-compose exec laravel npx playwright test "$(filter)" $(options)
