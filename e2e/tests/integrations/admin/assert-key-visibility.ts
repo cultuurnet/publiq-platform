@@ -33,15 +33,17 @@ export const assertKeyVisibility = async (
 
     const tables = [uiTiDv1Consumers, auth0Clients, keycloakClients];
 
-    for (const table of tables) {
-      for (const environment of Object.values(Environment)) {
+    const assertions = tables.map((table) => {
+      return Object.values(Environment).map(async (environment) => {
         const row = table.getByRole("row", {
           name: `${environment} ${StatusToCopy[integrationStatus]}`,
         });
         await expect(row).toBeVisible({ timeout: 7_000 });
-      }
-    }
+      });
+    });
+
+    await Promise.all(assertions.flat());
   }).toPass({
-    intervals: [1_000, 2_000],
+    intervals: [1_000, 2_000, 3_000],
   });
 };
