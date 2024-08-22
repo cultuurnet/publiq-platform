@@ -95,6 +95,10 @@ export async function createIntegrationAsIntegrator(
     page.getByRole("heading", { name: integrationName, exact: true })
   ).toBeVisible();
 
+  await expect(page.getByRole("button", { name: "Organisaties" })).toBeVisible({
+    visible: integrationType === IntegrationType.UiTPAS,
+  });
+
   const integrationId = page.url().split("/").pop()!;
 
   return { integrationName, integrationId };
