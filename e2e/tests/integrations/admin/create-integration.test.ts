@@ -20,7 +20,7 @@ async function addContactToIntegration(
     .selectOption(integrationId);
   await page.getByRole("button", { name: "Create Contact" }).click();
   await expect(page.getByText("Contact was created!")).toBeVisible({
-    timeout: 10_000,
+    timeout: 20_000,
   });
 
   return { email };

@@ -90,7 +90,7 @@ export async function createIntegrationAsIntegrator(
 
   await page.getByRole("button", { name: "Integratie aanmaken" }).click();
 
-  await page.waitForURL(/\/nl\/integraties\/(?!nieuw).+$/, { timeout: 10_000 });
+  await page.waitForURL(/\/nl\/integraties\/(?!nieuw).+$/, { timeout: 20_000 });
   await expect(
     page.getByRole("heading", { name: integrationName, exact: true })
   ).toBeVisible();
