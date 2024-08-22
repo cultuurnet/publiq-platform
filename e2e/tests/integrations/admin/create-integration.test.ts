@@ -47,7 +47,7 @@ test("create a new integration as an admin (with functional, technical and contr
     })
   );
 
-  // Go to overview page and see if the contacts are visible
+  // Go to detail page and see if the contacts are visible
   await page.goto(`/admin/resources/integrations/${id}`);
   await expect(page.getByText(functional.email)).toBeVisible();
   await expect(page.getByText(contributor.email)).toBeVisible();
