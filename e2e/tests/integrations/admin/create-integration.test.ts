@@ -9,16 +9,18 @@ async function addContactToIntegration(
   integrationId: string,
   page: Page
 ) {
-  await page.goto("/admin/resources/contacts/new");
+  await page.goto(`/admin/resources/integrations/${integrationId}`);
+  await page.getByRole("link", { name: "Create Contact" }).first().click();
+
+  await page.waitForURL("/admin/resources/contacts/new**");
   const email = faker.internet.email();
   await page.getByPlaceholder("Email").fill(email);
   await page.locator("#type").selectOption(type);
   await page.getByPlaceholder("First Name").fill(faker.person.firstName());
   await page.getByPlaceholder("Last Name").fill(faker.person.lastName());
-  await page
-    .locator("[dusk='integrations-select']")
-    .selectOption(integrationId);
+
   await page.getByRole("button", { name: "Create Contact" }).click();
+
   await expect(page.getByText("Contact was created!")).toBeVisible({
     timeout: 20_000,
   });
