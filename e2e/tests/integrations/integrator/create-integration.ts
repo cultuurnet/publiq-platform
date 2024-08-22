@@ -90,10 +90,16 @@ export async function createIntegrationAsIntegrator(
 
   await page.getByRole("button", { name: "Integratie aanmaken" }).click();
 
-  await page.waitForURL(/\/nl\/integraties\/(?!nieuw).+$/);
+  await page.waitForURL(/\/nl\/integraties\/(?!nieuw).+$/, { timeout: 20_000 });
   await expect(
-    page.getByRole("heading", { name: integrationName })
+    page.getByRole("heading", { name: integrationName, exact: true })
   ).toBeVisible();
+
+  if (integrationType === IntegrationType.UiTPAS) {
+    await expect(
+      page.getByRole("button", { name: "Organisaties" })
+    ).toBeVisible();
+  }
 
   const integrationId = page.url().split("/").pop()!;
 

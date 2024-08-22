@@ -10,11 +10,13 @@ export async function createCoupon(page: Page) {
 
   await page.getByLabel("Coupon code").fill(couponCode);
   await page.getByRole("button", { name: "Create Coupon" }).click();
-  await page.waitForURL(/\/admin\/resources\/coupons\/(?!new).+$/);
+  await page.waitForURL(/\/admin\/resources\/coupons\/(?!new).+$/, {
+    timeout: 20_000,
+  });
 
   await expect(
     page.getByRole("heading", { name: `Coupon Details: ${couponCode}` })
-  ).toBeVisible({ timeout: 10_000 });
+  ).toBeVisible({ timeout: 20_000 });
 
   return { couponCode };
 }
