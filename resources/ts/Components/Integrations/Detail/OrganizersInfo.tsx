@@ -77,6 +77,7 @@ const OrganizersSection = ({
               {sectionName === "Live" && (
                 <div>
                   <ButtonIcon
+                    id={organizer.name[i18n.language]}
                     icon={faTrash}
                     className="text-icon-gray"
                     onClick={() => setToBeDeletedId(organizer.id)}
