@@ -85,6 +85,8 @@ const Detail = ({
     setOriginalVisitingUrl("");
   };
 
+  const isUitpasIntegration = integration.type === IntegrationType.UiTPAS;
+
   useEffect(() => {
     const cleanUp = router.on("before", (e) => {
       const nextVisit = e.detail.visit;
@@ -179,12 +181,14 @@ const Detail = ({
                     duplicateContactErrorMessage={duplicateContactErrorMessage}
                   />
                 </Tabs.Item>
-                <Tabs.Item
-                  type="organisations"
-                  label={t("details.organizers_info.title")}
-                >
-                  <OrganizersInfo {...integration} organizers={organizers} />
-                </Tabs.Item>
+                {isUitpasIntegration && (
+                  <Tabs.Item
+                    type="organisations"
+                    label={t("details.organizers_info.title")}
+                  >
+                    <OrganizersInfo {...integration} organizers={organizers} />
+                  </Tabs.Item>
+                )}
                 <Tabs.Item
                   type="billing"
                   label={t("details.billing_info.title.billing")}
