@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\MailJet;
+namespace App\Mails\MailJet;
 
 use App\Domain\Mail\Addresses;
 use App\Domain\Mail\Mailer;
