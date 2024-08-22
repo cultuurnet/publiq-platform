@@ -91,7 +91,14 @@ export async function createIntegrationAsIntegrator(
   await page.getByRole("button", { name: "Integratie aanmaken" }).click();
 
   await page.waitForURL(/https?:\/\/[^/]*\/nl\/integraties(\/.*)?/);
-  await expect(page.getByText(integrationName)).toBeVisible();
+  await page.waitForLoadState("networkidle");
+
+  await expect(
+    page.getByRole("heading", { name: integrationName })
+  ).toBeVisible();
+  await expect(page.getByRole("button", { name: "Organisaties" })).toBeVisible({
+    visible: integrationType === IntegrationType.UiTPAS,
+  });
 
   const integrationId = page.url().split("/").pop()!;
 
