@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Mails;
+namespace App\Domain\Mail;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Domain\Mail\Mailer;
 use Symfony\Component\Mime\Address;
 
 final class MailManager
@@ -40,7 +39,6 @@ final class MailManager
                     'lastName' => $contact->lastName,
                     'contactType' => $contact->type->value,
                     'integrationName' => $integration->name,
-                    //@todo Should we add a language preference to contacts?
                     'url' => $this->baseUrl . '/nl/integraties/' . $integration->id,
                     'type' => $integration->type->value,
                 ]

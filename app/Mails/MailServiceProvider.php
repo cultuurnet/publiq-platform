@@ -8,8 +8,9 @@ use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Mail\Mailer;
-use App\Domain\Mail\MailjetConfig;
-use App\Domain\Mail\MailjetMailer;
+use App\Domain\Mail\MailManager;
+use App\Mails\MailJet\MailjetConfig;
+use App\Mails\MailJet\MailjetMailer;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Mailjet\Client;
@@ -42,7 +43,7 @@ final class MailServiceProvider extends ServiceProvider
                 $this->app->get(IntegrationRepository::class),
                 (int)config(MailjetConfig::TEMPLATE_INTEGRATION_ACTIVATED),
                 (int)config(MailjetConfig::TEMPLATE_INTEGRATION_BLOCKED),
-                env('APP_URL')
+                config('url')
             );
         });
 
