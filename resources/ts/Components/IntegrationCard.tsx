@@ -168,6 +168,13 @@ export const IntegrationCard = ({
                     )}
                   </div>
                 ))}
+                {testClientWithLabels.length &&
+                  type === IntegrationType.UiTPAS &&
+                  status !== IntegrationStatus.Active && (
+                    <Alert variant={"info"}>
+                      {t("details.credentials.waiting")}
+                    </Alert>
+                  )}
               </div>
             </div>
           </section>
