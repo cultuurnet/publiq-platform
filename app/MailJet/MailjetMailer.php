@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Mail;
+namespace App\MailJet;
 
-use App\Mails\Addresses;
+use App\Domain\Mail\Addresses;
+use App\Domain\Mail\Mailer;
+use App\Domain\Mail\MailNotSend;
 use Mailjet\Client;
 use Mailjet\Resources;
 use Psr\Log\LoggerInterface;

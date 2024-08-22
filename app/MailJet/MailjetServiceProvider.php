@@ -2,20 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Mails;
+namespace App\MailJet;
 
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Mail\Mailer;
-use App\Domain\Mail\MailjetConfig;
-use App\Domain\Mail\MailjetMailer;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Mailjet\Client;
 use Psr\Log\LoggerInterface;
 
-final class MailServiceProvider extends ServiceProvider
+final class MailjetServiceProvider extends ServiceProvider
 {
     public function register(): void
     {

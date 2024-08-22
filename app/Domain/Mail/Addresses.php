@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Mails;
+namespace App\Domain\Mail;
 
 use Illuminate\Support\Collection;
 use Symfony\Component\Mime\Address;

@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Mails;
+namespace App\MailJet;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Domain\Mail\Addresses;
 use App\Domain\Mail\Mailer;
 use Symfony\Component\Mime\Address;
 

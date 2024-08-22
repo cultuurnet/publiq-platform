@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Mail;
+namespace App\MailJet;
 
 final class MailjetConfig
 {
