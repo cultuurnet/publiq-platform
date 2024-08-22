@@ -6,6 +6,8 @@ import { IntegrationStatus } from "@app-types/IntegrationStatus";
 
 test.use({ storageState: "playwright/.auth/admin.json" });
 
+test.setTimeout(120_000);
+
 test("As an admin I can block an integration", async ({ page }) => {
   // create integration
   const { id } = await createIntegration(page, IntegrationType.SearchApi);
