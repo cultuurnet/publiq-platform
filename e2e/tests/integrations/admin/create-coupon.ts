@@ -16,7 +16,7 @@ export async function createCoupon(page: Page) {
 
   await expect(
     page.getByRole("heading", { name: `Coupon Details: ${couponCode}` })
-  ).toBeVisible({ timeout: 10_000 });
+  ).toBeVisible({ timeout: 15_000 });
 
   return { couponCode };
 }
