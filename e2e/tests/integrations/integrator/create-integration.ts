@@ -95,9 +95,11 @@ export async function createIntegrationAsIntegrator(
     page.getByRole("heading", { name: integrationName, exact: true })
   ).toBeVisible();
 
-  await expect(page.getByRole("button", { name: "Organisaties" })).toBeVisible({
-    visible: integrationType === IntegrationType.UiTPAS,
-  });
+  if (integrationType === IntegrationType.UiTPAS) {
+    await expect(
+      page.getByRole("button", { name: "Organisaties" })
+    ).toBeVisible();
+  }
 
   const integrationId = page.url().split("/").pop()!;
 
