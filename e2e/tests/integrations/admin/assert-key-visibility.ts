@@ -26,12 +26,18 @@ export const assertKeyVisibility = async (
     const uiTiDv1Consumers = page.locator(
       '[data-relationship="uiTiDv1Consumers"]'
     );
-    const auth0Clients = page.locator('[data-relationship="auth0Clients"]');
     const keycloakClients = page.locator(
       '[data-relationship="keycloakClients"]'
     );
 
-    const tables = [uiTiDv1Consumers, auth0Clients, keycloakClients];
+    /**
+     * We don't check auth0 clients because auth0 often doesn't update the clients on
+     * acc/test due to rate limiting.
+     *
+     * This shouldn't be an issue on production since that environment uses different
+     * rate limiting quota
+     */
+    const tables = [uiTiDv1Consumers, keycloakClients];
 
     const assertions = tables.map((table) => {
       return Object.values(Environment).map(async (environment) => {
