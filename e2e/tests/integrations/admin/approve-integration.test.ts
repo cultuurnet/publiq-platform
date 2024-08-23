@@ -1,15 +1,15 @@
 import { expect, test } from "@playwright/test";
-import { createIntegrationAsIntegrator } from "../integrator/create-integration.js";
 import { requestActivationAsIntegrator } from "../integrator/request-activation.js";
 import { IntegrationType } from "@app-types/IntegrationType";
 import { assertKeyVisibility } from "./assert-key-visibility.js";
 import { IntegrationStatus } from "@app-types/IntegrationStatus";
+import { createIntegration } from "./create-integration.js";
 
 test.use({ storageState: "playwright/.auth/admin.json" });
 
 test("As an admin I can approve an integration", async ({ page }) => {
   // create integration as integrator
-  const { integrationId } = await createIntegrationAsIntegrator(
+  const { id: integrationId } = await createIntegration(
     page,
     IntegrationType.EntryApi
   );
