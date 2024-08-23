@@ -23,7 +23,10 @@ import { classNames } from "../utils/classNames";
 import { usePolling } from "../hooks/usePolling";
 import { ButtonSecondary } from "./ButtonSecondary";
 import { usePageProps } from "../hooks/usePageProps";
-import { IntegrationClientCredential } from "./IntegrationClientCredential";
+import {
+  IntegrationClientCredential,
+  IntegrationClientCredentials,
+} from "./IntegrationClientCredential";
 
 type Props = Integration &
   Credentials & {
@@ -75,55 +78,8 @@ export const IntegrationCard = ({
   onEdit,
 }: Props) => {
   const { t } = useTranslation();
-  const { config } = usePageProps();
-  const keycloakEnabled = config.keycloakEnabled;
 
   const integrationTypesInfo = useIntegrationTypesInfo();
-
-  const testClientWithLabels = keycloakEnabled
-    ? [
-        {
-          label: "details.credentials.client_id",
-          value: keycloakTestClient?.clientId,
-        },
-        {
-          label: "details.credentials.client_secret",
-          value: keycloakTestClient?.clientSecret,
-        },
-      ]
-    : [
-        {
-          label: "details.credentials.client_id",
-          value: testClient?.clientId,
-        },
-        {
-          label: "details.credentials.client_secret",
-          value: testClient?.clientSecret,
-        },
-      ];
-
-  const prodClientWithLabels = keycloakEnabled
-    ? [
-        {
-          label: "details.credentials.client_id",
-          value: keycloakProdClient?.clientId,
-        },
-        {
-          label: "details.credentials.client_secret",
-          value: keycloakProdClient?.clientSecret,
-        },
-      ]
-    : [
-        {
-          label: "details.credentials.client_id",
-          value: prodClient?.clientId,
-        },
-        {
-          label: "details.credentials.client_secret",
-          value: prodClient?.clientSecret,
-        },
-      ];
-
   const hasAnyCredentials = Boolean(
     legacyTestConsumer ||
       legacyProdConsumer ||
@@ -150,21 +106,13 @@ export const IntegrationCard = ({
               {t("integrations.test")}
             </Heading>
             <div className="flex flex-col gap-2">
-              <div className="flex flex-col gap-2">
-                {testClientWithLabels.map((client) => (
-                  <IntegrationClientCredential
-                    key={`${client.label}-${client.value}`}
-                    client={client}
-                  />
-                ))}
-                {testClientWithLabels.length &&
-                  type === IntegrationType.UiTPAS &&
-                  status !== IntegrationStatus.Active && (
-                    <Alert variant={"info"}>
-                      {t("details.credentials.waiting")}
-                    </Alert>
-                  )}
-              </div>
+              <IntegrationClientCredentials
+                client={testClient}
+                keycloakClient={keycloakTestClient}
+                status={status}
+                type={type}
+                isLive={false}
+              />
             </div>
           </section>
         )}
@@ -216,14 +164,13 @@ export const IntegrationCard = ({
                   <ActivationRequest id={id} type={type} />
                 )}
                 {status === IntegrationStatus.Active && (
-                  <div className="flex flex-col gap-2">
-                    {prodClientWithLabels.map((client) => (
-                      <IntegrationClientCredential
-                        key={`${client.label}-${client.value}`}
-                        client={client}
-                      />
-                    ))}
-                  </div>
+                  <IntegrationClientCredentials
+                    client={prodClient}
+                    keycloakClient={keycloakProdClient}
+                    status={status}
+                    type={type}
+                    isLive={true}
+                  />
                 )}
               </div>
             </div>
