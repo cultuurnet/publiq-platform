@@ -13,6 +13,8 @@ import { router } from "@inertiajs/react";
 import { Link } from "../../Link";
 import { Alert } from "../../Alert";
 import { usePageProps } from "../../../hooks/usePageProps";
+import { IntegrationType } from "../../../types/IntegrationType";
+import { IntegrationClientCredential } from "../../IntegrationClientCredential";
 
 type Props = Pick<
   Integration,
@@ -88,8 +90,6 @@ export const CredentialsAuthClients = ({
         },
       ];
 
-  const clientSecretLabel = t("details.credentials.client_secret");
-
   const handleKeyVisibilityUpgrade = () =>
     router.post(`/integrations/${id}/upgrade`, {
       keyVisibility: KeyVisibility.v2,
@@ -133,21 +133,18 @@ export const CredentialsAuthClients = ({
               {t("details.credentials.test")}
             </Heading>
             {testClientWithLabels.map((client) => (
-              <div
+              <IntegrationClientCredential
                 key={`${client.label}-${client.value}`}
-                className="flex gap-1 max-md:flex-col max-md:items-start"
-              >
-                <span className="flex items-center whitespace-nowrap">
-                  {t(client.label)}
-                </span>
-                {client.value && (
-                  <CopyText
-                    isSecret={t(client.label) === clientSecretLabel}
-                    text={client.value}
-                  />
-                )}
-              </div>
+                client={client}
+              />
             ))}
+            {testClientWithLabels.length &&
+              type === IntegrationType.UiTPAS &&
+              status !== IntegrationStatus.Active && (
+                <Alert variant={"info"}>
+                  {t("details.credentials.waiting")}
+                </Alert>
+              )}
           </div>
           <div className="flex flex-col gap-2">
             <Heading className="font-semibold min-w-[5rem]" level={4}>
@@ -157,20 +154,10 @@ export const CredentialsAuthClients = ({
             {status === IntegrationStatus.Active && (
               <div className="flex flex-col gap-3">
                 {prodClientWithLabels.map((client) => (
-                  <div
+                  <IntegrationClientCredential
                     key={`${client.label}-${client.value}`}
-                    className="flex gap-1 max-md:flex-col max-md:items-start"
-                  >
-                    <span className="flex items-center whitespace-nowrap">
-                      {t(client.label)}
-                    </span>
-                    {client.value && (
-                      <CopyText
-                        isSecret={t(client.label) === clientSecretLabel}
-                        text={client.value}
-                      />
-                    )}
-                  </div>
+                    client={client}
+                  />
                 ))}
               </div>
             )}

@@ -23,6 +23,7 @@ import { classNames } from "../utils/classNames";
 import { usePolling } from "../hooks/usePolling";
 import { ButtonSecondary } from "./ButtonSecondary";
 import { usePageProps } from "../hooks/usePageProps";
+import { IntegrationClientCredential } from "./IntegrationClientCredential";
 
 type Props = Integration &
   Credentials & {
@@ -123,8 +124,6 @@ export const IntegrationCard = ({
         },
       ];
 
-  const clientSecretLabel = t("details.credentials.client_secret");
-
   const hasAnyCredentials = Boolean(
     legacyTestConsumer ||
       legacyProdConsumer ||
@@ -153,20 +152,10 @@ export const IntegrationCard = ({
             <div className="flex flex-col gap-2">
               <div className="flex flex-col gap-2">
                 {testClientWithLabels.map((client) => (
-                  <div
+                  <IntegrationClientCredential
                     key={`${client.label}-${client.value}`}
-                    className="flex gap-1 max-md:flex-col max-md:items-start"
-                  >
-                    <span className="flex items-center whitespace-nowrap">
-                      {t(client.label)}
-                    </span>
-                    {client.value && (
-                      <CopyText
-                        isSecret={t(client.label) === clientSecretLabel}
-                        text={client.value}
-                      />
-                    )}
-                  </div>
+                    client={client}
+                  />
                 ))}
                 {testClientWithLabels.length &&
                   type === IntegrationType.UiTPAS &&
@@ -229,20 +218,10 @@ export const IntegrationCard = ({
                 {status === IntegrationStatus.Active && (
                   <div className="flex flex-col gap-2">
                     {prodClientWithLabels.map((client) => (
-                      <div
+                      <IntegrationClientCredential
                         key={`${client.label}-${client.value}`}
-                        className="flex gap-1 max-md:flex-col max-md:items-start"
-                      >
-                        <span className="flex items-center whitespace-nowrap">
-                          {t(client.label)}
-                        </span>
-                        {client.value && (
-                          <CopyText
-                            isSecret={t(client.label) === clientSecretLabel}
-                            text={client.value}
-                          />
-                        )}
-                      </div>
+                        client={client}
+                      />
                     ))}
                   </div>
                 )}
