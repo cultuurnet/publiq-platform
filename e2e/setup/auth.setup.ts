@@ -31,7 +31,6 @@ setup("authenticate as admin", async ({ page }) => {
 
   await page.getByRole("button", { name: "Meld je aan", exact: true }).click();
 
-  await page.waitForLoadState("networkidle");
   await page.waitForURL("/nl/integraties");
 
   await page.context().storageState({ path: "playwright/.auth/admin.json" });
@@ -58,7 +57,6 @@ setup("authenticate as contributor", async ({ page }) => {
 
   await page.getByRole("button", { name: "Meld je aan", exact: true }).click();
 
-  await page.waitForLoadState("networkidle");
   await page.waitForURL("/nl/integraties");
 
   await page.context().storageState({ path: "playwright/.auth/user.json" });
@@ -93,7 +91,6 @@ setup(
       .getByRole("button", { name: "Meld je aan", exact: true })
       .click();
 
-    await page.waitForLoadState("networkidle");
     await page.waitForURL("/nl/integraties");
 
     await page
