@@ -3,7 +3,6 @@ import { Heading } from "../../Heading";
 import { Trans, useTranslation } from "react-i18next";
 import { StatusLight } from "../../StatusLight";
 import { ButtonPrimary } from "../../ButtonPrimary";
-import { CopyText } from "../../CopyText";
 import { ActivationFlow } from "../../ActivationFlow";
 import { IntegrationStatus } from "../../../types/IntegrationStatus";
 import type { Credentials } from "./Credentials";
@@ -12,12 +11,7 @@ import { KeyVisibility } from "../../../types/KeyVisibility";
 import { router } from "@inertiajs/react";
 import { Link } from "../../Link";
 import { Alert } from "../../Alert";
-import { usePageProps } from "../../../hooks/usePageProps";
-import { IntegrationType } from "../../../types/IntegrationType";
-import {
-  IntegrationClientCredential,
-  IntegrationClientCredentials,
-} from "../../IntegrationClientCredential";
+import { IntegrationClientCredentials } from "../../IntegrationClientCredential";
 
 type Props = Pick<
   Integration,

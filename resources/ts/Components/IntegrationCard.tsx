@@ -22,11 +22,7 @@ import { Alert } from "./Alert";
 import { classNames } from "../utils/classNames";
 import { usePolling } from "../hooks/usePolling";
 import { ButtonSecondary } from "./ButtonSecondary";
-import { usePageProps } from "../hooks/usePageProps";
-import {
-  IntegrationClientCredential,
-  IntegrationClientCredentials,
-} from "./IntegrationClientCredential";
+import { IntegrationClientCredentials } from "./IntegrationClientCredential";
 
 type Props = Integration &
   Credentials & {
