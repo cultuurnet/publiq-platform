@@ -40,7 +40,7 @@ export const CredentialsAuthClients = ({
 }: Props) => {
   const { t } = useTranslation();
   const { config } = usePageProps();
-  const keycloakEnabled = config.keycloakEnabled;
+  const keycloakEnabled = config.keycloak.enabled;
 
   const isKeyVisibilityV1 = keyVisibility === KeyVisibility.v1;
 

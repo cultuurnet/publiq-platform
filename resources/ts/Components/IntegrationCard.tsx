@@ -75,7 +75,7 @@ export const IntegrationCard = ({
 }: Props) => {
   const { t } = useTranslation();
   const { config } = usePageProps();
-  const keycloakEnabled = config.keycloakEnabled;
+  const keycloakEnabled = config.keycloak.enabled;
 
   const integrationTypesInfo = useIntegrationTypesInfo();
 
