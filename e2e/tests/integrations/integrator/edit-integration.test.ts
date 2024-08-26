@@ -8,10 +8,7 @@ test.use({ storageState: "playwright/.auth/user.json" });
 test("As an integrator I can edit an existing integration", async ({
   page,
 }) => {
-  const { integrationName } = await createIntegrationAsIntegrator(
-    page,
-    IntegrationType.EntryApi
-  );
+  await createIntegrationAsIntegrator(page, IntegrationType.EntryApi);
 
   // Edit integration
   await page.getByRole("button", { name: "Instellingen" }).click();

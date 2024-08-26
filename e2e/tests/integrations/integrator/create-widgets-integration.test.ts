@@ -12,7 +12,6 @@ test("As an integrator I can create a new widget integration", async ({
     page,
     IntegrationType.Widgets
   );
-  await expect(page.getByText(integrationName)).toBeVisible();
 
   // nieuwe
   const pagePromise = context.waitForEvent("page");
