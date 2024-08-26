@@ -2,18 +2,7 @@ import { test, expect, Page } from "@playwright/test";
 import { IntegrationType } from "@app-types/IntegrationType";
 import { createIntegrationAsIntegrator } from "./create-integration.js";
 import { requestActivationAsIntegrator } from "./request-activation.js";
-
-export async function addUiTPASOrganizer(
-  page: Page,
-  organizerName = "publiq vzw - UiTPAS organizer"
-) {
-  await page.getByRole("button", { name: "Organisaties" }).click();
-  await page.getByRole("button", { name: "Organisatie toevoegen" }).click();
-  await page.getByRole("textbox").click();
-  await page.getByRole("textbox").fill(organizerName);
-  await page.locator("li").filter({ hasText: organizerName }).click();
-  await page.getByRole("button", { name: "Bevestigen" }).click();
-}
+import { addOrganizer } from "./add-organizer.js";
 
 test("As an integrator I can add an organizer to an UiTPAS integration", async ({
   page,
@@ -27,8 +16,5 @@ test("As an integrator I can add an organizer to an UiTPAS integration", async (
     integrationId,
     IntegrationType.UiTPAS
   );
-  await addUiTPASOrganizer(page);
-  await expect(
-    page.getByRole("heading", { name: "publiq vzw - UiTPAS organizer" })
-  ).toBeVisible();
+  await addOrganizer(page);
 });

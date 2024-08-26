@@ -2,7 +2,7 @@ import { test, expect, Page } from "@playwright/test";
 import { IntegrationType } from "@app-types/IntegrationType";
 import { createIntegrationAsIntegrator } from "./create-integration.js";
 import { requestActivationAsIntegrator } from "./request-activation.js";
-import { addUiTPASOrganizer } from "./add-organizer-uitpas-integration.test.js";
+import { addOrganizer } from "./add-organizer.js";
 
 test("As an integrator I can remove an organizer from an UiTPAS integration", async ({
   page,
@@ -16,8 +16,8 @@ test("As an integrator I can remove an organizer from an UiTPAS integration", as
     integrationId,
     IntegrationType.UiTPAS
   );
-  await addUiTPASOrganizer(page);
-  await page.locator("#Publiq").click();
+  await addOrganizer(page);
+  await page.getByTestId("Publiq").click();
   await page.getByRole("button", { name: "Bevestigen" }).click();
   await expect(
     page.getByRole("heading", { name: "Publiq", exact: true })
