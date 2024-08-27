@@ -15,6 +15,7 @@ import { Dialog } from "../../Dialog";
 import { ButtonSecondary } from "../../ButtonSecondary";
 import { OrganizersDatalist } from "./OrganizersDatalist";
 import type { UiTPASOrganizer } from "../../../types/UiTPASOrganizer";
+import { classNames } from "../../../utils/classNames";
 
 type Props = Integration & { organizers: Organizer[] };
 
@@ -62,25 +63,21 @@ const OrganizersSection = ({
             key={organizer.id}
             className={`m-0 drop-shadow-none border border-gray-200 border-t-0 first:border-t z-[${organizers.length - index}]`}
           >
-            <div className="grid grid-cols-[1fr,1fr,100px] gap-x-4 items-center">
-              <Heading
-                level={5}
-                className={"font-semibold text-publiq-gray-600"}
-              >
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2 md:gap-4">
+              <Heading level={5} className="font-semibold text-publiq-gray-600">
                 {organizer.name[i18n.language]}
               </Heading>
-              <div>
+              <div className="flex-shrink-0 flex max-sm:flex-col gap-4">
                 <CopyText text={organizer.id} />
+                <ButtonIcon
+                  icon={faTrash}
+                  className={classNames(
+                    sectionName !== "Live" && "invisible",
+                    "text-icon-gray"
+                  )}
+                  onClick={() => setToBeDeletedId(organizer.id)}
+                />
               </div>
-              {sectionName === "Live" && (
-                <div>
-                  <ButtonIcon
-                    icon={faTrash}
-                    className="text-icon-gray"
-                    onClick={() => setToBeDeletedId(organizer.id)}
-                  />
-                </div>
-              )}
             </div>
           </Card>
         ))}
