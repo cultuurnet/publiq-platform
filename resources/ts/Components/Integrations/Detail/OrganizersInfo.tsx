@@ -87,16 +87,14 @@ const OrganizersSection = ({
           </Card>
         ))}
       </div>
-      <div className="grid lg:grid-cols-3">
-        {sectionName === "Live" && (
-          <ButtonPrimary
-            className="col-span-1"
-            onClick={() => setIsModalVisible(true)}
-          >
-            {t("details.organizers_info.add")}
-          </ButtonPrimary>
-        )}
-      </div>
+      {sectionName === "Live" && (
+        <ButtonPrimary
+          className="self-start"
+          onClick={() => setIsModalVisible(true)}
+        >
+          {t("details.organizers_info.add")}
+        </ButtonPrimary>
+      )}
       <QuestionDialog
         isVisible={!!toBeDeletedId}
         onClose={() => {
