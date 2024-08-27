@@ -72,7 +72,7 @@ const OrganizersSection = ({
                 <ButtonIcon
                   icon={faTrash}
                   className={classNames(
-                    sectionName !== "Live" && "invisible",
+                    sectionName !== "Live" && "invisible max-sm:hidden",
                     "text-icon-gray"
                   )}
                   onClick={() => setToBeDeletedId(organizer.id)}
