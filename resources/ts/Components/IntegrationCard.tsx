@@ -75,33 +75,33 @@ export const IntegrationCard = ({
 }: Props) => {
   const { t } = useTranslation();
   const { config } = usePageProps();
-  const keycloakEnabled = config.keycloak.enabled;
 
   const integrationTypesInfo = useIntegrationTypesInfo();
 
-  const testClientWithLabels = keycloakEnabled
-    ? [
-        {
-          label: "details.credentials.client_id",
-          value: keycloakTestClient?.clientId,
-        },
-        {
-          label: "details.credentials.client_secret",
-          value: keycloakTestClient?.clientSecret,
-        },
-      ]
-    : [
-        {
-          label: "details.credentials.client_id",
-          value: testClient?.clientId,
-        },
-        {
-          label: "details.credentials.client_secret",
-          value: testClient?.clientSecret,
-        },
-      ];
+  const testClientWithLabels =
+    config.keycloak.enabled || config.keycloak.testClientEnabled
+      ? [
+          {
+            label: "details.credentials.client_id",
+            value: keycloakTestClient?.clientId,
+          },
+          {
+            label: "details.credentials.client_secret",
+            value: keycloakTestClient?.clientSecret,
+          },
+        ]
+      : [
+          {
+            label: "details.credentials.client_id",
+            value: testClient?.clientId,
+          },
+          {
+            label: "details.credentials.client_secret",
+            value: testClient?.clientSecret,
+          },
+        ];
 
-  const prodClientWithLabels = keycloakEnabled
+  const prodClientWithLabels = config.keycloak.enabled
     ? [
         {
           label: "details.credentials.client_id",
