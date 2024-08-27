@@ -154,108 +154,110 @@ export const ActivationDialog = ({
       isVisible
       onClose={onClose}
       isFullscreen={isMobile}
-      contentStyles="gap-3"
+      contentStyles="gap-10"
     >
       <>
-        {type === IntegrationType.UiTPAS && (
-          <Heading level={5} className="font-semibold">
-            {t("integrations.activation_dialog.uitpas.partner")}
-          </Heading>
-        )}
-        <FormElement
-          label={`${t("details.billing_info.name")}`}
-          required
-          error={organizationFormErrors["organization.name"]}
-          className="w-full"
-          component={
-            <Input
-              type="text"
-              name="organization.name"
-              onChange={(e) => {
-                if (!organizationForm.data.organization) return;
+        <div className="flex flex-col gap-3">
+          {type === IntegrationType.UiTPAS && (
+            <Heading level={5} className="font-semibold">
+              {t("integrations.activation_dialog.uitpas.partner")}
+            </Heading>
+          )}
+          <FormElement
+            label={`${t("details.billing_info.name")}`}
+            required
+            error={organizationFormErrors["organization.name"]}
+            className="w-full"
+            component={
+              <Input
+                type="text"
+                name="organization.name"
+                onChange={(e) => {
+                  if (!organizationForm.data.organization) return;
 
-                organizationForm.setData("organization", {
-                  ...organizationForm.data.organization,
-                  name: e.target.value,
-                });
-              }}
+                  organizationForm.setData("organization", {
+                    ...organizationForm.data.organization,
+                    name: e.target.value,
+                  });
+                }}
+              />
+            }
+          />
+          <div className="max-md:flex max-md:flex-col md:grid md:grid-cols-5 gap-3">
+            <FormElement
+              label={`${t("details.billing_info.address.street")}`}
+              required
+              error={organizationFormErrors["organization.address.street"]}
+              className="col-span-2"
+              component={
+                <Input
+                  type="text"
+                  name="organization.address.street"
+                  onChange={(e) => {
+                    if (!organizationForm.data.organization) return;
+
+                    organizationForm.setData("organization", {
+                      ...organizationForm.data.organization,
+                      address: {
+                        ...organizationForm.data.organization.address,
+                        street: e.target.value,
+                      },
+                    });
+                  }}
+                />
+              }
             />
-          }
-        />
-        <div className="max-md:flex max-md:flex-col md:grid md:grid-cols-5 gap-3">
-          <FormElement
-            label={`${t("details.billing_info.address.street")}`}
-            required
-            error={organizationFormErrors["organization.address.street"]}
-            className="col-span-2"
-            component={
-              <Input
-                type="text"
-                name="organization.address.street"
-                onChange={(e) => {
-                  if (!organizationForm.data.organization) return;
+            <FormElement
+              label={`${t("details.billing_info.address.postcode")}`}
+              required
+              error={organizationFormErrors["organization.address.zip"]}
+              className="col-span-1"
+              component={
+                <Input
+                  type="text"
+                  name="organization.address.zip"
+                  onChange={(e) => {
+                    if (!organizationForm.data.organization) return;
 
-                  organizationForm.setData("organization", {
-                    ...organizationForm.data.organization,
-                    address: {
-                      ...organizationForm.data.organization.address,
-                      street: e.target.value,
-                    },
-                  });
-                }}
-              />
-            }
-          />
-          <FormElement
-            label={`${t("details.billing_info.address.postcode")}`}
-            required
-            error={organizationFormErrors["organization.address.zip"]}
-            className="col-span-1"
-            component={
-              <Input
-                type="text"
-                name="organization.address.zip"
-                onChange={(e) => {
-                  if (!organizationForm.data.organization) return;
+                    organizationForm.setData("organization", {
+                      ...organizationForm.data.organization,
+                      address: {
+                        ...organizationForm.data.organization.address,
+                        zip: e.target.value,
+                      },
+                    });
+                  }}
+                />
+              }
+            />
+            <FormElement
+              label={`${t("details.billing_info.address.city")}`}
+              required
+              error={organizationFormErrors["organization.address.city"]}
+              className="col-span-2"
+              component={
+                <Input
+                  type="text"
+                  name="organization.address.city"
+                  onChange={(e) => {
+                    if (!organizationForm.data.organization) return;
 
-                  organizationForm.setData("organization", {
-                    ...organizationForm.data.organization,
-                    address: {
-                      ...organizationForm.data.organization.address,
-                      zip: e.target.value,
-                    },
-                  });
-                }}
-              />
-            }
-          />
-          <FormElement
-            label={`${t("details.billing_info.address.city")}`}
-            required
-            error={organizationFormErrors["organization.address.city"]}
-            className="col-span-2"
-            component={
-              <Input
-                type="text"
-                name="organization.address.city"
-                onChange={(e) => {
-                  if (!organizationForm.data.organization) return;
-
-                  organizationForm.setData("organization", {
-                    ...organizationForm.data.organization,
-                    address: {
-                      ...organizationForm.data.organization.address,
-                      city: e.target.value,
-                    },
-                  });
-                }}
-              />
-            }
-          />
+                    organizationForm.setData("organization", {
+                      ...organizationForm.data.organization,
+                      address: {
+                        ...organizationForm.data.organization.address,
+                        city: e.target.value,
+                      },
+                    });
+                  }}
+                />
+              }
+            />
+          </div>
         </div>
         {type === IntegrationType.UiTPAS && (
-          <>
-            <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-3">
+            <div>
               <Heading level={5} className="font-semibold">
                 {t("integrations.activation_dialog.uitpas.organizers.title")}
               </Heading>
@@ -273,7 +275,7 @@ export const ActivationDialog = ({
                 organizationForm.setData("organizers", organizers)
               }
             />
-          </>
+          </div>
         )}
         {isBillingInfoAndPriceOverviewVisible && (
           <>
