@@ -16,11 +16,11 @@ export const Tooltip = ({ visible, text, children, className }: Props) => {
           {children}
           <div
             className={classNames(
-              "absolute top-full left-1.5 z-20 mt-3 -translate-x-1/2 whitespace-nowrap rounded bg-publiq-blue-dark py-[6px] px-4 text-sm font-semibold text-gray-100",
+              "absolute top-full left-1.5 mt-3 -translate-x-1/2 whitespace-nowrap rounded bg-publiq-blue-dark py-[6px] px-4 text-sm font-semibold text-gray-100",
               visible ? "visible" : "hidden"
             )}
           >
-            <span className="absolute top-[1px] left-1/2 -z-10 h-2 w-2 -translate-y-1/2 max-md:-translate-x-1/2 rotate-45 rounded-sm bg-publiq-blue-dark"></span>
+            <span className="absolute top-[1px] left-1/2 h-2 w-2 -translate-y-1/2 max-md:-translate-x-1/2 rotate-45 rounded-sm bg-publiq-blue-dark"></span>
             {text}
           </div>
         </div>

@@ -57,12 +57,10 @@ const OrganizersSection = ({
         {sectionName}
       </Heading>
       <div className="gap-0">
-        {organizers.map((organizer) => (
+        {organizers.map((organizer, index) => (
           <Card
             key={organizer.id}
-            className={
-              "m-0 drop-shadow-none border border-gray-200 border-t-0 first:border-t"
-            }
+            className={`m-0 drop-shadow-none border border-gray-200 border-t-0 first:border-t z-[${organizers.length - index}]`}
           >
             <div className="grid grid-cols-[1fr,1fr,100px] gap-x-4 items-center">
               <Heading
