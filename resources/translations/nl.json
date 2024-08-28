@@ -274,7 +274,8 @@
       "client_id": "Client id",
       "client_secret": "Client secret",
       "api_key": "API Key",
-      "info": "Deze credentials blijven nog {{amount}} geldig en worden definitief verwijderd op {{date}}."
+      "info": "Deze credentials blijven nog {{amount}} geldig en worden definitief verwijderd op {{date}}.",
+      "waiting": "Na aanmaak van je integratie kan het momenteel nog tot enkele dagen duren voor je de UiTPAS API kan aanspreken. Je ontvangt een mailtje van ons wanneer je rechten zijn toegekend."
     },
     "integration_settings": {
       "title": "Instellingen",
