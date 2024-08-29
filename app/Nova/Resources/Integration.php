@@ -300,7 +300,7 @@ final class Integration extends Resource
 
             (new CreateMissingUiTiDv1Consumers())
                 ->withName('Create missing UiTiD v1 Consumers')
-                ->exceptOnIndex()
+                ->onlyOnDetail()
                 ->confirmText('Are you sure you want to create missing UiTiD v1 consumers for this integration?')
                 ->confirmButtonText('Create')
                 ->cancelButtonText('Cancel')
@@ -311,7 +311,7 @@ final class Integration extends Resource
         if (config(Auth0Config::IS_ENABLED)) {
             $actions[] = (new CreateMissingAuth0Clients())
                 ->withName('Create missing Auth0 Clients')
-                ->exceptOnIndex()
+                ->onlyOnDetail()
                 ->confirmText('Are you sure you want to create missing Auth0 clients for this integration?')
                 ->confirmButtonText('Create')
                 ->cancelButtonText('Cancel')
@@ -322,7 +322,7 @@ final class Integration extends Resource
         if (config(KeycloakConfig::KEYCLOAK_CREATION_ENABLED)) {
             $actions[] = (new CreateMissingKeycloakClients())
                 ->withName('Create missing Keycloak clients')
-                ->exceptOnIndex()
+                ->onlyOnDetail()
                 ->confirmText('Are you sure you want to create missing Keycloak clients for this integration?')
                 ->confirmButtonText('Create')
                 ->cancelButtonText('Cancel')
