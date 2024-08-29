@@ -55,6 +55,13 @@ final class Integration extends Resource
         'created_at' => 'desc',
     ];
 
+    public static $with = [
+        'uiTiDv1Consumers',
+        'auth0Clients',
+        'keycloakClients',
+        'subscription',
+    ];
+
     public static function searchableColumns(): array
     {
         $output = [
