@@ -16,7 +16,6 @@ use Auth0\SDK\Contract\API\ManagementInterface;
 use Illuminate\Support\Facades\Log;
 use Psr\Http\Message\ResponseInterface;
 use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidInterface;
 
 final class Auth0TenantSDK
 {
