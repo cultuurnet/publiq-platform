@@ -76,14 +76,15 @@ export const IntegrationCard = ({
   const { t } = useTranslation();
 
   const integrationTypesInfo = useIntegrationTypesInfo();
-  const hasAnyCredentials = Boolean(
-    legacyTestConsumer ||
-      legacyProdConsumer ||
-      testClient ||
-      prodClient ||
-      keycloakProdClient ||
-      keycloakProdClient
-  );
+
+  const hasAnyCredentials = [
+    legacyTestConsumer,
+    legacyProdConsumer,
+    testClient,
+    prodClient,
+    keycloakTestClient,
+    keycloakProdClient,
+  ].some(Boolean);
 
   usePolling(!hasAnyCredentials, { only: ["credentials"] });
   const CardIcon = integrationTypesInfo.find((i) => i.type === type)?.Icon as

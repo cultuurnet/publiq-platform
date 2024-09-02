@@ -47,29 +47,29 @@ export const IntegrationClientCredentials = ({
 }) => {
   const { t } = useTranslation();
   const { config } = usePageProps();
-  const keycloakEnabled = config.keycloakEnabled;
 
-  const clientWithLabels = keycloakEnabled
-    ? [
-        {
-          label: "details.credentials.client_id",
-          value: keycloakClient?.clientId,
-        },
-        {
-          label: "details.credentials.client_secret",
-          value: keycloakClient?.clientSecret,
-        },
-      ]
-    : [
-        {
-          label: "details.credentials.client_id",
-          value: client?.clientId,
-        },
-        {
-          label: "details.credentials.client_secret",
-          value: client?.clientSecret,
-        },
-      ];
+  const clientWithLabels =
+    config.keycloak.enabled || (!isLive && config.keycloak.testClientEnabled)
+      ? [
+          {
+            label: "details.credentials.client_id",
+            value: keycloakClient?.clientId,
+          },
+          {
+            label: "details.credentials.client_secret",
+            value: keycloakClient?.clientSecret,
+          },
+        ]
+      : [
+          {
+            label: "details.credentials.client_id",
+            value: client?.clientId,
+          },
+          {
+            label: "details.credentials.client_secret",
+            value: client?.clientSecret,
+          },
+        ];
 
   return (
     <>
