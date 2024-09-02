@@ -221,12 +221,12 @@
       "new": "Nieuwe medewerker",
       "delete_dialog": {
         "title": "Contact verwijderen",
-        "question": "Ben je zeker dat je het contact met e-mailadres {{email}} wilt verwijderen?"
+        "question": "Ben je zeker dat je het contact met e-mailadres {{email}} wilt verwijderen? Eens verwijderd heeft een contact geen toegang meer tot de integratie."
       },
       "edit_dialog": "Contact bewerken",
       "alert": {
         "title": "Gevarenzone",
-        "description": "Contacten kunnen de integratie aanpassen, activeren en verwijderen. Eens verwijderd heeft een contact geen toegang meer tot de integratie."
+        "description": "Contacten kunnen de integratie aanpassen, activeren en verwijderen."
       }
     },
     "organizers_info": {
