@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace App\Console\Commands\UiTPAS;
 
+use App\Auth0\Auth0Client;
+use App\Auth0\Auth0ClusterSDK;
+use App\Auth0\Auth0Tenant;
+use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Console\Commands\ReadCsvFile;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Integrations\Integration;
@@ -32,6 +36,8 @@ final class MigrateUiTPAS extends Command
         private readonly IntegrationRepository $integrationRepository,
         private readonly SubscriptionRepository $subscriptionRepository,
         private readonly ContactRepository $contactRepository,
+        private readonly Auth0ClusterSDK $auth0ClusterSDK,
+        private readonly Auth0ClientRepository $auth0ClientRepository
     ) {
         parent::__construct();
     }
@@ -64,6 +70,8 @@ final class MigrateUiTPAS extends Command
             $this->migrateIntegration($integrationId, $uitpasIntegration);
 
             $this->migrateContacts($integrationId, $uitpasIntegration);
+
+            $this->migrateAuth0Clients($integrationId, $uitpasIntegration);
 
             $this->info($integrationId . ' - Ended importing project ' . $uitpasIntegration->name());
             $this->info('---');
@@ -104,6 +112,33 @@ final class MigrateUiTPAS extends Command
 
         foreach ($contacts as $contact) {
             $this->contactRepository->save($contact);
+        }
+    }
+
+    private function migrateAuth0Clients(UuidInterface $integrationId, UiTPASIntegration $uitpasIntegration): void
+    {
+        $auth0Tenants = [Auth0Tenant::Testing, Auth0Tenant::Production];
+
+        foreach ($auth0Tenants as $auth0Tenant) {
+            $clientId = $uitpasIntegration->clientIdForTenant($auth0Tenant);
+            if (empty($clientId)) {
+                $this->warn('No client ID for ' . $auth0Tenant->value . ' tenant');
+                continue;
+            }
+
+            $auth0TenantSDK = $this->auth0ClusterSDK->getTenantSDK($auth0Tenant);
+
+            $testCredentials = $auth0TenantSDK->getClientSecret($clientId);
+
+            $auth0Client = new Auth0Client(
+                Uuid::uuid4(),
+                $integrationId,
+                $clientId,
+                $testCredentials,
+                $auth0Tenant
+            );
+
+            $this->auth0ClientRepository->save($auth0Client);
         }
     }
 }
