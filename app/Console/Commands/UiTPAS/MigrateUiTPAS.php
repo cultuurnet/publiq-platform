@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands\UiTPAS;
 
 use App\Console\Commands\ReadCsvFile;
+use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationType;
@@ -30,6 +31,7 @@ final class MigrateUiTPAS extends Command
     public function __construct(
         private readonly IntegrationRepository $integrationRepository,
         private readonly SubscriptionRepository $subscriptionRepository,
+        private readonly ContactRepository $contactRepository,
     ) {
         parent::__construct();
     }
@@ -60,6 +62,8 @@ final class MigrateUiTPAS extends Command
             $this->info($integrationId . ' - Started importing project ' . $uitpasIntegration->name());
 
             $this->migrateIntegration($integrationId, $uitpasIntegration);
+
+            $this->migrateContacts($integrationId, $uitpasIntegration);
 
             $this->info($integrationId . ' - Ended importing project ' . $uitpasIntegration->name());
             $this->info('---');
@@ -92,5 +96,14 @@ final class MigrateUiTPAS extends Command
         IntegrationModel::query()->where('id', '=', $integrationId)->update([
             'migrated_at' => Carbon::now(),
         ]);
+    }
+
+    private function migrateContacts(UuidInterface $integrationId, UiTPASIntegration $uitpasIntegration): void
+    {
+        $contacts = $uitpasIntegration->contacts($integrationId);
+
+        foreach ($contacts as $contact) {
+            $this->contactRepository->save($contact);
+        }
     }
 }

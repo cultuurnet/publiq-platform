@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace App\Console\Commands\UiTPAS;
 
+use App\Domain\Contacts\Contact;
+use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\Website;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 final class UiTPASIntegration
 {
@@ -43,5 +47,53 @@ final class UiTPASIntegration
     public function website(): Website
     {
         return new Website($this->integrationAsArray[5]);
+    }
+
+    /**
+     * @return array<Contact>
+     */
+    public function contacts(UuidInterface $integrationId): array
+    {
+        $contacts = [];
+
+        $contacts[] = new Contact(
+            id: Uuid::uuid4(),
+            integrationId: $integrationId,
+            email: $this->integrationAsArray[6],
+            type: ContactType::Functional,
+            firstName: $this->integrationAsArray[7],
+            lastName: $this->integrationAsArray[8]
+        );
+
+        $contacts[] = new Contact(
+            id: Uuid::uuid4(),
+            integrationId: $integrationId,
+            email: $this->integrationAsArray[9],
+            type: ContactType::Technical,
+            firstName: $this->integrationAsArray[10],
+            lastName: $this->integrationAsArray[11]
+        );
+
+        $contacts[] = new Contact(
+            id: Uuid::uuid4(),
+            integrationId: $integrationId,
+            email: $this->integrationAsArray[12],
+            type: ContactType::Contributor,
+            firstName: $this->integrationAsArray[13],
+            lastName: $this->integrationAsArray[14]
+        );
+
+        if (!empty($this->integrationAsArray[15])) {
+            $contacts[] = new Contact(
+                id: Uuid::uuid4(),
+                integrationId: $integrationId,
+                email: $this->integrationAsArray[15],
+                type: ContactType::Contributor,
+                firstName: $this->integrationAsArray[16],
+                lastName: $this->integrationAsArray[17]
+            );
+        }
+
+        return $contacts;
     }
 }
