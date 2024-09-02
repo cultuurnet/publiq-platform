@@ -273,7 +273,8 @@
       "uitid_alert_link": "https://docs.publiq.be/docs/authentication/methods/overview",
       "action_status": "Request activation",
       "action_uitid": "Request client credentials",
-      "info": "These credentials remain valid for another {{amount}} and will be permanently deleted on {{date}}"
+      "info": "These credentials remain valid for another {{amount}} and will be permanently deleted on {{date}}",
+      "waiting": "After creating your integration, it can currently take up to a few days before you can call the UiTPAS API. You will receive an email from us when your rights have been granted."
     },
     "integration_settings": {
       "title": "Settings",

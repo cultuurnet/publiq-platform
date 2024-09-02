@@ -17,9 +17,9 @@ createInertiaApp<PageProps>({
     const config = props.initialPage.props.config;
 
     Sentry.init({
-      dsn: config.sentryDsn,
+      dsn: config.sentry.dsn,
       environment: config.env,
-      enabled: config.sentryEnabled,
+      enabled: config.sentry.enabled,
     });
 
     initializeI18n().then(() => {
