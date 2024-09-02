@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Console\Commands\UiTPAS;
 
-use App\Console\Commands\Migrations\MigrationProject;
 use App\Console\Commands\ReadCsvFile;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
@@ -80,7 +79,7 @@ final class MigrateUiTPAS extends Command
             $integrationId,
             IntegrationType::UiTPAS,
             $uiTPASIntegration->name(),
-            $uiTPASIntegration->description() !== null ? $uiTPASIntegration->description() : '',
+            $uiTPASIntegration->description(),
             $subscriptionId,
             $uiTPASIntegration->status(),
             IntegrationPartnerStatus::THIRD_PARTY,
