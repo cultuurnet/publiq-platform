@@ -3,7 +3,6 @@ import { Heading } from "../../Heading";
 import { Trans, useTranslation } from "react-i18next";
 import { StatusLight } from "../../StatusLight";
 import { ButtonPrimary } from "../../ButtonPrimary";
-import { CopyText } from "../../CopyText";
 import { ActivationFlow } from "../../ActivationFlow";
 import { IntegrationStatus } from "../../../types/IntegrationStatus";
 import type { Credentials } from "./Credentials";
@@ -12,7 +11,7 @@ import { KeyVisibility } from "../../../types/KeyVisibility";
 import { router } from "@inertiajs/react";
 import { Link } from "../../Link";
 import { Alert } from "../../Alert";
-import { usePageProps } from "../../../hooks/usePageProps";
+import { IntegrationClientCredentials } from "../../IntegrationClientCredential";
 
 type Props = Pick<
   Integration,
@@ -131,22 +130,13 @@ export const CredentialsAuthClients = ({
             <Heading className="font-semibold flex min-w-[5rem]" level={4}>
               {t("details.credentials.test")}
             </Heading>
-            {testClientWithLabels.map((client) => (
-              <div
-                key={`${client.label}-${client.value}`}
-                className="flex gap-1 max-md:flex-col max-md:items-start"
-              >
-                <span className="flex items-center whitespace-nowrap">
-                  {t(client.label)}
-                </span>
-                {client.value && (
-                  <CopyText
-                    isSecret={t(client.label) === clientSecretLabel}
-                    text={client.value}
-                  />
-                )}
-              </div>
-            ))}
+            <IntegrationClientCredentials
+              client={testClient}
+              keycloakClient={keycloakTestClient}
+              status={status}
+              type={type}
+              isLive={false}
+            />
           </div>
           <div className="flex flex-col gap-2">
             <Heading className="font-semibold min-w-[5rem]" level={4}>
@@ -155,22 +145,13 @@ export const CredentialsAuthClients = ({
             <StatusLight status={status} />
             {status === IntegrationStatus.Active && (
               <div className="flex flex-col gap-3">
-                {prodClientWithLabels.map((client) => (
-                  <div
-                    key={`${client.label}-${client.value}`}
-                    className="flex gap-1 max-md:flex-col max-md:items-start"
-                  >
-                    <span className="flex items-center whitespace-nowrap">
-                      {t(client.label)}
-                    </span>
-                    {client.value && (
-                      <CopyText
-                        isSecret={t(client.label) === clientSecretLabel}
-                        text={client.value}
-                      />
-                    )}
-                  </div>
-                ))}
+                <IntegrationClientCredentials
+                  client={prodClient}
+                  keycloakClient={keycloakProdClient}
+                  status={status}
+                  type={type}
+                  isLive={true}
+                />
               </div>
             )}
             <div className="flex flex-col gap-3 align-center">
