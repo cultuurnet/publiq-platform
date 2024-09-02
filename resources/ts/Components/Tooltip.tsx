@@ -16,7 +16,7 @@ export const Tooltip = ({ visible, text, children, className }: Props) => {
           {children}
           <div
             className={classNames(
-              "absolute top-full left-1.5 mt-3 -translate-x-1/2 whitespace-nowrap rounded bg-publiq-blue-dark py-[6px] px-4 text-sm font-semibold text-gray-100",
+              "absolute top-full left-0.5 mt-3 -translate-x-1/2 whitespace-nowrap rounded bg-publiq-blue-dark py-[6px] px-4 text-sm font-semibold text-gray-100",
               visible ? "visible" : "hidden"
             )}
           >
