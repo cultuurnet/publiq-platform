@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Console\Commands\UiTPAS;
 
+use App\Auth0\Auth0Tenant;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\Website;
+use InvalidArgumentException;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
@@ -47,6 +49,15 @@ final class UiTPASIntegration
     public function website(): Website
     {
         return new Website($this->integrationAsArray[5]);
+    }
+
+    public function clientIdForTenant(Auth0Tenant $auth0Tenant): string
+    {
+        return match ($auth0Tenant) {
+            Auth0Tenant::Acceptance => throw new InvalidArgumentException('No client ID for acceptance tenant'),
+            Auth0Tenant::Testing => $this->integrationAsArray[2],
+            Auth0Tenant::Production => $this->integrationAsArray[3],
+        };
     }
 
     /**
