@@ -17,8 +17,7 @@
     "integrations": "My integrations",
     "opportunities": "Solutions",
     "support": "Support",
-    "hello": "Hello",
-    "integrations/new": "Add integration"
+    "hello": "Hello"
   },
   "pricing_plan": {
     "free": {
