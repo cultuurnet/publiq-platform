@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Console\Commands\Migrations;
+namespace App\Console\Commands;
 
 trait ReadCsvFile
 {
