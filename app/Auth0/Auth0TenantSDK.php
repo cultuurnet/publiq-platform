@@ -16,6 +16,7 @@ use Auth0\SDK\Contract\API\ManagementInterface;
 use Illuminate\Support\Facades\Log;
 use Psr\Http\Message\ResponseInterface;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 final class Auth0TenantSDK
 {
@@ -93,6 +94,15 @@ final class Auth0TenantSDK
         $this->guardResponseStatus(201, $grantResponse);
 
         return new Auth0Client(Uuid::uuid4(), $integration->id, $clientId, $clientSecret, $this->auth0Tenant);
+    }
+
+    public function getClientSecret(string $clientId): string
+    {
+        $response = $this->management->clients()->get($clientId);
+
+        $client = Json::decodeAssociatively($response->getBody()->getContents());
+
+        return $client['client_secret'];
     }
 
     public function updateClient(Integration $integration, Auth0Client $auth0Client): void
