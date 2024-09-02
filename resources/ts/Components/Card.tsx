@@ -94,7 +94,7 @@ export const Card = ({
   return (
     <div
       className={classNames(
-        "w-full flex flex-col overflow-hidden drop-shadow-card",
+        "w-full flex flex-col overflow-visible drop-shadow-card relative",
         img && "px-0 py-0 max-lg:gap-3 p-0",
         !headless ? backgroundColor : "",
         !border && "px-6 py-6",
