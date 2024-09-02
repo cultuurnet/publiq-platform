@@ -66,6 +66,8 @@ module.exports = {
         "alert-info-dark": "#3868EC",
         "alert-error": "#FAE5E3",
         "alert-error-dark": "#DD5242",
+        "alert-warning": "#FCF0CB",
+        "alert-warning-dark": "#E69336",
       },
       textColor: ({ theme }) => theme("colors.publiq-gray.900"),
       fontFamily: {
