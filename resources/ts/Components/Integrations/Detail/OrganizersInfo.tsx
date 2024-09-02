@@ -15,6 +15,7 @@ import { Dialog } from "../../Dialog";
 import { ButtonSecondary } from "../../ButtonSecondary";
 import { OrganizersDatalist } from "./OrganizersDatalist";
 import type { UiTPASOrganizer } from "../../../types/UiTPASOrganizer";
+import { classNames } from "../../../utils/classNames";
 
 type Props = Integration & { organizers: Organizer[] };
 
@@ -57,47 +58,39 @@ const OrganizersSection = ({
         {sectionName}
       </Heading>
       <div className="gap-0">
-        {organizers.map((organizer) => (
+        {organizers.map((organizer, index) => (
           <Card
             key={organizer.id}
-            className={
-              "m-0 drop-shadow-none border border-gray-200 border-t-0 first:border-t"
-            }
+            className={`m-0 drop-shadow-none border border-gray-200 border-t-0 first:border-t z-[${organizers.length - index}]`}
           >
-            <div className="grid grid-cols-[1fr,1fr,100px] gap-x-4 items-center">
-              <Heading
-                level={5}
-                className={"font-semibold text-publiq-gray-600"}
-              >
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2 md:gap-4">
+              <Heading level={5} className="font-semibold text-publiq-gray-600">
                 {organizer.name[i18n.language]}
               </Heading>
-              <div>
+              <div className="flex-shrink-0 flex max-sm:flex-col gap-4">
                 <CopyText text={organizer.id} />
+                <ButtonIcon
+                  data-testid={organizer.name[i18n.language]}
+                  icon={faTrash}
+                  className={classNames(
+                    sectionName !== "Live" && "invisible max-sm:hidden",
+                    "text-icon-gray"
+                  )}
+                  onClick={() => setToBeDeletedId(organizer.id)}
+                />
               </div>
-              {sectionName === "Live" && (
-                <div>
-                  <ButtonIcon
-                    data-testid={organizer.name[i18n.language]}
-                    icon={faTrash}
-                    className="text-icon-gray"
-                    onClick={() => setToBeDeletedId(organizer.id)}
-                  />
-                </div>
-              )}
             </div>
           </Card>
         ))}
       </div>
-      <div className="grid lg:grid-cols-3">
-        {sectionName === "Live" && (
-          <ButtonPrimary
-            className="col-span-1"
-            onClick={() => setIsModalVisible(true)}
-          >
-            {t("details.organizers_info.add")}
-          </ButtonPrimary>
-        )}
-      </div>
+      {sectionName === "Live" && (
+        <ButtonPrimary
+          className="self-start"
+          onClick={() => setIsModalVisible(true)}
+        >
+          {t("details.organizers_info.add")}
+        </ButtonPrimary>
+      )}
       <QuestionDialog
         isVisible={!!toBeDeletedId}
         onClose={() => {
