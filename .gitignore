@@ -17,6 +17,7 @@ yarn-error.log
 /.vscode
 .php-cs-fixer.cache
 database/project-aanvraag
+database/uitpas
 .phpunit.cache
 /test-results/
 /playwright-report/
