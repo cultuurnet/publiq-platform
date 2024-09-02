@@ -12,16 +12,18 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-type Variant = "error" | "success" | "info";
+type Variant = "error" | "success" | "info" | "warning";
 
 const variantToAlertStyle: Record<Variant, string> = {
   error: "bg-alert-error border border-alert-error-dark",
   success: "bg-alert-success border border-alert-success-dark",
   info: "bg-alert-info border border-alert-info-dark",
+  warning: "bg-alert-warning border border-alert-warning-dark",
 };
 
 const variantToIcon: Record<Variant, IconDefinition> = {
   error: faTriangleExclamation,
+  warning: faTriangleExclamation,
   success: faCircleCheck,
   info: faBell,
 };
@@ -30,12 +32,14 @@ const variantToIconColor: Record<Variant, string> = {
   error: "text-alert-error-dark",
   success: "text-alert-success-dark",
   info: "text-alert-info-dark",
+  warning: "text-alert-warning-dark",
 };
 
 const variantToHeadingStyle: Record<Variant, string> = {
   error: "text-publiq-gray",
   success: "text-publiq-gray",
   info: "text-publiq-gray",
+  warning: "text-publiq-gray",
 };
 
 type Props = ComponentProps<"div"> & {
