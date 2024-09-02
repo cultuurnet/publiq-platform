@@ -26,7 +26,6 @@ export default function Navigation({
 
   const pages = [
     { component: "Integrations/Index", title: "integrations" },
-    { component: "Integrations/New", title: "integrations/new" },
     { component: "Support/Index", title: "support" },
   ];
 
