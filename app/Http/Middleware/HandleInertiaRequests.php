@@ -27,10 +27,17 @@ final class HandleInertiaRequests extends Middleware
         return array_merge(parent::share($request), [
             'config' => [
                 'env' => config('app.env'),
-                'sentryDsn' => config('sentry.dsn'),
-                'sentryEnabled' => config('app.sentry.enabled'),
-                'uitpasEnabled' => config('uitpas.enabled'),
-                'keycloakEnabled' => config('keycloak.enabled'),
+                'sentry' => [
+                    'dsn' => config('sentry.dsn'),
+                    'enabled' => config('app.sentry.enabled'),
+                ],
+                'uitpas' => [
+                    'enabled' => config('uitpas.enabled'),
+                ],
+                'keycloak' => [
+                    'enabled' => config('keycloak.enabled'),
+                    'testClientEnabled' => config('keycloak.testClientEnabled'),
+                ],
             ],
             'widgetConfig' => [
                 'url' => config('uitidwidget.url'),

@@ -8,6 +8,7 @@ return [
     'enabled' => env('KEYCLOAK_ENABLED', false),
     'loginEnabled' => env('KEYCLOAK_LOGIN_ENABLED', false),
     'creationEnabled' => env('KEYCLOAK_CREATION_ENABLED', false),
+    'testClientEnabled' => env('KEYCLOAK_TEST_CLIENT_ENABLED', false),
     'login' => [
         'strategy' => env('AUTH0_LOGIN_STRATEGY', SdkConfiguration::STRATEGY_REGULAR),
         'domain' => env('KEYCLOAK_LOGIN_DOMAIN'),

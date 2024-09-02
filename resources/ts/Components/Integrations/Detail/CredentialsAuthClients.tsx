@@ -39,6 +39,7 @@ export const CredentialsAuthClients = ({
 }: Props) => {
   const { t } = useTranslation();
   const isKeyVisibilityV1 = keyVisibility === KeyVisibility.v1;
+
   const handleKeyVisibilityUpgrade = () =>
     router.post(`/integrations/${id}/upgrade`, {
       keyVisibility: KeyVisibility.v2,
