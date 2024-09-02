@@ -38,55 +38,7 @@ export const CredentialsAuthClients = ({
   keyVisibilityUpgrade,
 }: Props) => {
   const { t } = useTranslation();
-  const { config } = usePageProps();
   const isKeyVisibilityV1 = keyVisibility === KeyVisibility.v1;
-
-  const testClientWithLabels =
-    config.keycloak.enabled || config.keycloak.testClientEnabled
-      ? [
-          {
-            label: "details.credentials.client_id",
-            value: keycloakTestClient?.clientId,
-          },
-          {
-            label: "details.credentials.client_secret",
-            value: keycloakTestClient?.clientSecret,
-          },
-        ]
-      : [
-          {
-            label: "details.credentials.client_id",
-            value: testClient?.clientId,
-          },
-          {
-            label: "details.credentials.client_secret",
-            value: testClient?.clientSecret,
-          },
-        ];
-
-  const prodClientWithLabels = config.keycloak.enabled
-    ? [
-        {
-          label: "details.credentials.client_id",
-          value: keycloakProdClient?.clientId,
-        },
-        {
-          label: "details.credentials.client_secret",
-          value: keycloakProdClient?.clientSecret,
-        },
-      ]
-    : [
-        {
-          label: "details.credentials.client_id",
-          value: prodClient?.clientId,
-        },
-        {
-          label: "details.credentials.client_secret",
-          value: prodClient?.clientSecret,
-        },
-      ];
-
-  const clientSecretLabel = t("details.credentials.client_secret");
 
   const handleKeyVisibilityUpgrade = () =>
     router.post(`/integrations/${id}/upgrade`, {
