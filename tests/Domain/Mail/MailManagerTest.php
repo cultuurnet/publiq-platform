@@ -2,19 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Tests\Mails;
+namespace Domain\Mail;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Events\IntegrationActivated;
+use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Domain\Mail\Addresses;
 use App\Domain\Mail\Mailer;
-use App\Mails\Addresses;
-use App\Mails\MailManager;
+use App\Domain\Mail\MailManager;
 use PHPUnit\Framework\MockObject\MockObject;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Mime\Address;
@@ -23,6 +24,7 @@ use Tests\TestCase;
 final class MailManagerTest extends TestCase
 {
     private const INTEGRATION_ID = '9e6d778f-ef44-45b3-b842-26b6d71bcad7';
+    private const TEMPLATE_BLOCKED_ID = 456;
     private const TEMPLATE_ACTIVATED_ID = 123;
     private MailManager $mailManager;
     private Mailer&MockObject $mailer;
@@ -41,7 +43,8 @@ final class MailManagerTest extends TestCase
             $this->mailer,
             $integrationRepository,
             self::TEMPLATE_ACTIVATED_ID,
-            'http://www.example.com/'
+            self::TEMPLATE_BLOCKED_ID,
+            'http://www.example.com'
         );
 
         // @todo Let add all types of contacts here, it might be the case that we only sent the email to specific type of contacts
@@ -148,12 +151,18 @@ final class MailManagerTest extends TestCase
                 'templateId' => self::TEMPLATE_ACTIVATED_ID,
                 'subject' => 'Publiq platform - Integration activated',
                 'expectedParameters' => [
-                    'firstName' => 'Grote',
-                    'lastName' => 'Smurf',
-                    'contactType' => 'technical',
-                    'url' => 'http://www.example.com//nl/integraties/' . self::INTEGRATION_ID,
+                    'url' => 'http://www.example.com/nl/integraties/' . self::INTEGRATION_ID,
                     'integrationName' => 'Mock Integration',
                     'type' => 'search-api',
+                ],
+            ],
+            'IntegrationBlocked' => [
+                'event' => new IntegrationBlocked(Uuid::fromString(self::INTEGRATION_ID)),
+                'method' => 'sendIntegrationBlockedMail',
+                'templateId' => self::TEMPLATE_BLOCKED_ID,
+                'subject' => 'Publiq platform - Integration blocked',
+                'expectedParameters' => [
+                    'integrationName' => 'Mock Integration',
                 ],
             ],
         ];
