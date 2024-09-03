@@ -46,7 +46,7 @@ final readonly class MailjetMailer implements Mailer
 
         if (!$response->success()) {
             $this->logger->debug((string)json_encode($response->getData(), JSON_THROW_ON_ERROR));
-            throw new MailNotSend($response->getReasonPhrase());
+            throw new MailNotSend($response->getReasonPhrase(), $variables);
         }
 
         $this->logger->info(

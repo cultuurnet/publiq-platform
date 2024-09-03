@@ -6,8 +6,13 @@ namespace App\Domain\Mail;
 
 final class MailNotSend extends \DomainException
 {
-    public function __construct(string $reason = null)
+    public function __construct(?string $reason = null, ?array $variables = null)
     {
-        parent::__construct(sprintf('Failed to sent mail: %s', $reason ?? 'Unknown reason'));
+        $reason = $reason ?? 'Unknown reason';
+        $message = $variables === null
+            ? sprintf('Failed to send mail: %s', $reason)
+            : sprintf('Failed to send mail: %s with params: %s', $reason, json_encode($variables, JSON_THROW_ON_ERROR));
+
+        parent::__construct($message);
     }
 }
