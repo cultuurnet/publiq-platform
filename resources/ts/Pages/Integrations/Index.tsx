@@ -20,6 +20,7 @@ import type { Credentials } from "../../types/Credentials";
 import type { Integration } from "../../types/Integration";
 import { router } from "@inertiajs/react";
 import { KeycloakEnvironment } from "../../types/KeycloakEnvironment";
+import { WelcomeSection } from "../../Components/WelcomeSection";
 
 type Props = {
   integrations: Integration[];
@@ -121,27 +122,31 @@ const Index = ({ integrations, paginationInfo, credentials }: Props) => {
           {t("integrations.add")}
         </ButtonLink>
       </div>
-      <div className="inline-flex self-start">
-        {t("integrations.results_found", {
-          count: paginationInfo.totalItems,
-        })}
-      </div>
+
+      {integrations.length === 0 && <WelcomeSection />}
       {integrations.length > 0 && (
-        <ul className="flex flex-col w-full gap-9">
-          {integrationsWithCredentials.map(
-            ({ credentials, ...integration }) => (
-              <li className="flex w-full" key={integration.id}>
-                <IntegrationCard
-                  {...integration}
-                  {...credentials}
-                  onEdit={(id) =>
-                    router.get(`${translateRoute("/integrations")}/${id}`)
-                  }
-                />
-              </li>
-            )
-          )}
-        </ul>
+        <>
+          <div className="inline-flex self-start">
+            {t("integrations.results_found", {
+              count: paginationInfo.totalItems,
+            })}
+          </div>
+          <ul className="flex flex-col w-full gap-9">
+            {integrationsWithCredentials.map(
+              ({ credentials, ...integration }) => (
+                <li className="flex w-full" key={integration.id}>
+                  <IntegrationCard
+                    {...integration}
+                    {...credentials}
+                    onEdit={(id) =>
+                      router.get(`${translateRoute("/integrations")}/${id}`)
+                    }
+                  />
+                </li>
+              )
+            )}
+          </ul>
+        </>
       )}
 
       <Pagination links={paginationInfo.links} />
