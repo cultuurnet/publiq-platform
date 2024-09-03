@@ -1,9 +1,10 @@
-import { ComponentProps, useMemo } from "react";
+import type { ComponentProps} from "react";
+import { useMemo } from "react";
 import React from "react";
 import { classNames } from "../utils/classNames";
 import { Heading } from "./Heading";
 import { useTranslation } from "react-i18next";
-import { TFunction } from "i18next";
+import type { TFunction } from "i18next";
 import { IconEntryApi } from "./icons/IconEntryApi";
 import { IconSearchApi } from "./icons/IconSearchApi";
 import { IconWidgets } from "./icons/IconWidgets";

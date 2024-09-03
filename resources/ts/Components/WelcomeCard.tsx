@@ -1,7 +1,7 @@
 import React from "react";
 import { Heading } from "./Heading";
 import { ButtonLinkSecondary } from "./ButtonLinkSecondary";
-import { WelcomeIntegrationType } from "./WelcomeSection";
+import type { WelcomeIntegrationType } from "./WelcomeSection";
 import { useTranslation } from "react-i18next";
 import { Link } from "./Link";
 
