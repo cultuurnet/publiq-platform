@@ -70,6 +70,7 @@ const OrganizersSection = ({
               <div className="flex-shrink-0 flex max-sm:flex-col gap-4">
                 <CopyText text={organizer.id} />
                 <ButtonIcon
+                  data-testid={organizer.name[i18n.language]}
                   icon={faTrash}
                   className={classNames(
                     sectionName !== "Live" && "invisible max-sm:hidden",
