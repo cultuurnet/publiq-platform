@@ -6,9 +6,9 @@ namespace App\Domain\Integrations\Exceptions;
 
 use App\Domain\Integrations\Integration;
 use App\Domain\Subscriptions\Subscription;
-use Exception;
+use RuntimeException;
 
-final class InconsistentIntegrationTypeException extends Exception
+final class InconsistentIntegrationTypeException extends RuntimeException
 {
     public function __construct(Integration $integration, Subscription $subscription)
     {
