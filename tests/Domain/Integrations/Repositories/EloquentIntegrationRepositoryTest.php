@@ -9,6 +9,7 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
+use App\Domain\Integrations\Exceptions\InconsistentIntegrationTypeException;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
@@ -20,6 +21,10 @@ use App\Domain\Integrations\Repositories\EloquentUdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizers;
 use App\Domain\Integrations\Website;
+use App\Domain\Subscriptions\Currency;
+use App\Domain\Subscriptions\Repositories\EloquentSubscriptionRepository;
+use App\Domain\Subscriptions\Subscription;
+use App\Domain\Subscriptions\SubscriptionCategory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
@@ -31,6 +36,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
     use RefreshDatabase;
 
     private EloquentIntegrationRepository $integrationRepository;
+    private EloquentSubscriptionRepository $subscriptionRepository;
 
     protected function setUp(): void
     {
@@ -39,6 +45,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         $this->integrationRepository = new EloquentIntegrationRepository(
             new EloquentUdbOrganizerRepository()
         );
+        $this->subscriptionRepository = new EloquentSubscriptionRepository();
     }
 
     public function test_it_can_save_an_integration(): void
@@ -592,7 +599,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
 
         $integrationId = Uuid::uuid4();
 
-        $searchIntegration = new Integration(
+        $integration = new Integration(
             $integrationId,
             IntegrationType::UiTPAS,
             'First party integration',
@@ -601,13 +608,51 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::FIRST_PARTY,
         );
-        $searchIntegration = $searchIntegration->withKeyVisibility(KeyVisibility::v1);
+        $integration = $integration->withKeyVisibility(KeyVisibility::v1);
 
-        $this->integrationRepository->save($searchIntegration);
+        $this->integrationRepository->save($integration);
 
         $this->assertDatabaseHas('integrations', [
             'id' => $integrationId,
             'key_visibility' => 'v2',
         ]);
+    }
+
+    public function test_it_can_not_save_integration_with_subscription_with_different_integration_type(): void
+    {
+
+        $subscriptionId = Uuid::uuid4();
+
+        $searchSubscription = new Subscription(
+            $subscriptionId,
+            'Basic Plan',
+            'Basic Plan description',
+            SubscriptionCategory::Basic,
+            IntegrationType::SearchApi,
+            Currency::EUR,
+            14.99,
+            99.99
+        );
+
+        $uitpasIntegration = new Integration(
+            Uuid::uuid4(),
+            IntegrationType::UiTPAS,
+            'First party integration',
+            'First party integration',
+            $subscriptionId,
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::FIRST_PARTY,
+        );
+
+
+
+        $this->subscriptionRepository->save($searchSubscription);
+
+        $uitpasIntegration = $uitpasIntegration->withSubscription($searchSubscription);
+
+        $this->assertThrows(
+            fn () => $this->integrationRepository->save($uitpasIntegration),
+            InconsistentIntegrationTypeException::class
+        );
     }
 }
