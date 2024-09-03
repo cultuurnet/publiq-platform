@@ -11,7 +11,13 @@ use Ramsey\Uuid\UuidInterface;
 
 interface IntegrationRepository
 {
+    /**
+     * @throws InconsistentIntegrationTypeException
+     */
     public function save(Integration $integration): void;
+    /**
+     * @throws InconsistentIntegrationTypeException
+     */
     public function saveWithCoupon(Integration $integration, string $couponCode): void;
     public function update(Integration $integration): void;
     public function getById(UuidInterface $id): Integration;

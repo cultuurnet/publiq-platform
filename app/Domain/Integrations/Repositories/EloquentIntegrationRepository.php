@@ -6,9 +6,11 @@ namespace App\Domain\Integrations\Repositories;
 
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
+use App\Domain\Integrations\Exceptions\InconsistentIntegrationTypeException;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\UdbOrganizers;
+use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Pagination\PaginatedCollection;
 use App\Pagination\PaginationInfo;
 use Illuminate\Database\Eloquent\Builder;
@@ -164,6 +166,12 @@ final class EloquentIntegrationRepository implements IntegrationRepository
     private function saveTransaction(Integration $integration, ?string $couponCode): void
     {
         DB::transaction(function () use ($integration, $couponCode): void {
+            $subscriptionId = $integration->subscriptionId->toString();
+
+            if ($subscriptionId) {
+                $this->guardConsistencyIntegrationType($subscriptionId, $integration);
+            }
+
             if ($couponCode) {
                 $this->useCouponOnIntegration($integration->id, $couponCode);
             }
@@ -192,4 +200,23 @@ final class EloquentIntegrationRepository implements IntegrationRepository
             }
         });
     }
+
+    /**
+     * @throws InconsistentIntegrationTypeException
+     */
+    private function guardConsistencyIntegrationType(string $subscriptionId, Integration $integration): void
+    {
+        /** @var SubscriptionModel $subscriptionModel */
+        $subscriptionModel = SubscriptionModel::query()->findOrFail($subscriptionId);
+        $subscription = $subscriptionModel->toDomain();
+
+        if ($integration->type !== $subscription->integrationType) {
+            throw new InconsistentIntegrationTypeException(
+                $integration,
+                $subscription
+            );
+        }
+    }
+
+
 }
