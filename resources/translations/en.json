@@ -17,8 +17,7 @@
     "integrations": "My integrations",
     "opportunities": "Solutions",
     "support": "Support",
-    "hello": "Hello",
-    "integrations/new": "Add integration"
+    "hello": "Hello"
   },
   "pricing_plan": {
     "free": {
@@ -221,12 +220,12 @@
       "new": "New employee",
       "delete_dialog": {
         "title": "Delete contact",
-        "question": "Are you sure you want to delete the contact with email address {{email}}?"
+        "question": "Are you sure you want to delete the contact with email address {{email}}? Once deleted, a contact no longer has access to the integration."
       },
       "edit_dialog": "Edit contact",
       "alert": {
         "title": "Danger zone",
-        "description": "Contacts can edit, activate, and delete the integration. Once deleted, a contact no longer has access to the integration."
+        "description": "Contacts can edit, activate, and delete the integration."
       }
     },
     "organizers_info": {
@@ -273,7 +272,8 @@
       "uitid_alert_link": "https://docs.publiq.be/docs/authentication/methods/overview",
       "action_status": "Request activation",
       "action_uitid": "Request client credentials",
-      "info": "These credentials remain valid for another {{amount}} and will be permanently deleted on {{date}}"
+      "info": "These credentials remain valid for another {{amount}} and will be permanently deleted on {{date}}",
+      "waiting": "After creating your integration, it can currently take up to a few days before you can call the UiTPAS API. You will receive an email from us when your rights have been granted."
     },
     "integration_settings": {
       "title": "Settings",

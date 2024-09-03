@@ -85,7 +85,7 @@ export const useIntegrationTypesInfo = () => {
     const integrationTypesInfo = getIntegrationTypesInfo(t);
 
     // See https://jira.publiq.be/browse/PPF-481
-    return config.uitpasEnabled
+    return config.uitpas.enabled
       ? integrationTypesInfo
       : integrationTypesInfo.filter(
           (integrationTypesInfo) =>
@@ -101,7 +101,7 @@ export type IntegrationTypesInfo = ReturnType<
 export const IntegrationTypes = () => {
   const { config } = usePageProps();
   const filteredIntegrationTypes = useIntegrationTypesInfo();
-  const uitpasEnabled = config.uitpasEnabled;
+  const uitpasEnabled = config.uitpas.enabled;
 
   return (
     <div>

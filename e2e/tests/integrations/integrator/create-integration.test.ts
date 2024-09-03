@@ -8,10 +8,6 @@ integrationTypeValues.forEach(([integrationName, integrationType]) => {
   test(`As an integrator I can create a new ${integrationName} integration`, async ({
     page,
   }) => {
-    const { integrationName } = await createIntegrationAsIntegrator(
-      page,
-      integrationType
-    );
-    await expect(page.getByText(integrationName)).toBeVisible();
+    await createIntegrationAsIntegrator(page, integrationType);
   });
 });

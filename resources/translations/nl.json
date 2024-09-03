@@ -221,12 +221,12 @@
       "new": "Nieuwe medewerker",
       "delete_dialog": {
         "title": "Contact verwijderen",
-        "question": "Ben je zeker dat je het contact met e-mailadres {{email}} wilt verwijderen?"
+        "question": "Ben je zeker dat je het contact met e-mailadres {{email}} wilt verwijderen? Eens verwijderd heeft een contact geen toegang meer tot de integratie."
       },
       "edit_dialog": "Contact bewerken",
       "alert": {
         "title": "Gevarenzone",
-        "description": "Contacten kunnen de integratie aanpassen, activeren en verwijderen. Eens verwijderd heeft een contact geen toegang meer tot de integratie."
+        "description": "Contacten kunnen de integratie aanpassen, activeren en verwijderen."
       }
     },
     "organizers_info": {
@@ -274,7 +274,8 @@
       "client_id": "Client id",
       "client_secret": "Client secret",
       "api_key": "API Key",
-      "info": "Deze credentials blijven nog {{amount}} geldig en worden definitief verwijderd op {{date}}."
+      "info": "Deze credentials blijven nog {{amount}} geldig en worden definitief verwijderd op {{date}}.",
+      "waiting": "Na aanmaak van je integratie kan het momenteel nog tot enkele dagen duren voor je de UiTPAS API kan aanspreken. Je ontvangt een mailtje van ons wanneer je rechten zijn toegekend."
     },
     "integration_settings": {
       "title": "Instellingen",
