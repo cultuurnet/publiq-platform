@@ -202,9 +202,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
      */
     private function guardIntegrationTypeConsistency(UuidInterface $subscriptionId, Integration $integration): void
     {
-        /** @var SubscriptionModel $subscriptionModel */
-        $subscriptionModel = SubscriptionModel::query()->findOrFail($subscriptionId->toString());
-        $subscription = $subscriptionModel->toDomain();
+        $subscription = $this->subscriptionRepository->getById($subscriptionId);
 
         if ($integration->type !== $subscription->integrationType) {
             throw new InconsistentIntegrationType(
