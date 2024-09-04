@@ -686,7 +686,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::FIRST_PARTY,
         );
-        
+
         $this->subscriptionRepository->save($searchSubscription);
 
         $uitpasIntegration = $uitpasIntegration->withSubscription($searchSubscription);
