@@ -1,6 +1,4 @@
-import type { ReactNode } from "react";
 import React from "react";
-import Layout from "../layouts/Layout";
 import { Card } from "../Components/Card";
 import { Trans, useTranslation } from "react-i18next";
 import { ButtonSecondary } from "../../ts/Components/ButtonSecondary";
@@ -67,7 +65,5 @@ const Error = ({ statusCode }: Props) => {
     </div>
   );
 };
-
-Error.layout = (page: ReactNode) => <Layout>{page}</Layout>;
 
 export default Error;

@@ -1,6 +1,4 @@
-import type { ReactNode } from "react";
 import React, { useEffect, useState } from "react";
-import Layout from "../../layouts/Layout";
 import { Page } from "../../Components/Page";
 import { ContactInfo } from "../../Components/Integrations/Detail/ContactInfo";
 import { BillingInfo } from "../../Components/Integrations/Detail/BillingInfo";
@@ -209,7 +207,5 @@ const Detail = ({
     </Page>
   );
 };
-
-Detail.layout = (page: ReactNode) => <Layout>{page}</Layout>;
 
 export default Detail;
