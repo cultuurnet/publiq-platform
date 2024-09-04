@@ -44,7 +44,8 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         parent::setUp();
 
         $this->integrationRepository = new EloquentIntegrationRepository(
-            new EloquentUdbOrganizerRepository()
+            new EloquentUdbOrganizerRepository(),
+            new EloquentSubscriptionRepository(),
         );
         $this->subscriptionRepository = new EloquentSubscriptionRepository();
     }

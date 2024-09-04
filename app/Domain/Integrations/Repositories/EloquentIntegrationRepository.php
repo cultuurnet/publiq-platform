@@ -11,6 +11,8 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\UdbOrganizers;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
+use App\Domain\Subscriptions\Repositories\EloquentSubscriptionRepository;
+use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Pagination\PaginatedCollection;
 use App\Pagination\PaginationInfo;
 use Illuminate\Database\Eloquent\Builder;
@@ -20,7 +22,10 @@ use Ramsey\Uuid\UuidInterface;
 
 final class EloquentIntegrationRepository implements IntegrationRepository
 {
-    public function __construct(private readonly EloquentUdbOrganizerRepository $udbOrganizerRepository)
+    public function __construct(
+        private readonly UdbOrganizerRepository $udbOrganizerRepository,
+        private readonly SubscriptionRepository $subscriptionRepository
+    )
     {
 
     }
