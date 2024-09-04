@@ -8,7 +8,7 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Subscriptions\Subscription;
 use RuntimeException;
 
-final class InconsistentIntegrationTypeException extends RuntimeException
+final class InconsistentIntegrationType extends RuntimeException
 {
     public function __construct(Integration $integration, Subscription $subscription)
     {

@@ -9,7 +9,7 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
-use App\Domain\Integrations\Exceptions\InconsistentIntegrationTypeException;
+use App\Domain\Integrations\Exceptions\InconsistentIntegrationType;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
@@ -693,7 +693,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
 
         $this->assertThrows(
             fn () => $this->integrationRepository->save($uitpasIntegration),
-            InconsistentIntegrationTypeException::class
+            InconsistentIntegrationType::class
         );
     }
 

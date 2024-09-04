@@ -6,7 +6,7 @@ namespace App\Domain\Integrations\Repositories;
 
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
-use App\Domain\Integrations\Exceptions\InconsistentIntegrationTypeException;
+use App\Domain\Integrations\Exceptions\InconsistentIntegrationType;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\UdbOrganizers;
@@ -198,7 +198,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
     }
 
     /**
-     * @throws InconsistentIntegrationTypeException
+     * @throws InconsistentIntegrationType
      */
     private function guardConsistencyIntegrationType(UuidInterface $subscriptionId, Integration $integration): void
     {
@@ -207,7 +207,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         $subscription = $subscriptionModel->toDomain();
 
         if ($integration->type !== $subscription->integrationType) {
-            throw new InconsistentIntegrationTypeException(
+            throw new InconsistentIntegrationType(
                 $integration,
                 $subscription
             );
