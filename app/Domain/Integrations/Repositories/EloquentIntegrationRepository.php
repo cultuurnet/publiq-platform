@@ -166,7 +166,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
     private function saveTransaction(Integration $integration, ?string $couponCode): void
     {
         DB::transaction(function () use ($integration, $couponCode): void {
-            $this->guardConsistencyIntegrationType($integration->subscriptionId, $integration);
+            $this->guardIntegrationTypeConsistency($integration->subscriptionId, $integration);
 
             if ($couponCode) {
                 $this->useCouponOnIntegration($integration->id, $couponCode);
@@ -200,7 +200,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
     /**
      * @throws InconsistentIntegrationType
      */
-    private function guardConsistencyIntegrationType(UuidInterface $subscriptionId, Integration $integration): void
+    private function guardIntegrationTypeConsistency(UuidInterface $subscriptionId, Integration $integration): void
     {
         /** @var SubscriptionModel $subscriptionModel */
         $subscriptionModel = SubscriptionModel::query()->findOrFail($subscriptionId->toString());
