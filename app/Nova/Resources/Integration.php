@@ -24,6 +24,7 @@ use App\Nova\Actions\OpenWidgetManager;
 use App\Nova\Actions\UiTiDv1\CreateMissingUiTiDv1Consumers;
 use App\Nova\Actions\UnblockIntegration;
 use App\Nova\Resource;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Laravel\Nova\Fields\BelongsTo;
@@ -167,7 +168,18 @@ final class Integration extends Resource
                 ->filterable()
                 ->sortable()
                 ->withoutTrashed()
-                ->rules('required'),
+                ->rules('required')
+                ->dependsOn('type', function (BelongsTo $field, NovaRequest $request, FormData $formData) {
+                    $type = $formData->string('type')->toString();
+
+                    if (!$type) {
+                        $field->readonly();
+                    }
+
+                    $field->relatableQueryUsing(
+                        fn (NovaRequest $request, Builder $query) => $query->where('integration_type', $type)
+                    );
+                }),
 
             URL::make('Website')
                 ->displayUsing(fn () => $this->website)
