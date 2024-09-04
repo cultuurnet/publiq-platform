@@ -29,11 +29,14 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
+use Tests\CreatesSubscription;
 use Tests\TestCase;
 
 final class EloquentIntegrationRepositoryTest extends TestCase
 {
     use RefreshDatabase;
+    use CreatesSubscription;
 
     private EloquentIntegrationRepository $integrationRepository;
     private EloquentSubscriptionRepository $subscriptionRepository;
@@ -52,6 +55,8 @@ final class EloquentIntegrationRepositoryTest extends TestCase
     {
         $integrationId = Uuid::uuid4();
         $subscriptionId = Uuid::uuid4();
+
+        $subscription = $this->givenThereIsASubscriptionInDatabase($subscriptionId);
 
         $technicalContact = new Contact(
             Uuid::uuid4(),
@@ -124,6 +129,8 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         $secondIntegrationId = Uuid::uuid4();
         $subscriptionId = Uuid::uuid4();
 
+        $subscription = $this->givenThereIsASubscriptionInDatabase($subscriptionId);
+
         $initialIntegration = new Integration(
             $integrationId,
             IntegrationType::SearchApi,
@@ -157,7 +164,8 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             $initialIntegration->subscriptionId,
             IntegrationStatus::Active,
             $initialIntegration->partnerStatus,
-        ))->withKeyVisibility(KeyVisibility::all);
+        ))->withKeyVisibility(KeyVisibility::all)
+            ->withSubscription($subscription);
 
         $this->integrationRepository->update($updatedIntegration);
 
@@ -258,15 +266,20 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Doe'
         );
 
+        $widgetsCustomSubscription = $this->givenThereIsASubscriptionInDatabase(
+            category: SubscriptionCategory::Basic,
+            integrationType: IntegrationType::SearchApi
+        );
+
         $searchIntegration = (new Integration(
             $searchIntegrationId,
             IntegrationType::SearchApi,
             'Search Integration',
             'Search Integration description',
-            Uuid::uuid4(),
+            $widgetsCustomSubscription->id,
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::THIRD_PARTY,
-        ))->withContacts($technicalContact, $organizationContact);
+        ))->withContacts($technicalContact, $organizationContact)->withSubscription($widgetsCustomSubscription);
 
         $this->integrationRepository->save($searchIntegration);
 
@@ -290,15 +303,20 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Doe',
         );
 
+        $widgetsCustomSubscription = $this->givenThereIsASubscriptionInDatabase(
+            category: SubscriptionCategory::Custom,
+            integrationType: IntegrationType::Widgets,
+        );
+
         $widgetsIntegration = (new Integration(
             $widgetsIntegrationId,
             IntegrationType::Widgets,
             'Widgets Integration',
             'Widgets Integration description',
-            Uuid::uuid4(),
+            $widgetsCustomSubscription->id,
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::THIRD_PARTY,
-        ))->withContacts($contributor, $otherTechnicalContact);
+        ))->withContacts($contributor, $otherTechnicalContact)->withSubscription($widgetsCustomSubscription);
 
         $this->integrationRepository->save($widgetsIntegration);
 
@@ -311,12 +329,14 @@ final class EloquentIntegrationRepositoryTest extends TestCase
 
     public function test_it_can_delete_an_integration(): void
     {
+        $subscription = $this->givenThereIsASubscriptionInDatabase(Uuid::uuid4());
+
         $integration = new Integration(
             Uuid::uuid4(),
             IntegrationType::SearchApi,
             'Test Integration',
             'Test Integration description',
-            Uuid::uuid4(),
+            $subscription->id,
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::THIRD_PARTY,
         );
@@ -338,12 +358,15 @@ final class EloquentIntegrationRepositoryTest extends TestCase
     public function test_it_can_request_activation(): void
     {
         $integrationId = Uuid::uuid4();
+
+        $subscription = $this->givenThereIsASubscriptionInDatabase();
+
         $searchIntegration = new Integration(
             $integrationId,
             IntegrationType::SearchApi,
             'Search Integration',
             'Search Integration description',
-            Uuid::uuid4(),
+            $subscription->id,
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::THIRD_PARTY,
         );
@@ -393,13 +416,15 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'code' => $couponCode,
         ]);
 
+        $subscription = $this->givenThereIsASubscriptionInDatabase();
+
         $integrationId = Uuid::uuid4();
         $searchIntegration = new Integration(
             $integrationId,
             IntegrationType::SearchApi,
             'Search Integration',
             'Search Integration description',
-            Uuid::uuid4(),
+            $subscription->id,
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::THIRD_PARTY,
         );
@@ -432,12 +457,15 @@ final class EloquentIntegrationRepositoryTest extends TestCase
     public function test_it_can_activate(): void
     {
         $integrationId = Uuid::uuid4();
+
+        $subscription = $this->givenThereIsASubscriptionInDatabase();
+
         $searchIntegration = new Integration(
             $integrationId,
             IntegrationType::SearchApi,
             'Search Integration',
             'Search Integration description',
-            Uuid::uuid4(),
+            $subscription->id,
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::THIRD_PARTY,
         );
@@ -461,12 +489,15 @@ final class EloquentIntegrationRepositoryTest extends TestCase
     public function test_it_can_activate_with_organization(): void
     {
         $integrationId = Uuid::uuid4();
+
+        $subscription = $this->givenThereIsASubscriptionInDatabase();
+
         $searchIntegration = new Integration(
             $integrationId,
             IntegrationType::SearchApi,
             'Search Integration',
             'Search Integration description',
-            Uuid::uuid4(),
+            $subscription->id,
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::THIRD_PARTY,
         );
@@ -501,12 +532,15 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         ]);
 
         $integrationId = Uuid::uuid4();
+
+        $subscription = $this->givenThereIsASubscriptionInDatabase();
+
         $searchIntegration = new Integration(
             $integrationId,
             IntegrationType::SearchApi,
             'Search Integration',
             'Search Integration description',
-            Uuid::uuid4(),
+            $subscription->id,
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::THIRD_PARTY,
         );
@@ -550,12 +584,14 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'code' => $couponCode,
         ]);
 
+        $subscription = $this->givenThereIsASubscriptionInDatabase();
+
         $searchIntegration = new Integration(
             $integrationId,
             IntegrationType::SearchApi,
             'Search Integration',
             'Search Integration description',
-            Uuid::uuid4(),
+            $subscription->id,
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::THIRD_PARTY,
         );
@@ -571,12 +607,14 @@ final class EloquentIntegrationRepositoryTest extends TestCase
     {
         $integrationId = Uuid::uuid4();
 
+        $subscription = $this->givenThereIsASubscriptionInDatabase();
+
         $searchIntegration = new Integration(
             $integrationId,
             IntegrationType::SearchApi,
             'First party integration',
             'First party integration',
-            Uuid::uuid4(),
+            $subscription->id,
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::FIRST_PARTY,
         );
@@ -599,12 +637,17 @@ final class EloquentIntegrationRepositoryTest extends TestCase
 
         $integrationId = Uuid::uuid4();
 
+        $subscription = $this->givenThereIsASubscriptionInDatabase(
+            category: SubscriptionCategory::Free,
+            integrationType: IntegrationType::UiTPAS
+        );
+
         $integration = new Integration(
             $integrationId,
             IntegrationType::UiTPAS,
             'First party integration',
             'First party integration',
-            Uuid::uuid4(),
+            $subscription->id,
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::FIRST_PARTY,
         );
@@ -634,6 +677,8 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             99.99
         );
 
+        $this->subscriptionRepository->save($searchSubscription);
+
         $uitpasIntegration = new Integration(
             Uuid::uuid4(),
             IntegrationType::UiTPAS,
@@ -654,5 +699,20 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             fn () => $this->integrationRepository->save($uitpasIntegration),
             InconsistentIntegrationTypeException::class
         );
+    }
+
+    private function givenThereIsASubscriptionInDatabase(
+        ?UuidInterface $id = null,
+        ?string $name = null,
+        ?string $description = null,
+        ?SubscriptionCategory $category = null,
+        ?IntegrationType $integrationType = null,
+        ?Currency $currency = null,
+        ?float $price = null,
+        ?float $fee = null
+    ): Subscription {
+        $subscription = $this->givenThereIsASubscription($id, $name, $description, $category, $integrationType, $currency, $price, $fee);
+        $this->subscriptionRepository->save($subscription);
+        return $subscription;
     }
 }
