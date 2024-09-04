@@ -30,13 +30,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
-use Tests\CreatesSubscription;
 use Tests\TestCase;
 
 final class EloquentIntegrationRepositoryTest extends TestCase
 {
     use RefreshDatabase;
-    use CreatesSubscription;
 
     private EloquentIntegrationRepository $integrationRepository;
     private EloquentSubscriptionRepository $subscriptionRepository;
@@ -56,7 +54,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         $integrationId = Uuid::uuid4();
         $subscriptionId = Uuid::uuid4();
 
-        $subscription = $this->givenThereIsASubscriptionInDatabase($subscriptionId);
+        $subscription = $this->givenThereIsASubscription($subscriptionId);
 
         $technicalContact = new Contact(
             Uuid::uuid4(),
@@ -129,7 +127,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         $secondIntegrationId = Uuid::uuid4();
         $subscriptionId = Uuid::uuid4();
 
-        $subscription = $this->givenThereIsASubscriptionInDatabase($subscriptionId);
+        $subscription = $this->givenThereIsASubscription($subscriptionId);
 
         $initialIntegration = new Integration(
             $integrationId,
@@ -266,7 +264,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Doe'
         );
 
-        $widgetsCustomSubscription = $this->givenThereIsASubscriptionInDatabase(
+        $widgetsCustomSubscription = $this->givenThereIsASubscription(
             category: SubscriptionCategory::Basic,
             integrationType: IntegrationType::SearchApi
         );
@@ -303,7 +301,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Doe',
         );
 
-        $widgetsCustomSubscription = $this->givenThereIsASubscriptionInDatabase(
+        $widgetsCustomSubscription = $this->givenThereIsASubscription(
             category: SubscriptionCategory::Custom,
             integrationType: IntegrationType::Widgets,
         );
@@ -329,7 +327,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
 
     public function test_it_can_delete_an_integration(): void
     {
-        $subscription = $this->givenThereIsASubscriptionInDatabase(Uuid::uuid4());
+        $subscription = $this->givenThereIsASubscription(Uuid::uuid4());
 
         $integration = new Integration(
             Uuid::uuid4(),
@@ -359,7 +357,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
     {
         $integrationId = Uuid::uuid4();
 
-        $subscription = $this->givenThereIsASubscriptionInDatabase();
+        $subscription = $this->givenThereIsASubscription();
 
         $searchIntegration = new Integration(
             $integrationId,
@@ -416,7 +414,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'code' => $couponCode,
         ]);
 
-        $subscription = $this->givenThereIsASubscriptionInDatabase();
+        $subscription = $this->givenThereIsASubscription();
 
         $integrationId = Uuid::uuid4();
         $searchIntegration = new Integration(
@@ -458,7 +456,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
     {
         $integrationId = Uuid::uuid4();
 
-        $subscription = $this->givenThereIsASubscriptionInDatabase();
+        $subscription = $this->givenThereIsASubscription();
 
         $searchIntegration = new Integration(
             $integrationId,
@@ -490,7 +488,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
     {
         $integrationId = Uuid::uuid4();
 
-        $subscription = $this->givenThereIsASubscriptionInDatabase();
+        $subscription = $this->givenThereIsASubscription();
 
         $searchIntegration = new Integration(
             $integrationId,
@@ -533,7 +531,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
 
         $integrationId = Uuid::uuid4();
 
-        $subscription = $this->givenThereIsASubscriptionInDatabase();
+        $subscription = $this->givenThereIsASubscription();
 
         $searchIntegration = new Integration(
             $integrationId,
@@ -584,7 +582,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'code' => $couponCode,
         ]);
 
-        $subscription = $this->givenThereIsASubscriptionInDatabase();
+        $subscription = $this->givenThereIsASubscription();
 
         $searchIntegration = new Integration(
             $integrationId,
@@ -607,7 +605,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
     {
         $integrationId = Uuid::uuid4();
 
-        $subscription = $this->givenThereIsASubscriptionInDatabase();
+        $subscription = $this->givenThereIsASubscription();
 
         $searchIntegration = new Integration(
             $integrationId,
@@ -637,7 +635,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
 
         $integrationId = Uuid::uuid4();
 
-        $subscription = $this->givenThereIsASubscriptionInDatabase(
+        $subscription = $this->givenThereIsASubscription(
             category: SubscriptionCategory::Free,
             integrationType: IntegrationType::UiTPAS
         );
@@ -701,7 +699,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         );
     }
 
-    private function givenThereIsASubscriptionInDatabase(
+    private function givenThereIsASubscription(
         ?UuidInterface $id = null,
         ?string $name = null,
         ?string $description = null,
@@ -711,7 +709,16 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         ?float $price = null,
         ?float $fee = null
     ): Subscription {
-        $subscription = $this->givenThereIsASubscription($id, $name, $description, $category, $integrationType, $currency, $price, $fee);
+        $subscription = new Subscription(
+            $id ?? Uuid::uuid4(),
+            $name ?? 'Mock Subscription',
+            $description ?? 'Mock description',
+            $category ?? SubscriptionCategory::Basic,
+            $integrationType ?? IntegrationType::SearchApi,
+            $currency ?? Currency::EUR,
+            $price ?? 100.0,
+            $fee ?? 50.0
+        );
         $this->subscriptionRepository->save($subscription);
         return $subscription;
     }
