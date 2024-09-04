@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Repositories;
 
+use App\Domain\Integrations\Exceptions\InconsistentIntegrationType;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\UdbOrganizers;
 use App\Pagination\PaginatedCollection;
@@ -11,7 +12,13 @@ use Ramsey\Uuid\UuidInterface;
 
 interface IntegrationRepository
 {
+    /**
+     * @throws InconsistentIntegrationType
+     */
     public function save(Integration $integration): void;
+    /**
+     * @throws InconsistentIntegrationType
+     */
     public function saveWithCoupon(Integration $integration, string $couponCode): void;
     public function update(Integration $integration): void;
     public function getById(UuidInterface $id): Integration;

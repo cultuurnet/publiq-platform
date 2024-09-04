@@ -51,13 +51,14 @@ final class IntegrationControllerTest extends TestCase
         $this->actingAs($systemUser);
         $this->givenTheContactKeyVisibilityIs($systemUser->email, KeyVisibility::v1);
 
-        $subscriptionId = Uuid::uuid4();
+        $integrationType = IntegrationType::SearchApi;
+        $subscription = $this->givenThereIsASubscription(integrationType: $integrationType, subscriptionCategory: SubscriptionCategory::Custom);
 
         $response = $this->post(
             '/integrations',
             [
                 'integrationType' => IntegrationType::SearchApi->value,
-                'subscriptionId' => $subscriptionId->toString(),
+                'subscriptionId' => $subscription->id->toString(),
                 'integrationName' => 'Test Integration',
                 'description' => 'Test Integration description',
                 'firstNameFunctionalContact' => 'Jack',
@@ -78,7 +79,7 @@ final class IntegrationControllerTest extends TestCase
 
         $this->assertDatabaseHas('integrations', [
             'type' => IntegrationType::SearchApi->value,
-            'subscription_id' => $subscriptionId->toString(),
+            'subscription_id' => $subscription->id->toString(),
             'name' => 'Test Integration',
             'description' => 'Test Integration description',
             'status' => IntegrationStatus::Draft->value,
@@ -113,13 +114,15 @@ final class IntegrationControllerTest extends TestCase
 
         $coupon = $this->givenThereIsACoupon();
 
-        $subscriptionId = Uuid::uuid4();
+        $integrationType = IntegrationType::SearchApi;
+
+        $subscription = $this->givenThereIsASubscription(integrationType: $integrationType, subscriptionCategory: SubscriptionCategory::Basic);
 
         $response = $this->post(
             '/integrations',
             [
-                'integrationType' => IntegrationType::SearchApi->value,
-                'subscriptionId' => $subscriptionId->toString(),
+                'integrationType' => $integrationType->value,
+                'subscriptionId' => $subscription->id->toString(),
                 'integrationName' => 'Test Integration',
                 'description' => 'Test Integration description',
                 'firstNameFunctionalContact' => 'Jack',
@@ -141,7 +144,7 @@ final class IntegrationControllerTest extends TestCase
 
         $this->assertDatabaseHas('integrations', [
             'type' => IntegrationType::SearchApi->value,
-            'subscription_id' => $subscriptionId->toString(),
+            'subscription_id' => $subscription->id->toString(),
             'name' => 'Test Integration',
             'description' => 'Test Integration description',
             'status' => IntegrationStatus::Draft->value,
@@ -364,7 +367,12 @@ final class IntegrationControllerTest extends TestCase
     {
         $this->actingAs(UserModel::createSystemUser());
 
-        $integration = $this->givenThereIsAnIntegration();
+        $integrationType = IntegrationType::SearchApi;
+        $subscription = $this->givenThereIsASubscription(integrationType: $integrationType, subscriptionCategory: SubscriptionCategory::Basic);
+        $integration = $this->givenThereIsAnIntegration(
+            integrationType: $integrationType,
+            subscriptionId: $subscription->id
+        );
         $this->givenTheActingUserIsAContactOnIntegration($integration);
 
         $response = $this->post("/integrations/{$integration->id}/urls", [
