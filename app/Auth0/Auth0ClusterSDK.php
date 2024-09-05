@@ -20,6 +20,11 @@ final class Auth0ClusterSDK
         }
     }
 
+    public function getTenantSDK(Auth0Tenant $auth0Tenant): Auth0TenantSDK
+    {
+        return $this->auth0TenantSDKs[$auth0Tenant->value];
+    }
+
     /**
      * @return Auth0Client[]
      */

@@ -6,9 +6,11 @@ namespace App\Domain\Integrations\Repositories;
 
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
+use App\Domain\Integrations\Exceptions\InconsistentIntegrationType;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\UdbOrganizers;
+use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Pagination\PaginatedCollection;
 use App\Pagination\PaginationInfo;
 use Illuminate\Database\Eloquent\Builder;
@@ -18,8 +20,10 @@ use Ramsey\Uuid\UuidInterface;
 
 final class EloquentIntegrationRepository implements IntegrationRepository
 {
-    public function __construct(private readonly EloquentUdbOrganizerRepository $udbOrganizerRepository)
-    {
+    public function __construct(
+        private readonly UdbOrganizerRepository $udbOrganizerRepository,
+        private readonly SubscriptionRepository $subscriptionRepository
+    ) {
 
     }
 
@@ -164,6 +168,8 @@ final class EloquentIntegrationRepository implements IntegrationRepository
     private function saveTransaction(Integration $integration, ?string $couponCode): void
     {
         DB::transaction(function () use ($integration, $couponCode): void {
+            $this->guardIntegrationTypeConsistency($integration->subscriptionId, $integration);
+
             if ($couponCode) {
                 $this->useCouponOnIntegration($integration->id, $couponCode);
             }
@@ -192,4 +198,21 @@ final class EloquentIntegrationRepository implements IntegrationRepository
             }
         });
     }
+
+    /**
+     * @throws InconsistentIntegrationType
+     */
+    private function guardIntegrationTypeConsistency(UuidInterface $subscriptionId, Integration $integration): void
+    {
+        $subscription = $this->subscriptionRepository->getById($subscriptionId);
+
+        if ($integration->type !== $subscription->integrationType) {
+            throw new InconsistentIntegrationType(
+                $integration,
+                $subscription
+            );
+        }
+    }
+
+
 }

@@ -7,7 +7,7 @@ namespace App\Console\Commands\Migrations;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 
-final class MigrationProject
+final class ProjectCsvRow
 {
     private array $projectAsArray;
 

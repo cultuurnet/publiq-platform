@@ -143,6 +143,44 @@
     "submit": "Create integration",
     "back": "Back to integration overview"
   },
+  "welcome_section": {
+    "title": "Welcome to the publiq platform 👋",
+    "description": {
+      "part1": "On this self-service portal, you can easily access the APIs and tools offered by the publiq platform.",
+      "part2": "After creating an integration, you will immediately receive access to the test environment. You will also receive comprehensive documentation in which we guide you step by step. Still have questions? Our support colleagues are at your service. In short, everything you need to set up a seamless integration!"
+    },
+    "card": {
+      "documentation": "Documentation",
+      "entry_api": {
+        "title": "Entry API",
+        "description": "Do you organize activities yourself? Publish the events in the UiTdatabank using the Entry API and we make sure your events are distributed across numerous online channels.",
+        "cta": "Add integration with Entry API",
+        "action_url": "https://platform.publiq.be/en/integrations/new?type=entry-api",
+        "documentation_url": "https://docs.publiq.be/docs/uitdatabank/entry-api/introduction"
+      },
+      "search_api": {
+        "title": "Search API",
+        "description": "With this search engine you can retrieve event data from the UiTdatabank in JSON-LD standard and publish it on your own website or app.",
+        "cta": "Add integration with Search API",
+        "action_url": "https://platform.publiq.be/en/integrations/new?type=search-api",
+        "documentation_url": "https://docs.publiq.be/docs/uitdatabank/search-api/introduction"
+      },
+      "widgets": {
+        "title": "Widgets",
+        "description": "Our widgets allow you to configure an event calendar without any technical knowledge. It is the ideal solution for partners who want to set up a robust calendar quickly and hassle-free.",
+        "cta": "Add integration with Widgets",
+        "action_url": "https://platform.publiq.be/en/integrations/new?type=widgets",
+        "documentation_url": "https://docs.publiq.be/docs/widgets/inleiding"
+      },
+      "uitpas": {
+        "title": "UiTPAS API",
+        "description": "Does your organization work with UiTPAS? With the UiTPAS API you can automatically grant discounts, exchange benefits and save points for card holders.",
+        "cta": "Add integration with UiTPAS API",
+        "action_url": "https://platform.publiq.be/en/integrations/new?type=uitpas-api",
+        "documentation_url": "https://docs.publiq.be/docs/uitpas/introduction"
+      }
+    }
+  },
   "integrations": {
     "title": "My integrations",
     "add": "Add integration",

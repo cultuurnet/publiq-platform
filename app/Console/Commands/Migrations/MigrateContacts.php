@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands\Migrations;
 
+use App\Console\Commands\ReadCsvFile;
 use App\Domain\Auth\Models\UserModel;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\Repositories\ContactRepository;
@@ -54,7 +55,7 @@ final class MigrateContacts extends Command
             return 0;
         }
 
-        $migrationContacts = array_map(fn (array $contact) => new MigrationContact($contact), $contacts);
+        $migrationContacts = array_map(fn (array $contact) => new ContactCsvRow($contact), $contacts);
         foreach ($migrationContacts as $migrationContact) {
             $contactId = Uuid::uuid4();
 
@@ -75,7 +76,7 @@ final class MigrateContacts extends Command
         return 0;
     }
 
-    private function migrateContact(UuidInterface $contactId, MigrationContact $migrationContact): void
+    private function migrateContact(UuidInterface $contactId, ContactCsvRow $migrationContact): void
     {
         $mapping = $this->getInsightlyMapping($migrationContact);
         if ($mapping === null) {
@@ -102,7 +103,7 @@ final class MigrateContacts extends Command
         );
     }
 
-    private function getInsightlyMapping(MigrationContact $migrationContact): ?InsightlyMapping
+    private function getInsightlyMapping(ContactCsvRow $migrationContact): ?InsightlyMapping
     {
         if ($migrationContact->insightlyProjectId()) {
             try {
