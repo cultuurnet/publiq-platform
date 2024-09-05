@@ -48,7 +48,7 @@ final class MigrateUiTPAS extends Command
 
         $rows = $this->readCsvFile('database/uitpas/integrations.csv');
         $uitpasIntegrations = array_map(
-            fn (array $row) => new UiTPASIntegration($row),
+            fn (array $row) => new UiTPASIntegrationCsvRow($row),
             $rows
         );
 
@@ -80,7 +80,7 @@ final class MigrateUiTPAS extends Command
         return self::SUCCESS;
     }
 
-    private function migrateIntegration(UuidInterface $integrationId, UiTPASIntegration $uiTPASIntegration): void
+    private function migrateIntegration(UuidInterface $integrationId, UiTPASIntegrationCsvRow $uiTPASIntegration): void
     {
         $subscriptionId = $this->subscriptionRepository->getByIntegrationTypeAndCategory(
             IntegrationType::UiTPAS,
@@ -106,7 +106,7 @@ final class MigrateUiTPAS extends Command
         ]);
     }
 
-    private function migrateContacts(UuidInterface $integrationId, UiTPASIntegration $uitpasIntegration): void
+    private function migrateContacts(UuidInterface $integrationId, UiTPASIntegrationCsvRow $uitpasIntegration): void
     {
         $contacts = $uitpasIntegration->contacts($integrationId);
 
@@ -115,7 +115,7 @@ final class MigrateUiTPAS extends Command
         }
     }
 
-    private function migrateAuth0Clients(UuidInterface $integrationId, UiTPASIntegration $uitpasIntegration): void
+    private function migrateAuth0Clients(UuidInterface $integrationId, UiTPASIntegrationCsvRow $uitpasIntegration): void
     {
         $auth0Tenants = [Auth0Tenant::Testing, Auth0Tenant::Production];
 

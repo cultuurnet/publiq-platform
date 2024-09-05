@@ -13,7 +13,7 @@ use InvalidArgumentException;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-final class UiTPASIntegration
+final class UiTPASIntegrationCsvRow
 {
     private array $integrationAsArray;
 
