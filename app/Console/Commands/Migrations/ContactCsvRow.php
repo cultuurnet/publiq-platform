@@ -6,7 +6,7 @@ namespace App\Console\Commands\Migrations;
 
 use App\Domain\Contacts\ContactType;
 
-final class MigrationContact
+final class ContactCsvRow
 {
     private array $contactAsArray;
 
