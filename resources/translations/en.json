@@ -13,29 +13,29 @@
     "/subscriptions": "/en/subscriptions"
   },
   "title": "publiq platform",
-    "nav": {
-        "integrations": {
-            "label": "My integrations"
-        },
-        "opportunities": {
-            "label": "Solutions",
-            "link": "https://www.publiq.be/nl/projecten/publiq-platform"
-        },
-        "prices": {
-            "label": "Prices",
-            "link": "https://www.publiq.be/nl/projecten/publiq-platform/prijzen"
-        },
-        "documentation": {
-            "label": "Documentation",
-            "link": "https://docs.publiq.be"
-        },
-        "support": {
-            "label": "Support"
-        },
-        "integrations/new": {
-            "label": "Add integration"
-        }
+  "nav": {
+    "integrations": {
+      "label": "My integrations"
     },
+    "opportunities": {
+      "label": "Solutions",
+      "link": "https://www.publiq.be/nl/projecten/publiq-platform"
+    },
+    "prices": {
+      "label": "Prices",
+      "link": "https://www.publiq.be/nl/projecten/publiq-platform/prijzen"
+    },
+    "documentation": {
+      "label": "Documentation",
+      "link": "https://docs.publiq.be"
+    },
+    "support": {
+      "label": "Support"
+    },
+    "integrations/new": {
+      "label": "Add integration"
+    }
+  },
   "pricing_plan": {
     "free": {
       "title": "Free",
