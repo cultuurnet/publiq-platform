@@ -21,6 +21,9 @@ type Config = {
 };
 
 export type PageProps = {
+  auth: {
+    authenticated: boolean;
+  };
   widgetConfig: WidgetConfigVariables;
   config: Config;
 };
