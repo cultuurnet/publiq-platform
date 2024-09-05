@@ -83,7 +83,7 @@ final class MigrateProjects extends Command
         CauserResolver::setCauser(UserModel::createSystemUser());
 
         $rows = $this->readCsvFile('database/project-aanvraag/projects_with_subscriptions.csv');
-        $migrationProjects = array_map(fn (array $row) => new MigrationProject($row), array_filter($rows));
+        $migrationProjects = array_map(fn (array $row) => new ProjectCsvRow($row), array_filter($rows));
 
         $projectsCount = count($migrationProjects);
         if ($projectsCount <= 0) {
@@ -129,7 +129,7 @@ final class MigrateProjects extends Command
         return 0;
     }
 
-    private function migrateIntegration(UuidInterface $integrationId, MigrationProject $migrationProject): void
+    private function migrateIntegration(UuidInterface $integrationId, ProjectCsvRow $migrationProject): void
     {
         $subscriptionId = $this->subscriptionRepository->getByIntegrationTypeAndCategory(
             $migrationProject->type(),
@@ -237,7 +237,7 @@ final class MigrateProjects extends Command
         }
     }
 
-    private function migrateKeys(UuidInterface $integrationId, MigrationProject $migrationProject): void
+    private function migrateKeys(UuidInterface $integrationId, ProjectCsvRow $migrationProject): void
     {
         if ($migrationProject->apiKeyProduction()) {
             $consumerProduction = $this->getConsumerFromUitId(
