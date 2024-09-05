@@ -1,4 +1,4 @@
-import type { ComponentProps } from "react";
+import { ComponentProps } from "react";
 import React from "react";
 import { Heading } from "./Heading";
 import { useTranslation } from "react-i18next";
@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTranslateRoute } from "../hooks/useTranslateRoute";
 import { PubliqLogo } from "./logos/PubliqLogo";
 import { externalLinkProps, isExternalLink } from "./Link";
+import { useIsAuthenticated } from "../hooks/useIsAuthenticated";
 
 type Page = {
   key: string;
@@ -36,16 +37,20 @@ export default function Navigation({
   const translateRoute = useTranslateRoute();
 
   const { component } = usePage();
+  const isAuthenticated = useIsAuthenticated();
 
   const pages: Page[] = [
-    { component: "Integrations/Index", key: "integrations" },
+    isAuthenticated && {
+      component: "Integrations/Index",
+      key: "integrations",
+    },
     { key: "opportunities" },
     {
       key: "prices",
     },
     { key: "documentation" },
     { component: "Support/Index", key: "support" },
-  ];
+  ].filter((it) => !!it);
 
   const classes = classNames(
     "flex md:items-center md:justify-start gap-36 px-7 max-md:p-4 max-md:gap-5",
