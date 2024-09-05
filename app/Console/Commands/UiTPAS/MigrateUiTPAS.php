@@ -55,11 +55,11 @@ final class MigrateUiTPAS extends Command
         $integrationsCount = count($uitpasIntegrations);
         if ($integrationsCount <= 0) {
             $this->warn('No UiTPAS integrations to import');
-            return 0;
+            return self::SUCCESS;
         }
 
         if (!$this->confirm('Are you sure you want to import ' . $integrationsCount . ' UiTPAS integrations?')) {
-            return 0;
+            return self::SUCCESS;
         }
 
         foreach ($uitpasIntegrations as $uitpasIntegration) {
@@ -77,7 +77,7 @@ final class MigrateUiTPAS extends Command
             $this->info('---');
         }
 
-        return 0;
+        return self::SUCCESS;
     }
 
     private function migrateIntegration(UuidInterface $integrationId, UiTPASIntegration $uiTPASIntegration): void
