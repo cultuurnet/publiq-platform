@@ -1,4 +1,4 @@
-import { ComponentProps } from "react";
+import type { ComponentProps } from "react";
 import React from "react";
 import { Heading } from "./Heading";
 import { useTranslation } from "react-i18next";
