@@ -27,7 +27,7 @@ final class HandleInertiaRequests extends Middleware
     {
         return array_merge(parent::share($request), [
             'auth' => [
-                'authenticated' => Auth::check()
+                'authenticated' => Auth::check(),
             ],
             'config' => [
                 'env' => config('app.env'),
