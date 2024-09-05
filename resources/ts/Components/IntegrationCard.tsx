@@ -269,6 +269,7 @@ export const IntegrationCard = ({
   return (
     <Card
       title={name}
+      subtitle={t(`integrations.products.${type}`)}
       border
       icon={CardIcon && <CardIcon className={integrationIconClasses} />}
       clickableHeading
