@@ -1,4 +1,8 @@
-import type { ComponentPropsWithoutRef, Ref } from "react";
+import type {
+  ComponentPropsWithoutRef,
+  HTMLAttributeAnchorTarget,
+  Ref,
+} from "react";
 import React from "react";
 import type { InertiaLinkProps } from "@inertiajs/react";
 import { Link as InertiaLink } from "@inertiajs/react";
@@ -12,6 +16,18 @@ export type LinkProps = InertiaLinkProps &
     hasExternalIcon?: boolean;
   };
 
+type ExternalLinkProps = {
+  target: HTMLAttributeAnchorTarget;
+  rel: string;
+};
+
+export const externalLinkProps: ExternalLinkProps = {
+  target: "_blank",
+  rel: "noopener",
+};
+
+export const isExternalLink = (href: string) =>
+  !href.startsWith("/") && !href.startsWith("#");
 export const Link = ({
   children,
   href,
@@ -19,7 +35,7 @@ export const Link = ({
   hasExternalIcon = false,
   ...props
 }: LinkProps) => {
-  const isExternal = !href.startsWith("/") && !href.startsWith("#");
+  const isExternal = isExternalLink(href);
 
   return (
     <>
