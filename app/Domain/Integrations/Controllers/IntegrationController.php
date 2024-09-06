@@ -133,8 +133,6 @@ final class IntegrationController extends Controller
             $this->integrationRepository->save($integration);
         }
 
-        IntegrationCreatedPost::dispatch($integration->id);
-
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
             [
