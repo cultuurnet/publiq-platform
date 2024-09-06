@@ -7,7 +7,7 @@ namespace App\Domain\Integrations\Events;
 use Illuminate\Foundation\Events\Dispatchable;
 use Ramsey\Uuid\UuidInterface;
 
-final class IntegrationCreatedPost
+final class IntegrationCreatedAfter
 {
     use Dispatchable;
 

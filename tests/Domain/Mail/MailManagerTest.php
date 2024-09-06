@@ -8,7 +8,7 @@ use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationBlocked;
-use App\Domain\Integrations\Events\IntegrationCreatedPost;
+use App\Domain\Integrations\Events\IntegrationCreatedAfter;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
@@ -147,7 +147,7 @@ final class MailManagerTest extends TestCase
     {
         return [
             'IntegrationCreated' => [
-                'event' => new IntegrationCreatedPost(Uuid::fromString(self::INTEGRATION_ID)),
+                'event' => new IntegrationCreatedAfter(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationCreatedMail',
                 'templateId' => self::TEMPLATE_CREATED_ID,
                 'subject' => 'Welcome to Publiq platform - Let\'s get you started!',
