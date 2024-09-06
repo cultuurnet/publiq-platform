@@ -6,6 +6,7 @@ namespace App\Domain\Integrations\Repositories;
 
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
+use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\Exceptions\InconsistentIntegrationType;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Models\IntegrationModel;
@@ -196,6 +197,8 @@ final class EloquentIntegrationRepository implements IntegrationRepository
                     'email' => $contact->email,
                 ]);
             }
+
+            IntegrationCreatedWithContacts::dispatch($integration->id);
         });
     }
 
