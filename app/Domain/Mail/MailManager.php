@@ -7,7 +7,7 @@ namespace App\Domain\Mail;
 use App\Domain\Contacts\Contact;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationBlocked;
-use App\Domain\Integrations\Events\IntegrationCreatedAfter;
+use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use Symfony\Component\Mime\Address;
@@ -28,7 +28,7 @@ final class MailManager
     ) {
     }
 
-    public function sendIntegrationCreatedMail(IntegrationCreatedAfter $integrationCreated): void
+    public function sendIntegrationCreatedMail(IntegrationCreatedWithContacts $integrationCreated): void
     {
         $integration = $this->integrationRepository->getById($integrationCreated->id);
 
