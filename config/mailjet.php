@@ -10,6 +10,7 @@ return [
         'secret' => env('MAILJET_API_SECRET'),
     ],
     'templates' => [
+        'integration_created' => env('MAILJET_TEMPLATE_INTEGRATION_CREATED'),
         'integration_blocked' => env('MAILJET_TEMPLATE_INTEGRATION_BLOCKED'),
         'integration_activated' => env('MAILJET_TEMPLATE_INTEGRATION_ACTIVATED'),
     ],

@@ -10,6 +10,7 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\ContactKeyVisibilityRepository;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Coupons\Repositories\CouponRepository;
+use App\Domain\Integrations\Events\IntegrationCreatedPost;
 use App\Domain\Integrations\FormRequests\KeyVisibilityUpgradeRequest;
 use App\Domain\Integrations\FormRequests\RequestActivationRequest;
 use App\Domain\Integrations\FormRequests\StoreContactRequest;
@@ -131,6 +132,8 @@ final class IntegrationController extends Controller
         } else {
             $this->integrationRepository->save($integration);
         }
+
+        IntegrationCreatedPost::dispatch($integration->id);
 
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName($request, 'integrations.show'),
