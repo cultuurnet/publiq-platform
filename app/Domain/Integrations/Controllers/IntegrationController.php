@@ -10,7 +10,6 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\ContactKeyVisibilityRepository;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Coupons\Repositories\CouponRepository;
-use App\Domain\Integrations\Events\IntegrationCreatedAfter;
 use App\Domain\Integrations\FormRequests\KeyVisibilityUpgradeRequest;
 use App\Domain\Integrations\FormRequests\RequestActivationRequest;
 use App\Domain\Integrations\FormRequests\StoreContactRequest;

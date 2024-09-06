@@ -198,7 +198,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
                 ]);
             }
 
-            IntegrationCreatedAfter::dispatch($integration->id->toString());
+            IntegrationCreatedAfter::dispatch($integration->id);
         });
     }
 
