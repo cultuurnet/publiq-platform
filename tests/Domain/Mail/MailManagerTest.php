@@ -8,6 +8,7 @@ use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationBlocked;
+use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
@@ -26,6 +27,7 @@ final class MailManagerTest extends TestCase
     private const INTEGRATION_ID = '9e6d778f-ef44-45b3-b842-26b6d71bcad7';
     private const TEMPLATE_BLOCKED_ID = 456;
     private const TEMPLATE_ACTIVATED_ID = 123;
+    private const TEMPLATE_CREATED_ID = 677;
     private MailManager $mailManager;
     private Mailer&MockObject $mailer;
 
@@ -42,12 +44,12 @@ final class MailManagerTest extends TestCase
         $this->mailManager = new MailManager(
             $this->mailer,
             $integrationRepository,
+            self::TEMPLATE_CREATED_ID,
             self::TEMPLATE_ACTIVATED_ID,
             self::TEMPLATE_BLOCKED_ID,
             'http://www.example.com'
         );
 
-        // @todo Let add all types of contacts here, it might be the case that we only sent the email to specific type of contacts
         $this->contacts = [
             new Contact(
                 Uuid::uuid4(),
@@ -92,7 +94,6 @@ final class MailManagerTest extends TestCase
             ->with(self::INTEGRATION_ID)
             ->willReturn($integration);
     }
-
 
     /**
      * @dataProvider mailDataProvider
@@ -145,6 +146,17 @@ final class MailManagerTest extends TestCase
     public static function mailDataProvider(): array
     {
         return [
+            'IntegrationCreated' => [
+                'event' => new IntegrationCreatedWithContacts(Uuid::fromString(self::INTEGRATION_ID)),
+                'method' => 'sendIntegrationCreatedMail',
+                'templateId' => self::TEMPLATE_CREATED_ID,
+                'subject' => 'Welcome to Publiq platform - Let\'s get you started!',
+                'expectedParameters' => [
+                    'url' => 'http://www.example.com/nl/integraties/' . self::INTEGRATION_ID,
+                    'integrationName' => 'Mock Integration',
+                    'type' => 'search-api',
+                ],
+            ],
             'IntegrationActivated' => [
                 'event' => new IntegrationActivated(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationActivatedMail',
