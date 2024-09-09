@@ -1,7 +1,5 @@
-import type { ReactNode } from "react";
 import React, { useMemo, useState } from "react";
 import { Heading } from "../../Components/Heading";
-import Layout from "../../layouts/Layout";
 import { ButtonLink } from "../../Components/ButtonLink";
 import { Input } from "../../Components/Input";
 import { debounce } from "lodash";
@@ -166,7 +164,5 @@ const Index = ({ integrations, paginationInfo, credentials }: Props) => {
     </Page>
   );
 };
-
-Index.layout = (page: ReactNode) => <Layout>{page}</Layout>;
 
 export default Index;

@@ -1,7 +1,6 @@
-import type { FormEvent, ReactNode } from "react";
+import type { FormEvent } from "react";
 import React, { useEffect, useState } from "react";
 import { router, useForm } from "@inertiajs/react";
-import Layout from "../../layouts/Layout";
 import { Heading } from "../../Components/Heading";
 import { FormElement } from "../../Components/FormElement";
 import { Input } from "../../Components/Input";
@@ -462,7 +461,5 @@ const New = ({ subscriptions }: Props) => {
     </Page>
   );
 };
-
-New.layout = (page: ReactNode) => <Layout>{page}</Layout>;
 
 export default New;
