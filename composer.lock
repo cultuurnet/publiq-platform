@@ -788,16 +788,16 @@
         },
         {
             "name": "doctrine/dbal",
-            "version": "3.8.7",
+            "version": "3.9.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/dbal.git",
-                "reference": "2093d670ca17f634f3c095ec10a20687eccebd99"
+                "reference": "d7dc08f98cba352b2bab5d32c5e58f7e745c11a7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/2093d670ca17f634f3c095ec10a20687eccebd99",
-                "reference": "2093d670ca17f634f3c095ec10a20687eccebd99",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/d7dc08f98cba352b2bab5d32c5e58f7e745c11a7",
+                "reference": "d7dc08f98cba352b2bab5d32c5e58f7e745c11a7",
                 "shasum": ""
             },
             "require": {
@@ -813,7 +813,7 @@
                 "doctrine/coding-standard": "12.0.0",
                 "fig/log-test": "^1",
                 "jetbrains/phpstorm-stubs": "2023.1",
-                "phpstan/phpstan": "1.11.7",
+                "phpstan/phpstan": "1.12.0",
                 "phpstan/phpstan-strict-rules": "^1.6",
                 "phpunit/phpunit": "9.6.20",
                 "psalm/plugin-phpunit": "0.18.4",
@@ -881,7 +881,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/dbal/issues",
-                "source": "https://github.com/doctrine/dbal/tree/3.8.7"
+                "source": "https://github.com/doctrine/dbal/tree/3.9.1"
             },
             "funding": [
                 {
@@ -897,7 +897,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-08-07T11:57:25+00:00"
+            "time": "2024-09-01T13:49:23+00:00"
         },
         {
             "name": "doctrine/deprecations",
@@ -2590,17 +2590,17 @@
         },
         {
             "name": "laravel/nova",
-            "version": "4.35.0",
+            "version": "4.35.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:laravel/nova.git",
-                "reference": "78ef7f728f63d30ce724dc877e30cc574e066308"
+                "reference": "d774e78aa468dfbac70a062d6890bdd07883683f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://nova.laravel.com/dist/laravel/nova/laravel-nova-78ef7f728f63d30ce724dc877e30cc574e066308-zip-716877.zip",
-                "reference": "78ef7f728f63d30ce724dc877e30cc574e066308",
-                "shasum": "38875c41792b5bb19994b7dcb10683223c971ec1"
+                "url": "https://nova.laravel.com/dist/laravel/nova/laravel-nova-d774e78aa468dfbac70a062d6890bdd07883683f-zip-0aadef.zip",
+                "reference": "d774e78aa468dfbac70a062d6890bdd07883683f",
+                "shasum": "f8f6d5dfbd87746574c9f9321076eef38a08f77b"
             },
             "require": {
                 "brick/money": "^0.5|^0.6|^0.7|^0.8|^0.9",
@@ -2710,9 +2710,9 @@
                 "laravel"
             ],
             "support": {
-                "source": "https://github.com/laravel/nova/tree/v4.35.0"
+                "source": "https://github.com/laravel/nova/tree/v4.35.1"
             },
-            "time": "2024-08-06T14:25:25+00:00"
+            "time": "2024-09-02T14:45:09+00:00"
         },
         {
             "name": "laravel/prompts",
