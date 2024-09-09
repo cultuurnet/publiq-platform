@@ -5,8 +5,8 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "format": "prettier --write 'resources/ts/**/*.{js,jsx,ts,tsx}'",
-        "format:check": "prettier --check 'resources/ts/**/*.{js,jsx,ts,tsx}'",
+        "format": "prettier --write 'resources/**/*.{js,jsx,ts,tsx,json}'",
+        "format:check": "prettier --check 'resources/**/*.{js,jsx,ts,tsx,json}'",
         "lint": "eslint --fix 'resources/ts/**/*.{js,jsx,ts,tsx}'",
         "lint:check": "eslint 'resources/ts/**/*.{js,jsx,ts,tsx}'",
         "types:check": "tsc",

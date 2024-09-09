@@ -1,6 +1,4 @@
-import type { ReactNode } from "react";
 import React from "react";
-import Layout from "../../layouts/Layout";
 import { SupportTypes } from "../../Components/SupportTypes";
 import { Heading } from "../../Components/Heading";
 import { useTranslation } from "react-i18next";
@@ -23,7 +21,5 @@ const Index = (props: SupportProps) => {
     </Page>
   );
 };
-
-Index.layout = (page: ReactNode) => <Layout>{page}</Layout>;
 
 export default Index;

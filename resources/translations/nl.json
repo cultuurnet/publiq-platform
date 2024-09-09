@@ -14,11 +14,27 @@
   },
   "title": "publiq platform",
   "nav": {
-    "integrations": "Mijn integraties",
-    "opportunities": "Mogelijkheden",
-    "support": "Ondersteuning",
-    "hello": "Hallo",
-    "integrations/new": "Integratie toevoegen"
+    "integrations": {
+      "label": "Mijn integraties"
+    },
+    "opportunities": {
+      "label": "Mogelijkheden",
+      "link": "https://www.publiq.be/nl/projecten/publiq-platform"
+    },
+    "prices": {
+      "label": "Prijzen",
+      "link": "https://www.publiq.be/nl/projecten/publiq-platform/prijzen"
+    },
+    "documentation": {
+      "label": "Documentatie",
+      "link": "https://docs.publiq.be"
+    },
+    "support": {
+      "label": "Ondersteuning"
+    },
+    "integrations/new": {
+      "label": "Integratie toevoegen"
+    }
   },
   "pricing_plan": {
     "free": {
