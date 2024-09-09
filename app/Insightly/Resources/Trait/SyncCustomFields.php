@@ -10,11 +10,11 @@ trait SyncCustomFields
     {
         $output = [];
 
-        foreach($originalCustomFields as $value) {
+        foreach ($originalCustomFields as $value) {
             $output[$value['FIELD_NAME']] = $value;
         }
 
-        foreach($updatedCustomFields as $value) {
+        foreach ($updatedCustomFields as $value) {
             $output[$value['FIELD_NAME']] = $value;
         }
 
