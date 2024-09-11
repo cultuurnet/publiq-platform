@@ -18,6 +18,7 @@ final class MailManager
     private const SUBJECT_INTEGRATION_ACTIVATED = 'Publiq platform - Integration activated';
     private const SUBJECT_INTEGRATION_BLOCKED = 'Publiq platform - Integration blocked';
     private const SUBJECT_INTEGRATION_CREATED = 'Welcome to Publiq platform - Let\'s get you started!';
+    private const SUBJECT_INTEGRATION_ACTIVATION_REMINDER_EMAIL = 'Publiq platform - Can we help you to activate your integration?';
 
     public function __construct(
         private readonly Mailer $mailer,
@@ -25,6 +26,7 @@ final class MailManager
         private readonly int $templateIntegrationCreated,
         private readonly int $templateIntegrationActivated,
         private readonly int $templateIntegrationBlocked,
+        private readonly int $templateIntegrationActivationReminderEmail,
         private readonly string $baseUrl
     ) {
     }
@@ -77,7 +79,24 @@ final class MailManager
                 ]
             );
         }
+    }
 
+    public function sendActivationReminderEmail(Integration $integration): void
+    {
+        foreach ($this->getContacts($integration) as $contact) {
+            $this->mailer->send(
+                $this->getFrom(),
+                $this->getAddresses($contact),
+                $this->templateIntegrationActivationReminderEmail,
+                self::SUBJECT_INTEGRATION_ACTIVATION_REMINDER_EMAIL,
+                [
+                    'firstName' => $contact->firstName,
+                    'lastName' => $contact->lastName,
+                    'contactType' => $contact->type->value,
+                    'integrationName' => $integration->name,
+                ]
+            );
+        }
     }
 
     private function getFrom(): Address

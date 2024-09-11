@@ -25,28 +25,32 @@ use Tests\TestCase;
 final class MailManagerTest extends TestCase
 {
     private const INTEGRATION_ID = '9e6d778f-ef44-45b3-b842-26b6d71bcad7';
-    private const TEMPLATE_BLOCKED_ID = 456;
-    private const TEMPLATE_ACTIVATED_ID = 123;
-    private const TEMPLATE_CREATED_ID = 677;
+    private const TEMPLATE_BLOCKED_ID = 1;
+    private const TEMPLATE_ACTIVATED_ID = 2;
+    private const TEMPLATE_CREATED_ID = 3;
+    private const TEMPLATE_INTEGRATION_ACTIVATION_REMINDER = 4;
     private MailManager $mailManager;
     private Mailer&MockObject $mailer;
 
     /** @var Contact[] */
     private array $contacts;
+    private Integration $integration;
+    private IntegrationRepository&MockObject $integrationRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->mailer = $this->createMock(Mailer::class);
-        $integrationRepository = $this->createMock(IntegrationRepository::class);
+        $this->integrationRepository = $this->createMock(IntegrationRepository::class);
 
         $this->mailManager = new MailManager(
             $this->mailer,
-            $integrationRepository,
+            $this->integrationRepository,
             self::TEMPLATE_CREATED_ID,
             self::TEMPLATE_ACTIVATED_ID,
             self::TEMPLATE_BLOCKED_ID,
+            self::TEMPLATE_INTEGRATION_ACTIVATION_REMINDER,
             'http://www.example.com'
         );
 
@@ -85,7 +89,7 @@ final class MailManagerTest extends TestCase
             ),
         ];
 
-        $integration = (new Integration(
+        $this->integration = (new Integration(
             Uuid::fromString(self::INTEGRATION_ID),
             IntegrationType::SearchApi,
             'Mock Integration',
@@ -95,24 +99,25 @@ final class MailManagerTest extends TestCase
             IntegrationPartnerStatus::THIRD_PARTY,
         ))
             ->withContacts(...$this->contacts);
-
-        $integrationRepository
-            ->expects($this->once())
-            ->method('getById')
-            ->with(self::INTEGRATION_ID)
-            ->willReturn($integration);
     }
 
     /**
      * @dataProvider mailDataProvider
      */
     public function testSendMail(
-        object $event,
+        ?object $event,
         string $method,
         int $templateId,
         string $subject,
-        array $expectedParameters
+        array $expectedParameters,
+        int $timesGetByIdCalled = 1
     ): void {
+        $this->integrationRepository
+            ->expects($this->exactly($timesGetByIdCalled))
+            ->method('getById')
+            ->with(self::INTEGRATION_ID)
+            ->willReturn($this->integration);
+
         $currentEmail = null;
 
         $this->mailer
@@ -150,7 +155,7 @@ final class MailManagerTest extends TestCase
                 })
             );
 
-        $this->mailManager->$method($event);
+        $this->mailManager->$method($event ?: $this->integration);
     }
 
     public static function mailDataProvider(): array
@@ -186,6 +191,16 @@ final class MailManagerTest extends TestCase
                 'expectedParameters' => [
                     'integrationName' => 'Mock Integration',
                 ],
+            ],
+            'sendActivationReminderEmail' => [
+                'event' => null, // Use the integration directly / no mapping event
+                'method' => 'sendActivationReminderEmail',
+                'templateId' => self::TEMPLATE_INTEGRATION_ACTIVATION_REMINDER,
+                'subject' => 'Publiq platform - Can we help you to activate your integration?',
+                'expectedParameters' => [
+                    'integrationName' => 'Mock Integration',
+                ],
+                0,
             ],
         ];
     }

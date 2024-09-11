@@ -13,5 +13,6 @@ return [
         'integration_created' => env('MAILJET_TEMPLATE_INTEGRATION_CREATED'),
         'integration_blocked' => env('MAILJET_TEMPLATE_INTEGRATION_BLOCKED'),
         'integration_activated' => env('MAILJET_TEMPLATE_INTEGRATION_ACTIVATED'),
+        'integration_activation_reminder' => env('MAILJET_TEMPLATE_INTEGRATION_ACTIVATION_REMINDER'),
     ],
 ];

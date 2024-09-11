@@ -13,4 +13,5 @@ final class MailjetConfig
     public const TEMPLATE_INTEGRATION_BLOCKED = 'mailjet.templates.integration_blocked';
     public const TEMPLATE_INTEGRATION_ACTIVATED = 'mailjet.templates.integration_activated';
     public const TEMPLATE_INTEGRATION_CREATED = 'mailjet.templates.integration_created';
+    public const TEMPLATE_INTEGRATION_ACTIVATION_REMINDER = 'mailjet.templates.integration_activation_reminder';
 }

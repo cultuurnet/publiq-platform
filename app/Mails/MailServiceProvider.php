@@ -45,6 +45,7 @@ final class MailServiceProvider extends ServiceProvider
                 (int)config(MailjetConfig::TEMPLATE_INTEGRATION_CREATED),
                 (int)config(MailjetConfig::TEMPLATE_INTEGRATION_ACTIVATED),
                 (int)config(MailjetConfig::TEMPLATE_INTEGRATION_BLOCKED),
+                (int)config(MailjetConfig::TEMPLATE_INTEGRATION_ACTIVATION_REMINDER),
                 config('app.url')
             );
         });

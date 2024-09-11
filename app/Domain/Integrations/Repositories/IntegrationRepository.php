@@ -8,6 +8,7 @@ use App\Domain\Integrations\Exceptions\InconsistentIntegrationType;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\UdbOrganizers;
 use App\Pagination\PaginatedCollection;
+use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface;
 
 interface IntegrationRepository
@@ -29,4 +30,7 @@ interface IntegrationRepository
     public function activate(UuidInterface $id): void;
     public function activateWithOrganization(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode, UdbOrganizers $organizers = null): void;
     public function approve(UuidInterface $id): void;
+
+    /** @return Collection<Integration> */
+    public function getIntegrationsThatHaveNotBeenActivatedYet(): Collection;
 }

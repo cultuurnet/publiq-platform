@@ -55,6 +55,20 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         ]);
     }
 
+    /** @return Collection<Integration> */
+    public function getIntegrationsThatHaveNotBeenActivatedYet(): Collection
+    {
+        return IntegrationModel::query()
+            ->where('status', 'draft')
+            ->whereNull('sent_reminder_email')
+            ->where('created_at', '<', Carbon::now()->subYear())
+            ->has('contacts')  // This ensures that only integrations with at least one contact are returned
+            ->get()
+            ->map(static function (IntegrationModel $integrationModel) {
+                return $integrationModel->toDomain();
+            });
+    }
+
     public function getById(UuidInterface $id): Integration
     {
         /** @var IntegrationModel $integrationModel */
@@ -110,7 +124,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
     {
         DB::transaction(function () use ($couponCode, $id, $organizationId, $organizers): void {
             if ($organizers !== null) {
-                foreach($organizers as $organizer) {
+                foreach ($organizers as $organizer) {
                     $this->udbOrganizerRepository->create($organizer);
                 }
             }
