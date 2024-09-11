@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Mail;
 
 use App\Domain\Contacts\Contact;
+use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
@@ -32,7 +33,7 @@ final class MailManager
     {
         $integration = $this->integrationRepository->getById($integrationCreated->id);
 
-        foreach ($integration->contacts() as $contact) {
+        foreach ($this->getContacts($integration) as $contact) {
             $this->mailer->send(
                 $this->getFrom(),
                 $this->getAddresses($contact),
@@ -47,7 +48,7 @@ final class MailManager
     {
         $integration = $this->integrationRepository->getById($integrationActivated->id);
 
-        foreach ($integration->contacts() as $contact) {
+        foreach ($this->getContacts($integration) as $contact) {
             $this->mailer->send(
                 $this->getFrom(),
                 $this->getAddresses($contact),
@@ -62,8 +63,7 @@ final class MailManager
     {
         $integration = $this->integrationRepository->getById($integrationBlocked->id);
 
-        foreach ($integration->contacts() as $contact) {
-
+        foreach ($this->getContacts($integration) as $contact) {
             $this->mailer->send(
                 $this->getFrom(),
                 $this->getAddresses($contact),
@@ -100,5 +100,23 @@ final class MailManager
             'url' => $this->baseUrl . '/nl/integraties/' . $integration->id,
             'type' => $integration->type->value,
         ];
+    }
+
+    /**
+     * To optimize email credits and prevent spamming we check that the same email is not sent multiple times to the same e-mail address
+     * @return Contact[]
+     */
+    private function getContacts(Integration $integration): array
+    {
+        $uniqueContacts = [];
+
+        foreach($integration->contacts() as $contact) {
+            // Because sometimes the technical contacts get some additional info this contact gets preference when matching email addresses are found
+            if (!isset($uniqueContacts[$contact->email]) || $uniqueContacts[$contact->email]->type === ContactType::Technical) {
+                $uniqueContacts[$contact->email] = $contact;
+            }
+        }
+
+        return $uniqueContacts;
     }
 }
