@@ -31,6 +31,7 @@ use App\Keycloak\Models\KeycloakClientModel;
 use App\Models\UuidModel;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use App\UiTiDv1\UiTiDv1Environment;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -47,6 +48,7 @@ use Ramsey\Uuid\UuidInterface;
  * @property IntegrationPartnerStatus $partner_status
  * @property KeyVisibility $key_visibility
  * @property string $website
+ * @property string $sent_reminder_email
  */
 final class IntegrationModel extends UuidModel
 {
@@ -65,6 +67,7 @@ final class IntegrationModel extends UuidModel
         'partner_status',
         'key_visibility',
         'website',
+        'sent_reminder_email',
     ];
 
     protected $attributes = [
@@ -340,6 +343,7 @@ final class IntegrationModel extends UuidModel
             Uuid::fromString($this->subscription_id),
             $this->status,
             $this->partner_status,
+            $this->sent_reminder_email ? Carbon::parse($this->sent_reminder_email) : null
         ))->withKeyVisibility(
             $this->key_visibility
         )->withContacts(

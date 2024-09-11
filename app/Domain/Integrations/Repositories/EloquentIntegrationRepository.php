@@ -14,6 +14,7 @@ use App\Domain\Integrations\UdbOrganizers;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Pagination\PaginatedCollection;
 use App\Pagination\PaginationInfo;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -50,6 +51,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
             'status' => $integration->status,
             'partner_status' => $integration->partnerStatus,
             'key_visibility' => $integration->getKeyVisibility(),
+            'sent_reminder_email' => $integration->sentReminderEmail,
         ]);
     }
 

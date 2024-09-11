@@ -12,6 +12,7 @@ use App\Domain\Organizations\Organization;
 use App\Domain\Subscriptions\Subscription;
 use App\Keycloak\Client as KeycloakClient;
 use App\UiTiDv1\UiTiDv1Consumer;
+use DateTimeInterface;
 use Ramsey\Uuid\UuidInterface;
 
 final class Integration
@@ -53,7 +54,8 @@ final class Integration
         public readonly string $description,
         public readonly UuidInterface $subscriptionId,
         public readonly IntegrationStatus $status,
-        public readonly IntegrationPartnerStatus $partnerStatus
+        public readonly IntegrationPartnerStatus $partnerStatus,
+        public ?DateTimeInterface $sentReminderEmail = null,
     ) {
         $this->contacts = [];
         $this->urls = [];
@@ -207,6 +209,13 @@ final class Integration
     {
         $clone = clone $this;
         $clone->urls = $urls;
+        return $clone;
+    }
+
+    public function withSentReminderEmail(DateTimeInterface $sentReminderEmail): self
+    {
+        $clone = clone $this;
+        $clone->sentReminderEmail = $sentReminderEmail;
         return $clone;
     }
 
