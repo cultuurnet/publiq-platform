@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Domain\Contacts\Contact;
+use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Domain\Mail\MailManager;
 use App\Mails\MailJet\MailjetConfig;
-use Carbon\Carbon;
+use App\Mails\SendIntegrationActivationReminderEmail;
 use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
 
-final class SendIntegrationActivationReminderEmail extends Command
+final class SendIntegrationActivationReminderEmailCommand extends Command
 {
     protected $signature = 'cronjob:send-activation-reminder-email {--force : Skip confirmation prompt}';
 
@@ -19,7 +19,7 @@ final class SendIntegrationActivationReminderEmail extends Command
 
     public function __construct(
         private readonly IntegrationRepository $integrationRepository,
-        private readonly MailManager $mailManager,
+        private readonly SendIntegrationActivationReminderEmail $sendIntegrationActivationReminderEmail,
     ) {
         parent::__construct();
     }
@@ -31,7 +31,20 @@ final class SendIntegrationActivationReminderEmail extends Command
             return self::FAILURE;
         }
 
-        $integrations = $this->integrationRepository->getIntegrationsThatHaveNotBeenActivatedYet();
+        $integrationTypeConfig = [
+            IntegrationType::SearchApi->value => 6,
+            IntegrationType::Widgets->value => 3,
+        ];
+
+        $integrations = new Collection();
+        foreach ($integrationTypeConfig as $integrationType => $months) {
+            $integrations->merge(
+                $this->integrationRepository->getIntegrationsThatHaveNotBeenActivatedYetByType(
+                    IntegrationType::from($integrationType),
+                    $months
+                )
+            );
+        }
 
         if ($integrations->isEmpty()) {
             $this->output->writeln('No integrations found to sent reminder emails');
@@ -42,17 +55,7 @@ final class SendIntegrationActivationReminderEmail extends Command
             return self::SUCCESS;
         }
 
-        foreach ($integrations as $integration) {
-            $this->mailManager->sendActivationReminderEmail($integration);
-
-            $this->integrationRepository->update($integration->withSentReminderEmail(Carbon::now()));
-
-            $emails = implode(', ', array_unique(array_map(static function (Contact $contact) {
-                return $contact->email;
-            }, $integration->contacts())));
-
-            $this->output->writeln(sprintf('Sending activation reminder about integration %s to %s', $integration->id, $emails));
-        }
+        $this->sendIntegrationActivationReminderEmail->send($integrations, $this->output);
 
         return self::SUCCESS;
     }

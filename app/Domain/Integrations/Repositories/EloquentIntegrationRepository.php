@@ -9,6 +9,7 @@ use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\Exceptions\InconsistentIntegrationType;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\UdbOrganizers;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
@@ -56,12 +57,12 @@ final class EloquentIntegrationRepository implements IntegrationRepository
     }
 
     /** @return Collection<Integration> */
-    public function getIntegrationsThatHaveNotBeenActivatedYet(): Collection
+    public function getIntegrationsThatHaveNotBeenActivatedYetByType(IntegrationType $type, int $months): Collection
     {
         return IntegrationModel::query()
             ->where('status', 'draft')
             ->whereNull('sent_reminder_email')
-            ->where('created_at', '<', Carbon::now()->subYear())
+            ->where('created_at', '<', Carbon::now()->subMonths($months))
             ->has('contacts')  // This ensures that only integrations with at least one contact are returned
             ->get()
             ->map(static function (IntegrationModel $integrationModel) {
@@ -232,6 +233,4 @@ final class EloquentIntegrationRepository implements IntegrationRepository
             );
         }
     }
-
-
 }

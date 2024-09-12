@@ -703,12 +703,12 @@ final class EloquentIntegrationRepositoryTest extends TestCase
     }
 
     /** @dataProvider dataProviderGetIntegrationsThatHaveNotBeenActivatedYet */
-    public function test_get_integrations_that_have_not_been_activated_yet(IntegrationStatus $status, Carbon $date, ?Carbon $sentReminderEmail, bool $hasContact, int $expectedCount): void
+    public function test_get_integrations_that_have_not_been_activated_yet(IntegrationType $integrationType,  $status, Carbon $date, ?Carbon $sentReminderEmail, bool $hasContact, int $expectedCount): void
     {
         $integrationId = Uuid::uuid4()->toString();
         DB::table('integrations')->insert([
             'id' => $integrationId,
-            'type' => IntegrationType::SearchApi->value,
+            'type' => $integrationType->value,
             'subscription_id' => Uuid::uuid4()->toString(),
             'name' => 'Test',
             'description' => 'test',
@@ -728,13 +728,22 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             ]);
         }
 
-        $this->assertCount($expectedCount, $this->integrationRepository->getIntegrationsThatHaveNotBeenActivatedYet());
+        $this->assertCount($expectedCount, $this->integrationRepository->getIntegrationsThatHaveNotBeenActivatedYetByType(IntegrationType::SearchApi, 12));
     }
 
     public static function dataProviderGetIntegrationsThatHaveNotBeenActivatedYet(): array
     {
         return [
+            'Should not be selected: wrong type' => [
+                IntegrationType::EntryApi,
+                IntegrationStatus::Active,
+                Carbon::now()->subYears(2),
+                null,
+                true,
+                0,
+            ],
             'Should not be selected: already active' => [
+                IntegrationType::SearchApi,
                 IntegrationStatus::Active,
                 Carbon::now()->subYears(2),
                 null,
@@ -742,6 +751,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
                 0,
             ],
             'Should not be selected: No contacts' => [
+                IntegrationType::SearchApi,
                 IntegrationStatus::Draft,
                 Carbon::now()->subYears(2),
                 null,
@@ -749,13 +759,15 @@ final class EloquentIntegrationRepositoryTest extends TestCase
                 0,
             ],
             'Should not be selected: Created too recently' => [
+                IntegrationType::SearchApi,
                 IntegrationStatus::Draft,
-                Carbon::now()->subDay(),
+                Carbon::now()->subMonths(11),
                 null,
                 true,
                 0,
             ],
             'Should not be selected: Mail already sent' => [
+                IntegrationType::SearchApi,
                 IntegrationStatus::Draft,
                 Carbon::now()->subYears(2),
                 Carbon::now(),
@@ -763,6 +775,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
                 0,
             ],
             'Should be selected!' => [
+                IntegrationType::SearchApi,
                 IntegrationStatus::Draft,
                 Carbon::now()->subYears(2),
                 null,

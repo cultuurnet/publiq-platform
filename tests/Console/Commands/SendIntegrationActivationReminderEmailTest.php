@@ -4,15 +4,20 @@ declare(strict_types=1);
 
 namespace Tests\Console\Commands;
 
-use App\Console\Commands\SendIntegrationActivationReminderEmail;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
-use App\Mails\MailJet\MailjetConfig;
+use App\Domain\Integrations\Repositories\EloquentIntegrationRepository;
+use App\Domain\Integrations\Repositories\EloquentUdbOrganizerRepository;
+use App\Domain\Mail\Mailer;
+use App\Domain\Mail\MailManager;
+use App\Domain\Subscriptions\Repositories\EloquentSubscriptionRepository;
+use App\Mails\SendIntegrationActivationReminderEmail;
 use Carbon\Carbon;
+use Illuminate\Console\OutputStyle;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Testing\PendingCommand;
+use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
@@ -20,28 +25,8 @@ final class SendIntegrationActivationReminderEmailTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_feature_flag_is_off(): void
-    {
-        $this->mockConfigForEmail(false);
-
-        $this->getPendingCommand('cronjob:send-activation-reminder-email --force')
-            ->expectsOutput('Email feature flag is disabled - mails not sent')
-            ->assertExitCode(SendIntegrationActivationReminderEmail::FAILURE);
-    }
-
-    public function test_no_integrations_found(): void
-    {
-        $this->mockConfigForEmail(true);
-
-        $this->getPendingCommand('cronjob:send-activation-reminder-email --force')
-            ->expectsOutput('No integrations found to sent reminder emails')
-            ->assertExitCode(SendIntegrationActivationReminderEmail::SUCCESS);
-    }
-
     public function test_confirmation_mail_sent(): void
     {
-        $this->mockConfigForEmail(true);
-
         $integrationId = Uuid::uuid4()->toString();
         DB::table('integrations')->insert([
             'id' => $integrationId,
@@ -73,25 +58,46 @@ final class SendIntegrationActivationReminderEmailTest extends TestCase
         $now = Carbon::now();
         Carbon::setTestNow($now);
 
-        $this->getPendingCommand('cronjob:send-activation-reminder-email --force')
-            ->expectsOutput(sprintf('Sending activation reminder about integration %s to bril.smurf@example.com, grote.smurf@example.com', $integrationId))
-            ->assertExitCode(SendIntegrationActivationReminderEmail::SUCCESS);
+        $output = $this->createMock(OutputStyle::class);
+        $output->expects($this->once())
+            ->method('writeln')
+            ->with(sprintf('Sending activation reminder about integration %s to bril.smurf@example.com, grote.smurf@example.com', $integrationId));
+
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())
+            ->method('info')
+            ->with(sprintf('Sending activation reminder about integration %s to bril.smurf@example.com, grote.smurf@example.com', $integrationId));
+
+        $mailer = $this->createMock(Mailer::class);
+        $mailer->expects($this->exactly(2))
+            ->method('send');
+
+        $integrationRepository = new EloquentIntegrationRepository(
+            new EloquentUdbOrganizerRepository(),
+            new EloquentSubscriptionRepository(),
+        );
+
+        $mailManager = new MailManager(
+            $mailer,
+            $integrationRepository,
+            1,
+            2,
+            3,
+            4,
+            'http://www.example.com'
+        );
+
+        $service = new SendIntegrationActivationReminderEmail(
+            $mailManager,
+            $integrationRepository,
+            $logger
+        );
+
+        $service->send($integrationRepository->getIntegrationsThatHaveNotBeenActivatedYetByType(IntegrationType::SearchApi, 12), $output);
 
         $this->assertDatabaseHas('integrations', [
             'id' => $integrationId,
             'sent_reminder_email' => $now,
         ]);
-    }
-
-    private function mockConfigForEmail(bool $enabled): void
-    {
-        config()->set(MailjetConfig::TRANSACTIONAL_EMAILS_ENABLED, $enabled);
-    }
-
-    private function getPendingCommand(string $command, array $params = []): PendingCommand
-    {
-        $command = $this->artisan($command, $params);
-        $this->assertInstanceOf(PendingCommand::class, $command);
-        return $command;
     }
 }

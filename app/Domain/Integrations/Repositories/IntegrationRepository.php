@@ -6,6 +6,7 @@ namespace App\Domain\Integrations\Repositories;
 
 use App\Domain\Integrations\Exceptions\InconsistentIntegrationType;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\UdbOrganizers;
 use App\Pagination\PaginatedCollection;
 use Illuminate\Support\Collection;
@@ -32,5 +33,5 @@ interface IntegrationRepository
     public function approve(UuidInterface $id): void;
 
     /** @return Collection<Integration> */
-    public function getIntegrationsThatHaveNotBeenActivatedYet(): Collection;
+    public function getIntegrationsThatHaveNotBeenActivatedYetByType(IntegrationType $type, int $months): Collection;
 }
