@@ -10,6 +10,7 @@ use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use Symfony\Component\Mime\Address;
 
@@ -33,7 +34,8 @@ final class MailManager
     {
         $integration = $this->integrationRepository->getById($integrationCreated->id);
 
-        foreach ($this->getUniqueContacts($integration) as $contact) {
+        // The technical contact get  additional information in the e-mail (example a link to the satisfaction survey), so this type of contact gets preference when matching email addresses are found
+        foreach ($this->getUniqueContactsWithPreferredContactType($integration, ContactType::Technical) as $contact) {
             $this->mailer->send(
                 $this->getFrom(),
                 $this->getAddresses($contact),
@@ -48,7 +50,7 @@ final class MailManager
     {
         $integration = $this->integrationRepository->getById($integrationActivated->id);
 
-        foreach ($this->getUniqueContacts($integration) as $contact) {
+        foreach ($this->getUniqueContactsWithPreferredContactType($integration, ContactType::Technical) as $contact) {
             $this->mailer->send(
                 $this->getFrom(),
                 $this->getAddresses($contact),
@@ -63,7 +65,7 @@ final class MailManager
     {
         $integration = $this->integrationRepository->getById($integrationBlocked->id);
 
-        foreach ($this->getUniqueContacts($integration) as $contact) {
+        foreach ($this->getUniqueContactsWithPreferredContactType($integration, ContactType::Technical) as $contact) {
             $this->mailer->send(
                 $this->getFrom(),
                 $this->getAddresses($contact),
@@ -106,13 +108,12 @@ final class MailManager
      * To optimize email credits and prevent spamming we check that the same email is not sent multiple times to the same e-mail address
      * @return Contact[]
      */
-    private function getUniqueContacts(Integration $integration): array
+    private function getUniqueContactsWithPreferredContactType(Integration $integration, ContactType $contactType): array
     {
         $uniqueContacts = [];
 
         foreach($integration->contacts() as $contact) {
-            // Sometimes the technical contacts get some additional information in the e-mail (example a link to the survey), so this type of contact gets preference when matching email addresses are found
-            if (!isset($uniqueContacts[$contact->email]) || $contact->type === ContactType::Technical) {
+            if (!isset($uniqueContacts[$contact->email]) || $contact->type === $contactType) {
                 $uniqueContacts[$contact->email] = $contact;
             }
         }
