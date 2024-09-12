@@ -51,7 +51,15 @@ final class MailManagerTest extends TestCase
         );
 
         $this->contacts = [
-            new Contact(
+            'grote.smurf@publiq.be_wrong1' => new Contact( // This contact will be discarded because the email already exists (next contact), and it is not a technical contact
+                Uuid::uuid4(),
+                Uuid::fromString(self::INTEGRATION_ID),
+                'grote.smurf@publiq.be',
+                ContactType::Contributor,
+                'Grote',
+                'Smurf'
+            ),
+            'grote.smurf@publiq.be' => new Contact(
                 Uuid::uuid4(),
                 Uuid::fromString(self::INTEGRATION_ID),
                 'grote.smurf@publiq.be',
@@ -59,7 +67,15 @@ final class MailManagerTest extends TestCase
                 'Grote',
                 'Smurf'
             ),
-            new Contact(
+            'grote.smurf@publiq.be_wrong2' => new Contact( // This contact will be discarded because the email already exists, and it is not a technical contact
+                Uuid::uuid4(),
+                Uuid::fromString(self::INTEGRATION_ID),
+                'grote.smurf@publiq.be',
+                ContactType::Functional,
+                'Grote',
+                'Smurf'
+            ),
+            'brilsmurf@publiq.be' => new Contact(
                 Uuid::uuid4(),
                 Uuid::fromString(self::INTEGRATION_ID),
                 'brilsmurf@publiq.be',
@@ -67,7 +83,7 @@ final class MailManagerTest extends TestCase
                 'Bril',
                 'Smurf'
             ),
-            new Contact(
+            'knutselsmurf@publiq.be' => new Contact(
                 Uuid::uuid4(),
                 Uuid::fromString(self::INTEGRATION_ID),
                 'knutselsmurf@publiq.be',
@@ -105,36 +121,38 @@ final class MailManagerTest extends TestCase
         string $subject,
         array $expectedParameters
     ): void {
-        $counter = 0;
+        $currentEmail = null;
 
         $this->mailer
-            ->expects($this->exactly(count($this->contacts)))
+            ->expects($this->exactly(3))
             ->method('send')
             ->with(
                 new Address(config('mail.from.address'), config('mail.from.name')),
-                $this->callback(function (Addresses $addresses) use (&$counter) {
+                $this->callback(function (Addresses $addresses) use (&$currentEmail) {
                     /** @var Address $address */
                     $address = $addresses->first();
-                    if ($address->getAddress() !== $this->contacts[$counter]->email) {
+
+                    if (!isset($this->contacts[$address->getAddress()])) {
                         return false;
                     }
 
-                    if ($address->getName() !== $this->contacts[$counter]->firstName . ' ' . $this->contacts[$counter]->lastName) {
+                    if ($address->getName() !== $this->contacts[$address->getAddress()]->firstName . ' ' . $this->contacts[$address->getAddress()]->lastName) {
                         return false;
                     }
+
+                    $currentEmail = $address->getAddress();
 
                     return true;
                 }),
                 $templateId,
                 $subject,
-                $this->callback(function ($parameters) use ($expectedParameters, &$counter) {
-                    $expectedParameters['firstName'] = $this->contacts[$counter]->firstName;
-                    $expectedParameters['lastName'] = $this->contacts[$counter]->lastName;
-                    $expectedParameters['contactType'] = $this->contacts[$counter]->type->value;
+                // Because with() is called with all callbacks at the same time, we have to pass currentEmail as reference
+                $this->callback(function ($parameters) use ($expectedParameters, &$currentEmail) {
+                    $expectedParameters['firstName'] = $this->contacts[$currentEmail]->firstName;
+                    $expectedParameters['lastName'] = $this->contacts[$currentEmail]->lastName;
+                    $expectedParameters['contactType'] = $this->contacts[$currentEmail]->type->value;
 
                     $this->assertEquals($expectedParameters, $parameters);
-
-                    $counter++;
 
                     return true;
                 })

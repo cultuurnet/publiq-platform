@@ -40,4 +40,9 @@ final class UserProvider implements UserProviderContract
     {
         throw new \Exception('Not implemented');
     }
+
+    public function rehashPasswordIfRequired(Authenticatable $user, array $credentials, bool $force = false)
+    {
+        throw new \Exception('Not implemented');
+    }
 }

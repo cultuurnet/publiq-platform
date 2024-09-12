@@ -14,7 +14,7 @@ final class CachedUiTiDv1Status
 
     public function findStatusOnConsumer(UiTiDv1Consumer $consumer): UiTiDv1ConsumerStatus
     {
-        if(! isset($this->statuses[$consumer->consumerKey])) {
+        if (! isset($this->statuses[$consumer->consumerKey])) {
             $this->statuses[$consumer->consumerKey] = $this->sdk->fetchStatusOfConsumer($consumer);
         }
 

@@ -108,7 +108,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
     {
         DB::transaction(function () use ($couponCode, $id, $organizationId, $organizers): void {
             if ($organizers !== null) {
-                foreach($organizers as $organizer) {
+                foreach ($organizers as $organizer) {
                     $this->udbOrganizerRepository->create($organizer);
                 }
             }
