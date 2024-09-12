@@ -10,6 +10,7 @@ final class MailjetConfig
     public const TRANSACTIONAL_EMAILS_ENABLED = 'mailjet.enabled';
     public const API_KEY = 'mailjet.api.key';
     public const API_SECRET = 'mailjet.api.secret';
+    public const SANDBOX_MODE = 'mailjet.sandbox_mode';
     public const TEMPLATE_INTEGRATION_BLOCKED = 'mailjet.templates.integration_blocked';
     public const TEMPLATE_INTEGRATION_ACTIVATED = 'mailjet.templates.integration_activated';
     public const TEMPLATE_INTEGRATION_CREATED = 'mailjet.templates.integration_created';
