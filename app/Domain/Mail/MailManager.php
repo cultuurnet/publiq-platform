@@ -111,7 +111,7 @@ final class MailManager
         $uniqueContacts = [];
 
         foreach($integration->contacts() as $contact) {
-            // Because sometimes the technical contacts get some additional info this contact gets preference when matching email addresses are found
+            // Sometimes the technical contacts get some additional information in the e-mail (example a link to the survey), so this type of contact gets preference when matching email addresses are found
             if (!isset($uniqueContacts[$contact->email]) || $contact->type === ContactType::Technical) {
                 $uniqueContacts[$contact->email] = $contact;
             }
