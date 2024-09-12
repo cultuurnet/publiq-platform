@@ -36,7 +36,7 @@ final class SendIntegrationActivationReminderEmailTest extends TestCase
             'description' => 'test',
             'status' => IntegrationStatus::Draft,
             'created_at' => Carbon::now()->subYears(2),
-            'sent_reminder_email' => null,
+            'reminder_email_sent' => null,
         ]);
         DB::table('contacts')->insert([
             'id' => Uuid::uuid4()->toString(),
@@ -97,7 +97,7 @@ final class SendIntegrationActivationReminderEmailTest extends TestCase
 
         $this->assertDatabaseHas('integrations', [
             'id' => $integrationId,
-            'sent_reminder_email' => $now,
+            'reminder_email_sent' => $now,
         ]);
     }
 }

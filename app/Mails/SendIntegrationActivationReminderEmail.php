@@ -27,7 +27,7 @@ final readonly class SendIntegrationActivationReminderEmail
         foreach ($integrations as $integration) {
             $this->mailManager->sendActivationReminderEmail($integration);
 
-            $this->integrationRepository->update($integration->withSentReminderEmail(Carbon::now()));
+            $this->integrationRepository->update($integration->withreminderEmailSent(Carbon::now()));
 
             $msg = sprintf('Sending activation reminder about integration %s to %s', $integration->id, $this->getEmails($integration));
 

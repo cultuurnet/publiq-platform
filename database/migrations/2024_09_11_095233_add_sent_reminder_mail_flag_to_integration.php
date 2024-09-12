@@ -10,15 +10,15 @@ return new class () extends Migration {
     public function up(): void
     {
         Schema::table('integrations', function (Blueprint $table) {
-            $table->timestamp('sent_reminder_email')->after('migrated_at')->nullable();
-            $table->index('sent_reminder_email', 'sent_reminder_email_index');
+            $table->timestamp('reminder_email_sent')->after('migrated_at')->nullable();
+            $table->index('reminder_email_sent', 'reminder_email_sent_index');
         });
     }
 
     public function down(): void
     {
         Schema::table('integrations', function (Blueprint $table) {
-            $table->dropColumn('sent_reminder_email');
+            $table->dropColumn('reminder_email_sent');
         });
     }
 };

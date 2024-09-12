@@ -52,7 +52,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
             'status' => $integration->status,
             'partner_status' => $integration->partnerStatus,
             'key_visibility' => $integration->getKeyVisibility(),
-            'sent_reminder_email' => $integration->sentReminderEmail,
+            'reminder_email_sent' => $integration->reminderEmailSent,
         ]);
     }
 
@@ -61,7 +61,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
     {
         return IntegrationModel::query()
             ->where('status', 'draft')
-            ->whereNull('sent_reminder_email')
+            ->whereNull('reminder_email_sent')
             ->where('created_at', '<', Carbon::now()->subMonths($months))
             ->has('contacts')  // This ensures that only integrations with at least one contact are returned
             ->get()

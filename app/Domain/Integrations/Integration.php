@@ -55,7 +55,7 @@ final class Integration
         public readonly UuidInterface $subscriptionId,
         public readonly IntegrationStatus $status,
         public readonly IntegrationPartnerStatus $partnerStatus,
-        public ?DateTimeInterface $sentReminderEmail = null,
+        public ?DateTimeInterface $reminderEmailSent = null,
     ) {
         $this->contacts = [];
         $this->urls = [];
@@ -212,10 +212,10 @@ final class Integration
         return $clone;
     }
 
-    public function withSentReminderEmail(DateTimeInterface $sentReminderEmail): self
+    public function withreminderEmailSent(DateTimeInterface $reminderEmailSent): self
     {
         $clone = clone $this;
-        $clone->sentReminderEmail = $sentReminderEmail;
+        $clone->reminderEmailSent = $reminderEmailSent;
         return $clone;
     }
 
