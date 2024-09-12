@@ -33,7 +33,8 @@ final class MailServiceProvider extends ServiceProvider
                     true,
                     ['version' => 'v3.1']
                 ),
-                $this->app->get(LoggerInterface::class)
+                $this->app->get(LoggerInterface::class),
+                config(MailjetConfig::SANDBOX_MODE)
             );
         });
 
