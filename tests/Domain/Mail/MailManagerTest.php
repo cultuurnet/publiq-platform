@@ -59,7 +59,7 @@ final class MailManagerTest extends TestCase
                 'Grote',
                 'Smurf'
             ),
-            'grote.smurf@publiq.be2' => new Contact( // This email will be merged into the previous contact
+            'grote.smurf@publiq.be2' => new Contact( // This contact will be absorbed into the previous contact
                 Uuid::uuid4(),
                 Uuid::fromString(self::INTEGRATION_ID),
                 'grote.smurf@publiq.be',
