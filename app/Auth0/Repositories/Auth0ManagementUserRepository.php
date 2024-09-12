@@ -23,7 +23,7 @@ final readonly class Auth0ManagementUserRepository implements Auth0UserRepositor
         $response = $this->management->users()->getAll(['q' => $email]);
         $json = json_decode($response->getBody()->getContents());
 
-        if(!is_array($json) || count($json) === 0) {
+        if (!is_array($json) || count($json) === 0) {
             return null;
         }
 

@@ -393,7 +393,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'status' => IntegrationStatus::PendingApprovalIntegration,
         ]);
 
-        foreach($organizers as $organizer) {
+        foreach ($organizers as $organizer) {
             $this->assertDatabaseHas('udb_organizers', [
                 'id' => $organizer->id->toString(),
                 'integration_id' => $organizer->integrationId->toString(),

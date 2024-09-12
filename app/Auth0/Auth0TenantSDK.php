@@ -150,7 +150,7 @@ final class Auth0TenantSDK
 
         $json = json_decode($response->getBody()->getContents());
 
-        if(! is_object($json) || ! property_exists($json, 'grant_types')) {
+        if (! is_object($json) || ! property_exists($json, 'grant_types')) {
             return [];
         }
 
