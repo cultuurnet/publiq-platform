@@ -703,7 +703,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
     }
 
     /** @dataProvider dataProviderGetIntegrationsThatHaveNotBeenActivatedYet */
-    public function test_get_integrations_that_have_not_been_activated_yet(IntegrationType $integrationType,  $status, Carbon $date, ?Carbon $sentReminderEmail, bool $hasContact, int $expectedCount): void
+    public function test_get_integrations_that_have_not_been_activated_yet(IntegrationType $integrationType, IntegrationStatus $status, Carbon $date, ?Carbon $sentReminderEmail, bool $hasContact, int $expectedCount): void
     {
         $integrationId = Uuid::uuid4()->toString();
         DB::table('integrations')->insert([
