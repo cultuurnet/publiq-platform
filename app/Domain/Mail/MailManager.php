@@ -84,7 +84,7 @@ final class MailManager
 
     public function sendActivationReminderEmail(Integration $integration): void
     {
-        foreach ($this->getContacts($integration) as $contact) {
+        foreach ($this->getUniqueContactsWithPreferredContactType($integration, ContactType::Technical) as $contact) {
             $this->mailer->send(
                 $this->getFrom(),
                 $this->getAddresses($contact),
