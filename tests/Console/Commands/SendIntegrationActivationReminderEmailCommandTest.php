@@ -1,0 +1,46 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Console\Commands;
+
+use App\Console\Commands\SendIntegrationActivationReminderEmailCommand;
+use App\Mails\MailJet\MailjetConfig;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\PendingCommand;
+use Tests\TestCase;
+
+final class SendIntegrationActivationReminderEmailCommandTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_feature_flag_is_off(): void
+    {
+        $this->mockConfigForEmail(false);
+
+        $this->getPendingCommand('cronjob:send-activation-reminder-email --force')
+            ->expectsOutput('Email feature flag is disabled - mails not sent')
+            ->assertExitCode(SendIntegrationActivationReminderEmailCommand::FAILURE);
+    }
+
+    public function test_no_integrations_found(): void
+    {
+        $this->mockConfigForEmail(true);
+
+        $this->getPendingCommand('cronjob:send-activation-reminder-email --force')
+            ->expectsOutput('No integrations found to sent reminder emails')
+            ->assertExitCode(SendIntegrationActivationReminderEmailCommand::SUCCESS);
+    }
+
+    private function mockConfigForEmail(bool $enabled): void
+    {
+        config()->set(MailjetConfig::TRANSACTIONAL_EMAILS_ENABLED, $enabled);
+    }
+
+    private function getPendingCommand(string $command, array $params = []): PendingCommand
+    {
+        $command = $this->artisan($command, $params);
+        $this->assertInstanceOf(PendingCommand::class, $command);
+        return $command;
+    }
+}
