@@ -111,7 +111,7 @@ final class MailManager
     {
         $uniqueContacts = [];
 
-        foreach($integration->contacts() as $contact) {
+        foreach ($integration->contacts() as $contact) {
             if (!isset($uniqueContacts[$contact->email]) || $contact->type === $contactType) {
                 $uniqueContacts[$contact->email] = $contact;
             }
