@@ -33,7 +33,7 @@ final class MailManager
     {
         $integration = $this->integrationRepository->getById($integrationCreated->id);
 
-        foreach ($this->getContacts($integration) as $contact) {
+        foreach ($this->getUniqueContacts($integration) as $contact) {
             $this->mailer->send(
                 $this->getFrom(),
                 $this->getAddresses($contact),
@@ -48,7 +48,7 @@ final class MailManager
     {
         $integration = $this->integrationRepository->getById($integrationActivated->id);
 
-        foreach ($this->getContacts($integration) as $contact) {
+        foreach ($this->getUniqueContacts($integration) as $contact) {
             $this->mailer->send(
                 $this->getFrom(),
                 $this->getAddresses($contact),
@@ -63,7 +63,7 @@ final class MailManager
     {
         $integration = $this->integrationRepository->getById($integrationBlocked->id);
 
-        foreach ($this->getContacts($integration) as $contact) {
+        foreach ($this->getUniqueContacts($integration) as $contact) {
             $this->mailer->send(
                 $this->getFrom(),
                 $this->getAddresses($contact),
@@ -106,7 +106,7 @@ final class MailManager
      * To optimize email credits and prevent spamming we check that the same email is not sent multiple times to the same e-mail address
      * @return Contact[]
      */
-    private function getContacts(Integration $integration): array
+    private function getUniqueContacts(Integration $integration): array
     {
         $uniqueContacts = [];
 
