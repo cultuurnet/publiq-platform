@@ -35,7 +35,8 @@ final class MailManager
     {
         $integration = $this->integrationRepository->getById($integrationCreated->id);
 
-        foreach ($this->getContacts($integration) as $contact) {
+        // The technical contact get  additional information in the e-mail (example a link to the satisfaction survey), so this type of contact gets preference when matching email addresses are found
+        foreach ($this->getUniqueContactsWithPreferredContactType($integration, ContactType::Technical) as $contact) {
             $this->mailer->send(
                 $this->getFrom(),
                 $this->getAddresses($contact),
@@ -50,7 +51,7 @@ final class MailManager
     {
         $integration = $this->integrationRepository->getById($integrationActivated->id);
 
-        foreach ($this->getContacts($integration) as $contact) {
+        foreach ($this->getUniqueContactsWithPreferredContactType($integration, ContactType::Technical) as $contact) {
             $this->mailer->send(
                 $this->getFrom(),
                 $this->getAddresses($contact),
@@ -65,7 +66,7 @@ final class MailManager
     {
         $integration = $this->integrationRepository->getById($integrationBlocked->id);
 
-        foreach ($this->getContacts($integration) as $contact) {
+        foreach ($this->getUniqueContactsWithPreferredContactType($integration, ContactType::Technical) as $contact) {
             $this->mailer->send(
                 $this->getFrom(),
                 $this->getAddresses($contact),
@@ -125,13 +126,12 @@ final class MailManager
      * To optimize email credits and prevent spamming we check that the same email is not sent multiple times to the same e-mail address
      * @return Contact[]
      */
-    private function getContacts(Integration $integration): array
+    private function getUniqueContactsWithPreferredContactType(Integration $integration, ContactType $contactType): array
     {
         $uniqueContacts = [];
 
-        foreach($integration->contacts() as $contact) {
-            // Because sometimes the technical contacts get some additional info this contact gets preference when matching email addresses are found
-            if (!isset($uniqueContacts[$contact->email]) || $contact->type === ContactType::Technical) {
+        foreach ($integration->contacts() as $contact) {
+            if (!isset($uniqueContacts[$contact->email]) || $contact->type === $contactType) {
                 $uniqueContacts[$contact->email] = $contact;
             }
         }

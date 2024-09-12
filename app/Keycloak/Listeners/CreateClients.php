@@ -79,7 +79,7 @@ final class CreateClients implements ShouldQueue
             try {
                 $client = $this->client->createClient($realm, $integration, new ClientIdUuidStrategy());
 
-                foreach($realm->scopeConfig->getScopeIdsFromIntegrationType($integration) as $scopeId) {
+                foreach ($realm->scopeConfig->getScopeIdsFromIntegrationType($integration) as $scopeId) {
                     $this->client->addScopeToClient(
                         $client,
                         $scopeId

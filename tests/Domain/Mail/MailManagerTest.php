@@ -55,6 +55,14 @@ final class MailManagerTest extends TestCase
         );
 
         $this->contacts = [
+            'grote.smurf@publiq.be_wrong1' => new Contact( // This contact will be discarded because the email already exists (next contact), and it is not a technical contact
+                Uuid::uuid4(),
+                Uuid::fromString(self::INTEGRATION_ID),
+                'grote.smurf@publiq.be',
+                ContactType::Contributor,
+                'Grote',
+                'Smurf'
+            ),
             'grote.smurf@publiq.be' => new Contact(
                 Uuid::uuid4(),
                 Uuid::fromString(self::INTEGRATION_ID),
@@ -63,7 +71,7 @@ final class MailManagerTest extends TestCase
                 'Grote',
                 'Smurf'
             ),
-            'grote.smurf@publiq.be2' => new Contact( // This email will be merged into the previous contact
+            'grote.smurf@publiq.be_wrong2' => new Contact( // This contact will be discarded because the email already exists, and it is not a technical contact
                 Uuid::uuid4(),
                 Uuid::fromString(self::INTEGRATION_ID),
                 'grote.smurf@publiq.be',

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Domain\Contacts\Models;
 
+use App\Domain\Auth\Models\UserModel;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Contacts\Events\ContactDeleted;
@@ -16,6 +17,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
+use Spatie\Activitylog\Facades\CauserResolver;
 use Tests\TestCase;
 
 final class ContactModelTest extends TestCase
@@ -29,6 +31,8 @@ final class ContactModelTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        CauserResolver::setCauser(UserModel::createSystemUser());
 
         $this->integrationId = Uuid::uuid4();
 
