@@ -82,14 +82,14 @@ final class UiTiDv1EnvironmentSDK
     {
         $response = $this->httpClient->request('GET', 'serviceconsumer/' . $consumer->consumerKey);
 
-        if($response->getStatusCode() !== 200) {
+        if ($response->getStatusCode() !== 200) {
             return UiTiDv1ConsumerStatus::Unknown;
         }
 
         $body = $response->getBody()->getContents();
         $xml = simplexml_load_string($body);
 
-        if(! $xml instanceof SimpleXMLElement || ! $xml->status instanceof SimpleXMLElement) {
+        if (! $xml instanceof SimpleXMLElement || ! $xml->status instanceof SimpleXMLElement) {
             return UiTiDv1ConsumerStatus::Unknown;
         }
 
