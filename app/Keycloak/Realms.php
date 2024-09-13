@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Keycloak;
 
 use App\Domain\Integrations\Environment;
+use App\Keycloak\Exception\RealmNotAvailable;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
 
@@ -45,6 +46,9 @@ final class Realms extends Collection
         return $realms;
     }
 
+    /**
+     * @throws RealmNotAvailable
+     */
     public function getRealmByEnvironment(Environment $environment): Realm
     {
         foreach ($this->items as $realm) {
@@ -53,6 +57,6 @@ final class Realms extends Collection
             }
         }
 
-        throw new \InvalidArgumentException(sprintf('Could not determine realm with the provided environment %s', $environment->value));
+        throw RealmNotAvailable::realmNotAvailable($environment);
     }
 }
