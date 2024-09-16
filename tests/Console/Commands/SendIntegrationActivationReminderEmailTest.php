@@ -93,7 +93,7 @@ final class SendIntegrationActivationReminderEmailTest extends TestCase
             $logger
         );
 
-        $service->send($integrationRepository->getIntegrationsThatHaveNotBeenActivatedYetByType(IntegrationType::SearchApi, 12), $output);
+        $service->send($integrationRepository->getDraftsByTypeAndOlderThenMonthsAgo(IntegrationType::SearchApi, 12), $output);
 
         $this->assertDatabaseHas('integrations', [
             'id' => $integrationId,

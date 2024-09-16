@@ -728,7 +728,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             ]);
         }
 
-        $this->assertCount($expectedCount, $this->integrationRepository->getIntegrationsThatHaveNotBeenActivatedYetByType(IntegrationType::SearchApi, 12));
+        $this->assertCount($expectedCount, $this->integrationRepository->getDraftsByTypeAndOlderThenMonthsAgo(IntegrationType::SearchApi, 12));
     }
 
     public static function dataProviderGetIntegrationsThatHaveNotBeenActivatedYet(): array

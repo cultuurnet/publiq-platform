@@ -46,6 +46,7 @@ final class Integration
     private ?Website $website;
 
     private ?Coupon $coupon;
+    private ?DateTimeInterface $reminderEmailSent = null;
 
     public function __construct(
         public readonly UuidInterface $id,
@@ -55,7 +56,6 @@ final class Integration
         public readonly UuidInterface $subscriptionId,
         public readonly IntegrationStatus $status,
         public readonly IntegrationPartnerStatus $partnerStatus,
-        public ?DateTimeInterface $reminderEmailSent = null,
     ) {
         $this->contacts = [];
         $this->urls = [];
@@ -203,6 +203,11 @@ final class Integration
     public function keycloakClients(): array
     {
         return $this->keycloakClients;
+    }
+
+    public function getReminderEmailSent(): ?DateTimeInterface
+    {
+        return $this->reminderEmailSent;
     }
 
     public function withUrls(IntegrationUrl ...$urls): self

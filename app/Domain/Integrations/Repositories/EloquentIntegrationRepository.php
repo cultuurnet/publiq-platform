@@ -52,12 +52,12 @@ final class EloquentIntegrationRepository implements IntegrationRepository
             'status' => $integration->status,
             'partner_status' => $integration->partnerStatus,
             'key_visibility' => $integration->getKeyVisibility(),
-            'reminder_email_sent' => $integration->reminderEmailSent,
+            'reminder_email_sent' => $integration->getReminderEmailSent(),
         ]);
     }
 
     /** @return Collection<Integration> */
-    public function getIntegrationsThatHaveNotBeenActivatedYetByType(IntegrationType $type, int $months): Collection
+    public function getDraftsByTypeAndOlderThenMonthsAgo(IntegrationType $type, int $months): Collection
     {
         return IntegrationModel::query()
             ->where('status', 'draft')

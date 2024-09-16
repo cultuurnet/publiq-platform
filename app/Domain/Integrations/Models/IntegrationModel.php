@@ -343,7 +343,6 @@ final class IntegrationModel extends UuidModel
             Uuid::fromString($this->subscription_id),
             $this->status,
             $this->partner_status,
-            $this->reminder_email_sent ? Carbon::parse($this->reminder_email_sent) : null
         ))->withKeyVisibility(
             $this->key_visibility
         )->withContacts(
@@ -377,6 +376,10 @@ final class IntegrationModel extends UuidModel
             ->map(fn (UdbOrganizerModel $organizerModel) => $organizerModel->toDomain())
             ->toArray()
         );
+
+        if ($this->reminder_email_sent) {
+            $integration = $integration->withreminderEmailSent(Carbon::parse($this->reminder_email_sent));
+        }
 
         if ($this->keyVisibilityUpgrade) {
             $integration = $integration->withKeyVisibilityUpgrade($this->keyVisibilityUpgrade->toDomain());

@@ -42,7 +42,7 @@ final class SendIntegrationActivationReminderEmailCommand extends Command
         $integrations = new Collection();
         foreach ($integrationTypeConfig as $integrationType => $months) {
             $integrations->merge(
-                $this->integrationRepository->getIntegrationsThatHaveNotBeenActivatedYetByType(
+                $this->integrationRepository->getDraftsByTypeAndOlderThenMonthsAgo(
                     IntegrationType::from($integrationType),
                     $months
                 )
