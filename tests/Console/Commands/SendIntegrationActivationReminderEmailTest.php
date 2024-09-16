@@ -14,7 +14,6 @@ use App\Domain\Mail\MailManager;
 use App\Domain\Subscriptions\Repositories\EloquentSubscriptionRepository;
 use App\Mails\SendIntegrationActivationReminderEmail;
 use Carbon\Carbon;
-use Illuminate\Console\OutputStyle;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Psr\Log\LoggerInterface;
@@ -58,11 +57,6 @@ final class SendIntegrationActivationReminderEmailTest extends TestCase
         $now = Carbon::now();
         Carbon::setTestNow($now);
 
-        $output = $this->createMock(OutputStyle::class);
-        $output->expects($this->once())
-            ->method('writeln')
-            ->with(sprintf('Sending activation reminder about integration %s to bril.smurf@example.com, grote.smurf@example.com', $integrationId));
-
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->once())
             ->method('info')
@@ -93,7 +87,7 @@ final class SendIntegrationActivationReminderEmailTest extends TestCase
             $logger
         );
 
-        $service->send($integrationRepository->getDraftsByTypeAndOlderThenMonthsAgo(IntegrationType::SearchApi, 12), $output);
+        $service->send($integrationRepository->getDraftsByTypeAndOlderThenMonthsAgo(IntegrationType::SearchApi, 12));
 
         $this->assertDatabaseHas('integrations', [
             'id' => $integrationId,

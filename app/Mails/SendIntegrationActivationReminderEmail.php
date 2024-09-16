@@ -9,7 +9,6 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Mail\MailManager;
 use Carbon\Carbon;
-use Illuminate\Console\OutputStyle;
 use Illuminate\Support\Collection;
 use Psr\Log\LoggerInterface;
 
@@ -22,7 +21,7 @@ final readonly class SendIntegrationActivationReminderEmail
     ) {
     }
 
-    public function send(Collection $integrations, OutputStyle $output): void
+    public function send(Collection $integrations): void
     {
         foreach ($integrations as $integration) {
             $this->mailManager->sendActivationReminderEmail($integration);
@@ -32,8 +31,6 @@ final readonly class SendIntegrationActivationReminderEmail
             $msg = sprintf('Sending activation reminder about integration %s to %s', $integration->id, $this->getEmails($integration));
 
             $this->logger->info($msg);
-
-            $output->writeln($msg);
         }
     }
 

@@ -58,7 +58,7 @@ final class SendIntegrationActivationReminderEmailCommand extends Command
             return self::SUCCESS;
         }
 
-        $this->sendIntegrationActivationReminderEmail->send($integrations, $this->output);
+        $this->sendIntegrationActivationReminderEmail->send($integrations);
 
         return self::SUCCESS;
     }
