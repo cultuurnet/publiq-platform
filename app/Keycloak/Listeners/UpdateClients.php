@@ -14,6 +14,7 @@ use App\Keycloak\Client;
 use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
 use App\Keycloak\Exception\KeyCloakApiFailed;
+use App\Keycloak\Exception\RealmNotAvailable;
 use App\Keycloak\Realms;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use Illuminate\Bus\Queueable;
@@ -49,7 +50,7 @@ final class UpdateClients implements ShouldQueue
                     $keycloakClient,
                     $realm->scopeConfig->getScopeIdsFromIntegrationType($integration)
                 );
-            } catch (KeyCloakApiFailed $e) {
+            } catch (KeyCloakApiFailed|RealmNotAvailable $e) {
                 $this->failed($event, $e);
             }
         }

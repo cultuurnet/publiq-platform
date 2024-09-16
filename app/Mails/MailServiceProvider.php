@@ -6,6 +6,7 @@ namespace App\Mails;
 
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationBlocked;
+use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Mail\Mailer;
 use App\Domain\Mail\MailManager;
@@ -32,7 +33,8 @@ final class MailServiceProvider extends ServiceProvider
                     true,
                     ['version' => 'v3.1']
                 ),
-                $this->app->get(LoggerInterface::class)
+                $this->app->get(LoggerInterface::class),
+                config(MailjetConfig::SANDBOX_MODE)
             );
         });
 
@@ -41,12 +43,14 @@ final class MailServiceProvider extends ServiceProvider
             return new MailManager(
                 $this->app->get(Mailer::class),
                 $this->app->get(IntegrationRepository::class),
+                (int)config(MailjetConfig::TEMPLATE_INTEGRATION_CREATED),
                 (int)config(MailjetConfig::TEMPLATE_INTEGRATION_ACTIVATED),
                 (int)config(MailjetConfig::TEMPLATE_INTEGRATION_BLOCKED),
-                config('url')
+                config('app.url')
             );
         });
 
+        Event::listen(IntegrationCreatedWithContacts::class, [MailManager::class, 'sendIntegrationCreatedMail']);
         Event::listen(IntegrationActivated::class, [MailManager::class, 'sendIntegrationActivatedMail']);
         Event::listen(IntegrationBlocked::class, [MailManager::class, 'sendIntegrationBlockedMail']);
     }

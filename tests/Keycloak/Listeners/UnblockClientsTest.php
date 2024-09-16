@@ -51,8 +51,7 @@ final class UnblockClientsTest extends TestCase
             ->willReturn($this->integration);
 
         $clients = [];
-        foreach ($this->givenAllRealms()
-                 as $realm) {
+        foreach ($this->givenAllRealms() as $realm) {
             $client = new Client(Uuid::uuid4(), $this->integration->id, Uuid::uuid4()->toString(), self::SECRET, $realm->environment);
 
             $clients[$client->id->toString()] = $client;
