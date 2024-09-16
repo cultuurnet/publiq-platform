@@ -4,32 +4,32 @@ declare(strict_types=1);
 
 namespace Tests\Console\Commands;
 
-use App\Console\Commands\SendIntegrationActivationReminderEmailCommand;
 use App\Mails\MailJet\MailjetConfig;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\PendingCommand;
+use Symfony\Component\Console\Command\Command;
 use Tests\TestCase;
 
 final class SendIntegrationActivationReminderEmailCommandTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_feature_flag_is_off(): void
+    public function test_it_warns_about_disabled_transactional_mails(): void
     {
         $this->mockConfigForEmail(false);
 
         $this->getPendingCommand('integration:send-activation-reminder-email --force')
             ->expectsOutput('Email feature flag is disabled - mails not sent')
-            ->assertExitCode(SendIntegrationActivationReminderEmailCommand::FAILURE);
+            ->assertExitCode(Command::FAILURE);
     }
 
-    public function test_no_integrations_found(): void
+    public function test_it_warns_when_no_integrations_are_found(): void
     {
         $this->mockConfigForEmail(true);
 
         $this->getPendingCommand('integration:send-activation-reminder-email --force')
             ->expectsOutput('No integrations found to sent reminder emails')
-            ->assertExitCode(SendIntegrationActivationReminderEmailCommand::SUCCESS);
+            ->assertExitCode(Command::SUCCESS);
     }
 
     private function mockConfigForEmail(bool $enabled): void
