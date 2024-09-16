@@ -24,6 +24,19 @@ const Link = (props: ComponentProps<"a">) =>
     <RouterLink {...(props as InertiaLinkProps)} />
   );
 
+const allPages = [
+  {
+    component: "Integrations/Index",
+    key: "integrations",
+  },
+  { key: "opportunities" },
+  {
+    key: "prices",
+  },
+  { key: "documentation" },
+  { component: "Support/Index", key: "support" },
+] as const;
+
 type Props = ComponentProps<"section"> & {
   orientation?: "vertical" | "horizontal";
 };
@@ -39,18 +52,9 @@ export default function Navigation({
   const { component } = usePage();
   const isAuthenticated = useIsAuthenticated();
 
-  const pages: Page[] = [
-    isAuthenticated && {
-      component: "Integrations/Index",
-      key: "integrations",
-    },
-    { key: "opportunities" },
-    {
-      key: "prices",
-    },
-    { key: "documentation" },
-    { component: "Support/Index", key: "support" },
-  ].filter((it) => !!it);
+  const pages: Page[] = isAuthenticated
+    ? allPages.filter((it) => ["integrations", "support"].includes(it.key))
+    : allPages.filter((it) => it.key !== "integrations");
 
   const classes = classNames(
     "flex md:items-center md:justify-start gap-36 px-7 max-md:p-4 max-md:gap-5",
