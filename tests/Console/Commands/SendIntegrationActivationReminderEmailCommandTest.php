@@ -18,7 +18,7 @@ final class SendIntegrationActivationReminderEmailCommandTest extends TestCase
     {
         $this->mockConfigForEmail(false);
 
-        $this->getPendingCommand('cronjob:send-activation-reminder-email --force')
+        $this->getPendingCommand('integration:send-activation-reminder-email --force')
             ->expectsOutput('Email feature flag is disabled - mails not sent')
             ->assertExitCode(SendIntegrationActivationReminderEmailCommand::FAILURE);
     }
@@ -27,7 +27,7 @@ final class SendIntegrationActivationReminderEmailCommandTest extends TestCase
     {
         $this->mockConfigForEmail(true);
 
-        $this->getPendingCommand('cronjob:send-activation-reminder-email --force')
+        $this->getPendingCommand('integration:send-activation-reminder-email --force')
             ->expectsOutput('No integrations found to sent reminder emails')
             ->assertExitCode(SendIntegrationActivationReminderEmailCommand::SUCCESS);
     }

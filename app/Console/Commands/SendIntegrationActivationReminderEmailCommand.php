@@ -16,7 +16,7 @@ final class SendIntegrationActivationReminderEmailCommand extends Command
     private const SEARCH_API_SEND_MAIL_AFTER_X_MONTHS = 6;
     private const WIDGETS_API_SEND_MAIL_AFTER_X_MONTHS = 3;
 
-    protected $signature = 'cronjob:send-activation-reminder-email {--force : Skip confirmation prompt}';
+    protected $signature = 'integration:send-activation-reminder-email {--force : Skip confirmation prompt}';
 
     protected $description = 'Send activation reminder email';
 
