@@ -13,6 +13,9 @@ use Illuminate\Support\Collection;
 
 final class SendIntegrationActivationReminderEmailCommand extends Command
 {
+    private const SEARCH_API_SEND_MAIL_AFTER_X_MONTHS = 6;
+    private const WIDGETS_API_SEND_MAIL_AFTER_X_MONTHS = 3;
+
     protected $signature = 'cronjob:send-activation-reminder-email {--force : Skip confirmation prompt}';
 
     protected $description = 'Send activation reminder email';
@@ -32,8 +35,8 @@ final class SendIntegrationActivationReminderEmailCommand extends Command
         }
 
         $integrationTypeConfig = [
-            IntegrationType::SearchApi->value => 6,
-            IntegrationType::Widgets->value => 3,
+            IntegrationType::SearchApi->value => self::SEARCH_API_SEND_MAIL_AFTER_X_MONTHS,
+            IntegrationType::Widgets->value => self::WIDGETS_API_SEND_MAIL_AFTER_X_MONTHS,
         ];
 
         $integrations = new Collection();
