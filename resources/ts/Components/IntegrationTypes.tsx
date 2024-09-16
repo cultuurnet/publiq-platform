@@ -22,18 +22,6 @@ export const integrationTypesIcons = {
 
 export const getIntegrationTypesInfo = (t: TFunction) => [
   {
-    Icon: IconUiTPAS,
-    image: <IconUiTPAS className={classNames(integrationIconClasses)} />,
-    title: t("home.integration_types.uitpas_api.title"),
-    description: t("home.integration_types.uitpas_api.description"),
-    features: [
-      t("home.integration_types.uitpas_api.features.0"),
-      t("home.integration_types.uitpas_api.features.1"),
-      t("home.integration_types.uitpas_api.features.2"),
-    ],
-    type: IntegrationType.UiTPAS,
-  },
-  {
     Icon: IconEntryApi,
     image: (
       <IconEntryApi className={classNames(integrationIconClasses, "mr-4")} />
@@ -74,6 +62,18 @@ export const getIntegrationTypesInfo = (t: TFunction) => [
       t("home.integration_types.widgets.features.2"),
     ],
     type: IntegrationType.Widgets,
+  },
+  {
+    Icon: IconUiTPAS,
+    image: <IconUiTPAS className={classNames(integrationIconClasses)} />,
+    title: t("home.integration_types.uitpas_api.title"),
+    description: t("home.integration_types.uitpas_api.description"),
+    features: [
+      t("home.integration_types.uitpas_api.features.0"),
+      t("home.integration_types.uitpas_api.features.1"),
+      t("home.integration_types.uitpas_api.features.2"),
+    ],
+    type: IntegrationType.UiTPAS,
   },
 ];
 
