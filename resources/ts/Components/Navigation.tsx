@@ -24,7 +24,7 @@ const Link = (props: ComponentProps<"a">) =>
     <RouterLink {...(props as InertiaLinkProps)} />
   );
 
-const allPages = [
+const allPages: Page[] = [
   {
     component: "Integrations/Index",
     key: "integrations",
