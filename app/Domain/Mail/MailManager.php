@@ -6,15 +6,19 @@ namespace App\Domain\Mail;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
+use App\Domain\Integrations\Events\ActivationReminderEmailSend;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use Illuminate\Bus\Queueable;
 use Symfony\Component\Mime\Address;
 
 final class MailManager
 {
+    use Queueable;
+
     private const SUBJECT_INTEGRATION_ACTIVATED = 'Publiq platform - Integration activated';
     private const SUBJECT_INTEGRATION_BLOCKED = 'Publiq platform - Integration blocked';
     private const SUBJECT_INTEGRATION_CREATED = 'Welcome to Publiq platform - Let\'s get you started!';
@@ -82,8 +86,10 @@ final class MailManager
         }
     }
 
-    public function sendActivationReminderEmail(Integration $integration): void
+    public function sendActivationReminderEmail(ActivationReminderEmailSend $activationReminderEmailSend): void
     {
+        $integration = $this->integrationRepository->getById($activationReminderEmailSend->id);
+
         foreach ($this->getUniqueContactsWithPreferredContactType($integration, ContactType::Technical) as $contact) {
             $this->mailer->send(
                 $this->getFrom(),

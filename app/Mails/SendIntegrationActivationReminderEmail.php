@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Mails;
 
 use App\Domain\Contacts\Contact;
+use App\Domain\Integrations\Events\ActivationReminderEmailSend;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Mail\MailManager;
@@ -24,7 +25,7 @@ final readonly class SendIntegrationActivationReminderEmail
     public function send(Collection $integrations): void
     {
         foreach ($integrations as $integration) {
-            $this->mailManager->sendActivationReminderEmail($integration);
+            $this->mailManager->sendActivationReminderEmail(new ActivationReminderEmailSend($integration->id));
 
             $this->integrationRepository->update($integration->withreminderEmailSent(Carbon::now()));
 

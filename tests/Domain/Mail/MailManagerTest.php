@@ -6,6 +6,7 @@ namespace Domain\Mail;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
+use App\Domain\Integrations\Events\ActivationReminderEmailSend;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
@@ -117,11 +118,10 @@ final class MailManagerTest extends TestCase
         string $method,
         int $templateId,
         string $subject,
-        array $expectedParameters,
-        int $timesGetByIdCalled = 1
+        array $expectedParameters
     ): void {
         $this->integrationRepository
-            ->expects($this->exactly($timesGetByIdCalled))
+            ->expects($this->once())
             ->method('getById')
             ->with(self::INTEGRATION_ID)
             ->willReturn($this->integration);
@@ -163,7 +163,7 @@ final class MailManagerTest extends TestCase
                 })
             );
 
-        $this->mailManager->$method($event ?: $this->integration);
+        $this->mailManager->$method($event);
     }
 
     public static function mailDataProvider(): array
@@ -201,14 +201,13 @@ final class MailManagerTest extends TestCase
                 ],
             ],
             'sendActivationReminderEmail' => [
-                'event' => null, // Use the integration directly / no mapping event
+                'event' => new ActivationReminderEmailSend(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendActivationReminderEmail',
                 'templateId' => self::TEMPLATE_INTEGRATION_ACTIVATION_REMINDER,
                 'subject' => 'Publiq platform - Can we help you to activate your integration?',
                 'expectedParameters' => [
                     'integrationName' => 'Mock Integration',
                 ],
-                0,
             ],
         ];
     }
