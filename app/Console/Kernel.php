@@ -11,7 +11,7 @@ final class Kernel extends ConsoleKernel
 {
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('integration:send-activation-reminder-email --force')->dailyAt('00:00');
+        $schedule->command('integration:search-expired-integrations --force')->dailyAt('00:00');
     }
 
     protected function commands(): void

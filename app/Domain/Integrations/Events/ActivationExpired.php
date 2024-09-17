@@ -7,7 +7,7 @@ namespace App\Domain\Integrations\Events;
 use Illuminate\Foundation\Events\Dispatchable;
 use Ramsey\Uuid\UuidInterface;
 
-final class ActivationReminderEmailSend
+final class ActivationExpired
 {
     use Dispatchable;
 

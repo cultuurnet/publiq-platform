@@ -6,12 +6,13 @@ namespace App\Domain\Mail;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
-use App\Domain\Integrations\Events\ActivationReminderEmailSend;
+use App\Domain\Integrations\Events\ActivationExpired;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Symfony\Component\Mime\Address;
 
@@ -86,7 +87,7 @@ final class MailManager
         }
     }
 
-    public function sendActivationReminderEmail(ActivationReminderEmailSend $activationReminderEmailSend): void
+    public function sendActivationReminderEmail(ActivationExpired $activationReminderEmailSend): void
     {
         $integration = $this->integrationRepository->getById($activationReminderEmailSend->id);
 
@@ -104,6 +105,8 @@ final class MailManager
                 ]
             );
         }
+
+        $this->integrationRepository->update($integration->withreminderEmailSent(Carbon::now()));
     }
 
     private function getFrom(): Address

@@ -6,7 +6,7 @@ namespace Domain\Mail;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
-use App\Domain\Integrations\Events\ActivationReminderEmailSend;
+use App\Domain\Integrations\Events\ActivationExpired;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
@@ -18,6 +18,7 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Mail\Addresses;
 use App\Domain\Mail\Mailer;
 use App\Domain\Mail\MailManager;
+use Carbon\Carbon;
 use PHPUnit\Framework\MockObject\MockObject;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Mime\Address;
@@ -118,13 +119,25 @@ final class MailManagerTest extends TestCase
         string $method,
         int $templateId,
         string $subject,
-        array $expectedParameters
+        array $expectedParameters,
+        bool $checkReminderEmailSent = false
     ): void {
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
         $this->integrationRepository
             ->expects($this->once())
             ->method('getById')
             ->with(self::INTEGRATION_ID)
             ->willReturn($this->integration);
+
+        if ($checkReminderEmailSent) {
+            $integrationWithReminderEmailSent = $this->integration->withreminderEmailSent(Carbon::now());
+            $this->integrationRepository
+                ->expects($this->once())
+                ->method('update')
+                ->with($integrationWithReminderEmailSent);
+        }
 
         $currentEmail = null;
 
@@ -201,13 +214,14 @@ final class MailManagerTest extends TestCase
                 ],
             ],
             'sendActivationReminderEmail' => [
-                'event' => new ActivationReminderEmailSend(Uuid::fromString(self::INTEGRATION_ID)),
+                'event' => new ActivationExpired(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendActivationReminderEmail',
                 'templateId' => self::TEMPLATE_INTEGRATION_ACTIVATION_REMINDER,
                 'subject' => 'Publiq platform - Can we help you to activate your integration?',
                 'expectedParameters' => [
                     'integrationName' => 'Mock Integration',
                 ],
+                true,
             ],
         ];
     }
