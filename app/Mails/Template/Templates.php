@@ -16,6 +16,8 @@ final class Templates extends Collection
     public const INTEGRATION_ACTIVATION_REMINDER = 'integration_activation_reminder';
     public const INTEGRATION_BLOCKED = 'integration_blocked';
     public const INTEGRATION_ACTIVATED = 'integration_activated';
+    public const INTEGRATION_ACTIVATION_REQUEST = 'integration_activation_request';
+    public const INTEGRATION_DELETED = 'integration_deleted';
 
     public static function build(array $mails): self
     {
@@ -28,9 +30,9 @@ final class Templates extends Collection
         return $collection;
     }
 
-    public function getOrFail($key, $default = null): Template
+    public function getOrFail(string $key): Template
     {
-        $template = parent::get($key, $default);
+        $template = $this->get($key);
         if ($template instanceof Template) {
             return $template;
         }
