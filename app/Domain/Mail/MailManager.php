@@ -12,6 +12,9 @@ use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Mails\MailEnabled;
+use App\Mails\Template\Template;
+use App\Mails\Template\Templates;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Symfony\Component\Mime\Address;
@@ -20,93 +23,41 @@ final class MailManager
 {
     use Queueable;
 
-    private const SUBJECT_INTEGRATION_ACTIVATED = 'Publiq platform - Integration activated';
-    private const SUBJECT_INTEGRATION_BLOCKED = 'Publiq platform - Integration blocked';
-    private const SUBJECT_INTEGRATION_CREATED = 'Welcome to Publiq platform - Let\'s get you started!';
-    private const SUBJECT_INTEGRATION_ACTIVATION_REMINDER_EMAIL = 'Publiq platform - Can we help you to activate your integration?';
+    private const INTEGRATION_CREATED = 'integration_created';
+    private const INTEGRATION_ACTIVATION_REMINDER = 'integration_activation_reminder';
+    private const INTEGRATION_BLOCKED = 'integration_blocked';
+    private const INTEGRATION_ACTIVATED = 'integration_activated';
 
     public function __construct(
         private readonly Mailer $mailer,
         private readonly IntegrationRepository $integrationRepository,
-        private readonly int $templateIntegrationCreated,
-        private readonly int $templateIntegrationActivated,
-        private readonly int $templateIntegrationBlocked,
-        private readonly int $templateIntegrationActivationReminderEmail,
+        private readonly Templates $templates,
         private readonly string $baseUrl
     ) {
     }
 
-    public function sendIntegrationCreatedMail(IntegrationCreatedWithContacts $integrationCreated): void
+    public function sendIntegrationCreatedMail(IntegrationCreatedWithContacts $event): void
     {
-        $integration = $this->integrationRepository->getById($integrationCreated->id);
-
-        // The technical contact get  additional information in the e-mail (example a link to the satisfaction survey), so this type of contact gets preference when matching email addresses are found
-        foreach ($this->getUniqueContactsWithPreferredContactType($integration, ContactType::Technical) as $contact) {
-            $this->mailer->send(
-                $this->getFrom(),
-                $this->getAddresses($contact),
-                $this->templateIntegrationCreated,
-                self::SUBJECT_INTEGRATION_CREATED,
-                $this->getIntegrationVariables($contact, $integration)
-            );
-        }
+        $this->sendMail($event, $this->templates->get(self::INTEGRATION_CREATED));
     }
 
-    public function sendIntegrationActivatedMail(IntegrationActivated $integrationActivated): void
+    public function sendIntegrationActivatedMail(IntegrationActivated $event): void
     {
-        $integration = $this->integrationRepository->getById($integrationActivated->id);
-
-        foreach ($this->getUniqueContactsWithPreferredContactType($integration, ContactType::Technical) as $contact) {
-            $this->mailer->send(
-                $this->getFrom(),
-                $this->getAddresses($contact),
-                $this->templateIntegrationActivated,
-                self::SUBJECT_INTEGRATION_ACTIVATED,
-                $this->getIntegrationVariables($contact, $integration)
-            );
-        }
+        $this->sendMail($event, $this->templates->get(self::INTEGRATION_ACTIVATED));
     }
 
-    public function sendIntegrationBlockedMail(IntegrationBlocked $integrationBlocked): void
+    public function sendIntegrationBlockedMail(IntegrationBlocked $event): void
     {
-        $integration = $this->integrationRepository->getById($integrationBlocked->id);
-
-        foreach ($this->getUniqueContactsWithPreferredContactType($integration, ContactType::Technical) as $contact) {
-            $this->mailer->send(
-                $this->getFrom(),
-                $this->getAddresses($contact),
-                $this->templateIntegrationBlocked,
-                self::SUBJECT_INTEGRATION_BLOCKED,
-                [
-                    'firstName' => $contact->firstName,
-                    'lastName' => $contact->lastName,
-                    'contactType' => $contact->type->value,
-                    'integrationName' => $integration->name,
-                ]
-            );
-        }
+        $this->sendMail($event, $this->templates->get(self::INTEGRATION_BLOCKED));
     }
 
-    public function sendActivationReminderEmail(ActivationExpired $activationReminderEmailSend): void
+    public function sendActivationReminderEmail(ActivationExpired $event): void
     {
-        $integration = $this->integrationRepository->getById($activationReminderEmailSend->id);
+        $integration = $this->sendMail($event, $this->templates->get(self::INTEGRATION_ACTIVATION_REMINDER));
 
-        foreach ($this->getUniqueContactsWithPreferredContactType($integration, ContactType::Technical) as $contact) {
-            $this->mailer->send(
-                $this->getFrom(),
-                $this->getAddresses($contact),
-                $this->templateIntegrationActivationReminderEmail,
-                self::SUBJECT_INTEGRATION_ACTIVATION_REMINDER_EMAIL,
-                [
-                    'firstName' => $contact->firstName,
-                    'lastName' => $contact->lastName,
-                    'contactType' => $contact->type->value,
-                    'integrationName' => $integration->name,
-                ]
-            );
+        if ($integration !== null) {
+            $this->integrationRepository->update($integration->withreminderEmailSent(Carbon::now()));
         }
-
-        $this->integrationRepository->update($integration->withreminderEmailSent(Carbon::now()));
     }
 
     private function getFrom(): Address
@@ -146,5 +97,27 @@ final class MailManager
         }
 
         return $uniqueContacts;
+    }
+
+    public function sendMail(MailEnabled $event, ?Template $template): ?Integration
+    {
+        if ($template === null || !$template->enabled) {
+            return null;
+        }
+
+        $integration = $this->integrationRepository->getById($event->getId());
+
+        // The technical contact get  additional information in the e-mail (example a link to the satisfaction survey), so this type of contact gets preference when matching email addresses are found
+        foreach ($this->getUniqueContactsWithPreferredContactType($integration, ContactType::Technical) as $contact) {
+            $this->mailer->send(
+                $this->getFrom(),
+                $this->getAddresses($contact),
+                $template->id,
+                $template->subject,
+                $this->getIntegrationVariables($contact, $integration)
+            );
+        }
+
+        return $integration;
     }
 }
