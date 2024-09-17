@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Mails\Template;
 
-use http\Exception\InvalidArgumentException;
 use Illuminate\Support\Collection;
+use InvalidArgumentException;
 
 /**
  * @extends Collection<string, Template>
@@ -16,8 +16,6 @@ final class Templates extends Collection
     public const INTEGRATION_ACTIVATION_REMINDER = 'integration_activation_reminder';
     public const INTEGRATION_BLOCKED = 'integration_blocked';
     public const INTEGRATION_ACTIVATED = 'integration_activated';
-    public const INTEGRATION_ACTIVATION_REQUEST = 'integration_activation_request';
-    public const INTEGRATION_DELETED = 'integration_deleted';
 
     public static function build(array $mails): self
     {
