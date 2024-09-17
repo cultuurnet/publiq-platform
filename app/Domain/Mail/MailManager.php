@@ -55,12 +55,16 @@ final class MailManager
 
     public function sendIntegrationActivationRequestMail(IntegrationActivationRequested $event): void
     {
-        $this->sendMail($event->id, $this->templates->getOrFail(Templates::INTEGRATION_ACTIVATION_REQUEST));
+        $integration = $this->integrationRepository->getById($event->id);
+
+        $this->sendMail($integration, $this->templates->getOrFail(Templates::INTEGRATION_ACTIVATION_REQUEST));
     }
 
     public function sendIntegrationDeletedMail(IntegrationDeleted $event): void
     {
-        $this->sendMail($event->id, $this->templates->getOrFail(Templates::INTEGRATION_DELETED));
+        $integration = $this->integrationRepository->getByIdWithTrashed($event->id);
+
+        $this->sendMail($integration, $this->templates->getOrFail(Templates::INTEGRATION_DELETED));
     }
 
     public function sendActivationReminderEmail(ActivationExpired $event): void
