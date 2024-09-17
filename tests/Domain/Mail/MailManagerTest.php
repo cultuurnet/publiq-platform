@@ -115,12 +115,12 @@ final class MailManagerTest extends TestCase
      * @dataProvider mailDataProvider
      */
     public function testSendMail(
-        ?object $event,
+        object $event,
         string $method,
         int $templateId,
         string $subject,
         array $expectedParameters,
-        bool $checkReminderEmailSent = false
+        bool $checkReminderEmailSent = false,
     ): void {
         $now = Carbon::now();
         Carbon::setTestNow($now);
@@ -221,7 +221,7 @@ final class MailManagerTest extends TestCase
                 'expectedParameters' => [
                     'integrationName' => 'Mock Integration',
                 ],
-                true,
+                'checkReminderEmailSent' => true,
             ],
         ];
     }
