@@ -182,25 +182,25 @@ final class MailManagerTest extends TestCase
     public static function mailDataProvider(): array
     {
         return [
-            'IntegrationCreated' => [
+            Templates::INTEGRATION_CREATED => [
                 'event' => new IntegrationCreatedWithContacts(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationCreatedMail',
                 'templateId' => self::TEMPLATE_CREATED_ID,
                 'subject' => 'Welcome to Publiq platform - Let\'s get you started!',
             ],
-            'IntegrationActivated' => [
+            Templates::INTEGRATION_ACTIVATED => [
                 'event' => new IntegrationActivated(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationActivatedMail',
                 'templateId' => self::TEMPLATE_ACTIVATED_ID,
                 'subject' => 'Publiq platform - Integration activated',
             ],
-            'IntegrationBlocked' => [
+            Templates::INTEGRATION_BLOCKED => [
                 'event' => new IntegrationBlocked(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationBlockedMail',
                 'templateId' => self::TEMPLATE_BLOCKED_ID,
                 'subject' => 'Publiq platform - Integration blocked',
             ],
-            'sendActivationReminderEmail' => [
+            Templates::INTEGRATION_ACTIVATION_REMINDER => [
                 'event' => new ActivationExpired(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendActivationReminderEmail',
                 'templateId' => self::TEMPLATE_INTEGRATION_ACTIVATION_REMINDER,

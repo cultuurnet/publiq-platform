@@ -23,11 +23,6 @@ final class MailManager
 {
     use Queueable;
 
-    private const INTEGRATION_CREATED = 'integration_created';
-    private const INTEGRATION_ACTIVATION_REMINDER = 'integration_activation_reminder';
-    private const INTEGRATION_BLOCKED = 'integration_blocked';
-    private const INTEGRATION_ACTIVATED = 'integration_activated';
-
     public function __construct(
         private readonly Mailer $mailer,
         private readonly IntegrationRepository $integrationRepository,
@@ -38,22 +33,22 @@ final class MailManager
 
     public function sendIntegrationCreatedMail(IntegrationCreatedWithContacts $event): void
     {
-        $this->sendMail($event, $this->templates->get(self::INTEGRATION_CREATED));
+        $this->sendMail($event, $this->templates->get(Templates::INTEGRATION_CREATED));
     }
 
     public function sendIntegrationActivatedMail(IntegrationActivated $event): void
     {
-        $this->sendMail($event, $this->templates->get(self::INTEGRATION_ACTIVATED));
+        $this->sendMail($event, $this->templates->get(Templates::INTEGRATION_ACTIVATED));
     }
 
     public function sendIntegrationBlockedMail(IntegrationBlocked $event): void
     {
-        $this->sendMail($event, $this->templates->get(self::INTEGRATION_BLOCKED));
+        $this->sendMail($event, $this->templates->get(Templates::INTEGRATION_BLOCKED));
     }
 
     public function sendActivationReminderEmail(ActivationExpired $event): void
     {
-        $integration = $this->sendMail($event, $this->templates->get(self::INTEGRATION_ACTIVATION_REMINDER));
+        $integration = $this->sendMail($event, $this->templates->get(Templates::INTEGRATION_ACTIVATION_REMINDER));
 
         if ($integration !== null) {
             $this->integrationRepository->update($integration->withreminderEmailSent(Carbon::now()));
