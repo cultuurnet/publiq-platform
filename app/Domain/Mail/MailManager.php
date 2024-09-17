@@ -8,8 +8,10 @@ use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Events\ActivationExpired;
 use App\Domain\Integrations\Events\IntegrationActivated;
+use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
+use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Mails\Template\Template;
@@ -46,12 +48,22 @@ final class MailManager
         $this->sendMail($event->id, $this->templates->getOrFail(Templates::INTEGRATION_BLOCKED));
     }
 
+    public function sendIntegrationActivationRequestMail(IntegrationActivationRequested $event): void
+    {
+        $this->sendMail($event->id, $this->templates->getOrFail(Templates::INTEGRATION_ACTIVATION_REQUEST));
+    }
+
+    public function sendIntegrationDeletedMail(IntegrationDeleted $event): void
+    {
+        $this->sendMail($event->id, $this->templates->getOrFail(Templates::INTEGRATION_DELETED));
+    }
+
     public function sendActivationReminderEmail(ActivationExpired $event): void
     {
         $integration = $this->sendMail($event->id, $this->templates->getOrFail(Templates::INTEGRATION_ACTIVATION_REMINDER));
 
         if ($integration !== null) {
-            $this->integrationRepository->update($integration->withreminderEmailSent(Carbon::now()));
+            $this->integrationRepository->update($integration->withReminderEmailSent(Carbon::now()));
         }
     }
 

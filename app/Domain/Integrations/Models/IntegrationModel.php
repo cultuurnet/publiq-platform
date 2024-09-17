@@ -378,7 +378,7 @@ final class IntegrationModel extends UuidModel
         );
 
         if ($this->reminder_email_sent) {
-            $integration = $integration->withreminderEmailSent(Carbon::parse($this->reminder_email_sent));
+            $integration = $integration->withReminderEmailSent(Carbon::parse($this->reminder_email_sent));
         }
 
         if ($this->keyVisibilityUpgrade) {
