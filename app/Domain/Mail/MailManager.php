@@ -12,11 +12,11 @@ use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Mails\MailEnabled;
 use App\Mails\Template\Template;
 use App\Mails\Template\Templates;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
+use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Mime\Address;
 
 final class MailManager
@@ -33,22 +33,22 @@ final class MailManager
 
     public function sendIntegrationCreatedMail(IntegrationCreatedWithContacts $event): void
     {
-        $this->sendMail($event, $this->templates->get(Templates::INTEGRATION_CREATED));
+        $this->sendMail($event->id, $this->templates->getOrFail(Templates::INTEGRATION_CREATED));
     }
 
     public function sendIntegrationActivatedMail(IntegrationActivated $event): void
     {
-        $this->sendMail($event, $this->templates->get(Templates::INTEGRATION_ACTIVATED));
+        $this->sendMail($event->id, $this->templates->getOrFail(Templates::INTEGRATION_ACTIVATED));
     }
 
     public function sendIntegrationBlockedMail(IntegrationBlocked $event): void
     {
-        $this->sendMail($event, $this->templates->get(Templates::INTEGRATION_BLOCKED));
+        $this->sendMail($event->id, $this->templates->getOrFail(Templates::INTEGRATION_BLOCKED));
     }
 
     public function sendActivationReminderEmail(ActivationExpired $event): void
     {
-        $integration = $this->sendMail($event, $this->templates->get(Templates::INTEGRATION_ACTIVATION_REMINDER));
+        $integration = $this->sendMail($event->id, $this->templates->getOrFail(Templates::INTEGRATION_ACTIVATION_REMINDER));
 
         if ($integration !== null) {
             $this->integrationRepository->update($integration->withreminderEmailSent(Carbon::now()));
@@ -94,13 +94,13 @@ final class MailManager
         return $uniqueContacts;
     }
 
-    public function sendMail(MailEnabled $event, ?Template $template): ?Integration
+    public function sendMail(UuidInterface $eventId, Template $template): ?Integration
     {
-        if ($template === null || !$template->enabled) {
+        if (!$template->enabled) {
             return null;
         }
 
-        $integration = $this->integrationRepository->getById($event->getId());
+        $integration = $this->integrationRepository->getById($eventId);
 
         // The technical contact get  additional information in the e-mail (example a link to the satisfaction survey), so this type of contact gets preference when matching email addresses are found
         foreach ($this->getUniqueContactsWithPreferredContactType($integration, ContactType::Technical) as $contact) {

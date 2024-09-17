@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Mails\Template;
 
+use http\Exception\InvalidArgumentException;
 use Illuminate\Support\Collection;
 
 /**
@@ -25,5 +26,15 @@ final class Templates extends Collection
         }
 
         return $collection;
+    }
+
+    public function getOrFail($key, $default = null): Template
+    {
+        $template = parent::get($key, $default);
+        if ($template instanceof Template) {
+            return $template;
+        }
+
+        throw new InvalidArgumentException(sprintf('Invalid mail template %s.', $key));
     }
 }
