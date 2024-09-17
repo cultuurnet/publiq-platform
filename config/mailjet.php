@@ -20,7 +20,7 @@ return [
         ],
         Templates::INTEGRATION_BLOCKED => [
             'id' => env('MAILJET_TEMPLATE_INTEGRATION_BLOCKED'),
-            'enabled' => true,
+            'enabled' => false,
             'subject' => 'Publiq platform - Integration blocked',
         ],
         Templates::INTEGRATION_ACTIVATED => [
