@@ -13,6 +13,7 @@ use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Mails\Template\Template;
+use App\Mails\Template\TemplateName;
 use App\Mails\Template\Templates;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -34,28 +35,28 @@ final class MailManager
     {
         $integration = $this->integrationRepository->getById($event->id);
 
-        $this->sendMail($integration, $this->templates->getOrFail(Templates::INTEGRATION_CREATED));
+        $this->sendMail($integration, $this->templates->getOrFail(TemplateName::INTEGRATION_CREATED->value));
     }
 
     public function sendIntegrationActivatedMail(IntegrationActivated $event): void
     {
         $integration = $this->integrationRepository->getById($event->id);
 
-        $this->sendMail($integration, $this->templates->getOrFail(Templates::INTEGRATION_ACTIVATED));
+        $this->sendMail($integration, $this->templates->getOrFail(TemplateName::INTEGRATION_ACTIVATED->value));
     }
 
     public function sendIntegrationBlockedMail(IntegrationBlocked $event): void
     {
         $integration = $this->integrationRepository->getById($event->id);
 
-        $this->sendMail($integration, $this->templates->getOrFail(Templates::INTEGRATION_BLOCKED));
+        $this->sendMail($integration, $this->templates->getOrFail(TemplateName::INTEGRATION_BLOCKED->value));
     }
 
     public function sendActivationReminderEmail(ActivationExpired $event): void
     {
         $integration = $this->integrationRepository->getById($event->id);
 
-        $this->sendMail($integration, $this->templates->getOrFail(Templates::INTEGRATION_ACTIVATION_REMINDER));
+        $this->sendMail($integration, $this->templates->getOrFail(TemplateName::INTEGRATION_ACTIVATION_REMINDER->value));
 
         $this->integrationRepository->update($integration->withReminderEmailSent(Carbon::now()));
     }

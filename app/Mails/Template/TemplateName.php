@@ -1,0 +1,13 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Mails\Template;
+
+enum TemplateName: string
+{
+    case INTEGRATION_CREATED = 'integration_created';
+    case INTEGRATION_ACTIVATION_REMINDER = 'integration_activation_reminder';
+    case INTEGRATION_BLOCKED = 'integration_blocked';
+    case INTEGRATION_ACTIVATED = 'integration_activated';
+}
