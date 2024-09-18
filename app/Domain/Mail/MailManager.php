@@ -66,11 +66,6 @@ final class MailManager
         return new Address(config('mail.from.address'), config('mail.from.name'));
     }
 
-    private function getAddresses(Contact $contact): Addresses
-    {
-        return new Addresses([new Address($contact->email, trim($contact->firstName . ' ' . $contact->lastName))]);
-    }
-
     private function getIntegrationVariables(Contact $contact, Integration $integration): array
     {
         return [
@@ -110,7 +105,7 @@ final class MailManager
         foreach ($this->getUniqueContactsWithPreferredContactType($integration, ContactType::Technical) as $contact) {
             $this->mailer->send(
                 $this->getFrom(),
-                $this->getAddresses($contact),
+                new Address($contact->email, trim($contact->firstName . ' ' . $contact->lastName)),
                 $template->id,
                 $template->subject,
                 $this->getIntegrationVariables($contact, $integration)

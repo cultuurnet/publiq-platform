@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Mails\MailJet;
 
-use App\Domain\Mail\Addresses;
+use Symfony\Component\Mime\Address;
 
 final readonly class SandboxMode
 {
@@ -12,17 +12,15 @@ final readonly class SandboxMode
     {
     }
 
-    public function forAddresses(Addresses $to): bool
+    public function forAddress(Address $address): bool
     {
         if (!$this->sandboxMode) {
             return false;
         }
 
-        foreach ($to as $address) {
-            foreach ($this->allowedDomains as $domain) {
-                if (str_ends_with($address->getAddress(), $domain)) {
-                    return false;
-                }
+        foreach ($this->allowedDomains as $domain) {
+            if (str_ends_with($address->getAddress(), $domain)) {
+                return false;
             }
         }
 

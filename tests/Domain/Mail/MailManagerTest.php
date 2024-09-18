@@ -15,7 +15,6 @@ use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Domain\Mail\Addresses;
 use App\Domain\Mail\Mailer;
 use App\Domain\Mail\MailManager;
 use App\Mails\Template\TemplateName;
@@ -144,10 +143,7 @@ final class MailManagerTest extends TestCase
             ->method('send')
             ->with(
                 new Address(config('mail.from.address'), config('mail.from.name')),
-                $this->callback(function (Addresses $addresses) use (&$currentEmail) {
-                    /** @var Address $address */
-                    $address = $addresses->first();
-
+                $this->callback(function (Address $address) use (&$currentEmail) {
                     if (!isset($this->contacts[$address->getAddress()])) {
                         return false;
                     }
