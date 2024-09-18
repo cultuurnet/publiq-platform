@@ -13,6 +13,7 @@ use App\Domain\Mail\Mailer;
 use App\Domain\Mail\MailManager;
 use App\Mails\MailJet\MailjetConfig;
 use App\Mails\MailJet\MailjetMailer;
+use App\Mails\MailJet\SandboxHelper;
 use App\Mails\Template\Templates;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
@@ -36,10 +37,12 @@ final class MailServiceProvider extends ServiceProvider
                     ['version' => 'v3.1']
                 ),
                 $this->app->get(LoggerInterface::class),
-                config(MailjetConfig::SANDBOX_MODE)
+                new SandboxHelper(
+                    config(MailjetConfig::SANDBOX_MODE),
+                    array_map(static fn ($value) => trim($value), explode(',', config(MailjetConfig::SANDBOX_ALLOWED_DOMAINS)))
+                )
             );
         });
-
 
         $this->app->singleton(MailManager::class, function () {
             return new MailManager(
