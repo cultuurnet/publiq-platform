@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Mails\MailJet\MailjetConfig;
 use App\Mails\Template\TemplateName;
 
 return [
