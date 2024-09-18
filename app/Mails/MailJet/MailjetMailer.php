@@ -17,7 +17,7 @@ final readonly class MailjetMailer implements Mailer
     public function __construct(
         private Client $client,
         private LoggerInterface $logger,
-        private SandboxHelper $sandboxHelper,
+        private SandboxMode $sandboxMode,
     ) {
 
     }
@@ -25,7 +25,7 @@ final readonly class MailjetMailer implements Mailer
     public function send(Address $from, Addresses $to, int $templateId, string $subject, array $variables = []): void
     {
         $body = [
-            'SandboxMode' => $this->sandboxHelper->getSandboxMode($to),
+            'SandboxMode' => $this->sandboxMode->getSandboxMode($to),
             'Messages' => [
                 [
                     'From' => [

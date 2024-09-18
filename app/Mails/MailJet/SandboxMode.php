@@ -6,7 +6,7 @@ namespace App\Mails\MailJet;
 
 use App\Domain\Mail\Addresses;
 
-final readonly class SandboxHelper
+final readonly class SandboxMode
 {
     public function __construct(private bool $sandboxMode, private array $allowedDomains)
     {
