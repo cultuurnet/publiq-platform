@@ -124,13 +124,14 @@ final class MailManagerTest extends TestCase
         int $templateId,
         string $subject,
         bool $checkReminderEmailSent = false,
+        bool $useGetByIdWithTrashed = false,
     ): void {
         $now = Carbon::now();
         Carbon::setTestNow($now);
 
         $this->integrationRepository
             ->expects($this->once())
-            ->method('getById')
+            ->method($useGetByIdWithTrashed ? 'getByIdWithTrashed' : 'getById')
             ->with(self::INTEGRATION_ID)
             ->willReturn($this->integration);
 
@@ -206,19 +207,19 @@ final class MailManagerTest extends TestCase
                 'templateId' => self::TEMPLATE_BLOCKED_ID,
                 'subject' => 'Publiq platform - Integration blocked',
             ],
-            Templates::INTEGRATION_ACTIVATION_REQUEST => [
+            TemplateName::INTEGRATION_ACTIVATION_REQUEST->value => [
                 'event' => new IntegrationActivationRequested(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationActivationRequestMail',
                 'templateId' => self::TEMPLATE_ACTIVATION_REQUESTED_ID,
                 'subject' => 'Publiq platform - Request for activating integration',
             ],
-            Templates::INTEGRATION_DELETED => [
+            TemplateName::INTEGRATION_DELETED->value => [
                 'event' => new IntegrationDeleted(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationDeletedMail',
                 'templateId' => self::TEMPLATE_DELETED_ID,
                 'subject' => 'Publiq platform - Integration deleted',
+                'useGetByIdWithTrashed' => true,
             ],
-            Templates::INTEGRATION_ACTIVATION_REMINDER => [
             TemplateName::INTEGRATION_ACTIVATION_REMINDER->value => [
                 'event' => new ActivationExpired(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendActivationReminderEmail',
@@ -232,32 +233,32 @@ final class MailManagerTest extends TestCase
     private function getTemplateConfig(): array
     {
         return [
-            Templates::INTEGRATION_CREATED => [
+            TemplateName::INTEGRATION_CREATED->value => [
                 'id' => self::TEMPLATE_CREATED_ID,
                 'enabled' => true,
                 'subject' => 'Welcome to Publiq platform - Let\'s get you started!',
             ],
-            Templates::INTEGRATION_BLOCKED => [
+            TemplateName::INTEGRATION_BLOCKED->value => [
                 'id' => self::TEMPLATE_BLOCKED_ID,
                 'enabled' => true,
                 'subject' => 'Publiq platform - Integration blocked',
             ],
-            Templates::INTEGRATION_ACTIVATED => [
+            TemplateName::INTEGRATION_ACTIVATED->value => [
                 'id' => self::TEMPLATE_ACTIVATED_ID,
                 'enabled' => true,
                 'subject' => 'Publiq platform - Integration activated',
             ],
-            Templates::INTEGRATION_ACTIVATION_REMINDER => [
+            TemplateName::INTEGRATION_ACTIVATION_REMINDER->value => [
                 'id' => self::TEMPLATE_INTEGRATION_ACTIVATION_REMINDER,
                 'enabled' => true,
                 'subject' => 'Publiq platform - Can we help you to activate your integration?',
             ],
-            Templates::INTEGRATION_ACTIVATION_REQUEST => [
+            TemplateName::INTEGRATION_ACTIVATION_REQUEST->value => [
                 'id' => self::TEMPLATE_ACTIVATION_REQUESTED_ID,
                 'enabled' => true,
                 'subject' => 'Publiq platform - Request for activating integration',
             ],
-            Templates::INTEGRATION_DELETED => [
+            TemplateName::INTEGRATION_DELETED->value => [
                 'id' => self::TEMPLATE_DELETED_ID,
                 'enabled' => true,
                 'subject' => 'Publiq platform - Integration deleted',
