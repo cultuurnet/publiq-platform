@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Domain\Mail;
+namespace Tests\Domain\Mail;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
