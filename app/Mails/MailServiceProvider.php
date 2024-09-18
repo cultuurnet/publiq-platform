@@ -39,7 +39,7 @@ final class MailServiceProvider extends ServiceProvider
                 $this->app->get(LoggerInterface::class),
                 new SandboxMode(
                     config(MailjetConfig::SANDBOX_MODE),
-                    array_map(static fn ($value) => trim($value), explode(',', config(MailjetConfig::SANDBOX_ALLOWED_DOMAINS)))
+                    config(MailjetConfig::SANDBOX_ALLOWED_DOMAINS)
                 )
             );
         });
