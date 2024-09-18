@@ -22,7 +22,7 @@ final class Templates extends Collection
         $collection = new self();
 
         foreach ($mails as $type => $config) {
-            $collection->put($type, new Template($type, $config['id'], $config['enabled'], $config['subject']));
+            $collection->put($type, new Template($type, (int)$config['id'], $config['enabled'], $config['subject']));
         }
 
         return $collection;
