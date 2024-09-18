@@ -5,20 +5,22 @@ declare(strict_types=1);
 namespace Tests\Mails\MailJet;
 
 use App\Domain\Mail\Addresses;
-use App\Mails\MailJet\SandboxHelper;
+use App\Mails\MailJet\SandboxMode;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Mime\Address;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-final class SandboxHelperTest extends TestCase
+final class SandboxModeTest extends TestCase
 {
     #[DataProvider('sandboxModeProvider')]
     public function test_get_sandbox_mode(bool $sandboxMode, array $allowedDomains, array $addresses, bool $expected): void
     {
-        $sandboxHelper = new SandboxHelper($sandboxMode, $allowedDomains);
         $to = new Addresses(array_map(static fn ($address) => new Address($address), $addresses));
 
-        $this->assertSame($expected, $sandboxHelper->getSandboxMode($to));
+        $this->assertSame(
+            $expected,
+            (new SandboxMode($sandboxMode, $allowedDomains))->forAddresses($to)
+        );
     }
 
     public static function sandboxModeProvider(): array

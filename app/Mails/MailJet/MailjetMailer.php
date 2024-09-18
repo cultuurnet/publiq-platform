@@ -25,7 +25,7 @@ final readonly class MailjetMailer implements Mailer
     public function send(Address $from, Addresses $to, int $templateId, string $subject, array $variables = []): void
     {
         $body = [
-            'SandboxMode' => $this->sandboxMode->getSandboxMode($to),
+            'SandboxMode' => $this->sandboxMode->forAddresses($to),
             'Messages' => [
                 [
                     'From' => [

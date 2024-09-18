@@ -12,7 +12,7 @@ final readonly class SandboxMode
     {
     }
 
-    public function getSandboxMode(Addresses $to): bool
+    public function forAddresses(Addresses $to): bool
     {
         if (!$this->sandboxMode) {
             return false;
