@@ -217,7 +217,7 @@ final class Integration
         return $clone;
     }
 
-    public function withreminderEmailSent(DateTimeInterface $reminderEmailSent): self
+    public function withReminderEmailSent(DateTimeInterface $reminderEmailSent): self
     {
         $clone = clone $this;
         $clone->reminderEmailSent = $reminderEmailSent;
