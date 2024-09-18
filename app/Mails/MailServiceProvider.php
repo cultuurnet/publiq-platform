@@ -45,7 +45,7 @@ final class MailServiceProvider extends ServiceProvider
             return new MailManager(
                 $this->app->get(Mailer::class),
                 $this->app->get(IntegrationRepository::class),
-                Templates::build(config(MailjetConfig::MAILJET_MAILS)),
+                Templates::build(config(MailjetConfig::MAILJET_TEMPLATES)),
                 config('app.url'),
             );
         });

@@ -12,7 +12,7 @@ return [
         'key' => env('MAILJET_API_KEY'),
         'secret' => env('MAILJET_API_SECRET'),
     ],
-    'mails' => [
+    'templates' => [
         TemplateName::INTEGRATION_CREATED->value => [
             'id' => env('MAILJET_TEMPLATE_INTEGRATION_CREATED'),
             'enabled' => true,
