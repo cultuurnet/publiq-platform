@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Domain\Mail;
+namespace Tests\Domain\Mail;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
@@ -20,6 +20,7 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Mail\Addresses;
 use App\Domain\Mail\Mailer;
 use App\Domain\Mail\MailManager;
+use App\Mails\Template\TemplateName;
 use App\Mails\Template\Templates;
 use Carbon\Carbon;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -187,19 +188,19 @@ final class MailManagerTest extends TestCase
     public static function mailDataProvider(): array
     {
         return [
-            Templates::INTEGRATION_CREATED => [
+            TemplateName::INTEGRATION_CREATED->value => [
                 'event' => new IntegrationCreatedWithContacts(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationCreatedMail',
                 'templateId' => self::TEMPLATE_CREATED_ID,
                 'subject' => 'Welcome to Publiq platform - Let\'s get you started!',
             ],
-            Templates::INTEGRATION_ACTIVATED => [
+            TemplateName::INTEGRATION_ACTIVATED->value => [
                 'event' => new IntegrationActivated(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationActivatedMail',
                 'templateId' => self::TEMPLATE_ACTIVATED_ID,
                 'subject' => 'Publiq platform - Integration activated',
             ],
-            Templates::INTEGRATION_BLOCKED => [
+            TemplateName::INTEGRATION_BLOCKED->value => [
                 'event' => new IntegrationBlocked(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationBlockedMail',
                 'templateId' => self::TEMPLATE_BLOCKED_ID,
@@ -218,6 +219,7 @@ final class MailManagerTest extends TestCase
                 'subject' => 'Publiq platform - Integration deleted',
             ],
             Templates::INTEGRATION_ACTIVATION_REMINDER => [
+            TemplateName::INTEGRATION_ACTIVATION_REMINDER->value => [
                 'event' => new ActivationExpired(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendActivationReminderEmail',
                 'templateId' => self::TEMPLATE_INTEGRATION_ACTIVATION_REMINDER,
