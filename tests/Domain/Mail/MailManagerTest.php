@@ -2,21 +2,26 @@
 
 declare(strict_types=1);
 
-namespace Domain\Mail;
+namespace Tests\Domain\Mail;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
+use App\Domain\Integrations\Events\ActivationExpired;
 use App\Domain\Integrations\Events\IntegrationActivated;
+use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
+use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Domain\Mail\Addresses;
 use App\Domain\Mail\Mailer;
 use App\Domain\Mail\MailManager;
+use App\Mails\Template\TemplateName;
+use App\Mails\Template\Templates;
+use Carbon\Carbon;
 use PHPUnit\Framework\MockObject\MockObject;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Mime\Address;
@@ -25,28 +30,32 @@ use Tests\TestCase;
 final class MailManagerTest extends TestCase
 {
     private const INTEGRATION_ID = '9e6d778f-ef44-45b3-b842-26b6d71bcad7';
-    private const TEMPLATE_BLOCKED_ID = 456;
-    private const TEMPLATE_ACTIVATED_ID = 123;
-    private const TEMPLATE_CREATED_ID = 677;
+    private const TEMPLATE_BLOCKED_ID = 1;
+    private const TEMPLATE_ACTIVATED_ID = 2;
+    private const TEMPLATE_CREATED_ID = 3;
+    private const TEMPLATE_INTEGRATION_ACTIVATION_REMINDER = 4;
+    private const TEMPLATE_ACTIVATION_REQUESTED_ID = 5;
+    private const TEMPLATE_DELETED_ID = 6;
+
     private MailManager $mailManager;
     private Mailer&MockObject $mailer;
 
     /** @var Contact[] */
     private array $contacts;
+    private Integration $integration;
+    private IntegrationRepository&MockObject $integrationRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->mailer = $this->createMock(Mailer::class);
-        $integrationRepository = $this->createMock(IntegrationRepository::class);
+        $this->integrationRepository = $this->createMock(IntegrationRepository::class);
 
         $this->mailManager = new MailManager(
             $this->mailer,
-            $integrationRepository,
-            self::TEMPLATE_CREATED_ID,
-            self::TEMPLATE_ACTIVATED_ID,
-            self::TEMPLATE_BLOCKED_ID,
+            $this->integrationRepository,
+            Templates::build($this->getTemplateConfig()),
             'http://www.example.com'
         );
 
@@ -93,7 +102,7 @@ final class MailManagerTest extends TestCase
             ),
         ];
 
-        $integration = (new Integration(
+        $this->integration = (new Integration(
             Uuid::fromString(self::INTEGRATION_ID),
             IntegrationType::SearchApi,
             'Mock Integration',
@@ -103,12 +112,6 @@ final class MailManagerTest extends TestCase
             IntegrationPartnerStatus::THIRD_PARTY,
         ))
             ->withContacts(...$this->contacts);
-
-        $integrationRepository
-            ->expects($this->once())
-            ->method('getById')
-            ->with(self::INTEGRATION_ID)
-            ->willReturn($integration);
     }
 
     /**
@@ -119,8 +122,26 @@ final class MailManagerTest extends TestCase
         string $method,
         int $templateId,
         string $subject,
-        array $expectedParameters
+        bool $checkReminderEmailSent = false,
+        bool $useGetByIdWithTrashed = false,
     ): void {
+        $now = Carbon::now();
+        Carbon::setTestNow($now);
+
+        $this->integrationRepository
+            ->expects($this->once())
+            ->method($useGetByIdWithTrashed ? 'getByIdWithTrashed' : 'getById')
+            ->with(self::INTEGRATION_ID)
+            ->willReturn($this->integration);
+
+        if ($checkReminderEmailSent) {
+            $integrationWithReminderEmailSent = $this->integration->withReminderEmailSent(Carbon::now());
+            $this->integrationRepository
+                ->expects($this->once())
+                ->method('update')
+                ->with($integrationWithReminderEmailSent);
+        }
+
         $currentEmail = null;
 
         $this->mailer
@@ -128,10 +149,7 @@ final class MailManagerTest extends TestCase
             ->method('send')
             ->with(
                 new Address(config('mail.from.address'), config('mail.from.name')),
-                $this->callback(function (Addresses $addresses) use (&$currentEmail) {
-                    /** @var Address $address */
-                    $address = $addresses->first();
-
+                $this->callback(function (Address $address) use (&$currentEmail) {
                     if (!isset($this->contacts[$address->getAddress()])) {
                         return false;
                     }
@@ -147,12 +165,15 @@ final class MailManagerTest extends TestCase
                 $templateId,
                 $subject,
                 // Because with() is called with all callbacks at the same time, we have to pass currentEmail as reference
-                $this->callback(function ($parameters) use ($expectedParameters, &$currentEmail) {
-                    $expectedParameters['firstName'] = $this->contacts[$currentEmail]->firstName;
-                    $expectedParameters['lastName'] = $this->contacts[$currentEmail]->lastName;
-                    $expectedParameters['contactType'] = $this->contacts[$currentEmail]->type->value;
-
-                    $this->assertEquals($expectedParameters, $parameters);
+                $this->callback(function ($parameters) use (&$currentEmail) {
+                    $this->assertEquals([
+                        'url' => 'http://www.example.com/nl/integraties/' . self::INTEGRATION_ID,
+                        'integrationName' => 'Mock Integration',
+                        'type' => 'search-api',
+                        'firstName' => $this->contacts[$currentEmail]->firstName,
+                        'lastName' => $this->contacts[$currentEmail]->lastName,
+                        'contactType' => $this->contacts[$currentEmail]->type->value,
+                    ], $parameters);
 
                     return true;
                 })
@@ -164,36 +185,79 @@ final class MailManagerTest extends TestCase
     public static function mailDataProvider(): array
     {
         return [
-            'IntegrationCreated' => [
+            TemplateName::INTEGRATION_CREATED->value => [
                 'event' => new IntegrationCreatedWithContacts(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationCreatedMail',
                 'templateId' => self::TEMPLATE_CREATED_ID,
                 'subject' => 'Welcome to Publiq platform - Let\'s get you started!',
-                'expectedParameters' => [
-                    'url' => 'http://www.example.com/nl/integraties/' . self::INTEGRATION_ID,
-                    'integrationName' => 'Mock Integration',
-                    'type' => 'search-api',
-                ],
             ],
-            'IntegrationActivated' => [
+            TemplateName::INTEGRATION_ACTIVATED->value => [
                 'event' => new IntegrationActivated(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationActivatedMail',
                 'templateId' => self::TEMPLATE_ACTIVATED_ID,
                 'subject' => 'Publiq platform - Integration activated',
-                'expectedParameters' => [
-                    'url' => 'http://www.example.com/nl/integraties/' . self::INTEGRATION_ID,
-                    'integrationName' => 'Mock Integration',
-                    'type' => 'search-api',
-                ],
             ],
-            'IntegrationBlocked' => [
+            TemplateName::INTEGRATION_BLOCKED->value => [
                 'event' => new IntegrationBlocked(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationBlockedMail',
                 'templateId' => self::TEMPLATE_BLOCKED_ID,
                 'subject' => 'Publiq platform - Integration blocked',
-                'expectedParameters' => [
-                    'integrationName' => 'Mock Integration',
-                ],
+            ],
+            TemplateName::INTEGRATION_ACTIVATION_REQUEST->value => [
+                'event' => new IntegrationActivationRequested(Uuid::fromString(self::INTEGRATION_ID)),
+                'method' => 'sendIntegrationActivationRequestMail',
+                'templateId' => self::TEMPLATE_ACTIVATION_REQUESTED_ID,
+                'subject' => 'Publiq platform - Request for activating integration',
+            ],
+            TemplateName::INTEGRATION_DELETED->value => [
+                'event' => new IntegrationDeleted(Uuid::fromString(self::INTEGRATION_ID)),
+                'method' => 'sendIntegrationDeletedMail',
+                'templateId' => self::TEMPLATE_DELETED_ID,
+                'subject' => 'Publiq platform - Integration deleted',
+                'useGetByIdWithTrashed' => true,
+            ],
+            TemplateName::INTEGRATION_ACTIVATION_REMINDER->value => [
+                'event' => new ActivationExpired(Uuid::fromString(self::INTEGRATION_ID)),
+                'method' => 'sendActivationReminderEmail',
+                'templateId' => self::TEMPLATE_INTEGRATION_ACTIVATION_REMINDER,
+                'subject' => 'Publiq platform - Can we help you to activate your integration?',
+                'checkReminderEmailSent' => true,
+            ],
+        ];
+    }
+
+    private function getTemplateConfig(): array
+    {
+        return [
+            TemplateName::INTEGRATION_CREATED->value => [
+                'id' => self::TEMPLATE_CREATED_ID,
+                'enabled' => true,
+                'subject' => 'Welcome to Publiq platform - Let\'s get you started!',
+            ],
+            TemplateName::INTEGRATION_BLOCKED->value => [
+                'id' => self::TEMPLATE_BLOCKED_ID,
+                'enabled' => true,
+                'subject' => 'Publiq platform - Integration blocked',
+            ],
+            TemplateName::INTEGRATION_ACTIVATED->value => [
+                'id' => self::TEMPLATE_ACTIVATED_ID,
+                'enabled' => true,
+                'subject' => 'Publiq platform - Integration activated',
+            ],
+            TemplateName::INTEGRATION_ACTIVATION_REMINDER->value => [
+                'id' => self::TEMPLATE_INTEGRATION_ACTIVATION_REMINDER,
+                'enabled' => true,
+                'subject' => 'Publiq platform - Can we help you to activate your integration?',
+            ],
+            TemplateName::INTEGRATION_ACTIVATION_REQUEST->value => [
+                'id' => self::TEMPLATE_ACTIVATION_REQUESTED_ID,
+                'enabled' => true,
+                'subject' => 'Publiq platform - Request for activating integration',
+            ],
+            TemplateName::INTEGRATION_DELETED->value => [
+                'id' => self::TEMPLATE_DELETED_ID,
+                'enabled' => true,
+                'subject' => 'Publiq platform - Integration deleted',
             ],
         ];
     }

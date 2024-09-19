@@ -25,8 +25,10 @@ use App\Domain\Subscriptions\Currency;
 use App\Domain\Subscriptions\Repositories\EloquentSubscriptionRepository;
 use App\Domain\Subscriptions\Subscription;
 use App\Domain\Subscriptions\SubscriptionCategory;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -373,11 +375,13 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         $this->integrationRepository->save($searchIntegration);
 
         $organizers = new UdbOrganizers(
-            [new UdbOrganizer(
-                Uuid::uuid4(),
-                Uuid::uuid4(),
-                Uuid::uuid4()->toString(),
-            )],
+            [
+                new UdbOrganizer(
+                    Uuid::uuid4(),
+                    Uuid::uuid4(),
+                    Uuid::uuid4()->toString(),
+                ),
+            ],
         );
 
         $organizationId = Uuid::uuid4();
@@ -696,6 +700,95 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             fn () => $this->integrationRepository->save($uitpasIntegration),
             InconsistentIntegrationType::class
         );
+    }
+
+    /** @dataProvider dataProviderGetIntegrationsThatHaveNotBeenActivatedYet */
+    public function test_get_integrations_that_have_not_been_activated_yet(
+        IntegrationType $integrationType,
+        IntegrationStatus $status,
+        Carbon $date,
+        ?Carbon $reminderEmailSent,
+        bool $hasContact,
+        int $expectedCount
+    ): void {
+        $integrationId = Uuid::uuid4()->toString();
+        DB::table('integrations')->insert([
+            'id' => $integrationId,
+            'type' => $integrationType->value,
+            'subscription_id' => Uuid::uuid4()->toString(),
+            'name' => 'Test',
+            'description' => 'test',
+            'status' => $status,
+            'created_at' => $date,
+            'reminder_email_sent' => $reminderEmailSent,
+        ]);
+
+        if ($hasContact) {
+            DB::table('contacts')->insert([
+                'id' => Uuid::uuid4()->toString(),
+                'integration_id' => $integrationId,
+                'email' => 'grote.smurf@example.com',
+                'type' => ContactType::Technical->value,
+                'first_name' => 'Grote',
+                'last_name' => 'Smurf',
+            ]);
+        }
+
+        $this->assertCount($expectedCount, $this->integrationRepository->getDraftsByTypeAndOlderThenMonthsAgo(IntegrationType::SearchApi, 12));
+    }
+
+    public static function dataProviderGetIntegrationsThatHaveNotBeenActivatedYet(): array
+    {
+        return [
+            'Should not be selected: wrong type' => [
+                IntegrationType::EntryApi,
+                IntegrationStatus::Draft,
+                Carbon::now()->subYears(2),
+                null,
+                true,
+                0,
+            ],
+            'Should not be selected: already active' => [
+                IntegrationType::SearchApi,
+                IntegrationStatus::Active,
+                Carbon::now()->subYears(2),
+                null,
+                true,
+                0,
+            ],
+            'Should not be selected: No contacts' => [
+                IntegrationType::SearchApi,
+                IntegrationStatus::Draft,
+                Carbon::now()->subYears(2),
+                null,
+                false,
+                0,
+            ],
+            'Should not be selected: Created too recently' => [
+                IntegrationType::SearchApi,
+                IntegrationStatus::Draft,
+                Carbon::now()->subMonths(11),
+                null,
+                true,
+                0,
+            ],
+            'Should not be selected: Mail already sent' => [
+                IntegrationType::SearchApi,
+                IntegrationStatus::Draft,
+                Carbon::now()->subYears(2),
+                Carbon::now(),
+                true,
+                0,
+            ],
+            'Should be selected!' => [
+                IntegrationType::SearchApi,
+                IntegrationStatus::Draft,
+                Carbon::now()->subYears(2),
+                null,
+                true,
+                1,
+            ],
+        ];
     }
 
     private function givenThereIsASubscription(

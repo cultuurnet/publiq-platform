@@ -9,11 +9,13 @@ use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\Exceptions\InconsistentIntegrationType;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\UdbOrganizers;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Pagination\PaginatedCollection;
 use App\Pagination\PaginationInfo;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -50,7 +52,24 @@ final class EloquentIntegrationRepository implements IntegrationRepository
             'status' => $integration->status,
             'partner_status' => $integration->partnerStatus,
             'key_visibility' => $integration->getKeyVisibility(),
+            'reminder_email_sent' => $integration->getReminderEmailSent(),
         ]);
+    }
+
+    /** @return Collection<Integration> */
+    public function getDraftsByTypeAndOlderThenMonthsAgo(IntegrationType $type, int $months): Collection
+    {
+        return IntegrationModel::query()
+            ->distinct()
+            ->where('status', 'draft')
+            ->where('type', $type->value)
+            ->whereNull('reminder_email_sent')
+            ->where('created_at', '<', Carbon::now()->subMonths($months))
+            ->has('contacts')  // This ensures that only integrations with at least one contact are returned
+            ->get()
+            ->map(static function (IntegrationModel $integrationModel) {
+                return $integrationModel->toDomain();
+            });
     }
 
     public function getById(UuidInterface $id): Integration
@@ -216,6 +235,4 @@ final class EloquentIntegrationRepository implements IntegrationRepository
             );
         }
     }
-
-
 }
