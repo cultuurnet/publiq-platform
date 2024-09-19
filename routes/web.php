@@ -37,20 +37,17 @@ Route::get('/auth/callback', CallbackController::class);
 
 Route::post('/newsletter', [NewsletterController::class, 'subscribe']);
 
-Route::group(['middleware' => 'auth'], static function () {
-    TranslatedRoute::get(
-        [
-            '/en/support',
-            '/nl/ondersteuning',
-        ],
-        [SupportController::class, 'index'],
-        'support.index'
-    );
-});
+TranslatedRoute::get(
+    [
+        '/en/support',
+        '/nl/ondersteuning',
+    ],
+    [SupportController::class, 'index'],
+    'support.index'
+);
 
-Route::group(['middleware' => 'auth'], static function () {
-    Route::post('/support/slack', [SupportController::class, 'sendInvitation']);
-});
+Route::post('/support/slack', [SupportController::class, 'sendInvitation'])
+    ->middleware('auth');
 
 Route::group(['middleware' => 'auth'], static function () {
     TranslatedRoute::get(
