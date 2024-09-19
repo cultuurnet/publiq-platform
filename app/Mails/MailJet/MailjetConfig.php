@@ -13,4 +13,5 @@ final class MailjetConfig
     public const SANDBOX_MODE = 'mailjet.sandbox_mode';
     public const SANDBOX_ALLOWED_DOMAINS = 'mailjet.sandbox_allowed_domains';
     public const MAILJET_TEMPLATES = 'mailjet.templates';
+    public const MAILJET_EXPIRATION_TIMERS = 'mailjet.expiration_timers';
 }

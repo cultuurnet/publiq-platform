@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Domain\Integrations\Events\ActivationExpired;
-use App\Domain\Integrations\IntegrationExpirationTime;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use Illuminate\Console\Command;
@@ -21,6 +20,7 @@ final class SearchExpiredIntegrations extends Command
     public function __construct(
         private readonly IntegrationRepository $integrationRepository,
         private readonly LoggerInterface $logger,
+        private readonly array $expirationTimers
     ) {
         parent::__construct();
     }
@@ -28,11 +28,11 @@ final class SearchExpiredIntegrations extends Command
     public function handle(): int
     {
         $integrations = new Collection();
-        foreach (IntegrationExpirationTime::cases() as $expirationTimeConfig) {
+        foreach ($this->expirationTimers as $integrationType => $expirationTimer) {
             $integrations = $integrations->merge(
                 $this->integrationRepository->getDraftsByTypeAndOlderThenMonthsAgo(
-                    IntegrationType::fromName($expirationTimeConfig->name),
-                    $expirationTimeConfig->value
+                    IntegrationType::from($integrationType),
+                    $expirationTimer
                 )
             );
         }
