@@ -32,8 +32,10 @@ final readonly class MailjetMailer implements Mailer
                         'Name' => $from->getName(),
                     ],
                     'To' => [
-                        'Email' => $to->getAddress(),
-                        'Name' => $to->getName(),
+                        [
+                            'Email' => $to->getAddress(),
+                            'Name' => $to->getName(),
+                        ],
                     ],
                     'TemplateID' => $templateId,
                     'TemplateLanguage' => true,
