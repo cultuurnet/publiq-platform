@@ -120,8 +120,15 @@ const Index = ({ integrations, paginationInfo, credentials }: Props) => {
           {t("integrations.add")}
         </ButtonLink>
       </div>
-
-      {integrations.length === 0 && <WelcomeSection />}
+      {integrations.length === 0 && (
+        <div>
+          {searchFromUrl ? (
+            t("integrations.results_found_zero")
+          ) : (
+            <WelcomeSection />
+          )}
+        </div>
+      )}
       {integrations.length > 0 && (
         <>
           <div className="inline-flex self-start">
