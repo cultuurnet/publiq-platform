@@ -261,6 +261,14 @@ export const IntegrationCard = ({
               {t("integrations.documentation.test_dataset")}
             </Link>
           )}
+          {type === IntegrationType.SearchApi && (
+            <Link
+              href={t("support.styleguide.action_url")}
+              className="text-publiq-blue"
+            >
+              {t("integrations.styleguide.action_title")}
+            </Link>
+          )}
         </div>
       </section>
     </>
