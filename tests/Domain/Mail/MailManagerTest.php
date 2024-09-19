@@ -197,12 +197,6 @@ final class MailManagerTest extends TestCase
                 'templateId' => self::TEMPLATE_ACTIVATED_ID,
                 'subject' => 'Publiq platform - Integration activated',
             ],
-            TemplateName::INTEGRATION_BLOCKED->value => [
-                'event' => new IntegrationBlocked(Uuid::fromString(self::INTEGRATION_ID)),
-                'method' => 'sendIntegrationBlockedMail',
-                'templateId' => self::TEMPLATE_BLOCKED_ID,
-                'subject' => 'Publiq platform - Integration blocked',
-            ],
             TemplateName::INTEGRATION_ACTIVATION_REQUEST->value => [
                 'event' => new IntegrationActivationRequested(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationActivationRequestMail',
@@ -233,11 +227,6 @@ final class MailManagerTest extends TestCase
                 'id' => self::TEMPLATE_CREATED_ID,
                 'enabled' => true,
                 'subject' => 'Welcome to Publiq platform - Let\'s get you started!',
-            ],
-            TemplateName::INTEGRATION_BLOCKED->value => [
-                'id' => self::TEMPLATE_BLOCKED_ID,
-                'enabled' => true,
-                'subject' => 'Publiq platform - Integration blocked',
             ],
             TemplateName::INTEGRATION_ACTIVATED->value => [
                 'id' => self::TEMPLATE_ACTIVATED_ID,

@@ -47,13 +47,6 @@ final class MailManager
         $this->sendMail($integration, $this->templates->getOrFail(TemplateName::INTEGRATION_ACTIVATED->value));
     }
 
-    public function sendIntegrationBlockedMail(IntegrationBlocked $event): void
-    {
-        $integration = $this->integrationRepository->getById($event->id);
-
-        $this->sendMail($integration, $this->templates->getOrFail(TemplateName::INTEGRATION_BLOCKED->value));
-    }
-
     public function sendIntegrationActivationRequestMail(IntegrationActivationRequested $event): void
     {
         $integration = $this->integrationRepository->getById($event->id);
