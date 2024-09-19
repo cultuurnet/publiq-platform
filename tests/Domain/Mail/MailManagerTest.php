@@ -9,7 +9,6 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Events\ActivationExpired;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
-use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Integration;
@@ -30,7 +29,6 @@ use Tests\TestCase;
 final class MailManagerTest extends TestCase
 {
     private const INTEGRATION_ID = '9e6d778f-ef44-45b3-b842-26b6d71bcad7';
-    private const TEMPLATE_BLOCKED_ID = 1;
     private const TEMPLATE_ACTIVATED_ID = 2;
     private const TEMPLATE_CREATED_ID = 3;
     private const TEMPLATE_INTEGRATION_ACTIVATION_REMINDER = 4;
