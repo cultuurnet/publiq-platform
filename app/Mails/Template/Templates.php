@@ -12,12 +12,12 @@ use InvalidArgumentException;
  */
 final class Templates extends Collection
 {
-    public static function build(array $mails): self
+    public static function build(array $templates): self
     {
         $collection = new self();
 
-        foreach ($mails as $type => $config) {
-            $collection->put($type, new Template($type, (int)$config['id'], $config['enabled'], $config['subject']));
+        foreach ($templates as $type => $template) {
+            $collection->put($type, new Template($type, (int)$template['id'], $template['enabled'], $template['subject']));
         }
 
         return $collection;
