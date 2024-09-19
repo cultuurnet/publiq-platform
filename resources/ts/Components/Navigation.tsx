@@ -15,6 +15,7 @@ import { useIsAuthenticated } from "../hooks/useIsAuthenticated";
 type Page = {
   key: string;
   component?: string;
+  shouldShowWhen: ('authenticated' | 'unauthenticated')[]
 };
 
 const Link = (props: ComponentProps<"a">) =>
@@ -28,13 +29,15 @@ const allPages: Page[] = [
   {
     component: "Integrations/Index",
     key: "integrations",
+    shouldShowWhen: ['authenticated']
   },
-  { key: "opportunities" },
+  { key: "opportunities", shouldShowWhen: ['unauthenticated']  },
   {
     key: "prices",
+    shouldShowWhen: ['unauthenticated']
   },
-  { key: "documentation" },
-  { component: "Support/Index", key: "support" },
+  { key: "documentation", shouldShowWhen: ['unauthenticated'] },
+  { component: "Support/Index", key: "support", shouldShowWhen: ['authenticated', 'unauthenticated'] },
 ] as const;
 
 type Props = ComponentProps<"section"> & {
@@ -52,9 +55,7 @@ export default function Navigation({
   const { component } = usePage();
   const isAuthenticated = useIsAuthenticated();
 
-  const pages: Page[] = isAuthenticated
-    ? allPages.filter((it) => ["integrations", "support"].includes(it.key))
-    : allPages.filter((it) => it.key !== "integrations");
+  const pages: Page[] = allPages.filter((it) => it.shouldShowWhen.includes(isAuthenticated ? 'authenticated' : 'unauthenticated'))
 
   const classes = classNames(
     "flex md:items-center md:justify-start gap-36 px-7 max-md:p-4 max-md:gap-5",
