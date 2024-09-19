@@ -33,5 +33,15 @@ return [
             'enabled' => true,
             'subject' => 'Publiq platform - Can we help you to activate your integration?',
         ],
+        TemplateName::INTEGRATION_ACTIVATION_REQUEST->value => [
+            'id' => env('MAILJET_TEMPLATE_INTEGRATION_ACTIVATION_REQUEST'),
+            'enabled' => true,
+            'subject' => 'Publiq platform - Request for activating integration',
+        ],
+        TemplateName::INTEGRATION_DELETED->value => [
+            'id' => env('MAILJET_TEMPLATE_INTEGRATION_DELETED'),
+            'enabled' => true,
+            'subject' => 'Publiq platform - Integration deleted',
+        ],
     ],
 ];

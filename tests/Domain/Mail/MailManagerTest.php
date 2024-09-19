@@ -8,8 +8,10 @@ use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Events\ActivationExpired;
 use App\Domain\Integrations\Events\IntegrationActivated;
+use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
+use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
@@ -32,6 +34,9 @@ final class MailManagerTest extends TestCase
     private const TEMPLATE_ACTIVATED_ID = 2;
     private const TEMPLATE_CREATED_ID = 3;
     private const TEMPLATE_INTEGRATION_ACTIVATION_REMINDER = 4;
+    private const TEMPLATE_ACTIVATION_REQUESTED_ID = 5;
+    private const TEMPLATE_DELETED_ID = 6;
+
     private MailManager $mailManager;
     private Mailer&MockObject $mailer;
 
@@ -118,18 +123,19 @@ final class MailManagerTest extends TestCase
         int $templateId,
         string $subject,
         bool $checkReminderEmailSent = false,
+        bool $useGetByIdWithTrashed = false,
     ): void {
         $now = Carbon::now();
         Carbon::setTestNow($now);
 
         $this->integrationRepository
             ->expects($this->once())
-            ->method('getById')
+            ->method($useGetByIdWithTrashed ? 'getByIdWithTrashed' : 'getById')
             ->with(self::INTEGRATION_ID)
             ->willReturn($this->integration);
 
         if ($checkReminderEmailSent) {
-            $integrationWithReminderEmailSent = $this->integration->withreminderEmailSent(Carbon::now());
+            $integrationWithReminderEmailSent = $this->integration->withReminderEmailSent(Carbon::now());
             $this->integrationRepository
                 ->expects($this->once())
                 ->method('update')
@@ -197,6 +203,19 @@ final class MailManagerTest extends TestCase
                 'templateId' => self::TEMPLATE_BLOCKED_ID,
                 'subject' => 'Publiq platform - Integration blocked',
             ],
+            TemplateName::INTEGRATION_ACTIVATION_REQUEST->value => [
+                'event' => new IntegrationActivationRequested(Uuid::fromString(self::INTEGRATION_ID)),
+                'method' => 'sendIntegrationActivationRequestMail',
+                'templateId' => self::TEMPLATE_ACTIVATION_REQUESTED_ID,
+                'subject' => 'Publiq platform - Request for activating integration',
+            ],
+            TemplateName::INTEGRATION_DELETED->value => [
+                'event' => new IntegrationDeleted(Uuid::fromString(self::INTEGRATION_ID)),
+                'method' => 'sendIntegrationDeletedMail',
+                'templateId' => self::TEMPLATE_DELETED_ID,
+                'subject' => 'Publiq platform - Integration deleted',
+                'useGetByIdWithTrashed' => true,
+            ],
             TemplateName::INTEGRATION_ACTIVATION_REMINDER->value => [
                 'event' => new ActivationExpired(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendActivationReminderEmail',
@@ -210,25 +229,35 @@ final class MailManagerTest extends TestCase
     private function getTemplateConfig(): array
     {
         return [
-            'integration_created' => [
+            TemplateName::INTEGRATION_CREATED->value => [
                 'id' => self::TEMPLATE_CREATED_ID,
                 'enabled' => true,
                 'subject' => 'Welcome to Publiq platform - Let\'s get you started!',
             ],
-            'integration_blocked' => [
+            TemplateName::INTEGRATION_BLOCKED->value => [
                 'id' => self::TEMPLATE_BLOCKED_ID,
                 'enabled' => true,
                 'subject' => 'Publiq platform - Integration blocked',
             ],
-            'integration_activated' => [
+            TemplateName::INTEGRATION_ACTIVATED->value => [
                 'id' => self::TEMPLATE_ACTIVATED_ID,
                 'enabled' => true,
                 'subject' => 'Publiq platform - Integration activated',
             ],
-            'integration_activation_reminder' => [
+            TemplateName::INTEGRATION_ACTIVATION_REMINDER->value => [
                 'id' => self::TEMPLATE_INTEGRATION_ACTIVATION_REMINDER,
                 'enabled' => true,
                 'subject' => 'Publiq platform - Can we help you to activate your integration?',
+            ],
+            TemplateName::INTEGRATION_ACTIVATION_REQUEST->value => [
+                'id' => self::TEMPLATE_ACTIVATION_REQUESTED_ID,
+                'enabled' => true,
+                'subject' => 'Publiq platform - Request for activating integration',
+            ],
+            TemplateName::INTEGRATION_DELETED->value => [
+                'id' => self::TEMPLATE_DELETED_ID,
+                'enabled' => true,
+                'subject' => 'Publiq platform - Integration deleted',
             ],
         ];
     }
