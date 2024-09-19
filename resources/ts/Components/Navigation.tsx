@@ -15,7 +15,7 @@ import { useIsAuthenticated } from "../hooks/useIsAuthenticated";
 type Page = {
   key: string;
   component?: string;
-  shouldShowWhen: ('authenticated' | 'unauthenticated')[]
+  shouldShowWhen: ("authenticated" | "unauthenticated")[];
 };
 
 const Link = (props: ComponentProps<"a">) =>
@@ -29,15 +29,19 @@ const allPages: Page[] = [
   {
     component: "Integrations/Index",
     key: "integrations",
-    shouldShowWhen: ['authenticated']
+    shouldShowWhen: ["authenticated"],
   },
-  { key: "opportunities", shouldShowWhen: ['unauthenticated']  },
+  { key: "opportunities", shouldShowWhen: ["unauthenticated"] },
   {
     key: "prices",
-    shouldShowWhen: ['unauthenticated']
+    shouldShowWhen: ["unauthenticated"],
   },
-  { key: "documentation", shouldShowWhen: ['unauthenticated'] },
-  { component: "Support/Index", key: "support", shouldShowWhen: ['authenticated', 'unauthenticated'] },
+  { key: "documentation", shouldShowWhen: ["unauthenticated"] },
+  {
+    component: "Support/Index",
+    key: "support",
+    shouldShowWhen: ["authenticated", "unauthenticated"],
+  },
 ] as const;
 
 type Props = ComponentProps<"section"> & {
@@ -55,7 +59,11 @@ export default function Navigation({
   const { component } = usePage();
   const isAuthenticated = useIsAuthenticated();
 
-  const pages: Page[] = allPages.filter((it) => it.shouldShowWhen.includes(isAuthenticated ? 'authenticated' : 'unauthenticated'))
+  const pages: Page[] = allPages.filter((it) =>
+    it.shouldShowWhen.includes(
+      isAuthenticated ? "authenticated" : "unauthenticated"
+    )
+  );
 
   const classes = classNames(
     "flex md:items-center md:justify-start gap-36 px-7 max-md:p-4 max-md:gap-5",
