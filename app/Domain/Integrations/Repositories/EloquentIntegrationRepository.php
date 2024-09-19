@@ -60,7 +60,9 @@ final class EloquentIntegrationRepository implements IntegrationRepository
     public function getDraftsByTypeAndOlderThenMonthsAgo(IntegrationType $type, int $months): Collection
     {
         return IntegrationModel::query()
+            ->distinct()
             ->where('status', 'draft')
+            ->where('type', $type->value)
             ->whereNull('reminder_email_sent')
             ->where('created_at', '<', Carbon::now()->subMonths($months))
             ->has('contacts')  // This ensures that only integrations with at least one contact are returned

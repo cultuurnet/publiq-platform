@@ -11,8 +11,6 @@ final class MailjetConfig
     public const API_KEY = 'mailjet.api.key';
     public const API_SECRET = 'mailjet.api.secret';
     public const SANDBOX_MODE = 'mailjet.sandbox_mode';
-    public const TEMPLATE_INTEGRATION_BLOCKED = 'mailjet.templates.integration_blocked';
-    public const TEMPLATE_INTEGRATION_ACTIVATED = 'mailjet.templates.integration_activated';
-    public const TEMPLATE_INTEGRATION_CREATED = 'mailjet.templates.integration_created';
-    public const TEMPLATE_INTEGRATION_ACTIVATION_REMINDER = 'mailjet.templates.integration_activation_reminder';
+    public const SANDBOX_ALLOWED_DOMAINS = 'mailjet.sandbox_allowed_domains';
+    public const MAILJET_TEMPLATES = 'mailjet.templates';
 }

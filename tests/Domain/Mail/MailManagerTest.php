@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Domain\Mail;
+namespace Tests\Domain\Mail;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
@@ -15,9 +15,10 @@ use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Domain\Mail\Addresses;
 use App\Domain\Mail\Mailer;
 use App\Domain\Mail\MailManager;
+use App\Mails\Template\TemplateName;
+use App\Mails\Template\Templates;
 use Carbon\Carbon;
 use PHPUnit\Framework\MockObject\MockObject;
 use Ramsey\Uuid\Uuid;
@@ -49,10 +50,7 @@ final class MailManagerTest extends TestCase
         $this->mailManager = new MailManager(
             $this->mailer,
             $this->integrationRepository,
-            self::TEMPLATE_CREATED_ID,
-            self::TEMPLATE_ACTIVATED_ID,
-            self::TEMPLATE_BLOCKED_ID,
-            self::TEMPLATE_INTEGRATION_ACTIVATION_REMINDER,
+            Templates::build($this->getTemplateConfig()),
             'http://www.example.com'
         );
 
@@ -119,7 +117,6 @@ final class MailManagerTest extends TestCase
         string $method,
         int $templateId,
         string $subject,
-        array $expectedParameters,
         bool $checkReminderEmailSent = false,
     ): void {
         $now = Carbon::now();
@@ -146,10 +143,7 @@ final class MailManagerTest extends TestCase
             ->method('send')
             ->with(
                 new Address(config('mail.from.address'), config('mail.from.name')),
-                $this->callback(function (Addresses $addresses) use (&$currentEmail) {
-                    /** @var Address $address */
-                    $address = $addresses->first();
-
+                $this->callback(function (Address $address) use (&$currentEmail) {
                     if (!isset($this->contacts[$address->getAddress()])) {
                         return false;
                     }
@@ -165,12 +159,15 @@ final class MailManagerTest extends TestCase
                 $templateId,
                 $subject,
                 // Because with() is called with all callbacks at the same time, we have to pass currentEmail as reference
-                $this->callback(function ($parameters) use ($expectedParameters, &$currentEmail) {
-                    $expectedParameters['firstName'] = $this->contacts[$currentEmail]->firstName;
-                    $expectedParameters['lastName'] = $this->contacts[$currentEmail]->lastName;
-                    $expectedParameters['contactType'] = $this->contacts[$currentEmail]->type->value;
-
-                    $this->assertEquals($expectedParameters, $parameters);
+                $this->callback(function ($parameters) use (&$currentEmail) {
+                    $this->assertEquals([
+                        'url' => 'http://www.example.com/nl/integraties/' . self::INTEGRATION_ID,
+                        'integrationName' => 'Mock Integration',
+                        'type' => 'search-api',
+                        'firstName' => $this->contacts[$currentEmail]->firstName,
+                        'lastName' => $this->contacts[$currentEmail]->lastName,
+                        'contactType' => $this->contacts[$currentEmail]->type->value,
+                    ], $parameters);
 
                     return true;
                 })
@@ -182,46 +179,56 @@ final class MailManagerTest extends TestCase
     public static function mailDataProvider(): array
     {
         return [
-            'IntegrationCreated' => [
+            TemplateName::INTEGRATION_CREATED->value => [
                 'event' => new IntegrationCreatedWithContacts(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationCreatedMail',
                 'templateId' => self::TEMPLATE_CREATED_ID,
                 'subject' => 'Welcome to Publiq platform - Let\'s get you started!',
-                'expectedParameters' => [
-                    'url' => 'http://www.example.com/nl/integraties/' . self::INTEGRATION_ID,
-                    'integrationName' => 'Mock Integration',
-                    'type' => 'search-api',
-                ],
             ],
-            'IntegrationActivated' => [
+            TemplateName::INTEGRATION_ACTIVATED->value => [
                 'event' => new IntegrationActivated(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationActivatedMail',
                 'templateId' => self::TEMPLATE_ACTIVATED_ID,
                 'subject' => 'Publiq platform - Integration activated',
-                'expectedParameters' => [
-                    'url' => 'http://www.example.com/nl/integraties/' . self::INTEGRATION_ID,
-                    'integrationName' => 'Mock Integration',
-                    'type' => 'search-api',
-                ],
             ],
-            'IntegrationBlocked' => [
+            TemplateName::INTEGRATION_BLOCKED->value => [
                 'event' => new IntegrationBlocked(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationBlockedMail',
                 'templateId' => self::TEMPLATE_BLOCKED_ID,
                 'subject' => 'Publiq platform - Integration blocked',
-                'expectedParameters' => [
-                    'integrationName' => 'Mock Integration',
-                ],
             ],
-            'sendActivationReminderEmail' => [
+            TemplateName::INTEGRATION_ACTIVATION_REMINDER->value => [
                 'event' => new ActivationExpired(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendActivationReminderEmail',
                 'templateId' => self::TEMPLATE_INTEGRATION_ACTIVATION_REMINDER,
                 'subject' => 'Publiq platform - Can we help you to activate your integration?',
-                'expectedParameters' => [
-                    'integrationName' => 'Mock Integration',
-                ],
                 'checkReminderEmailSent' => true,
+            ],
+        ];
+    }
+
+    private function getTemplateConfig(): array
+    {
+        return [
+            'integration_created' => [
+                'id' => self::TEMPLATE_CREATED_ID,
+                'enabled' => true,
+                'subject' => 'Welcome to Publiq platform - Let\'s get you started!',
+            ],
+            'integration_blocked' => [
+                'id' => self::TEMPLATE_BLOCKED_ID,
+                'enabled' => true,
+                'subject' => 'Publiq platform - Integration blocked',
+            ],
+            'integration_activated' => [
+                'id' => self::TEMPLATE_ACTIVATED_ID,
+                'enabled' => true,
+                'subject' => 'Publiq platform - Integration activated',
+            ],
+            'integration_activation_reminder' => [
+                'id' => self::TEMPLATE_INTEGRATION_ACTIVATION_REMINDER,
+                'enabled' => true,
+                'subject' => 'Publiq platform - Can we help you to activate your integration?',
             ],
         ];
     }
