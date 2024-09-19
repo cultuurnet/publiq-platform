@@ -742,7 +742,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         return [
             'Should not be selected: wrong type' => [
                 IntegrationType::EntryApi,
-                IntegrationStatus::Active,
+                IntegrationStatus::Draft,
                 Carbon::now()->subYears(2),
                 null,
                 true,
