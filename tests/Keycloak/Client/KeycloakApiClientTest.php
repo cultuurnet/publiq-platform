@@ -14,6 +14,7 @@ use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realm;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
@@ -144,7 +145,7 @@ final class KeycloakApiClientTest extends TestCase
         );
     }
 
-    /** @dataProvider dataProviderIsClientEnabled */
+    #[DataProvider('dataProviderIsClientEnabled')]
     public function test_fetch_is_client_enabled(bool $enabled): void
     {
         $mock = new MockHandler([
