@@ -30,6 +30,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Tests\TestCase;
@@ -702,7 +703,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         );
     }
 
-    /** @dataProvider dataProviderGetIntegrationsThatHaveNotBeenActivatedYet */
+    #[DataProvider('dataProviderGetIntegrationsThatHaveNotBeenActivatedYet')]
     public function test_get_integrations_that_have_not_been_activated_yet(
         IntegrationType $integrationType,
         IntegrationStatus $status,

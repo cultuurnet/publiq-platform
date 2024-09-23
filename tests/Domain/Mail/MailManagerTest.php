@@ -22,6 +22,7 @@ use App\Domain\Mail\MailManager;
 use App\Mails\Template\TemplateName;
 use App\Mails\Template\Templates;
 use Carbon\Carbon;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Mime\Address;
@@ -114,9 +115,7 @@ final class MailManagerTest extends TestCase
             ->withContacts(...$this->contacts);
     }
 
-    /**
-     * @dataProvider mailDataProvider
-     */
+    #[DataProvider('mailDataProvider')]
     public function testSendMail(
         object $event,
         string $method,
