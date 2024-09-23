@@ -148,7 +148,6 @@ final class CreateConsumersTest extends TestCase
         $this->assertEquals($consumer->consumerId, $expectedConsumer->consumerId);
         $this->assertEquals($consumer->apiKey, $expectedConsumer->apiKey);
         $this->assertEquals($consumer->consumerKey, $expectedConsumer->consumerKey);
-        $this->assertEquals($consumer->consumerSecret, $expectedConsumer->consumerSecret);
         $this->assertEquals($consumer->environment, $expectedConsumer->environment);
 
         return true;

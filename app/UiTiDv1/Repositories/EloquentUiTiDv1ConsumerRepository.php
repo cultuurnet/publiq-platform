@@ -34,7 +34,6 @@ final class EloquentUiTiDv1ConsumerRepository implements UiTiDv1ConsumerReposito
                             'integration_id' => $uitidv1Consumer->integrationId->toString(),
                             'consumer_id' => $uitidv1Consumer->consumerId,
                             'consumer_key' => $uitidv1Consumer->consumerKey,
-                            'consumer_secret' => $uitidv1Consumer->consumerSecret,
                             'api_key' => $uitidv1Consumer->apiKey,
                             'environment' => $environment,
                         ]
