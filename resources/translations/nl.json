@@ -258,6 +258,9 @@
       "action_url": "https://docs.publiq.be/docs{{product}}",
       "requirements": "Vereisten om live te gaan",
       "test_dataset": "Test dataset"
+    },
+    "styleguide": {
+      "action_title": "Beeldmerken en verwijzigingen"
     }
   },
   "details": {
