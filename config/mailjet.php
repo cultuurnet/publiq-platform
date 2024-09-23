@@ -14,10 +14,10 @@ return [
         'secret' => env('MAILJET_API_SECRET'),
     ],
     'expiration_timers' => [ // Timer is always in months
-        IntegrationType::EntryApi->value => env('MAILJET_EXPIRATION_TIMER_ENTRY_API', 6),
-        IntegrationType::SearchApi->value => env('MAILJET_EXPIRATION_TIMER_SEARCH_API', 6),
-        IntegrationType::UiTPAS->value => env('MAILJET_EXPIRATION_TIMER_UITPAS', 6),
-        IntegrationType::Widgets->value => env('MAILJET_EXPIRATION_TIMER_WIDGETS', 3),
+        IntegrationType::EntryApi->value => (int)env('MAILJET_EXPIRATION_TIMER_ENTRY_API', 6),
+        IntegrationType::SearchApi->value => (int)env('MAILJET_EXPIRATION_TIMER_SEARCH_API', 6),
+        IntegrationType::UiTPAS->value => (int)env('MAILJET_EXPIRATION_TIMER_UITPAS', 6),
+        IntegrationType::Widgets->value => (int)env('MAILJET_EXPIRATION_TIMER_WIDGETS', 3),
     ],
     'templates' => [
         TemplateName::INTEGRATION_CREATED->value => [
