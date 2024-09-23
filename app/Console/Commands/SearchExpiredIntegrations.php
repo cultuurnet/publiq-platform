@@ -32,7 +32,7 @@ final class SearchExpiredIntegrations extends Command
             $integrations = $integrations->merge(
                 $this->integrationRepository->getDraftsByTypeAndOlderThenMonthsAgo(
                     IntegrationType::from($integrationType),
-                    $expirationTimer
+                    (int) $expirationTimer
                 )
             );
         }
