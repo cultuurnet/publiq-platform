@@ -9,6 +9,7 @@ use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\IntegrationUrlType;
 use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Ramsey\Uuid\Uuid;
 use Tests\CreatesIntegration;
 use Tests\TestCase;
@@ -17,9 +18,7 @@ final class IntegrationToKeycloakClientConverterTest extends TestCase
 {
     use CreatesIntegration;
 
-    /**
-     * @dataProvider integrationDataProvider
-     */
+    #[DataProvider('integrationDataProvider')]
     public function test_integration_converted_to_keycloak_format(IntegrationPartnerStatus $partnerStatus, bool $serviceAccountsEnabled, bool $standardFlowEnabled): void
     {
         $id = Uuid::uuid4();
