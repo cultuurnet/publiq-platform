@@ -18,7 +18,6 @@ trait CreatesMockUiTiDv1Consumer
             Uuid::uuid4(),
             'consumer-id-1',
             'consumer-key-1',
-            'consumer-secret-1',
             'api-key-1',
             UiTiDv1Environment::Acceptance
         );

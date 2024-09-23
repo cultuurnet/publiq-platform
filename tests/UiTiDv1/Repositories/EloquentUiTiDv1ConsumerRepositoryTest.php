@@ -32,7 +32,6 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
             $integrationId,
             '1',
             'consumer-key-1',
-            'consumer-secret-1',
             'api-key-1',
             UiTiDv1Environment::Acceptance
         );
@@ -41,7 +40,6 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
             $integrationId,
             '2',
             'consumer-key-2',
-            'consumer-secret-2',
             'api-key-2',
             UiTiDv1Environment::Testing
         );
@@ -50,7 +48,6 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
             $integrationId,
             '3',
             'consumer-key-3',
-            'consumer-secret-3',
             'api-key-3',
             UiTiDv1Environment::Production
         );
@@ -61,7 +58,6 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
             'integration_id' => $integrationId->toString(),
             'consumer_id' => '1',
             'consumer_key' => 'consumer-key-1',
-            'consumer_secret' => 'consumer-secret-1',
             'api_key' => 'api-key-1',
             'environment' => 'acc',
         ]);
@@ -69,7 +65,6 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
             'integration_id' => $integrationId->toString(),
             'consumer_id' => '2',
             'consumer_key' => 'consumer-key-2',
-            'consumer_secret' => 'consumer-secret-2',
             'api_key' => 'api-key-2',
             'environment' => 'test',
         ]);
@@ -77,7 +72,6 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
             'integration_id' => $integrationId->toString(),
             'consumer_id' => '3',
             'consumer_key' => 'consumer-key-3',
-            'consumer_secret' => 'consumer-secret-3',
             'api_key' => 'api-key-3',
             'environment' => 'prod',
         ]);
@@ -92,7 +86,6 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
             $integrationId,
             '1',
             'consumer-key-1',
-            'consumer-secret-1',
             'api-key-1',
             UiTiDv1Environment::Acceptance
         );
@@ -101,7 +94,6 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
             $integrationId,
             '2',
             'consumer-key-2',
-            'consumer-secret-2',
             'api-key-2',
             UiTiDv1Environment::Testing
         );
@@ -110,7 +102,6 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
             $integrationId,
             '3',
             'consumer-key-3',
-            'consumer-secret-3',
             'api-key-3',
             UiTiDv1Environment::Production
         );
@@ -145,7 +136,6 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
                     $integrationId,
                     (string)$count,
                     'consumer-key-' . $count,
-                    'consumer-secret-' . $count,
                     'api-key-' . $count,
                     $environment
                 );
@@ -183,7 +173,6 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
                     $integrationId,
                     (string)$count,
                     'consumer-key-' . $count,
-                    'consumer-secret-' . $count,
                     'api-key-' . $count,
                     $environment
                 );
@@ -216,7 +205,6 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
             $integrationId,
             '1',
             'consumer-key-1',
-            'consumer-secret-1',
             'api-key-1',
             UiTiDv1Environment::Acceptance
         );
@@ -225,7 +213,6 @@ final class EloquentUiTiDv1ConsumerRepositoryTest extends TestCase
             $integrationId,
             '2',
             'consumer-key-2',
-            'consumer-secret-2',
             'api-key-2',
             UiTiDv1Environment::Testing
         );

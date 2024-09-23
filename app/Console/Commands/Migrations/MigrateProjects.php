@@ -352,14 +352,12 @@ final class MigrateProjects extends Command
 
         $consumerId = (string) $data['id'];
         $consumerKey = $data['consumerKey'];
-        $consumerSecret = $data['consumerSecret'];
 
         return new UiTiDv1Consumer(
             Uuid::uuid4(),
             $integrationId,
             $consumerId,
             $consumerKey,
-            $consumerSecret,
             $apiKey,
             $environment
         );

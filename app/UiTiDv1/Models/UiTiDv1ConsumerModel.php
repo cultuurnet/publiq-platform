@@ -35,7 +35,6 @@ final class UiTiDv1ConsumerModel extends UuidModel
             Uuid::fromString($this->integration_id),
             (string)$this->consumer_id,
             $this->consumer_key,
-            $this->consumer_secret,
             $this->api_key,
             UiTiDv1Environment::from($this->environment)
         );

@@ -106,7 +106,6 @@ final class CreateConsumersTest extends TestCase
                 $integrationId,
                 '4135',
                 'mock-consumer-key-1',
-                'mock-consumer-secret-1',
                 'mock-api-key-1',
                 UiTiDv1Environment::Acceptance
             ),
@@ -115,7 +114,6 @@ final class CreateConsumersTest extends TestCase
                 $integrationId,
                 '4136',
                 'mock-consumer-key-2',
-                'mock-consumer-secret-2',
                 'mock-api-key-2',
                 UiTiDv1Environment::Testing
             ),
@@ -124,7 +122,6 @@ final class CreateConsumersTest extends TestCase
                 $integrationId,
                 '4137',
                 'mock-consumer-key-3',
-                'mock-consumer-secret-3',
                 'mock-api-key-3',
                 UiTiDv1Environment::Production
             ),

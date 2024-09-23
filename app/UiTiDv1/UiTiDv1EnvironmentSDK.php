@@ -38,7 +38,6 @@ final class UiTiDv1EnvironmentSDK
         $data = Json::decodeAssociatively(Json::encode($xml));
         $consumerId = (string) $data['id'];
         $consumerKey = $data['consumerKey'];
-        $consumerSecret = $data['consumerSecret'];
         $apiKey = $data['apiKeySapi3'];
 
         return new UiTiDv1Consumer(
@@ -46,7 +45,6 @@ final class UiTiDv1EnvironmentSDK
             $integration->id,
             $consumerId,
             $consumerKey,
-            $consumerSecret,
             $apiKey,
             $this->environment
         );

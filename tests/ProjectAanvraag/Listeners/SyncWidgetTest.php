@@ -194,7 +194,6 @@ final class SyncWidgetTest extends TestCase
             $integrationId,
             'consumer-id-testing',
             'consumer-key-testing',
-            'consumer-secret-testing',
             'api-key-testing',
             UiTiDv1Environment::Testing
         );
@@ -204,7 +203,6 @@ final class SyncWidgetTest extends TestCase
             $integrationId,
             'consumer-id-production',
             'consumer-key-production',
-            'consumer-secret-production',
             'api-key-production',
             UiTiDv1Environment::Production
         );
