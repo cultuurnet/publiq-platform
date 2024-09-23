@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Keycloak\KeycloakConfig;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
@@ -39,8 +40,8 @@ final class HandleInertiaRequests extends Middleware
                     'enabled' => config('uitpas.enabled'),
                 ],
                 'keycloak' => [
-                    'enabled' => config('keycloak.enabled'),
-                    'testClientEnabled' => config('keycloak.testClientEnabled'),
+                    'enabled' => config(KeycloakConfig::KEYCLOAK_LOGIN_ENABLED),
+                    'testClientEnabled' => config(KeycloakConfig::KEYCLOAK_LOGIN_TEST_CLIENT_ENABLED),
                 ],
             ],
             'widgetConfig' => [

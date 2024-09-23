@@ -12,4 +12,5 @@ final class KeycloakConfig
     public const KEYCLOAK_CLIENT_ID = 'keycloak.login.clientId';
     public const KEYCLOAK_REALM_NAME = 'keycloak.login.realmName';
     public const KEYCLOAK_LOGIN_PARAMETERS = 'keycloak.login.parameters';
+    public const KEYCLOAK_LOGIN_TEST_CLIENT_ENABLED = 'keycloak.login.testClientEnabled';
 }
