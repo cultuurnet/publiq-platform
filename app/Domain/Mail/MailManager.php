@@ -9,7 +9,6 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Events\ActivationExpired;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
-use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Integration;
@@ -45,13 +44,6 @@ final class MailManager
         $integration = $this->integrationRepository->getById($event->id);
 
         $this->sendMail($integration, $this->templates->getOrFail(TemplateName::INTEGRATION_ACTIVATED->value));
-    }
-
-    public function sendIntegrationBlockedMail(IntegrationBlocked $event): void
-    {
-        $integration = $this->integrationRepository->getById($event->id);
-
-        $this->sendMail($integration, $this->templates->getOrFail(TemplateName::INTEGRATION_BLOCKED->value));
     }
 
     public function sendIntegrationActivationRequestMail(IntegrationActivationRequested $event): void
