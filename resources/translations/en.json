@@ -404,6 +404,7 @@
     },
     "support_via_slack": {
       "title": "Support via Slack",
+      "request_title": "Request access to Slack support channel",
       "description": "Have questions after reading our documentation? We're here to help. Reach us quickly through our support channel on Slack.",
       "img_url": "#",
       "action_title": "Go to Slack channel",

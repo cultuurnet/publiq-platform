@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import type { SupportType } from "./SupportTypes";
 import { Heading } from "./Heading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,6 +10,10 @@ import { InformationDialog } from "./InformationDialog";
 import { useTranslation } from "react-i18next";
 import type { SupportProps } from "../Pages/Support/Index";
 import { useTranslateRoute } from "../hooks/useTranslateRoute";
+import { ButtonPrimary } from "./ButtonPrimary";
+import { Dialog } from "./Dialog";
+import { FormElement } from "./FormElement";
+import { Input } from "./Input";
 
 type Props = SupportType & SupportProps;
 
@@ -25,7 +29,11 @@ export const SupportCard = ({
 }: Props) => {
   const { t } = useTranslation();
   const translateRoute = useTranslateRoute();
-  const handleSlackInvitation = () => router.post("/support/slack");
+  const [isDialogVisible, setIsDialogVisible] = useState(false);
+  const handleSlackInvitation = () => {
+    //router.post("/support/slack");
+    setIsDialogVisible(true);
+  };
   const handleRedirect = () => router.get(translateRoute("/support"));
 
   return (
@@ -78,6 +86,29 @@ export const SupportCard = ({
           </div>
         </div>
       </div>
+
+      <Dialog
+        title={t("support.support_via_slack.request_title")}
+        actions={
+          <>
+            <ButtonSecondary onClick={() => setIsDialogVisible(false)}>
+              {t("dialog.cancel")}
+            </ButtonSecondary>
+            <ButtonPrimary onClick={() => console.log("submit")}>
+              {t("dialog.confirm")}
+            </ButtonPrimary>
+          </>
+        }
+        isVisible={isDialogVisible}
+        onClose={() => setIsDialogVisible(false)}
+      >
+        <FormElement
+          label={t("footer.newsletter_dialog.email")}
+          required
+          className="w-full"
+          component={<Input type="email" name="email" />}
+        />
+      </Dialog>
     </div>
   );
 };
