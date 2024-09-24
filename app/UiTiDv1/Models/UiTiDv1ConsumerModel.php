@@ -23,7 +23,6 @@ final class UiTiDv1ConsumerModel extends UuidModel
         'integration_id',
         'consumer_id',
         'consumer_key',
-        'consumer_secret',
         'api_key',
         'environment',
     ];
