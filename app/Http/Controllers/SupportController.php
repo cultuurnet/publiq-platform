@@ -24,11 +24,13 @@ final class SupportController extends Controller
             'slackStatus' => $slackStatus,
         ]);
     }
+
     public function sendInvitation(Request $request): RedirectResponse
     {
         $botToken = config('slack.botToken');
         $channelID = config('slack.channels.technical_support');
-        $email = Auth::user()?->email;
+        $data = $request->validate(['email' => ['required', 'email']]);
+        $email = $data['email'] ?? Auth::user()?->email;
 
         try {
             $response = Http::withToken($botToken)

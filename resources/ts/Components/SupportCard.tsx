@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { FormEvent, FormEventHandler, useState } from "react";
 import type { SupportType } from "./SupportTypes";
 import { Heading } from "./Heading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -32,16 +32,16 @@ export const SupportCard = ({
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const handleRedirect = () => router.get(translateRoute("/support"));
 
-  const { data, errors, setData, reset } = useForm({ email });
-  const onSubmit = (event) => {
+  const { data, errors, setError, setData, reset } = useForm({ email });
+  const onSubmit = (event: FormEvent) => {
     event.preventDefault();
 
-    return;
     router.post("/support/slack", data, {
       onSuccess: () => {
         reset();
         setIsDialogVisible(false);
       },
+      onError: (errors) => setError("email", errors.email),
     });
   };
 
@@ -108,16 +108,14 @@ export const SupportCard = ({
         <form id={"slack"} onSubmit={onSubmit}>
           <FormElement
             label={t("footer.newsletter_dialog.email")}
-            required
             className="w-full"
             error={errors["email"]}
             component={
               <Input
-                type="email"
+                type="text"
                 name="email"
                 value={data.email}
                 onChange={(e) => setData("email", e.target.value)}
-                required
               />
             }
           />
