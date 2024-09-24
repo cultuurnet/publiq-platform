@@ -28,7 +28,7 @@ final class ClientCredentials implements TokenStrategy
 
     public function fetchToken(KeycloakHttpClient $client, Realm $realm): string
     {
-        $key = $realm->baseUrl . $realm->internalName . $realm->clientId;
+        $key = $realm->environment->value . $realm->internalName . $realm->clientId;
 
         if (isset($this->accessToken[$key])) {
             return $this->accessToken[$key];
