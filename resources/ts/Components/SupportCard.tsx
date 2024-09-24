@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { ButtonLinkSecondary } from "./ButtonLinkSecondary";
 import { ButtonSecondary } from "./ButtonSecondary";
-import { router } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 import { InformationDialog } from "./InformationDialog";
 import { useTranslation } from "react-i18next";
 import type { SupportProps } from "../Pages/Support/Index";
@@ -30,11 +30,20 @@ export const SupportCard = ({
   const { t } = useTranslation();
   const translateRoute = useTranslateRoute();
   const [isDialogVisible, setIsDialogVisible] = useState(false);
-  const handleSlackInvitation = () => {
-    //router.post("/support/slack");
-    setIsDialogVisible(true);
-  };
   const handleRedirect = () => router.get(translateRoute("/support"));
+
+  const { data, errors, setData, reset } = useForm({ email });
+  const onSubmit = (event) => {
+    event.preventDefault();
+
+    return;
+    router.post("/support/slack", data, {
+      onSuccess: () => {
+        reset();
+        setIsDialogVisible(false);
+      },
+    });
+  };
 
   return (
     <div className="w-full flex flex-col bg-white drop-shadow-card">
@@ -54,14 +63,9 @@ export const SupportCard = ({
                   {actionTitle}
                   <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
                 </ButtonLinkSecondary>
-                <ButtonSecondary
-                  onClick={() => {
-                    handleSlackInvitation();
-                  }}
-                >
+                <ButtonSecondary onClick={() => setIsDialogVisible(true)}>
                   {t("support.support_via_slack.invitation")}
                 </ButtonSecondary>
-
                 <InformationDialog
                   isVisible={!!slackStatus}
                   title={title}
@@ -72,7 +76,7 @@ export const SupportCard = ({
                   }
                   onConfirm={() => handleRedirect()}
                   onClose={() => handleRedirect()}
-                ></InformationDialog>
+                />
               </div>
             ) : (
               <ButtonLinkSecondary
@@ -86,28 +90,38 @@ export const SupportCard = ({
           </div>
         </div>
       </div>
-
       <Dialog
         title={t("support.support_via_slack.request_title")}
+        isVisible={isDialogVisible}
+        onClose={() => setIsDialogVisible(false)}
         actions={
           <>
             <ButtonSecondary onClick={() => setIsDialogVisible(false)}>
               {t("dialog.cancel")}
             </ButtonSecondary>
-            <ButtonPrimary onClick={() => console.log("submit")}>
+            <ButtonPrimary type={"submit"} form={"slack"}>
               {t("dialog.confirm")}
             </ButtonPrimary>
           </>
         }
-        isVisible={isDialogVisible}
-        onClose={() => setIsDialogVisible(false)}
       >
-        <FormElement
-          label={t("footer.newsletter_dialog.email")}
-          required
-          className="w-full"
-          component={<Input type="email" name="email" />}
-        />
+        <form id={"slack"} onSubmit={onSubmit}>
+          <FormElement
+            label={t("footer.newsletter_dialog.email")}
+            required
+            className="w-full"
+            error={errors["email"]}
+            component={
+              <Input
+                type="email"
+                name="email"
+                value={data.email}
+                onChange={(e) => setData("email", e.target.value)}
+                required
+              />
+            }
+          />
+        </form>
       </Dialog>
     </div>
   );
