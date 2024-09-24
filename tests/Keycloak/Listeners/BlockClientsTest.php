@@ -10,6 +10,7 @@ use App\Keycloak\Client;
 use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Listeners\BlockClients;
 use App\Keycloak\Repositories\KeycloakClientRepository;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
@@ -38,9 +39,7 @@ final class BlockClientsTest extends TestCase
         $this->logger = $this->createMock(LoggerInterface::class);
     }
 
-    /**
-     * @dataProvider differentWaysToBlockClients
-     */
+    #[DataProvider('differentWaysToBlockClients')]
     public function test_block_clients_when_integration_is_blocked_or_deleted(IntegrationBlocked|IntegrationDeleted $event): void
     {
         $integrationId = Uuid::fromString(self::INTEGRATION_ID);

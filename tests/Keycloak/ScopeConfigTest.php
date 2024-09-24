@@ -6,6 +6,7 @@ namespace Tests\Keycloak;
 
 use App\Domain\Integrations\IntegrationType;
 use App\Keycloak\ScopeConfig;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
 use Tests\CreatesIntegration;
@@ -31,9 +32,7 @@ final class ScopeConfigTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider integrationDataProvider
-     */
+    #[DataProvider('integrationDataProvider')]
     public function test_get_scope_ids_from_integration(IntegrationType $type, array $expectedScopeId): void
     {
         $actualScopeIds = $this->scopeConfig->getScopeIdsFromIntegrationType(

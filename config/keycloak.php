@@ -31,7 +31,6 @@ return [
             'scope' => [
                 'search_api_id' => env('KEYCLOAK_ACC_SCOPE_SEARCH_API_ID', ''),
                 'entry_api_id' => env('KEYCLOAK_ACC_SCOPE_ENTRY_API_ID', ''),
-                'widgets_id' => env('KEYCLOAK_ACC_SCOPE_WIDGETS_ID', ''),
                 'uitpas_id' => env('KEYCLOAK_ACC_SCOPE_UITPAS_ID', ''),
             ],
         ],
@@ -43,7 +42,6 @@ return [
             'scope' => [
                 'search_api_id' => env('KEYCLOAK_TEST_SCOPE_SEARCH_API_ID', ''),
                 'entry_api_id' => env('KEYCLOAK_TEST_SCOPE_ENTRY_API_ID', ''),
-                'widgets_id' => env('KEYCLOAK_TEST_SCOPE_WIDGETS_ID', ''),
                 'uitpas_id' => env('KEYCLOAK_TEST_SCOPE_UITPAS_ID', ''),
             ],
         ],
@@ -55,7 +53,6 @@ return [
             'scope' => [
                 'search_api_id' => env('KEYCLOAK_PROD_SCOPE_SEARCH_API_ID', ''),
                 'entry_api_id' => env('KEYCLOAK_PROD_SCOPE_ENTRY_API_ID', ''),
-                'widgets_id' => env('KEYCLOAK_PROD_SCOPE_WIDGETS_ID', ''),
                 'uitpas_id' => env('KEYCLOAK_PROD_SCOPE_UITPAS_ID', ''),
             ],
         ],
