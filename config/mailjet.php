@@ -25,11 +25,6 @@ return [
             'enabled' => true,
             'subject' => 'Welcome to Publiq platform - Let\'s get you started!',
         ],
-        TemplateName::INTEGRATION_BLOCKED->value => [
-            'id' => env('MAILJET_TEMPLATE_INTEGRATION_BLOCKED'),
-            'enabled' => false,
-            'subject' => 'Publiq platform - Integration blocked',
-        ],
         TemplateName::INTEGRATION_ACTIVATED->value => [
             'id' => env('MAILJET_TEMPLATE_INTEGRATION_ACTIVATED'),
             'enabled' => true,

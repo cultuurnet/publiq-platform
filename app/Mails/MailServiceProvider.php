@@ -7,7 +7,6 @@ namespace App\Mails;
 use App\Domain\Integrations\Events\ActivationExpired;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
-use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
@@ -57,7 +56,6 @@ final class MailServiceProvider extends ServiceProvider
 
         Event::listen(IntegrationCreatedWithContacts::class, [MailManager::class, 'sendIntegrationCreatedMail']);
         Event::listen(IntegrationActivated::class, [MailManager::class, 'sendIntegrationActivatedMail']);
-        Event::listen(IntegrationBlocked::class, [MailManager::class, 'sendIntegrationBlockedMail']);
         Event::listen(ActivationExpired::class, [MailManager::class, 'sendActivationReminderEmail']);
         Event::listen(IntegrationActivationRequested::class, [MailManager::class, 'sendIntegrationActivationRequestMail']);
         Event::listen(IntegrationDeleted::class, [MailManager::class, 'sendIntegrationDeletedMail']);
