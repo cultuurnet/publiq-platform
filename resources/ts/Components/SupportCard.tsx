@@ -1,4 +1,4 @@
-import type { FormEvent} from "react";
+import type { FormEvent } from "react";
 import React, { useState } from "react";
 import type { SupportType } from "./SupportTypes";
 import { Heading } from "./Heading";
