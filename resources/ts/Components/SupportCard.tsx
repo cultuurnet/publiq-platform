@@ -32,15 +32,11 @@ export const SupportCard = ({
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const handleRedirect = () => router.get(translateRoute("/support"));
 
-  const { data, errors, setError, setData, reset } = useForm({ email });
+  const { data, errors, setError, setData } = useForm({ email });
   const onSubmit = (event: FormEvent) => {
     event.preventDefault();
-
     router.post("/support/slack", data, {
-      onSuccess: () => {
-        reset();
-        setIsDialogVisible(false);
-      },
+      onSuccess: () => setIsDialogVisible(false),
       onError: (errors) => setError("email", errors.email),
     });
   };
@@ -71,7 +67,7 @@ export const SupportCard = ({
                   title={title}
                   info={
                     slackStatus === "success"
-                      ? t("dialog.invite_success", { email: email })
+                      ? t("dialog.invite_success", { email: data.email })
                       : t("dialog.invite_error")
                   }
                   onConfirm={() => handleRedirect()}
