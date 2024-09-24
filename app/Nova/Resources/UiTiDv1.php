@@ -76,10 +76,6 @@ final class UiTiDv1 extends Resource
                     $status->name
                 );
             })->asHtml(),
-            Text::make('consumer_key')
-                ->readonly(),
-            Text::make('consumer_secret')
-                ->readonly(),
             Text::make('api_key')
                 ->readonly(),
             Text::make('Open', function ($model) {
