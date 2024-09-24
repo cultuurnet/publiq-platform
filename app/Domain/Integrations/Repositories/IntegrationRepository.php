@@ -33,5 +33,5 @@ interface IntegrationRepository
     public function approve(UuidInterface $id): void;
 
     /** @return Collection<Integration> */
-    public function getDraftsByTypeAndOlderThenMonthsAgo(IntegrationType $type, int $months): Collection;
+    public function getDraftsByTypeAndBetweenMonthsOld(IntegrationType $type, int $startMonths, int $endMonths): Collection;
 }

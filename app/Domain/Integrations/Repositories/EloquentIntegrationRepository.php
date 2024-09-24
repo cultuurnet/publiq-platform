@@ -57,14 +57,14 @@ final class EloquentIntegrationRepository implements IntegrationRepository
     }
 
     /** @return Collection<Integration> */
-    public function getDraftsByTypeAndOlderThenMonthsAgo(IntegrationType $type, int $months): Collection
+    public function getDraftsByTypeAndBetweenMonthsOld(IntegrationType $type, int $startMonths, int $endMonths): Collection
     {
         return IntegrationModel::query()
             ->distinct()
             ->where('status', 'draft')
             ->where('type', $type->value)
             ->whereNull('reminder_email_sent')
-            ->where('created_at', '<', Carbon::now()->subMonths($months))
+            ->whereBetween('created_at', [Carbon::now()->subMonths($endMonths), Carbon::now()->subMonths($startMonths)])
             ->has('contacts')  // This ensures that only integrations with at least one contact are returned
             ->get()
             ->map(static function (IntegrationModel $integrationModel) {
