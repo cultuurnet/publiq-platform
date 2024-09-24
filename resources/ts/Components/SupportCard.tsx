@@ -1,4 +1,5 @@
-import React, { FormEvent, FormEventHandler, useState } from "react";
+import type { FormEvent} from "react";
+import React, { useState } from "react";
 import type { SupportType } from "./SupportTypes";
 import { Heading } from "./Heading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
