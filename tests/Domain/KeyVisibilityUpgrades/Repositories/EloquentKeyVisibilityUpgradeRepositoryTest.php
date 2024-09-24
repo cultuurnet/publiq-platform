@@ -24,10 +24,7 @@ final class EloquentKeyVisibilityUpgradeRepositoryTest extends TestCase
         $this->keyVisibilityUpgradeRepository = new EloquentKeyVisibilityUpgradeRepository();
     }
 
-    /**
-     * @test
-     */
-    public function it_can_create_a_key_visibility_upgrade(): void
+    public function test_it_can_create_a_key_visibility_upgrade(): void
     {
         $upgradeRequest = new KeyVisibilityUpgrade(
             Uuid::uuid4(),
