@@ -55,7 +55,7 @@ header('Status: 503 Service Temporarily Unavailable');
 <div class="container">
     <img src="/build/assets/Hero-DagNCfZ2.svg" alt="Maintenance Image" class="header-image">
 
-    <div class="message-title">Publiq Platform is in onderhoud</div>
+    <div class="message-title">publiq platform is in onderhoud</div>
     <div class="message-content">
         <p>We voeren momenteel onderhoudswerkzaamheden uit.<br> We zijn ermee bezig en zijn terug op dinsdag 24/09/24 om 16:00 uur.</p>
         <p>We are currently performing maintenance work.<br> We are working on it and will be back on Tuesday, 24/09/24, at 4:00 PM.</p>
@@ -63,7 +63,7 @@ header('Status: 503 Service Temporarily Unavailable');
 </div>
 
 <footer class="footer">
-    &copy; Publiq VZW.
+    &copy; publiq vzw
 </footer>
 </body>
 </html>
