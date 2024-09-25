@@ -19,12 +19,6 @@ return [
         IntegrationType::UiTPAS->value => (int)env('MAILJET_EXPIRATION_TIMER_UITPAS', 6),
         IntegrationType::Widgets->value => (int)env('MAILJET_EXPIRATION_TIMER_WIDGETS', 3),
     ],
-    'expiration_timers_final_warning' => [ // Timer is always in months
-        IntegrationType::EntryApi->value => (int)env('MAILJET_FINAL_EXPIRATION_TIMER_ENTRY_API', 12),
-        IntegrationType::SearchApi->value => (int)env('MAILJET_FINAL_EXPIRATION_TIMER_SEARCH_API', 12),
-        IntegrationType::UiTPAS->value => (int)env('MAILJET_FINAL_EXPIRATION_TIMER_UITPAS', 12),
-        IntegrationType::Widgets->value => (int)env('MAILJET_FINAL_EXPIRATION_TIMER_WIDGETS', 12),
-    ],
     'templates' => [
         TemplateName::INTEGRATION_CREATED->value => [
             'id' => env('MAILJET_TEMPLATE_INTEGRATION_CREATED'),
