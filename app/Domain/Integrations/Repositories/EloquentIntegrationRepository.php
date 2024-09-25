@@ -17,6 +17,7 @@ use App\Pagination\PaginatedCollection;
 use App\Pagination\PaginationInfo;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\UuidInterface;
@@ -47,29 +48,42 @@ final class EloquentIntegrationRepository implements IntegrationRepository
             'type' => $integration->type,
             'name' => $integration->name,
             'description' => $integration->description,
-            'website' => $integration->website() ? $integration->website()->value : null,
+            'website' => $integration->website()?->value,
             'subscription_id' => $integration->subscriptionId,
             'status' => $integration->status,
             'partner_status' => $integration->partnerStatus,
             'key_visibility' => $integration->getKeyVisibility(),
-            'reminder_email_sent' => $integration->getReminderEmailSent(),
         ]);
     }
 
     /** @return Collection<Integration> */
-    public function getDraftsByTypeAndBetweenMonthsOld(IntegrationType $type, int $startMonths, int $endMonths): Collection
+    public function getDraftsByTypeAndBetweenMonthsOld(IntegrationType $type, int $startMonths, int $endMonths, string $mailType): Collection
     {
         return IntegrationModel::query()
             ->distinct()
             ->where('status', 'draft')
             ->where('type', $type->value)
-            ->whereNull('reminder_email_sent')
             ->whereBetween('created_at', [Carbon::now()->subMonths($endMonths), Carbon::now()->subMonths($startMonths)])
             ->has('contacts')  // This ensures that only integrations with at least one contact are returned
+            ->whereNotExists(function (QueryBuilder $query) use ($mailType) {
+                $query->from('integrations_mails', 'im')
+                    ->whereColumn('im.integration_id', 'integrations.id')
+                    ->where('im.type', $mailType)
+                    ->whereNotNull('date');
+            })
             ->get()
             ->map(static function (IntegrationModel $integrationModel) {
                 return $integrationModel->toDomain();
             });
+    }
+
+    public function updateReminderEmailSent(UuidInterface $id, string $type, Carbon $date): void
+    {
+        DB::table('integrations_mails')->insert([
+            'integration_id' => $id,
+            'type' => $type,
+            'date' => $date,
+        ]);
     }
 
     public function getById(UuidInterface $id): Integration

@@ -132,11 +132,10 @@ final class MailManagerTest extends TestCase
             ->willReturn($this->integration);
 
         if ($checkReminderEmailSent) {
-            $integrationWithReminderEmailSent = $this->integration->withReminderEmailSent(Carbon::now());
             $this->integrationRepository
                 ->expects($this->once())
-                ->method('update')
-                ->with($integrationWithReminderEmailSent);
+                ->method('updateReminderEmailSent')
+                ->with(self::INTEGRATION_ID, TemplateName::INTEGRATION_ACTIVATION_REMINDER->value, $now);
         }
 
         $currentEmail = null;

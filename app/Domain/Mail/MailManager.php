@@ -64,9 +64,9 @@ final class MailManager
     {
         $integration = $this->integrationRepository->getById($event->id);
 
-        $this->sendMail($integration, $this->templates->getOrFail(TemplateName::INTEGRATION_ACTIVATION_REMINDER->value));
+        $this->sendMail($integration, $this->templates->getOrFail($event->templateName));
 
-        $this->integrationRepository->update($integration->withReminderEmailSent(Carbon::now()));
+        $this->integrationRepository->updateReminderEmailSent($event->id, $event->templateName, Carbon::now());
     }
 
     private function getFrom(): Address

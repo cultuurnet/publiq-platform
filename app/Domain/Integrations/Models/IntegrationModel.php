@@ -31,7 +31,6 @@ use App\Keycloak\Models\KeycloakClientModel;
 use App\Models\UuidModel;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use App\UiTiDv1\UiTiDv1Environment;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -48,7 +47,6 @@ use Ramsey\Uuid\UuidInterface;
  * @property IntegrationPartnerStatus $partner_status
  * @property KeyVisibility $key_visibility
  * @property string $website
- * @property string $reminder_email_sent
  */
 final class IntegrationModel extends UuidModel
 {
@@ -67,7 +65,6 @@ final class IntegrationModel extends UuidModel
         'partner_status',
         'key_visibility',
         'website',
-        'reminder_email_sent',
     ];
 
     protected $attributes = [
@@ -376,10 +373,6 @@ final class IntegrationModel extends UuidModel
             ->map(fn (UdbOrganizerModel $organizerModel) => $organizerModel->toDomain())
             ->toArray()
         );
-
-        if ($this->reminder_email_sent) {
-            $integration = $integration->withReminderEmailSent(Carbon::parse($this->reminder_email_sent));
-        }
 
         if ($this->keyVisibilityUpgrade) {
             $integration = $integration->withKeyVisibilityUpgrade($this->keyVisibilityUpgrade->toDomain());

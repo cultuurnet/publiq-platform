@@ -25,6 +25,7 @@ use App\Domain\Subscriptions\Currency;
 use App\Domain\Subscriptions\Repositories\EloquentSubscriptionRepository;
 use App\Domain\Subscriptions\Subscription;
 use App\Domain\Subscriptions\SubscriptionCategory;
+use App\Mails\Template\TemplateName;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -703,14 +704,15 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         );
     }
 
-    #[DataProvider('dataProviderGetIntegrationsThatHaveNotBeenActivatedYet')]
-    public function test_get_integrations_that_have_not_been_activated_yet(
+    #[DataProvider('dataProviderForGetDraftsByTypeAndBetweenMonthsOld')]
+    public function test_get_drafts_by_type_and_between_months_old(
         IntegrationType $integrationType,
         IntegrationStatus $status,
         Carbon $date,
         ?Carbon $reminderEmailSent,
         bool $hasContact,
-        int $expectedCount
+        TemplateName $templateName,
+        int $expectedCount,
     ): void {
         $integrationId = Uuid::uuid4()->toString();
         DB::table('integrations')->insert([
@@ -721,8 +723,15 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'description' => 'test',
             'status' => $status,
             'created_at' => $date,
-            'reminder_email_sent' => $reminderEmailSent,
         ]);
+
+        if ($reminderEmailSent !== null) {
+            DB::table('integrations_mails')->insert([
+                'integration_id' => $integrationId,
+                'type' => TemplateName::INTEGRATION_ACTIVATION_REMINDER->value,
+                'date' => $reminderEmailSent,
+            ]);
+        }
 
         if ($hasContact) {
             DB::table('contacts')->insert([
@@ -737,11 +746,16 @@ final class EloquentIntegrationRepositoryTest extends TestCase
 
         $this->assertCount(
             $expectedCount,
-            $this->integrationRepository->getDraftsByTypeAndBetweenMonthsOld(IntegrationType::SearchApi, 12, 24)
+            $this->integrationRepository->getDraftsByTypeAndBetweenMonthsOld(
+                IntegrationType::SearchApi,
+                12,
+                24,
+                $templateName->value,
+            )
         );
     }
 
-    public static function dataProviderGetIntegrationsThatHaveNotBeenActivatedYet(): array
+    public static function dataProviderForGetDraftsByTypeAndBetweenMonthsOld(): array
     {
         return [
             'Should not be selected: wrong type' => [
@@ -750,6 +764,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
                 Carbon::now()->subMonths(14),
                 null,
                 true,
+                TemplateName::INTEGRATION_ACTIVATION_REMINDER,
                 0,
             ],
             'Should not be selected: already active' => [
@@ -758,6 +773,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
                 Carbon::now()->subMonths(14),
                 null,
                 true,
+                TemplateName::INTEGRATION_ACTIVATION_REMINDER,
                 0,
             ],
             'Should not be selected: No contacts' => [
@@ -766,6 +782,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
                 Carbon::now()->subMonths(14),
                 null,
                 false,
+                TemplateName::INTEGRATION_ACTIVATION_REMINDER,
                 0,
             ],
             'Should not be selected: Created too recently' => [
@@ -774,6 +791,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
                 Carbon::now()->subMonths(11),
                 null,
                 true,
+                TemplateName::INTEGRATION_ACTIVATION_REMINDER,
                 0,
             ],
             'Should not be selected: Mail already sent' => [
@@ -782,6 +800,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
                 Carbon::now()->subMonths(14),
                 Carbon::now(),
                 true,
+                TemplateName::INTEGRATION_ACTIVATION_REMINDER,
                 0,
             ],
             'Should not be selected: Too old' => [
@@ -790,6 +809,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
                 Carbon::now()->subMonths(50),
                 null,
                 false,
+                TemplateName::INTEGRATION_ACTIVATION_REMINDER,
                 0,
             ],
             'Should be selected!' => [
@@ -798,6 +818,17 @@ final class EloquentIntegrationRepositoryTest extends TestCase
                 Carbon::now()->subMonths(14),
                 null,
                 true,
+                TemplateName::INTEGRATION_ACTIVATION_REMINDER,
+                1,
+            ],
+            // Context: related to the "final reminder email", when the first email has been sent
+            'A different type of email has been sent, should be selected' => [
+                IntegrationType::SearchApi,
+                IntegrationStatus::Draft,
+                Carbon::now()->subMonths(14),
+                Carbon::now(),
+                true,
+                TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER,
                 1,
             ],
         ];
