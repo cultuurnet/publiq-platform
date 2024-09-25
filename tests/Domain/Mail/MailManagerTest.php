@@ -207,7 +207,10 @@ final class MailManagerTest extends TestCase
                 'useGetByIdWithTrashed' => true,
             ],
             TemplateName::INTEGRATION_ACTIVATION_REMINDER->value => [
-                'event' => new ActivationExpired(Uuid::fromString(self::INTEGRATION_ID)),
+                'event' => new ActivationExpired(
+                    Uuid::fromString(self::INTEGRATION_ID),
+                    TemplateName::INTEGRATION_ACTIVATION_REMINDER->value
+                ),
                 'method' => 'sendActivationReminderEmail',
                 'templateId' => self::TEMPLATE_INTEGRATION_ACTIVATION_REMINDER,
                 'subject' => 'Publiq platform - Can we help you to activate your integration?',
