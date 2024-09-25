@@ -821,14 +821,13 @@ final class EloquentIntegrationRepositoryTest extends TestCase
                 TemplateName::INTEGRATION_ACTIVATION_REMINDER,
                 1,
             ],
-            // Context: related to the "final reminder email", when the first email has been sent
             'A different type of email has been sent, should be selected' => [
                 IntegrationType::SearchApi,
                 IntegrationStatus::Draft,
                 Carbon::now()->subMonths(14),
                 Carbon::now(),
                 true,
-                TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER,
+                TemplateName::INTEGRATION_CREATED,
                 1,
             ],
         ];
