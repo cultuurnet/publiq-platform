@@ -30,7 +30,7 @@ final class SearchExpiredIntegrationsTest extends TestCase
             ->assertExitCode(Command::SUCCESS);
     }
 
-    public function test_it_listens_to_the_option_first_warning(): void
+    public function test_it_listens_to_the_option_first_reminder(): void
     {
         $integrationId = Uuid::uuid4()->toString();
         $this->createIntegrationWithContacts($integrationId, 14);
@@ -40,7 +40,7 @@ final class SearchExpiredIntegrationsTest extends TestCase
             ->assertExitCode(Command::SUCCESS);
     }
 
-    public function test_it_listens_to_the_option_final_warning(): void
+    public function test_it_listens_to_the_option_final_reminder(): void
     {
         $integrationId = Uuid::uuid4()->toString();
         $this->createIntegrationWithContacts($integrationId, 8);
