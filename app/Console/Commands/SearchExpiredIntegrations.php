@@ -13,6 +13,7 @@ use Psr\Log\LoggerInterface;
 
 final class SearchExpiredIntegrations extends Command
 {
+    private const ONE_YEAR = 12;
     protected $signature = 'integration:search-expired-integrations {--force : Skip confirmation prompt}';
 
     protected $description = 'Search for expired integrations and dispatch event';
@@ -30,9 +31,10 @@ final class SearchExpiredIntegrations extends Command
         $integrations = new Collection();
         foreach ($this->expirationTimers as $integrationType => $expirationTimer) {
             $integrations = $integrations->merge(
-                $this->integrationRepository->getDraftsByTypeAndOlderThenMonthsAgo(
+                $this->integrationRepository->getDraftsByTypeAndBetweenMonthsOld(
                     IntegrationType::from($integrationType),
-                    $expirationTimer
+                    $expirationTimer,
+                    self::ONE_YEAR
                 )
             );
         }
