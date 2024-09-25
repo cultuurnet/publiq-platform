@@ -11,7 +11,7 @@ final class ActivationExpired
 {
     use Dispatchable;
 
-    public function __construct(public readonly UuidInterface $id)
+    public function __construct(public readonly UuidInterface $id, public readonly string $templateName)
     {
     }
 }

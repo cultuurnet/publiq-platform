@@ -18,6 +18,7 @@ final class CommandServiceProvider extends ServiceProvider
                 $this->app->get(IntegrationRepository::class),
                 $this->app->get(LoggerInterface::class),
                 config(MailjetConfig::MAILJET_EXPIRATION_TIMERS),
+                config(MailjetConfig::MAILJET_EXPIRATION_TIMERS_FINAL_WARNING),
             );
         });
     }
