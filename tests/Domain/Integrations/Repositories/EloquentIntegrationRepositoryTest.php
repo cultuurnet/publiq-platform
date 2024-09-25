@@ -788,7 +788,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
                 IntegrationType::SearchApi,
                 IntegrationStatus::Draft,
                 Carbon::now()->subMonths(50),
-                Carbon::now(),
+                null,
                 false,
                 0,
             ],
