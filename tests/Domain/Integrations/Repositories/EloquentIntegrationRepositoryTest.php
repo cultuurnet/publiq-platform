@@ -735,7 +735,10 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             ]);
         }
 
-        $this->assertCount($expectedCount, $this->integrationRepository->getDraftsByTypeAndOlderThenMonthsAgo(IntegrationType::SearchApi, 12));
+        $this->assertCount(
+            $expectedCount,
+            $this->integrationRepository->getDraftsByTypeAndBetweenMonthsOld(IntegrationType::SearchApi, 12, 24)
+        );
     }
 
     public static function dataProviderGetIntegrationsThatHaveNotBeenActivatedYet(): array
@@ -744,7 +747,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Should not be selected: wrong type' => [
                 IntegrationType::EntryApi,
                 IntegrationStatus::Draft,
-                Carbon::now()->subYears(2),
+                Carbon::now()->subMonths(14),
                 null,
                 true,
                 0,
@@ -752,7 +755,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Should not be selected: already active' => [
                 IntegrationType::SearchApi,
                 IntegrationStatus::Active,
-                Carbon::now()->subYears(2),
+                Carbon::now()->subMonths(14),
                 null,
                 true,
                 0,
@@ -760,7 +763,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Should not be selected: No contacts' => [
                 IntegrationType::SearchApi,
                 IntegrationStatus::Draft,
-                Carbon::now()->subYears(2),
+                Carbon::now()->subMonths(14),
                 null,
                 false,
                 0,
@@ -776,15 +779,23 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'Should not be selected: Mail already sent' => [
                 IntegrationType::SearchApi,
                 IntegrationStatus::Draft,
-                Carbon::now()->subYears(2),
+                Carbon::now()->subMonths(14),
                 Carbon::now(),
                 true,
+                0,
+            ],
+            'Should not be selected: Too old' => [
+                IntegrationType::SearchApi,
+                IntegrationStatus::Draft,
+                Carbon::now()->subMonths(50),
+                null,
+                false,
                 0,
             ],
             'Should be selected!' => [
                 IntegrationType::SearchApi,
                 IntegrationStatus::Draft,
-                Carbon::now()->subYears(2),
+                Carbon::now()->subMonths(14),
                 null,
                 true,
                 1,

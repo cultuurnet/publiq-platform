@@ -42,7 +42,7 @@ final class SearchExpiredIntegrationsTest extends TestCase
             'name' => 'Test',
             'description' => 'test',
             'status' => IntegrationStatus::Draft,
-            'created_at' => Carbon::now()->subYears(2),
+            'created_at' => Carbon::now()->subMonths(8),
             'reminder_email_sent' => null,
         ]);
         DB::table('contacts')->insert([
