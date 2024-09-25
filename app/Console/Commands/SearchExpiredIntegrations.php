@@ -19,8 +19,8 @@ final class SearchExpiredIntegrations extends Command
 
     protected $signature = 'integration:search-expired-integrations
                         {--force : Skip confirmation prompt}
-                        {--only-first-warning : Only sent the first warning}
-                        {--only-final-warning : Only sent the final warning}';
+                        {--only-first-reminder : Only sent the first reminder}
+                        {--only-final-reminder : Only sent the final reminder}';
 
     protected $description = 'Search for expired integrations and dispatch event';
 
@@ -28,22 +28,22 @@ final class SearchExpiredIntegrations extends Command
         private readonly IntegrationRepository $integrationRepository,
         private readonly LoggerInterface $logger,
         private readonly array $expirationTimers,
-        private readonly array $expirationTimersFinalWarning
+        private readonly array $expirationTimersFinalReminder
     ) {
         parent::__construct();
     }
 
     public function handle(): int
     {
-        $sendFirstWarnings = $this->option('only-first-warning');
-        $sendFinalWarning = $this->option('only-final-warning');
+        $sendFirstReminder = $this->option('only-first-reminder');
+        $sendFinalReminder = $this->option('only-final-reminder');
 
-        if (!$sendFirstWarnings && !$sendFinalWarning) {
-            $sendFirstWarnings = true;
-            $sendFinalWarning = true;
+        if (!$sendFirstReminder && !$sendFinalReminder) {
+            $sendFirstReminder = true;
+            $sendFinalReminder = true;
         }
 
-        $integrations = $sendFirstWarnings ?
+        $integrations = $sendFirstReminder ?
             $this->buildIntegrationsCollection(
                 $this->expirationTimers,
                 self::ONE_YEAR,
@@ -51,26 +51,26 @@ final class SearchExpiredIntegrations extends Command
             ) :
             new Collection();
 
-        $integrationsFinalWarning = $sendFinalWarning ?
+        $integrationsFinalReminder = $sendFinalReminder ?
             $this->buildIntegrationsCollection(
-                $this->expirationTimersFinalWarning,
+                $this->expirationTimersFinalReminder,
                 self::ONE_CENTURY,
                 TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER
             ) :
             new Collection();
 
-        if ($integrations->isEmpty() && $integrationsFinalWarning->isEmpty()) {
+        if ($integrations->isEmpty() && $integrationsFinalReminder->isEmpty()) {
             $this->output->writeln('No expired integrations');
             return self::SUCCESS;
         }
 
         if (!$this->option('force')
-            && !$this->confirm(sprintf('Are you sure you want to dispatch expirations for %d integrations?', count($integrations) + count($integrationsFinalWarning)))) {
+            && !$this->confirm(sprintf('Are you sure you want to dispatch expirations for %d integrations?', count($integrations) + count($integrationsFinalReminder)))) {
             return self::SUCCESS;
         }
 
         $this->sendExpirationMessages($integrations, TemplateName::INTEGRATION_ACTIVATION_REMINDER);
-        $this->sendExpirationMessages($integrationsFinalWarning, TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER);
+        $this->sendExpirationMessages($integrationsFinalReminder, TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER);
 
         return self::SUCCESS;
     }

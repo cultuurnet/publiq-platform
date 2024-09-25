@@ -35,7 +35,7 @@ final class SearchExpiredIntegrationsTest extends TestCase
         $integrationId = Uuid::uuid4()->toString();
         $this->createIntegrationWithContacts($integrationId, 14);
 
-        $this->getPendingCommand('integration:search-expired-integrations --force --only-first-warning')
+        $this->getPendingCommand('integration:search-expired-integrations --force --only-first-reminder')
             ->expectsOutput('No expired integrations')
             ->assertExitCode(Command::SUCCESS);
     }
@@ -45,7 +45,7 @@ final class SearchExpiredIntegrationsTest extends TestCase
         $integrationId = Uuid::uuid4()->toString();
         $this->createIntegrationWithContacts($integrationId, 8);
 
-        $this->getPendingCommand('integration:search-expired-integrations --force --only-final-warning')
+        $this->getPendingCommand('integration:search-expired-integrations --force --only-final-reminder')
             ->expectsOutput('No expired integrations')
             ->assertExitCode(Command::SUCCESS);
     }
