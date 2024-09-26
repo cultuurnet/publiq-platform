@@ -67,8 +67,8 @@ final class SearchExpiredIntegrationsTest extends TestCase
 
         Event::assertDispatched(ActivationExpired::class, static function (ActivationExpired $event) use ($integrationId, $integrationId2) {
             return match ($event->templateName) {
-                TemplateName::INTEGRATION_ACTIVATION_REMINDER->value => $event->id->toString() === $integrationId,
-                TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER->value => $event->id->toString() === $integrationId2,
+                TemplateName::INTEGRATION_ACTIVATION_REMINDER => $event->id->toString() === $integrationId,
+                TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER => $event->id->toString() === $integrationId2,
                 default => false,
             };
         });

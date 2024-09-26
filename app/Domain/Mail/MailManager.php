@@ -64,7 +64,7 @@ final class MailManager
     {
         $integration = $this->integrationRepository->getById($event->id);
 
-        $this->sendMail($integration, $this->templates->getOrFail($event->templateName));
+        $this->sendMail($integration, $this->templates->getOrFail($event->templateName->value));
 
         $this->integrationRepository->updateReminderEmailSent($event->id, $event->templateName, Carbon::now());
     }

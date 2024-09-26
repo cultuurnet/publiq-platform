@@ -95,7 +95,7 @@ final class SearchExpiredIntegrations extends Command
     private function sendExpirationMessages(Collection $integrations, TemplateName $templateName): void
     {
         foreach ($integrations as $integration) {
-            ActivationExpired::dispatch($integration->id, $templateName->value);
+            ActivationExpired::dispatch($integration->id, $templateName);
 
             $msg = sprintf('Dispatched ActivationExpired for integration %s', $integration->id);
             $this->output->writeln($msg);

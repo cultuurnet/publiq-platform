@@ -13,6 +13,7 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\UdbOrganizers;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
+use App\Mails\Template\TemplateName;
 use App\Pagination\PaginatedCollection;
 use App\Pagination\PaginationInfo;
 use Carbon\Carbon;
@@ -77,7 +78,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
             });
     }
 
-    public function updateReminderEmailSent(UuidInterface $id, string $type, Carbon $date): void
+    public function updateReminderEmailSent(UuidInterface $id, TemplateName $type, Carbon $date): void
     {
         DB::table('integrations_mails')->insert([
             'integration_id' => $id,
