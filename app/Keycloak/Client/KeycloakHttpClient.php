@@ -9,19 +9,18 @@ use App\Keycloak\TokenStrategy\TokenStrategy;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Uri;
-use Illuminate\Support\Facades\Log;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 final readonly class KeycloakHttpClient
 {
     public function __construct(
         private ClientInterface $client,
         private TokenStrategy $tokenStrategy,
-        private LoggerInterface $logger
-    )
-    {
+        private LoggerInterface $logger = new NullLogger()
+    ) {
     }
 
     /**
@@ -47,7 +46,7 @@ final readonly class KeycloakHttpClient
                 'Bearer ' . $this->tokenStrategy->fetchToken($this, $realm->getMasterRealm())
             );
 
-        $this->logger->debug('API call: '. $request->getUri());
+        $this->logger->debug('API call: ' . $request->getUri());
 
         return $this->client->send($request);
     }

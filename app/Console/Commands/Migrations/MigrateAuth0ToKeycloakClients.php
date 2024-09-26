@@ -75,7 +75,7 @@ final class MigrateAuth0ToKeycloakClients extends Command
         $query = DB::table('auth0_clients')
             ->orderBy('updated_at', 'asc')
             ->whereNotIn('auth0_clients.id', function ($query) {
-                $query->select('client_id')
+                $query->select('id')
                     ->from('keycloak_clients');
             })
             ->whereNull('deleted_at');

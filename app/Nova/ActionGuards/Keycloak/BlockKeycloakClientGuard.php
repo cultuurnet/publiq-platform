@@ -24,8 +24,7 @@ final readonly class BlockKeycloakClientGuard implements ActionGuard
 
         try {
             return ! $this->cachedKeycloakClientStatus->isClientBlocked($client);
-        }
-        catch(KeyCloakApiFailed) {
+        } catch (KeyCloakApiFailed) {
             return false;
         }
     }

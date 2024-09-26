@@ -78,8 +78,7 @@ final class KeycloakClient extends Resource
                     }
 
                     return '<span style="color: green;">Active</span>';
-                }
-                catch(KeyCloakApiFailed) {
+                } catch (KeyCloakApiFailed) {
                     return '<span style="color: orange;">Failed to sync</span>';
                 }
             })->asHtml(),
