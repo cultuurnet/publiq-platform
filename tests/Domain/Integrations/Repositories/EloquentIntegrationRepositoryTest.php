@@ -728,8 +728,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         if ($reminderEmailSent !== null) {
             DB::table('integrations_mails')->insert([
                 'integration_id' => $integrationId,
-                'type' => TemplateName::INTEGRATION_ACTIVATION_REMINDER->value,
-                'date' => $reminderEmailSent,
+                'template_name' => TemplateName::INTEGRATION_ACTIVATION_REMINDER->value,
             ]);
         }
 
@@ -750,7 +749,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
                 IntegrationType::SearchApi,
                 12,
                 24,
-                $templateName->value,
+                $templateName,
             )
         );
     }

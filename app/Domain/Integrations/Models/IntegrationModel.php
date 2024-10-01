@@ -224,6 +224,15 @@ final class IntegrationModel extends UuidModel
     }
 
     /**
+     * Tracks which mails have been sent about this integration
+     * @return HasMany<IntegrationMailModel>
+     */
+    public function mail(): HasMany
+    {
+        return $this->hasMany(IntegrationMailModel::class, 'integration_id');
+    }
+
+    /**
      * @return BelongsTo<SubscriptionModel, IntegrationModel>
      */
     public function subscription(): BelongsTo

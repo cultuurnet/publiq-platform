@@ -69,22 +69,12 @@ final class EloquentIntegrationRepository implements IntegrationRepository
             ->whereNotExists(function (QueryBuilder $query) use ($templateName) {
                 $query->from('integrations_mails', 'im')
                     ->whereColumn('im.integration_id', 'integrations.id')
-                    ->where('im.template_name', $templateName)
-                    ->whereNotNull('date');
+                    ->where('im.template_name', $templateName);
             })
             ->get()
             ->map(static function (IntegrationModel $integrationModel) {
                 return $integrationModel->toDomain();
             });
-    }
-
-    public function updateReminderEmailSent(UuidInterface $id, string $type, Carbon $date): void
-    {
-        DB::table('integrations_mails')->insert([
-            'integration_id' => $id,
-            'type' => $type,
-            'date' => $date,
-        ]);
     }
 
     public function getById(UuidInterface $id): Integration
