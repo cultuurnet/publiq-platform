@@ -35,6 +35,6 @@ interface IntegrationRepository
     public function approve(UuidInterface $id): void;
 
     /** @return Collection<Integration> */
-    public function getDraftsByTypeAndBetweenMonthsOld(IntegrationType $type, int $startMonths, int $endMonths, string $mailType): Collection;
-    public function updateReminderEmailSent(UuidInterface $id, TemplateName $type, Carbon $date): void;
+    public function getDraftsByTypeAndBetweenMonthsOld(IntegrationType $type, int $startMonths, int $endMonths, TemplateName $templateName): Collection;
+    public function updateReminderEmailSent(UuidInterface $id, TemplateName $templateName, Carbon $date): void;
 }

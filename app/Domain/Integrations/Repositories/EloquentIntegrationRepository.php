@@ -58,7 +58,7 @@ final class EloquentIntegrationRepository implements IntegrationRepository
     }
 
     /** @return Collection<Integration> */
-    public function getDraftsByTypeAndBetweenMonthsOld(IntegrationType $type, int $startMonths, int $endMonths, string $mailType): Collection
+    public function getDraftsByTypeAndBetweenMonthsOld(IntegrationType $type, int $startMonths, int $endMonths, TemplateName $templateName): Collection
     {
         return IntegrationModel::query()
             ->distinct()
@@ -66,10 +66,10 @@ final class EloquentIntegrationRepository implements IntegrationRepository
             ->where('type', $type->value)
             ->whereBetween('created_at', [Carbon::now()->subMonths($endMonths), Carbon::now()->subMonths($startMonths)])
             ->has('contacts')  // This ensures that only integrations with at least one contact are returned
-            ->whereNotExists(function (QueryBuilder $query) use ($mailType) {
+            ->whereNotExists(function (QueryBuilder $query) use ($templateName) {
                 $query->from('integrations_mails', 'im')
                     ->whereColumn('im.integration_id', 'integrations.id')
-                    ->where('im.type', $mailType)
+                    ->where('im.template_name', $templateName)
                     ->whereNotNull('date');
             })
             ->get()
@@ -78,11 +78,11 @@ final class EloquentIntegrationRepository implements IntegrationRepository
             });
     }
 
-    public function updateReminderEmailSent(UuidInterface $id, TemplateName $type, Carbon $date): void
+    public function updateReminderEmailSent(UuidInterface $id, TemplateName $templateName, Carbon $date): void
     {
         DB::table('integrations_mails')->insert([
             'integration_id' => $id,
-            'type' => $type,
+            'template_name' => $templateName  ,
             'date' => $date,
         ]);
     }

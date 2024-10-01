@@ -84,7 +84,7 @@ final class SearchExpiredIntegrations extends Command
                     IntegrationType::from($integrationType),
                     $expirationTimer,
                     $endDate,
-                    $templateName->value
+                    $templateName
                 )
             );
         }
