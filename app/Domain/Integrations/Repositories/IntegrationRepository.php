@@ -8,6 +8,7 @@ use App\Domain\Integrations\Exceptions\InconsistentIntegrationType;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\UdbOrganizers;
+use App\Mails\Template\TemplateName;
 use App\Pagination\PaginatedCollection;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -34,6 +35,6 @@ interface IntegrationRepository
     public function approve(UuidInterface $id): void;
 
     /** @return Collection<Integration> */
-    public function getDraftsByTypeAndBetweenMonthsOld(IntegrationType $type, int $startMonths, int $endMonths, string $mailType): Collection;
+    public function getDraftsByTypeAndBetweenMonthsOld(IntegrationType $type, int $startMonths, int $endMonths, TemplateName $templateName): Collection;
     public function updateReminderEmailSent(UuidInterface $id, string $type, Carbon $date): void;
 }
