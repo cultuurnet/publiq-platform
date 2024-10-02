@@ -9,6 +9,7 @@ use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\Events\IntegrationDeleted;
+use App\Domain\Integrations\Repositories\IntegrationMailRepository;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Mail\Mailer;
 use App\Domain\Mail\MailManager;
@@ -49,6 +50,7 @@ final class MailServiceProvider extends ServiceProvider
             return new MailManager(
                 $this->app->get(Mailer::class),
                 $this->app->get(IntegrationRepository::class),
+                $this->app->get(IntegrationMailRepository::class),
                 Templates::build(config(MailjetConfig::MAILJET_TEMPLATES)),
                 config('app.url'),
             );

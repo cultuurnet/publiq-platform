@@ -12,8 +12,8 @@ return new class () extends Migration {
         Schema::create('integrations_mails', static function (Blueprint $table) {
             $table->uuid('integration_id')->primary();
             $table->string('template_name');
-            $table->timestamp('date');
             $table->unique(['integration_id', 'template_name']);
+            $table->timestamps();
         });
 
         Schema::table('integrations', function (Blueprint $table) {

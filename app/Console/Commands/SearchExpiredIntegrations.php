@@ -46,8 +46,7 @@ final class SearchExpiredIntegrations extends Command
         $integrations = $sendFirstReminder ?
             $this->buildIntegrationsCollection(
                 $this->expirationTimers,
-                self::ONE_YEAR,
-                TemplateName::INTEGRATION_ACTIVATION_REMINDER
+                self::ONE_YEAR,       TemplateName::INTEGRATION_ACTIVATION_REMINDER
             ) :
             new Collection();
 

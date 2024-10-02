@@ -10,7 +10,6 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\UdbOrganizers;
 use App\Mails\Template\TemplateName;
 use App\Pagination\PaginatedCollection;
-use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface;
 
@@ -36,5 +35,4 @@ interface IntegrationRepository
 
     /** @return Collection<Integration> */
     public function getDraftsByTypeAndBetweenMonthsOld(IntegrationType $type, int $startMonths, int $endMonths, TemplateName $templateName): Collection;
-    public function updateReminderEmailSent(UuidInterface $id, TemplateName $templateName, Carbon $date): void;
 }

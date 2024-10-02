@@ -729,7 +729,6 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             DB::table('integrations_mails')->insert([
                 'integration_id' => $integrationId,
                 'template_name' => TemplateName::INTEGRATION_ACTIVATION_REMINDER->value,
-                'date' => $reminderEmailSent,
             ]);
         }
 
