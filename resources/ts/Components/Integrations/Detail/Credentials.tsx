@@ -54,14 +54,14 @@ export const Credentials = ({
 
     const credentials: unknown[][] = [legacyAuthConsumers, authClients];
 
-    if (config.keycloak) {
+    if (config.keycloak.enabled) {
       credentials.push(keycloakClients);
     }
 
     return credentials.every((it) => it.length > 0);
   }, [
     authClients,
-    config.keycloak,
+    config.keycloak.enabled,
     keyVisibility,
     keyVisibilityUpgrade,
     keycloakClients,
