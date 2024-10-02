@@ -6,12 +6,16 @@ namespace App\Keycloak\Repositories;
 
 use App\Domain\Integrations\Environments;
 use App\Keycloak\Client;
+use App\Keycloak\Exception\RealmNotAvailable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Ramsey\Uuid\UuidInterface;
 
 interface KeycloakClientRepository
 {
+    /**
+     * @throws RealmNotAvailable
+     */
     public function create(Client ...$clients): void;
 
     /**
