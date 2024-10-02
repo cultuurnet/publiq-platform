@@ -54,7 +54,7 @@ export const Credentials = ({
 
     const credentials: unknown[][] = [legacyAuthConsumers, authClients];
 
-    if (config.keycloak) {
+    if (config.keycloak.enabled) {
       credentials.push(keycloakClients);
     }
 
