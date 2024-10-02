@@ -120,7 +120,6 @@ final class MailManager
                 $this->getFrom(),
                 new Address($contact->email, trim($contact->firstName . ' ' . $contact->lastName)),
                 $template->id,
-                $template->subject,
                 $this->getIntegrationVariables($contact, $integration)
             );
         }
