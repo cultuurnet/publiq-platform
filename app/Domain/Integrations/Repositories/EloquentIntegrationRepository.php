@@ -18,16 +18,15 @@ use App\Pagination\PaginatedCollection;
 use App\Pagination\PaginationInfo;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\UuidInterface;
 
-final class EloquentIntegrationRepository implements IntegrationRepository
+final readonly class EloquentIntegrationRepository implements IntegrationRepository
 {
     public function __construct(
-        private readonly UdbOrganizerRepository $udbOrganizerRepository,
-        private readonly SubscriptionRepository $subscriptionRepository
+        private UdbOrganizerRepository $udbOrganizerRepository,
+        private SubscriptionRepository $subscriptionRepository
     ) {
 
     }
@@ -60,17 +59,15 @@ final class EloquentIntegrationRepository implements IntegrationRepository
     /** @return Collection<Integration> */
     public function getDraftsByTypeAndBetweenMonthsOld(IntegrationType $type, int $startMonths, int $endMonths, TemplateName $templateName): Collection
     {
-        return IntegrationModel::query()
-            ->distinct()
+        /** @var IntegrationModel $integrationModel */
+        $integrationModel = IntegrationModel::query();
+
+        return $integrationModel->distinct()
             ->where('status', 'draft')
             ->where('type', $type->value)
             ->whereBetween('created_at', [Carbon::now()->subMonths($endMonths), Carbon::now()->subMonths($startMonths)])
             ->has('contacts')  // This ensures that only integrations with at least one contact are returned
-            ->whereNotExists(function (QueryBuilder $query) use ($templateName) {
-                $query->from('integrations_mails', 'im')
-                    ->whereColumn('im.integration_id', 'integrations.id')
-                    ->where('im.template_name', $templateName);
-            })
+            ->withoutMailSent($templateName)
             ->get()
             ->map(static function (IntegrationModel $integrationModel) {
                 return $integrationModel->toDomain();
