@@ -12,15 +12,16 @@ use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationMail;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\Repositories\IntegrationMailRepository;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Mail\Mailer;
 use App\Domain\Mail\MailManager;
 use App\Mails\Template\TemplateName;
 use App\Mails\Template\Templates;
-use Carbon\Carbon;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Ramsey\Uuid\Uuid;
@@ -43,6 +44,7 @@ final class MailManagerTest extends TestCase
     private array $contacts;
     private Integration $integration;
     private IntegrationRepository&MockObject $integrationRepository;
+    private IntegrationMailRepository&MockObject $integrationMailRepository;
 
     protected function setUp(): void
     {
@@ -50,10 +52,12 @@ final class MailManagerTest extends TestCase
 
         $this->mailer = $this->createMock(Mailer::class);
         $this->integrationRepository = $this->createMock(IntegrationRepository::class);
+        $this->integrationMailRepository = $this->createMock(IntegrationMailRepository::class);
 
         $this->mailManager = new MailManager(
             $this->mailer,
             $this->integrationRepository,
+            $this->integrationMailRepository,
             Templates::build($this->getTemplateConfig()),
             'http://www.example.com'
         );
@@ -122,9 +126,6 @@ final class MailManagerTest extends TestCase
         bool $checkReminderEmailSent = false,
         bool $useGetByIdWithTrashed = false,
     ): void {
-        $now = Carbon::now();
-        Carbon::setTestNow($now);
-
         $this->integrationRepository
             ->expects($this->once())
             ->method($useGetByIdWithTrashed ? 'getByIdWithTrashed' : 'getById')
@@ -132,11 +133,13 @@ final class MailManagerTest extends TestCase
             ->willReturn($this->integration);
 
         if ($checkReminderEmailSent) {
-            $integrationWithReminderEmailSent = $this->integration->withReminderEmailSent(Carbon::now());
-            $this->integrationRepository
+            $this->integrationMailRepository
                 ->expects($this->once())
-                ->method('update')
-                ->with($integrationWithReminderEmailSent);
+                ->method('create')
+                ->with(new IntegrationMail(
+                    Uuid::fromString(self::INTEGRATION_ID),
+                    TemplateName::INTEGRATION_ACTIVATION_REMINDER,
+                ));
         }
 
         $currentEmail = null;

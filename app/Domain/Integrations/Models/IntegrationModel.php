@@ -28,10 +28,11 @@ use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Insightly\Models\InsightlyMappingModel;
 use App\Insightly\Resources\ResourceType;
 use App\Keycloak\Models\KeycloakClientModel;
+use App\Mails\Template\TemplateName;
 use App\Models\UuidModel;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use App\UiTiDv1\UiTiDv1Environment;
-use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -48,8 +49,9 @@ use Ramsey\Uuid\UuidInterface;
  * @property IntegrationPartnerStatus $partner_status
  * @property KeyVisibility $key_visibility
  * @property string $website
- * @property string $reminder_email_sent
- */
+ * @method static Builder|IntegrationModel withoutMailSent(TemplateName $templateName)
+ * @mixin Builder
+ * */
 final class IntegrationModel extends UuidModel
 {
     use SoftDeletes;
@@ -67,7 +69,6 @@ final class IntegrationModel extends UuidModel
         'partner_status',
         'key_visibility',
         'website',
-        'reminder_email_sent',
     ];
 
     protected $attributes = [
@@ -227,6 +228,15 @@ final class IntegrationModel extends UuidModel
     }
 
     /**
+     * Tracks which mails have been sent about this integration
+     * @return HasMany<IntegrationMailModel>
+     */
+    public function mail(): HasMany
+    {
+        return $this->hasMany(IntegrationMailModel::class, 'integration_id');
+    }
+
+    /**
      * @return BelongsTo<SubscriptionModel, IntegrationModel>
      */
     public function subscription(): BelongsTo
@@ -377,10 +387,6 @@ final class IntegrationModel extends UuidModel
             ->toArray()
         );
 
-        if ($this->reminder_email_sent) {
-            $integration = $integration->withReminderEmailSent(Carbon::parse($this->reminder_email_sent));
-        }
-
         if ($this->keyVisibilityUpgrade) {
             $integration = $integration->withKeyVisibilityUpgrade($this->keyVisibilityUpgrade->toDomain());
         }
@@ -402,5 +408,12 @@ final class IntegrationModel extends UuidModel
         }
 
         return $integration;
+    }
+
+    public function scopeWithoutMailSent(Builder $query, TemplateName $templateName): Builder
+    {
+        return $query->whereDoesntHave('mail', function (Builder $query) use ($templateName) {
+            $query->where('template_name', $templateName->value);
+        });
     }
 }

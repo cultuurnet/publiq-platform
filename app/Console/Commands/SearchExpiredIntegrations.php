@@ -7,6 +7,7 @@ namespace App\Console\Commands;
 use App\Domain\Integrations\Events\ActivationExpired;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Mails\Template\TemplateName;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Psr\Log\LoggerInterface;
@@ -34,7 +35,8 @@ final class SearchExpiredIntegrations extends Command
                 $this->integrationRepository->getDraftsByTypeAndBetweenMonthsOld(
                     IntegrationType::from($integrationType),
                     $expirationTimer,
-                    self::ONE_YEAR
+                    self::ONE_YEAR,
+                    TemplateName::INTEGRATION_ACTIVATION_REMINDER
                 )
             );
         }

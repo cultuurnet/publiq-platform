@@ -12,11 +12,12 @@ use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationMail;
+use App\Domain\Integrations\Repositories\IntegrationMailRepository;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Mails\Template\Template;
 use App\Mails\Template\TemplateName;
 use App\Mails\Template\Templates;
-use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Symfony\Component\Mime\Address;
 
@@ -27,6 +28,7 @@ final class MailManager
     public function __construct(
         private readonly Mailer $mailer,
         private readonly IntegrationRepository $integrationRepository,
+        private readonly IntegrationMailRepository $integrationMailRepository,
         private readonly Templates $templates,
         private readonly string $baseUrl
     ) {
@@ -66,7 +68,10 @@ final class MailManager
 
         $this->sendMail($integration, $this->templates->getOrFail(TemplateName::INTEGRATION_ACTIVATION_REMINDER->value));
 
-        $this->integrationRepository->update($integration->withReminderEmailSent(Carbon::now()));
+        $this->integrationMailRepository->create(new IntegrationMail(
+            $event->id,
+            TemplateName::INTEGRATION_ACTIVATION_REMINDER,
+        ));
     }
 
     private function getFrom(): Address
