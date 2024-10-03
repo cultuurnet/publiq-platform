@@ -10,7 +10,6 @@ final class Template
         public string $type,
         public int $id,
         public bool $enabled,
-        public string $subject
     ) {
     }
 }

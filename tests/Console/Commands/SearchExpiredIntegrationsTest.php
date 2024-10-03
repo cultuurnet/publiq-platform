@@ -9,6 +9,7 @@ use App\Domain\Integrations\Events\ActivationExpired;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Mails\MailJet\MailjetConfig;
+use App\Mails\Template\TemplateName;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -29,12 +30,64 @@ final class SearchExpiredIntegrationsTest extends TestCase
             ->assertExitCode(Command::SUCCESS);
     }
 
-    public function testHandleDispatchesActivationExpired(): void
+    public function test_it_listens_to_the_option_first_reminder(): void
+    {
+        $integrationId = Uuid::uuid4()->toString();
+        $this->createIntegrationWithContacts($integrationId, 14);
+
+        $this->getPendingCommand('integration:search-expired-integrations --force --only-first-reminder')
+            ->expectsOutput('No expired integrations')
+            ->assertExitCode(Command::SUCCESS);
+    }
+
+    public function test_it_listens_to_the_option_final_reminder(): void
+    {
+        $integrationId = Uuid::uuid4()->toString();
+        $this->createIntegrationWithContacts($integrationId, 8);
+
+        $this->getPendingCommand('integration:search-expired-integrations --force --only-final-reminder')
+            ->expectsOutput('No expired integrations')
+            ->assertExitCode(Command::SUCCESS);
+    }
+
+    public function test_can_handle_search_expired_integrations(): void
     {
         $this->mockConfigForEmail(false);
 
         $integrationId = Uuid::uuid4()->toString();
+        $integrationId2 = Uuid::uuid4()->toString();
 
+        $this->createIntegrationWithContacts($integrationId, 8);
+        $this->createIntegrationWithContacts($integrationId2, 14);
+
+        $this->getPendingCommand('integration:search-expired-integrations --force')
+            ->expectsOutput(sprintf('Dispatched ActivationExpired for integration %s', $integrationId))
+            ->expectsOutput(sprintf('Dispatched ActivationExpired for integration %s', $integrationId2))
+            ->assertExitCode(Command::SUCCESS);
+
+        Event::assertDispatched(ActivationExpired::class, static function (ActivationExpired $event) use ($integrationId, $integrationId2) {
+            return match ($event->templateName) {
+                TemplateName::INTEGRATION_ACTIVATION_REMINDER => $event->id->toString() === $integrationId,
+                TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER => $event->id->toString() === $integrationId2,
+                default => false,
+            };
+        });
+    }
+
+    private function mockConfigForEmail(bool $enabled): void
+    {
+        config()->set(MailjetConfig::TRANSACTIONAL_EMAILS_ENABLED, $enabled);
+    }
+
+    private function getPendingCommand(string $command, array $params = []): PendingCommand
+    {
+        $command = $this->artisan($command, $params);
+        $this->assertInstanceOf(PendingCommand::class, $command);
+        return $command;
+    }
+
+    private function createIntegrationWithContacts(string $integrationId, int $monthsAgo): void
+    {
         DB::table('integrations')->insert([
             'id' => $integrationId,
             'type' => IntegrationType::SearchApi->value,
@@ -42,8 +95,7 @@ final class SearchExpiredIntegrationsTest extends TestCase
             'name' => 'Test',
             'description' => 'test',
             'status' => IntegrationStatus::Draft,
-            'created_at' => Carbon::now()->subMonths(8),
-            'reminder_email_sent' => null,
+            'created_at' => Carbon::now()->subMonths($monthsAgo),
         ]);
         DB::table('contacts')->insert([
             'id' => Uuid::uuid4()->toString(),
@@ -61,25 +113,5 @@ final class SearchExpiredIntegrationsTest extends TestCase
             'first_name' => 'Bril',
             'last_name' => 'Smurf',
         ]);
-
-        $this->getPendingCommand('integration:search-expired-integrations --force')
-            ->expectsOutput(sprintf('Dispatched ActivationExpired for integration %s', $integrationId))
-            ->assertExitCode(Command::SUCCESS);
-
-        Event::assertDispatched(ActivationExpired::class, static function ($event) use ($integrationId) {
-            return $event->id->toString() === $integrationId;
-        });
-    }
-
-    private function mockConfigForEmail(bool $enabled): void
-    {
-        config()->set(MailjetConfig::TRANSACTIONAL_EMAILS_ENABLED, $enabled);
-    }
-
-    private function getPendingCommand(string $command, array $params = []): PendingCommand
-    {
-        $command = $this->artisan($command, $params);
-        $this->assertInstanceOf(PendingCommand::class, $command);
-        return $command;
     }
 }

@@ -8,5 +8,5 @@ use Symfony\Component\Mime\Address;
 
 interface Mailer
 {
-    public function send(Address $from, Address $to, int $templateId, string $subject, array $variables = []): void;
+    public function send(Address $from, Address $to, int $templateId, array $variables = []): void;
 }

@@ -12,15 +12,16 @@ use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationMail;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
+use App\Domain\Integrations\Repositories\IntegrationMailRepository;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Mail\Mailer;
 use App\Domain\Mail\MailManager;
 use App\Mails\Template\TemplateName;
 use App\Mails\Template\Templates;
-use Carbon\Carbon;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Ramsey\Uuid\Uuid;
@@ -35,6 +36,7 @@ final class MailManagerTest extends TestCase
     private const TEMPLATE_INTEGRATION_ACTIVATION_REMINDER = 4;
     private const TEMPLATE_ACTIVATION_REQUESTED_ID = 5;
     private const TEMPLATE_DELETED_ID = 6;
+    private const TEMPLATE_INTEGRATION_FINAL_ACTIVATION_REMINDER = 7;
 
     private MailManager $mailManager;
     private Mailer&MockObject $mailer;
@@ -43,6 +45,7 @@ final class MailManagerTest extends TestCase
     private array $contacts;
     private Integration $integration;
     private IntegrationRepository&MockObject $integrationRepository;
+    private IntegrationMailRepository&MockObject $integrationMailRepository;
 
     protected function setUp(): void
     {
@@ -50,10 +53,12 @@ final class MailManagerTest extends TestCase
 
         $this->mailer = $this->createMock(Mailer::class);
         $this->integrationRepository = $this->createMock(IntegrationRepository::class);
+        $this->integrationMailRepository = $this->createMock(IntegrationMailRepository::class);
 
         $this->mailManager = new MailManager(
             $this->mailer,
             $this->integrationRepository,
+            $this->integrationMailRepository,
             Templates::build($this->getTemplateConfig()),
             'http://www.example.com'
         );
@@ -118,13 +123,9 @@ final class MailManagerTest extends TestCase
         object $event,
         string $method,
         int $templateId,
-        string $subject,
         bool $checkReminderEmailSent = false,
         bool $useGetByIdWithTrashed = false,
     ): void {
-        $now = Carbon::now();
-        Carbon::setTestNow($now);
-
         $this->integrationRepository
             ->expects($this->once())
             ->method($useGetByIdWithTrashed ? 'getByIdWithTrashed' : 'getById')
@@ -132,11 +133,17 @@ final class MailManagerTest extends TestCase
             ->willReturn($this->integration);
 
         if ($checkReminderEmailSent) {
-            $integrationWithReminderEmailSent = $this->integration->withReminderEmailSent(Carbon::now());
-            $this->integrationRepository
+            if (!$event instanceof ActivationExpired) {
+                $this->fail(sprintf('Invalid event %s, expected ActivationExpired', get_class($event)));
+            }
+
+            $this->integrationMailRepository
                 ->expects($this->once())
-                ->method('update')
-                ->with($integrationWithReminderEmailSent);
+                ->method('create')
+                ->with(new IntegrationMail(
+                    Uuid::fromString(self::INTEGRATION_ID),
+                    $event->templateName,
+                ));
         }
 
         $currentEmail = null;
@@ -160,7 +167,6 @@ final class MailManagerTest extends TestCase
                     return true;
                 }),
                 $templateId,
-                $subject,
                 // Because with() is called with all callbacks at the same time, we have to pass currentEmail as reference
                 $this->callback(function ($parameters) use (&$currentEmail) {
                     $this->assertEquals([
@@ -186,32 +192,39 @@ final class MailManagerTest extends TestCase
                 'event' => new IntegrationCreatedWithContacts(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationCreatedMail',
                 'templateId' => self::TEMPLATE_CREATED_ID,
-                'subject' => 'Welcome to Publiq platform - Let\'s get you started!',
             ],
             TemplateName::INTEGRATION_ACTIVATED->value => [
                 'event' => new IntegrationActivated(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationActivatedMail',
                 'templateId' => self::TEMPLATE_ACTIVATED_ID,
-                'subject' => 'Publiq platform - Integration activated',
             ],
             TemplateName::INTEGRATION_ACTIVATION_REQUEST->value => [
                 'event' => new IntegrationActivationRequested(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationActivationRequestMail',
                 'templateId' => self::TEMPLATE_ACTIVATION_REQUESTED_ID,
-                'subject' => 'Publiq platform - Request for activating integration',
             ],
             TemplateName::INTEGRATION_DELETED->value => [
                 'event' => new IntegrationDeleted(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationDeletedMail',
                 'templateId' => self::TEMPLATE_DELETED_ID,
-                'subject' => 'Publiq platform - Integration deleted',
                 'useGetByIdWithTrashed' => true,
             ],
             TemplateName::INTEGRATION_ACTIVATION_REMINDER->value => [
-                'event' => new ActivationExpired(Uuid::fromString(self::INTEGRATION_ID)),
+                'event' => new ActivationExpired(
+                    Uuid::fromString(self::INTEGRATION_ID),
+                    TemplateName::INTEGRATION_ACTIVATION_REMINDER
+                ),
                 'method' => 'sendActivationReminderEmail',
                 'templateId' => self::TEMPLATE_INTEGRATION_ACTIVATION_REMINDER,
-                'subject' => 'Publiq platform - Can we help you to activate your integration?',
+                'checkReminderEmailSent' => true,
+            ],
+            TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER->value => [
+                'event' => new ActivationExpired(
+                    Uuid::fromString(self::INTEGRATION_ID),
+                    TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER
+                ),
+                'method' => 'sendActivationReminderEmail',
+                'templateId' => self::TEMPLATE_INTEGRATION_FINAL_ACTIVATION_REMINDER,
                 'checkReminderEmailSent' => true,
             ],
         ];
@@ -232,6 +245,11 @@ final class MailManagerTest extends TestCase
             ],
             TemplateName::INTEGRATION_ACTIVATION_REMINDER->value => [
                 'id' => self::TEMPLATE_INTEGRATION_ACTIVATION_REMINDER,
+                'enabled' => true,
+                'subject' => 'Publiq platform - Can we help you to activate your integration?',
+            ],
+            TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER->value => [
+                'id' => self::TEMPLATE_INTEGRATION_FINAL_ACTIVATION_REMINDER,
                 'enabled' => true,
                 'subject' => 'Publiq platform - Can we help you to activate your integration?',
             ],

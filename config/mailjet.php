@@ -19,31 +19,36 @@ return [
         IntegrationType::UiTPAS->value => (int)env('MAILJET_EXPIRATION_TIMER_UITPAS', 6),
         IntegrationType::Widgets->value => (int)env('MAILJET_EXPIRATION_TIMER_WIDGETS', 3),
     ],
+    'expiration_timers_final_reminder' => [ // Timer is always in months
+        IntegrationType::EntryApi->value => (int)env('MAILJET_FINAL_EXPIRATION_TIMER_ENTRY_API', 12),
+        IntegrationType::SearchApi->value => (int)env('MAILJET_FINAL_EXPIRATION_TIMER_SEARCH_API', 12),
+        IntegrationType::UiTPAS->value => (int)env('MAILJET_FINAL_EXPIRATION_TIMER_UITPAS', 12),
+        IntegrationType::Widgets->value => (int)env('MAILJET_FINAL_EXPIRATION_TIMER_WIDGETS', 12),
+    ],
     'templates' => [
         TemplateName::INTEGRATION_CREATED->value => [
             'id' => env('MAILJET_TEMPLATE_INTEGRATION_CREATED'),
             'enabled' => true,
-            'subject' => 'Welcome to Publiq platform - Let\'s get you started!',
         ],
         TemplateName::INTEGRATION_ACTIVATED->value => [
             'id' => env('MAILJET_TEMPLATE_INTEGRATION_ACTIVATED'),
             'enabled' => true,
-            'subject' => 'Publiq platform - Integration activated',
         ],
         TemplateName::INTEGRATION_ACTIVATION_REMINDER->value => [
             'id' => env('MAILJET_TEMPLATE_INTEGRATION_ACTIVATION_REMINDER'),
             'enabled' => true,
-            'subject' => 'Publiq platform - Can we help you to activate your integration?',
+        ],
+        TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER->value => [
+            'id' => env('MAILJET_TEMPLATE_INTEGRATION_ACTIVATION_REMINDER'),
+            'enabled' => true,
         ],
         TemplateName::INTEGRATION_ACTIVATION_REQUEST->value => [
             'id' => env('MAILJET_TEMPLATE_INTEGRATION_ACTIVATION_REQUEST'),
             'enabled' => true,
-            'subject' => 'Publiq platform - Request for activating integration',
         ],
         TemplateName::INTEGRATION_DELETED->value => [
             'id' => env('MAILJET_TEMPLATE_INTEGRATION_DELETED'),
             'enabled' => true,
-            'subject' => 'Publiq platform - Integration deleted',
         ],
     ],
 ];
