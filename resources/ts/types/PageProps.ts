@@ -11,9 +11,6 @@ type Config = {
     enabled: boolean;
     dsn: string;
   };
-  uitpas: {
-    enabled: boolean;
-  };
   keycloak: {
     enabled: boolean;
     testClientEnabled: boolean;

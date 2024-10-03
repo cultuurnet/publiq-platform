@@ -79,19 +79,10 @@ export const getIntegrationTypesInfo = (t: TFunction) => [
 
 export const useIntegrationTypesInfo = () => {
   const { t } = useTranslation();
-  const { config } = usePageProps();
 
   return useMemo(() => {
-    const integrationTypesInfo = getIntegrationTypesInfo(t);
-
-    // See https://jira.publiq.be/browse/PPF-481
-    return config.uitpas.enabled
-      ? integrationTypesInfo
-      : integrationTypesInfo.filter(
-          (integrationTypesInfo) =>
-            integrationTypesInfo.type !== IntegrationType.UiTPAS
-        );
-  }, [t, config]);
+    return getIntegrationTypesInfo(t);
+  }, [t]);
 };
 
 export type IntegrationTypesInfo = ReturnType<
@@ -99,20 +90,16 @@ export type IntegrationTypesInfo = ReturnType<
 >[number];
 
 export const IntegrationTypes = () => {
-  const { config } = usePageProps();
-  const filteredIntegrationTypes = useIntegrationTypesInfo();
-  const uitpasEnabled = config.uitpas.enabled;
+  const integrationTypes = useIntegrationTypesInfo();
 
   return (
     <div>
       <ul
         className={classNames(
-          !uitpasEnabled && "w-full flex gap-5 max-md:flex-col",
-          uitpasEnabled &&
-            "grid grid-cols-4 gap-4 max-lg:grid-cols-2 max-md:grid-cols-1"
+          "grid grid-cols-4 gap-4 max-lg:grid-cols-2 max-md:grid-cols-1"
         )}
       >
-        {filteredIntegrationTypes.map((integrationTypeInfo) => (
+        {integrationTypes.map((integrationTypeInfo) => (
           <IntegrationTypeCard
             key={integrationTypeInfo.title}
             {...integrationTypeInfo}

@@ -92,11 +92,8 @@ final class Integration extends Resource
             IntegrationType::EntryApi->value => IntegrationType::EntryApi->name,
             IntegrationType::SearchApi->value => IntegrationType::SearchApi->name,
             IntegrationType::Widgets->value => IntegrationType::Widgets->name,
+            IntegrationType::UiTPAS->value => IntegrationType::UiTPAS->name
         ];
-
-        if (config('uitpas.enabled')) {
-            $integrationTypes[IntegrationType::UiTPAS->value] = IntegrationType::UiTPAS->name;
-        }
 
         $fields = [
             ID::make()
