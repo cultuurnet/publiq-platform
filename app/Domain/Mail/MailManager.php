@@ -66,11 +66,11 @@ final class MailManager
     {
         $integration = $this->integrationRepository->getById($event->id);
 
-        $this->sendMail($integration, $this->templates->getOrFail(TemplateName::INTEGRATION_ACTIVATION_REMINDER->value));
+        $this->sendMail($integration, $this->templates->getOrFail($event->templateName->value));
 
         $this->integrationMailRepository->create(new IntegrationMail(
             $event->id,
-            TemplateName::INTEGRATION_ACTIVATION_REMINDER,
+            $event->templateName,
         ));
     }
 
@@ -120,7 +120,6 @@ final class MailManager
                 $this->getFrom(),
                 new Address($contact->email, trim($contact->firstName . ' ' . $contact->lastName)),
                 $template->id,
-                $template->subject,
                 $this->getIntegrationVariables($contact, $integration)
             );
         }

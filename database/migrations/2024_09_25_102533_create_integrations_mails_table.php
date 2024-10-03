@@ -10,9 +10,9 @@ return new class () extends Migration {
     public function up(): void
     {
         Schema::create('integrations_mails', static function (Blueprint $table) {
-            $table->uuid('integration_id')->primary();
+            $table->uuid('integration_id');
             $table->string('template_name');
-            $table->unique(['integration_id', 'template_name']);
+            $table->primary(['integration_id', 'template_name']);
             $table->timestamps();
         });
 

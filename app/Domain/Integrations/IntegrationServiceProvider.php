@@ -24,6 +24,7 @@ final class IntegrationServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(IntegrationRepository::class, EloquentIntegrationRepository::class);
+        $this->app->bind(IntegrationMailRepository::class, EloquentIntegrationMailRepository::class);
         $this->app->bind(IntegrationUrlRepository::class, EloquentIntegrationUrlRepository::class);
         $this->app->bind(UdbOrganizerRepository::class, EloquentUdbOrganizerRepository::class);
         $this->app->bind(IntegrationMailRepository::class, EloquentIntegrationMailRepository::class);
