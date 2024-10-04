@@ -11,6 +11,7 @@ use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
+use App\Domain\Integrations\Events\IntegrationApproved;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationDeleted;
@@ -171,6 +172,7 @@ final class IntegrationModel extends UuidModel
         $this->update([
             'status' => IntegrationStatus::Active,
         ]);
+        IntegrationApproved::dispatch(Uuid::fromString($this->id));
     }
 
     public function block(): void

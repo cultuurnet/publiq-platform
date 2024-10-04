@@ -9,6 +9,7 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Events\ActivationExpired;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
+use App\Domain\Integrations\Events\IntegrationApproved;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Integration;
@@ -196,6 +197,11 @@ final class MailManagerTest extends TestCase
             TemplateName::INTEGRATION_ACTIVATED->value => [
                 'event' => new IntegrationActivated(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationActivatedMail',
+                'templateId' => self::TEMPLATE_ACTIVATED_ID,
+            ],
+            'integration_approved' => [
+                'event' => new IntegrationApproved(Uuid::fromString(self::INTEGRATION_ID)),
+                'method' => 'sendIntegrationApprovedMail',
                 'templateId' => self::TEMPLATE_ACTIVATED_ID,
             ],
             TemplateName::INTEGRATION_ACTIVATION_REQUEST->value => [
