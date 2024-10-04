@@ -27,6 +27,7 @@ final class IntegrationServiceProvider extends ServiceProvider
         $this->app->bind(IntegrationMailRepository::class, EloquentIntegrationMailRepository::class);
         $this->app->bind(IntegrationUrlRepository::class, EloquentIntegrationUrlRepository::class);
         $this->app->bind(UdbOrganizerRepository::class, EloquentUdbOrganizerRepository::class);
+        $this->app->bind(IntegrationMailRepository::class, EloquentIntegrationMailRepository::class);
 
         Event::listen(IntegrationCreated::class, [ActivateIntegration::class, 'handle']);
         Event::listen(KeyVisibilityUpgradeCreated::class, [UpgradeKeyVisibility::class, 'handle']);
