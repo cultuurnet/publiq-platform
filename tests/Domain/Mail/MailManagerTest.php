@@ -172,10 +172,10 @@ final class MailManagerTest extends TestCase
         $this->integrationMailRepository
             ->expects($this->once())
             ->method('create')
-            ->with(new IntegrationMail(
-                Uuid::fromString(self::INTEGRATION_ID),
-                $template->type,
-            ));
+            ->with($this->callback(function (IntegrationMail $integrationMail) use ($template) {
+                return $integrationMail->templateName === $template->type &&
+                    $integrationMail->integrationId->toString() === self::INTEGRATION_ID;
+            }));
 
         $this->mailManager->$method($event);
     }

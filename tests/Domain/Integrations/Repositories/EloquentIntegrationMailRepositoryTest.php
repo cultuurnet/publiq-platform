@@ -18,6 +18,7 @@ final class EloquentIntegrationMailRepositoryTest extends TestCase
         $repository = new EloquentIntegrationMailRepository();
 
         $id = Uuid::uuid4();
+        $integrationId = Uuid::uuid4();
         $templateName = TemplateName::INTEGRATION_ACTIVATION_REMINDER;
 
         $now = Carbon::now();
@@ -25,11 +26,13 @@ final class EloquentIntegrationMailRepositoryTest extends TestCase
 
         $repository->create(new IntegrationMail(
             $id,
+            $integrationId,
             $templateName,
         ));
 
         $this->assertDatabaseHas('integrations_mails', [
-            'integration_id' => $id,
+            'uuid' => $id,
+            'integration_id' => $integrationId,
             'template_name' => $templateName,
             'created_at' => $now,
         ]);
