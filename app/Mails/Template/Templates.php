@@ -17,7 +17,7 @@ final class Templates extends Collection
         $collection = new self();
 
         foreach ($templates as $type => $template) {
-            $collection->put($type, new Template($type, (int)$template['id'], $template['enabled']));
+            $collection->put($type, new Template(TemplateName::from($type), (int)$template['id'], $template['enabled']));
         }
 
         return $collection;
