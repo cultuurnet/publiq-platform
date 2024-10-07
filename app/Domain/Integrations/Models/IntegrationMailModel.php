@@ -14,7 +14,6 @@ final class IntegrationMailModel extends Model
     protected $fillable = [
         'integration_id',
         'template_name',
-        'date',
     ];
 
     /**
