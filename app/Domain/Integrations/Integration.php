@@ -12,7 +12,6 @@ use App\Domain\Organizations\Organization;
 use App\Domain\Subscriptions\Subscription;
 use App\Keycloak\Client as KeycloakClient;
 use App\UiTiDv1\UiTiDv1Consumer;
-use DateTimeInterface;
 use Ramsey\Uuid\UuidInterface;
 
 final class Integration
@@ -46,7 +45,6 @@ final class Integration
     private ?Website $website;
 
     private ?Coupon $coupon;
-    private ?DateTimeInterface $reminderEmailSent = null;
 
     public function __construct(
         public readonly UuidInterface $id,
@@ -205,22 +203,10 @@ final class Integration
         return $this->keycloakClients;
     }
 
-    public function getReminderEmailSent(): ?DateTimeInterface
-    {
-        return $this->reminderEmailSent;
-    }
-
     public function withUrls(IntegrationUrl ...$urls): self
     {
         $clone = clone $this;
         $clone->urls = $urls;
-        return $clone;
-    }
-
-    public function withReminderEmailSent(DateTimeInterface $reminderEmailSent): self
-    {
-        $clone = clone $this;
-        $clone->reminderEmailSent = $reminderEmailSent;
         return $clone;
     }
 

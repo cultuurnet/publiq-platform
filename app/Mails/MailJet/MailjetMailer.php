@@ -21,7 +21,7 @@ final readonly class MailjetMailer implements Mailer
 
     }
 
-    public function send(Address $from, Address $to, int $templateId, string $subject, array $variables = []): void
+    public function send(Address $from, Address $to, int $templateId, array $variables = []): void
     {
         $body = [
             'SandboxMode' => $this->sandboxMode->forAddress($to),
@@ -39,7 +39,6 @@ final readonly class MailjetMailer implements Mailer
                     ],
                     'TemplateID' => $templateId,
                     'TemplateLanguage' => true,
-                    'Subject' => $subject,
                     'Variables' => $variables,
                 ],
             ],
@@ -56,7 +55,7 @@ final readonly class MailjetMailer implements Mailer
         }
 
         $this->logger->info(
-            sprintf('Mail "%s" sent successfully to %s', $subject, $to->getAddress())
+            sprintf('Mail "%s" sent successfully to %s', $templateId, $to->getAddress())
         );
     }
 }

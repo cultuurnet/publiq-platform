@@ -16,6 +16,7 @@ import { KeyVisibility } from "../../../types/KeyVisibility";
 import { UiTiDv1Environment } from "../../../types/UiTiDv1Environment";
 import { Auth0Tenant } from "../../../types/Auth0Tenant";
 import { KeycloakEnvironment } from "../../../types/KeycloakEnvironment";
+import { usePageProps } from "../../../hooks/usePageProps";
 
 type Props = Integration & {
   email: string;
@@ -45,12 +46,31 @@ export const Credentials = ({
   oldCredentialsExpirationDate,
 }: Props) => {
   const { t } = useTranslation();
-  const hasAnyCredentials = Boolean(
-    legacyAuthConsumers.length || authClients.length
-  );
+  const { config } = usePageProps();
+  const hasCredentials = useMemo(() => {
+    if (keyVisibility === KeyVisibility.v1 && !keyVisibilityUpgrade) {
+      return legacyAuthConsumers.length > 0;
+    }
+
+    const credentials: unknown[][] = [legacyAuthConsumers, authClients];
+
+    if (config.keycloak.enabled) {
+      credentials.push(keycloakClients);
+    }
+
+    return credentials.every((it) => it.length > 0);
+  }, [
+    authClients,
+    config.keycloak.enabled,
+    keyVisibility,
+    keyVisibilityUpgrade,
+    keycloakClients,
+    legacyAuthConsumers,
+  ]);
+
   const isV1Upgraded =
     keyVisibility === KeyVisibility.v1 && !!keyVisibilityUpgrade;
-  usePolling(!hasAnyCredentials || isV1Upgraded, { only: ["integration"] });
+  usePolling(!hasCredentials || isV1Upgraded, { only: ["integration"] });
   const credentials = useMemo(
     () => ({
       legacyTestConsumer: legacyAuthConsumers.find(
@@ -75,7 +95,7 @@ export const Credentials = ({
     [legacyAuthConsumers, authClients, keycloakClients]
   );
 
-  if (!hasAnyCredentials) {
+  if (!hasCredentials) {
     return (
       <Alert variant={"info"}>{t("integrations.pending_credentials")}</Alert>
     );
