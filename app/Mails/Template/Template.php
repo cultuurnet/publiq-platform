@@ -9,7 +9,7 @@ final class Template
     public function __construct(
         public TemplateName $name,
         public int $id,
-        public bool $enabled = true,
+        public bool $enabled
     ) {
     }
 }

@@ -727,7 +727,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
 
         if ($mailAlreadySent) {
             DB::table('integrations_mails')->insert([
-                'uuid' => Uuid::uuid4()->toString(),
+                'id' => Uuid::uuid4()->toString(),
                 'integration_id' => $integrationId,
                 'template_name' => TemplateName::INTEGRATION_ACTIVATION_REMINDER->value,
             ]);

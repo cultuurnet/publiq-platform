@@ -31,7 +31,7 @@ final class EloquentIntegrationMailRepositoryTest extends TestCase
         ));
 
         $this->assertDatabaseHas('integrations_mails', [
-            'uuid' => $id,
+            'id' => $id,
             'integration_id' => $integrationId,
             'template_name' => $templateName,
             'created_at' => $now,

@@ -186,27 +186,27 @@ final class MailManagerTest extends TestCase
             TemplateName::INTEGRATION_CREATED->value => [
                 'event' => new IntegrationCreatedWithContacts(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationCreatedMail',
-                'template' => new Template(TemplateName::INTEGRATION_CREATED, self::TEMPLATE_CREATED_ID),
+                'template' => new Template(TemplateName::INTEGRATION_CREATED, self::TEMPLATE_CREATED_ID, true),
             ],
             TemplateName::INTEGRATION_ACTIVATED->value => [
                 'event' => new IntegrationActivated(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationActivatedMail',
-                'template' => new Template(TemplateName::INTEGRATION_ACTIVATED, self::TEMPLATE_ACTIVATED_ID),
+                'template' => new Template(TemplateName::INTEGRATION_ACTIVATED, self::TEMPLATE_ACTIVATED_ID, true),
             ],
             'integration_approved' => [
                 'event' => new IntegrationApproved(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationApprovedMail',
-                'template' => new Template(TemplateName::INTEGRATION_ACTIVATED, self::TEMPLATE_ACTIVATED_ID),
+                'template' => new Template(TemplateName::INTEGRATION_ACTIVATED, self::TEMPLATE_ACTIVATED_ID, true),
             ],
             TemplateName::INTEGRATION_ACTIVATION_REQUEST->value => [
                 'event' => new IntegrationActivationRequested(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationActivationRequestMail',
-                'template' => new Template(TemplateName::INTEGRATION_ACTIVATION_REQUEST, self::TEMPLATE_ACTIVATION_REQUESTED_ID),
+                'template' => new Template(TemplateName::INTEGRATION_ACTIVATION_REQUEST, self::TEMPLATE_ACTIVATION_REQUESTED_ID, true),
             ],
             TemplateName::INTEGRATION_DELETED->value => [
                 'event' => new IntegrationDeleted(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationDeletedMail',
-                'template' => new Template(TemplateName::INTEGRATION_DELETED, self::TEMPLATE_DELETED_ID),
+                'template' => new Template(TemplateName::INTEGRATION_DELETED, self::TEMPLATE_DELETED_ID, true),
                 'useGetByIdWithTrashed' => true,
             ],
             TemplateName::INTEGRATION_ACTIVATION_REMINDER->value => [
@@ -215,7 +215,7 @@ final class MailManagerTest extends TestCase
                     TemplateName::INTEGRATION_ACTIVATION_REMINDER
                 ),
                 'method' => 'sendActivationReminderEmail',
-                'template' => new Template(TemplateName::INTEGRATION_ACTIVATION_REMINDER, self::TEMPLATE_INTEGRATION_ACTIVATION_REMINDER),
+                'template' => new Template(TemplateName::INTEGRATION_ACTIVATION_REMINDER, self::TEMPLATE_INTEGRATION_ACTIVATION_REMINDER, true),
             ],
             TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER->value => [
                 'event' => new ActivationExpired(
@@ -223,7 +223,7 @@ final class MailManagerTest extends TestCase
                     TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER
                 ),
                 'method' => 'sendActivationReminderEmail',
-                'template' => new Template(TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER, self::TEMPLATE_INTEGRATION_FINAL_ACTIVATION_REMINDER),
+                'template' => new Template(TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER, self::TEMPLATE_INTEGRATION_FINAL_ACTIVATION_REMINDER, true),
             ],
         ];
     }

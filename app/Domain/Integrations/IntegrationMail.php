@@ -10,7 +10,7 @@ use Ramsey\Uuid\UuidInterface;
 final readonly class IntegrationMail
 {
     public function __construct(
-        public UuidInterface $uuid,
+        public UuidInterface $id,
         public UuidInterface $integrationId,
         public TemplateName $templateName,
     ) {

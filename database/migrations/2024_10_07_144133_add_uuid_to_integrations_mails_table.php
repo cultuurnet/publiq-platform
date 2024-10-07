@@ -13,16 +13,16 @@ return new class () extends Migration {
     {
         Schema::table('integrations_mails', function (Blueprint $table) {
             // Add the UUID field (but don't set it as primary key yet)
-            $table->uuid('uuid')->nullable()->first();
+            $table->uuid('id')->nullable()->first();
         });
 
         // Autofill UUIDs for existing records to prevent null errors later
-        DB::table('integrations_mails')->update(['uuid' => Uuid::uuid4()->toString()]);
+        DB::table('integrations_mails')->update(['id' => Uuid::uuid4()->toString()]);
 
         // Finish the migration, drop existing primary key and make the UUID field non-nullable and set it as the primary key
         Schema::table('integrations_mails', function (Blueprint $table) {
             $table->dropPrimary(['integration_id', 'template_name']);
-            $table->uuid('uuid')->primary()->change();
+            $table->uuid('id')->primary()->change();
 
             $table->index(['integration_id', 'template_name'], 'integration_id_template_name_index');
         });
@@ -31,13 +31,13 @@ return new class () extends Migration {
     public function down(): void
     {
         Schema::table('integrations_mails', function (Blueprint $table) {
-            $table->dropPrimary(['uuid']);
+            $table->dropPrimary(['id']);
 
             $table->dropIndex('integration_id_template_name_index');
 
             $table->primary(['integration_id', 'template_name']);
 
-            $table->dropColumn('uuid');
+            $table->dropColumn('id');
         });
     }
 };

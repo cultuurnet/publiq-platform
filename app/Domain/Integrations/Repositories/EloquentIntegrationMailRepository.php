@@ -13,7 +13,7 @@ final class EloquentIntegrationMailRepository implements IntegrationMailReposito
     {
         IntegrationMailModel::query()->create(
             [
-                'uuid' => $integrationMail->uuid,
+                'id' => $integrationMail->id,
                 'integration_id' => $integrationMail->integrationId->toString(),
                 'template_name' => $integrationMail->templateName,
             ]
