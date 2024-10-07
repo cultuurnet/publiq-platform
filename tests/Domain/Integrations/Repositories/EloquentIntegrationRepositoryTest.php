@@ -709,7 +709,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         IntegrationType $integrationType,
         IntegrationStatus $status,
         Carbon $date,
-        ?Carbon $reminderEmailSent,
+        ?Carbon $mailAlreadySent,
         bool $hasContact,
         TemplateName $templateName,
         int $expectedCount,
@@ -725,8 +725,9 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'created_at' => $date,
         ]);
 
-        if ($reminderEmailSent !== null) {
+        if ($mailAlreadySent) {
             DB::table('integrations_mails')->insert([
+                'id' => Uuid::uuid4()->toString(),
                 'integration_id' => $integrationId,
                 'template_name' => TemplateName::INTEGRATION_ACTIVATION_REMINDER->value,
             ]);

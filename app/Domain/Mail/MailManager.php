@@ -20,6 +20,7 @@ use App\Mails\Template\Template;
 use App\Mails\Template\TemplateName;
 use App\Mails\Template\Templates;
 use Illuminate\Bus\Queueable;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\Mime\Address;
 
 final class MailManager
@@ -76,11 +77,6 @@ final class MailManager
         $integration = $this->integrationRepository->getById($event->id);
 
         $this->sendMail($integration, $this->templates->getOrFail($event->templateName->value));
-
-        $this->integrationMailRepository->create(new IntegrationMail(
-            $event->id,
-            $event->templateName,
-        ));
     }
 
     private function getFrom(): Address
@@ -132,5 +128,11 @@ final class MailManager
                 $this->getIntegrationVariables($contact, $integration)
             );
         }
+
+        $this->integrationMailRepository->create(new IntegrationMail(
+            Uuid::uuid4(),
+            $integration->id,
+            $template->name,
+        ));
     }
 }
