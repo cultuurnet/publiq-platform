@@ -12,6 +12,7 @@ final class IntegrationMailModel extends Model
     protected $table = 'integrations_mails';
 
     protected $fillable = [
+        'uuid',
         'integration_id',
         'template_name',
     ];

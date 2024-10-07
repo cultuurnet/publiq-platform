@@ -20,6 +20,7 @@ use App\Mails\Template\Template;
 use App\Mails\Template\TemplateName;
 use App\Mails\Template\Templates;
 use Illuminate\Bus\Queueable;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\Mime\Address;
 
 final class MailManager
@@ -129,6 +130,7 @@ final class MailManager
         }
 
         $this->integrationMailRepository->create(new IntegrationMail(
+            Uuid::uuid4(),
             $integration->id,
             $template->type,
         ));

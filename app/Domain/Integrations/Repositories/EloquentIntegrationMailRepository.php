@@ -6,6 +6,7 @@ namespace App\Domain\Integrations\Repositories;
 
 use App\Domain\Integrations\IntegrationMail;
 use App\Domain\Integrations\Models\IntegrationMailModel;
+use Ramsey\Uuid\Uuid;
 
 final class EloquentIntegrationMailRepository implements IntegrationMailRepository
 {
@@ -13,6 +14,7 @@ final class EloquentIntegrationMailRepository implements IntegrationMailReposito
     {
         IntegrationMailModel::query()->create(
             [
+                'uuid' => $integrationMail->uuid,
                 'integration_id' => $integrationMail->integrationId->toString(),
                 'template_name' => $integrationMail->templateName,
             ]
