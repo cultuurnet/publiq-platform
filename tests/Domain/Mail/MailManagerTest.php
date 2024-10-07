@@ -234,32 +234,26 @@ final class MailManagerTest extends TestCase
             TemplateName::INTEGRATION_CREATED->value => [
                 'id' => self::TEMPLATE_CREATED_ID,
                 'enabled' => true,
-                'subject' => 'Welcome to Publiq platform - Let\'s get you started!',
             ],
             TemplateName::INTEGRATION_ACTIVATED->value => [
                 'id' => self::TEMPLATE_ACTIVATED_ID,
                 'enabled' => true,
-                'subject' => 'Publiq platform - Integration activated',
             ],
             TemplateName::INTEGRATION_ACTIVATION_REMINDER->value => [
                 'id' => self::TEMPLATE_INTEGRATION_ACTIVATION_REMINDER,
                 'enabled' => true,
-                'subject' => 'Publiq platform - Can we help you to activate your integration?',
             ],
             TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER->value => [
                 'id' => self::TEMPLATE_INTEGRATION_FINAL_ACTIVATION_REMINDER,
                 'enabled' => true,
-                'subject' => 'Publiq platform - Can we help you to activate your integration?',
             ],
             TemplateName::INTEGRATION_ACTIVATION_REQUEST->value => [
                 'id' => self::TEMPLATE_ACTIVATION_REQUESTED_ID,
                 'enabled' => true,
-                'subject' => 'Publiq platform - Request for activating integration',
             ],
             TemplateName::INTEGRATION_DELETED->value => [
                 'id' => self::TEMPLATE_DELETED_ID,
                 'enabled' => true,
-                'subject' => 'Publiq platform - Integration deleted',
             ],
         ];
     }
