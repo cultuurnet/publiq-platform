@@ -76,11 +76,6 @@ final class MailManager
         $integration = $this->integrationRepository->getById($event->id);
 
         $this->sendMail($integration, $this->templates->getOrFail($event->templateName->value));
-
-        $this->integrationMailRepository->create(new IntegrationMail(
-            $event->id,
-            $event->templateName,
-        ));
     }
 
     private function getFrom(): Address
@@ -132,5 +127,10 @@ final class MailManager
                 $this->getIntegrationVariables($contact, $integration)
             );
         }
+
+        $this->integrationMailRepository->create(new IntegrationMail(
+            $integration->id,
+            $template->type,
+        ));
     }
 }
