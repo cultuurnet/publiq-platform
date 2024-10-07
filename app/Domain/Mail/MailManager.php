@@ -132,7 +132,7 @@ final class MailManager
         $this->integrationMailRepository->create(new IntegrationMail(
             Uuid::uuid4(),
             $integration->id,
-            $template->type,
+            $template->name,
         ));
     }
 }

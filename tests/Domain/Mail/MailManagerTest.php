@@ -173,7 +173,7 @@ final class MailManagerTest extends TestCase
             ->expects($this->once())
             ->method('create')
             ->with($this->callback(function (IntegrationMail $integrationMail) use ($template) {
-                return $integrationMail->templateName === $template->type &&
+                return $integrationMail->templateName === $template->name &&
                     $integrationMail->integrationId->toString() === self::INTEGRATION_ID;
             }));
 
