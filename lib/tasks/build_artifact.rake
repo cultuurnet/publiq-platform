@@ -16,6 +16,7 @@ task :build_artifact do |task|
 
   FileUtils.rm(Dir.glob('.env*'))
   FileUtils.touch('.env')
+  FileUtils.touch('nova_users.php')
 
   system("fpm -s dir -t deb -n #{artifact_name} -v #{version} -a all -p pkg \
     -x '.git*' -x pkg -x lib -x Rakefile -x Gemfile -x Gemfile.lock \
