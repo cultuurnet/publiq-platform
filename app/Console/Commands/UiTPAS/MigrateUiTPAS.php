@@ -21,6 +21,7 @@ use App\Domain\Subscriptions\SubscriptionCategory;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
@@ -44,6 +45,7 @@ final class MigrateUiTPAS extends Command
 
     public function handle(): int
     {
+        Event::fake();
         Model::unsetEventDispatcher();
 
         $rows = $this->readCsvFile('database/uitpas/integrations.csv');
