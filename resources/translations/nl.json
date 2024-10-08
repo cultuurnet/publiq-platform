@@ -14,11 +14,27 @@
   },
   "title": "publiq platform",
   "nav": {
-    "integrations": "Mijn integraties",
-    "opportunities": "Mogelijkheden",
-    "support": "Ondersteuning",
-    "hello": "Hallo",
-    "integrations/new": "Integratie toevoegen"
+    "integrations": {
+      "label": "Mijn integraties"
+    },
+    "opportunities": {
+      "label": "Mogelijkheden",
+      "link": "https://www.publiq.be/nl/projecten/publiq-platform"
+    },
+    "prices": {
+      "label": "Prijzen",
+      "link": "https://www.publiq.be/nl/projecten/publiq-platform/prijzen"
+    },
+    "documentation": {
+      "label": "Documentatie",
+      "link": "https://docs.publiq.be"
+    },
+    "support": {
+      "label": "Ondersteuning"
+    },
+    "integrations/new": {
+      "label": "Integratie toevoegen"
+    }
   },
   "pricing_plan": {
     "free": {
@@ -137,12 +153,50 @@
       "label": "Ik ga akkoord met de <1>verwerkingsvoorwaarden van UiTPAS<1>",
       "link": "https://www.publiq.be/nl/projecten/publiq-platform/algemene-verwerkingsvoorwaarden"
     },
-    "terms_of_use_link": "https://docs.publiq.be/docs/uitdatabank/terms-of-use/terms-of-use",
+    "terms_of_use_link": "https://www.publiq.be/projecten/publiq-platform/gebruiksvoorwaarden",
     "privacy_link": "https://www.publiq.be/nl/privacy",
     "coupon": "Ik heb een coupon",
     "code": "Couponcode",
     "submit": "Integratie aanmaken",
     "back": "Terug naar integratieoverzicht"
+  },
+  "welcome_section": {
+    "title": "Welkom op het publiq platform 👋",
+    "description": {
+      "part1": "Op dit self-service portaal kan je gemakkelijk toegang krijgen tot de API's en tools die het publiq platform biedt.",
+      "part2": "Na het aanmaken van een integratie zal je meteen toegang krijgen tot de testomgeving. Je ontvangt ook uitgebreide documentatie waarin we je stap voor stap gidsen. Heb je toch nog vragen? Onze supportcollega's staan voor je klaar. Kortom, alles om een naadloze integratie op te zetten!"
+    },
+    "card": {
+      "documentation": "Documentatie",
+      "entry_api": {
+        "title": "Entry API",
+        "description": "Organiseer je zelf activiteiten? Publiceer de evenementen in de UiTdatabank met behulp van de Entry API en wij zorgen ervoor dat je evenementen verspreid worden over talloze online kanalen.",
+        "cta": "Entry API integratie toevoegen",
+        "action_url": "/nl/integraties/nieuw?type=entry-api",
+        "documentation_url": "https://docs.publiq.be/docs/uitdatabank/entry-api/introduction"
+      },
+      "search_api": {
+        "title": "Search API",
+        "description": "Met deze zoekmachine kan je eventdata (JSON-LD) ophalen uit de UiTdatabank deze publiceren op je eigen website of app.",
+        "cta": "Search API integratie toevoegen",
+        "action_url": "/nl/integraties/nieuw?type=search-api",
+        "documentation_url": "https://docs.publiq.be/docs/uitdatabank/search-api/introduction"
+      },
+      "widgets": {
+        "title": "Widgets",
+        "description": "Met onze widgets kan je een evenementenagenda configureren zonder dat je daarvoor enige technische kennis nodig hebt. Het is de ideale oplossing voor partners die zorgeloos snel een robuuste agenda willen opzetten.",
+        "cta": "Voeg Widget integratie toe",
+        "action_url": "/nl/integraties/nieuw?type=widgets",
+        "documentation_url": "https://docs.publiq.be/docs/widgets/inleiding"
+      },
+      "uitpas": {
+        "title": "UiTPAS API",
+        "description": "Werkt jouw organisatie met UiTPAS? Met de UiTPAS API kan je automatisch kortingen toekennen, voordelen uitwisselen en punten sparen voor kaarthouders.",
+        "cta": "Voeg UiTPAS API integratie toe",
+        "action_url": "/nl/integraties/nieuw?type=uitpas-api",
+        "documentation_url": "https://docs.publiq.be/docs/uitpas/introduction"
+      }
+    }
   },
   "integrations": {
     "title": "Mijn integraties",
@@ -204,6 +258,9 @@
       "action_url": "https://docs.publiq.be/docs{{product}}",
       "requirements": "Vereisten om live te gaan",
       "test_dataset": "Test dataset"
+    },
+    "styleguide": {
+      "action_title": "Beeldmerken en verwijzigingen"
     }
   },
   "details": {
@@ -221,12 +278,12 @@
       "new": "Nieuwe medewerker",
       "delete_dialog": {
         "title": "Contact verwijderen",
-        "question": "Ben je zeker dat je het contact met e-mailadres {{email}} wilt verwijderen?"
+        "question": "Ben je zeker dat je het contact met e-mailadres {{email}} wilt verwijderen? Eens verwijderd heeft een contact geen toegang meer tot de integratie."
       },
       "edit_dialog": "Contact bewerken",
       "alert": {
         "title": "Gevarenzone",
-        "description": "Contacten kunnen de integratie aanpassen, activeren en verwijderen. Eens verwijderd heeft een contact geen toegang meer tot de integratie."
+        "description": "Contacten kunnen de integratie aanpassen, activeren en verwijderen."
       }
     },
     "organizers_info": {
@@ -274,7 +331,8 @@
       "client_id": "Client id",
       "client_secret": "Client secret",
       "api_key": "API Key",
-      "info": "Deze credentials blijven nog {{amount}} geldig en worden definitief verwijderd op {{date}}."
+      "info": "Deze credentials blijven nog {{amount}} geldig en worden definitief verwijderd op {{date}}.",
+      "waiting": "Na aanmaak van je integratie kan het momenteel nog tot enkele dagen duren voor je de UiTPAS API kan aanspreken. Je ontvangt een mailtje van ons wanneer je rechten zijn toegekend."
     },
     "integration_settings": {
       "title": "Instellingen",

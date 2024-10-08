@@ -2,17 +2,51 @@ import type { ComponentProps } from "react";
 import React from "react";
 import { Heading } from "./Heading";
 import { useTranslation } from "react-i18next";
-import { Link, usePage } from "@inertiajs/react";
+import type { InertiaLinkProps } from "@inertiajs/react";
+import { Link as RouterLink, usePage } from "@inertiajs/react";
 import { classNames } from "../utils/classNames";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTranslateRoute } from "../hooks/useTranslateRoute";
 import { PubliqLogo } from "./logos/PubliqLogo";
+import { externalLinkProps, isExternalLink } from "./Link";
+import { useIsAuthenticated } from "../hooks/useIsAuthenticated";
+
+type Page = {
+  key: string;
+  component?: string;
+  shouldShowWhen: ("authenticated" | "unauthenticated")[];
+};
+
+const Link = (props: ComponentProps<"a">) =>
+  isExternalLink(props.href ?? "") ? (
+    <a {...props} {...externalLinkProps} />
+  ) : (
+    <RouterLink {...(props as InertiaLinkProps)} />
+  );
+
+const allPages: Page[] = [
+  {
+    component: "Integrations/Index",
+    key: "integrations",
+    shouldShowWhen: ["authenticated"],
+  },
+  { key: "opportunities", shouldShowWhen: ["unauthenticated"] },
+  {
+    key: "prices",
+    shouldShowWhen: ["unauthenticated"],
+  },
+  { key: "documentation", shouldShowWhen: ["unauthenticated"] },
+  {
+    component: "Support/Index",
+    key: "support",
+    shouldShowWhen: ["authenticated", "unauthenticated"],
+  },
+] as const;
 
 type Props = ComponentProps<"section"> & {
   orientation?: "vertical" | "horizontal";
 };
-
 export default function Navigation({
   className,
   children,
@@ -23,12 +57,13 @@ export default function Navigation({
   const translateRoute = useTranslateRoute();
 
   const { component } = usePage();
+  const isAuthenticated = useIsAuthenticated();
 
-  const pages = [
-    { component: "Integrations/Index", title: "integrations" },
-    { component: "Integrations/New", title: "integrations/new" },
-    { component: "Support/Index", title: "support" },
-  ];
+  const pages: Page[] = allPages.filter((it) =>
+    it.shouldShowWhen.includes(
+      isAuthenticated ? "authenticated" : "unauthenticated"
+    )
+  );
 
   const classes = classNames(
     "flex md:items-center md:justify-start gap-36 px-7 max-md:p-4 max-md:gap-5",
@@ -42,29 +77,36 @@ export default function Navigation({
   return (
     <section className={classes} {...props}>
       {children && <div className="fixed top-10 right-16">{children}</div>}
-      <Link href={translateRoute("/")}>
+      <RouterLink href={translateRoute("/")}>
         <PubliqLogo color="publiq-blue" width={32} height={32} />
-      </Link>
+      </RouterLink>
       <div className="flex max-md:flex-col md:gap-8 min-w-[50%]">
-        {pages.map((page) => (
-          <Link
-            key={page.title}
-            href={translateRoute(`/${page.title}`)}
-            className={classNames(
-              "relative max-md:inline-flex items-center justify-between py-3 border-transparent border-b-4 ",
-              page.component === component &&
-                "md:border-b-4 md:border-b-publiq-blue max-md:font-semibold",
-              afterStyles
-            )}
-          >
-            <Heading level={5} className="max-md:text-xl">
-              {t(`nav.${page.title}`)}
-            </Heading>
-            {orientation === "vertical" && (
-              <FontAwesomeIcon icon={faChevronRight} />
-            )}
-          </Link>
-        ))}
+        {pages.map((page) => {
+          return (
+            <Link
+              key={page.key}
+              href={
+                "component" in page
+                  ? translateRoute(`/${page.key}`)
+                  : t(`nav.${page.key}.link`)
+              }
+              className={classNames(
+                "relative max-md:inline-flex items-center justify-between py-3 border-transparent border-b-4 ",
+                "component" in page &&
+                  page.component === component &&
+                  "md:border-b-4 md:border-b-publiq-blue max-md:font-semibold",
+                afterStyles
+              )}
+            >
+              <Heading level={5} className="max-md:text-xl">
+                {t(`nav.${page.key}.label`)}
+              </Heading>
+              {orientation === "vertical" && (
+                <FontAwesomeIcon icon={faChevronRight} />
+              )}
+            </Link>
+          );
+        })}
       </div>
     </section>
   );

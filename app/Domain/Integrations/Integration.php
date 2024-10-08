@@ -31,8 +31,8 @@ final class Integration
 
     private ?Organization $organization;
 
-    /** @var array<Organizer> */
-    private array $organizers;
+    /** @var array<UdbOrganizer> */
+    private array $udbOrganizers;
 
     /** @var array<UiTiDv1Consumer> */
     private array $uiTiDv1Consumers;
@@ -53,14 +53,14 @@ final class Integration
         public readonly string $description,
         public readonly UuidInterface $subscriptionId,
         public readonly IntegrationStatus $status,
-        public readonly IntegrationPartnerStatus $partnerStatus
+        public readonly IntegrationPartnerStatus $partnerStatus,
     ) {
         $this->contacts = [];
         $this->urls = [];
         $this->uiTiDv1Consumers = [];
         $this->auth0Clients = [];
         $this->keycloakClients = [];
-        $this->organizers = [];
+        $this->udbOrganizers = [];
         $this->organization = null;
         $this->keyVisibility = KeyVisibility::v2;
         $this->keyVisibilityUpgrade = null;
@@ -126,10 +126,10 @@ final class Integration
         return $clone;
     }
 
-    public function withOrganizers(Organizer ...$organizers): self
+    public function withUdbOrganizers(UdbOrganizer ...$organizers): self
     {
         $clone = clone $this;
-        $clone->organizers = $organizers;
+        $clone->udbOrganizers = $organizers;
         return $clone;
     }
 
@@ -178,11 +178,11 @@ final class Integration
     }
 
     /**
-     * @return array<Organizer>
+     * @return array<UdbOrganizer>
      */
-    public function organizers(): array
+    public function udbOrganizers(): array
     {
-        return $this->organizers;
+        return $this->udbOrganizers;
     }
 
     /** @return array<UiTiDv1Consumer> */
@@ -245,7 +245,7 @@ final class Integration
             'contacts' => $this->contacts,
             'urls' => $this->urls,
             'organization' => $this->organization,
-            'organizers' => $this->organizers,
+            'organizers' => $this->udbOrganizers,
             'authClients' => $this->auth0Clients,
             'legacyAuthConsumers' => $this->uiTiDv1Consumers,
             'keycloakClients' => $this->keycloakClients,

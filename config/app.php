@@ -204,7 +204,9 @@ return [
         App\ProjectAanvraag\ProjectAanvraagServiceProvider::class,
         App\Keycloak\KeycloakServiceProvider::class,
         App\Search\SearchServiceProvider::class,
+        \App\Mails\MailServiceProvider::class,
         \App\Notifications\NotificationsProvider::class,
+        App\Console\Commands\CommandServiceProvider::class,
     ],
 
     /*

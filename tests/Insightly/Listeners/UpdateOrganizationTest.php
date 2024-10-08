@@ -32,7 +32,7 @@ final class UpdateOrganizationTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->mockCrmClient(new Pipelines(['opportunities'=>['id' => 3, 'stages' => ['test'=> 4]]]));
+        $this->mockCrmClient(new Pipelines(['opportunities' => ['id' => 3, 'stages' => ['test' => 4]]]));
         $this->organizationRepository = $this->createMock(OrganizationRepository::class);
         $this->insightlyMappingRepository = $this->createMock(InsightlyMappingRepository::class);
 
@@ -44,7 +44,7 @@ final class UpdateOrganizationTest extends TestCase
         );
     }
 
-    public function test_it_updates_an_organizer(): void
+    public function test_it_updates_an_organization(): void
     {
         // Given
         $organizationId = Uuid::uuid4();

@@ -95,6 +95,15 @@ final class Auth0TenantSDK
         return new Auth0Client(Uuid::uuid4(), $integration->id, $clientId, $clientSecret, $this->auth0Tenant);
     }
 
+    public function getClientSecret(string $clientId): string
+    {
+        $response = $this->management->clients()->get($clientId);
+
+        $client = Json::decodeAssociatively($response->getBody()->getContents());
+
+        return $client['client_secret'];
+    }
+
     public function updateClient(Integration $integration, Auth0Client $auth0Client): void
     {
         $body = [
@@ -141,7 +150,7 @@ final class Auth0TenantSDK
 
         $json = json_decode($response->getBody()->getContents());
 
-        if(! is_object($json) || ! property_exists($json, 'grant_types')) {
+        if (! is_object($json) || ! property_exists($json, 'grant_types')) {
             return [];
         }
 

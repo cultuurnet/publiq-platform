@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
 
 final class HandleInertiaRequests extends Middleware
@@ -25,12 +26,19 @@ final class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         return array_merge(parent::share($request), [
+            'auth' => [
+                'authenticated' => Auth::check(),
+            ],
             'config' => [
                 'env' => config('app.env'),
-                'sentryDsn' => config('sentry.dsn'),
-                'sentryEnabled' => config('app.sentry.enabled'),
-                'uitpasEnabled' => config('uitpas.enabled'),
-                'keycloakEnabled' => config('keycloak.enabled'),
+                'sentry' => [
+                    'dsn' => config('sentry.dsn'),
+                    'enabled' => config('app.sentry.enabled'),
+                ],
+                'keycloak' => [
+                    'enabled' => config('keycloak.enabled'),
+                    'testClientEnabled' => config('keycloak.testClientEnabled'),
+                ],
             ],
             'widgetConfig' => [
                 'url' => config('uitidwidget.url'),

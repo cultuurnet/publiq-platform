@@ -6,19 +6,31 @@ namespace App\Domain\Integrations\Repositories;
 
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
+use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
+use App\Domain\Integrations\Exceptions\InconsistentIntegrationType;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationType;
-use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Models\IntegrationModel;
+use App\Domain\Integrations\UdbOrganizers;
+use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
+use App\Mails\Template\TemplateName;
 use App\Pagination\PaginatedCollection;
 use App\Pagination\PaginationInfo;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\UuidInterface;
 
-final class EloquentIntegrationRepository implements IntegrationRepository
+final readonly class EloquentIntegrationRepository implements IntegrationRepository
 {
+    public function __construct(
+        private UdbOrganizerRepository $udbOrganizerRepository,
+        private SubscriptionRepository $subscriptionRepository
+    ) {
+
+    }
+
     public function save(Integration $integration): void
     {
         $this->saveTransaction($integration, null);
@@ -36,12 +48,30 @@ final class EloquentIntegrationRepository implements IntegrationRepository
             'type' => $integration->type,
             'name' => $integration->name,
             'description' => $integration->description,
-            'website' => $integration->website() ? $integration->website()->value : null,
+            'website' => $integration->website()?->value,
             'subscription_id' => $integration->subscriptionId,
             'status' => $integration->status,
             'partner_status' => $integration->partnerStatus,
             'key_visibility' => $integration->getKeyVisibility(),
         ]);
+    }
+
+    /** @return Collection<Integration> */
+    public function getDraftsByTypeAndBetweenMonthsOld(IntegrationType $type, int $startMonths, int $endMonths, TemplateName $templateName): Collection
+    {
+        /** @var IntegrationModel $integrationModel */
+        $integrationModel = IntegrationModel::query();
+
+        return $integrationModel->distinct()
+            ->where('status', 'draft')
+            ->where('type', $type->value)
+            ->whereBetween('created_at', [Carbon::now()->subMonths($endMonths), Carbon::now()->subMonths($startMonths)])
+            ->has('contacts')  // This ensures that only integrations with at least one contact are returned
+            ->withoutMailSent($templateName)
+            ->get()
+            ->map(static function (IntegrationModel $integrationModel) {
+                return $integrationModel->toDomain();
+            });
     }
 
     public function getById(UuidInterface $id): Integration
@@ -95,9 +125,15 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         );
     }
 
-    public function requestActivation(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode): void
+    public function requestActivation(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode, UdbOrganizers $organizers = null): void
     {
-        DB::transaction(function () use ($couponCode, $id, $organizationId): void {
+        DB::transaction(function () use ($couponCode, $id, $organizationId, $organizers): void {
+            if ($organizers !== null) {
+                foreach ($organizers as $organizer) {
+                    $this->udbOrganizerRepository->create($organizer);
+                }
+            }
+
             if ($couponCode) {
                 $this->useCouponOnIntegration($id, $couponCode);
             }
@@ -115,9 +151,15 @@ final class EloquentIntegrationRepository implements IntegrationRepository
         $integrationModel->activate();
     }
 
-    public function activateWithOrganization(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode): void
+    public function activateWithOrganization(UuidInterface $id, UuidInterface $organizationId, ?string $couponCode, UdbOrganizers $organizers = null): void
     {
-        DB::transaction(function () use ($couponCode, $id, $organizationId): void {
+        DB::transaction(function () use ($couponCode, $id, $organizationId, $organizers): void {
+            if ($organizers !== null) {
+                foreach ($organizers as $organizer) {
+                    $this->udbOrganizerRepository->create($organizer);
+                }
+            }
+
             if ($couponCode) {
                 $this->useCouponOnIntegration($id, $couponCode);
             }
@@ -148,13 +190,10 @@ final class EloquentIntegrationRepository implements IntegrationRepository
     private function saveTransaction(Integration $integration, ?string $couponCode): void
     {
         DB::transaction(function () use ($integration, $couponCode): void {
+            $this->guardIntegrationTypeConsistency($integration->subscriptionId, $integration);
+
             if ($couponCode) {
                 $this->useCouponOnIntegration($integration->id, $couponCode);
-            }
-
-            // https://jira.publiq.be/browse/PPF-555
-            if($integration->type === IntegrationType::UiTPAS) {
-                $integration = $integration->withKeyVisibility(KeyVisibility::v2);
             }
 
             IntegrationModel::query()->create([
@@ -179,6 +218,23 @@ final class EloquentIntegrationRepository implements IntegrationRepository
                     'email' => $contact->email,
                 ]);
             }
+
+            IntegrationCreatedWithContacts::dispatch($integration->id);
         });
+    }
+
+    /**
+     * @throws InconsistentIntegrationType
+     */
+    private function guardIntegrationTypeConsistency(UuidInterface $subscriptionId, Integration $integration): void
+    {
+        $subscription = $this->subscriptionRepository->getById($subscriptionId);
+
+        if ($integration->type !== $subscription->integrationType) {
+            throw new InconsistentIntegrationType(
+                $integration,
+                $subscription
+            );
+        }
     }
 }

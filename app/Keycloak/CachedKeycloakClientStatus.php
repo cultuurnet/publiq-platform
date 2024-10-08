@@ -19,7 +19,7 @@ final class CachedKeycloakClientStatus
     {
         $uuid = $client->id->toString();
 
-        if(! isset($this->statuses[$uuid])) {
+        if (! isset($this->statuses[$uuid])) {
             $this->statuses[$uuid] = $this->apiClient->fetchIsClientActive($client);
         } else {
             $this->logger->info(self::class . '  - ' . $uuid . ': cache hit: ' . ($this->statuses[$uuid] ? 'Active' : 'Blocked'));

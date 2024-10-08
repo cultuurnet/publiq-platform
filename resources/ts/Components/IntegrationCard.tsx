@@ -22,7 +22,7 @@ import { Alert } from "./Alert";
 import { classNames } from "../utils/classNames";
 import { usePolling } from "../hooks/usePolling";
 import { ButtonSecondary } from "./ButtonSecondary";
-import { usePageProps } from "../hooks/usePageProps";
+import { IntegrationClientCredentials } from "./IntegrationClientCredential";
 
 type Props = Integration &
   Credentials & {
@@ -74,65 +74,17 @@ export const IntegrationCard = ({
   onEdit,
 }: Props) => {
   const { t } = useTranslation();
-  const { config } = usePageProps();
-  const keycloakEnabled = config.keycloakEnabled;
 
   const integrationTypesInfo = useIntegrationTypesInfo();
 
-  const testClientWithLabels = keycloakEnabled
-    ? [
-        {
-          label: "details.credentials.client_id",
-          value: keycloakTestClient?.clientId,
-        },
-        {
-          label: "details.credentials.client_secret",
-          value: keycloakTestClient?.clientSecret,
-        },
-      ]
-    : [
-        {
-          label: "details.credentials.client_id",
-          value: testClient?.clientId,
-        },
-        {
-          label: "details.credentials.client_secret",
-          value: testClient?.clientSecret,
-        },
-      ];
-
-  const prodClientWithLabels = keycloakEnabled
-    ? [
-        {
-          label: "details.credentials.client_id",
-          value: keycloakProdClient?.clientId,
-        },
-        {
-          label: "details.credentials.client_secret",
-          value: keycloakProdClient?.clientSecret,
-        },
-      ]
-    : [
-        {
-          label: "details.credentials.client_id",
-          value: prodClient?.clientId,
-        },
-        {
-          label: "details.credentials.client_secret",
-          value: prodClient?.clientSecret,
-        },
-      ];
-
-  const clientSecretLabel = t("details.credentials.client_secret");
-
-  const hasAnyCredentials = Boolean(
-    legacyTestConsumer ||
-      legacyProdConsumer ||
-      testClient ||
-      prodClient ||
-      keycloakProdClient ||
-      keycloakProdClient
-  );
+  const hasAnyCredentials = [
+    legacyTestConsumer,
+    legacyProdConsumer,
+    testClient,
+    prodClient,
+    keycloakTestClient,
+    keycloakProdClient,
+  ].some(Boolean);
 
   usePolling(!hasAnyCredentials, { only: ["credentials"] });
   const CardIcon = integrationTypesInfo.find((i) => i.type === type)?.Icon as
@@ -151,24 +103,13 @@ export const IntegrationCard = ({
               {t("integrations.test")}
             </Heading>
             <div className="flex flex-col gap-2">
-              <div className="flex flex-col gap-2">
-                {testClientWithLabels.map((client) => (
-                  <div
-                    key={`${client.label}-${client.value}`}
-                    className="flex gap-1 max-md:flex-col max-md:items-start"
-                  >
-                    <span className="flex items-center whitespace-nowrap">
-                      {t(client.label)}
-                    </span>
-                    {client.value && (
-                      <CopyText
-                        isSecret={t(client.label) === clientSecretLabel}
-                        text={client.value}
-                      />
-                    )}
-                  </div>
-                ))}
-              </div>
+              <IntegrationClientCredentials
+                client={testClient}
+                keycloakClient={keycloakTestClient}
+                status={status}
+                type={type}
+                isLive={false}
+              />
             </div>
           </section>
         )}
@@ -220,24 +161,13 @@ export const IntegrationCard = ({
                   <ActivationRequest id={id} type={type} />
                 )}
                 {status === IntegrationStatus.Active && (
-                  <div className="flex flex-col gap-2">
-                    {prodClientWithLabels.map((client) => (
-                      <div
-                        key={`${client.label}-${client.value}`}
-                        className="flex gap-1 max-md:flex-col max-md:items-start"
-                      >
-                        <span className="flex items-center whitespace-nowrap">
-                          {t(client.label)}
-                        </span>
-                        {client.value && (
-                          <CopyText
-                            isSecret={t(client.label) === clientSecretLabel}
-                            text={client.value}
-                          />
-                        )}
-                      </div>
-                    ))}
-                  </div>
+                  <IntegrationClientCredentials
+                    client={prodClient}
+                    keycloakClient={keycloakProdClient}
+                    status={status}
+                    type={type}
+                    isLive={true}
+                  />
                 )}
               </div>
             </div>
@@ -331,6 +261,14 @@ export const IntegrationCard = ({
               {t("integrations.documentation.test_dataset")}
             </Link>
           )}
+          {type === IntegrationType.SearchApi && (
+            <Link
+              href={t("support.styleguide.action_url")}
+              className="text-publiq-blue"
+            >
+              {t("integrations.styleguide.action_title")}
+            </Link>
+          )}
         </div>
       </section>
     </>
@@ -339,6 +277,7 @@ export const IntegrationCard = ({
   return (
     <Card
       title={name}
+      subtitle={t(`integrations.products.${type}`)}
       border
       icon={CardIcon && <CardIcon className={integrationIconClasses} />}
       clickableHeading

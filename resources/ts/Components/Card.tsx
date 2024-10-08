@@ -9,6 +9,7 @@ import { Link } from "@inertiajs/react";
 
 type Props = {
   title?: ReactElement | string;
+  subtitle?: string;
   description?: string;
   img?: ReactElement | string;
   badge?: string;
@@ -26,6 +27,7 @@ type Props = {
 
 export const Card = ({
   title,
+  subtitle,
   description,
   img,
   badge = "",
@@ -52,16 +54,19 @@ export const Card = ({
     typeof title !== "string" ? (
       title
     ) : (
-      <Heading
-        level={2}
-        className={classNames(
-          "font-medium max-sm:text-basis",
-          clickableHeading && "text-publiq-blue-dark hover:underline",
-          headingStyles
-        )}
-      >
-        {title}
-      </Heading>
+      <>
+        <Heading
+          level={2}
+          className={classNames(
+            "font-medium max-sm:text-basis",
+            clickableHeading && "text-publiq-blue-dark hover:underline",
+            headingStyles
+          )}
+        >
+          {title}
+        </Heading>
+        {subtitle && <small>{subtitle}</small>}
+      </>
     );
 
   const header = (
@@ -94,7 +99,7 @@ export const Card = ({
   return (
     <div
       className={classNames(
-        "w-full flex flex-col overflow-hidden drop-shadow-card",
+        "w-full flex flex-col overflow-visible drop-shadow-card relative",
         img && "px-0 py-0 max-lg:gap-3 p-0",
         !headless ? backgroundColor : "",
         !border && "px-6 py-6",

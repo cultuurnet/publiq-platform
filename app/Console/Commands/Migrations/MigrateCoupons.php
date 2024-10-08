@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands\Migrations;
 
+use App\Console\Commands\ReadCsvFile;
 use App\Domain\Auth\Models\UserModel;
 use App\Domain\Coupons\Coupon;
 use App\Domain\Coupons\Repositories\CouponRepository;

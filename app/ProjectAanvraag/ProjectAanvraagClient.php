@@ -11,7 +11,6 @@ use GuzzleHttp\Psr7\Request;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Log\LoggerInterface;
-
 use JsonException;
 
 final readonly class ProjectAanvraagClient

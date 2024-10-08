@@ -1,6 +1,4 @@
-import type { ReactNode } from "react";
 import React, { useEffect, useState } from "react";
-import Layout from "../../layouts/Layout";
 import { Page } from "../../Components/Page";
 import { ContactInfo } from "../../Components/Integrations/Detail/ContactInfo";
 import { BillingInfo } from "../../Components/Integrations/Detail/BillingInfo";
@@ -84,6 +82,8 @@ const Detail = ({
     setIsKeepChangesDialogVisible(false);
     setOriginalVisitingUrl("");
   };
+
+  const isUitpasIntegration = integration.type === IntegrationType.UiTPAS;
 
   useEffect(() => {
     const cleanUp = router.on("before", (e) => {
@@ -179,12 +179,14 @@ const Detail = ({
                     duplicateContactErrorMessage={duplicateContactErrorMessage}
                   />
                 </Tabs.Item>
-                <Tabs.Item
-                  type="organisations"
-                  label={t("details.organizers_info.title")}
-                >
-                  <OrganizersInfo {...integration} organizers={organizers} />
-                </Tabs.Item>
+                {isUitpasIntegration && (
+                  <Tabs.Item
+                    type="organisations"
+                    label={t("details.organizers_info.title")}
+                  >
+                    <OrganizersInfo {...integration} organizers={organizers} />
+                  </Tabs.Item>
+                )}
                 <Tabs.Item
                   type="billing"
                   label={t("details.billing_info.title.billing")}
@@ -205,7 +207,5 @@ const Detail = ({
     </Page>
   );
 };
-
-Detail.layout = (page: ReactNode) => <Layout>{page}</Layout>;
 
 export default Detail;

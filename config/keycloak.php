@@ -8,6 +8,7 @@ return [
     'enabled' => env('KEYCLOAK_ENABLED', false),
     'loginEnabled' => env('KEYCLOAK_LOGIN_ENABLED', false),
     'creationEnabled' => env('KEYCLOAK_CREATION_ENABLED', false),
+    'testClientEnabled' => env('KEYCLOAK_TEST_CLIENT_ENABLED', false),
     'login' => [
         'strategy' => env('AUTH0_LOGIN_STRATEGY', SdkConfiguration::STRATEGY_REGULAR),
         'domain' => env('KEYCLOAK_LOGIN_DOMAIN'),
@@ -30,7 +31,6 @@ return [
             'scope' => [
                 'search_api_id' => env('KEYCLOAK_ACC_SCOPE_SEARCH_API_ID', ''),
                 'entry_api_id' => env('KEYCLOAK_ACC_SCOPE_ENTRY_API_ID', ''),
-                'widgets_id' => env('KEYCLOAK_ACC_SCOPE_WIDGETS_ID', ''),
                 'uitpas_id' => env('KEYCLOAK_ACC_SCOPE_UITPAS_ID', ''),
             ],
         ],
@@ -42,7 +42,6 @@ return [
             'scope' => [
                 'search_api_id' => env('KEYCLOAK_TEST_SCOPE_SEARCH_API_ID', ''),
                 'entry_api_id' => env('KEYCLOAK_TEST_SCOPE_ENTRY_API_ID', ''),
-                'widgets_id' => env('KEYCLOAK_TEST_SCOPE_WIDGETS_ID', ''),
                 'uitpas_id' => env('KEYCLOAK_TEST_SCOPE_UITPAS_ID', ''),
             ],
         ],
@@ -54,7 +53,6 @@ return [
             'scope' => [
                 'search_api_id' => env('KEYCLOAK_PROD_SCOPE_SEARCH_API_ID', ''),
                 'entry_api_id' => env('KEYCLOAK_PROD_SCOPE_ENTRY_API_ID', ''),
-                'widgets_id' => env('KEYCLOAK_PROD_SCOPE_WIDGETS_ID', ''),
                 'uitpas_id' => env('KEYCLOAK_PROD_SCOPE_UITPAS_ID', ''),
             ],
         ],

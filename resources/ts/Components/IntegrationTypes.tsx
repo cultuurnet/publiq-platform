@@ -8,7 +8,6 @@ import { IconSearchApi } from "./icons/IconSearchApi";
 import { IconWidgets } from "./icons/IconWidgets";
 import { classNames } from "../utils/classNames";
 import { IconUiTPAS } from "./icons/IconUiTPAS";
-import { usePageProps } from "../hooks/usePageProps";
 
 export const integrationIconClasses =
   "h-full w-auto aspect-square max-h-[10rem] object-contain";
@@ -21,18 +20,6 @@ export const integrationTypesIcons = {
 };
 
 export const getIntegrationTypesInfo = (t: TFunction) => [
-  {
-    Icon: IconUiTPAS,
-    image: <IconUiTPAS className={classNames(integrationIconClasses)} />,
-    title: t("home.integration_types.uitpas_api.title"),
-    description: t("home.integration_types.uitpas_api.description"),
-    features: [
-      t("home.integration_types.uitpas_api.features.0"),
-      t("home.integration_types.uitpas_api.features.1"),
-      t("home.integration_types.uitpas_api.features.2"),
-    ],
-    type: IntegrationType.UiTPAS,
-  },
   {
     Icon: IconEntryApi,
     image: (
@@ -75,23 +62,26 @@ export const getIntegrationTypesInfo = (t: TFunction) => [
     ],
     type: IntegrationType.Widgets,
   },
+  {
+    Icon: IconUiTPAS,
+    image: <IconUiTPAS className={classNames(integrationIconClasses)} />,
+    title: t("home.integration_types.uitpas_api.title"),
+    description: t("home.integration_types.uitpas_api.description"),
+    features: [
+      t("home.integration_types.uitpas_api.features.0"),
+      t("home.integration_types.uitpas_api.features.1"),
+      t("home.integration_types.uitpas_api.features.2"),
+    ],
+    type: IntegrationType.UiTPAS,
+  },
 ];
 
 export const useIntegrationTypesInfo = () => {
   const { t } = useTranslation();
-  const { config } = usePageProps();
 
   return useMemo(() => {
-    const integrationTypesInfo = getIntegrationTypesInfo(t);
-
-    // See https://jira.publiq.be/browse/PPF-481
-    return config.uitpasEnabled
-      ? integrationTypesInfo
-      : integrationTypesInfo.filter(
-          (integrationTypesInfo) =>
-            integrationTypesInfo.type !== IntegrationType.UiTPAS
-        );
-  }, [t, config]);
+    return getIntegrationTypesInfo(t);
+  }, [t]);
 };
 
 export type IntegrationTypesInfo = ReturnType<
@@ -99,20 +89,16 @@ export type IntegrationTypesInfo = ReturnType<
 >[number];
 
 export const IntegrationTypes = () => {
-  const { config } = usePageProps();
-  const filteredIntegrationTypes = useIntegrationTypesInfo();
-  const uitpasEnabled = config.uitpasEnabled;
+  const integrationTypes = useIntegrationTypesInfo();
 
   return (
     <div>
       <ul
         className={classNames(
-          !uitpasEnabled && "w-full flex gap-5 max-md:flex-col",
-          uitpasEnabled &&
-            "grid grid-cols-4 gap-4 max-lg:grid-cols-2 max-md:grid-cols-1"
+          "grid grid-cols-4 gap-4 max-lg:grid-cols-2 max-md:grid-cols-1"
         )}
       >
-        {filteredIntegrationTypes.map((integrationTypeInfo) => (
+        {integrationTypes.map((integrationTypeInfo) => (
           <IntegrationTypeCard
             key={integrationTypeInfo.title}
             {...integrationTypeInfo}

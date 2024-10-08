@@ -11,6 +11,7 @@ use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
+use App\Domain\Integrations\Events\IntegrationApproved;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationDeleted;
@@ -28,9 +29,11 @@ use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Insightly\Models\InsightlyMappingModel;
 use App\Insightly\Resources\ResourceType;
 use App\Keycloak\Models\KeycloakClientModel;
+use App\Mails\Template\TemplateName;
 use App\Models\UuidModel;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use App\UiTiDv1\UiTiDv1Environment;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -42,9 +45,14 @@ use Ramsey\Uuid\UuidInterface;
  * @property CouponModel|null $coupon
  * @property SubscriptionModel|null $subscription
  * @property KeyVisibilityUpgradeModel|null $keyVisibilityUpgrade
- * @property string $type
+ * @property IntegrationType $type
+ * @property IntegrationStatus $status
+ * @property IntegrationPartnerStatus $partner_status
+ * @property KeyVisibility $key_visibility
  * @property string $website
- */
+ * @method static Builder|IntegrationModel withoutMailSent(TemplateName $templateName)
+ * @mixin Builder
+ * */
 final class IntegrationModel extends UuidModel
 {
     use SoftDeletes;
@@ -69,39 +77,53 @@ final class IntegrationModel extends UuidModel
         'partner_status' => IntegrationPartnerStatus::THIRD_PARTY,
     ];
 
+    protected $casts = [
+        'type' => IntegrationType::class,
+        'status' => IntegrationStatus::class,
+        'partner_status' => IntegrationPartnerStatus::class,
+        'key_visibility' => KeyVisibility::class,
+    ];
+
     public function canBeActivated(): bool
     {
-        return $this->status === IntegrationStatus::Draft->value
-            || $this->status === IntegrationStatus::Blocked->value;
+        return $this->status === IntegrationStatus::Draft
+            || $this->status === IntegrationStatus::Blocked;
     }
 
     public function canBeApproved(): bool
     {
-        return $this->status === IntegrationStatus::PendingApprovalIntegration->value;
+        return $this->status === IntegrationStatus::PendingApprovalIntegration;
     }
 
     public function canBeBlocked(): bool
     {
-        return $this->status !== IntegrationStatus::Blocked->value;
+        return $this->status !== IntegrationStatus::Blocked;
     }
 
     public function canBeUnblocked(): bool
     {
-        return $this->status === IntegrationStatus::Blocked->value;
+        return $this->status === IntegrationStatus::Blocked;
     }
 
     public function isWidgets(): bool
     {
-        return $this->type === IntegrationType::Widgets->value;
+        return $this->type === IntegrationType::Widgets;
     }
 
     public function isUiTPAS(): bool
     {
-        return $this->type === IntegrationType::UiTPAS->value;
+        return $this->type === IntegrationType::UiTPAS;
     }
 
     protected static function booted(): void
     {
+        self::creating(
+            static function (IntegrationModel $integrationModel) {
+                if ($integrationModel->type == IntegrationType::UiTPAS) {
+                    $integrationModel->key_visibility = KeyVisibility::v2;
+                }
+            }
+        );
         self::created(
             static fn (IntegrationModel $integrationModel) => IntegrationCreated::dispatch(Uuid::fromString($integrationModel->id))
         );
@@ -150,6 +172,7 @@ final class IntegrationModel extends UuidModel
         $this->update([
             'status' => IntegrationStatus::Active,
         ]);
+        IntegrationApproved::dispatch(Uuid::fromString($this->id));
     }
 
     public function block(): void
@@ -191,11 +214,11 @@ final class IntegrationModel extends UuidModel
     }
 
     /**
-     * @return HasMany<OrganizerModel>
+     * @return HasMany<UdbOrganizerModel>
      */
-    public function organizers(): HasMany
+    public function udbOrganizers(): HasMany
     {
-        return $this->hasMany(OrganizerModel::class, 'integration_id');
+        return $this->hasMany(UdbOrganizerModel::class, 'integration_id');
     }
 
     /**
@@ -204,6 +227,15 @@ final class IntegrationModel extends UuidModel
     public function contacts(): HasMany
     {
         return $this->hasMany(ContactModel::class, 'integration_id');
+    }
+
+    /**
+     * Tracks which mails have been sent about this integration
+     * @return HasMany<IntegrationMailModel>
+     */
+    public function mail(): HasMany
+    {
+        return $this->hasMany(IntegrationMailModel::class, 'integration_id');
     }
 
     /**
@@ -317,14 +349,14 @@ final class IntegrationModel extends UuidModel
 
         $integration = (new Integration(
             Uuid::fromString($this->id),
-            IntegrationType::from($this->type),
+            $this->type,
             $this->name,
             $this->description,
             Uuid::fromString($this->subscription_id),
-            IntegrationStatus::from($this->status),
-            IntegrationPartnerStatus::from($this->partner_status),
+            $this->status,
+            $this->partner_status,
         ))->withKeyVisibility(
-            KeyVisibility::from($this->key_visibility)
+            $this->key_visibility
         )->withContacts(
             ...$this->contacts()
             ->get()
@@ -350,10 +382,10 @@ final class IntegrationModel extends UuidModel
             ->get()
             ->map(fn (KeycloakClientModel $keycloakClientModel) => $keycloakClientModel->toDomain())
             ->toArray()
-        )->withOrganizers(
-            ...$this->organizers()
+        )->withUdbOrganizers(
+            ...$this->udbOrganizers()
             ->get()
-            ->map(fn (OrganizerModel $organizerModel) => $organizerModel->toDomain())
+            ->map(fn (UdbOrganizerModel $organizerModel) => $organizerModel->toDomain())
             ->toArray()
         );
 
@@ -378,5 +410,12 @@ final class IntegrationModel extends UuidModel
         }
 
         return $integration;
+    }
+
+    public function scopeWithoutMailSent(Builder $query, TemplateName $templateName): Builder
+    {
+        return $query->whereDoesntHave('mail', function (Builder $query) use ($templateName) {
+            $query->where('template_name', $templateName->value);
+        });
     }
 }

@@ -50,12 +50,12 @@ final class SupportController extends Controller
         } catch (\Throwable $th) {
             return Redirect::route(
                 TranslatedRoute::getTranslatedRouteName($request, 'support.index'),
-                ['slackStatus'=> 'error']
+                ['slackStatus' => 'error']
             );
         }
         return Redirect::route(
             TranslatedRoute::getTranslatedRouteName($request, 'support.index'),
-            ['slackStatus'=> 'success']
+            ['slackStatus' => 'success']
         );
     }
 }

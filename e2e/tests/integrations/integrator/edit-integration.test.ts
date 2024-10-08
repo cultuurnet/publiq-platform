@@ -8,30 +8,13 @@ test.use({ storageState: "playwright/.auth/user.json" });
 test("As an integrator I can edit an existing integration", async ({
   page,
 }) => {
-  const { integrationName } = await createIntegrationAsIntegrator(
-    page,
-    IntegrationType.EntryApi
-  );
+  await createIntegrationAsIntegrator(page, IntegrationType.EntryApi);
 
   // Edit integration
   await page.getByRole("button", { name: "Instellingen" }).click();
 
   await page.getByLabel("Integratienaam").fill(faker.word.adjective());
   await page.getByLabel("Beschrijving").fill(faker.lorem.lines(2));
-
-  await page
-    .locator("div")
-    .filter({ hasText: /^Login URLtestomgevingproductieomgeving$/ })
-    .getByRole("textbox")
-    .first()
-    .fill(faker.internet.url());
-
-  await page
-    .locator("div")
-    .filter({ hasText: /^Login URLtestomgevingproductieomgeving$/ })
-    .getByRole("textbox")
-    .first()
-    .fill(faker.internet.url());
 
   await page.getByRole("button", { name: "Aanpassingen bewaren" }).click();
 

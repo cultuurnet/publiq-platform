@@ -50,7 +50,7 @@ final class UiTiDv1ClusterSDK
         Integration $integration,
         UiTiDv1Environment $environment
     ): UiTiDv1Consumer {
-        if (!key_exists($environment->value, $this->uitidv1EnvironmentSDKs)) {
+        if (!array_key_exists($environment->value, $this->uitidv1EnvironmentSDKs)) {
             throw new UiTiDv1EnvironmentNotConfigured($environment);
         }
 

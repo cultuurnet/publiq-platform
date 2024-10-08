@@ -6,6 +6,7 @@ namespace App\Console\Commands\Migrations;
 
 use App\Domain\Integrations\Environment;
 use App\Keycloak\Client;
+use App\Keycloak\Exception\RealmNotAvailable;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
@@ -52,9 +53,14 @@ final class MigrateAuth0ToKeycloakClients extends Command
                 $auth0Client->auth0_client_secret,
                 Environment::from($auth0Client->auth0_tenant),
             );
-            $this->keycloakClientRepository->create($client);
 
-            $this->info(sprintf('Converted client %s', $auth0Client->id));
+            try {
+                $this->keycloakClientRepository->create($client);
+
+                $this->info(sprintf('Converted client %s', $auth0Client->id));
+            } catch (RealmNotAvailable $e) {
+                $this->error('Failed to sync ' . $auth0Client->id . ' - ' . $e->getMessage());
+            }
 
             $bar->advance();
         }

@@ -14,23 +14,23 @@ test("As an integrator I can create an integration with coupon (so it doesn't ne
 
   const { couponCode } = await createCoupon(adminPage);
 
-  await expect(adminPage.getByText(couponCode, { exact: true })).toBeVisible();
-
   const userContext = await browser.newContext({
     storageState: "playwright/.auth/user.json",
   });
 
   const userPage = await userContext.newPage();
 
-  const { integrationName } = await createIntegrationAsIntegrator(
-    userPage,
-    IntegrationType.SearchApi,
-    couponCode
-  );
+  const { integrationName, integrationId } =
+    await createIntegrationAsIntegrator(
+      userPage,
+      IntegrationType.SearchApi,
+      couponCode
+    );
 
-  await userPage.waitForURL(/https?:\/\/[^/]*\/nl\/integraties(\/.*)?/);
-  await expect(userPage.getByText(integrationName)).toBeVisible();
-  await userPage.waitForLoadState("networkidle");
+  await userPage.waitForURL(`/nl/integraties/${integrationId}`);
+  await expect(
+    userPage.getByRole("heading", { name: integrationName })
+  ).toBeVisible();
 
   await expect(userPage.getByText("Actief", { exact: true })).toBeVisible();
 });

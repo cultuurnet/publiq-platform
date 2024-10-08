@@ -11,11 +11,11 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Domain\Integrations\Repositories\OrganizerRepository;
+use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Keycloak\KeycloakConfig;
 use App\Nova\Actions\ActivateIntegration;
 use App\Nova\Actions\ActivateUitpasIntegration;
-use App\Nova\Actions\AddOrganizer;
+use App\Nova\Actions\AddUdbOrganizer;
 use App\Nova\Actions\ApproveIntegration;
 use App\Nova\Actions\Auth0\CreateMissingAuth0Clients;
 use App\Nova\Actions\BlockIntegration;
@@ -24,6 +24,7 @@ use App\Nova\Actions\OpenWidgetManager;
 use App\Nova\Actions\UiTiDv1\CreateMissingUiTiDv1Consumers;
 use App\Nova\Actions\UnblockIntegration;
 use App\Nova\Resource;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Laravel\Nova\Fields\BelongsTo;
@@ -55,6 +56,13 @@ final class Integration extends Resource
         'created_at' => 'desc',
     ];
 
+    public static $with = [
+        'uiTiDv1Consumers',
+        'auth0Clients',
+        'keycloakClients',
+        'subscription',
+    ];
+
     public static function searchableColumns(): array
     {
         $output = [
@@ -84,11 +92,8 @@ final class Integration extends Resource
             IntegrationType::EntryApi->value => IntegrationType::EntryApi->name,
             IntegrationType::SearchApi->value => IntegrationType::SearchApi->name,
             IntegrationType::Widgets->value => IntegrationType::Widgets->name,
+            IntegrationType::UiTPAS->value => IntegrationType::UiTPAS->name,
         ];
-
-        if (config('uitpas.enabled')) {
-            $integrationTypes[IntegrationType::UiTPAS->value] = IntegrationType::UiTPAS->name;
-        }
 
         $fields = [
             ID::make()
@@ -119,12 +124,24 @@ final class Integration extends Resource
             Select::make('Key Visibility')
                 ->filterable()
                 ->sortable()
-                ->options([
-                    KeyVisibility::v1->value => KeyVisibility::v1->name,
-                    KeyVisibility::v2->value => KeyVisibility::v2->name,
-                    KeyVisibility::all->value => KeyVisibility::all->name,
-                ])
-                ->rules('required'),
+                ->required()
+                ->dependsOn(
+                    ['type'],
+                    function (Select $field, NovaRequest $request, FormData $formData) {
+                        if ($formData->string('type')->toString() !== IntegrationType::UiTPAS->value) {
+                            $field->options([
+                                KeyVisibility::v1->value => KeyVisibility::v1->name,
+                                KeyVisibility::v2->value => KeyVisibility::v2->name,
+                                KeyVisibility::all->value => KeyVisibility::all->name,
+                            ]);
+                            return;
+                        }
+
+                        $field->options([
+                            KeyVisibility::v2->value => KeyVisibility::v2->name,
+                        ]);
+                    }
+                ),
 
             Text::make('Description')
                 ->rules('required', 'max:255')
@@ -148,7 +165,18 @@ final class Integration extends Resource
                 ->filterable()
                 ->sortable()
                 ->withoutTrashed()
-                ->rules('required'),
+                ->rules('required')
+                ->dependsOn('type', function (BelongsTo $field, NovaRequest $request, FormData $formData) {
+                    $type = $formData->string('type')->toString();
+
+                    if (!$type) {
+                        $field->readonly();
+                    }
+
+                    $field->relatableQueryUsing(
+                        fn (NovaRequest $request, Builder $query) => $query->where('integration_type', $type)
+                    );
+                }),
 
             URL::make('Website')
                 ->displayUsing(fn () => $this->website)
@@ -210,7 +238,7 @@ final class Integration extends Resource
         }
 
         return array_merge($fields, [
-            HasMany::make('UDB3 Organizers', 'organizers', Organizer::class)
+            HasMany::make('UDB3 Organizers', 'udbOrganizers', UdbOrganizer::class)
                 ->canSee(function () {
                     /** @var ?IntegrationModel $model */
                     $model = $this->model();
@@ -233,7 +261,7 @@ final class Integration extends Resource
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeActivated() && !$this->isUiTPAS())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeActivated()),
 
-            (new ActivateUitpasIntegration(App::make(IntegrationRepository::class), App::make(OrganizerRepository::class)))
+            (new ActivateUitpasIntegration(App::make(IntegrationRepository::class)))
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to activate this integration?')
                 ->confirmButtonText('Activate')
@@ -271,7 +299,7 @@ final class Integration extends Resource
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeUnblocked())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeUnblocked()),
 
-            (new AddOrganizer(App::make(OrganizerRepository::class)))
+            (new AddUdbOrganizer(App::make(UdbOrganizerRepository::class)))
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to add an organizer?')
                 ->confirmButtonText('Add')
@@ -281,7 +309,7 @@ final class Integration extends Resource
 
             (new CreateMissingUiTiDv1Consumers())
                 ->withName('Create missing UiTiD v1 Consumers')
-                ->exceptOnIndex()
+                ->onlyOnDetail()
                 ->confirmText('Are you sure you want to create missing UiTiD v1 consumers for this integration?')
                 ->confirmButtonText('Create')
                 ->cancelButtonText('Cancel')
@@ -290,9 +318,9 @@ final class Integration extends Resource
         ];
 
         if (config(Auth0Config::IS_ENABLED)) {
-            $actions[] =(new CreateMissingAuth0Clients())
+            $actions[] = (new CreateMissingAuth0Clients())
                 ->withName('Create missing Auth0 Clients')
-                ->exceptOnIndex()
+                ->onlyOnDetail()
                 ->confirmText('Are you sure you want to create missing Auth0 clients for this integration?')
                 ->confirmButtonText('Create')
                 ->cancelButtonText('Cancel')
@@ -303,7 +331,7 @@ final class Integration extends Resource
         if (config(KeycloakConfig::KEYCLOAK_CREATION_ENABLED)) {
             $actions[] = (new CreateMissingKeycloakClients())
                 ->withName('Create missing Keycloak clients')
-                ->exceptOnIndex()
+                ->onlyOnDetail()
                 ->confirmText('Are you sure you want to create missing Keycloak clients for this integration?')
                 ->confirmButtonText('Create')
                 ->cancelButtonText('Cancel')

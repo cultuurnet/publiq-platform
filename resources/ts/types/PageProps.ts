@@ -4,10 +4,23 @@ export type WidgetConfigVariables = {
   registerUrl: string;
   auth0Domain: string;
 };
-export type PageProps = {
-  widgetConfig: WidgetConfigVariables;
-  config: { [key: string]: string } & {
-    sentryEnabled: boolean;
-    uitpasEnabled: boolean;
+
+type Config = {
+  env: string;
+  sentry: {
+    enabled: boolean;
+    dsn: string;
   };
+  keycloak: {
+    enabled: boolean;
+    testClientEnabled: boolean;
+  };
+};
+
+export type PageProps = {
+  auth: {
+    authenticated: boolean;
+  };
+  widgetConfig: WidgetConfigVariables;
+  config: Config;
 };

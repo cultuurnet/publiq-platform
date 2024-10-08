@@ -6,7 +6,7 @@ use App\Domain\Auth\Controllers\CallbackController;
 use App\Domain\Auth\Controllers\LoginController;
 use App\Domain\Auth\Controllers\LogoutController;
 use App\Domain\Integrations\Controllers\IntegrationController;
-use App\Domain\Integrations\Controllers\OrganizerController;
+use App\Domain\Integrations\Controllers\UdbOrganizerController;
 use App\Domain\Newsletter\Controllers\NewsletterController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SupportController;
@@ -37,20 +37,17 @@ Route::get('/auth/callback', CallbackController::class);
 
 Route::post('/newsletter', [NewsletterController::class, 'subscribe']);
 
-Route::group(['middleware' => 'auth'], static function () {
-    TranslatedRoute::get(
-        [
-            '/en/support',
-            '/nl/ondersteuning',
-        ],
-        [SupportController::class, 'index'],
-        'support.index'
-    );
-});
+TranslatedRoute::get(
+    [
+        '/en/support',
+        '/nl/ondersteuning',
+    ],
+    [SupportController::class, 'index'],
+    'support.index'
+);
 
-Route::group(['middleware' => 'auth'], static function () {
-    Route::post('/support/slack', [SupportController::class, 'sendInvitation']);
-});
+Route::post('/support/slack', [SupportController::class, 'sendInvitation'])
+    ->middleware('auth');
 
 Route::group(['middleware' => 'auth'], static function () {
     TranslatedRoute::get(
@@ -72,7 +69,7 @@ Route::group(['middleware' => 'auth'], static function () {
 
     Route::post('/integrations', [IntegrationController::class, 'store']);
 
-    Route::get('/organizers', [OrganizerController::class, 'index']);
+    Route::get('/organizers', [UdbOrganizerController::class, 'index']);
 
     Route::group(['middleware' => 'can:access-integration,id'], static function () {
         TranslatedRoute::get(
