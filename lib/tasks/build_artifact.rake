@@ -16,6 +16,7 @@ task :build_artifact do |task|
 
   FileUtils.rm(Dir.glob('.env*'))
   FileUtils.touch('.env')
+  FileUtils.rm(Dir.glob('nova_users.php*'))
   FileUtils.touch('nova_users.php')
 
   system("fpm -s dir -t deb -n #{artifact_name} -v #{version} -a all -p pkg \
