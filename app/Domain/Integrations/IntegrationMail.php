@@ -7,11 +7,12 @@ namespace App\Domain\Integrations;
 use App\Mails\Template\TemplateName;
 use Ramsey\Uuid\UuidInterface;
 
-final class IntegrationMail
+final readonly class IntegrationMail
 {
     public function __construct(
-        public readonly UuidInterface $integrationId,
-        public readonly TemplateName $templateName,
+        public UuidInterface $id,
+        public UuidInterface $integrationId,
+        public TemplateName $templateName,
     ) {
     }
 }

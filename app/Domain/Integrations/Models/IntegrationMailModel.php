@@ -12,9 +12,9 @@ final class IntegrationMailModel extends Model
     protected $table = 'integrations_mails';
 
     protected $fillable = [
+        'id',
         'integration_id',
         'template_name',
-        'date',
     ];
 
     /**

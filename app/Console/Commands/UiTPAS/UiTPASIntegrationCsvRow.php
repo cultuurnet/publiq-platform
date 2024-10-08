@@ -70,38 +70,38 @@ final class UiTPASIntegrationCsvRow
         $contacts[] = new Contact(
             id: Uuid::uuid4(),
             integrationId: $integrationId,
-            email: $this->integrationAsArray[6],
+            email: $this->integrationAsArray[8],
             type: ContactType::Functional,
-            firstName: $this->integrationAsArray[7],
-            lastName: $this->integrationAsArray[8]
+            firstName: $this->integrationAsArray[6],
+            lastName: $this->integrationAsArray[7]
         );
 
         $contacts[] = new Contact(
             id: Uuid::uuid4(),
             integrationId: $integrationId,
-            email: $this->integrationAsArray[9],
+            email: $this->integrationAsArray[11],
             type: ContactType::Technical,
-            firstName: $this->integrationAsArray[10],
-            lastName: $this->integrationAsArray[11]
+            firstName: $this->integrationAsArray[9],
+            lastName: $this->integrationAsArray[10]
         );
 
         $contacts[] = new Contact(
             id: Uuid::uuid4(),
             integrationId: $integrationId,
-            email: $this->integrationAsArray[12],
+            email: $this->integrationAsArray[14],
             type: ContactType::Contributor,
-            firstName: $this->integrationAsArray[13],
-            lastName: $this->integrationAsArray[14]
+            firstName: $this->integrationAsArray[12],
+            lastName: $this->integrationAsArray[13]
         );
 
         if (!empty($this->integrationAsArray[15])) {
             $contacts[] = new Contact(
                 id: Uuid::uuid4(),
                 integrationId: $integrationId,
-                email: $this->integrationAsArray[15],
+                email: $this->integrationAsArray[17],
                 type: ContactType::Contributor,
-                firstName: $this->integrationAsArray[16],
-                lastName: $this->integrationAsArray[17]
+                firstName: $this->integrationAsArray[15],
+                lastName: $this->integrationAsArray[16]
             );
         }
 
