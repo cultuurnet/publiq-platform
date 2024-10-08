@@ -12,6 +12,7 @@ return [
     'karen.schilders@cultuurnet.be',
     'koen.eelen@publiq.be',
     'simon.debruijn@publiq.be',
+    'ben.gabriels@publiq.be',
     // PLATFORM & SERVICES
     'kristof@publiq.be',
     'paul@herbosch.be',
