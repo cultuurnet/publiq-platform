@@ -159,6 +159,7 @@ final readonly class KeycloakApiClient implements ApiClient
             $body = $response->getBody()->getContents();
 
             if (empty($body) || $response->getStatusCode() !== 200) {
+                $this->logger->alert(sprintf('[Keycloak] Failed to fetch is client active for env %s, with body %s', $realm->environment->value, $body));
                 throw KeyCloakApiFailed::failedToFetchClient($realm, $body);
             }
 
@@ -166,6 +167,8 @@ final readonly class KeycloakApiClient implements ApiClient
 
             return $data['enabled'];
         } catch (Throwable $e) {
+            $this->logger->alert(sprintf('[Keycloak] Failed to fetch is client active for env %s, with message %s', $realm->environment->value, $e->getMessage()));
+
             throw KeyCloakApiFailed::failedToFetchClient($realm, $e->getMessage());
         }
     }

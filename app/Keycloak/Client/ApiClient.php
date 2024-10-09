@@ -7,6 +7,8 @@ namespace App\Keycloak\Client;
 use App\Domain\Integrations\Integration;
 use App\Keycloak\Client;
 use App\Keycloak\ClientId\ClientIdFactory;
+use App\Keycloak\Exception\KeyCloakApiFailed;
+use App\Keycloak\Exception\RealmNotAvailable;
 use App\Keycloak\Realm;
 use Ramsey\Uuid\UuidInterface;
 
@@ -16,6 +18,7 @@ interface ApiClient
 
     public function addScopeToClient(Client $client, UuidInterface $scopeId): void;
 
+    /** @throws KeyCloakApiFailed|RealmNotAvailable */
     public function fetchIsClientActive(Client $client): bool;
 
     public function unblockClient(Client $client): void;
