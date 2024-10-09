@@ -19,7 +19,7 @@ final class CreateOrganizationRequest extends FormRequest
             'organization.address.zip' => ['required', 'string', 'max:255'],
             'organization.address.city' => ['required', 'string', 'max:255'],
             'organization.address.country' => ['required', 'string', 'max:255'],
-            'organization.invoiceEmail' => ['required_with:organization.vat', 'string', 'email', 'min:2', 'max:255'],
+            'organization.invoiceEmail' => ['required_with:organization.vat', 'string', 'email:filter', 'min:2', 'max:255'],
             'organization.vat' => ['required_with:organization.invoiceEmail', 'string', 'max:255'],
         ];
     }

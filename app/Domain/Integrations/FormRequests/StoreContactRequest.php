@@ -16,7 +16,7 @@ final class StoreContactRequest extends FormRequest
         return [
             'firstName' => ['string', 'min:2', 'max:255'],
             'lastName' => [ 'string', 'min:2', 'max:255'],
-            'email' => ['string', 'email', 'min:2', 'max:255'],
+            'email' => ['string', 'email:filter', 'min:2', 'max:255'],
         ];
     }
 }
