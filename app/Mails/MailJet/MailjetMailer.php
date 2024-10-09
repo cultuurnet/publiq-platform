@@ -23,12 +23,6 @@ final readonly class MailjetMailer implements Mailer
 
     public function send(Address $from, Address $to, int $templateId, array $variables = []): void
     {
-        if (!filter_var($from->getAddress(), FILTER_VALIDATE_EMAIL)) {
-            // Mailjet requires emails to pass a filter_var() check.
-            // This fallback is for legacy integrations; form validation should prevent this for new entries.
-            return;
-        }
-
         $body = [
             'SandboxMode' => $this->sandboxMode->forAddress($to),
             'Messages' => [
