@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Keycloak;
 
 use App\Keycloak\Client\ApiClient;
+use App\Keycloak\Exception\KeyCloakApiFailed;
+use App\Keycloak\Exception\RealmNotAvailable;
 use Psr\Log\LoggerInterface;
 
 final class CachedKeycloakClientStatus
@@ -15,6 +17,7 @@ final class CachedKeycloakClientStatus
     {
     }
 
+    /** @throws KeyCloakApiFailed|RealmNotAvailable */
     public function isClientBlocked(Client $client): bool
     {
         $uuid = $client->id->toString();

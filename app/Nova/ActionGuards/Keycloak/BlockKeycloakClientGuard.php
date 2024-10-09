@@ -6,6 +6,7 @@ namespace App\Nova\ActionGuards\Keycloak;
 
 use App\Keycloak\CachedKeycloakClientStatus;
 use App\Keycloak\Client;
+use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Nova\ActionGuards\ActionGuard;
 
 final readonly class BlockKeycloakClientGuard implements ActionGuard
@@ -21,6 +22,10 @@ final readonly class BlockKeycloakClientGuard implements ActionGuard
             return false;
         }
 
-        return ! $this->cachedKeycloakClientStatus->isClientBlocked($client);
+        try {
+            return ! $this->cachedKeycloakClientStatus->isClientBlocked($client);
+        } catch (KeyCloakApiFailed) {
+            return false;
+        }
     }
 }
