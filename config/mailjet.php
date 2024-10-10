@@ -39,7 +39,7 @@ return [
             'enabled' => true,
         ],
         TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER->value => [
-            'id' => env('MAILJET_TEMPLATE_INTEGRATION_ACTIVATION_REMINDER'),
+            'id' => env('MAILJET_TEMPLATE_INTEGRATION_FINAL_ACTIVATION_REMINDER'),
             'enabled' => true,
         ],
         TemplateName::INTEGRATION_ACTIVATION_REQUEST->value => [
