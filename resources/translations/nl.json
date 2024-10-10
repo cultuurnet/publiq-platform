@@ -404,6 +404,7 @@
     },
     "support_via_slack": {
       "title": "Support via slack",
+      "request_title": "Vraag toegang aan tot het Slack-ondersteuningskanaal",
       "description": "Heb je na het lezen van onze documentatie toch nog vragen? We horen ze graag. Via ons support kanaal op slack spelen we kort op de bal.",
       "img_url": "#",
       "action_title": "Naar het slack kanaal",
