@@ -101,6 +101,24 @@ export async function createIntegrationAsIntegrator(
     ).toBeVisible();
   }
 
+  const testCredentialsHeading = page.getByRole("heading", { name: "Test" });
+  await expect(testCredentialsHeading).toBeVisible();
+
+  // TODO: Fix after creation client credentials stream in but are blank
+  await page.waitForTimeout(1000);
+  await page.reload();
+
+  await expect(
+    page
+      .locator("div")
+      .filter({ has: testCredentialsHeading })
+      .filter({ hasText: "Client id" })
+      .filter({ hasText: /([0-9a-fA-F]{3,12}-){4}[0-9a-fA-F]{3,12}/ })
+      .first()
+  ).toBeVisible({
+    timeout: 20_000,
+  });
+
   const integrationId = page.url().split("/").pop()!;
 
   return { integrationName, integrationId };

@@ -7,25 +7,23 @@ import { IntegrationStatus } from "@app-types/IntegrationStatus";
 
 test.use({ storageState: "playwright/.auth/admin.json" });
 
-test("As an admin I can activate an integration", async ({ page }) => {
-  // create organization
-  const { id: organizationId } = await createOrganization(page);
-
-  // create integration
-  const { id: integrationId } = await createIntegration(
-    page,
-    IntegrationType.SearchApi
-  );
+test("As an admin I can activate an integration", async ({ page, context }) => {
+  const newPage = await context.newPage();
+  const [organization, integration] = await Promise.all([
+    createOrganization(page),
+    createIntegration(newPage, IntegrationType.SearchApi),
+  ]);
+  await newPage.close();
 
   // activate integration
-  await page.goto(`/admin/resources/integrations/${integrationId}`);
+  await page.goto(`/admin/resources/integrations/${integration.id}`);
   await page.locator("#nova-ui-dropdown-button-5").click();
   await page.getByRole("button", { name: "Activate Integration" }).click();
-  await page.locator("#organization").selectOption(organizationId);
+  await page.locator("#organization").selectOption(organization.id);
   await page.locator("[dusk='confirm-action-button']").click();
 
   await expect(
-    page.locator(`a[href="/admin/resources/organizations/${organizationId}"]`)
+    page.locator(`a[href="/admin/resources/organizations/${organization.id}"]`)
   ).toBeVisible();
   await expect(page.getByText("active", { exact: true })).toBeVisible();
 
