@@ -47,7 +47,7 @@ final class SyncWidgetTest extends TestCase
 
     private UiTiDv1ConsumerRepository&MockObject $uiTiDv1ConsumerRepository;
 
-    private UserRepository&MockObject $auth0UserRepository;
+    private UserRepository&MockObject $userRepository;
 
     private SyncWidget $syncWidget;
 
@@ -59,7 +59,7 @@ final class SyncWidgetTest extends TestCase
         $this->integrationRepository = $this->createMock(IntegrationRepository::class);
         $this->contactRepository = $this->createMock(ContactRepository::class);
         $this->uiTiDv1ConsumerRepository = $this->createMock(UiTiDv1ConsumerRepository::class);
-        $this->auth0UserRepository = $this->createMock(UserRepository::class);
+        $this->userRepository = $this->createMock(UserRepository::class);
         $logger = $this->createMock(LoggerInterface::class);
 
         $this->syncWidget = new SyncWidget(
@@ -71,7 +71,7 @@ final class SyncWidgetTest extends TestCase
             $this->contactRepository,
             $this->uiTiDv1ConsumerRepository,
             123,
-            $this->auth0UserRepository,
+            $this->userRepository,
             $logger
         );
     }
@@ -179,7 +179,7 @@ final class SyncWidgetTest extends TestCase
             ->with($integrationId)
             ->willReturn(new Collection([$contact]));
 
-        $this->auth0UserRepository->expects($this->once())
+        $this->userRepository->expects($this->once())
             ->method('findUserIdByEmail')
             ->with($contact->email)
             ->willReturn('google-oauth2|102486314601596809843');

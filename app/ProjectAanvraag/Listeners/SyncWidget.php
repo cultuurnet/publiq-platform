@@ -38,7 +38,7 @@ final class SyncWidget implements ShouldQueue
         private readonly ContactRepository $contactRepository,
         private readonly UiTiDv1ConsumerRepository $uiTiDv1ConsumerRepository,
         private readonly int $groupId,
-        private readonly UserRepository $auth0UserRepository,
+        private readonly UserRepository $userRepository,
         private readonly LoggerInterface $logger
     ) {
     }
@@ -117,7 +117,7 @@ final class SyncWidget implements ShouldQueue
             return;
         }
 
-        $userId = $this->auth0UserRepository->findUserIdByEmail($contributor->email);
+        $userId = $this->userRepository->findUserIdByEmail($contributor->email);
         if ($userId === null) {
             $this->logger->info(
                 'Integration {integrationId} Auth0 contact {$email} not found, skipping widget creation',
