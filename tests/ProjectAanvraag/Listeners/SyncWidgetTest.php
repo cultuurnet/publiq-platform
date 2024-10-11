@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\ProjectAanvraag\Listeners;
 
-use App\Auth0\Repositories\Auth0UserRepository;
+use App\Domain\Auth\Repositories\UserRepository;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\ContactRepository;
@@ -47,7 +47,7 @@ final class SyncWidgetTest extends TestCase
 
     private UiTiDv1ConsumerRepository&MockObject $uiTiDv1ConsumerRepository;
 
-    private Auth0UserRepository&MockObject $auth0UserRepository;
+    private UserRepository&MockObject $auth0UserRepository;
 
     private SyncWidget $syncWidget;
 
@@ -59,7 +59,7 @@ final class SyncWidgetTest extends TestCase
         $this->integrationRepository = $this->createMock(IntegrationRepository::class);
         $this->contactRepository = $this->createMock(ContactRepository::class);
         $this->uiTiDv1ConsumerRepository = $this->createMock(UiTiDv1ConsumerRepository::class);
-        $this->auth0UserRepository = $this->createMock(Auth0UserRepository::class);
+        $this->auth0UserRepository = $this->createMock(UserRepository::class);
         $logger = $this->createMock(LoggerInterface::class);
 
         $this->syncWidget = new SyncWidget(

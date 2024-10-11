@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\ProjectAanvraag\Listeners;
 
-use App\Auth0\Repositories\Auth0UserRepository;
+use App\Domain\Auth\Repositories\UserRepository;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Contacts\Repositories\ContactRepository;
@@ -38,7 +38,7 @@ final class SyncWidget implements ShouldQueue
         private readonly ContactRepository $contactRepository,
         private readonly UiTiDv1ConsumerRepository $uiTiDv1ConsumerRepository,
         private readonly int $groupId,
-        private readonly Auth0UserRepository $auth0UserRepository,
+        private readonly UserRepository $auth0UserRepository,
         private readonly LoggerInterface $logger
     ) {
     }
