@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace App\Domain\Auth;
 
+use App\Auth0\Repositories\Auth0ManagementUserRepository;
 use App\Domain\Auth\Controllers\AccessController;
 use App\Domain\Auth\Models\UserModel;
+use App\Domain\Auth\Repositories\UserRepository;
 use App\Domain\Contacts\Repositories\ContactRepository;
+use App\Keycloak\KeycloakConfig;
+use App\Keycloak\Repositories\KeycloakUserRepository;
 use Auth0\SDK\Auth0;
 use Auth0\SDK\Contract\Auth0Interface;
 use Illuminate\Support\Facades\Gate;
@@ -18,6 +22,11 @@ final class AuthServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(Auth0Interface::class, Auth0::class);
+
+        $this->app->bind(
+            UserRepository::class,
+            config(KeycloakConfig::KEYCLOAK_LOGIN_ENABLED) ? KeycloakUserRepository::class : Auth0ManagementUserRepository::class
+        );
 
         /** @var array $adminEmails */
         $adminEmails = config('nova.users');

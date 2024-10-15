@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\ProjectAanvraag;
 
-use App\Auth0\Repositories\Auth0UserRepository;
+use App\Domain\Auth\Repositories\UserRepository;
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Integrations\Events\IntegrationActivated;
@@ -17,11 +17,11 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\ProjectAanvraag\Listeners\SyncWidget;
 use App\UiTiDv1\Events\ConsumerCreated;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
+use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Psr\Log\LoggerInterface;
-use GuzzleHttp\Client;
 
 final class ProjectAanvraagServiceProvider extends ServiceProvider
 {
@@ -51,7 +51,7 @@ final class ProjectAanvraagServiceProvider extends ServiceProvider
                 $this->app->get(ContactRepository::class),
                 $this->app->get(UiTiDv1ConsumerRepository::class),
                 (int) end($groups),
-                $this->app->get(Auth0UserRepository::class),
+                $this->app->get(UserRepository::class),
                 $this->app->get(LoggerInterface::class)
             );
         });

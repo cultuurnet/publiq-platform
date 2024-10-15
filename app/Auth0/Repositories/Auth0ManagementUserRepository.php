@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace App\Auth0\Repositories;
 
+use App\Domain\Auth\Repositories\UserRepository;
 use Auth0\SDK\Auth0;
 use Auth0\SDK\Configuration\SdkConfiguration;
 use Auth0\SDK\Contract\API\ManagementInterface;
 
-final readonly class Auth0ManagementUserRepository implements Auth0UserRepository
+final readonly class Auth0ManagementUserRepository implements UserRepository
 {
     private ManagementInterface $management;
 
