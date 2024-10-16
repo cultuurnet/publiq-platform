@@ -5,7 +5,6 @@ import { IntegrationType } from "../types/IntegrationType";
 import { IntegrationStatus } from "../types/IntegrationStatus";
 import { Alert } from "./Alert";
 import type { Integration } from "../types/Integration";
-import { usePageProps } from "../hooks/usePageProps";
 import type { AuthClient, KeycloakClient } from "../types/Credentials";
 
 type Props = {
