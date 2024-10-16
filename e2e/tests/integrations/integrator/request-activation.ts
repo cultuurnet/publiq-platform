@@ -29,7 +29,7 @@ export async function requestActivationAsIntegrator(
   if (integrationType === IntegrationType.UiTPAS) {
     await page.locator('input[name="organizers"]').click();
     await page.locator('input[name="organizers"]').fill("Publiq");
-    await page.getByText("Publiq", { exact: true }).click();
+    await page.locator('li').getByText(/^Publiq$/).click();
   }
 
   await page.getByRole("button", { name: "Bevestigen" }).click();
