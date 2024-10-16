@@ -39,7 +39,7 @@ final class Auth0ServiceProvider extends ServiceProvider
             return $this->app->get(EloquentAuth0ClientRepository::class);
         });
 
-        $this->app->singleton(UserRepository::class, function () {
+        $this->app->singleton(Auth0ManagementUserRepository::class, function () {
             return new Auth0ManagementUserRepository(
                 new SdkConfiguration(
                     strategy: SdkConfiguration::STRATEGY_MANAGEMENT_API,
