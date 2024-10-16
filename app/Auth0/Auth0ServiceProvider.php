@@ -17,7 +17,6 @@ use App\Auth0\Listeners\UpdateClients;
 use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Auth0\Repositories\Auth0ManagementUserRepository;
 use App\Auth0\Repositories\EloquentAuth0ClientRepository;
-use App\Domain\Auth\Repositories\UserRepository;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationDeleted;
@@ -39,7 +38,7 @@ final class Auth0ServiceProvider extends ServiceProvider
             return $this->app->get(EloquentAuth0ClientRepository::class);
         });
 
-        $this->app->singleton(UserRepository::class, function () {
+        $this->app->singleton(Auth0ManagementUserRepository::class, function () {
             return new Auth0ManagementUserRepository(
                 new SdkConfiguration(
                     strategy: SdkConfiguration::STRATEGY_MANAGEMENT_API,
