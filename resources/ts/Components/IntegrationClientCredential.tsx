@@ -49,7 +49,8 @@ export const IntegrationClientCredentials = ({
   const { config } = usePageProps();
 
   const clientWithLabels =
-    config.keycloak.enabled || (!isLive && config.keycloak.testClientEnabled)
+    config.keycloak.enabled ||
+    (!isLive && config.keycloak.testClientEnabled && keycloakClient)
       ? [
           {
             label: "details.credentials.client_id",
