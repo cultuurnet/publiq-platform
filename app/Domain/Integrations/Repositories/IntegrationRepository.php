@@ -8,6 +8,7 @@ use App\Domain\Integrations\Exceptions\InconsistentIntegrationType;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\UdbOrganizers;
+use App\Mails\Template\TemplateName;
 use App\Pagination\PaginatedCollection;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface;
@@ -33,5 +34,5 @@ interface IntegrationRepository
     public function approve(UuidInterface $id): void;
 
     /** @return Collection<Integration> */
-    public function getDraftsByTypeAndOlderThenMonthsAgo(IntegrationType $type, int $months): Collection;
+    public function getDraftsByTypeAndBetweenMonthsOld(IntegrationType $type, int $startMonths, int $endMonths, TemplateName $templateName): Collection;
 }

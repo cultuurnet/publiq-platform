@@ -90,7 +90,7 @@ pipeline {
             }
         }
 
-        /* stage('Acceptance tests') {
+        stage('Acceptance tests') {
             agent { label 'ubuntu && 20.04 && nodejs18' }
             environment {
                 E2E_TEST_BASE_URL = 'https://platform-acc.publiq.be'
@@ -131,7 +131,7 @@ pipeline {
                     cleanWs()
                 }
             }
-        } */
+        }
 
         stage('Deploy to testing') {
             input { message "Deploy to Testing?" }

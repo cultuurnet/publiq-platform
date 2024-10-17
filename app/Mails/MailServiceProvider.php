@@ -7,8 +7,10 @@ namespace App\Mails;
 use App\Domain\Integrations\Events\ActivationExpired;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
+use App\Domain\Integrations\Events\IntegrationApproved;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\Events\IntegrationDeleted;
+use App\Domain\Integrations\Repositories\IntegrationMailRepository;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Mail\Mailer;
 use App\Domain\Mail\MailManager;
@@ -49,6 +51,7 @@ final class MailServiceProvider extends ServiceProvider
             return new MailManager(
                 $this->app->get(Mailer::class),
                 $this->app->get(IntegrationRepository::class),
+                $this->app->get(IntegrationMailRepository::class),
                 Templates::build(config(MailjetConfig::MAILJET_TEMPLATES)),
                 config('app.url'),
             );
@@ -56,6 +59,7 @@ final class MailServiceProvider extends ServiceProvider
 
         Event::listen(IntegrationCreatedWithContacts::class, [MailManager::class, 'sendIntegrationCreatedMail']);
         Event::listen(IntegrationActivated::class, [MailManager::class, 'sendIntegrationActivatedMail']);
+        Event::listen(IntegrationApproved::class, [MailManager::class, 'sendIntegrationApprovedMail']);
         Event::listen(ActivationExpired::class, [MailManager::class, 'sendActivationReminderEmail']);
         Event::listen(IntegrationActivationRequested::class, [MailManager::class, 'sendIntegrationActivationRequestMail']);
         Event::listen(IntegrationDeleted::class, [MailManager::class, 'sendIntegrationDeletedMail']);

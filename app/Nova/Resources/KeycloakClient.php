@@ -6,6 +6,7 @@ namespace App\Nova\Resources;
 
 use App\Domain\Integrations\Environment;
 use App\Keycloak\CachedKeycloakClientStatus;
+use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Models\KeycloakClientModel;
 use App\Keycloak\Realms;
 use App\Nova\ActionGuards\ActionGuard;
@@ -71,11 +72,15 @@ final class KeycloakClient extends Resource
             Text::make('Status', function (KeycloakClientModel $model) {
                 $client = $model->toDomain();
 
-                if ($this->getKeycloakClientStatus()->isClientBlocked($client)) {
-                    return '<span style="color: red;">Blocked</span>';
-                }
+                try {
+                    if ($this->getKeycloakClientStatus()->isClientBlocked($client)) {
+                        return '<span style="color: red;">Blocked</span>';
+                    }
 
-                return '<span style="color: green;">Active</span>';
+                    return '<span style="color: green;">Active</span>';
+                } catch (KeyCloakApiFailed) {
+                    return '<span style="color: orange;">Failed to sync</span>';
+                }
             })->asHtml(),
             Text::make('client_id', function (KeycloakClientModel $model) {
                 return $model->toDomain()->clientId;

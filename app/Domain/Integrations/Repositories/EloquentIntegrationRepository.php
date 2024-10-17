@@ -13,6 +13,7 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\UdbOrganizers;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
+use App\Mails\Template\TemplateName;
 use App\Pagination\PaginatedCollection;
 use App\Pagination\PaginationInfo;
 use Carbon\Carbon;
@@ -21,11 +22,11 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\UuidInterface;
 
-final class EloquentIntegrationRepository implements IntegrationRepository
+final readonly class EloquentIntegrationRepository implements IntegrationRepository
 {
     public function __construct(
-        private readonly UdbOrganizerRepository $udbOrganizerRepository,
-        private readonly SubscriptionRepository $subscriptionRepository
+        private UdbOrganizerRepository $udbOrganizerRepository,
+        private SubscriptionRepository $subscriptionRepository
     ) {
 
     }
@@ -47,25 +48,26 @@ final class EloquentIntegrationRepository implements IntegrationRepository
             'type' => $integration->type,
             'name' => $integration->name,
             'description' => $integration->description,
-            'website' => $integration->website() ? $integration->website()->value : null,
+            'website' => $integration->website()?->value,
             'subscription_id' => $integration->subscriptionId,
             'status' => $integration->status,
             'partner_status' => $integration->partnerStatus,
             'key_visibility' => $integration->getKeyVisibility(),
-            'reminder_email_sent' => $integration->getReminderEmailSent(),
         ]);
     }
 
     /** @return Collection<Integration> */
-    public function getDraftsByTypeAndOlderThenMonthsAgo(IntegrationType $type, int $months): Collection
+    public function getDraftsByTypeAndBetweenMonthsOld(IntegrationType $type, int $startMonths, int $endMonths, TemplateName $templateName): Collection
     {
-        return IntegrationModel::query()
-            ->distinct()
+        /** @var IntegrationModel $integrationModel */
+        $integrationModel = IntegrationModel::query();
+
+        return $integrationModel->distinct()
             ->where('status', 'draft')
             ->where('type', $type->value)
-            ->whereNull('reminder_email_sent')
-            ->where('created_at', '<', Carbon::now()->subMonths($months))
+            ->whereBetween('created_at', [Carbon::now()->subMonths($endMonths), Carbon::now()->subMonths($startMonths)])
             ->has('contacts')  // This ensures that only integrations with at least one contact are returned
+            ->withoutMailSent($templateName)
             ->get()
             ->map(static function (IntegrationModel $integrationModel) {
                 return $integrationModel->toDomain();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Keycloak;
 
+use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationDeleted;
@@ -22,6 +23,7 @@ use App\Keycloak\Listeners\UnblockClients;
 use App\Keycloak\Listeners\UpdateClients;
 use App\Keycloak\Repositories\EloquentKeycloakClientRepository;
 use App\Keycloak\Repositories\KeycloakClientRepository;
+use App\Keycloak\Repositories\KeycloakUserRepository;
 use App\Keycloak\TokenStrategy\ClientCredentials;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
@@ -34,14 +36,19 @@ final class KeycloakServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->singleton(KeycloakHttpClient::class, function () {
+            return new KeycloakHttpClient(
+                new Client([RequestOptions::HTTP_ERRORS => false]),
+                new ClientCredentials(
+                    $this->app->get(LoggerInterface::class),
+                ),
+                App::get(LoggerInterface::class),
+            );
+        });
+
         $this->app->singleton(ApiClient::class, function () {
             return new KeycloakApiClient(
-                new KeycloakHttpClient(
-                    new Client([RequestOptions::HTTP_ERRORS => false]),
-                    new ClientCredentials(
-                        $this->app->get(LoggerInterface::class),
-                    )
-                ),
+                $this->app->get(KeycloakHttpClient::class),
                 $this->app->get(Realms::class),
                 $this->app->get(LoggerInterface::class),
             );
@@ -57,8 +64,15 @@ final class KeycloakServiceProvider extends ServiceProvider
 
         $this->app->singleton(CachedKeycloakClientStatus::class, function () {
             return new CachedKeycloakClientStatus(
-                App::get(ApiClient::class),
-                App::get(LoggerInterface::class),
+                $this->app->get(ApiClient::class),
+                $this->app->get(LoggerInterface::class),
+            );
+        });
+
+        $this->app->singleton(KeycloakUserRepository::class, function () {
+            return new KeycloakUserRepository(
+                $this->app->get(KeycloakHttpClient::class),
+                $this->app->get(Realms::class)->getRealmByEnvironment(Environment::Production),
             );
         });
 

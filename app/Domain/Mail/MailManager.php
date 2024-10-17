@@ -9,15 +9,18 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Events\ActivationExpired;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
+use App\Domain\Integrations\Events\IntegrationApproved;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationMail;
+use App\Domain\Integrations\Repositories\IntegrationMailRepository;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Mails\Template\Template;
 use App\Mails\Template\TemplateName;
 use App\Mails\Template\Templates;
-use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\Mime\Address;
 
 final class MailManager
@@ -27,6 +30,7 @@ final class MailManager
     public function __construct(
         private readonly Mailer $mailer,
         private readonly IntegrationRepository $integrationRepository,
+        private readonly IntegrationMailRepository $integrationMailRepository,
         private readonly Templates $templates,
         private readonly string $baseUrl
     ) {
@@ -43,6 +47,14 @@ final class MailManager
     {
         $integration = $this->integrationRepository->getById($event->id);
 
+        $this->sendMail($integration, $this->templates->getOrFail(TemplateName::INTEGRATION_ACTIVATED->value));
+    }
+
+    public function sendIntegrationApprovedMail(IntegrationApproved $event): void
+    {
+        $integration = $this->integrationRepository->getById($event->id);
+
+        // Currently the same e-mail as integration activated
         $this->sendMail($integration, $this->templates->getOrFail(TemplateName::INTEGRATION_ACTIVATED->value));
     }
 
@@ -64,9 +76,7 @@ final class MailManager
     {
         $integration = $this->integrationRepository->getById($event->id);
 
-        $this->sendMail($integration, $this->templates->getOrFail(TemplateName::INTEGRATION_ACTIVATION_REMINDER->value));
-
-        $this->integrationRepository->update($integration->withReminderEmailSent(Carbon::now()));
+        $this->sendMail($integration, $this->templates->getOrFail($event->templateName->value));
     }
 
     private function getFrom(): Address
@@ -115,9 +125,14 @@ final class MailManager
                 $this->getFrom(),
                 new Address($contact->email, trim($contact->firstName . ' ' . $contact->lastName)),
                 $template->id,
-                $template->subject,
                 $this->getIntegrationVariables($contact, $integration)
             );
         }
+
+        $this->integrationMailRepository->create(new IntegrationMail(
+            Uuid::uuid4(),
+            $integration->id,
+            $template->name,
+        ));
     }
 }

@@ -56,7 +56,7 @@ final class Contact extends Resource
 
             Text::make('Email')
                 ->sortable()
-                ->rules('required', 'email', 'max:255'),
+                ->rules('required', 'email:filter', 'max:255'),
 
             Select::make('Type')
                 ->filterable(

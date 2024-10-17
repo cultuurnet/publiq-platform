@@ -7,10 +7,9 @@ namespace App\Mails\Template;
 final class Template
 {
     public function __construct(
-        public string $type,
+        public TemplateName $name,
         public int $id,
-        public bool $enabled,
-        public string $subject
+        public bool $enabled
     ) {
     }
 }

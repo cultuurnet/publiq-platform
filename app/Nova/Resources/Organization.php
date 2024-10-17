@@ -72,7 +72,7 @@ final class Organization extends Resource
 
             Text::make('Invoice Email', 'invoice_email')
                 ->sortable()
-                ->rules('required_with:vat', 'nullable', 'email', 'max:255'),
+                ->rules('required_with:vat', 'nullable', 'email:filter', 'max:255'),
 
             Text::make('Vat')
                 ->hideFromIndex()

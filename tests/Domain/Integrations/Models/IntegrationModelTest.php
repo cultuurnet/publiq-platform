@@ -6,6 +6,7 @@ namespace Tests\Domain\Integrations\Models;
 
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
+use App\Domain\Integrations\Events\IntegrationApproved;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationUnblocked;
 use App\Domain\Integrations\IntegrationStatus;
@@ -89,6 +90,18 @@ final class IntegrationModelTest extends TestCase
         $this->integrationModel->activate();
 
         Event::assertDispatched(IntegrationActivated::class);
+
+        $this->assertDatabaseHas('integrations', [
+            'id' =>  $this->integrationModel->id,
+            'status' => IntegrationStatus::Active,
+        ]);
+    }
+
+    public function test_it_handles_approve(): void
+    {
+        $this->integrationModel->approve();
+
+        Event::assertDispatched(IntegrationApproved::class);
 
         $this->assertDatabaseHas('integrations', [
             'id' =>  $this->integrationModel->id,
