@@ -1,6 +1,8 @@
 import { expect, Page } from "@playwright/test";
 import { fakerNL_BE as faker } from "@faker-js/faker";
 import { IntegrationType } from "@app-types/IntegrationType";
+import { assertKeyVisibility } from "./assert-key-visibility.js";
+import { IntegrationStatus } from "@app-types/IntegrationStatus";
 
 const IntegrationTypeSubscriptionMap: Record<IntegrationType, string> = {
   [IntegrationType.SearchApi]: "b46745a1-feb5-45fd-8fa9-8e3ef25aac26",
@@ -28,6 +30,8 @@ export async function createIntegration(page: Page, type: IntegrationType) {
   await expect(
     page.locator("h1").getByText(`Integration Details: ${name}`)
   ).toBeVisible();
+
+  await assertKeyVisibility(page, IntegrationStatus.Active);
 
   const integrationUrl = page.url();
   const id = integrationUrl.split("/").pop()!;
