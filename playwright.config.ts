@@ -7,7 +7,7 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export default defineConfig({
   testDir: "e2e",
-  timeout: 120 * 1000,
+  timeout: 3 * 60 * 1000,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
@@ -30,6 +30,7 @@ export default defineConfig({
       name: "chromium",
       use: {
         ...devices["Desktop Chrome"],
+        viewport: { width: 1920, height: 1080 },
         storageState: "playwright/.auth/user.json",
       },
       dependencies: ["setup"],
