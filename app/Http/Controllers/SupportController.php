@@ -29,8 +29,7 @@ final class SupportController extends Controller
     {
         $botToken = config('slack.botToken');
         $channelID = config('slack.channels.technical_support');
-        $data = $request->validate(['email' => ['required', 'email']]);
-        $email = $data['email'] ?? Auth::user()?->email;
+        $email = $request->validate(['email' => ['required', 'email']])['email'];
 
         try {
             $response = Http::withToken($botToken)
