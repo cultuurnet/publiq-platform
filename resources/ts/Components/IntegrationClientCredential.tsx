@@ -6,6 +6,7 @@ import { IntegrationStatus } from "../types/IntegrationStatus";
 import { Alert } from "./Alert";
 import type { Integration } from "../types/Integration";
 import type { AuthClient, KeycloakClient } from "../types/Credentials";
+import { usePageProps } from "../hooks/usePageProps";
 
 type Props = {
   client: {
@@ -45,8 +46,10 @@ export const IntegrationClientCredentials = ({
   isLive: boolean;
 }) => {
   const { t } = useTranslation();
+  const { config } = usePageProps();
 
-  const clientToShow = keycloakClient && !isLive ? keycloakClient : client;
+  const clientToShow =
+    config.keycloak.creationEnabled && keycloakClient ? keycloakClient : client;
   const clientWithLabels = [
     {
       label: "details.credentials.client_id",
