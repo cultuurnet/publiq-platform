@@ -72,14 +72,15 @@ final class MigrateAuth0ToKeycloakClients extends Command
 
     private function findAuth0Clients(): Collection
     {
-        $query = DB::table('auth0_clients')
-            ->orderBy('updated_at', 'asc')
-            ->whereNotIn('auth0_clients.id', function ($query) {
-                $query->select('id')
-                    ->from('keycloak_clients');
+        return DB::table('auth0_clients as ac')
+            ->leftJoin('keycloak_clients as kc', function($join) {
+                $join->on('ac.integration_id', '=', 'kc.integration_id')
+                    ->on('ac.auth0_tenant', '=', 'kc.realm');
             })
-            ->whereNull('deleted_at');
-
-        return $query->get();
+            ->whereNull('kc.client_id')
+            ->whereNull('ac.deleted_at')
+            ->select('ac.*')
+            ->orderBy('updated_at', 'asc')
+            ->get();
     }
 }
