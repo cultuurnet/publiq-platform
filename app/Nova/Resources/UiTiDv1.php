@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace App\Nova\Resources;
 
+use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\IntegrationStatus;
+use App\Domain\Integrations\KeyVisibility;
+use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Nova\ActionGuards\ActionGuard;
 use App\Nova\ActionGuards\UiTiDv1\UnblockUiTiDv1ConsumerGuard;
 use App\Nova\ActionGuards\UiTiDv1\BlockUiTiDv1ConsumerGuard;
@@ -67,6 +71,19 @@ final class UiTiDv1 extends Resource
                     UiTiDv1Environment::Testing->value => UiTiDv1Environment::Testing->name,
                     UiTiDv1Environment::Production->value => UiTiDv1Environment::Production->name,
                 ]),
+            Text::make('Visible for integrator', static function (UiTiDv1ConsumerModel $model) {
+                $uitIdV1Consumer = $model->toDomain();
+                /** @var Integration $integration */
+                $integration = App::get(IntegrationRepository::class)->getById($uitIdV1Consumer->integrationId);
+                $isVisible = $uitIdV1Consumer->environment !== UiTiDv1Environment::Acceptance &&
+                    $integration->status !== IntegrationStatus::Deleted &&
+                    $integration->getKeyVisibility() !== KeyVisibility::v2;
+                return sprintf(
+                    '<span style="color: %s">%s</span>',
+                    $isVisible ? 'green' : 'red',
+                    $isVisible ? 'Yes' : 'No'
+                );
+            })->asHtml(),
             Text::make('Status', static function (UiTiDv1ConsumerModel $model) {
                 $status = App::get(CachedUiTiDv1Status::class)->findStatusOnConsumer($model->toDomain());
 
