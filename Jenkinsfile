@@ -119,6 +119,8 @@ pipeline {
                                 sh label: 'Run acceptance tests', script: 'npm run test:e2e'
                             }
                         }
+                        archiveArtifacts artifacts: "screenshots/**/*", onlyIfSuccessful: false
+                        archiveArtifacts artifacts: "test-results/**/*", onlyIfSuccessful: false
                     }
                     post {
                         always {
