@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Nova\Resources;
 
 use App\Domain\Integrations\Environment;
+use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\CachedKeycloakClientStatus;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Models\KeycloakClientModel;
@@ -69,6 +71,17 @@ final class KeycloakClient extends Resource
                     Environment::Testing->value => Environment::Testing->name,
                     Environment::Production->value => Environment::Production->name,
                 ]),
+            Text::make('Visible for integrator', static function (KeycloakClientModel $model) {
+                $keycloakClientModel = $model->toDomain();
+                /** @var Integration $integration */
+                $integration = App::get(IntegrationRepository::class)->getById($keycloakClientModel->integrationId);
+                $isVisible = $integration->isKeyVisibleForEnvironment($keycloakClientModel->environment);
+                return sprintf(
+                    '<span style="color: %s">%s</span>',
+                    $isVisible ? 'green' : 'red',
+                    $isVisible ? 'Yes' : 'No'
+                );
+            })->asHtml(),
             Text::make('Status', function (KeycloakClientModel $model) {
                 $client = $model->toDomain();
 
