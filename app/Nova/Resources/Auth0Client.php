@@ -75,8 +75,7 @@ final class Auth0Client extends Resource
                 $auth0Client = $model->toDomain();
                 /** @var Integration $integration */
                 $integration = App::get(IntegrationRepository::class)->getById($auth0Client->integrationId);
-                $isVisible = $auth0Client->tenant !== Auth0Tenant::Acceptance &&
-                    $integration->status !== IntegrationStatus::Deleted &&
+                $isVisible = $integration->isKeyVisibleForEnvironment($auth0Client->tenant) &&
                     $integration->getKeyVisibility() !== KeyVisibility::v1;
                 return sprintf(
                     '<span style="color: %s">%s</span>',

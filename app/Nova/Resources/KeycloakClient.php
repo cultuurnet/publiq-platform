@@ -77,8 +77,7 @@ final class KeycloakClient extends Resource
                 $keycloakClientModel = $model->toDomain();
                 /** @var Integration $integration */
                 $integration = App::get(IntegrationRepository::class)->getById($keycloakClientModel->integrationId);
-                $isVisible = $keycloakClientModel->environment !== Environment::Acceptance &&
-                    $integration->status !== IntegrationStatus::Deleted &&
+                $isVisible = $integration->isKeyVisibleForEnvironment($keycloakClientModel->environment) &&
                     $integration->getKeyVisibility() !== KeyVisibility::v1;
                 return sprintf(
                     '<span style="color: %s">%s</span>',

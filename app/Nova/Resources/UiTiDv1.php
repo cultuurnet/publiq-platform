@@ -75,8 +75,7 @@ final class UiTiDv1 extends Resource
                 $uitIdV1Consumer = $model->toDomain();
                 /** @var Integration $integration */
                 $integration = App::get(IntegrationRepository::class)->getById($uitIdV1Consumer->integrationId);
-                $isVisible = $uitIdV1Consumer->environment !== UiTiDv1Environment::Acceptance &&
-                    $integration->status !== IntegrationStatus::Deleted &&
+                $isVisible = $integration->isKeyVisibleForEnvironment($uitIdV1Consumer->environment) &&
                     $integration->getKeyVisibility() !== KeyVisibility::v2;
                 return sprintf(
                     '<span style="color: %s">%s</span>',
