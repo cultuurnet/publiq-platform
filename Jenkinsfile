@@ -124,7 +124,7 @@ pipeline {
                     }
                     post {
                         always {
-                            sendBuildNotification to: ['#upw-ops', '#publiq-platform'], message: "Pipeline <${env.RUN_DISPLAY_URL}|${env.JOB_NAME} [${currentBuild.displayName}]>: automated acceptance tests finished"
+                            sendBuildNotification to: '#publiq-platform', message: "Pipeline <${env.RUN_DISPLAY_URL}|${env.JOB_NAME} [${currentBuild.displayName}]>: automated acceptance tests finished"
                         }
                     }
                 }
