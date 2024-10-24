@@ -93,7 +93,8 @@ pipeline {
         stage('Acceptance tests') {
             agent { label 'ubuntu && 20.04 && nodejs18' }
             environment {
-                E2E_TEST_BASE_URL = 'https://platform-acc.publiq.be'
+                E2E_TEST_BASE_URL      = 'https://platform-acc.publiq.be'
+                KEYCLOAK_LOGIN_ENABLED = 'true'
             }
             stages {
                 stage('Setup') {
