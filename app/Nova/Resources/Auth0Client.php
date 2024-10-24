@@ -7,6 +7,8 @@ namespace App\Nova\Resources;
 use App\Auth0\Auth0Tenant;
 use App\Auth0\CachedAuth0ClientGrants;
 use App\Auth0\Models\Auth0ClientModel;
+use App\Domain\Integrations\Integration;
+use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Nova\ActionGuards\ActionGuard;
 use App\Nova\ActionGuards\Auth0\UnblockAuth0ClientGuard;
 use App\Nova\ActionGuards\Auth0\BlockAuth0ClientGuard;
@@ -67,6 +69,17 @@ final class Auth0Client extends Resource
                     Auth0Tenant::Testing->value => Auth0Tenant::Testing->name,
                     Auth0Tenant::Production->value => Auth0Tenant::Production->name,
                 ]),
+            Text::make('Visible for integrator', static function (Auth0ClientModel $model) {
+                $auth0Client = $model->toDomain();
+                /** @var Integration $integration */
+                $integration = App::get(IntegrationRepository::class)->getById($auth0Client->integrationId);
+                $isVisible = $integration->isKeyVisibleForEnvironment($auth0Client->tenant);
+                return sprintf(
+                    '<span style="color: %s">%s</span>',
+                    $isVisible ? 'green' : 'red',
+                    $isVisible ? 'Yes' : 'No'
+                );
+            })->asHtml(),
             Text::make('Status', function (Auth0ClientModel $model) {
                 $auth0Client = $model->toDomain();
                 if (empty(App::get(CachedAuth0ClientGrants::class)->findGrantsOnClient($auth0Client))) {
