@@ -24,7 +24,6 @@ final class MigrateAuth0ToKeycloakClientsTest extends TestCase
             ->assertExitCode(Command::SUCCESS);
     }
 
-
     public function test_complex_query_clients_already_exist_in_keycloak_table(): void
     {
         $integrationId = Uuid::uuid4()->toString();
@@ -52,6 +51,16 @@ final class MigrateAuth0ToKeycloakClientsTest extends TestCase
             'updated_at' => now(),
         ]);
 
+        DB::table('auth0_clients')->insert([
+            'id' => Uuid::uuid4()->toString(),
+            'integration_id' => $integrationId,
+            'auth0_client_id' => 'prod_client_already_exist_in_keycloak',
+            'auth0_client_secret' => 'secret1',
+            'auth0_tenant' => 'prod',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
         DB::table('keycloak_clients')->insert([
             'id' => $id2,
             'integration_id' => $integrationId,
@@ -62,12 +71,22 @@ final class MigrateAuth0ToKeycloakClientsTest extends TestCase
             'updated_at' => now(),
         ]);
 
+        DB::table('keycloak_clients')->insert([
+            'id' => Uuid::uuid4()->toString(),
+            'integration_id' => $integrationId,
+            'client_id' => Uuid::uuid4()->toString(),
+            'client_secret' => 'secret1',
+            'realm' => 'prod',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
         $this->getPendingCommand('migrate:keycloak')
             ->expectsOutput('No clients found to migrate')
             ->assertExitCode(Command::SUCCESS);
 
-        $this->assertDatabaseCount('auth0_clients', 2);
-        $this->assertDatabaseCount('keycloak_clients', 1);
+        $this->assertDatabaseCount('auth0_clients', 3);
+        $this->assertDatabaseCount('keycloak_clients', 2);
     }
 
     public function test_migration_with_clients(): void

@@ -93,7 +93,8 @@ pipeline {
         stage('Acceptance tests') {
             agent { label 'ubuntu && 20.04 && nodejs18' }
             environment {
-                E2E_TEST_BASE_URL = 'https://platform-acc.publiq.be'
+                E2E_TEST_BASE_URL      = 'https://platform-acc.publiq.be'
+                KEYCLOAK_LOGIN_ENABLED = 'true'
             }
             stages {
                 stage('Setup') {
@@ -118,10 +119,12 @@ pipeline {
                                 sh label: 'Run acceptance tests', script: 'npm run test:e2e'
                             }
                         }
+                        archiveArtifacts artifacts: "screenshots/**/*", onlyIfSuccessful: false
+                        archiveArtifacts artifacts: "test-results/**/*", onlyIfSuccessful: false
                     }
                     post {
                         always {
-                            sendBuildNotification to: ['#upw-ops', '#publiq-platform'], message: "Pipeline <${env.RUN_DISPLAY_URL}|${env.JOB_NAME} [${currentBuild.displayName}]>: automated acceptance tests finished"
+                            sendBuildNotification to: '#publiq-platform', message: "Pipeline <${env.RUN_DISPLAY_URL}|${env.JOB_NAME} [${currentBuild.displayName}]>: automated acceptance tests finished"
                         }
                     }
                 }

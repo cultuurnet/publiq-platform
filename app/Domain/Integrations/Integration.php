@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Integrations;
 
 use App\Auth0\Auth0Client;
+use App\Auth0\Auth0Tenant;
 use App\Domain\Contacts\Contact;
 use App\Domain\Coupons\Coupon;
 use App\Domain\KeyVisibilityUpgrades\KeyVisibilityUpgrade;
@@ -12,6 +13,7 @@ use App\Domain\Organizations\Organization;
 use App\Domain\Subscriptions\Subscription;
 use App\Keycloak\Client as KeycloakClient;
 use App\UiTiDv1\UiTiDv1Consumer;
+use App\UiTiDv1\UiTiDv1Environment;
 use Ramsey\Uuid\UuidInterface;
 
 final class Integration
@@ -228,6 +230,14 @@ final class Integration
             $this->urls,
             fn (IntegrationUrl $url) => $url->type->value === $type->value && $url->environment->value === $environment->value
         ));
+    }
+
+    public function isKeyVisibleForEnvironment(UiTiDv1Environment|Auth0Tenant|Environment $environment): bool
+    {
+        $keyVisibility = ($environment instanceof UiTiDv1Environment) ? KeyVisibility::v2 : KeyVisibility::v1;
+        return $environment->value !== 'acc' &&
+            $this->status !== IntegrationStatus::Deleted &&
+            $this->getKeyVisibility() !== $keyVisibility;
     }
 
     public function toArray(): array
