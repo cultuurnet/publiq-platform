@@ -13,7 +13,7 @@ type Config = {
   };
   keycloak: {
     enabled: boolean;
-    testClientEnabled: boolean;
+    creationEnabled: boolean;
   };
 };
 

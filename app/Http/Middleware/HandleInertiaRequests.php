@@ -37,7 +37,7 @@ final class HandleInertiaRequests extends Middleware
                 ],
                 'keycloak' => [
                     'enabled' => config('keycloak.enabled'),
-                    'testClientEnabled' => config('keycloak.testClientEnabled'),
+                    'creationEnabled' => config('keycloak.creationEnabled'),
                 ],
             ],
             'widgetConfig' => [
