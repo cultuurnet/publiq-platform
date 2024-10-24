@@ -6,7 +6,6 @@ namespace App\Nova\Resources;
 
 use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Integration;
-use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\CachedKeycloakClientStatus;
 use App\Keycloak\Exception\KeyCloakApiFailed;
@@ -76,8 +75,7 @@ final class KeycloakClient extends Resource
                 $keycloakClientModel = $model->toDomain();
                 /** @var Integration $integration */
                 $integration = App::get(IntegrationRepository::class)->getById($keycloakClientModel->integrationId);
-                $isVisible = $integration->isKeyVisibleForEnvironment($keycloakClientModel->environment) &&
-                    $integration->getKeyVisibility() !== KeyVisibility::v1;
+                $isVisible = $integration->isKeyVisibleForEnvironment($keycloakClientModel->environment);
                 return sprintf(
                     '<span style="color: %s">%s</span>',
                     $isVisible ? 'green' : 'red',

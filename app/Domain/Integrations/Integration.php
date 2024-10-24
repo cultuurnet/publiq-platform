@@ -234,8 +234,10 @@ final class Integration
 
     public function isKeyVisibleForEnvironment(UiTiDv1Environment|Auth0Tenant|Environment $environment): bool
     {
+        $keyVisibility = ($environment instanceof UiTiDv1Environment) ? KeyVisibility::v2 : KeyVisibility::v1;
         return $environment->value !== 'acc' &&
-            $this->status !== IntegrationStatus::Deleted;
+            $this->status !== IntegrationStatus::Deleted &&
+            $this->getKeyVisibility() !== $keyVisibility;
     }
 
     public function toArray(): array

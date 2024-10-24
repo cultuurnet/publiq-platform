@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Nova\Resources;
 
 use App\Domain\Integrations\Integration;
-use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Nova\ActionGuards\ActionGuard;
 use App\Nova\ActionGuards\UiTiDv1\UnblockUiTiDv1ConsumerGuard;
@@ -74,8 +73,7 @@ final class UiTiDv1 extends Resource
                 $uitIdV1Consumer = $model->toDomain();
                 /** @var Integration $integration */
                 $integration = App::get(IntegrationRepository::class)->getById($uitIdV1Consumer->integrationId);
-                $isVisible = $integration->isKeyVisibleForEnvironment($uitIdV1Consumer->environment) &&
-                    $integration->getKeyVisibility() !== KeyVisibility::v2;
+                $isVisible = $integration->isKeyVisibleForEnvironment($uitIdV1Consumer->environment);
                 return sprintf(
                     '<span style="color: %s">%s</span>',
                     $isVisible ? 'green' : 'red',

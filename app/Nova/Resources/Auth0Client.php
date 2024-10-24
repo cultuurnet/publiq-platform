@@ -8,7 +8,6 @@ use App\Auth0\Auth0Tenant;
 use App\Auth0\CachedAuth0ClientGrants;
 use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Integrations\Integration;
-use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Nova\ActionGuards\ActionGuard;
 use App\Nova\ActionGuards\Auth0\UnblockAuth0ClientGuard;
@@ -74,8 +73,7 @@ final class Auth0Client extends Resource
                 $auth0Client = $model->toDomain();
                 /** @var Integration $integration */
                 $integration = App::get(IntegrationRepository::class)->getById($auth0Client->integrationId);
-                $isVisible = $integration->isKeyVisibleForEnvironment($auth0Client->tenant) &&
-                    $integration->getKeyVisibility() !== KeyVisibility::v1;
+                $isVisible = $integration->isKeyVisibleForEnvironment($auth0Client->tenant);
                 return sprintf(
                     '<span style="color: %s">%s</span>',
                     $isVisible ? 'green' : 'red',
