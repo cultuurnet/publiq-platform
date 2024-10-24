@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Nova\Resources;
 
 use App\Domain\Integrations\Integration;
-use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Nova\ActionGuards\ActionGuard;

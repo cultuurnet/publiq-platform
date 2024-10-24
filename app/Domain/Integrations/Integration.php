@@ -14,7 +14,6 @@ use App\Domain\Subscriptions\Subscription;
 use App\Keycloak\Client as KeycloakClient;
 use App\UiTiDv1\UiTiDv1Consumer;
 use App\UiTiDv1\UiTiDv1Environment;
-use Laravel\Prompts\Key;
 use Ramsey\Uuid\UuidInterface;
 
 final class Integration

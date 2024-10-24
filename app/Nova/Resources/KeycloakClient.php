@@ -6,7 +6,6 @@ namespace App\Nova\Resources;
 
 use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Integration;
-use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\CachedKeycloakClientStatus;

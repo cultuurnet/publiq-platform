@@ -8,7 +8,6 @@ use App\Auth0\Auth0Tenant;
 use App\Auth0\CachedAuth0ClientGrants;
 use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Integrations\Integration;
-use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Nova\ActionGuards\ActionGuard;
