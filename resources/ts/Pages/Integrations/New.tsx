@@ -1,4 +1,4 @@
-import type { FormEvent } from "react";
+import { FormEvent, useEffect } from "react";
 import React, { useState } from "react";
 import { useForm } from "@inertiajs/react";
 import { Heading } from "../../Components/Heading";
@@ -65,19 +65,19 @@ const New = ({ subscriptions }: Props) => {
 
   const pricingPlans = useGetPricingPlans(data.integrationType, subscriptions);
 
-  const freeSubscription = pricingPlans.find(
+  const freePricingPlan = pricingPlans.find(
     (it) => it.category === SubscriptionCategory.Free
   );
-  const basicSubscription = pricingPlans.find(
+  const basicPricingPlan = pricingPlans.find(
     (it) => it.category === SubscriptionCategory.Basic
   );
 
-  const defaultPricingPlans = freeSubscription ?? basicSubscription;
+  const defaultPricingPlan = freePricingPlan ?? basicPricingPlan;
 
   useEffect(() => {
-    setData("subscriptionId", defaultPricingPlans?.id ?? "");
+    setData("subscriptionId", defaultPricingPlan?.id ?? "");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultPricingPlans]);
+  }, [defaultPricingPlan]);
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -91,7 +91,7 @@ const New = ({ subscriptions }: Props) => {
   const isCouponFieldVisible =
     (activeType === IntegrationType.SearchApi ||
       activeType === IntegrationType.Widgets) &&
-    data.subscriptionId === basicSubscription?.id;
+    data.subscriptionId === basicPricingPlan?.id;
 
   const isPricingInfoVisible = (
     [IntegrationType.SearchApi, IntegrationType.Widgets] as IntegrationType[]
