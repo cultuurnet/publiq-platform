@@ -75,7 +75,6 @@ export const RadioButtonGroup = ({
         <li
           key={option.value}
           tabIndex={0}
-          onClick={() => onChange(option.value)}
           onKeyUp={(e) => {
             if (e.key === "Enter") {
               onChange(option.value);
@@ -92,6 +91,7 @@ export const RadioButtonGroup = ({
             name={name}
             value={option.value}
             checked={value === option.value}
+            onChange={() => onChange(option.value)}
           />
           <div className="flex flex-grow">
             <label
