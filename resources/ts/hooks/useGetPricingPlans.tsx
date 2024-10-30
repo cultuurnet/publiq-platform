@@ -8,6 +8,7 @@ import { formatCurrency } from "../utils/formatCurrency";
 
 export type PricingPlan = {
   id: string;
+  category: SubscriptionCategory;
   title: string;
   label: string;
   price: string;
@@ -41,6 +42,7 @@ const getPricingPlans = (
 
     return {
       id: data.id,
+      category: data.category,
       title: title,
       label: data.category === "Free" ? title : `${title} (${price})`,
       description: t(

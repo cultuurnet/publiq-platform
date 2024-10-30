@@ -1,6 +1,6 @@
-import type { FormEvent } from "react";
-import React, { useEffect, useState } from "react";
-import { router, useForm } from "@inertiajs/react";
+import { FormEvent } from "react";
+import React, { useState } from "react";
+import { useForm } from "@inertiajs/react";
 import { Heading } from "../../Components/Heading";
 import { FormElement } from "../../Components/FormElement";
 import { Input } from "../../Components/Input";
@@ -30,12 +30,6 @@ type Props = {
 const New = ({ subscriptions }: Props) => {
   const { t } = useTranslation();
   const { i18n } = useTranslation();
-
-  const basicSubscriptionIds = subscriptions
-    .filter(
-      (subscription) => subscription.category === SubscriptionCategory.Basic
-    )
-    .map((subscription) => subscription.id);
 
   const integrationTypesInfo = useIntegrationTypesInfo();
 
@@ -69,18 +63,21 @@ const New = ({ subscriptions }: Props) => {
   const { data, setData, errors, hasErrors, post, processing } =
     useForm(initialFormValues);
 
+  const pricingPlans = useGetPricingPlans(data.integrationType, subscriptions);
+
+  const freeSubscription = pricingPlans.find(
+    (it) => it.category === SubscriptionCategory.Free
+  );
+  const basicSubscription = pricingPlans.find(
+    (it) => it.category === SubscriptionCategory.Basic
+  );
+
+  const defaultPricingPlans = freeSubscription ?? basicSubscription;
+
   useEffect(() => {
-    const freeSubscriptionId = subscriptions.find(
-      (subscription) =>
-        subscription.integrationType === activeType &&
-        subscription.category === SubscriptionCategory.Free
-    )?.id;
-
-    if (!freeSubscriptionId) return;
-
-    setData("subscriptionId", freeSubscriptionId);
+    setData("subscriptionId", defaultPricingPlans?.id ?? "");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeType, subscriptions]);
+  }, [defaultPricingPlans]);
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -94,13 +91,11 @@ const New = ({ subscriptions }: Props) => {
   const isCouponFieldVisible =
     (activeType === IntegrationType.SearchApi ||
       activeType === IntegrationType.Widgets) &&
-    basicSubscriptionIds.some((id) => data.subscriptionId === id);
+    data.subscriptionId === basicSubscription?.id;
 
   const isPricingInfoVisible = (
     [IntegrationType.SearchApi, IntegrationType.Widgets] as IntegrationType[]
   ).includes(data.integrationType);
-
-  const pricingPlans = useGetPricingPlans(data.integrationType, subscriptions);
 
   return (
     <Page>
@@ -132,11 +127,9 @@ const New = ({ subscriptions }: Props) => {
               )}
               onChange={(value) => {
                 setData("integrationType", value as IntegrationType);
-                router.get(
-                  url.pathname,
-                  { type: value },
-                  { preserveScroll: true, preserveState: true }
-                );
+                const url = new URL(document.location.href);
+                url.searchParams.set("type", value);
+                history.pushState({}, "", url);
               }}
             />
             {errors.integrationType && (
