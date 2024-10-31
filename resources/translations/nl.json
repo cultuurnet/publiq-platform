@@ -148,9 +148,9 @@
       "email": "E-mailadres"
     },
     "error": "Niet alle verplichte velden werden correct ingevuld. Controleer je invoer.",
-    "agree": "Ik ga akkoord met de <1>gebruiksvoorwaarden</1> en de <2>privacyverklaring</2>",
+    "agree": "Ik ga akkoord met de <0>gebruiksvoorwaarden</0> en de <1>privacyverklaring</1>",
     "uitpasAgreement": {
-      "label": "Ik ga akkoord met de <1>verwerkingsvoorwaarden van UiTPAS<1>",
+      "label": "Ik ga akkoord met de <0>verwerkingsvoorwaarden van UiTPAS</0>",
       "link": "https://www.publiq.be/nl/projecten/publiq-platform/algemene-verwerkingsvoorwaarden"
     },
     "terms_of_use_link": "https://www.publiq.be/projecten/publiq-platform/gebruiksvoorwaarden",

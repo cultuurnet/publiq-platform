@@ -1,4 +1,4 @@
-import type { FormEvent} from "react";
+import type { FormEvent } from "react";
 import { useEffect } from "react";
 import React, { useState } from "react";
 import { useForm } from "@inertiajs/react";
@@ -341,20 +341,18 @@ const New = ({ subscriptions }: Props) => {
                 <Trans
                   i18nKey="integration_form.agree"
                   t={t}
-                  components={{
-                    1: (
-                      <Link
-                        href={t("integration_form.terms_of_use_link")}
-                        className="text-publiq-blue-dark hover:underline"
-                      />
-                    ),
-                    2: (
-                      <Link
-                        href={t("integration_form.privacy_link")}
-                        className="text-publiq-blue-dark hover:underline"
-                      />
-                    ),
-                  }}
+                  components={[
+                    <Link
+                      key="integration_form.terms_of_use_link"
+                      href={t("integration_form.terms_of_use_link")}
+                      className="text-publiq-blue-dark hover:underline"
+                    />,
+                    <Link
+                      key="integration_form.privacy_link"
+                      href={t("integration_form.privacy_link")}
+                      className="text-publiq-blue-dark hover:underline"
+                    />,
+                  ]}
                 />
               }
               labelPosition="right"
@@ -382,14 +380,13 @@ const New = ({ subscriptions }: Props) => {
                   <Trans
                     i18nKey="integration_form.uitpasAgreement.label"
                     t={t}
-                    components={{
-                      1: (
-                        <Link
-                          href={t("integration_form.uitpasAgreement.link")}
-                          className="text-publiq-blue-dark hover:underline"
-                        />
-                      ),
-                    }}
+                    components={[
+                      <Link
+                        key="integration_form.uitpasAgreement.label"
+                        href={t("integration_form.uitpasAgreement.link")}
+                        className="text-publiq-blue-dark hover:underline"
+                      />,
+                    ]}
                   />
                 }
                 labelPosition="right"
