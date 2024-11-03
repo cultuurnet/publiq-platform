@@ -80,7 +80,7 @@ const Index = ({ integrations, paginationInfo, credentials }: Props) => {
           keycloakProdClient: credentials.keycloak.find(
             (client) =>
               client.integrationId === integration.id &&
-              client.environment === KeycloakEnvironment.Testing
+              client.environment === KeycloakEnvironment.Production
           ),
         },
       })),
