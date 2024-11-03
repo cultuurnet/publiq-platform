@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Auth0\Repositories;
+namespace App\Domain\Auth\Repositories;
 
-interface Auth0UserRepository
+interface UserRepository
 {
     public function findUserIdByEmail(string $email): ?string;
 }
