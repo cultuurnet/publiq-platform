@@ -27,7 +27,7 @@ test("As an admin I can activate an integration", async ({ page }) => {
   await expect(
     page.locator(`a[href="/admin/resources/organizations/${organizationId}"]`)
   ).toBeVisible();
-  await expect(page.getByText("active", { exact: true })).toBeVisible();
+  await expect(page.getByText(/^active$/, { exact: true })).toBeVisible();
 
   await assertKeyVisibility(page, IntegrationStatus.Active);
 });
