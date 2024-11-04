@@ -74,13 +74,6 @@ export const RadioButtonGroup = ({
       {options.map((option, index) => (
         <li
           key={option.value}
-          tabIndex={0}
-          onClick={() => onChange(option.value)}
-          onKeyUp={(e) => {
-            if (e.key === "Enter") {
-              onChange(option.value);
-            }
-          }}
           className={classNames(
             optionClasses(index, option),
             "flex items-center gap-5 px-10 py-3 max-md:px-5 max-md:py-2 w-[100%] h-[100%]"
@@ -92,6 +85,7 @@ export const RadioButtonGroup = ({
             name={name}
             value={option.value}
             checked={value === option.value}
+            onChange={() => onChange(option.value)}
           />
           <div className="flex flex-grow">
             <label
