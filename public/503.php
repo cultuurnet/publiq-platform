@@ -57,8 +57,8 @@ header('Status: 503 Service Temporarily Unavailable');
 
     <div class="message-title">publiq platform is in onderhoud</div>
     <div class="message-content">
-        <p>We voeren momenteel onderhoudswerkzaamheden uit.<br> We zijn ermee bezig en zijn terug op dinsdag 24/09/24 om 16:00 uur.</p>
-        <p>We are currently performing maintenance work.<br> We are working on it and will be back on Tuesday, 24/09/24, at 4:00 PM.</p>
+        <p>We voeren momenteel onderhoudswerkzaamheden uit.<br> We zijn ermee bezig en zijn terug op maandag 4/11/2024 om 08:00 uur.</p>
+        <p>We are currently performing maintenance work.<br> We are working on it and will be back on Monday, 4/11/2024, at 8:00 AM.</p>
     </div>
 </div>
 
