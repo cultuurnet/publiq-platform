@@ -1,6 +1,7 @@
 import type { FormEvent } from "react";
-import React, { useEffect, useState } from "react";
-import { router, useForm } from "@inertiajs/react";
+import { useEffect } from "react";
+import React, { useState } from "react";
+import { useForm } from "@inertiajs/react";
 import { Heading } from "../../Components/Heading";
 import { FormElement } from "../../Components/FormElement";
 import { Input } from "../../Components/Input";
@@ -30,12 +31,6 @@ type Props = {
 const New = ({ subscriptions }: Props) => {
   const { t } = useTranslation();
   const { i18n } = useTranslation();
-
-  const basicSubscriptionIds = subscriptions
-    .filter(
-      (subscription) => subscription.category === SubscriptionCategory.Basic
-    )
-    .map((subscription) => subscription.id);
 
   const integrationTypesInfo = useIntegrationTypesInfo();
 
@@ -69,18 +64,21 @@ const New = ({ subscriptions }: Props) => {
   const { data, setData, errors, hasErrors, post, processing } =
     useForm(initialFormValues);
 
+  const pricingPlans = useGetPricingPlans(data.integrationType, subscriptions);
+
+  const freePricingPlan = pricingPlans.find(
+    (it) => it.category === SubscriptionCategory.Free
+  );
+  const basicPricingPlan = pricingPlans.find(
+    (it) => it.category === SubscriptionCategory.Basic
+  );
+
+  const defaultPricingPlan = freePricingPlan ?? basicPricingPlan;
+
   useEffect(() => {
-    const freeSubscriptionId = subscriptions.find(
-      (subscription) =>
-        subscription.integrationType === activeType &&
-        subscription.category === SubscriptionCategory.Free
-    )?.id;
-
-    if (!freeSubscriptionId) return;
-
-    setData("subscriptionId", freeSubscriptionId);
+    setData("subscriptionId", defaultPricingPlan?.id ?? "");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeType, subscriptions]);
+  }, [defaultPricingPlan]);
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -94,13 +92,11 @@ const New = ({ subscriptions }: Props) => {
   const isCouponFieldVisible =
     (activeType === IntegrationType.SearchApi ||
       activeType === IntegrationType.Widgets) &&
-    basicSubscriptionIds.some((id) => data.subscriptionId === id);
+    data.subscriptionId === basicPricingPlan?.id;
 
   const isPricingInfoVisible = (
     [IntegrationType.SearchApi, IntegrationType.Widgets] as IntegrationType[]
   ).includes(data.integrationType);
-
-  const pricingPlans = useGetPricingPlans(data.integrationType, subscriptions);
 
   return (
     <Page>
@@ -132,11 +128,9 @@ const New = ({ subscriptions }: Props) => {
               )}
               onChange={(value) => {
                 setData("integrationType", value as IntegrationType);
-                router.get(
-                  url.pathname,
-                  { type: value },
-                  { preserveScroll: true, preserveState: true }
-                );
+                const url = new URL(document.location.href);
+                url.searchParams.set("type", value);
+                history.pushState({}, "", url);
               }}
             />
             {errors.integrationType && (
@@ -347,20 +341,18 @@ const New = ({ subscriptions }: Props) => {
                 <Trans
                   i18nKey="integration_form.agree"
                   t={t}
-                  components={{
-                    1: (
-                      <Link
-                        href={t("integration_form.terms_of_use_link")}
-                        className="text-publiq-blue-dark hover:underline"
-                      />
-                    ),
-                    2: (
-                      <Link
-                        href={t("integration_form.privacy_link")}
-                        className="text-publiq-blue-dark hover:underline"
-                      />
-                    ),
-                  }}
+                  components={[
+                    <Link
+                      key="integration_form.terms_of_use_link"
+                      href={t("integration_form.terms_of_use_link")}
+                      className="text-publiq-blue-dark hover:underline"
+                    />,
+                    <Link
+                      key="integration_form.privacy_link"
+                      href={t("integration_form.privacy_link")}
+                      className="text-publiq-blue-dark hover:underline"
+                    />,
+                  ]}
                 />
               }
               labelPosition="right"
@@ -388,14 +380,13 @@ const New = ({ subscriptions }: Props) => {
                   <Trans
                     i18nKey="integration_form.uitpasAgreement.label"
                     t={t}
-                    components={{
-                      1: (
-                        <Link
-                          href={t("integration_form.uitpasAgreement.link")}
-                          className="text-publiq-blue-dark hover:underline"
-                        />
-                      ),
-                    }}
+                    components={[
+                      <Link
+                        key="integration_form.uitpasAgreement.label"
+                        href={t("integration_form.uitpasAgreement.link")}
+                        className="text-publiq-blue-dark hover:underline"
+                      />,
+                    ]}
                   />
                 }
                 labelPosition="right"
