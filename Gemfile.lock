@@ -1,8 +1,6 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.8.7)
-      public_suffix (>= 2.0.2, < 7.0)
     arr-pm (0.0.12)
     backports (3.23.0)
     cabin (0.9.0)
@@ -18,8 +16,7 @@ GEM
       pleaserun (~> 0.0.29)
       rexml
       stud
-    git (1.13.0)
-      addressable (~> 2.8)
+    git (1.11.0)
       rchardet (~> 1.8)
     insist (1.0.0)
     json (2.6.1)
@@ -31,7 +28,6 @@ GEM
       insist
       mustache (= 0.99.8)
       stud
-    public_suffix (6.0.1)
     rake (13.0.6)
     rchardet (1.8.0)
     rexml (3.3.9)
