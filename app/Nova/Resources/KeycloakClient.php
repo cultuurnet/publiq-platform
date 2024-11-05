@@ -71,17 +71,6 @@ final class KeycloakClient extends Resource
                     Environment::Testing->value => Environment::Testing->name,
                     Environment::Production->value => Environment::Production->name,
                 ]),
-            Text::make('Visible for integrator', static function (KeycloakClientModel $model) {
-                $keycloakClientModel = $model->toDomain();
-                /** @var Integration $integration */
-                $integration = App::get(IntegrationRepository::class)->getById($keycloakClientModel->integrationId);
-                $isVisible = $integration->isKeyVisibleForEnvironment($keycloakClientModel->environment);
-                return sprintf(
-                    '<span style="color: %s">%s</span>',
-                    $isVisible ? 'green' : 'red',
-                    $isVisible ? 'Yes' : 'No'
-                );
-            })->asHtml(),
             Text::make('Status', function (KeycloakClientModel $model) {
                 $client = $model->toDomain();
 
@@ -94,6 +83,17 @@ final class KeycloakClient extends Resource
                 } catch (KeyCloakApiFailed) {
                     return '<span style="color: orange;">Failed to sync</span>';
                 }
+            })->asHtml(),
+            Text::make('Visible for integrator', static function (KeycloakClientModel $model) {
+                $keycloakClientModel = $model->toDomain();
+                /** @var Integration $integration */
+                $integration = App::get(IntegrationRepository::class)->getById($keycloakClientModel->integrationId);
+                $isVisible = $integration->isKeyVisibleForEnvironment($keycloakClientModel->environment);
+                return sprintf(
+                    '<span style="color: %s">%s</span>',
+                    $isVisible ? 'default' : 'silver',
+                    $isVisible ? 'Yes' : 'No'
+                );
             })->asHtml(),
             Text::make('client_id', function (KeycloakClientModel $model) {
                 return $model->toDomain()->clientId;

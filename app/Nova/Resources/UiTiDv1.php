@@ -69,17 +69,6 @@ final class UiTiDv1 extends Resource
                     UiTiDv1Environment::Testing->value => UiTiDv1Environment::Testing->name,
                     UiTiDv1Environment::Production->value => UiTiDv1Environment::Production->name,
                 ]),
-            Text::make('Visible for integrator', static function (UiTiDv1ConsumerModel $model) {
-                $uitIdV1Consumer = $model->toDomain();
-                /** @var Integration $integration */
-                $integration = App::get(IntegrationRepository::class)->getById($uitIdV1Consumer->integrationId);
-                $isVisible = $integration->isKeyVisibleForEnvironment($uitIdV1Consumer->environment);
-                return sprintf(
-                    '<span style="color: %s">%s</span>',
-                    $isVisible ? 'green' : 'red',
-                    $isVisible ? 'Yes' : 'No'
-                );
-            })->asHtml(),
             Text::make('Status', static function (UiTiDv1ConsumerModel $model) {
                 $status = App::get(CachedUiTiDv1Status::class)->findStatusOnConsumer($model->toDomain());
 
@@ -87,6 +76,17 @@ final class UiTiDv1 extends Resource
                     '<span style="color: %s">%s</span>',
                     $status === UiTiDv1ConsumerStatus::Active ? 'green' : 'red',
                     $status->name
+                );
+            })->asHtml(),
+            Text::make('Visible for integrator', static function (UiTiDv1ConsumerModel $model) {
+                $uitIdV1Consumer = $model->toDomain();
+                /** @var Integration $integration */
+                $integration = App::get(IntegrationRepository::class)->getById($uitIdV1Consumer->integrationId);
+                $isVisible = $integration->isKeyVisibleForEnvironment($uitIdV1Consumer->environment);
+                return sprintf(
+                    '<span style="color: %s">%s</span>',
+                    $isVisible ? 'default' : 'silver',
+                    $isVisible ? 'Yes' : 'No'
                 );
             })->asHtml(),
             Text::make('api_key')
