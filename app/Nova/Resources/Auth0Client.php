@@ -69,17 +69,6 @@ final class Auth0Client extends Resource
                     Auth0Tenant::Testing->value => Auth0Tenant::Testing->name,
                     Auth0Tenant::Production->value => Auth0Tenant::Production->name,
                 ]),
-            Text::make('Visible for integrator', static function (Auth0ClientModel $model) {
-                $auth0Client = $model->toDomain();
-                /** @var Integration $integration */
-                $integration = App::get(IntegrationRepository::class)->getById($auth0Client->integrationId);
-                $isVisible = $integration->isKeyVisibleForEnvironment($auth0Client->tenant);
-                return sprintf(
-                    '<span style="color: %s">%s</span>',
-                    $isVisible ? 'green' : 'red',
-                    $isVisible ? 'Yes' : 'No'
-                );
-            })->asHtml(),
             Text::make('Status', function (Auth0ClientModel $model) {
                 $auth0Client = $model->toDomain();
                 if (empty(App::get(CachedAuth0ClientGrants::class)->findGrantsOnClient($auth0Client))) {
@@ -89,6 +78,17 @@ final class Auth0Client extends Resource
 
                 Log::debug('Auth0Client - status - ' . $auth0Client->clientId . ': active');
                 return '<span style="color: green;">Active</span>';
+            })->asHtml(),
+            Text::make('Visible for integrator', static function (Auth0ClientModel $model) {
+                $auth0Client = $model->toDomain();
+                /** @var Integration $integration */
+                $integration = App::get(IntegrationRepository::class)->getById($auth0Client->integrationId);
+                $isVisible = $integration->isKeyVisibleForEnvironment($auth0Client->tenant);
+                return sprintf(
+                    '<span style="color: %s">%s</span>',
+                    $isVisible ? 'default' : 'silver',
+                    $isVisible ? 'Yes' : 'No'
+                );
             })->asHtml(),
             Text::make('auth0_client_id')
                 ->readonly(),
