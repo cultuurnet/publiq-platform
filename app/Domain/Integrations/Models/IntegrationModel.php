@@ -137,7 +137,10 @@ final class IntegrationModel extends UuidModel
 
     public function delete(): ?bool
     {
-        $this->update(['status' => IntegrationStatus::Deleted]);
+        // Temporarily disable events to avoid triggering 'updated'
+        static::withoutEvents(function () {
+            $this->update(['status' => IntegrationStatus::Deleted]);
+        });
         return parent::delete();
     }
 
