@@ -46,7 +46,7 @@ final class OrganizationModel extends UuidModel
     }
 
     /**
-     * @return HasMany<InsightlyMappingModel>
+     * @return HasMany<InsightlyMappingModel, $this>
      */
     public function insightlyMappings(): HasMany
     {

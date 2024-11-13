@@ -38,7 +38,7 @@ final class Auth0ClientModel extends UuidModel
     }
 
     /**
-     * @return BelongsTo<IntegrationModel, Auth0ClientModel>
+     * @return BelongsTo<IntegrationModel, $this>
      */
     public function integration(): BelongsTo
     {
