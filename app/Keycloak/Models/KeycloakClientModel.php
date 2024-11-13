@@ -38,7 +38,7 @@ final class KeycloakClientModel extends UuidModel
     }
 
     /**
-     * @return BelongsTo<IntegrationModel, KeycloakClientModel>
+     * @return BelongsTo<IntegrationModel, $this>
      */
     public function integration(): BelongsTo
     {

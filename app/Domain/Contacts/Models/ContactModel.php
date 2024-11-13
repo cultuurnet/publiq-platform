@@ -57,7 +57,7 @@ final class ContactModel extends UuidModel
     }
 
     /**
-     * @return BelongsTo<IntegrationModel, ContactModel>
+     * @return BelongsTo<IntegrationModel, $this>
      */
     public function integration(): BelongsTo
     {
@@ -65,7 +65,7 @@ final class ContactModel extends UuidModel
     }
 
     /**
-     * @return HasMany<InsightlyMappingModel>
+     * @return HasMany<InsightlyMappingModel, $this>
      */
     public function insightlyMappings(): HasMany
     {

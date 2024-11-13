@@ -45,7 +45,7 @@ abstract class UuidModel extends Model
     }
 
     /**
-     * @return HasMany<Activity>
+     * @return HasMany<Activity, $this>
      */
     public function activityLog(): HasMany
     {

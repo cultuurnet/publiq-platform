@@ -38,7 +38,7 @@ final class KeyVisibilityUpgradeModel extends UuidModel
     }
 
     /**
-     * @return BelongsTo<IntegrationModel, KeyVisibilityUpgradeModel>
+     * @return BelongsTo<IntegrationModel, $this>
      */
     public function integration(): BelongsTo
     {

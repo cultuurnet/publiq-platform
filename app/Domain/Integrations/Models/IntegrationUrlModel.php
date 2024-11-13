@@ -49,7 +49,7 @@ final class IntegrationUrlModel extends UuidModel
     }
 
     /**
-     * @return BelongsTo<IntegrationModel, IntegrationUrlModel>
+     * @return BelongsTo<IntegrationModel, $this>
      */
     public function integration(): BelongsTo
     {
