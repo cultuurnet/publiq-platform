@@ -42,7 +42,7 @@ final class UiTiDv1ConsumerModel extends UuidModel
     }
 
     /**
-     * @return BelongsTo<IntegrationModel, UiTiDv1ConsumerModel>
+     * @return BelongsTo<IntegrationModel, $this>
      */
     public function integration(): BelongsTo
     {
