@@ -7,7 +7,6 @@ namespace App\Keycloak\Converters;
 use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
-use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\IntegrationUrlType;
 
 /* Converts integration urls in the correct Keycloak API format */
@@ -39,7 +38,7 @@ final readonly class IntegrationUrlConverter
         }
 
         $loginUrl = $integration->urlsForTypeAndEnvironment(IntegrationUrlType::Login, $environment);
-        if (!isset($loginUrl[0]) || !$loginUrl[0] instanceof IntegrationUrl) {
+        if (!isset($loginUrl[0])) {
             return '';
         }
 

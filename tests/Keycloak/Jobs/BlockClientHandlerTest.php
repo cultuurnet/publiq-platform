@@ -26,8 +26,6 @@ final class BlockClientHandlerTest extends TestCase
     {
         Event::fake();
 
-        $this->assertTrue(true);
-
         $client = new Client(
             Uuid::uuid4(),
             Uuid::uuid4(),

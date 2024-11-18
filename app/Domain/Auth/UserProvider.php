@@ -11,7 +11,7 @@ use Illuminate\Contracts\Auth\UserProvider as UserProviderContract;
 
 final class UserProvider implements UserProviderContract
 {
-    public function retrieveById($identifier)
+    public function retrieveById($identifier): ?Authenticatable
     {
         /** @var Auth0 $auth0 */
         $auth0 = app(Auth0::class);
@@ -19,6 +19,8 @@ final class UserProvider implements UserProviderContract
         if ($user) {
             return UserModel::fromSession($user);
         }
+
+        return null;
     }
 
     public function retrieveByToken($identifier, $token)
