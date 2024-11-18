@@ -1,4 +1,5 @@
 import type { ComponentProps, ReactNode } from "react";
+import { useEffect } from "react";
 import React from "react";
 import { ButtonIcon } from "./ButtonIcon";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -24,6 +25,10 @@ export const Dialog = ({
   title,
   actions,
 }: Props) => {
+  useEffect(() => {
+    document.body.style.overflowY = isVisible ? "hidden" : "initial";
+  }, [isVisible]);
+
   if (!isVisible) {
     return null;
   }
