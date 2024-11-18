@@ -44,16 +44,16 @@
         },
         {
             "name": "auth0/auth0-php",
-            "version": "8.12.0",
+            "version": "8.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/auth0/auth0-PHP.git",
-                "reference": "d70324df7c04114513790ec886be261fb9bc5f30"
+                "reference": "3acf0f4d847f355eada5ac3f3336b175238c8ef1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/auth0/auth0-PHP/zipball/d70324df7c04114513790ec886be261fb9bc5f30",
-                "reference": "d70324df7c04114513790ec886be261fb9bc5f30",
+                "url": "https://api.github.com/repos/auth0/auth0-PHP/zipball/3acf0f4d847f355eada5ac3f3336b175238c8ef1",
+                "reference": "3acf0f4d847f355eada5ac3f3336b175238c8ef1",
                 "shasum": ""
             },
             "require": {
@@ -137,9 +137,9 @@
             ],
             "support": {
                 "issues": "https://github.com/auth0/auth0-PHP/issues",
-                "source": "https://github.com/auth0/auth0-PHP/tree/8.12.0"
+                "source": "https://github.com/auth0/auth0-PHP/tree/8.13.0"
             },
-            "time": "2024-11-07T06:09:39+00:00"
+            "time": "2024-11-15T11:08:53+00:00"
         },
         {
             "name": "barryvdh/laravel-debugbar",
