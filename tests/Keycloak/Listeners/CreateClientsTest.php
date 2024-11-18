@@ -104,7 +104,7 @@ final class CreateClientsTest extends TestCase
 
         $this->keycloakClientRepository->expects($this->once())
             ->method('create')
-            ->with(... $clients);
+            ->with(...array_values($clients));
 
         $this->logger->expects($this->exactly($this->realms->count()))
             ->method('info')
@@ -184,7 +184,7 @@ final class CreateClientsTest extends TestCase
 
         $this->keycloakClientRepository->expects($this->once())
             ->method('create')
-            ->with(... $clients);
+            ->with(...array_values($clients));
 
         $this->logger->expects($this->exactly($missingEnvironments->count()))
             ->method('info')

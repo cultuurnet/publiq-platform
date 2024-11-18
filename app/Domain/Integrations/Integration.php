@@ -66,7 +66,9 @@ final class Integration
         $this->organization = null;
         $this->keyVisibility = KeyVisibility::v2;
         $this->keyVisibilityUpgrade = null;
+        $this->subscription = null;
         $this->website = null;
+        $this->coupon = null;
     }
 
     public function withKeyVisibility(KeyVisibility $keyVisibility): self

@@ -39,7 +39,7 @@ final readonly class IntegrationUrlConverter
         }
 
         $loginUrl = $integration->urlsForTypeAndEnvironment(IntegrationUrlType::Login, $environment);
-        if (!isset($loginUrl[0]) || !$loginUrl[0] instanceof IntegrationUrl) {
+        if (!isset($loginUrl[0])) {
             return '';
         }
 
