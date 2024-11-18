@@ -7,7 +7,6 @@ namespace App\Keycloak\Converters;
 use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
-use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\IntegrationUrlType;
 
 /* Converts integration urls in the correct Keycloak API format */
