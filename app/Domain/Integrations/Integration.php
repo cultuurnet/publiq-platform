@@ -48,6 +48,8 @@ final class Integration
 
     private ?Coupon $coupon;
 
+    private ?IntegrationOnHold $integrationOnHold;
+
     public function __construct(
         public readonly UuidInterface $id,
         public readonly IntegrationType $type,
@@ -67,8 +69,16 @@ final class Integration
         $this->keyVisibility = KeyVisibility::v2;
         $this->keyVisibilityUpgrade = null;
         $this->subscription = null;
+        $this->integrationOnHold = null;
         $this->website = null;
         $this->coupon = null;
+    }
+
+    public function withIntegrationOnHold(IntegrationOnHold $integrationOnHold): self
+    {
+        $clone = clone $this;
+        $clone->integrationOnHold = $integrationOnHold;
+        return $clone;
     }
 
     public function withKeyVisibility(KeyVisibility $keyVisibility): self
@@ -262,6 +272,7 @@ final class Integration
             'legacyAuthConsumers' => $this->uiTiDv1Consumers,
             'keycloakClients' => $this->keycloakClients,
             'subscription' => $this->subscription,
+            'integrationOnHold' => $this->integrationOnHold,
             'website' => $this->website->value ?? null,
             'coupon' => $this->coupon ?? null,
         ];
