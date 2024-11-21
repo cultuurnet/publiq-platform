@@ -308,6 +308,14 @@ final class IntegrationModel extends UuidModel
     }
 
     /**
+     * @return HasOne<AdminInformationModel, $this>
+     */
+    public function adminInformation(): HasOne
+    {
+        return $this->hasOne(AdminInformationModel::class, 'integration_id');
+    }
+
+    /**
      * @return HasMany<Auth0ClientModel, $this>
      */
     public function auth0Clients(): HasMany
