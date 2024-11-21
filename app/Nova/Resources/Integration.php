@@ -23,6 +23,7 @@ use App\Nova\Actions\Keycloak\CreateMissingKeycloakClients;
 use App\Nova\Actions\OpenWidgetManager;
 use App\Nova\Actions\UiTiDv1\CreateMissingUiTiDv1Consumers;
 use App\Nova\Actions\UnblockIntegration;
+use App\Nova\Filters\AdminInformationFilter;
 use App\Nova\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -32,6 +33,7 @@ use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\FormData;
 use Laravel\Nova\Fields\HasMany;
+use Laravel\Nova\Fields\HasOne;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
@@ -81,6 +83,13 @@ final class Integration extends Resource
         }
 
         return $output;
+    }
+
+    public function filters(Request $request): array
+    {
+        return [
+            new AdminInformationFilter(),
+        ];
     }
 
     /**
@@ -224,6 +233,9 @@ final class Integration extends Resource
                 return '<a href="' . $couponUrl . '" class="link-default">' . $this->couponCode() . '</a>';
             })
                 ->asHtml()
+                ->onlyOnDetail(),
+
+            HasOne::make('Admin Information', 'adminInformation', AdminInformation::class)
                 ->onlyOnDetail(),
 
             HasMany::make('UiTiD v1 Consumer Credentials', 'uiTiDv1Consumers', UiTiDv1::class),
