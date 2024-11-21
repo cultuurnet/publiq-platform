@@ -273,6 +273,11 @@ final class IntegrationModel extends UuidModel
         return $this->hasMany(IntegrationUrlModel::class, 'integration_id');
     }
 
+    public function onHold(): HasOne
+    {
+        return $this->hasOne(IntegrationOnHoldModel::class, 'integration_id');
+    }
+
     public function insightlyOpportunityId(): ?string
     {
         return $this->insightlyMappings()

@@ -28,6 +28,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\FormData;
@@ -35,6 +36,7 @@ use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Fields\URL;
 use Laravel\Nova\Http\Requests\ActionRequest;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -161,6 +163,25 @@ final class Integration extends Resource
                 ])
                 ->default(IntegrationStatus::Draft->value),
 
+            Boolean::make('On hold', null, function () {
+                return $this->onHold()->value('on_hold');
+            })
+                ->filterable()
+                ->sortable()
+                ->fillUsing(function (NovaRequest $request, $model, string $attribute, string $requestAttribute): void {
+                    if (!$model instanceof IntegrationModel) {
+                        return;
+                    }
+
+                    if ($model->onHold()->value('id') === null) {
+                        if ($request->get($requestAttribute) === true) {
+                            $model->onHold()->create(['on_hold' => $request->get($requestAttribute)]);
+                        }
+                    } else {
+                        $model->onHold()->update(['on_hold' => $request->get($requestAttribute)]);
+                    }
+                }),
+
             BelongsTo::make('Subscription')
                 ->filterable()
                 ->sortable()
@@ -227,6 +248,24 @@ final class Integration extends Resource
                 ->onlyOnDetail(),
 
             HasMany::make('UiTiD v1 Consumer Credentials', 'uiTiDv1Consumers', UiTiDv1::class),
+            Textarea::make('Comment', null, function () {
+                return $this->onHold()->value('comment');
+            })
+                ->hideFromIndex()
+                ->sortable()
+                ->fillUsing(function (NovaRequest $request, $model, string $attribute, string $requestAttribute): void {
+                    if (!$model instanceof IntegrationModel) {
+                        return;
+                    }
+
+                    if ($model->onHold()->value('id') === null) {
+                        if (!empty($request->get($requestAttribute))) {
+                            $model->onHold()->create(['comment' => $request->get($requestAttribute)]);
+                        }
+                    } else {
+                        $model->onHold()->update(['comment' => $request->get($requestAttribute)]);
+                    }
+                }),
         ];
 
         if (config(Auth0Config::IS_ENABLED)) {
@@ -258,7 +297,7 @@ final class Integration extends Resource
                 ->confirmText('Are you sure you want to activate this integration?')
                 ->confirmButtonText('Activate')
                 ->cancelButtonText('Cancel')
-                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeActivated() && !$this->isUiTPAS())
+                ->canSee(fn (Request $request) => $request instanceof ActionRequest || ($this->canBeActivated() && !$this->isUiTPAS()))
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeActivated()),
 
             (new ActivateUitpasIntegration(App::make(IntegrationRepository::class)))
@@ -266,7 +305,7 @@ final class Integration extends Resource
                 ->confirmText('Are you sure you want to activate this integration?')
                 ->confirmButtonText('Activate')
                 ->cancelButtonText('Cancel')
-                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeActivated() && $this->isUiTPAS())
+                ->canSee(fn (Request $request) => $request instanceof ActionRequest || ($this->canBeActivated() && $this->isUiTPAS()))
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeActivated()),
 
             (new ApproveIntegration(App::make(IntegrationRepository::class)))
