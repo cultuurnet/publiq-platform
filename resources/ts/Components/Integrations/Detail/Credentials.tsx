@@ -60,7 +60,6 @@ export const Credentials = ({
 
     return credentials.every((it) => it.length > 0);
   }, [
-    authClients,
     config.keycloak.enabled,
     keyVisibility,
     keyVisibilityUpgrade,
