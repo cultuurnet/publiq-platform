@@ -35,21 +35,18 @@ export const IntegrationClientCredential = ({ client }: Props) => {
 };
 
 export const IntegrationClientCredentials = ({
-  client,
   keycloakClient,
   status,
   type,
   isLive,
 }: Pick<Integration, "status" | "type"> & {
-  client: AuthClient | undefined;
   keycloakClient?: KeycloakClient;
   isLive: boolean;
 }) => {
   const { t } = useTranslation();
   const { config } = usePageProps();
 
-  const clientToShow =
-    config.keycloak.creationEnabled && keycloakClient ? keycloakClient : client;
+  const clientToShow = keycloakClient;
   const clientWithLabels = [
     {
       label: "details.credentials.client_id",

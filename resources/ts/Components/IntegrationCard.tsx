@@ -66,8 +66,6 @@ export const IntegrationCard = ({
   status,
   legacyTestConsumer,
   legacyProdConsumer,
-  testClient,
-  prodClient,
   keycloakTestClient,
   keycloakProdClient,
   keyVisibility,
@@ -80,8 +78,6 @@ export const IntegrationCard = ({
   const hasAnyCredentials = [
     legacyTestConsumer,
     legacyProdConsumer,
-    testClient,
-    prodClient,
     keycloakTestClient,
     keycloakProdClient,
   ].some(Boolean);
@@ -104,7 +100,6 @@ export const IntegrationCard = ({
             </Heading>
             <div className="flex flex-col gap-2">
               <IntegrationClientCredentials
-                client={testClient}
                 keycloakClient={keycloakTestClient}
                 status={status}
                 type={type}
@@ -162,7 +157,6 @@ export const IntegrationCard = ({
                 )}
                 {status === IntegrationStatus.Active && (
                   <IntegrationClientCredentials
-                    client={prodClient}
                     keycloakClient={keycloakProdClient}
                     status={status}
                     type={type}

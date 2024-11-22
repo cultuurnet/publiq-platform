@@ -81,7 +81,6 @@ export const CredentialsAuthClients = ({
               {t("details.credentials.test")}
             </Heading>
             <IntegrationClientCredentials
-              client={testClient}
               keycloakClient={keycloakTestClient}
               status={status}
               type={type}
@@ -96,7 +95,6 @@ export const CredentialsAuthClients = ({
             {status === IntegrationStatus.Active && (
               <div className="flex flex-col gap-3">
                 <IntegrationClientCredentials
-                  client={prodClient}
                   keycloakClient={keycloakProdClient}
                   status={status}
                   type={type}
