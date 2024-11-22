@@ -9,21 +9,14 @@ use App\Auth0\CachedAuth0ClientGrants;
 use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Nova\ActionGuards\ActionGuard;
-use App\Nova\ActionGuards\Auth0\UnblockAuth0ClientGuard;
-use App\Nova\ActionGuards\Auth0\BlockAuth0ClientGuard;
-use App\Nova\Actions\Auth0\UnblockAuth0Client;
-use App\Nova\Actions\Auth0\BlockAuth0Client;
 use App\Nova\Resource;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Http\Requests\ActionRequest;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 /**
@@ -121,49 +114,5 @@ final class Auth0Client extends Resource
                 config('auth0.tenants')
             )
         );
-    }
-
-    public function actions(NovaRequest $request): array
-    {
-        return [
-            App::make(UnblockAuth0Client::class)
-                ->exceptOnIndex()
-                ->confirmText('Are you sure you want to unblock this client?')
-                ->confirmButtonText('Activate')
-                ->cancelButtonText('Cancel')
-                ->canSee(fn (Request $request) => $this->canUnblock($request, $this->resource))
-                ->canRun(fn (Request $request, Auth0ClientModel $model) => $this->canUnblock($request, $model)),
-
-            App::make(BlockAuth0Client::class)
-                ->exceptOnIndex()
-                ->confirmText('Are you sure you want to block this client?')
-                ->confirmButtonText('Block')
-                ->cancelButtonText('Cancel')
-                ->canSee(fn (Request $request) => $this->canBlock($request, $this->resource))
-                ->canRun(fn (Request $request, Auth0ClientModel $model) => $this->canBlock($request, $model)),
-        ];
-    }
-
-    private function canUnblock(Request $request, ?Auth0ClientModel $model): bool
-    {
-        return $this->can($request, $model, App::make(UnblockAuth0ClientGuard::class));
-    }
-
-    private function canBlock(Request $request, ?Auth0ClientModel $model): bool
-    {
-        return $this->can($request, $model, App::make(BlockAuth0ClientGuard::class));
-    }
-
-    private function can(Request $request, ?Auth0ClientModel $model, ActionGuard $guard): bool
-    {
-        if ($request instanceof ActionRequest) {
-            return true;
-        }
-
-        if ($model === null) {
-            return false;
-        }
-
-        return $guard->canDo($model->toDomain());
     }
 }
