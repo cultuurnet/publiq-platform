@@ -229,10 +229,6 @@ final class Integration extends Resource
             HasMany::make('UiTiD v1 Consumer Credentials', 'uiTiDv1Consumers', UiTiDv1::class),
         ];
 
-        if (config(Auth0Config::IS_ENABLED)) {
-            $fields[] = HasMany::make('UiTiD v2 Client Credentials (Auth0)', 'auth0Clients', Auth0Client::class);
-        }
-
         if (config(KeycloakConfig::KEYCLOAK_CREATION_ENABLED)) {
             $fields[] = HasMany::make('Keycloak client Credentials', 'keycloakClients', KeycloakClient::class);
         }
