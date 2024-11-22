@@ -29,17 +29,17 @@ export type Credentials = {
 };
 
 export const Credentials = ({
-                              id,
-                              status,
-                              email,
-                              subscription,
-                              type,
-                              keyVisibility,
-                              keyVisibilityUpgrade,
-                              legacyAuthConsumers,
-                              keycloakClients,
-                              oldCredentialsExpirationDate,
-                            }: Props) => {
+  id,
+  status,
+  email,
+  subscription,
+  type,
+  keyVisibility,
+  keyVisibilityUpgrade,
+  legacyAuthConsumers,
+  keycloakClients,
+  oldCredentialsExpirationDate,
+}: Props) => {
   const { t } = useTranslation();
   const { config } = usePageProps();
   const hasCredentials = useMemo(() => {
@@ -63,69 +63,69 @@ export const Credentials = ({
   ]);
 
   const isV1Upgraded =
-      keyVisibility === KeyVisibility.v1 && !!keyVisibilityUpgrade;
+    keyVisibility === KeyVisibility.v1 && !!keyVisibilityUpgrade;
   usePolling(!hasCredentials || isV1Upgraded, { only: ["integration"] });
   const credentials = useMemo(
-      () => ({
-        legacyTestConsumer: legacyAuthConsumers.find(
-            (consumer) => consumer.environment === UiTiDv1Environment.Testing
-        ),
-        legacyProdConsumer: legacyAuthConsumers.find(
-            (consumer) => consumer.environment === UiTiDv1Environment.Production
-        ),
-        keycloakTestClient: keycloakClients.find(
-            (client) => client.environment === KeycloakEnvironment.Testing
-        ),
-        keycloakProdClient: keycloakClients.find(
-            (client) => client.environment === KeycloakEnvironment.Production
-        ),
-      }),
-      [legacyAuthConsumers, keycloakClients]
+    () => ({
+      legacyTestConsumer: legacyAuthConsumers.find(
+        (consumer) => consumer.environment === UiTiDv1Environment.Testing
+      ),
+      legacyProdConsumer: legacyAuthConsumers.find(
+        (consumer) => consumer.environment === UiTiDv1Environment.Production
+      ),
+      keycloakTestClient: keycloakClients.find(
+        (client) => client.environment === KeycloakEnvironment.Testing
+      ),
+      keycloakProdClient: keycloakClients.find(
+        (client) => client.environment === KeycloakEnvironment.Production
+      ),
+    }),
+    [legacyAuthConsumers, keycloakClients]
   );
 
   if (!hasCredentials) {
     return (
-        <Alert variant={"info"}>{t("integrations.pending_credentials")}</Alert>
+      <Alert variant={"info"}>{t("integrations.pending_credentials")}</Alert>
     );
   }
 
   if (type === IntegrationType.Widgets) {
     return (
-        <CredentialsWidgets
-            {...credentials}
-            email={email}
-            status={status}
-            id={id}
-            type={type}
-            subscription={subscription}
-        />
+      <CredentialsWidgets
+        {...credentials}
+        email={email}
+        status={status}
+        id={id}
+        type={type}
+        subscription={subscription}
+      />
     );
   }
 
   return (
-      <>
-        {keyVisibility !== KeyVisibility.v2 && (
-            <CredentialsLegacyAuthConsumers
-                {...credentials}
-                email={email}
-                status={status}
-                id={id}
-                type={type}
-                subscription={subscription}
-                keyVisibility={keyVisibility}
-                oldCredentialsExpirationDate={oldCredentialsExpirationDate}
-            />
-        )}
-        <CredentialsAuthClients
-            {...credentials}
-            email={email}
-            status={status}
-            id={id}
-            type={type}
-            subscription={subscription}
-            keyVisibility={keyVisibility}
-            keyVisibilityUpgrade={keyVisibilityUpgrade}
+    <>
+      {keyVisibility !== KeyVisibility.v2 && (
+        <CredentialsLegacyAuthConsumers
+          {...credentials}
+          email={email}
+          status={status}
+          id={id}
+          type={type}
+          subscription={subscription}
+          keyVisibility={keyVisibility}
+          oldCredentialsExpirationDate={oldCredentialsExpirationDate}
         />
-      </>
+      )}
+      <CredentialsAuthClients
+        {...credentials}
+        email={email}
+        status={status}
+        id={id}
+        type={type}
+        subscription={subscription}
+        keyVisibility={keyVisibility}
+        keyVisibilityUpgrade={keyVisibilityUpgrade}
+      />
+    </>
   );
 };

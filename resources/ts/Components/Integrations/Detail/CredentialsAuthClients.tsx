@@ -25,8 +25,6 @@ type Props = Pick<
   Credentials & { email: string };
 
 export const CredentialsAuthClients = ({
-  testClient,
-  prodClient,
   keycloakTestClient,
   keycloakProdClient,
   id,
