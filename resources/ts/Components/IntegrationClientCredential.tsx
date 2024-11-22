@@ -5,8 +5,7 @@ import { IntegrationType } from "../types/IntegrationType";
 import { IntegrationStatus } from "../types/IntegrationStatus";
 import { Alert } from "./Alert";
 import type { Integration } from "../types/Integration";
-import type { AuthClient, KeycloakClient } from "../types/Credentials";
-import { usePageProps } from "../hooks/usePageProps";
+import type { KeycloakClient } from "../types/Credentials";
 
 type Props = {
   client: {
@@ -44,7 +43,6 @@ export const IntegrationClientCredentials = ({
   isLive: boolean;
 }) => {
   const { t } = useTranslation();
-  const { config } = usePageProps();
 
   const clientToShow = keycloakClient;
   const clientWithLabels = [
