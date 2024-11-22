@@ -18,7 +18,7 @@ final class IntegrationMailModel extends Model
     ];
 
     /**
-     * @return BelongsTo<IntegrationModel, IntegrationMailModel>
+     * @return BelongsTo<IntegrationModel, $this>
      */
     public function integration(): BelongsTo
     {

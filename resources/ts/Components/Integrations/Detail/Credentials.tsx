@@ -52,7 +52,7 @@ export const Credentials = ({
       return legacyAuthConsumers.length > 0;
     }
 
-    const credentials: unknown[][] = [legacyAuthConsumers, authClients];
+    const credentials: unknown[][] = [legacyAuthConsumers];
 
     if (config.keycloak.enabled) {
       credentials.push(keycloakClients);
@@ -60,7 +60,6 @@ export const Credentials = ({
 
     return credentials.every((it) => it.length > 0);
   }, [
-    authClients,
     config.keycloak.enabled,
     keyVisibility,
     keyVisibilityUpgrade,

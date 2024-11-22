@@ -137,7 +137,10 @@ final class IntegrationModel extends UuidModel
 
     public function delete(): ?bool
     {
-        $this->update(['status' => IntegrationStatus::Deleted]);
+        // Temporarily disable events to avoid triggering 'updated'
+        static::withoutEvents(function () {
+            $this->update(['status' => IntegrationStatus::Deleted]);
+        });
         return parent::delete();
     }
 
@@ -206,7 +209,7 @@ final class IntegrationModel extends UuidModel
     }
 
     /**
-     * @return HasOne<KeyVisibilityUpgradeModel>
+     * @return HasOne<KeyVisibilityUpgradeModel, $this>
      */
     public function keyVisibilityUpgrade(): HasOne
     {
@@ -214,7 +217,7 @@ final class IntegrationModel extends UuidModel
     }
 
     /**
-     * @return HasMany<UdbOrganizerModel>
+     * @return HasMany<UdbOrganizerModel, $this>
      */
     public function udbOrganizers(): HasMany
     {
@@ -222,7 +225,7 @@ final class IntegrationModel extends UuidModel
     }
 
     /**
-     * @return HasMany<ContactModel>
+     * @return HasMany<ContactModel, $this>
      */
     public function contacts(): HasMany
     {
@@ -231,7 +234,7 @@ final class IntegrationModel extends UuidModel
 
     /**
      * Tracks which mails have been sent about this integration
-     * @return HasMany<IntegrationMailModel>
+     * @return HasMany<IntegrationMailModel, $this>
      */
     public function mail(): HasMany
     {
@@ -239,7 +242,7 @@ final class IntegrationModel extends UuidModel
     }
 
     /**
-     * @return BelongsTo<SubscriptionModel, IntegrationModel>
+     * @return BelongsTo<SubscriptionModel, $this>
      */
     public function subscription(): BelongsTo
     {
@@ -247,7 +250,7 @@ final class IntegrationModel extends UuidModel
     }
 
     /**
-     * @return BelongsTo<OrganizationModel, IntegrationModel>
+     * @return BelongsTo<OrganizationModel, $this>
      */
     public function organization(): BelongsTo
     {
@@ -255,7 +258,7 @@ final class IntegrationModel extends UuidModel
     }
 
     /**
-     * @return HasMany<InsightlyMappingModel>
+     * @return HasMany<InsightlyMappingModel, $this>
      */
     public function insightlyMappings(): HasMany
     {
@@ -263,7 +266,7 @@ final class IntegrationModel extends UuidModel
     }
 
     /**
-     * @return HasMany<IntegrationUrlModel>
+     * @return HasMany<IntegrationUrlModel, $this>
      */
     public function urls(): HasMany
     {
@@ -287,7 +290,7 @@ final class IntegrationModel extends UuidModel
     }
 
     /**
-     * @return HasOne<CouponModel>
+     * @return HasOne<CouponModel, $this>
      */
     public function coupon(): HasOne
     {
@@ -305,7 +308,7 @@ final class IntegrationModel extends UuidModel
     }
 
     /**
-     * @return HasMany<Auth0ClientModel>
+     * @return HasMany<Auth0ClientModel, $this>
      */
     public function auth0Clients(): HasMany
     {
@@ -313,7 +316,7 @@ final class IntegrationModel extends UuidModel
     }
 
     /**
-     * @return HasMany<UiTiDv1ConsumerModel>
+     * @return HasMany<UiTiDv1ConsumerModel, $this>
      */
     public function uiTiDv1Consumers(): HasMany
     {
@@ -321,7 +324,7 @@ final class IntegrationModel extends UuidModel
     }
 
     /**
-     * @return HasMany<KeycloakClientModel>
+     * @return HasMany<KeycloakClientModel, $this>
      */
     public function keycloakClients(): HasMany
     {

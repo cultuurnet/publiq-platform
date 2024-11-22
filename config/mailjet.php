@@ -8,7 +8,7 @@ use App\Mails\Template\TemplateName;
 return [
     'enabled' => env('MAILJET_TRANSACTIONAL_EMAILS_ENABLED', false),
     'sandbox_mode' => env('MAILJET_SANDBOX_MODE', true),
-    'sandbox_allowed_domains' => array_map(static fn ($value) => trim($value), explode(',', env('MAILJET_SANDBOX_ALLOWED_DOMAINS', ''))),
+    'sandbox_allowed_domains' => array_map(static fn ($value) => trim($value), explode(',', (string)env('MAILJET_SANDBOX_ALLOWED_DOMAINS', ''))),
     'api' => [
         'key' => env('MAILJET_API_KEY'),
         'secret' => env('MAILJET_API_SECRET'),

@@ -54,7 +54,7 @@ final class HttpInsightlyClientTest extends TestCase
         );
 
         $insightlyId = $this->insightlyClient->contacts()->create($contact);
-        $this->assertNotNull($insightlyId);
+        $this->assertNotEmpty($insightlyId);
 
         $updatedContact = new Contact(
             Uuid::uuid4(),
@@ -82,7 +82,7 @@ final class HttpInsightlyClientTest extends TestCase
         );
 
         $insightlyId = $this->insightlyClient->contacts()->create($contact);
-        $this->assertNotNull($insightlyId);
+        $this->assertNotEmpty($insightlyId);
 
         $insightlyContacts = $this->insightlyClient->contacts()->findByEmail('jane.doe@anonymous.com');
         $contactIds = array_map(
@@ -107,7 +107,7 @@ final class HttpInsightlyClientTest extends TestCase
         );
 
         $insightlyId = $this->insightlyClient->opportunities()->create($integration);
-        $this->assertNotNull($insightlyId);
+        $this->assertNotEmpty($insightlyId);
 
         $this->insightlyClient->opportunities()->delete($insightlyId);
     }
@@ -125,7 +125,7 @@ final class HttpInsightlyClientTest extends TestCase
         );
 
         $insightlyId = $this->insightlyClient->projects()->create($integration);
-        $this->assertNotNull($insightlyId);
+        $this->assertNotEmpty($insightlyId);
 
         $this->insightlyClient->projects()->delete($insightlyId);
     }
@@ -143,7 +143,7 @@ final class HttpInsightlyClientTest extends TestCase
         );
 
         $insightlyId = $this->insightlyClient->projects()->create($integration);
-        $this->assertNotNull($insightlyId);
+        $this->assertNotEmpty($insightlyId);
 
         $this->insightlyClient->projects()->updateWithCoupon($insightlyId, 'test123');
 
@@ -163,7 +163,7 @@ final class HttpInsightlyClientTest extends TestCase
         );
 
         $insightlyId = $this->insightlyClient->projects()->create($integration);
-        $this->assertNotNull($insightlyId);
+        $this->assertNotEmpty($insightlyId);
 
         $this->insightlyClient->projects()->updateStage($insightlyId, ProjectStage::LIVE);
 
@@ -183,10 +183,10 @@ final class HttpInsightlyClientTest extends TestCase
         );
 
         $insightlyOpportunityId = $this->insightlyClient->opportunities()->create($integration);
-        $this->assertNotNull($insightlyOpportunityId);
+        $this->assertNotEmpty($insightlyOpportunityId);
 
         $insightlyProjectId = $this->insightlyClient->projects()->create($integration);
-        $this->assertNotNull($insightlyProjectId);
+        $this->assertNotEmpty($insightlyProjectId);
 
         $this->insightlyClient->projects()->linkOpportunity($insightlyProjectId, $insightlyOpportunityId);
 
@@ -266,7 +266,7 @@ final class HttpInsightlyClientTest extends TestCase
         );
 
         $insightlyId = $this->insightlyClient->organizations()->create($organization);
-        $this->assertNotNull($insightlyId);
+        $this->assertNotEmpty($insightlyId);
 
         $this->insightlyClient->opportunities()->delete($insightlyId);
     }
@@ -289,7 +289,7 @@ final class HttpInsightlyClientTest extends TestCase
         );
 
         $insightlyId = $this->insightlyClient->organizations()->create($organization);
-        $this->assertNotNull($organizationId);
+        $this->assertNotEmpty($insightlyId);
 
         $updatedOrganization = new Organization(
             $organizationId,

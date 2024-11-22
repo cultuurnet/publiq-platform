@@ -47,7 +47,7 @@ final class CouponModel extends UuidModel
     }
 
     /**
-     * @return BelongsTo<IntegrationModel, CouponModel>
+     * @return BelongsTo<IntegrationModel, $this>
      */
     public function integration(): BelongsTo
     {

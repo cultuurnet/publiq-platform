@@ -1,4 +1,5 @@
 import type { ComponentProps, ReactNode } from "react";
+import { useEffect } from "react";
 import React from "react";
 import { ButtonIcon } from "./ButtonIcon";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -24,6 +25,10 @@ export const Dialog = ({
   title,
   actions,
 }: Props) => {
+  useEffect(() => {
+    document.body.style.overflowY = isVisible ? "hidden" : "initial";
+  }, [isVisible]);
+
   if (!isVisible) {
     return null;
   }
@@ -32,10 +37,10 @@ export const Dialog = ({
     <>
       <div
         className={classNames(
-          "fixed bg-white flex flex-col items-center z-[60] top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%]",
+          "fixed bg-white flex flex-col items-center z-[60] top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] overflow-y-auto",
           isFullscreen
-            ? "h-full w-full p-4 overflow-y-auto"
-            : "max-h-screen md:max-w-[40rem] md:min-w-[40rem] top-[30%] overflow-y-visible"
+            ? "h-full w-full p-4"
+            : "md:max-w-[40rem] md:min-w-[40rem] top-[30%] max-h-[95%]"
         )}
       >
         <div

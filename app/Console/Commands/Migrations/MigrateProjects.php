@@ -116,7 +116,7 @@ final class MigrateProjects extends Command
                 $migrationProject->insightlyProjectId()
             );
 
-            if ($migrationProject->userUiTiD() !== null) {
+            if (!empty($migrationProject->userUiTiD())) {
                 $this->migrateContact($integrationId, $migrationProject->userUiTiD());
             }
 

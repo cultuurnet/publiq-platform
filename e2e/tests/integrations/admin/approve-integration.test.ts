@@ -29,7 +29,7 @@ test("As an admin I can approve an integration", async ({ page }) => {
   await page.getByRole("button", { name: "Approve Integration" }).click();
   await page.locator("[dusk='confirm-action-button']").click();
 
-  await expect(page.getByText(/^active$/, { exact: true })).toBeVisible();
+  await expect(page.getByText('Statusactive', { exact: true })).toBeVisible();
 
   await assertKeyVisibility(page, IntegrationStatus.Active);
 });

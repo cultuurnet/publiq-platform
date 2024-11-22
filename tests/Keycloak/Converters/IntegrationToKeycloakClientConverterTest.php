@@ -28,7 +28,6 @@ final class IntegrationToKeycloakClientConverterTest extends TestCase
 
         $convertedData = IntegrationToKeycloakClientConverter::convert($id, $integration, $clientId, Environment::Acceptance);
 
-        $this->assertIsArray($convertedData);
         $this->assertEquals('openid-connect', $convertedData['protocol']);
         $this->assertEquals($id->toString(), $convertedData['id']);
         $this->assertEquals($clientId, $convertedData['clientId']);
