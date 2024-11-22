@@ -17,7 +17,6 @@ use App\Nova\Actions\ActivateIntegration;
 use App\Nova\Actions\ActivateUitpasIntegration;
 use App\Nova\Actions\AddUdbOrganizer;
 use App\Nova\Actions\ApproveIntegration;
-use App\Nova\Actions\Auth0\CreateMissingAuth0Clients;
 use App\Nova\Actions\BlockIntegration;
 use App\Nova\Actions\Keycloak\CreateMissingKeycloakClients;
 use App\Nova\Actions\OpenWidgetManager;
@@ -312,17 +311,6 @@ final class Integration extends Resource
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->hasMissingUiTiDv1Consumers())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->hasMissingUiTiDv1Consumers()),
         ];
-
-        if (config(Auth0Config::IS_ENABLED)) {
-            $actions[] = (new CreateMissingAuth0Clients())
-                ->withName('Create missing Auth0 Clients')
-                ->onlyOnDetail()
-                ->confirmText('Are you sure you want to create missing Auth0 clients for this integration?')
-                ->confirmButtonText('Create')
-                ->cancelButtonText('Cancel')
-                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->hasMissingAuth0Clients())
-                ->canRun(fn (Request $request, IntegrationModel $model) => $model->hasMissingAuth0Clients());
-        }
 
         if (config(KeycloakConfig::KEYCLOAK_CREATION_ENABLED)) {
             $actions[] = (new CreateMissingKeycloakClients())
