@@ -85,7 +85,7 @@ pipeline {
             }
             post {
                 always {
-                    sendBuildNotification to: '#upw-ops', message: "Pipeline <${env.RUN_DISPLAY_URL}|${env.JOB_NAME} [${currentBuild.displayName}]>: deployed to *${env.APPLICATION_ENVIRONMENT}*"
+                    sendBuildNotification to: '#upw-ops', message: "Pipeline <${env.RUN_DISPLAY_URL}|${util.getJobDisplayName()} [${currentBuild.displayName}]>: deployed to *${env.APPLICATION_ENVIRONMENT}*"
                 }
             }
         }
@@ -105,6 +105,7 @@ pipeline {
                 }
                 stage('Run acceptance tests') {
                     steps {
+                        sendBuildNotification to: '#mwl-publiq-tests', message: "Pipeline <${env.RUN_DISPLAY_URL}|${util.getJobDisplayName()} [${currentBuild.displayName}]>: automated acceptance tests started"
                         withCredentials([usernamePassword(credentialsId: 'publiq-platform_e2etest_user',
                                                           usernameVariable: 'E2E_TEST_EMAIL',
                                                           passwordVariable: 'E2E_TEST_PASSWORD'),
@@ -124,7 +125,7 @@ pipeline {
                     }
                     post {
                         always {
-                            sendBuildNotification to: '#publiq-platform', message: "Pipeline <${env.RUN_DISPLAY_URL}|${env.JOB_NAME} [${currentBuild.displayName}]>: automated acceptance tests finished"
+                            sendBuildNotification to: '#mwl-publiq-tests', message: "Pipeline <${env.RUN_DISPLAY_URL}|${util.getJobDisplayName()} [${currentBuild.displayName}]>: automated acceptance tests finished"
                         }
                     }
                 }
@@ -150,7 +151,7 @@ pipeline {
             }
             post {
                 always {
-                    sendBuildNotification to: '#upw-ops', message: "Pipeline <${env.RUN_DISPLAY_URL}|${env.JOB_NAME} [${currentBuild.displayName}]>: deployed to *${env.APPLICATION_ENVIRONMENT}*"
+                    sendBuildNotification to: '#upw-ops', message: "Pipeline <${env.RUN_DISPLAY_URL}|${util.getJobDisplayName()} [${currentBuild.displayName}]>: deployed to *${env.APPLICATION_ENVIRONMENT}*"
                 }
             }
         }
@@ -169,7 +170,7 @@ pipeline {
             }
             post {
                 always {
-                    sendBuildNotification to: '#upw-ops', message: "Pipeline <${env.RUN_DISPLAY_URL}|${env.JOB_NAME} [${currentBuild.displayName}]>: deployed to *${env.APPLICATION_ENVIRONMENT}*"
+                    sendBuildNotification to: '#upw-ops', message: "Pipeline <${env.RUN_DISPLAY_URL}|${util.getJobDisplayName()} [${currentBuild.displayName}]>: deployed to *${env.APPLICATION_ENVIRONMENT}*"
                 }
                 cleanup {
                     cleanupAptlySnapshots repository: env.REPOSITORY_NAME
