@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Nova\Resources;
 
-use App\Auth0\Auth0Config;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
@@ -57,7 +56,6 @@ final class Integration extends Resource
 
     public static $with = [
         'uiTiDv1Consumers',
-        'auth0Clients',
         'keycloakClients',
         'subscription',
     ];
@@ -70,10 +68,6 @@ final class Integration extends Resource
             'description',
             new SearchableRelation('uiTiDv1Consumers', 'consumer_key'),
         ];
-
-        if (config(Auth0Config::IS_ENABLED)) {
-            $output[] = new SearchableRelation('auth0Clients', 'auth0_client_id');
-        }
 
         if (config(KeycloakConfig::KEYCLOAK_CREATION_ENABLED)) {
             $output[] = new SearchableRelation('keycloakClients', 'client_id');
