@@ -1,4 +1,4 @@
-import { FormEvent } from "react";
+import { FormEvent, useEffect } from "react";
 import React, { useState } from "react";
 import { useForm } from "@inertiajs/react";
 import { Heading } from "../../Components/Heading";
