@@ -258,7 +258,7 @@ final class Integration
             'urls' => $this->urls,
             'organization' => $this->organization,
             'organizers' => $this->udbOrganizers,
-            'authClients' => $this->auth0Clients,
+            'authClients' => $this->keycloakClients,
             'legacyAuthConsumers' => $this->uiTiDv1Consumers,
             'keycloakClients' => $this->keycloakClients,
             'subscription' => $this->subscription,
