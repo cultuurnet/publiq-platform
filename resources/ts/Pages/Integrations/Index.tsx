@@ -51,29 +51,29 @@ const Index = ({ integrations, paginationInfo, credentials }: Props) => {
       integrations.map((integration) => ({
         ...integration,
         credentials: {
-          testClient: credentials.keycloak.find(
+          testClient: credentials.clients.find(
             (client) =>
               client.integrationId === integration.id &&
               client.environment === KeycloakEnvironment.Testing
           ),
-          prodClient: credentials.keycloak.find(
+          prodClient: credentials.clients.find(
             (client) =>
               client.integrationId === integration.id &&
               client.environment === KeycloakEnvironment.Production
           ),
-          legacyTestConsumer: credentials.uitidV1.find(
+          legacyTestConsumer: credentials.legacyConsumers.find(
             (client) =>
               client.integrationId === integration.id &&
               client.environment === UiTiDv1Environment.Testing
           ),
-          legacyProdConsumer: credentials.uitidV1.find(
+          legacyProdConsumer: credentials.legacyConsumers.find(
             (client) =>
               client.integrationId === integration.id &&
               client.environment === UiTiDv1Environment.Production
           ),
         },
       })),
-    [integrations, credentials.uitidV1, credentials.keycloak]
+    [integrations, credentials.legacyConsumers, credentials.clients]
   );
 
   const handleDeleteIntegration = () => {

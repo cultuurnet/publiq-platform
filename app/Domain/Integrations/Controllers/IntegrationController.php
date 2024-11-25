@@ -97,8 +97,8 @@ final class IntegrationController extends Controller
         return Inertia::render('Integrations/Index', [
             'integrations' => $integrationsData->collection->map(fn (Integration $integration) => $integration->toArray()),
             'credentials' => [
-                'uitidV1' => $uitidV1Consumers,
-                'keycloak' => $keycloakClients,
+                'legacyConsumers' => $uitidV1Consumers,
+                'clients' => $keycloakClients,
             ],
             'paginationInfo' => $integrationsData->paginationInfo,
         ]);

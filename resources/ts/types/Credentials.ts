@@ -19,6 +19,6 @@ export type AuthClient = {
 };
 
 export type Credentials = {
-  uitidV1: LegacyAuthConsumer[];
-  keycloak: AuthClient[];
+  legacyConsumers: LegacyAuthConsumer[];
+  clients: AuthClient[];
 };
