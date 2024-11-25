@@ -27,8 +27,6 @@ type Props = Pick<
 export const CredentialsAuthClients = ({
   testClient,
   prodClient,
-  keycloakTestClient,
-  keycloakProdClient,
   id,
   status,
   email,
@@ -84,7 +82,6 @@ export const CredentialsAuthClients = ({
             </Heading>
             <IntegrationClientCredentials
               client={testClient}
-              keycloakClient={keycloakTestClient}
               status={status}
               type={type}
               isLive={false}
@@ -99,7 +96,6 @@ export const CredentialsAuthClients = ({
               <div className="flex flex-col gap-3">
                 <IntegrationClientCredentials
                   client={prodClient}
-                  keycloakClient={keycloakProdClient}
                   status={status}
                   type={type}
                   isLive={true}
