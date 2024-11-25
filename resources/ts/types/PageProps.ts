@@ -11,10 +11,6 @@ type Config = {
     enabled: boolean;
     dsn: string;
   };
-  keycloak: {
-    enabled: boolean;
-    creationEnabled: boolean;
-  };
 };
 
 export type PageProps = {

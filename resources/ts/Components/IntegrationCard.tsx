@@ -24,11 +24,6 @@ import { usePolling } from "../hooks/usePolling";
 import { ButtonSecondary } from "./ButtonSecondary";
 import { IntegrationClientCredentials } from "./IntegrationClientCredential";
 
-type Props = Integration &
-  Credentials & {
-    onEdit: (id: string) => void;
-  };
-
 const productTypeToPath = {
   uitpas: "/uitpas/getting-started",
   "entry-api": "/uitdatabank/entry-api/introduction",
@@ -59,6 +54,11 @@ export const OpenWidgetBuilderButton = ({
   );
 };
 
+type Props = Integration &
+  Credentials & {
+    onEdit: (id: string) => void;
+  };
+
 export const IntegrationCard = ({
   id,
   name,
@@ -68,8 +68,6 @@ export const IntegrationCard = ({
   legacyProdConsumer,
   testClient,
   prodClient,
-  keycloakTestClient,
-  keycloakProdClient,
   keyVisibility,
   onEdit,
 }: Props) => {
@@ -82,8 +80,6 @@ export const IntegrationCard = ({
     legacyProdConsumer,
     testClient,
     prodClient,
-    keycloakTestClient,
-    keycloakProdClient,
   ].some(Boolean);
 
   usePolling(!hasAnyCredentials, { only: ["credentials"] });
@@ -105,7 +101,6 @@ export const IntegrationCard = ({
             <div className="flex flex-col gap-2">
               <IntegrationClientCredentials
                 client={testClient}
-                keycloakClient={keycloakTestClient}
                 status={status}
                 type={type}
                 isLive={false}
@@ -163,7 +158,6 @@ export const IntegrationCard = ({
                 {status === IntegrationStatus.Active && (
                   <IntegrationClientCredentials
                     client={prodClient}
-                    keycloakClient={keycloakProdClient}
                     status={status}
                     type={type}
                     isLive={true}
