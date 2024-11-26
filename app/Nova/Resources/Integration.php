@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Nova\Resources;
 
-use App\Auth0\Auth0Config;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
@@ -17,7 +16,6 @@ use App\Nova\Actions\ActivateIntegration;
 use App\Nova\Actions\ActivateUitpasIntegration;
 use App\Nova\Actions\AddUdbOrganizer;
 use App\Nova\Actions\ApproveIntegration;
-use App\Nova\Actions\Auth0\CreateMissingAuth0Clients;
 use App\Nova\Actions\BlockIntegration;
 use App\Nova\Actions\Keycloak\CreateMissingKeycloakClients;
 use App\Nova\Actions\OpenWidgetManager;
@@ -60,7 +58,6 @@ final class Integration extends Resource
 
     public static $with = [
         'uiTiDv1Consumers',
-        'auth0Clients',
         'keycloakClients',
         'subscription',
     ];
@@ -73,10 +70,6 @@ final class Integration extends Resource
             'description',
             new SearchableRelation('uiTiDv1Consumers', 'consumer_key'),
         ];
-
-        if (config(Auth0Config::IS_ENABLED)) {
-            $output[] = new SearchableRelation('auth0Clients', 'auth0_client_id');
-        }
 
         if (config(KeycloakConfig::KEYCLOAK_CREATION_ENABLED)) {
             $output[] = new SearchableRelation('keycloakClients', 'client_id');
@@ -241,10 +234,6 @@ final class Integration extends Resource
             HasMany::make('UiTiD v1 Consumer Credentials', 'uiTiDv1Consumers', UiTiDv1::class),
         ];
 
-        if (config(Auth0Config::IS_ENABLED)) {
-            $fields[] = HasMany::make('UiTiD v2 Client Credentials (Auth0)', 'auth0Clients', Auth0Client::class);
-        }
-
         if (config(KeycloakConfig::KEYCLOAK_CREATION_ENABLED)) {
             $fields[] = HasMany::make('Keycloak client Credentials', 'keycloakClients', KeycloakClient::class);
         }
@@ -328,17 +317,6 @@ final class Integration extends Resource
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->hasMissingUiTiDv1Consumers())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->hasMissingUiTiDv1Consumers()),
         ];
-
-        if (config(Auth0Config::IS_ENABLED)) {
-            $actions[] = (new CreateMissingAuth0Clients())
-                ->withName('Create missing Auth0 Clients')
-                ->onlyOnDetail()
-                ->confirmText('Are you sure you want to create missing Auth0 clients for this integration?')
-                ->confirmButtonText('Create')
-                ->cancelButtonText('Cancel')
-                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->hasMissingAuth0Clients())
-                ->canRun(fn (Request $request, IntegrationModel $model) => $model->hasMissingAuth0Clients());
-        }
 
         if (config(KeycloakConfig::KEYCLOAK_CREATION_ENABLED)) {
             $actions[] = (new CreateMissingKeycloakClients())
