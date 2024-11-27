@@ -11,14 +11,10 @@ use App\Keycloak\Client\ApiClient;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
-use Tests\Auth0\CreatesMockAuth0ClusterSDK;
 use Tests\TestCase;
 
 final class CachedKeycloakClientStatusTest extends TestCase
 {
-    use CreatesMockAuth0ClusterSDK;
-
-
     use RealmFactory;
 
     private ApiClient&MockObject $apiClient;
