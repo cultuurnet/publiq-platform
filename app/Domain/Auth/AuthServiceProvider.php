@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domain\Auth;
 
-use App\Auth0\Repositories\Auth0ManagementUserRepository;
 use App\Domain\Auth\Controllers\AccessController;
 use App\Domain\Auth\Models\UserModel;
 use App\Domain\Auth\Repositories\UserRepository;
 use App\Domain\Contacts\Repositories\ContactRepository;
-use App\Keycloak\KeycloakConfig;
 use App\Keycloak\Repositories\KeycloakUserRepository;
 use Auth0\SDK\Auth0;
 use Auth0\SDK\Contract\Auth0Interface;
