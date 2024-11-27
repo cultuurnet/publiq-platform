@@ -12,13 +12,12 @@ import type { PaginationInfo } from "../../types/PaginationInfo";
 import { Page } from "../../Components/Page";
 import { QuestionDialog } from "../../Components/QuestionDialog";
 import { IconLink } from "../../Components/IconLink";
-import { Auth0Tenant } from "../../types/Auth0Tenant";
 import { UiTiDv1Environment } from "../../types/UiTiDv1Environment";
 import type { Credentials } from "../../types/Credentials";
 import type { Integration } from "../../types/Integration";
 import { router } from "@inertiajs/react";
-import { KeycloakEnvironment } from "../../types/KeycloakEnvironment";
 import { WelcomeSection } from "../../Components/WelcomeSection";
+import { KeycloakEnvironment } from "../../types/KeycloakEnvironment";
 
 type Props = {
   integrations: Integration[];
@@ -52,39 +51,29 @@ const Index = ({ integrations, paginationInfo, credentials }: Props) => {
       integrations.map((integration) => ({
         ...integration,
         credentials: {
-          testClient: credentials.auth0.find(
-            (client) =>
-              client.integrationId === integration.id &&
-              client.tenant === Auth0Tenant.Testing
-          ),
-          prodClient: credentials.auth0.find(
-            (client) =>
-              client.integrationId === integration.id &&
-              client.tenant === Auth0Tenant.Production
-          ),
-          legacyTestConsumer: credentials.uitidV1.find(
-            (client) =>
-              client.integrationId === integration.id &&
-              client.environment === UiTiDv1Environment.Testing
-          ),
-          legacyProdConsumer: credentials.uitidV1.find(
-            (client) =>
-              client.integrationId === integration.id &&
-              client.environment === UiTiDv1Environment.Production
-          ),
-          keycloakTestClient: credentials.keycloak.find(
+          testClient: credentials.clients.find(
             (client) =>
               client.integrationId === integration.id &&
               client.environment === KeycloakEnvironment.Testing
           ),
-          keycloakProdClient: credentials.keycloak.find(
+          prodClient: credentials.clients.find(
             (client) =>
               client.integrationId === integration.id &&
               client.environment === KeycloakEnvironment.Production
           ),
+          legacyTestConsumer: credentials.legacyConsumers.find(
+            (client) =>
+              client.integrationId === integration.id &&
+              client.environment === UiTiDv1Environment.Testing
+          ),
+          legacyProdConsumer: credentials.legacyConsumers.find(
+            (client) =>
+              client.integrationId === integration.id &&
+              client.environment === UiTiDv1Environment.Production
+          ),
         },
       })),
-    [integrations, credentials.auth0, credentials.uitidV1, credentials.keycloak]
+    [integrations, credentials.legacyConsumers, credentials.clients]
   );
 
   const handleDeleteIntegration = () => {

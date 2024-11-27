@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Controllers;
 
-use App\Auth0\Repositories\Auth0ClientRepository;
 use App\Domain\Auth\CurrentUser;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\ContactKeyVisibilityRepository;
@@ -73,7 +72,6 @@ final class IntegrationController extends Controller
         private readonly OrganizationRepository $organizationRepository,
         private readonly UdbOrganizerRepository $organizerRepository,
         private readonly CouponRepository $couponRepository,
-        private readonly Auth0ClientRepository $auth0ClientRepository,
         private readonly UiTiDv1ConsumerRepository $uitidV1ConsumerRepository,
         private readonly KeycloakClientRepository $keycloakClientRepository,
         private readonly KeyVisibilityUpgradeRepository $keyVisibilityUpgradeRepository,
@@ -93,16 +91,14 @@ final class IntegrationController extends Controller
 
         $integrationIds = array_map(fn ($integration) => $integration->id, $integrationsData->collection->toArray());
 
-        $auth0Clients = $this->auth0ClientRepository->getByIntegrationIds($integrationIds);
         $uitidV1Consumers = $this->uitidV1ConsumerRepository->getByIntegrationIds($integrationIds);
         $keycloakClients = $this->keycloakClientRepository->getByIntegrationIds($integrationIds);
 
         return Inertia::render('Integrations/Index', [
             'integrations' => $integrationsData->collection->map(fn (Integration $integration) => $integration->toArray()),
             'credentials' => [
-                'auth0' => $auth0Clients,
-                'uitidV1' => $uitidV1Consumers,
-                'keycloak' => $keycloakClients,
+                'legacyConsumers' => $uitidV1Consumers,
+                'clients' => $keycloakClients,
             ],
             'paginationInfo' => $integrationsData->paginationInfo,
         ]);
