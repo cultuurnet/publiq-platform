@@ -48,7 +48,6 @@ final class AuthServiceProvider extends ServiceProvider
         UdbOrganizerModel::class => UdbOrganizerPolicy::class,
         SubscriptionModel::class => SubscriptionPolicy::class,
         UiTiDv1ConsumerModel::class => UiTiDv1ConsumerPolicy::class,
-        Auth0ClientModel::class => Auth0ClientPolicy::class,
         KeycloakClientModel::class => KeycloakClientPolicy::class,
         KeyVisibilityUpgradeModel::class => KeyVisibilityUpgradePolicy::class,
     ];
@@ -65,11 +64,7 @@ final class AuthServiceProvider extends ServiceProvider
         $this->app->singleton(
             Auth0::class,
             static function (): Auth0 {
-                if (config(KeycloakConfig::KEYCLOAK_LOGIN_ENABLED)) {
-                    return new Auth0(new SdkConfiguration(config('keycloak.login')));
-                }
-
-                return new Auth0(new SdkConfiguration(config('auth0')));
+                return new Auth0(new SdkConfiguration(config('keycloak.login')));
             }
         );
 
@@ -81,12 +76,7 @@ final class AuthServiceProvider extends ServiceProvider
     private function getLoginParameters(): array
     {
         $auth0LoginParameters = [];
-        if (config(KeycloakConfig::KEYCLOAK_LOGIN_ENABLED)) {
-            parse_str(config(KeycloakConfig::KEYCLOAK_LOGIN_PARAMETERS), $auth0LoginParameters);
-            return $auth0LoginParameters;
-        }
-
-        parse_str(config('auth0.login_parameters'), $auth0LoginParameters);
+        parse_str(config(KeycloakConfig::KEYCLOAK_LOGIN_PARAMETERS), $auth0LoginParameters);
         return $auth0LoginParameters;
     }
 }
