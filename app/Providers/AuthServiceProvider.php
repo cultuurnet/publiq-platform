@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Auth0\Models\Auth0ClientModel;
-use App\Auth0\Policies\Auth0ClientPolicy;
 use App\Domain\Activity\Policies\ActivityPolicy;
 use App\Domain\Auth\Controllers\LoginController;
 use App\Domain\Auth\UserProvider;
