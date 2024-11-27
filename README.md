@@ -75,7 +75,6 @@ This requires:
 ## Integrations
 
 The following integrations are provided:
-- Auth0, can be disabled with `AUTH0_CLIENT_CREATION_ENABLED`
 - UiTiD, can be disabled with `UITID_V1_CONSUMER_CREATION_ENABLED`
 - Insightly, can be disabled with `INSIGHTLY_ENABLED`
 - Sentry, can be disabled with `SENTRY_LARAVEL_ENABLED`
