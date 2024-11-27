@@ -25,7 +25,7 @@ final class AuthServiceProvider extends ServiceProvider
 
         $this->app->bind(
             UserRepository::class,
-            config(KeycloakConfig::KEYCLOAK_LOGIN_ENABLED) ? KeycloakUserRepository::class : Auth0ManagementUserRepository::class
+            KeycloakUserRepository::class
         );
 
         /** @var array $adminEmails */

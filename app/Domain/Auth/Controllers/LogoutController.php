@@ -27,18 +27,14 @@ final class LogoutController
 
         $url = config('app.url');
 
-        if (config(KeycloakConfig::KEYCLOAK_LOGIN_ENABLED)) {
-            return sprintf(
-                'https://%s/realms/%s/protocol/openid-connect/logout?client_id=%s&post_logout_redirect_uri=%s&id_token_hint=%s',
-                config(KeycloakConfig::KEYCLOAK_DOMAIN),
-                config(KeycloakConfig::KEYCLOAK_REALM_NAME),
-                config(KeycloakConfig::KEYCLOAK_CLIENT_ID),
-                $url,
-                $idtoken
-            );
-        }
-
-        return $auth0->authentication()->getLogoutLink($url);
+        return sprintf(
+            'https://%s/realms/%s/protocol/openid-connect/logout?client_id=%s&post_logout_redirect_uri=%s&id_token_hint=%s',
+            config(KeycloakConfig::KEYCLOAK_DOMAIN),
+            config(KeycloakConfig::KEYCLOAK_REALM_NAME),
+            config(KeycloakConfig::KEYCLOAK_CLIENT_ID),
+            $url,
+            $idtoken
+        );
     }
 
     public function adminLogout(): JsonResponse
