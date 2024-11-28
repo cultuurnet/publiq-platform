@@ -11,7 +11,7 @@ return new class () extends Migration {
     {
         Schema::create('admin_information', static function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('integration_id');
+            $table->uuid('integration_id')->index('integration_id_index');
             $table->boolean('on_hold')->default(false);
             $table->text('comment')->nullable();
             $table->timestamps();
