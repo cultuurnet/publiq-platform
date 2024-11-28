@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Models;
 
-use App\Auth0\Auth0Tenant;
-use App\Auth0\Models\Auth0ClientModel;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Integrations\Environment;
@@ -316,14 +314,6 @@ final class IntegrationModel extends UuidModel
     }
 
     /**
-     * @return HasMany<Auth0ClientModel, $this>
-     */
-    public function auth0Clients(): HasMany
-    {
-        return $this->hasMany(Auth0ClientModel::class, 'integration_id');
-    }
-
-    /**
      * @return HasMany<UiTiDv1ConsumerModel, $this>
      */
     public function uiTiDv1Consumers(): HasMany
@@ -337,11 +327,6 @@ final class IntegrationModel extends UuidModel
     public function keycloakClients(): HasMany
     {
         return $this->hasMany(KeycloakClientModel::class, 'integration_id');
-    }
-
-    public function hasMissingAuth0Clients(): bool
-    {
-        return $this->auth0Clients()->count() < count(Auth0Tenant::cases());
     }
 
     public function hasMissingUiTiDv1Consumers(): bool
@@ -382,11 +367,6 @@ final class IntegrationModel extends UuidModel
             ...$this->uiTiDv1Consumers()
             ->get()
             ->map(fn (UiTiDv1ConsumerModel $uiTiDv1ConsumerModel) => $uiTiDv1ConsumerModel->toDomain())
-            ->toArray()
-        )->withAuth0Clients(
-            ...$this->auth0Clients()
-            ->get()
-            ->map(fn (Auth0ClientModel $auth0ClientModel) => $auth0ClientModel->toDomain())
             ->toArray()
         )->withKeycloakClients(
             ...$this->keycloakClients()

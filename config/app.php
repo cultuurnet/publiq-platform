@@ -192,7 +192,6 @@ return [
          * Application Service Providers...
          */
         App\Providers\AppServiceProvider::class,
-        App\Auth0\Auth0ServiceProvider::class,
         App\Domain\Auth\AuthServiceProvider::class,
         App\Domain\Integrations\IntegrationServiceProvider::class,
         App\Insightly\InsightlyServiceProvider::class,

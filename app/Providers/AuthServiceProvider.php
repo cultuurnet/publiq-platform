@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Auth0\Models\Auth0ClientModel;
-use App\Auth0\Policies\Auth0ClientPolicy;
 use App\Domain\Activity\Policies\ActivityPolicy;
 use App\Domain\Auth\Controllers\LoginController;
 use App\Domain\Auth\UserProvider;
@@ -51,7 +49,6 @@ final class AuthServiceProvider extends ServiceProvider
         UdbOrganizerModel::class => UdbOrganizerPolicy::class,
         SubscriptionModel::class => SubscriptionPolicy::class,
         UiTiDv1ConsumerModel::class => UiTiDv1ConsumerPolicy::class,
-        Auth0ClientModel::class => Auth0ClientPolicy::class,
         KeycloakClientModel::class => KeycloakClientPolicy::class,
         KeyVisibilityUpgradeModel::class => KeyVisibilityUpgradePolicy::class,
     ];
@@ -68,28 +65,15 @@ final class AuthServiceProvider extends ServiceProvider
         $this->app->singleton(
             Auth0::class,
             static function (): Auth0 {
-                if (config(KeycloakConfig::KEYCLOAK_LOGIN_ENABLED)) {
-                    return new Auth0(new SdkConfiguration(config('keycloak.login')));
-                }
-
-                return new Auth0(new SdkConfiguration(config('auth0')));
+                return new Auth0(new SdkConfiguration(config('keycloak.login')));
             }
         );
 
+        $oAuthLoginParameters = [];
+        parse_str(config(KeycloakConfig::KEYCLOAK_LOGIN_PARAMETERS), $oAuthLoginParameters);
+
         $this->app->when(LoginController::class)
             ->needs('$loginParams')
-            ->give($this->getLoginParameters());
-    }
-
-    private function getLoginParameters(): array
-    {
-        $auth0LoginParameters = [];
-        if (config(KeycloakConfig::KEYCLOAK_LOGIN_ENABLED)) {
-            parse_str(config(KeycloakConfig::KEYCLOAK_LOGIN_PARAMETERS), $auth0LoginParameters);
-            return $auth0LoginParameters;
-        }
-
-        parse_str(config('auth0.login_parameters'), $auth0LoginParameters);
-        return $auth0LoginParameters;
+            ->give($oAuthLoginParameters);
     }
 }

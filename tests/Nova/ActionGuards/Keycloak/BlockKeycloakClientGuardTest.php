@@ -13,17 +13,12 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\NullLogger;
 use Ramsey\Uuid\Uuid;
-use Tests\Auth0\CreatesMockAuth0ClusterSDK;
 use Tests\Keycloak\RealmFactory;
 use Tests\TestCase;
 
 final class BlockKeycloakClientGuardTest extends TestCase
 {
-    use CreatesMockAuth0ClusterSDK;
-
-
     use RealmFactory;
-
 
     private ApiClient&MockObject $apiClient;
     private BlockKeycloakClientGuard $guard;

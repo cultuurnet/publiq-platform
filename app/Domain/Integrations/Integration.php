@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations;
 
-use App\Auth0\Auth0Client;
-use App\Auth0\Auth0Tenant;
 use App\Domain\Contacts\Contact;
 use App\Domain\Coupons\Coupon;
 use App\Domain\KeyVisibilityUpgrades\KeyVisibilityUpgrade;
@@ -24,9 +22,6 @@ final class Integration
 
     /** @var array<Contact> */
     private array $contacts;
-
-    /** @var array<Auth0Client> */
-    private array $auth0Clients;
 
     /** @var array<KeycloakClient> */
     private array $keycloakClients;
@@ -60,7 +55,6 @@ final class Integration
         $this->contacts = [];
         $this->urls = [];
         $this->uiTiDv1Consumers = [];
-        $this->auth0Clients = [];
         $this->keycloakClients = [];
         $this->udbOrganizers = [];
         $this->organization = null;
@@ -113,13 +107,6 @@ final class Integration
     {
         $clone = clone $this;
         $clone->uiTiDv1Consumers = $uiTiDv1ConsumerModel;
-        return $clone;
-    }
-
-    public function withAuth0Clients(Auth0Client ...$auth0Clients): self
-    {
-        $clone = clone $this;
-        $clone->auth0Clients = $auth0Clients;
         return $clone;
     }
 
@@ -195,12 +182,6 @@ final class Integration
         return $this->uiTiDv1Consumers;
     }
 
-    /** @return array<Auth0Client> */
-    public function auth0Clients(): array
-    {
-        return $this->auth0Clients;
-    }
-
     /** @return array<KeycloakClient> */
     public function keycloakClients(): array
     {
@@ -234,7 +215,7 @@ final class Integration
         ));
     }
 
-    public function isKeyVisibleForEnvironment(UiTiDv1Environment|Auth0Tenant|Environment $environment): bool
+    public function isKeyVisibleForEnvironment(UiTiDv1Environment|Environment $environment): bool
     {
         $keyVisibility = ($environment instanceof UiTiDv1Environment) ? KeyVisibility::v2 : KeyVisibility::v1;
         return $environment->value !== 'acc' &&
