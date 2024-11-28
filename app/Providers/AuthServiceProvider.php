@@ -66,15 +66,11 @@ final class AuthServiceProvider extends ServiceProvider
             }
         );
 
+        $oAuthLoginParameters = [];
+        parse_str(config(KeycloakConfig::KEYCLOAK_LOGIN_PARAMETERS), $oAuthLoginParameters);
+
         $this->app->when(LoginController::class)
             ->needs('$loginParams')
-            ->give($this->getLoginParameters());
-    }
-
-    private function getLoginParameters(): array
-    {
-        $auth0LoginParameters = [];
-        parse_str(config(KeycloakConfig::KEYCLOAK_LOGIN_PARAMETERS), $auth0LoginParameters);
-        return $auth0LoginParameters;
+            ->give($oAuthLoginParameters);
     }
 }
