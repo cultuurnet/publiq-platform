@@ -12,17 +12,20 @@ final class AdminInformationFilter extends Filter
 {
     public $name = 'On hold';
 
+    private const ON_HOLD = 'on_hold';
+    private const NOT_ON_HOLD = 'not_on_hold';
+
     public function apply(NovaRequest $request, $query, $value): Builder
     {
-        if ($value === 'on_hold') {
+        if ($value === self::ON_HOLD) {
             return $query->whereHas('adminInformation', function ($q) {
-                $q->where('on_hold', '=', 1);
+                $q->where(self::ON_HOLD, '=', 1);
             });
         }
 
-        if ($value === 'not_on_hold') {
+        if ($value === self::NOT_ON_HOLD) {
             return $query->whereDoesntHave('adminInformation', function ($q) {
-                $q->where('on_hold', '=', 1);
+                $q->where(self::ON_HOLD, '=', 1);
             });
         }
 
@@ -32,8 +35,8 @@ final class AdminInformationFilter extends Filter
     public function options(NovaRequest $request): array
     {
         return [
-            'On Hold' => 'on_hold',
-            'Not On Hold' => 'not_on_hold',
+            'On hold' => 'self::ON_HOLD',
+            'Not on hold' => self::NOT_ON_HOLD,
         ];
     }
 }
