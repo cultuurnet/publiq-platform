@@ -6,5 +6,5 @@ return [
     'url' => env('UITID_WIDGET_URL'),
     'profileUrl' => env('UITID_WIDGET_PROFILE_URL'),
     'registerUrl' => env('UITID_WIDGET_REGISTER_URL'),
-    'auth0Domain' => env('UITID_WIDGET_AUTH0_DOMAIN'),
+    'oAuthDomain' => env('UITID_WIDGET_OAUTH_DOMAIN'),
 ];
