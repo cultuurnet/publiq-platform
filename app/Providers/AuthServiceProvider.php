@@ -11,9 +11,11 @@ use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Contacts\Policies\ContactPolicy;
 use App\Domain\Coupons\Models\CouponModel;
 use App\Domain\Coupons\Policies\CouponPolicy;
+use App\Domain\Integrations\Models\AdminInformationModel;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Models\IntegrationUrlModel;
 use App\Domain\Integrations\Models\UdbOrganizerModel;
+use App\Domain\Integrations\Policies\AdminInformationPolicy;
 use App\Domain\Integrations\Policies\IntegrationPolicy;
 use App\Domain\Integrations\Policies\IntegrationUrlPolicy;
 use App\Domain\Integrations\Policies\UdbOrganizerPolicy;
@@ -38,6 +40,7 @@ final class AuthServiceProvider extends ServiceProvider
 {
     protected $policies = [
         Activity::class => ActivityPolicy::class,
+        AdminInformationModel::class => AdminInformationPolicy::class,
         ContactModel::class => ContactPolicy::class,
         CouponModel::class => CouponPolicy::class,
         IntegrationModel::class => IntegrationPolicy::class,
