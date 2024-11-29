@@ -35,7 +35,7 @@ final class AdminInformationFilter extends Filter
     public function options(NovaRequest $request): array
     {
         return [
-            'On hold' => 'self::ON_HOLD',
+            'On hold' => self::ON_HOLD,
             'Not on hold' => self::NOT_ON_HOLD,
         ];
     }
