@@ -12,6 +12,8 @@ final class AdminInformationFilter extends Filter
 {
     public $name = 'On hold';
 
+    public const ON_HOLD_COLUMN = 'on_hold';
+
     private const ON_HOLD = 'on_hold';
     private const NOT_ON_HOLD = 'not_on_hold';
 
@@ -19,13 +21,13 @@ final class AdminInformationFilter extends Filter
     {
         if ($value === self::ON_HOLD) {
             return $query->whereHas('adminInformation', function ($q) {
-                $q->where(self::ON_HOLD, '=', 1);
+                $q->where(self::ON_HOLD_COLUMN, '=', 1);
             });
         }
 
         if ($value === self::NOT_ON_HOLD) {
             return $query->whereDoesntHave('adminInformation', function ($q) {
-                $q->where(self::ON_HOLD, '=', 1);
+                $q->where(self::ON_HOLD_COLUMN, '=', 1);
             });
         }
 

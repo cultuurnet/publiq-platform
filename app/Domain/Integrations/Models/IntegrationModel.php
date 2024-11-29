@@ -29,6 +29,7 @@ use App\Insightly\Resources\ResourceType;
 use App\Keycloak\Models\KeycloakClientModel;
 use App\Mails\Template\TemplateName;
 use App\Models\UuidModel;
+use App\Nova\Filters\AdminInformationFilter;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use App\UiTiDv1\UiTiDv1Environment;
 use Illuminate\Database\Eloquent\Builder;
@@ -49,6 +50,7 @@ use Ramsey\Uuid\UuidInterface;
  * @property KeyVisibility $key_visibility
  * @property string $website
  * @method static Builder|IntegrationModel withoutMailSent(TemplateName $templateName)
+ * @method static Builder|IntegrationModel notOnHold()
  * @mixin Builder
  * */
 final class IntegrationModel extends UuidModel
@@ -407,6 +409,13 @@ final class IntegrationModel extends UuidModel
     {
         return $query->whereDoesntHave('mail', function (Builder $query) use ($templateName) {
             $query->where('template_name', $templateName->value);
+        });
+    }
+
+    public function scopeNotOnHold(Builder $query): Builder
+    {
+        return $query->whereDoesntHave('adminInformation', function ($q) {
+            $q->where(AdminInformationFilter::ON_HOLD_COLUMN, '=', 1);
         });
     }
 }

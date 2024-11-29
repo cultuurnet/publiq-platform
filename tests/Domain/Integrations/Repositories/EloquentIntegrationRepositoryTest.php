@@ -711,6 +711,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         Carbon $date,
         ?Carbon $mailAlreadySent,
         bool $hasContact,
+        bool $onHold,
         TemplateName $templateName,
         int $expectedCount,
     ): void {
@@ -744,6 +745,15 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             ]);
         }
 
+        if ($onHold) {
+            DB::table('admin_information')->insert([
+                'id' => Uuid::uuid4()->toString(),
+                'integration_id' => $integrationId,
+                'on_hold' => true,
+                'comment' => 'Integration is on hold',
+            ]);
+        }
+
         $this->assertCount(
             $expectedCount,
             $this->integrationRepository->getDraftsByTypeAndBetweenMonthsOld(
@@ -764,6 +774,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
                 Carbon::now()->subMonths(14),
                 null,
                 true,
+                false,
                 TemplateName::INTEGRATION_ACTIVATION_REMINDER,
                 0,
             ],
@@ -773,6 +784,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
                 Carbon::now()->subMonths(14),
                 null,
                 true,
+                false,
                 TemplateName::INTEGRATION_ACTIVATION_REMINDER,
                 0,
             ],
@@ -781,6 +793,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
                 IntegrationStatus::Draft,
                 Carbon::now()->subMonths(14),
                 null,
+                false,
                 false,
                 TemplateName::INTEGRATION_ACTIVATION_REMINDER,
                 0,
@@ -791,6 +804,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
                 Carbon::now()->subMonths(11),
                 null,
                 true,
+                false,
                 TemplateName::INTEGRATION_ACTIVATION_REMINDER,
                 0,
             ],
@@ -800,6 +814,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
                 Carbon::now()->subMonths(14),
                 Carbon::now(),
                 true,
+                false,
                 TemplateName::INTEGRATION_ACTIVATION_REMINDER,
                 0,
             ],
@@ -808,7 +823,18 @@ final class EloquentIntegrationRepositoryTest extends TestCase
                 IntegrationStatus::Draft,
                 Carbon::now()->subMonths(50),
                 null,
+                true,
                 false,
+                TemplateName::INTEGRATION_ACTIVATION_REMINDER,
+                0,
+            ],
+            'Should not be selected: has an admin hold state' => [
+                IntegrationType::SearchApi,
+                IntegrationStatus::Draft,
+                Carbon::now()->subMonths(14),
+                null,
+                true,
+                true,
                 TemplateName::INTEGRATION_ACTIVATION_REMINDER,
                 0,
             ],
@@ -818,6 +844,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
                 Carbon::now()->subMonths(14),
                 null,
                 true,
+                false,
                 TemplateName::INTEGRATION_ACTIVATION_REMINDER,
                 1,
             ],
@@ -827,6 +854,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
                 Carbon::now()->subMonths(14),
                 Carbon::now(),
                 true,
+                false,
                 TemplateName::INTEGRATION_CREATED,
                 1,
             ],

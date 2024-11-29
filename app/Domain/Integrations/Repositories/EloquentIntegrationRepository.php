@@ -68,6 +68,7 @@ final readonly class EloquentIntegrationRepository implements IntegrationReposit
             ->whereBetween('created_at', [Carbon::now()->subMonths($endMonths), Carbon::now()->subMonths($startMonths)])
             ->has('contacts')  // This ensures that only integrations with at least one contact are returned
             ->withoutMailSent($templateName)
+            ->notOnHold()
             ->get()
             ->map(static function (IntegrationModel $integrationModel) {
                 return $integrationModel->toDomain();
