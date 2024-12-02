@@ -75,6 +75,8 @@ npm-lint-check:
 npm-types-check:
 	vendor/bin/sail npm run types:check
 
+npm-ci: npm-format npm-lint-check npm-types-check
+
 e2e-install:
 	docker-compose exec laravel npx playwright install chromium --with-deps
 
