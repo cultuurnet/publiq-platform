@@ -2,7 +2,7 @@ export type WidgetConfigVariables = {
   url: string;
   profileUrl: string;
   registerUrl: string;
-  auth0Domain: string;
+  oAuthDomain: string;
 };
 
 type Config = {

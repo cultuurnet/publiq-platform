@@ -10,7 +10,7 @@ export const UitIdWidget = ({
   url,
   profileUrl,
   registerUrl,
-  auth0Domain,
+  oAuthDomain,
 }: WidgetConfigVariables) => {
   const { i18n } = useTranslation();
   const translateRoute = useTranslateRoute();
@@ -29,7 +29,7 @@ export const UitIdWidget = ({
         uitidProfileUrl: profileUrl,
         uitidRegisterUrl: registerUrl,
         defaultLanguage: "nl",
-        auth0Domain: auth0Domain,
+        oAuthDomain: oAuthDomain,
         loginUrl: "/login",
         logoutUrl: "/logout",
         accessTokenCookieName: "",
@@ -47,7 +47,7 @@ export const UitIdWidget = ({
           },
         ],
       }),
-    [auth0Domain, profileUrl, registerUrl, url]
+    [oAuthDomain, profileUrl, registerUrl, url]
   );
 
   const currentPage = useMemo(

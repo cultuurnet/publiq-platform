@@ -44,7 +44,7 @@ final class HandleInertiaRequests extends Middleware
                 'url' => config('uitidwidget.url'),
                 'profileUrl' => config('uitidwidget.profileUrl'),
                 'registerUrl' => config('uitidwidget.registerUrl'),
-                'auth0Domain' => config('uitidwidget.auth0Domain'),
+                'oAuthDomain' => config('uitidwidget.oAuthDomain'),
             ],
         ]);
     }

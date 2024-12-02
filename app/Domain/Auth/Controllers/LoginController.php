@@ -30,7 +30,7 @@ final readonly class LoginController
     public function adminLogin(): RedirectResponse
     {
         if (Auth::check()) {
-            return Redirect::intended(config('auth0.routes.home', '/'));
+            return Redirect::intended();
         }
 
         return Redirect::to($this->getAuth0LoginUrl());
@@ -39,7 +39,7 @@ final readonly class LoginController
     public function inertiaLogin(): Response
     {
         if (Auth::check()) {
-            return Redirect::intended(config('auth0.routes.home', '/'));
+            return Redirect::intended();
         }
 
         return Inertia::location($this->getAuth0LoginUrl());
