@@ -29,7 +29,7 @@ export const UitIdWidget = ({
         uitidProfileUrl: profileUrl,
         uitidRegisterUrl: registerUrl,
         defaultLanguage: "nl",
-        oAuthDomain: oAuthDomain,
+        auth0Domain: oAuthDomain,
         loginUrl: "/login",
         logoutUrl: "/logout",
         accessTokenCookieName: "",
