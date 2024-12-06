@@ -31,7 +31,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
-use PHPUnit\Framework\Attributes\DataProvider;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Tests\TestCase;
@@ -704,70 +703,9 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         );
     }
 
-    #[DataProvider('dataProviderForGetDraftsByTypeAndBetweenMonthsOld')]
-    public function test_get_drafts_by_type_and_between_months_old(
-        IntegrationType $integrationType,
-        IntegrationStatus $status,
-        Carbon $date,
-        ?Carbon $mailAlreadySent,
-        bool $hasContact,
-        bool $onHold,
-        TemplateName $templateName,
-        int $expectedCount,
-    ): void {
-        $integrationId = Uuid::uuid4()->toString();
-        DB::table('integrations')->insert([
-            'id' => $integrationId,
-            'type' => $integrationType->value,
-            'subscription_id' => Uuid::uuid4()->toString(),
-            'name' => 'Test',
-            'description' => 'test',
-            'status' => $status,
-            'created_at' => $date,
-        ]);
-
-        if ($mailAlreadySent) {
-            DB::table('integrations_mails')->insert([
-                'id' => Uuid::uuid4()->toString(),
-                'integration_id' => $integrationId,
-                'template_name' => TemplateName::INTEGRATION_ACTIVATION_REMINDER->value,
-            ]);
-        }
-
-        if ($hasContact) {
-            DB::table('contacts')->insert([
-                'id' => Uuid::uuid4()->toString(),
-                'integration_id' => $integrationId,
-                'email' => 'grote.smurf@example.com',
-                'type' => ContactType::Technical->value,
-                'first_name' => 'Grote',
-                'last_name' => 'Smurf',
-            ]);
-        }
-
-        if ($onHold) {
-            DB::table('admin_information')->insert([
-                'id' => Uuid::uuid4()->toString(),
-                'integration_id' => $integrationId,
-                'on_hold' => true,
-                'comment' => 'Integration is on hold',
-            ]);
-        }
-
-        $this->assertCount(
-            $expectedCount,
-            $this->integrationRepository->getDraftsByTypeAndBetweenMonthsOld(
-                IntegrationType::SearchApi,
-                12,
-                24,
-                $templateName,
-            )
-        );
-    }
-
-    public function test_get_drafts_by_type_and_between_months_old_refactor(): void
+    public function test_get_drafts_by_type_and_between_months_old(): void
     {
-        $integrations = $this->dataProviderForGetDraftsByTypeAndBetweenMonthsOldRefactor();
+        $integrations = $this->dataProviderForGetDraftsByTypeAndBetweenMonthsOld();
 
         foreach ($integrations as $integrationName => $integration) {
             $integrationId = Uuid::uuid4()->toString();
@@ -817,112 +755,16 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             TemplateName::INTEGRATION_ACTIVATION_REMINDER,
         );
 
-        $this->assertEquals(
+        $this->assertEqualsCanonicalizing(
             [
-                0 => 'Should also be selected!',
-                1 => 'Should be selected!',
+                'Should be selected!',
+                'Should also be selected!',
             ],
             $actual->map(fn ($item) => $item->name)->toArray()
         );
     }
 
     public static function dataProviderForGetDraftsByTypeAndBetweenMonthsOld(): array
-    {
-        return [
-            'Should not be selected: wrong type' => [
-                IntegrationType::EntryApi,
-                IntegrationStatus::Draft,
-                Carbon::now()->subMonths(14),
-                null,
-                true,
-                false,
-                TemplateName::INTEGRATION_ACTIVATION_REMINDER,
-                0,
-            ],
-            'Should not be selected: already active' => [
-                IntegrationType::SearchApi,
-                IntegrationStatus::Active,
-                Carbon::now()->subMonths(14),
-                null,
-                true,
-                false,
-                TemplateName::INTEGRATION_ACTIVATION_REMINDER,
-                0,
-            ],
-            'Should not be selected: No contacts' => [
-                IntegrationType::SearchApi,
-                IntegrationStatus::Draft,
-                Carbon::now()->subMonths(14),
-                null,
-                false,
-                false,
-                TemplateName::INTEGRATION_ACTIVATION_REMINDER,
-                0,
-            ],
-            'Should not be selected: Created too recently' => [
-                IntegrationType::SearchApi,
-                IntegrationStatus::Draft,
-                Carbon::now()->subMonths(11),
-                null,
-                true,
-                false,
-                TemplateName::INTEGRATION_ACTIVATION_REMINDER,
-                0,
-            ],
-            'Should not be selected: Mail already sent' => [
-                IntegrationType::SearchApi,
-                IntegrationStatus::Draft,
-                Carbon::now()->subMonths(14),
-                Carbon::now(),
-                true,
-                false,
-                TemplateName::INTEGRATION_ACTIVATION_REMINDER,
-                0,
-            ],
-            'Should not be selected: Too old' => [
-                IntegrationType::SearchApi,
-                IntegrationStatus::Draft,
-                Carbon::now()->subMonths(50),
-                null,
-                true,
-                false,
-                TemplateName::INTEGRATION_ACTIVATION_REMINDER,
-                0,
-            ],
-            'Should not be selected: has an admin hold state' => [
-                IntegrationType::SearchApi,
-                IntegrationStatus::Draft,
-                Carbon::now()->subMonths(14),
-                null,
-                true,
-                true,
-                TemplateName::INTEGRATION_ACTIVATION_REMINDER,
-                0,
-            ],
-            'Should be selected!' => [
-                IntegrationType::SearchApi,
-                IntegrationStatus::Draft,
-                Carbon::now()->subMonths(14),
-                null,
-                true,
-                false,
-                TemplateName::INTEGRATION_ACTIVATION_REMINDER,
-                1,
-            ],
-            'A different type of email has been sent, should be selected' => [
-                IntegrationType::SearchApi,
-                IntegrationStatus::Draft,
-                Carbon::now()->subMonths(14),
-                Carbon::now(),
-                true,
-                false,
-                TemplateName::INTEGRATION_CREATED,
-                1,
-            ],
-        ];
-    }
-
-    public static function dataProviderForGetDraftsByTypeAndBetweenMonthsOldRefactor(): array
     {
         return [
             'Should not be selected: wrong type' => [
