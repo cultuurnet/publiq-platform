@@ -765,6 +765,67 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         );
     }
 
+    public function test_get_drafts_by_type_and_between_months_old_refactor(): void
+    {
+        $integrations = $this->dataProviderForGetDraftsByTypeAndBetweenMonthsOldRefactor();
+
+        foreach ($integrations as $integrationName => $integration) {
+            $integrationId = Uuid::uuid4()->toString();
+            DB::table('integrations')->insert([
+                'id' => $integrationId,
+                'type' => $integration['type'],
+                'subscription_id' => Uuid::uuid4()->toString(),
+                'name' => $integrationName,
+                'description' => 'test',
+                'status' => $integration['status'],
+                'created_at' => $integration['created_at'],
+            ]);
+
+            if ($integration['mail_already_sent']) {
+                DB::table('integrations_mails')->insert([
+                    'id' => Uuid::uuid4()->toString(),
+                    'integration_id' => $integrationId,
+                    'template_name' => TemplateName::INTEGRATION_ACTIVATION_REMINDER->value,
+                ]);
+            }
+
+            if ($integration['has_contact']) {
+                DB::table('contacts')->insert([
+                    'id' => Uuid::uuid4()->toString(),
+                    'integration_id' => $integrationId,
+                    'email' => 'grote.smurf@example.com',
+                    'type' => ContactType::Technical->value,
+                    'first_name' => 'Grote',
+                    'last_name' => 'Smurf',
+                ]);
+            }
+
+            if ($integration['on_hold']) {
+                DB::table('admin_information')->insert([
+                    'id' => Uuid::uuid4()->toString(),
+                    'integration_id' => $integrationId,
+                    'on_hold' => true,
+                    'comment' => 'Integration is on hold',
+                ]);
+            }
+        }
+
+        $actual = $this->integrationRepository->getDraftsByTypeAndBetweenMonthsOld(
+            IntegrationType::SearchApi,
+            12,
+            24,
+            TemplateName::INTEGRATION_ACTIVATION_REMINDER,
+        );
+
+        $this->assertEquals(
+            [
+                0 => 'Should also be selected!',
+                1 => 'Should be selected!',
+            ],
+            $actual->map(fn ($item) => $item->name)->toArray()
+        );
+    }
+
     public static function dataProviderForGetDraftsByTypeAndBetweenMonthsOld(): array
     {
         return [
@@ -857,6 +918,112 @@ final class EloquentIntegrationRepositoryTest extends TestCase
                 false,
                 TemplateName::INTEGRATION_CREATED,
                 1,
+            ],
+        ];
+    }
+
+    public static function dataProviderForGetDraftsByTypeAndBetweenMonthsOldRefactor(): array
+    {
+        return [
+            'Should not be selected: wrong type' => [
+                'type' => IntegrationType::EntryApi,
+                'status' => IntegrationStatus::Draft,
+                'created_at' => Carbon::now()->subMonths(14),
+                'mail_already_sent' => null,
+                'has_contact' => true,
+                'on_hold' => false,
+                'template_name' => TemplateName::INTEGRATION_ACTIVATION_REMINDER,
+                'expectedCount' => 0,
+            ],
+            'Should not be selected: already active' => [
+                'type' => IntegrationType::SearchApi,
+                'status' => IntegrationStatus::Active,
+                'created_at' => Carbon::now()->subMonths(14),
+                'mail_already_sent' => null,
+                'has_contact' => true,
+                'on_hold' => false,
+                'template_name' => TemplateName::INTEGRATION_ACTIVATION_REMINDER,
+                'expectedCount' => 0,
+            ],
+            'Should not be selected: No contacts' => [
+                'type' => IntegrationType::SearchApi,
+                'status' => IntegrationStatus::Draft,
+                'created_at' => Carbon::now()->subMonths(14),
+                'mail_already_sent' => null,
+                'has_contact' => false,
+                'on_hold' => false,
+                'template_name' => TemplateName::INTEGRATION_ACTIVATION_REMINDER,
+                'expectedCount' => 0,
+            ],
+            'Should not be selected: Created too recently' => [
+                'type' => IntegrationType::SearchApi,
+                'status' => IntegrationStatus::Draft,
+                'created_at' => Carbon::now()->subMonths(11),
+                'mail_already_sent' => null,
+                'has_contact' => true,
+                'on_hold' => false,
+                'template_name' => TemplateName::INTEGRATION_ACTIVATION_REMINDER,
+                'expectedCount' => 0,
+            ],
+            'Should not be selected: Mail already sent' => [
+                'type' => IntegrationType::SearchApi,
+                'status' => IntegrationStatus::Draft,
+                'created_at' => Carbon::now()->subMonths(14),
+                'mail_already_sent' => Carbon::now(),
+                'has_contact' => true,
+                'on_hold' => false,
+                'template_name' => TemplateName::INTEGRATION_ACTIVATION_REMINDER,
+                'expectedCount' => 0,
+            ],
+            'Should not be selected: Too old' => [
+                'type' => IntegrationType::SearchApi,
+                'status' => IntegrationStatus::Draft,
+                'created_at' => Carbon::now()->subMonths(50),
+                'mail_already_sent' => null,
+                'has_contact' => true,
+                'on_hold' => false,
+                'template_name' => TemplateName::INTEGRATION_ACTIVATION_REMINDER,
+                'expectedCount' => 0,
+            ],
+            'Should not be selected: has an admin hold state' => [
+                'type' => IntegrationType::SearchApi,
+                'status' => IntegrationStatus::Draft,
+                'created_at' => Carbon::now()->subMonths(14),
+                'mail_already_sent' => null,
+                'has_contact' => true,
+                'on_hold' => true,
+                'template_name' => TemplateName::INTEGRATION_ACTIVATION_REMINDER,
+                'expectedCount' => 0,
+            ],
+            'Should be selected!' => [
+                'type' => IntegrationType::SearchApi,
+                'status' => IntegrationStatus::Draft,
+                'created_at' => Carbon::now()->subMonths(14),
+                'mail_already_sent' => null,
+                'has_contact' => true,
+                'on_hold' => false,
+                'template_name' => TemplateName::INTEGRATION_ACTIVATION_REMINDER,
+                'expectedCount' => 1,
+            ],
+            'Should also be selected!' => [
+                'type' => IntegrationType::SearchApi,
+                'status' => IntegrationStatus::Draft,
+                'created_at' => Carbon::now()->subMonths(15),
+                'mail_already_sent' => null,
+                'has_contact' => true,
+                'on_hold' => false,
+                'template_name' => TemplateName::INTEGRATION_ACTIVATION_REMINDER,
+                'expectedCount' => 1,
+            ],
+            'A different type of email has been sent, should be selected' => [
+                'type' => IntegrationType::SearchApi,
+                'status' => IntegrationStatus::Draft,
+                'created_at' => Carbon::now()->subMonths(14),
+                'mail_already_sent' => Carbon::now(),
+                'has_contact' => true,
+                'on_hold' => false,
+                'template_name' => TemplateName::INTEGRATION_CREATED,
+                'expectedCount' => 1,
             ],
         ];
     }
