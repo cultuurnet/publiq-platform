@@ -724,7 +724,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         );
     }
 
-    private static function setUpDatabaseForGetDraftsByTypeAndBetweenMonthsOld(): void
+    private function setUpDatabaseForGetDraftsByTypeAndBetweenMonthsOld(): void
     {
         $wrongTypeId = Uuid::uuid4()->toString();
         DB::table('integrations')->insert([
@@ -736,14 +736,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'status' => IntegrationStatus::Draft,
             'created_at' => Carbon::now()->subMonths(14),
         ]);
-        DB::table('contacts')->insert([
-            'id' => Uuid::uuid4()->toString(),
-            'integration_id' => $wrongTypeId,
-            'email' => 'grote.smurf@example.com',
-            'type' => ContactType::Technical->value,
-            'first_name' => 'Grote',
-            'last_name' => 'Smurf',
-        ]);
+        $this->setUpContact($wrongTypeId);
 
         $alreadyActiveId = Uuid::uuid4()->toString();
         DB::table('integrations')->insert([
@@ -755,14 +748,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'status' => IntegrationStatus::Active,
             'created_at' => Carbon::now()->subMonths(14),
         ]);
-        DB::table('contacts')->insert([
-            'id' => Uuid::uuid4()->toString(),
-            'integration_id' => $alreadyActiveId,
-            'email' => 'grote.smurf@example.com',
-            'type' => ContactType::Technical->value,
-            'first_name' => 'Grote',
-            'last_name' => 'Smurf',
-        ]);
+        $this->setUpContact($alreadyActiveId);
 
         $noContactsId = Uuid::uuid4()->toString();
         DB::table('integrations')->insert([
@@ -785,14 +771,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'status' => IntegrationStatus::Draft,
             'created_at' => Carbon::now()->subMonths(11),
         ]);
-        DB::table('contacts')->insert([
-            'id' => Uuid::uuid4()->toString(),
-            'integration_id' => $createdToRecentlyId,
-            'email' => 'grote.smurf@example.com',
-            'type' => ContactType::Technical->value,
-            'first_name' => 'Grote',
-            'last_name' => 'Smurf',
-        ]);
+        $this->setUpContact($createdToRecentlyId);
 
         $mailAlreadySentId = Uuid::uuid4()->toString();
         DB::table('integrations')->insert([
@@ -809,14 +788,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'integration_id' => $mailAlreadySentId,
             'template_name' => TemplateName::INTEGRATION_ACTIVATION_REMINDER->value,
         ]);
-        DB::table('contacts')->insert([
-            'id' => Uuid::uuid4()->toString(),
-            'integration_id' => $mailAlreadySentId,
-            'email' => 'grote.smurf@example.com',
-            'type' => ContactType::Technical->value,
-            'first_name' => 'Grote',
-            'last_name' => 'Smurf',
-        ]);
+        $this->setUpContact($mailAlreadySentId);
 
         $tooOldId = Uuid::uuid4()->toString();
         DB::table('integrations')->insert([
@@ -828,14 +800,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'status' => IntegrationStatus::Draft,
             'created_at' => Carbon::now()->subMonths(50),
         ]);
-        DB::table('contacts')->insert([
-            'id' => Uuid::uuid4()->toString(),
-            'integration_id' => $tooOldId,
-            'email' => 'grote.smurf@example.com',
-            'type' => ContactType::Technical->value,
-            'first_name' => 'Grote',
-            'last_name' => 'Smurf',
-        ]);
+        $this->setUpContact($tooOldId);
 
         $hasAdminHoldId = Uuid::uuid4()->toString();
         DB::table('integrations')->insert([
@@ -847,14 +812,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'status' => IntegrationStatus::Draft,
             'created_at' => Carbon::now()->subMonths(14),
         ]);
-        DB::table('contacts')->insert([
-            'id' => Uuid::uuid4()->toString(),
-            'integration_id' => $hasAdminHoldId,
-            'email' => 'grote.smurf@example.com',
-            'type' => ContactType::Technical->value,
-            'first_name' => 'Grote',
-            'last_name' => 'Smurf',
-        ]);
+        $this->setUpContact($hasAdminHoldId);
         DB::table('admin_information')->insert([
             'id' => Uuid::uuid4()->toString(),
             'integration_id' => $hasAdminHoldId,
@@ -872,14 +830,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'status' => IntegrationStatus::Draft,
             'created_at' => Carbon::now()->subMonths(14),
         ]);
-        DB::table('contacts')->insert([
-            'id' => Uuid::uuid4()->toString(),
-            'integration_id' => $shouldBeSelectedId,
-            'email' => 'grote.smurf@example.com',
-            'type' => ContactType::Technical->value,
-            'first_name' => 'Grote',
-            'last_name' => 'Smurf',
-        ]);
+        $this->setUpContact($shouldBeSelectedId);
 
         $shouldAlsoBeSelectedId = Uuid::uuid4()->toString();
         DB::table('integrations')->insert([
@@ -891,14 +842,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'status' => IntegrationStatus::Draft,
             'created_at' => Carbon::now()->subMonths(15),
         ]);
-        DB::table('contacts')->insert([
-            'id' => Uuid::uuid4()->toString(),
-            'integration_id' => $shouldAlsoBeSelectedId,
-            'email' => 'grote.smurf@example.com',
-            'type' => ContactType::Technical->value,
-            'first_name' => 'Grote',
-            'last_name' => 'Smurf',
-        ]);
+        $this->setUpContact($shouldAlsoBeSelectedId);
 
         $differentTypeOfMailId = Uuid::uuid4()->toString();
         DB::table('integrations')->insert([
@@ -915,9 +859,14 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'integration_id' => $differentTypeOfMailId,
             'template_name' => TemplateName::INTEGRATION_CREATED->value,
         ]);
+        $this->setUpContact($differentTypeOfMailId);
+    }
+
+    private function setUpContact(string $integrationId): void
+    {
         DB::table('contacts')->insert([
             'id' => Uuid::uuid4()->toString(),
-            'integration_id' => $differentTypeOfMailId,
+            'integration_id' => $integrationId,
             'email' => 'grote.smurf@example.com',
             'type' => ContactType::Technical->value,
             'first_name' => 'Grote',
