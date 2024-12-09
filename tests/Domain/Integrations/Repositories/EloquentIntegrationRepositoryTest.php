@@ -724,7 +724,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         );
     }
 
-    public static function setUpDatabaseForGetDraftsByTypeAndBetweenMonthsOld(): void
+    private static function setUpDatabaseForGetDraftsByTypeAndBetweenMonthsOld(): void
     {
         $wrongTypeId = Uuid::uuid4()->toString();
         DB::table('integrations')->insert([
