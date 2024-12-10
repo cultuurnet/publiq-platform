@@ -31,7 +31,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
-use PHPUnit\Framework\Attributes\DataProvider;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Tests\TestCase;
@@ -704,133 +703,175 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         );
     }
 
-    #[DataProvider('dataProviderForGetDraftsByTypeAndBetweenMonthsOld')]
-    public function test_get_drafts_by_type_and_between_months_old(
-        IntegrationType $integrationType,
-        IntegrationStatus $status,
-        Carbon $date,
-        ?Carbon $mailAlreadySent,
-        bool $hasContact,
-        TemplateName $templateName,
-        int $expectedCount,
-    ): void {
-        $integrationId = Uuid::uuid4()->toString();
-        DB::table('integrations')->insert([
-            'id' => $integrationId,
-            'type' => $integrationType->value,
-            'subscription_id' => Uuid::uuid4()->toString(),
-            'name' => 'Test',
-            'description' => 'test',
-            'status' => $status,
-            'created_at' => $date,
-        ]);
+    public function test_get_drafts_by_type_and_between_months_old(): void
+    {
+        $this->setUpDatabaseForGetDraftsByTypeAndBetweenMonthsOld();
 
-        if ($mailAlreadySent) {
-            DB::table('integrations_mails')->insert([
-                'id' => Uuid::uuid4()->toString(),
-                'integration_id' => $integrationId,
-                'template_name' => TemplateName::INTEGRATION_ACTIVATION_REMINDER->value,
-            ]);
-        }
+        $actual = $this->integrationRepository->getDraftsByTypeAndBetweenMonthsOld(
+            IntegrationType::SearchApi,
+            12,
+            24,
+            TemplateName::INTEGRATION_ACTIVATION_REMINDER,
+        );
 
-        if ($hasContact) {
-            DB::table('contacts')->insert([
-                'id' => Uuid::uuid4()->toString(),
-                'integration_id' => $integrationId,
-                'email' => 'grote.smurf@example.com',
-                'type' => ContactType::Technical->value,
-                'first_name' => 'Grote',
-                'last_name' => 'Smurf',
-            ]);
-        }
-
-        $this->assertCount(
-            $expectedCount,
-            $this->integrationRepository->getDraftsByTypeAndBetweenMonthsOld(
-                IntegrationType::SearchApi,
-                12,
-                24,
-                $templateName,
-            )
+        $this->assertEqualsCanonicalizing(
+            [
+                'A different type of email has been sent, should be selected',
+                'Should be selected!',
+                'Should also be selected!',
+            ],
+            $actual->map(fn ($item) => $item->name)->toArray()
         );
     }
 
-    public static function dataProviderForGetDraftsByTypeAndBetweenMonthsOld(): array
+    private function setUpDatabaseForGetDraftsByTypeAndBetweenMonthsOld(): void
     {
-        return [
-            'Should not be selected: wrong type' => [
-                IntegrationType::EntryApi,
-                IntegrationStatus::Draft,
-                Carbon::now()->subMonths(14),
-                null,
-                true,
-                TemplateName::INTEGRATION_ACTIVATION_REMINDER,
-                0,
-            ],
-            'Should not be selected: already active' => [
-                IntegrationType::SearchApi,
-                IntegrationStatus::Active,
-                Carbon::now()->subMonths(14),
-                null,
-                true,
-                TemplateName::INTEGRATION_ACTIVATION_REMINDER,
-                0,
-            ],
-            'Should not be selected: No contacts' => [
-                IntegrationType::SearchApi,
-                IntegrationStatus::Draft,
-                Carbon::now()->subMonths(14),
-                null,
-                false,
-                TemplateName::INTEGRATION_ACTIVATION_REMINDER,
-                0,
-            ],
-            'Should not be selected: Created too recently' => [
-                IntegrationType::SearchApi,
-                IntegrationStatus::Draft,
-                Carbon::now()->subMonths(11),
-                null,
-                true,
-                TemplateName::INTEGRATION_ACTIVATION_REMINDER,
-                0,
-            ],
-            'Should not be selected: Mail already sent' => [
-                IntegrationType::SearchApi,
-                IntegrationStatus::Draft,
-                Carbon::now()->subMonths(14),
-                Carbon::now(),
-                true,
-                TemplateName::INTEGRATION_ACTIVATION_REMINDER,
-                0,
-            ],
-            'Should not be selected: Too old' => [
-                IntegrationType::SearchApi,
-                IntegrationStatus::Draft,
-                Carbon::now()->subMonths(50),
-                null,
-                false,
-                TemplateName::INTEGRATION_ACTIVATION_REMINDER,
-                0,
-            ],
-            'Should be selected!' => [
-                IntegrationType::SearchApi,
-                IntegrationStatus::Draft,
-                Carbon::now()->subMonths(14),
-                null,
-                true,
-                TemplateName::INTEGRATION_ACTIVATION_REMINDER,
-                1,
-            ],
-            'A different type of email has been sent, should be selected' => [
-                IntegrationType::SearchApi,
-                IntegrationStatus::Draft,
-                Carbon::now()->subMonths(14),
-                Carbon::now(),
-                true,
-                TemplateName::INTEGRATION_CREATED,
-                1,
-            ],
-        ];
+        $wrongTypeId = Uuid::uuid4()->toString();
+        DB::table('integrations')->insert([
+            'id' => $wrongTypeId,
+            'type' => IntegrationType::EntryApi,
+            'subscription_id' => Uuid::uuid4()->toString(),
+            'name' => 'Should not be selected: wrong type',
+            'description' => 'test',
+            'status' => IntegrationStatus::Draft,
+            'created_at' => Carbon::now()->subMonths(14),
+        ]);
+        $this->setUpContact($wrongTypeId);
+
+        $alreadyActiveId = Uuid::uuid4()->toString();
+        DB::table('integrations')->insert([
+            'id' => $alreadyActiveId,
+            'type' => IntegrationType::SearchApi,
+            'subscription_id' => Uuid::uuid4()->toString(),
+            'name' => 'Should not be selected: already active',
+            'description' => 'test',
+            'status' => IntegrationStatus::Active,
+            'created_at' => Carbon::now()->subMonths(14),
+        ]);
+        $this->setUpContact($alreadyActiveId);
+
+        $noContactsId = Uuid::uuid4()->toString();
+        DB::table('integrations')->insert([
+            'id' => $noContactsId,
+            'type' => IntegrationType::SearchApi,
+            'subscription_id' => Uuid::uuid4()->toString(),
+            'name' => 'Should not be selected: No contacts',
+            'description' => 'test',
+            'status' => IntegrationStatus::Draft,
+            'created_at' => Carbon::now()->subMonths(14),
+        ]);
+
+        $createdToRecentlyId = Uuid::uuid4()->toString();
+        DB::table('integrations')->insert([
+            'id' => $createdToRecentlyId,
+            'type' => IntegrationType::SearchApi,
+            'subscription_id' => Uuid::uuid4()->toString(),
+            'name' => 'Should not be selected: Created too recently',
+            'description' => 'test',
+            'status' => IntegrationStatus::Draft,
+            'created_at' => Carbon::now()->subMonths(11),
+        ]);
+        $this->setUpContact($createdToRecentlyId);
+
+        $mailAlreadySentId = Uuid::uuid4()->toString();
+        DB::table('integrations')->insert([
+            'id' => $mailAlreadySentId,
+            'type' => IntegrationType::SearchApi,
+            'subscription_id' => Uuid::uuid4()->toString(),
+            'name' => 'Should not be selected: Created too recently',
+            'description' => 'test',
+            'status' => IntegrationStatus::Draft,
+            'created_at' => Carbon::now()->subMonths(11),
+        ]);
+        DB::table('integrations_mails')->insert([
+            'id' => Uuid::uuid4()->toString(),
+            'integration_id' => $mailAlreadySentId,
+            'template_name' => TemplateName::INTEGRATION_ACTIVATION_REMINDER->value,
+        ]);
+        $this->setUpContact($mailAlreadySentId);
+
+        $tooOldId = Uuid::uuid4()->toString();
+        DB::table('integrations')->insert([
+            'id' => $tooOldId,
+            'type' => IntegrationType::SearchApi,
+            'subscription_id' => Uuid::uuid4()->toString(),
+            'name' => 'Should not be selected: Too old',
+            'description' => 'test',
+            'status' => IntegrationStatus::Draft,
+            'created_at' => Carbon::now()->subMonths(50),
+        ]);
+        $this->setUpContact($tooOldId);
+
+        $hasAdminHoldId = Uuid::uuid4()->toString();
+        DB::table('integrations')->insert([
+            'id' => $hasAdminHoldId,
+            'type' => IntegrationType::SearchApi,
+            'subscription_id' => Uuid::uuid4()->toString(),
+            'name' => 'Should not be selected: has an admin hold state',
+            'description' => 'test',
+            'status' => IntegrationStatus::Draft,
+            'created_at' => Carbon::now()->subMonths(14),
+        ]);
+        $this->setUpContact($hasAdminHoldId);
+        DB::table('admin_information')->insert([
+            'id' => Uuid::uuid4()->toString(),
+            'integration_id' => $hasAdminHoldId,
+            'on_hold' => true,
+            'comment' => 'Integration is on hold',
+        ]);
+
+        $shouldBeSelectedId = Uuid::uuid4()->toString();
+        DB::table('integrations')->insert([
+            'id' => $shouldBeSelectedId,
+            'type' => IntegrationType::SearchApi,
+            'subscription_id' => Uuid::uuid4()->toString(),
+            'name' => 'Should be selected!',
+            'description' => 'test',
+            'status' => IntegrationStatus::Draft,
+            'created_at' => Carbon::now()->subMonths(14),
+        ]);
+        $this->setUpContact($shouldBeSelectedId);
+
+        $shouldAlsoBeSelectedId = Uuid::uuid4()->toString();
+        DB::table('integrations')->insert([
+            'id' => $shouldAlsoBeSelectedId,
+            'type' => IntegrationType::SearchApi,
+            'subscription_id' => Uuid::uuid4()->toString(),
+            'name' => 'Should also be selected!',
+            'description' => 'test',
+            'status' => IntegrationStatus::Draft,
+            'created_at' => Carbon::now()->subMonths(15),
+        ]);
+        $this->setUpContact($shouldAlsoBeSelectedId);
+
+        $differentTypeOfMailId = Uuid::uuid4()->toString();
+        DB::table('integrations')->insert([
+            'id' => $differentTypeOfMailId,
+            'type' => IntegrationType::SearchApi,
+            'subscription_id' => Uuid::uuid4()->toString(),
+            'name' => 'A different type of email has been sent, should be selected',
+            'description' => 'test',
+            'status' => IntegrationStatus::Draft,
+            'created_at' => Carbon::now()->subMonths(15),
+        ]);
+        DB::table('integrations_mails')->insert([
+            'id' => Uuid::uuid4()->toString(),
+            'integration_id' => $differentTypeOfMailId,
+            'template_name' => TemplateName::INTEGRATION_CREATED->value,
+        ]);
+        $this->setUpContact($differentTypeOfMailId);
+    }
+
+    private function setUpContact(string $integrationId): void
+    {
+        DB::table('contacts')->insert([
+            'id' => Uuid::uuid4()->toString(),
+            'integration_id' => $integrationId,
+            'email' => 'grote.smurf@example.com',
+            'type' => ContactType::Technical->value,
+            'first_name' => 'Grote',
+            'last_name' => 'Smurf',
+        ]);
     }
 
     private function givenThereIsASubscription(

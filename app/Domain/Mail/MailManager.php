@@ -20,10 +20,11 @@ use App\Mails\Template\Template;
 use App\Mails\Template\TemplateName;
 use App\Mails\Template\Templates;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Mime\Address;
 
-final class MailManager
+final class MailManager implements ShouldQueue
 {
     use Queueable;
 
