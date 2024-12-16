@@ -75,14 +75,14 @@ final class Subscription extends Resource
                 ->sortable()
                 ->currency(Currency::EUR->value)
                 ->min(0)
-                ->step(0.01)
+                ->step('0.01')
                 ->rules('required'),
 
             CurrencyField::make('Setup fee (billed once)', 'fee')
                 ->sortable()
                 ->currency(Currency::EUR->value)
                 ->min(0)
-                ->step(0.01),
+                ->step('0.01'),
 
             Text::make('Currency')
                 ->fillUsing(
