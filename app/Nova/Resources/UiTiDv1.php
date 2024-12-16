@@ -16,7 +16,7 @@ use App\UiTiDv1\CachedUiTiDv1Status;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use App\UiTiDv1\UiTiDv1ConsumerStatus;
 use App\UiTiDv1\UiTiDv1Environment;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Laravel\Nova\Fields\Field;
@@ -40,7 +40,7 @@ final class UiTiDv1 extends Resource
 
     public static $searchable = false;
 
-    public static function defaultOrderings($query): Builder
+    public static function defaultOrderings(Builder $query): Builder
     {
         /** @var Builder $query */
         return $query->orderByRaw(

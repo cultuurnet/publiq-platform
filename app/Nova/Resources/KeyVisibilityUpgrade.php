@@ -7,7 +7,7 @@ namespace App\Nova\Resources;
 use App\Domain\Integrations\KeyVisibility;
 use App\Domain\KeyVisibilityUpgrades\Models\KeyVisibilityUpgradeModel;
 use App\Nova\Resource;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
@@ -22,7 +22,7 @@ final class KeyVisibilityUpgrade extends Resource
 {
     public static string $model = KeyVisibilityUpgradeModel::class;
 
-    public static function indexQuery(NovaRequest $request, $query): Builder
+    public static function indexQuery(NovaRequest $request, Builder $query): Builder
     {
         return parent::indexQuery($request, $query)
             ->select('key_visibility_upgrades.*')

@@ -124,7 +124,6 @@ export const IntegrationSettings = ({
 
   urlsForm.transform((data) => ({
     ...data,
-    // @ts-expect-error strip out frontend generated ids
     urls: data.urls
       .map((url) => {
         if (!url.id.startsWith(NEW_URL_ID_PREFIX)) {
