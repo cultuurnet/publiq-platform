@@ -228,15 +228,15 @@ final class Integration extends Resource
                 ->asHtml()
                 ->onlyOnDetail(),
 
-            HasOne::make('Admin Information', 'adminInformation', AdminInformation::class)
-                ->onlyOnDetail(),
-
             HasMany::make('UiTiD v1 Consumer Credentials', 'uiTiDv1Consumers', UiTiDv1::class),
         ];
 
         if (config(KeycloakConfig::KEYCLOAK_CREATION_ENABLED)) {
             $fields[] = HasMany::make('Keycloak client Credentials', 'keycloakClients', KeycloakClient::class);
         }
+
+        $fields[] = HasOne::make('Admin Information', 'adminInformation', AdminInformation::class)
+            ->onlyOnDetail();
 
         return array_merge($fields, [
             HasMany::make('UDB3 Organizers', 'udbOrganizers', UdbOrganizer::class)

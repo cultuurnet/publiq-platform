@@ -12,7 +12,7 @@ test("As an admin I can block an integration", async ({ page }) => {
 
   // block integration
   await page.goto(`/admin/resources/integrations/${id}`);
-  await page.locator("#nova-ui-dropdown-button-5").click();
+  await page.locator(`[dusk="${id}-control-selector"]`).click();
   await page.getByRole("button", { name: "Block Integration" }).click();
   await page.locator("[dusk='confirm-action-button']").click();
   await expect(page.getByText('Statusblocked', { exact: true })).toBeVisible();
