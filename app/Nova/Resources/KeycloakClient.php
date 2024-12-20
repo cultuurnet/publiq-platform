@@ -17,7 +17,7 @@ use App\Nova\ActionGuards\Keycloak\UnblockKeycloakClientGuard;
 use App\Nova\Actions\Keycloak\BlockKeycloakClient;
 use App\Nova\Actions\Keycloak\UnblockKeycloakClient;
 use App\Nova\Resource;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Laravel\Nova\Fields\Field;
@@ -41,7 +41,7 @@ final class KeycloakClient extends Resource
 
     public static $searchable = false;
 
-    public static function defaultOrderings($query): Builder
+    public static function defaultOrderings(Builder $query): Builder
     {
         //@todo Change to real keycloak environments
         /** @var Builder $query */

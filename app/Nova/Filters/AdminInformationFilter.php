@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Nova\Filters;
 
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Laravel\Nova\Filters\Filter;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -17,7 +17,7 @@ final class AdminInformationFilter extends Filter
     private const ON_HOLD = 'on_hold';
     private const NOT_ON_HOLD = 'not_on_hold';
 
-    public function apply(NovaRequest $request, $query, $value): Builder
+    public function apply(NovaRequest $request, Builder $query, mixed $value): Builder
     {
         if ($value === self::ON_HOLD) {
             return $query->whereHas('adminInformation', function ($q) {

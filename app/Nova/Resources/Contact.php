@@ -7,7 +7,7 @@ namespace App\Nova\Resources;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Nova\Resource;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
@@ -37,7 +37,7 @@ final class Contact extends Resource
         'email',
     ];
 
-    public static function indexQuery(NovaRequest $request, $query): Builder
+    public static function indexQuery(NovaRequest $request, Builder $query): Builder
     {
         return parent::indexQuery($request, $query)
             ->select('contacts.*')
