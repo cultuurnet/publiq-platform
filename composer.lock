@@ -8,7 +8,7 @@
     "packages": [
         {
             "name": "Publiq/insightly-link",
-            "version": "dev-dependabot/npm_and_yarn/inertiajs/react-2.0.0",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "./nova-components/InsightlyLink",
@@ -2470,17 +2470,17 @@
         },
         {
             "name": "laravel/nova",
-            "version": "5.0.0",
+            "version": "5.0.4",
             "source": {
                 "type": "git",
                 "url": "git@github.com:laravel/nova.git",
-                "reference": "9050d1a8d1a4ec9f45bf03b8ea17afa8e7ff18c5"
+                "reference": "fb3de5987c32768f5e055e1b9767d64b8bcc0705"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://nova.laravel.com/dist/laravel/nova/laravel-nova-9050d1a8d1a4ec9f45bf03b8ea17afa8e7ff18c5-zip-d89946.zip",
-                "reference": "9050d1a8d1a4ec9f45bf03b8ea17afa8e7ff18c5",
-                "shasum": "fc255d3a94c6ffcbb56fc5ec4105427c43f3ce8e"
+                "url": "https://nova.laravel.com/dist/laravel/nova/laravel-nova-fb3de5987c32768f5e055e1b9767d64b8bcc0705-zip-3b75c2.zip",
+                "reference": "fb3de5987c32768f5e055e1b9767d64b8bcc0705",
+                "shasum": "4540184bb4d292c08d679790bb2babb54d2d4efe"
             },
             "require": {
                 "brick/money": "^0.8|^0.9|^0.10",
@@ -2493,7 +2493,7 @@
                 "rap2hpoutre/fast-excel": "^5.4",
                 "spatie/once": "^3.0",
                 "symfony/console": "^6.4.14|^7.0.3",
-                "symfony/finder": "^6.4.14|^7.0.3",
+                "symfony/finder": "^6.4.13|^7.0.3",
                 "symfony/polyfill-intl-icu": "^1.31",
                 "symfony/polyfill-php83": "^1.31",
                 "symfony/polyfill-php84": "^1.31",
@@ -2630,9 +2630,9 @@
                 "laravel"
             ],
             "support": {
-                "source": "https://github.com/laravel/nova/tree/v5.0.0"
+                "source": "https://github.com/laravel/nova/tree/v5.0.4"
             },
-            "time": "2024-12-13T14:10:19+00:00"
+            "time": "2024-12-19T14:56:23+00:00"
         },
         {
             "name": "laravel/prompts",
