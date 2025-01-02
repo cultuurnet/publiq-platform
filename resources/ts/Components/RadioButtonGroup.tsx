@@ -6,8 +6,8 @@ export const RadioButtonGroupLabel = ({
   name,
   description,
 }: {
-  name: string | ReactElement;
-  description: string | ReactElement;
+  name: string | ReactElement<Record<string, unknown>>;
+  description: string | ReactElement<Record<string, unknown>>;
 }) => (
   <div className="flex flex-col flex-grow justify-between md:flex-row items-center gap-2">
     <span>{name}</span>
@@ -18,7 +18,7 @@ export const RadioButtonGroupLabel = ({
 );
 
 type Option = {
-  label: string | ReactElement;
+  label: string | ReactElement<Record<string, unknown>>;
   value: string;
 };
 
