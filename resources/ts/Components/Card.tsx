@@ -8,18 +8,18 @@ import { useTranslateRoute } from "../hooks/useTranslateRoute";
 import { Link } from "@inertiajs/react";
 
 type Props = {
-  title?: ReactElement | string;
+  title?: ReactElement<Record<string, unknown>> | string;
   subtitle?: string;
   description?: string;
-  img?: ReactElement | string;
+  img?: ReactElement<Record<string, unknown>> | string;
   badge?: string;
-  icon?: ReactElement;
+  icon?: ReactElement<Record<string, unknown>>;
   active?: boolean;
   headless?: boolean;
   contentStyles?: string;
   textCenter?: boolean;
   border?: boolean;
-  iconButton?: ReactElement;
+  iconButton?: ReactElement<Record<string, unknown>>;
   clickableHeading?: boolean;
   id?: string;
   headingStyles?: string;
