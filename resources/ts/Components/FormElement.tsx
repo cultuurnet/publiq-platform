@@ -9,7 +9,7 @@ type LabelWeight = keyof Theme["fontWeight"];
 
 type WrapperProps = {
   labelPosition?: LabelPosition;
-  children: JSX.Element;
+  children: ReactElement<Record<string, unknown>>;
 };
 
 const Wrapper = ({ labelPosition, children }: WrapperProps) => {
@@ -34,7 +34,7 @@ const getAlignItems = (labelPosition: LabelPosition | undefined) => {
 
 type LabelProps = ComponentProps<"label"> & {
   id: string;
-  label: string | ReactElement;
+  label: string | ReactElement<Record<string, unknown>>;
   labelSize: LabelSize;
   required: boolean;
   labelWeight?: LabelWeight;
@@ -74,13 +74,13 @@ const InputStyle = {
 };
 
 export type Props = {
-  label?: string | ReactElement;
+  label?: string | ReactElement<Record<string, unknown>>;
   labelPosition?: LabelPosition;
   labelSize?: LabelSize;
   labelWeight?: LabelWeight;
   error?: string;
   info?: string;
-  component: ReactElement;
+  component: ReactElement<Record<string, unknown>>;
   elementId?: string;
   required?: boolean;
 } & ComponentProps<"div">;

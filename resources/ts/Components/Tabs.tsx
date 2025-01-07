@@ -1,4 +1,4 @@
-import type { ComponentProps, ReactElement } from "react";
+import type { ComponentProps, PropsWithChildren, ReactElement } from "react";
 import React, { cloneElement, useMemo } from "react";
 import { classNames } from "../utils/classNames";
 
@@ -32,7 +32,9 @@ export const Tabs = ({ children, active, onChange, ...props }: Props) => {
       React.Children.toArray(children).filter(
         (child) =>
           typeof child === "object" && "type" in child && child.type === Item
-      ) as ReactElement[],
+      ) as ReactElement<
+        PropsWithChildren<{ className?: string; type: string }>
+      >[],
     [children]
   );
 
@@ -42,7 +44,11 @@ export const Tabs = ({ children, active, onChange, ...props }: Props) => {
         const isActive = item.props.type === active;
 
         if (!isActive) {
-          return cloneElement(item, { ...item.props, onChange });
+          return cloneElement(item, {
+            ...item.props,
+            // @ts-expect-error
+            onChange,
+          });
         }
 
         return cloneElement(item, {
@@ -51,6 +57,7 @@ export const Tabs = ({ children, active, onChange, ...props }: Props) => {
             item.props.className,
             "text-publiq-blue-light border-publiq-blue border-b-[3px]"
           ),
+          // @ts-expect-error
           onChange,
         });
       }),
