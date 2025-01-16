@@ -59,6 +59,7 @@ final class NovaServiceProvider extends NovaApplicationServiceProvider
 
     public function register(): void
     {
+        parent::register();
         Nova::initialPath('/resources/' . Integration::uriKey());
     }
 }
