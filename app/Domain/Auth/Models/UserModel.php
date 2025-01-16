@@ -44,7 +44,7 @@ final class UserModel extends Model implements AuthenticatableContract
     {
         return new UserModel([
             'id' => $user['sub'] ?? $user['user_id'] ?? null,
-            'name' => $user['name'],
+            'name' => $user['name'] ?? '',
             'email' => $user['email'],
             'first_name' => $user['https://publiq.be/first_name'] ?? '',
             'last_name' => $user['family_name'] ?? '',
