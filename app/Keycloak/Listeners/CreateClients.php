@@ -19,6 +19,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
 use Throwable;
+use function Sentry\captureException;
 
 final class CreateClients implements ShouldQueue
 {
@@ -88,6 +89,7 @@ final class CreateClients implements ShouldQueue
 
                 $clientCollection->add($client);
             } catch (KeyCloakApiFailed $e) {
+                captureException($e);
                 $this->logger->error($e->getMessage());
             }
         }
