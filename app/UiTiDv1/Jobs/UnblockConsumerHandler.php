@@ -39,6 +39,7 @@ final class UnblockConsumerHandler implements ShouldQueue
                 [
                     'domain' => 'uitid',
                     'id' => $event->id,
+                    'exception' => $e,
                 ]
             );
             return;
