@@ -32,6 +32,7 @@ final readonly class UnblockClientHandler implements ShouldQueue
                 [
                     'domain' => 'keycloak',
                     'id' => $event->id,
+                    'exception' => $e,
                 ]
             );
             return;

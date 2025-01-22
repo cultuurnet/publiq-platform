@@ -39,6 +39,7 @@ final class BlockConsumerHandler implements ShouldQueue
                 [
                     'domain' => 'uitid',
                     'id' => $event->id,
+                    'exception' => $e,
                 ]
             );
             return;
