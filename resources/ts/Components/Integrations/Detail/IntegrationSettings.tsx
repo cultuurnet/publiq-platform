@@ -12,6 +12,7 @@ import { QuestionDialog } from "../../QuestionDialog";
 import { KeyVisibility } from "../../../types/KeyVisibility";
 import type { IntegrationUrl } from "../../../types/IntegrationUrl";
 import type { Integration } from "../../../types/Integration";
+import type { FormDataConvertible } from "@inertiajs/core";
 
 export const NEW_URL_ID_PREFIX = "new-";
 
@@ -25,8 +26,9 @@ export const createEmptyIntegrationUrl = (
   environment,
 });
 
-const useBasicInfoForm = <T extends object>(initialFormValues: T) =>
-  useForm<T>(initialFormValues);
+const useBasicInfoForm = <T extends Record<string, FormDataConvertible>>(
+  initialFormValues: T
+) => useForm<T>(initialFormValues);
 const useUrlsForm = (initialFormValues: { urls: IntegrationUrl[] }) => {
   const urlsWithDefaultEmptyValues = useMemo(() => {
     // foreach type and environment
