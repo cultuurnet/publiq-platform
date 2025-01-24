@@ -88,7 +88,7 @@ final class CreateClients implements ShouldQueue
 
                 $clientCollection->add($client);
             } catch (KeyCloakApiFailed $e) {
-                $this->logger->error($e->getMessage());
+                $this->logger->error($e->getMessage(), ['exception' => $e]);
             }
         }
 
