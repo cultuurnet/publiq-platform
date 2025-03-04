@@ -7,6 +7,7 @@ task :build do |task|
   system('cp .env.ci .env') or exit 1
   system('php artisan package:discover') or exit 1
   system('php artisan horizon:install') or exit 1
+  system('php artisan nova:publish') or exit 1
 
   # NodeJS
   system('npm install') or exit 1
