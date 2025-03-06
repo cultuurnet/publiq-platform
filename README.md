@@ -128,6 +128,10 @@ The code formatter Prettier is used for javascript/typescript files. To make sur
   }
 }
 ```
+## Dependabot
+
+This project uses dependabot to keep libraries up-to-date.
+More info can be found on our [Confluence](https://confluence.publiq.be/pages/viewpage.action?pageId=159482246)
 
 ## Makefile
 
