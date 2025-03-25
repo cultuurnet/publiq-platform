@@ -106,8 +106,10 @@ final class IntegrationController extends Controller
 
     public function create(Request $request): RedirectResponse|Response
     {
+        $type = $request->query('type', '');
+
         $integrationType = IntegrationType::tryFrom(
-            $request->query('type', '')
+            is_array($type) ? $type[0] : $type
         );
 
         if ($integrationType === null) {
