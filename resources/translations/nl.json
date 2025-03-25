@@ -193,7 +193,7 @@
         "title": "UiTPAS API",
         "description": "Werkt jouw organisatie met UiTPAS? Met de UiTPAS API kan je automatisch kortingen toekennen, voordelen uitwisselen en punten sparen voor kaarthouders.",
         "cta": "Voeg UiTPAS API integratie toe",
-        "action_url": "/nl/integraties/nieuw?type=uitpas-api",
+        "action_url": "/nl/integraties/nieuw?type=uitpas",
         "documentation_url": "https://docs.publiq.be/docs/uitpas/introduction"
       }
     }

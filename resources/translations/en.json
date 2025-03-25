@@ -193,7 +193,7 @@
         "title": "UiTPAS API",
         "description": "Does your organization work with UiTPAS? With the UiTPAS API you can automatically grant discounts, exchange benefits and save points for card holders.",
         "cta": "Add integration with UiTPAS API",
-        "action_url": "/en/integrations/new?type=uitpas-api",
+        "action_url": "/en/integrations/new?type=uitpas",
         "documentation_url": "https://docs.publiq.be/docs/uitpas/introduction"
       }
     }

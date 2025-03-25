@@ -64,7 +64,8 @@ Route::group(['middleware' => 'auth'], static function () {
             '/en/integrations/new',
             '/nl/integraties/nieuw',
         ],
-        [IntegrationController::class, 'create']
+        [IntegrationController::class, 'create'],
+        'integrations.create'
     );
 
     Route::post('/integrations', [IntegrationController::class, 'store']);

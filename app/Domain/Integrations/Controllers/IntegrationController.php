@@ -104,8 +104,23 @@ final class IntegrationController extends Controller
         ]);
     }
 
-    public function create(): Response
+    public function create(Request $request): RedirectResponse|Response
     {
+        $type = $request->query('type', '');
+
+        $integrationType = IntegrationType::tryFrom(
+            is_array($type) ? $type[0] : $type
+        );
+
+        if ($integrationType === null) {
+            return Redirect::route(
+                TranslatedRoute::getTranslatedRouteName($request, 'integrations.create'),
+                [
+                    'type' => IntegrationType::EntryApi,
+                ]
+            );
+        }
+
         return Inertia::render('Integrations/New', [
             'integrationTypes' => IntegrationType::cases(),
             'subscriptions' => $this->subscriptionRepository->all(),
