@@ -10,10 +10,7 @@ import { ButtonPrimary } from "../../Components/ButtonPrimary";
 import { Page } from "../../Components/Page";
 import { Link } from "../../Components/Link";
 import { useIntegrationTypesInfo } from "../../Components/IntegrationTypes";
-import {
-  IntegrationType,
-  isIntegrationType,
-} from "../../types/IntegrationType";
+import { IntegrationType } from "../../types/IntegrationType";
 import {
   RadioButtonGroup,
   RadioButtonGroupLabel,
@@ -34,10 +31,8 @@ const New = ({ subscriptions }: Props) => {
   const integrationTypesInfo = useIntegrationTypesInfo();
 
   const url = new URL(document.location.href);
-  const activeTypeFromUrl = url.searchParams.get("type");
-  const activeType = isIntegrationType(activeTypeFromUrl)
-    ? activeTypeFromUrl
-    : (integrationTypesInfo?.[0].type ?? IntegrationType.EntryApi);
+  // This is enforced in the backend
+  const activeType = url.searchParams.get("type") as IntegrationType;
 
   const initialFormValues = {
     integrationType: activeType,
