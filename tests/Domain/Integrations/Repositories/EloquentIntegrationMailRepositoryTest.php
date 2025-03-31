@@ -8,11 +8,14 @@ use App\Domain\Integrations\IntegrationMail;
 use App\Domain\Integrations\Repositories\EloquentIntegrationMailRepository;
 use App\Mails\Template\TemplateName;
 use Carbon\Carbon;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
 final class EloquentIntegrationMailRepositoryTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_it_saves_record_in_db(): void
     {
         $repository = new EloquentIntegrationMailRepository();
@@ -21,7 +24,7 @@ final class EloquentIntegrationMailRepositoryTest extends TestCase
         $integrationId = Uuid::uuid4();
         $templateName = TemplateName::INTEGRATION_ACTIVATION_REMINDER;
 
-        $now = Carbon::now();
+        $now = Carbon::now(config('app.timezone'));
         Carbon::setTestNow($now);
 
         $repository->create(new IntegrationMail(
