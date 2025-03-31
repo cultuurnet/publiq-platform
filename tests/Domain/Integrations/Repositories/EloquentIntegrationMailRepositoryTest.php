@@ -24,7 +24,7 @@ final class EloquentIntegrationMailRepositoryTest extends TestCase
         $integrationId = Uuid::uuid4();
         $templateName = TemplateName::INTEGRATION_ACTIVATION_REMINDER;
 
-        $now = Carbon::now();
+        $now = Carbon::now(config('app.timezone'));
         Carbon::setTestNow($now);
 
         $repository->create(new IntegrationMail(
