@@ -42,7 +42,7 @@
         "autoprefixer": "^10.4.20",
         "axios": "^1.8.4",
         "eslint": "8.57.0",
-        "eslint-plugin-react": "^7.37.4",
+        "eslint-plugin-react": "^7.37.5",
         "eslint-plugin-react-hooks": "^5.2.0",
         "laravel-vite-plugin": "^1.2.0",
         "lodash": "^4.17.21",
