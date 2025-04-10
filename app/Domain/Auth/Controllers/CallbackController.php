@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Auth\Controllers;
 
 use App\Domain\Auth\Models\UserModel;
+use App\Keycloak\KeycloakConfig;
 use Auth0\SDK\Auth0;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,13 +21,37 @@ final class CallbackController
 
         if ($auth0->exchange()) {
             $user = $auth0->getUser();
+
+            if ($user === null) {
+                return redirect()->intended('/');
+            }
+
+            if (config(KeycloakConfig::KEYCLOAK_ENFORCE_2FA_FOR_ADMINS)) {
+                $user['acr'] = $user['acr'] ?? null;
+                if ($user['acr'] !== 'highest' && in_array($user['email'], config('nova.users'), true)) {
+                    // Calling clear() is necessary here. Without it, the user will be  already logged in on the frontend but doesn’t have the correct ACR level for the admin, they get stuck in a redirect loop — they appear logged in, but don't meet the access requirements, so they keep getting kicked back without triggering a proper re-login with higher privileges.
+                    $auth0->clear();
+
+                    $url = $auth0->login(null, $this->addAcrEnforcementParam());
+
+                    return redirect()->intended($url);
+                }
+            }
+
             Session::put('id_token', $auth0->getIdToken());
 
-            if ($user !== null) {
-                Auth::login(UserModel::fromSession($user));
-            }
+            Auth::login(UserModel::fromSession($user));
         }
 
         return redirect()->intended('/');
+    }
+
+    public function addAcrEnforcementParam(): array
+    {
+        $params = [];
+        parse_str(config(KeycloakConfig::KEYCLOAK_LOGIN_PARAMETERS), $params);
+        $params['acr_values'] = 'highest';
+        unset($params['prompt']);
+        return $params;
     }
 }
