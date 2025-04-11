@@ -10,6 +10,7 @@ return [
     'testClientEnabled' => env('KEYCLOAK_TEST_CLIENT_ENABLED', false),
     'login' => [
         'strategy' => SdkConfiguration::STRATEGY_REGULAR,
+        'enforce2FAForAdmins' => env('KEYCLOAK_ENFORCE_2FA_FOR_ADMINS', false),
         'domain' => env('KEYCLOAK_LOGIN_DOMAIN'),
         'managementDomain' => env('KEYCLOAK_LOGIN_MANAGEMENT_DOMAIN'),
         'clientId' => env('KEYCLOAK_LOGIN_CLIENT_ID'),
