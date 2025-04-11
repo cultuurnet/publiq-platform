@@ -45,7 +45,7 @@ final class CallbackControllerTest extends TestCase
         app()->instance(Auth0::class, $auth0);
 
         $redirect = $this->createMock(Redirector::class);
-        $redirect->expects($this->once())->method('intended')->with($this->loginUrl)->willReturn(new RedirectResponse($this->loginUrl));
+        $redirect->expects($this->once())->method('to')->with($this->loginUrl)->willReturn(new RedirectResponse($this->loginUrl));
         app()->instance('redirect', $redirect);
 
         $controller = new CallbackController();

@@ -34,7 +34,7 @@ final class CallbackController
 
                     $url = $auth0->login(null, $this->addAcrEnforcementParam());
 
-                    return redirect()->intended($url);
+                    return redirect()->to($url);
                 }
             }
 
