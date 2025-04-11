@@ -34,6 +34,13 @@ final class NovaServiceProvider extends NovaApplicationServiceProvider
                 ->register();
     }
 
+    protected function authorization(): void
+    {
+        Nova::auth(static function ($request) {
+            return Gate::check('viewNova', [Nova::user($request)]);
+        });
+    }
+
     protected function gate(): void
     {
         Gate::define(
