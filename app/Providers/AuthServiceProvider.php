@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Domain\Activity\Policies\ActivityPolicy;
+use App\Domain\Auth\Controllers\CallbackController;
 use App\Domain\Auth\Controllers\LoginController;
 use App\Domain\Auth\UserProvider;
 use App\Domain\Contacts\Models\ContactModel;
@@ -73,6 +74,10 @@ final class AuthServiceProvider extends ServiceProvider
         parse_str(config(KeycloakConfig::KEYCLOAK_LOGIN_PARAMETERS), $oAuthLoginParameters);
 
         $this->app->when(LoginController::class)
+            ->needs('$loginParams')
+            ->give($oAuthLoginParameters);
+
+        $this->app->when(CallbackController::class)
             ->needs('$loginParams')
             ->give($oAuthLoginParameters);
     }

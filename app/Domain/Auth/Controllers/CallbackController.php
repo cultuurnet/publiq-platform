@@ -12,8 +12,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
-final class CallbackController
+final readonly class CallbackController
 {
+    /** @param array<string> $loginParams */
+    public function __construct(private array $loginParams)
+    {
+    }
+
     public function __invoke(Request $request): RedirectResponse
     {
         /** @var Auth0 $auth0 */
@@ -46,10 +51,9 @@ final class CallbackController
         return redirect()->intended('/');
     }
 
-    public function addAcrEnforcementParam(): array
+    private function addAcrEnforcementParam(): array
     {
-        $params = [];
-        parse_str(config(KeycloakConfig::KEYCLOAK_LOGIN_PARAMETERS), $params);
+        $params = $this->loginParams;
         $params['acr_values'] = 'highest';
         unset($params['prompt']);
         return $params;

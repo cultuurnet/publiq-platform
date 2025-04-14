@@ -18,18 +18,23 @@ use Tests\TestCase;
 final class CallbackControllerTest extends TestCase
 {
     private string $loginUrl;
+    private CallbackController $controller;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         Config::set('nova.users', ['admin@publiq.be']);
-        Config::set(KeycloakConfig::KEYCLOAK_LOGIN_PARAMETERS, 'clientId=123&prompt=login');
         Config::set(KeycloakConfig::KEYCLOAK_ENFORCE_2FA_FOR_ADMINS, true);
 
         Config::set('session.driver', 'null');//set driver to NULL instead of mocking
 
         $this->loginUrl = 'https://acc.keycloak.publiq.com/login';
+
+        $this->controller = new CallbackController([
+            'clientId' => '123',
+            'prompt' => 'login',
+        ]);
     }
 
     public function test_redirects_to_acr_highest_login_if_user_known_but_not_highest_acr(): void
@@ -48,67 +53,46 @@ final class CallbackControllerTest extends TestCase
         $redirect->expects($this->once())->method('to')->with($this->loginUrl)->willReturn(new RedirectResponse($this->loginUrl));
         app()->instance('redirect', $redirect);
 
-        $controller = new CallbackController();
-        $request = Request::create('/auth/callback', 'GET');
+        $request = Request::create('/auth/callback');
 
-        $response = $controller($request);
+        $response = $this->controller->__invoke($request);
 
         $this->assertEquals($this->loginUrl, $response->getTargetUrl());
     }
 
     public function test_logs_in_user_with_highest_acr_and_redirects_home(): void
     {
-        $mockUser = [
+        $this->givenAuth0Service([
             'email' => 'admin@publiq.be',
             'acr' => 'highest',
-        ];
-
-        $auth0 = $this->createMock(Auth0Interface::class);
-        $auth0->method('exchange')->willReturn(true);
-        $auth0->method('getUser')->willReturn($mockUser);
-        $auth0->method('getIdToken')->willReturn('mock-id-token');
-
-        app()->instance(Auth0::class, $auth0);
+        ]);
 
         Auth::shouldReceive('login')->once();
 
         Config::set('nova.users', []);
 
-        $controller = new CallbackController();
-        $request = Request::create('/auth/callback', 'GET');
+        $request = Request::create('/auth/callback');
 
-        $redirect = $this->createMock(Redirector::class);
-        $redirect->expects($this->once())->method('intended')->with('/')->willReturn(new RedirectResponse('/'));
-        app()->instance('redirect', $redirect);
+        $this->givenRedirect();
 
-        $response = $controller($request);
+        $response = $this->controller->__invoke($request);
 
         $this->assertEquals('/', $response->getTargetUrl());
     }
 
     public function test_user_not_in_nova_users_gets_logged_in(): void
     {
-        $mockUser = [
+        $this->givenAuth0Service([
             'email' => 'unknown@example.com',
             'acr' => 'lowest',
-        ];
-
-        $auth0 = $this->createMock(Auth0Interface::class);
-        $auth0->method('exchange')->willReturn(true);
-        $auth0->method('getUser')->willReturn($mockUser);
-        $auth0->method('getIdToken')->willReturn('mock-id-token');
+        ]);
 
         Auth::shouldReceive('login')->once();
 
-        app()->instance(Auth0::class, $auth0);
+        $this->givenRedirect();
 
-        $redirect = $this->createMock(Redirector::class);
-        $redirect->expects($this->once())->method('intended')->with('/')->willReturn(new RedirectResponse('/'));
-        app()->instance('redirect', $redirect);
-
-        $controller = new CallbackController();
-        $request = Request::create('/auth/callback', 'GET');
-        $response = $controller($request);
+        $request = Request::create('/auth/callback');
+        $response = $this->controller->__invoke($request);
 
         $this->assertEquals('/', $response->getTargetUrl());
     }
@@ -119,15 +103,28 @@ final class CallbackControllerTest extends TestCase
         $auth0->method('exchange')->willReturn(false);
         app()->instance(Auth0::class, $auth0);
 
+        $this->givenRedirect();
+
+        $request = Request::create('/auth/callback');
+
+        $response = $this->controller->__invoke($request);
+
+        $this->assertEquals('/', $response->getTargetUrl());
+    }
+
+    private function givenRedirect(): void
+    {
         $redirect = $this->createMock(Redirector::class);
         $redirect->expects($this->once())->method('intended')->with('/')->willReturn(new RedirectResponse('/'));
         app()->instance('redirect', $redirect);
+    }
 
-        $controller = new CallbackController();
-        $request = Request::create('/auth/callback', 'GET');
-
-        $response = $controller($request);
-
-        $this->assertEquals('/', $response->getTargetUrl());
+    private function givenAuth0Service(array $mockUser): void
+    {
+        $auth0 = $this->createMock(Auth0Interface::class);
+        $auth0->method('exchange')->willReturn(true);
+        $auth0->method('getUser')->willReturn($mockUser);
+        $auth0->method('getIdToken')->willReturn('mock-id-token');
+        app()->instance(Auth0::class, $auth0);
     }
 }
