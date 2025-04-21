@@ -3414,16 +3414,16 @@
         },
         {
             "name": "mailjet/mailjet-apiv3-php",
-            "version": "v1.6.3",
+            "version": "v1.6.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mailjet/mailjet-apiv3-php.git",
-                "reference": "b10ac28c0c201bfd834e28a5a2c13f89d283aaa1"
+                "reference": "c31917a8fcf5eb04363aa2af933ab560b0a934ea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mailjet/mailjet-apiv3-php/zipball/b10ac28c0c201bfd834e28a5a2c13f89d283aaa1",
-                "reference": "b10ac28c0c201bfd834e28a5a2c13f89d283aaa1",
+                "url": "https://api.github.com/repos/mailjet/mailjet-apiv3-php/zipball/c31917a8fcf5eb04363aa2af933ab560b0a934ea",
+                "reference": "c31917a8fcf5eb04363aa2af933ab560b0a934ea",
                 "shasum": ""
             },
             "require": {
@@ -3437,8 +3437,8 @@
                 "mockery/mockery": "^1.4",
                 "php-coveralls/php-coveralls": "^2.0",
                 "phpcompatibility/php-compatibility": "*",
-                "phpstan/phpstan": "^1.10",
-                "phpunit/phpunit": "^8|^9",
+                "phpstan/phpstan": "^2.0",
+                "phpunit/phpunit": "^11.4.0",
                 "squizlabs/php_codesniffer": "*"
             },
             "type": "library",
@@ -3469,9 +3469,9 @@
             ],
             "support": {
                 "issues": "https://github.com/mailjet/mailjet-apiv3-php/issues",
-                "source": "https://github.com/mailjet/mailjet-apiv3-php/tree/v1.6.3"
+                "source": "https://github.com/mailjet/mailjet-apiv3-php/tree/v1.6.5"
             },
-            "time": "2023-12-10T11:13:26+00:00"
+            "time": "2025-04-19T16:48:36+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -8914,16 +8914,16 @@
         },
         {
             "name": "symfony/validator",
-            "version": "v7.1.4",
+            "version": "v7.2.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/validator.git",
-                "reference": "0d7e0dfd41702d6b9356214b76110421c1e74368"
+                "reference": "d7edd7f44defbc4e0230512f929b5f4c067bb93e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/validator/zipball/0d7e0dfd41702d6b9356214b76110421c1e74368",
-                "reference": "0d7e0dfd41702d6b9356214b76110421c1e74368",
+                "url": "https://api.github.com/repos/symfony/validator/zipball/d7edd7f44defbc4e0230512f929b5f4c067bb93e",
+                "reference": "d7edd7f44defbc4e0230512f929b5f4c067bb93e",
                 "shasum": ""
             },
             "require": {
@@ -8991,7 +8991,7 @@
             "description": "Provides tools to validate values",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/validator/tree/v7.1.4"
+                "source": "https://github.com/symfony/validator/tree/v7.2.5"
             },
             "funding": [
                 {
@@ -9007,7 +9007,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-08-30T15:58:06+00:00"
+            "time": "2025-03-21T15:05:21+00:00"
         },
         {
             "name": "symfony/var-dumper",
