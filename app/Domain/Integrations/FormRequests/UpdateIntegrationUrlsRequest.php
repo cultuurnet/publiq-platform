@@ -54,7 +54,7 @@ final class UpdateIntegrationUrlsRequest extends FormRequest
                 $errorMessage = str_replace(
                     ucfirst($originalKey),
                     'Url',
-                    $originalMessage
+                    is_array($originalMessage) ? $originalMessage[0] : $originalMessage
                 );
 
                 $validator->errors()->add("{$hash}.{$groupedIndex}", $errorMessage);
