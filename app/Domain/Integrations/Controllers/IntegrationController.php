@@ -82,11 +82,9 @@ final class IntegrationController extends Controller
 
     public function index(Request $request): Response
     {
-        $search = $request->query('search') ?? '';
-
         $integrationsData = $this->integrationRepository->getByContactEmail(
             $this->currentUser->email(),
-            is_array($search) ? $search[0] : $search
+            $request->string('search', '')->toString()
         );
 
         $integrationIds = array_map(fn ($integration) => $integration->id, $integrationsData->collection->toArray());
@@ -106,10 +104,8 @@ final class IntegrationController extends Controller
 
     public function create(Request $request): RedirectResponse|Response
     {
-        $type = $request->query('type', '');
-
         $integrationType = IntegrationType::tryFrom(
-            is_array($type) ? $type[0] : $type
+            $request->string('type', '')->toString()
         );
 
         if ($integrationType === null) {
