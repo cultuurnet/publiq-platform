@@ -20,7 +20,7 @@
         "@inertiajs/react": "^2.0.8",
         "@sentry/browser": "^9.14.0",
         "date-fns": "^4.1.0",
-        "dotenv": "^16.4.7",
+        "dotenv": "^16.5.0",
         "i18next": "^24.2.2",
         "i18next-browser-languagedetector": "^8.1.0",
         "react": "^19.1.0",
