@@ -43,4 +43,30 @@ final readonly class Realm
 
         return $uri . '/';
     }
+
+    public static function getUitIdTestRealm(): Realm
+    {
+        return new Realm(
+            config(UitidRealms::TEST_INTERNAL_NAME->value),
+            config(UitidRealms::TEST_INTERNAL_NAME->value),
+            config(UitidRealms::TEST_BASE_URL->value),
+            config(UitidRealms::TEST_CLIENT_ID->value),
+            config(UitidRealms::TEST_CLIENT_SECRET->value),
+            Environment::Testing,
+            new EmptyDefaultScopeConfig()
+        );
+    }
+
+    public static function getUitIdProdRealm(): Realm
+    {
+        return new Realm(
+            config(UitidRealms::PROD_INTERNAL_NAME->value),
+            config(UitidRealms::PROD_INTERNAL_NAME->value),
+            config(UitidRealms::PROD_BASE_URL->value),
+            config(UitidRealms::PROD_CLIENT_ID->value),
+            config(UitidRealms::PROD_CLIENT_SECRET->value),
+            Environment::Production,
+            new EmptyDefaultScopeConfig()
+        );
+    }
 }

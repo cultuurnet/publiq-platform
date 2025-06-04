@@ -23,6 +23,7 @@ return [
         'redirectUri' => env('KEYCLOAK_LOGIN_REDIRECT_URI', env('APP_URL') . '/callback'),
     ],
     'environments' => [
+        // These are master realm clients
         'acc' => [
             'internalName' => env('KEYCLOAK_ACC_REALM_NAME', ''),
             'base_url' => env('KEYCLOAK_ACC_BASE_URL', ''),
@@ -55,6 +56,21 @@ return [
                 'entry_api_id' => env('KEYCLOAK_PROD_SCOPE_ENTRY_API_ID', ''),
                 'uitpas_id' => env('KEYCLOAK_PROD_SCOPE_UITPAS_ID', ''),
             ],
+        ],
+    ],
+    'uitid_realms' => [
+        // These are uitid realm clients (can be used for calls to other Publiq APIs like Uitpas
+        'test' => [
+            'internalName' => env('KEYCLOAK_TEST_UITID_REALM_NAME', ''),
+            'base_url' => env('KEYCLOAK_TEST_UITID_BASE_URL', ''),
+            'client_id' => env('KEYCLOAK_TEST_UITID_CLIENT_ID', ''),
+            'client_secret' => env('KEYCLOAK_TEST_UITID_CLIENT_SECRET', ''),
+        ],
+        'prod' => [
+            'internalName' => env('KEYCLOAK_PROD_UITID_REALM_NAME', ''),
+            'base_url' => env('KEYCLOAK_PROD_UITID_BASE_URL', ''),
+            'client_id' => env('KEYCLOAK_PROD_UITID_CLIENT_ID', ''),
+            'client_secret' => env('KEYCLOAK_PROD_UITID_CLIENT_SECRET', ''),
         ],
     ],
 ];
