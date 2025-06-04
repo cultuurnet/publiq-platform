@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Uitpas;
 
+use App\Keycloak\Client;
 use App\Keycloak\Realm;
 
 interface UitpasApiInterface
