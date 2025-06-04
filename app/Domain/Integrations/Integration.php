@@ -6,9 +6,11 @@ namespace App\Domain\Integrations;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Coupons\Coupon;
+use App\Domain\Integrations\Exceptions\KeycloakClientNotFound;
 use App\Domain\KeyVisibilityUpgrades\KeyVisibilityUpgrade;
 use App\Domain\Organizations\Organization;
 use App\Domain\Subscriptions\Subscription;
+use App\Keycloak\Client;
 use App\Keycloak\Client as KeycloakClient;
 use App\UiTiDv1\UiTiDv1Consumer;
 use App\UiTiDv1\UiTiDv1Environment;
@@ -221,6 +223,18 @@ final class Integration
         return $environment->value !== 'acc' &&
             $this->status !== IntegrationStatus::Deleted &&
             $this->getKeyVisibility() !== $keyVisibility;
+    }
+
+    /** @throws KeycloakClientNotFound */
+    public function getKeycloakClientByEnv(Environment $environment): Client
+    {
+        foreach ($this->keycloakClients() as $client) {
+            if ($client->environment === $environment) {
+                return $client;
+            }
+        }
+
+        throw KeycloakClientNotFound::byEnvironment($environment);
     }
 
     public function toArray(): array
