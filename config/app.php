@@ -206,6 +206,7 @@ return [
         \App\Mails\MailServiceProvider::class,
         \App\Notifications\NotificationsProvider::class,
         App\Console\Commands\CommandServiceProvider::class,
+        App\Uitpas\UitpasServiceProvider::class,
     ],
 
     /*
