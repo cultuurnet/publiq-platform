@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace App\Uitpas;
 
 use App\Json;
-use App\Keycloak\Client;
 use App\Keycloak\Client\HttpClient;
 use App\Keycloak\Realm;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
-use Illuminate\Support\Collection;
 use Psr\Log\LoggerInterface;
 
 final readonly class UitpasApi implements UitpasApiInterface

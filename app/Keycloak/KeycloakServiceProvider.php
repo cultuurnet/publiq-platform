@@ -27,7 +27,6 @@ use App\Keycloak\Repositories\KeycloakUserRepository;
 use App\Keycloak\TokenStrategy\ClientCredentials;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Psr\Log\LoggerInterface;
@@ -42,7 +41,6 @@ final class KeycloakServiceProvider extends ServiceProvider
                 new ClientCredentials(
                     $this->app->get(LoggerInterface::class),
                 ),
-                App::get(LoggerInterface::class),
             );
         });
 

@@ -11,15 +11,12 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 
 final readonly class KeycloakHttpClient implements HttpClient
 {
     public function __construct(
         private ClientInterface $client,
         private TokenStrategy $tokenStrategy,
-        private LoggerInterface $logger = new NullLogger()
     ) {
     }
 
