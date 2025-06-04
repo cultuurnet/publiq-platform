@@ -9,7 +9,7 @@ use App\Json;
 use App\Keycloak\Client\KeycloakHttpClient;
 use App\Keycloak\Realm;
 use App\Keycloak\Repositories\KeycloakUserRepository;
-use App\Keycloak\ScopeConfig;
+use App\Keycloak\DefaultScopeConfig;
 use App\Keycloak\TokenStrategy\TokenStrategy;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
@@ -46,7 +46,7 @@ final class KeycloakUserRepositoryTest extends TestCase
             'php_client',
             'dfgopopzjcvijogdrg',
             Environment::Acceptance,
-            new ScopeConfig(Uuid::uuid4(), Uuid::uuid4(), Uuid::uuid4()),
+            new DefaultScopeConfig(Uuid::uuid4(), Uuid::uuid4(), Uuid::uuid4()),
         );
 
         $this->keycloakUserRepository = new KeycloakUserRepository($keycloakHttpClient, $realm);
