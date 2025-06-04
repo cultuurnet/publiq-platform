@@ -53,20 +53,9 @@ final readonly class UitpasApi implements UitpasApiInterface
                 ],
                 'permissionDetails' => array_map(
                     static fn ($id) => ['id' => $id],
-                    $this->basicPermissions()
+                    UitpasPermissions::cases()
                 ),
             ],
-        ];
-    }
-
-    private function basicPermissions(): array
-    {
-        return [
-            'TARIFFS_READ',
-            'TICKETSALES_REGISTER',
-            'PASSES_READ',
-            'PASSES_INSZNUMBERS_READ',
-            'PASSES_CHIPNUMBERS_READ',
         ];
     }
 }
