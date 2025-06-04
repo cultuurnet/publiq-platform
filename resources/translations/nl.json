@@ -289,6 +289,7 @@
     "organizers_info": {
       "title": "Organisaties",
       "description": "Hieronder vind je een overzicht van de UiTdatabank organisaties waarvoor je acties kan uitvoeren in de UiTPAS API.",
+        "no_permissions": "Geen rechten toegekend",
       "add": "Organisatie toevoegen",
       "update_dialog": {
         "question": "Geef de UiTdatabank-organisaties op waarvoor je acties in UiTPAS wilt uitvoeren."

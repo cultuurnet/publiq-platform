@@ -59,55 +59,72 @@ const OrganizersSection = ({
       </Heading>
       <div className="gap-0">
         {organizers.map((organizer, index) => (
-          <Card
-            key={organizer.id}
-            className={`m-0 drop-shadow-none border border-gray-200 border-t-0 first:border-t z-[${organizers.length - index}]`}
-          >
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2 md:gap-4">
-              <Heading level={5} className="font-semibold text-publiq-gray-600">
-                {organizer.name[i18n.language]}
-              </Heading>
-              <div className="flex-shrink-0 flex max-sm:flex-col gap-4">
-                <CopyText text={organizer.id} />
-                <ButtonIcon
-                  data-testid={organizer.name[i18n.language]}
-                  icon={faTrash}
-                  className={classNames(
-                    sectionName !== "Live" && "invisible max-sm:hidden",
-                    "text-icon-gray"
-                  )}
-                  onClick={() => setToBeDeletedId(organizer.id)}
-                />
-              </div>
-            </div>
-          </Card>
+            <Card
+                key={organizer.id}
+                className={`m-0 drop-shadow-none border border-gray-200 border-t-0 first:border-t z-[${organizers.length - index}]`}
+            >
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2 md:gap-4">
+                    <Heading level={5} className="font-semibold text-publiq-gray-600">
+                        {organizer.name[i18n.language]}
+                    </Heading>
+                    <div className="flex-shrink-0 flex max-sm:flex-col gap-4">
+                        <CopyText text={organizer.id}/>
+                        <ButtonIcon
+                            data-testid={organizer.name[i18n.language]}
+                            icon={faTrash}
+                            className={classNames(
+                                sectionName !== "Live" && "invisible max-sm:hidden",
+                                "text-icon-gray"
+                            )}
+                            onClick={() => setToBeDeletedId(organizer.id)}
+                        />
+                    </div>
+                </div>
+
+                <div className="mt-2 ml-1">
+                    {Array.isArray(organizer.permissions) && organizer.permissions.length > 0 ? (
+                        <ul className="flex flex-col gap-1 text-sm text-gray-700">
+                            {organizer.permissions.map((permission: string, id: number) => (
+                                <li key={id} className="flex items-start gap-2">
+                                    <span className="text-green-600 mt-0.5">✅</span>
+                                    <span>{permission}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p className="text-sm italic text-gray-400">
+                            {t("details.organizers_info.no_permissions")}
+                        </p>
+                    )}
+                </div>
+            </Card>
         ))}
       </div>
-      {sectionName === "Live" && (
-        <ButtonPrimary
-          className="self-start"
-          onClick={() => setIsModalVisible(true)}
-        >
-          {t("details.organizers_info.add")}
-        </ButtonPrimary>
-      )}
-      <QuestionDialog
-        isVisible={!!toBeDeletedId}
-        onClose={() => {
-          setToBeDeletedId("");
-        }}
-        title={t("details.organizers_info.delete_dialog.title")}
-        question={t("details.organizers_info.delete_dialog.question", {
-          name: organizers.find((organizer) => organizer.id === toBeDeletedId)
-            ?.name[i18n.language],
-        })}
-        onConfirm={handleDeleteOrganizer}
-        onCancel={() => setToBeDeletedId("")}
-      />
-      <Dialog
-        isVisible={isModalVisible}
-        onClose={() => setIsModalVisible(false)}
-        title={t("details.organizers_info.add")}
+        {sectionName === "Live" && (
+            <ButtonPrimary
+                className="self-start"
+                onClick={() => setIsModalVisible(true)}
+            >
+                {t("details.organizers_info.add")}
+            </ButtonPrimary>
+        )}
+        <QuestionDialog
+            isVisible={!!toBeDeletedId}
+            onClose={() => {
+                setToBeDeletedId("");
+            }}
+            title={t("details.organizers_info.delete_dialog.title")}
+            question={t("details.organizers_info.delete_dialog.question", {
+                name: organizers.find((organizer) => organizer.id === toBeDeletedId)
+                    ?.name[i18n.language],
+            })}
+            onConfirm={handleDeleteOrganizer}
+            onCancel={() => setToBeDeletedId("")}
+        />
+        <Dialog
+            isVisible={isModalVisible}
+            onClose={() => setIsModalVisible(false)}
+            title={t("details.organizers_info.add")}
         contentStyles="gap-3"
         actions={
           <>
