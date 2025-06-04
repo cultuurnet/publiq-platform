@@ -69,4 +69,31 @@ final readonly class UitpasApi implements UitpasApiInterface
             'PASSES_CHIPNUMBERS_READ',
         ];
     }
+
+    /** @return string[] */
+    public function fetchPermissions(Realm $realm, Client $keycloakClient, string $organizerId): array
+    {
+        $myRequest = new Request('GET', 'permissions/' . $keycloakClient->clientId);
+
+        $response = $this->client->sendWithBearer(
+            $myRequest,
+            $realm
+        );
+
+        /** @var array<int, array{organizer: array{id: string}, permissionDetails: array<int, array{label: array{nl: string}}>}> $json */
+        $json = Json::decodeAssociatively($response->getBody()->getContents());
+
+        return collect($json)
+            ->filter(function (array $item) use ($organizerId): bool {
+                return $item['organizer']['id'] === $organizerId;
+            })
+            ->flatMap(function (array $item): Collection {
+                /** @var array<int, array{label: array{nl: string}}> $details */
+                $details = $item['permissionDetails'];
+                return collect($details)->pluck('label.nl');
+            })
+            ->sort()
+            ->values()
+            ->toArray();
+    }
 }

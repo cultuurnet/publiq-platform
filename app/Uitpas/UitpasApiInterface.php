@@ -9,4 +9,7 @@ use App\Keycloak\Realm;
 interface UitpasApiInterface
 {
     public function addPermissions(Realm $realm, string $organizerId, string $clientId): void;
+
+    /** @return string[] */
+    public function fetchPermissions(Realm $realm, Client $keycloakClient, string $organizerId): array;
 }
