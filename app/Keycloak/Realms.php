@@ -35,7 +35,7 @@ final class Realms extends Collection
                 $environment['client_id'],
                 $environment['client_secret'],
                 Environment::from($publicName),
-                new ScopeConfig(
+                new DefaultScopeConfig(
                     Uuid::fromString($environment['scope']['search_api_id']),
                     Uuid::fromString($environment['scope']['entry_api_id']),
                     Uuid::fromString($environment['scope']['uitpas_id'])
