@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Keycloak\TokenStrategy;
 
 use App\Json;
-use App\Keycloak\Client\KeycloakHttpClient;
+use App\Keycloak\Client\HttpClient;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realm;
 use GuzzleHttp\Exception\GuzzleException;
@@ -26,7 +26,7 @@ final class ClientCredentials implements TokenStrategy
     ) {
     }
 
-    public function fetchToken(KeycloakHttpClient $client, Realm $realm): string
+    public function fetchToken(HttpClient $client, Realm $realm): string
     {
         $key = $realm->environment->value . $realm->internalName . $realm->clientId;
 
