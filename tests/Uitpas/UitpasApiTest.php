@@ -9,7 +9,7 @@ use App\Keycloak\EmptyDefaultScopeConfig;
 use App\Keycloak\Realm;
 use App\Keycloak\TokenStrategy\ClientCredentials;
 use App\Keycloak\TokenStrategy\TokenStrategy;
-use App\Uitpas\UitpasApi;
+use App\UiTPAS\UiTPASApi;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Request;
@@ -57,7 +57,7 @@ final class UitpasApiTest extends TestCase
         ]);
 
         $keycloakHttpClient = $this->givenKeycloakHttpClient($this->logger, $mock);
-        $uitpasApi = new UitpasApi(
+        $uitpasApi = new UiTPASApi(
             $keycloakHttpClient,
             $this->givenClient($mock),
             new ClientCredentials($this->logger),
@@ -89,13 +89,13 @@ final class UitpasApiTest extends TestCase
         $mock = new MockHandler([
             new Response(200, [], json_encode(['access_token' => self::MY_TOKEN], JSON_THROW_ON_ERROR)),
             new RequestException(
-                "Ja lap, het is kapot",
+                'Ja lap, het is kapot',
                 new Request('PUT', 'https://test-uitpas.publiq.be/permissions/' . self::CLIENT_ID)
             ),
         ]);
 
         $keycloakHttpClient = $this->givenKeycloakHttpClient($this->logger, $mock);
-        $uitpasApi = new UitpasApi(
+        $uitpasApi = new UiTPASApi(
             $keycloakHttpClient,
             $this->givenClient($mock),
             new ClientCredentials($this->logger),
@@ -120,7 +120,7 @@ final class UitpasApiTest extends TestCase
         ]);
 
         $keycloakHttpClient = $this->givenKeycloakHttpClient($this->logger, $mock);
-        $uitpasApi = new UitpasApi(
+        $uitpasApi = new UiTPASApi(
             $keycloakHttpClient,
             $this->givenClient($mock),
             new ClientCredentials($this->logger),
@@ -132,7 +132,7 @@ final class UitpasApiTest extends TestCase
         $this->logger
             ->expects($this->once())
             ->method('error')
-            ->with(sprintf("Failed to give %s permission to uitpas organisation %s, status code 400", self::ORG_ID, self::CLIENT_ID));
+            ->with(sprintf('Failed to give %s permission to uitpas organisation %s, status code 400', self::ORG_ID, self::CLIENT_ID));
 
         $uitpasApi->addPermissions($this->realm, self::ORG_ID, self::CLIENT_ID);
     }

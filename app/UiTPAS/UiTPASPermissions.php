@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Uitpas;
+namespace App\UiTPAS;
 
-enum UitpasPermissions: string
+enum UiTPASPermissions: string
 {
     case TARIFFS_READ = 'TARIFFS_READ';
     case TICKETSALES_REGISTER = 'TICKETSALES_REGISTER';

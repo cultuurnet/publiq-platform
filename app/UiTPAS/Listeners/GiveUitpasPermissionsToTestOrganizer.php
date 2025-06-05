@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Uitpas\Listeners;
+namespace App\UiTPAS\Listeners;
 
 use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Events\IntegrationCreated;
@@ -10,8 +10,8 @@ use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Realm;
-use App\Uitpas\UitpasApiInterface;
-use App\Uitpas\UitpasConfig;
+use App\UiTPAS\UiTPASApiInterface;
+use App\UiTPAS\UiTPASConfig;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -21,7 +21,7 @@ final class GiveUitpasPermissionsToTestOrganizer implements ShouldQueue
 
     public function __construct(
         private readonly IntegrationRepository $integrationRepository,
-        private readonly UitpasApiInterface $uitpasApi,
+        private readonly UiTPASApiInterface $uitpasApi,
     ) {
     }
 
@@ -37,7 +37,7 @@ final class GiveUitpasPermissionsToTestOrganizer implements ShouldQueue
 
         $this->uitpasApi->addPermissions(
             Realm::getUitIdTestRealm(),
-            (string)config(UitpasConfig::TEST_ORGANISATION->value),
+            (string)config(UiTPASConfig::TEST_ORGANISATION->value),
             $keycloakClient->clientId,
         );
     }

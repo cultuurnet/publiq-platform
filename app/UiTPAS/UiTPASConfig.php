@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Uitpas;
+namespace App\UiTPAS;
 
-enum UitpasConfig: string
+enum UiTPASConfig: string
 {
     case AUTOMATIC_PERMISSIONS_ENABLED = 'uitpas.automatic_permissions_enabled';
     case TEST_ORGANISATION = 'uitpas.test.organisation';

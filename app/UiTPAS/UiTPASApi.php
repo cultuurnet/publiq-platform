@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Uitpas;
+namespace App\UiTPAS;
 
 use App\Domain\Integrations\Environment;
 use App\Json;
@@ -17,7 +17,7 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
-final readonly class UitpasApi implements UitpasApiInterface
+final readonly class UiTPASApi implements UiTPASApiInterface
 {
     public function __construct(
         private KeycloakGuzzleClient $keycloakHttpClient,
@@ -63,7 +63,7 @@ final readonly class UitpasApi implements UitpasApiInterface
                 ],
                 'permissionDetails' => array_map(
                     static fn ($id) => ['id' => $id],
-                    UitpasPermissions::cases()
+                    UiTPASPermissions::cases()
                 ),
             ],
         ];
