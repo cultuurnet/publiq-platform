@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Uitpas;
 
 use App\Domain\Integrations\Environment;
+use App\Keycloak\Client;
 use App\Keycloak\EmptyDefaultScopeConfig;
 use App\Keycloak\Realm;
 use App\Keycloak\TokenStrategy\ClientCredentials;
@@ -15,6 +16,7 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 use Tests\Keycloak\KeycloakHttpClientFactory;
 use Tests\TestCase;
 
@@ -132,5 +134,52 @@ final class UitpasApiTest extends TestCase
             ->with(sprintf('Failed to give %s permission to uitpas organisation %s, status code 400', self::ORG_ID, self::CLIENT_ID));
 
         $uitpasApi->addPermissions($this->realm, self::ORG_ID, self::CLIENT_ID);
+    }
+
+    public function test_it_fetches_permissions_with_the_correct_id(): void
+    {
+        $body = json_encode([
+            [
+                'organizer' => ['id' => 'wrong-id'],
+                'permissionDetails' => [
+                    ['id' => 'WRONG', 'label' => ['nl' => 'WRONG']],
+                ],
+            ],
+            [
+                'organizer' => ['id' => 'org-1'],
+                'permissionDetails' => [
+                    ['id' => 'TARIFFS_READ', 'label' => ['nl' => 'Tarieven opvragen']],
+                    ['id' => 'PASSES_READ', 'label' => ['nl' => 'Basis UiTPAS informatie ophalen']],
+                    ['id' => 'TICKETSALES_REGISTER', 'label' => ['nl' => 'Tickets registreren']],
+                ],
+            ],
+        ], JSON_THROW_ON_ERROR);
+
+        $mock = new MockHandler([
+            new Response(200, [], json_encode(['access_token' => self::MY_TOKEN], JSON_THROW_ON_ERROR)),
+            new Response(200, [], $body),
+        ]);
+
+        $keycloakHttpClient = $this->givenKeycloakHttpClient($this->logger, $mock);
+        $uitpasApi = new UiTPASApi(
+            $keycloakHttpClient,
+            $this->givenClient($mock),
+            new ClientCredentials($this->logger),
+            $this->logger,
+            'https://test-uitpas.publiq.be/',
+            'https://uitpas.publiq.be/',
+        );
+
+        $permissions = $uitpasApi->fetchPermissions(
+            $this->realm,
+            new Client(Uuid::uuid4(), Uuid::uuid4(), 'client-456', 'client-secret', Environment::Testing),
+            'org-1'
+        );
+
+        $this->assertEquals([
+            'Basis UiTPAS informatie ophalen',
+            'Tarieven opvragen',
+            'Tickets registreren',
+        ], $permissions);
     }
 }

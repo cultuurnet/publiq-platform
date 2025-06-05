@@ -80,6 +80,26 @@ const OrganizersSection = ({
                 />
               </div>
             </div>
+
+            <div className="mt-2 ml-1">
+              {Array.isArray(organizer.permissions) &&
+              organizer.permissions.length > 0 ? (
+                <ul className="flex flex-col gap-1 text-sm text-gray-700">
+                  {organizer.permissions.map(
+                    (permission: string, id: number) => (
+                      <li key={id} className="flex items-start gap-2">
+                        <span className="text-green-600 mt-0.5">✅</span>
+                        <span>{permission}</span>
+                      </li>
+                    )
+                  )}
+                </ul>
+              ) : (
+                <p className="text-sm italic text-gray-400">
+                  {t("details.organizers_info.no_permissions")}
+                </p>
+              )}
+            </div>
           </Card>
         ))}
       </div>

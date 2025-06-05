@@ -3,4 +3,5 @@ export type Organizer = {
   name: { [key: string]: string };
   description: string;
   status: "Live" | "Test";
+  permissions: string[];
 };

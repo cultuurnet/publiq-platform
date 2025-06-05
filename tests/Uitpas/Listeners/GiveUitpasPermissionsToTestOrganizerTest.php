@@ -17,6 +17,7 @@ use App\UiTPAS\Listeners\GiveUitpasPermissionsToTestOrganizer;
 use App\UiTPAS\UiTPASApiInterface;
 use App\UiTPAS\UiTPASConfig;
 use Illuminate\Support\Facades\Config;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
@@ -78,7 +79,7 @@ final class GiveUitpasPermissionsToTestOrganizerTest extends TestCase
         $this->listener->handle(new IntegrationCreated($integrationId));
     }
 
-    /** @dataProvider wrongTypes */
+    #[DataProvider('wrongTypes')]
     public function test_it_only_handles_uitpas_types(IntegrationType $type): void
     {
         $integrationId = Uuid::uuid4();
