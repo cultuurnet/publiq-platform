@@ -8,7 +8,6 @@ use App\Domain\Integrations\Environment;
 use App\Keycloak\EmptyDefaultScopeConfig;
 use App\Keycloak\Realm;
 use App\Keycloak\TokenStrategy\ClientCredentials;
-use App\Keycloak\TokenStrategy\TokenStrategy;
 use App\UiTPAS\UiTPASApi;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
@@ -29,7 +28,6 @@ final class UitpasApiTest extends TestCase
 
     private LoggerInterface&MockObject $logger;
     private Realm $realm;
-    private MockObject&TokenStrategy $tokenStrategy;
 
     public function setUp(): void
     {
@@ -46,7 +44,6 @@ final class UitpasApiTest extends TestCase
         );
 
         $this->logger = $this->createMock(LoggerInterface::class);
-        $this->tokenStrategy = $this->createMock(TokenStrategy::class);
     }
 
     public function test_it_adds_permissions_successfully(): void
