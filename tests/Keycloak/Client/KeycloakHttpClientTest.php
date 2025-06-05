@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Keycloak\Client;
 
-use App\Keycloak\Client\KeycloakHttpClient;
+use App\Domain\Integrations\Environment;
+use App\Keycloak\Client\KeycloakGuzzleClient;
+use App\Keycloak\Realm;
 use App\Keycloak\TokenStrategy\TokenStrategy;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
@@ -32,7 +34,7 @@ final class KeycloakHttpClientTest extends TestCase
 
     public function test_it_can_send_a_request_with_bearer(): void
     {
-        $keycloakClient = new KeycloakHttpClient($this->clientMock, $this->tokenStrategy);
+        $keycloakClient = new KeycloakGuzzleClient($this->clientMock, $this->tokenStrategy);
 
         $this->tokenStrategy->expects($this->once())
             ->method('fetchToken')
@@ -56,6 +58,19 @@ final class KeycloakHttpClientTest extends TestCase
         $this->assertEquals('Response body', $result->getBody()->getContents());
     }
 
+    private function givenAcceptanceRealm(): Realm
+    {
+        return new Realm(
+            'myAcceptanceRealm',
+            'Acc',
+            'https://keycloak.com/api',
+            'php_client',
+            'dfgopopzjcvijogdrg',
+            Environment::Acceptance,
+            $this->getScopeConfig(),
+        );
+    }
+
     public function test_it_can_send_a_request_without_bearer(): void
     {
         $request = new Request('GET', '/endpoint');
@@ -69,7 +84,7 @@ final class KeycloakHttpClientTest extends TestCase
             }))
             ->willReturn($response);
 
-        $keycloakClient = new KeycloakHttpClient($this->clientMock, $this->tokenStrategy);
+        $keycloakClient = new KeycloakGuzzleClient($this->clientMock, $this->tokenStrategy);
 
         $result = $keycloakClient->sendWithoutBearer($request, $this->givenAcceptanceRealm());
 

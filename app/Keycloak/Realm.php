@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Keycloak;
 
 use App\Domain\Integrations\Environment;
+use App\UiTPAS\UiTiDRealms;
 
 final readonly class Realm
 {
@@ -42,5 +43,31 @@ final readonly class Realm
         }
 
         return $uri . '/';
+    }
+
+    public static function getUitIdTestRealm(): Realm
+    {
+        return new Realm(
+            config(UiTiDRealms::TEST_INTERNAL_NAME->value),
+            config(UiTiDRealms::TEST_INTERNAL_NAME->value),
+            config(UiTiDRealms::TEST_BASE_URL->value),
+            config(UiTiDRealms::TEST_CLIENT_ID->value),
+            config(UiTiDRealms::TEST_CLIENT_SECRET->value),
+            Environment::Testing,
+            new EmptyDefaultScopeConfig()
+        );
+    }
+
+    public static function getUitIdProdRealm(): Realm
+    {
+        return new Realm(
+            config(UiTiDRealms::PROD_INTERNAL_NAME->value),
+            config(UiTiDRealms::PROD_INTERNAL_NAME->value),
+            config(UiTiDRealms::PROD_BASE_URL->value),
+            config(UiTiDRealms::PROD_CLIENT_ID->value),
+            config(UiTiDRealms::PROD_CLIENT_SECRET->value),
+            Environment::Production,
+            new EmptyDefaultScopeConfig()
+        );
     }
 }
