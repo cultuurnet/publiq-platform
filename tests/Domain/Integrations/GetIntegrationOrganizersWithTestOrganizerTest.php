@@ -13,8 +13,8 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Keycloak\Client;
 use App\Search\Sapi3\SearchService;
-use App\Uitpas\UitpasApiInterface;
-use App\Uitpas\UitpasConfig;
+use App\UiTPAS\UiTPASApiInterface;
+use App\UiTPAS\UiTPASConfig;
 use CultuurNet\SearchV3\ValueObjects\Collection;
 use CultuurNet\SearchV3\ValueObjects\Organizer as SapiOrganizer;
 use CultuurNet\SearchV3\ValueObjects\PagedCollection;
@@ -26,7 +26,7 @@ use Ramsey\Uuid\Uuid;
 
 final class GetIntegrationOrganizersWithTestOrganizerTest extends TestCase
 {
-    private UitpasApiInterface&MockObject $uitpasApi;
+    private UiTPASApiInterface&MockObject $uitpasApi;
     private GetIntegrationOrganizersWithTestOrganizer $service;
 
     private Integration $integration;
@@ -35,10 +35,10 @@ final class GetIntegrationOrganizersWithTestOrganizerTest extends TestCase
     {
         parent::setUp();
 
-        Config::set(UitpasConfig::TEST_ORGANISATION->value, 'test-org');
+        Config::set(UiTPASConfig::TEST_ORGANISATION->value, 'test-org');
 
         $searchClient = $this->createMock(SearchService::class);
-        $this->uitpasApi = $this->createMock(UitpasApiInterface::class);
+        $this->uitpasApi = $this->createMock(UiTPASApiInterface::class);
         $this->service = new GetIntegrationOrganizersWithTestOrganizer(
             $searchClient,
             $this->uitpasApi

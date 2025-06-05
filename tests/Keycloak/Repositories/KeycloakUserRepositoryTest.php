@@ -6,7 +6,7 @@ namespace Tests\Keycloak\Repositories;
 
 use App\Domain\Integrations\Environment;
 use App\Json;
-use App\Keycloak\Client\KeycloakHttpClient;
+use App\Keycloak\Client\KeycloakGuzzleClient;
 use App\Keycloak\DefaultScopeConfig;
 use App\Keycloak\Realm;
 use App\Keycloak\Repositories\KeycloakUserRepository;
@@ -32,7 +32,7 @@ final class KeycloakUserRepositoryTest extends TestCase
 
         $this->tokenStrategy = $this->createMock(TokenStrategy::class);
 
-        $keycloakHttpClient = new KeycloakHttpClient(
+        $keycloakHttpClient = new KeycloakGuzzleClient(
             $this->client,
             $this->tokenStrategy,
         );

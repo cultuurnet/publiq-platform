@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Keycloak;
+namespace App\UiTPAS;
 
-enum UitidRealms: string
+enum UiTiDRealms: string
 {
     case TEST_INTERNAL_NAME = 'keycloak.uitid_realms.test.internalName';
     case TEST_BASE_URL = 'keycloak.uitid_realms.test.base_url';

@@ -2,42 +2,37 @@
 
 declare(strict_types=1);
 
-namespace App\Uitpas;
+namespace App\UiTPAS;
 
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationUpdated;
-use App\Keycloak\Client\UitpasHttpClient;
+use App\Keycloak\Client\KeycloakGuzzleClient;
 use App\Keycloak\TokenStrategy\ClientCredentials;
-use App\Uitpas\Listeners\GiveUitpasPermissionsToTestOrganizer;
+use App\UiTPAS\Listeners\GiveUitpasPermissionsToTestOrganizer;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Psr\Log\LoggerInterface;
 
-final class UitpasServiceProvider extends ServiceProvider
+final class UiTPASServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->app->singleton(UitpasHttpClient::class, function () {
-            return new UitpasHttpClient(
+        $this->app->singleton(UiTPASApiInterface::class, function () {
+            return new UiTPASApi(
+                $this->app->get(KeycloakGuzzleClient::class),
                 new Client([RequestOptions::HTTP_ERRORS => false]),
                 new ClientCredentials(
                     $this->app->get(LoggerInterface::class),
                 ),
-                (string)config(UitpasConfig::TEST_API_ENDPOINT->value),
-                (string)config(UitpasConfig::PROD_API_ENDPOINT->value),
-            );
-        });
-
-        $this->app->singleton(UitpasApiInterface::class, function () {
-            return new UitpasApi(
-                $this->app->get(UitpasHttpClient::class),
                 $this->app->get(LoggerInterface::class),
+                (string)config(UiTPASConfig::TEST_API_ENDPOINT->value),
+                (string)config(UiTPASConfig::PROD_API_ENDPOINT->value),
             );
         });
 
-        if (!config(UitpasConfig::AUTOMATIC_PERMISSIONS_ENABLED->value)) {
+        if (!config(UiTPASConfig::AUTOMATIC_PERMISSIONS_ENABLED->value)) {
             return;
         }
 

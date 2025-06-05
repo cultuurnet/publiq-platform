@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Uitpas;
+namespace App\UiTPAS;
 
 use App\Keycloak\Client;
 use App\Keycloak\Realm;
 
-interface UitpasApiInterface
+interface UiTPASApiInterface
 {
     public function addPermissions(Realm $realm, string $organizerId, string $clientId): void;
 

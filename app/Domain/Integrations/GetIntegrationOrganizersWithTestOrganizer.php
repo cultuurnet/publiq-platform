@@ -7,8 +7,8 @@ namespace App\Domain\Integrations;
 use App\Domain\Integrations\Exceptions\KeycloakClientNotFound;
 use App\Keycloak\Realm;
 use App\Search\Sapi3\SearchService;
-use App\Uitpas\UitpasApiInterface;
-use App\Uitpas\UitpasConfig;
+use App\UiTPAS\UiTPASApiInterface;
+use App\UiTPAS\UiTPASConfig;
 use CultuurNet\SearchV3\ValueObjects\Organizer as SapiOrganizer;
 use Illuminate\Support\Collection;
 
@@ -16,17 +16,17 @@ final readonly class GetIntegrationOrganizersWithTestOrganizer
 {
     public function __construct(
         private SearchService $searchClient,
-        private UitpasApiInterface $uitpasApi,
+        private UiTPASApiInterface $UiTPASApi,
     ) {
     }
 
     public function getAndEnrichOrganisations(Integration $integration): Collection
     {
         $organizerIds = collect($integration->udbOrganizers())->map(fn (UdbOrganizer $organizer) => $organizer->organizerId);
-        $uitpasOrganizers = $this->searchClient->findUiTPASOrganizers(...$organizerIds)->getMember()?->getItems();
+        $UiTPASOrganizers = $this->searchClient->findUiTPASOrganizers(...$organizerIds)->getMember()?->getItems();
         $keycloakClient = $this->getClientByEnv($integration, Environment::Production);
 
-        $organizers = collect($uitpasOrganizers)->map(function (SapiOrganizer $organizer) use ($keycloakClient) {
+        $organizers = collect($UiTPASOrganizers)->map(function (SapiOrganizer $organizer) use ($keycloakClient) {
             $id = explode('/', $organizer->getId() ?? '');
             $id = $id[count($id) - 1];
 
@@ -34,17 +34,17 @@ final readonly class GetIntegrationOrganizersWithTestOrganizer
                 'id' => $id,
                 'name' => $organizer->getName()?->getValues() ?? [],
                 'status' => 'Live',
-                'permissions' => $keycloakClient ? $this->uitpasApi->fetchPermissions(Realm::getUitIdProdRealm(), $keycloakClient, $id) : [],
+                'permissions' => $keycloakClient ? $this->UiTPASApi->fetchPermissions(Realm::getUitIdProdRealm(), $keycloakClient, $id) : [],
             ];
         });
 
         $keycloakClient = $this->getClientByEnv($integration, Environment::Testing);
-        $orgTestId = (string)config(UitpasConfig::TEST_ORGANISATION->value);
+        $orgTestId = (string)config(UiTPASConfig::TEST_ORGANISATION->value);
         $organizers->push([
             'id' => $orgTestId,
             'name' => ['nl' => 'UiTPAS Organisatie (Regio Gent + Paspartoe)'],
             'status' => 'Test',
-            'permissions' => $keycloakClient ? $this->uitpasApi->fetchPermissions(Realm::getUitIdTestRealm(), $keycloakClient, $orgTestId) : [],
+            'permissions' => $keycloakClient ? $this->UiTPASApi->fetchPermissions(Realm::getUitIdTestRealm(), $keycloakClient, $orgTestId) : [],
         ]);
 
         return $organizers;

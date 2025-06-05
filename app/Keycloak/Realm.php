@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Keycloak;
 
 use App\Domain\Integrations\Environment;
+use App\UiTPAS\UiTiDRealms;
 
 final readonly class Realm
 {
@@ -47,11 +48,11 @@ final readonly class Realm
     public static function getUitIdTestRealm(): Realm
     {
         return new Realm(
-            config(UitidRealms::TEST_INTERNAL_NAME->value),
-            config(UitidRealms::TEST_INTERNAL_NAME->value),
-            config(UitidRealms::TEST_BASE_URL->value),
-            config(UitidRealms::TEST_CLIENT_ID->value),
-            config(UitidRealms::TEST_CLIENT_SECRET->value),
+            config(UiTiDRealms::TEST_INTERNAL_NAME->value),
+            config(UiTiDRealms::TEST_INTERNAL_NAME->value),
+            config(UiTiDRealms::TEST_BASE_URL->value),
+            config(UiTiDRealms::TEST_CLIENT_ID->value),
+            config(UiTiDRealms::TEST_CLIENT_SECRET->value),
             Environment::Testing,
             new EmptyDefaultScopeConfig()
         );
@@ -60,11 +61,11 @@ final readonly class Realm
     public static function getUitIdProdRealm(): Realm
     {
         return new Realm(
-            config(UitidRealms::PROD_INTERNAL_NAME->value),
-            config(UitidRealms::PROD_INTERNAL_NAME->value),
-            config(UitidRealms::PROD_BASE_URL->value),
-            config(UitidRealms::PROD_CLIENT_ID->value),
-            config(UitidRealms::PROD_CLIENT_SECRET->value),
+            config(UiTiDRealms::PROD_INTERNAL_NAME->value),
+            config(UiTiDRealms::PROD_INTERNAL_NAME->value),
+            config(UiTiDRealms::PROD_BASE_URL->value),
+            config(UiTiDRealms::PROD_CLIENT_ID->value),
+            config(UiTiDRealms::PROD_CLIENT_SECRET->value),
             Environment::Production,
             new EmptyDefaultScopeConfig()
         );

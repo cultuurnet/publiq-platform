@@ -2,22 +2,32 @@
 
 declare(strict_types=1);
 
-namespace App\Uitpas;
+namespace App\UiTPAS;
 
+use App\Domain\Integrations\Environment;
 use App\Json;
 use App\Keycloak\Client;
-use App\Keycloak\Client\HttpClient;
+use App\Keycloak\Client\KeycloakGuzzleClient;
 use App\Keycloak\Realm;
+use App\Keycloak\TokenStrategy\TokenStrategy;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Uri;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Illuminate\Support\Collection;
 use Psr\Log\LoggerInterface;
 
-final readonly class UitpasApi implements UitpasApiInterface
+final readonly class UiTPASApi implements UiTPASApiInterface
 {
     public function __construct(
-        private HttpClient $client,
+        private KeycloakGuzzleClient $keycloakHttpClient,
+        private ClientInterface $client,
+        private TokenStrategy $tokenStrategy,
         private LoggerInterface $logger,
+        private string $testApiEndpoint,
+        private string $prodApiEndpoint,
     ) {
     }
 
@@ -29,7 +39,7 @@ final readonly class UitpasApi implements UitpasApiInterface
         ], Json::encode($this->withBody($organizerId)));
 
         try {
-            $response = $this->client->sendWithBearer(
+            $response = $this->sendWithBearer(
                 $request,
                 $realm
             );
@@ -55,21 +65,33 @@ final readonly class UitpasApi implements UitpasApiInterface
                 ],
                 'permissionDetails' => array_map(
                     static fn ($id) => ['id' => $id],
-                    $this->basicPermissions()
+                    UiTPASPermissions::cases()
                 ),
             ],
         ];
     }
 
-    private function basicPermissions(): array
+    /** @throws GuzzleException */
+    private function sendWithBearer(RequestInterface $request, Realm $realm): ResponseInterface
     {
-        return [
-            'TARIFFS_READ',
-            'TICKETSALES_REGISTER',
-            'PASSES_READ',
-            'PASSES_INSZNUMBERS_READ',
-            'PASSES_CHIPNUMBERS_READ',
-        ];
+        $token = $this->tokenStrategy->fetchToken($this->keycloakHttpClient, $realm);
+        $request = $request
+            ->withUri(new Uri($this->getEndpoint($realm) . $request->getUri()))
+            ->withAddedHeader(
+                'Authorization',
+                'Bearer ' . $token
+            );
+
+        return $this->client->send($request);
+    }
+
+    private function getEndpoint(Realm $keycloakClient): string
+    {
+        if ($keycloakClient->environment === Environment::Testing) {
+            return $this->testApiEndpoint;
+        }
+
+        return $this->prodApiEndpoint;
     }
 
     /** @return string[] */
@@ -77,7 +99,7 @@ final readonly class UitpasApi implements UitpasApiInterface
     {
         $myRequest = new Request('GET', 'permissions/' . $keycloakClient->clientId);
 
-        $response = $this->client->sendWithBearer(
+        $response = $this->sendWithBearer(
             $myRequest,
             $realm
         );

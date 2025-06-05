@@ -6,22 +6,29 @@ namespace Tests\Uitpas;
 
 use App\Domain\Integrations\Environment;
 use App\Keycloak\Client;
-use App\Keycloak\Client\HttpClient;
 use App\Keycloak\EmptyDefaultScopeConfig;
 use App\Keycloak\Realm;
-use App\Uitpas\UitpasApi;
-use GuzzleHttp\Exception\GuzzleException;
+use App\Keycloak\TokenStrategy\ClientCredentials;
+use App\UiTPAS\UiTPASApi;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
-use Ramsey\Uuid\Uuid;
-use Tests\TestCase;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
+use Tests\Keycloak\KeycloakHttpClientFactory;
+use Tests\TestCase;
 
 final class UitpasApiTest extends TestCase
 {
-    private HttpClient&MockObject $client;
+    use KeycloakHttpClientFactory;
+
+    private const MY_TOKEN = 'my-token';
+    private const ORG_ID = 'org-123';
+    private const CLIENT_ID = 'client-456';
+
     private LoggerInterface&MockObject $logger;
-    private UitpasApi $uitpasApi;
     private Realm $realm;
 
     public function setUp(): void
@@ -37,76 +44,100 @@ final class UitpasApiTest extends TestCase
             Environment::Testing,
             new EmptyDefaultScopeConfig()
         );
-        $this->client = $this->createMock(HttpClient::class);
+
         $this->logger = $this->createMock(LoggerInterface::class);
-        $this->uitpasApi = new UitpasApi(
-            $this->client,
-            $this->logger,
-        );
     }
 
     public function test_it_adds_permissions_successfully(): void
     {
-        $organizerId = 'org-123';
-        $clientId = 'client-456';
+        $mock = new MockHandler([
+            new Response(200, [], json_encode(['access_token' => self::MY_TOKEN], JSON_THROW_ON_ERROR)),
+            new Response(204),
+        ]);
 
-        $this->client
-            ->expects($this->once())
-            ->method('sendWithBearer')
-            ->willReturn(new Response(204));
+        $keycloakHttpClient = $this->givenKeycloakHttpClient($this->logger, $mock);
+        $uitpasApi = new UiTPASApi(
+            $keycloakHttpClient,
+            $this->givenClient($mock),
+            new ClientCredentials($this->logger),
+            $this->logger,
+            'https://test-uitpas.publiq.be/',
+            'https://uitpas.publiq.be/',
+        );
 
+        $callCount = 0;
         $this->logger
-            ->expects($this->once())
+            ->expects($this->exactly(2))
             ->method('info')
-            ->with(sprintf('Gave %s permission to uitpas organisation %s', $organizerId, $clientId));
+            ->with($this->callback(function (string $message) use (&$callCount) {
+                if ($callCount === 0) {
+                    $expected = 'Fetched token for 123, token starts with my-tok';
+                } else {
+                    $expected = sprintf('Gave %s permission to uitpas organisation %s', self::ORG_ID, self::CLIENT_ID);
+                }
 
-        $this->uitpasApi->addPermissions($this->realm, $organizerId, $clientId);
+                $callCount++;
+                return $message === $expected;
+            }));
+
+        $uitpasApi->addPermissions($this->realm, self::ORG_ID, self::CLIENT_ID);
     }
 
     public function test_it_logs_error_when_add_permissions_fails_with_exception(): void
     {
-        $organizerId = 'org-123';
-        $clientId = 'client-456';
+        $mock = new MockHandler([
+            new Response(200, [], json_encode(['access_token' => self::MY_TOKEN], JSON_THROW_ON_ERROR)),
+            new RequestException(
+                'Ja lap, het is kapot',
+                new Request('PUT', 'https://test-uitpas.publiq.be/permissions/' . self::CLIENT_ID)
+            ),
+        ]);
 
-        $this->client
-            ->expects($this->once())
-            ->method('sendWithBearer')
-            ->willThrowException($this->createMock(GuzzleException::class));
+        $keycloakHttpClient = $this->givenKeycloakHttpClient($this->logger, $mock);
+        $uitpasApi = new UiTPASApi(
+            $keycloakHttpClient,
+            $this->givenClient($mock),
+            new ClientCredentials($this->logger),
+            $this->logger,
+            'https://test-uitpas.publiq.be/',
+            'https://uitpas.publiq.be/',
+        );
 
         $this->logger
             ->expects($this->once())
             ->method('error')
             ->with($this->stringContains('Failed to give'));
 
-        $this->uitpasApi->addPermissions($this->realm, $organizerId, $clientId);
+        $uitpasApi->addPermissions($this->realm, self::ORG_ID, self::CLIENT_ID);
     }
 
     public function test_it_logs_error_when_status_code_is_not_204(): void
     {
-        $organizerId = 'org-123';
-        $clientId = 'client-456';
+        $mock = new MockHandler([
+            new Response(200, [], json_encode(['access_token' => self::MY_TOKEN], JSON_THROW_ON_ERROR)),
+            new Response(400),
+        ]);
 
-        $this->client
-            ->expects($this->once())
-            ->method('sendWithBearer')
-            ->willReturn(new Response(400));
+        $keycloakHttpClient = $this->givenKeycloakHttpClient($this->logger, $mock);
+        $uitpasApi = new UiTPASApi(
+            $keycloakHttpClient,
+            $this->givenClient($mock),
+            new ClientCredentials($this->logger),
+            $this->logger,
+            'https://test-uitpas.publiq.be/',
+            'https://uitpas.publiq.be/',
+        );
 
         $this->logger
             ->expects($this->once())
             ->method('error')
-            ->with("Failed to give {$organizerId} permission to uitpas organisation {$clientId}, status code 400");
+            ->with(sprintf('Failed to give %s permission to uitpas organisation %s, status code 400', self::ORG_ID, self::CLIENT_ID));
 
-        $this->logger
-            ->expects($this->never())
-            ->method('info');
-
-        $this->uitpasApi->addPermissions($this->realm, $organizerId, $clientId);
+        $uitpasApi->addPermissions($this->realm, self::ORG_ID, self::CLIENT_ID);
     }
 
     public function test_it_fetches_permissions_with_the_correct_id(): void
     {
-        $client = new Client(Uuid::uuid4(), Uuid::uuid4(), 'client-456', 'client-secret', Environment::Testing);
-
         $body = json_encode([
             [
                 'organizer' => ['id' => 'wrong-id'],
@@ -124,14 +155,26 @@ final class UitpasApiTest extends TestCase
             ],
         ], JSON_THROW_ON_ERROR);
 
-        $response = new Response(200, [], $body);
+        $mock = new MockHandler([
+            new Response(200, [], json_encode(['access_token' => self::MY_TOKEN], JSON_THROW_ON_ERROR)),
+            new Response(200, [], $body),
+        ]);
 
-        $this->client
-            ->expects($this->once())
-            ->method('sendWithBearer')
-            ->willReturn($response);
+        $keycloakHttpClient = $this->givenKeycloakHttpClient($this->logger, $mock);
+        $uitpasApi = new UiTPASApi(
+            $keycloakHttpClient,
+            $this->givenClient($mock),
+            new ClientCredentials($this->logger),
+            $this->logger,
+            'https://test-uitpas.publiq.be/',
+            'https://uitpas.publiq.be/',
+        );
 
-        $permissions = $this->uitpasApi->fetchPermissions($this->realm, $client, 'org-1');
+        $permissions = $uitpasApi->fetchPermissions(
+            $this->realm,
+            new Client(Uuid::uuid4(), Uuid::uuid4(), 'client-456', 'client-secret', Environment::Testing),
+            'org-1'
+        );
 
         $this->assertEquals([
             'Basis UiTPAS informatie ophalen',

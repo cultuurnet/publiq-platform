@@ -13,10 +13,11 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client;
 use App\Keycloak\Realm;
-use App\Uitpas\Listeners\GiveUitpasPermissionsToTestOrganizer;
-use App\Uitpas\UitpasApiInterface;
-use App\Uitpas\UitpasConfig;
+use App\UiTPAS\Listeners\GiveUitpasPermissionsToTestOrganizer;
+use App\UiTPAS\UiTPASApiInterface;
+use App\UiTPAS\UiTPASConfig;
 use Illuminate\Support\Facades\Config;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
@@ -24,7 +25,7 @@ use Tests\TestCase;
 final class GiveUitpasPermissionsToTestOrganizerTest extends TestCase
 {
     private IntegrationRepository&MockObject $integrationRepository;
-    private UitpasApiInterface&MockObject $uitpasApi;
+    private UiTPASApiInterface&MockObject $uitpasApi;
     private GiveUitpasPermissionsToTestOrganizer $listener;
 
     protected function setUp(): void
@@ -32,7 +33,7 @@ final class GiveUitpasPermissionsToTestOrganizerTest extends TestCase
         parent::setUp();
 
         $this->integrationRepository = $this->createMock(IntegrationRepository::class);
-        $this->uitpasApi = $this->createMock(UitpasApiInterface::class);
+        $this->uitpasApi = $this->createMock(UiTPASApiInterface::class);
 
         $this->listener = new GiveUitpasPermissionsToTestOrganizer(
             $this->integrationRepository,
@@ -42,7 +43,7 @@ final class GiveUitpasPermissionsToTestOrganizerTest extends TestCase
 
     public function test_it_adds_permissions_for_integration_created_event(): void
     {
-        Config::set(UitpasConfig::TEST_ORGANISATION->value, 'org-id');
+        Config::set(UiTPASConfig::TEST_ORGANISATION->value, 'org-id');
 
         $integrationId = Uuid::uuid4();
         $clientIdTest = '5f263a50-9474-4690-a962-6935d6f9a3f2';
@@ -78,7 +79,7 @@ final class GiveUitpasPermissionsToTestOrganizerTest extends TestCase
         $this->listener->handle(new IntegrationCreated($integrationId));
     }
 
-    /** @dataProvider wrongTypes */
+    #[DataProvider('wrongTypes')]
     public function test_it_only_handles_uitpas_types(IntegrationType $type): void
     {
         $integrationId = Uuid::uuid4();
