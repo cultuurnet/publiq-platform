@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Keycloak\TokenStrategy;
 
-use App\Keycloak\Client\HttpClient;
+use App\Keycloak\Client\KeycloakGuzzleClient;
 use App\Keycloak\Realm;
 
 interface TokenStrategy
 {
-    public function fetchToken(HttpClient $client, Realm $realm): string;
+    public function fetchToken(KeycloakGuzzleClient $client, Realm $realm): string;
 }

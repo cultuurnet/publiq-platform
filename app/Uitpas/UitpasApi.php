@@ -4,18 +4,28 @@ declare(strict_types=1);
 
 namespace App\Uitpas;
 
+use App\Domain\Integrations\Environment;
 use App\Json;
-use App\Keycloak\Client\HttpClient;
+use App\Keycloak\Client\KeycloakGuzzleClient;
 use App\Keycloak\Realm;
+use App\Keycloak\TokenStrategy\TokenStrategy;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Uri;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
 final readonly class UitpasApi implements UitpasApiInterface
 {
     public function __construct(
-        private HttpClient $client,
+        private KeycloakGuzzleClient $keycloakHttpClient,
+        private ClientInterface $client,
+        private TokenStrategy $tokenStrategy,
         private LoggerInterface $logger,
+        private string $testApiEndpoint,
+        private string $prodApiEndpoint,
     ) {
     }
 
@@ -27,7 +37,7 @@ final readonly class UitpasApi implements UitpasApiInterface
         ], Json::encode($this->withBody($organizerId)));
 
         try {
-            $response = $this->client->sendWithBearer(
+            $response = $this->sendWithBearer(
                 $request,
                 $realm
             );
@@ -57,5 +67,28 @@ final readonly class UitpasApi implements UitpasApiInterface
                 ),
             ],
         ];
+    }
+
+    /** @throws GuzzleException */
+    private function sendWithBearer(RequestInterface $request, Realm $realm): ResponseInterface
+    {
+        $token = $this->tokenStrategy->fetchToken($this->keycloakHttpClient, $realm);
+        $request = $request
+            ->withUri(new Uri($this->getEndpoint($realm) . $request->getUri()))
+            ->withAddedHeader(
+                'Authorization',
+                'Bearer ' . $token
+            );
+
+        return $this->client->send($request);
+    }
+
+    private function getEndpoint(Realm $keycloakClient): string
+    {
+        if ($keycloakClient->environment === Environment::Testing) {
+            return $this->testApiEndpoint;
+        }
+
+        return $this->prodApiEndpoint;
     }
 }

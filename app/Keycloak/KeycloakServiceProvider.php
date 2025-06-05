@@ -15,7 +15,7 @@ use App\Domain\Integrations\Events\IntegrationUrlDeleted;
 use App\Domain\Integrations\Events\IntegrationUrlUpdated;
 use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Client\KeycloakApiClient;
-use App\Keycloak\Client\KeycloakHttpClient;
+use App\Keycloak\Client\KeycloakGuzzleClient;
 use App\Keycloak\Events\MissingClientsDetected;
 use App\Keycloak\Listeners\BlockClients;
 use App\Keycloak\Listeners\CreateClients;
@@ -35,8 +35,8 @@ final class KeycloakServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->app->singleton(KeycloakHttpClient::class, function () {
-            return new KeycloakHttpClient(
+        $this->app->singleton(KeycloakGuzzleClient::class, function () {
+            return new KeycloakGuzzleClient(
                 new Client([RequestOptions::HTTP_ERRORS => false]),
                 new ClientCredentials(
                     $this->app->get(LoggerInterface::class),
@@ -46,7 +46,7 @@ final class KeycloakServiceProvider extends ServiceProvider
 
         $this->app->singleton(ApiClient::class, function () {
             return new KeycloakApiClient(
-                $this->app->get(KeycloakHttpClient::class),
+                $this->app->get(KeycloakGuzzleClient::class),
                 $this->app->get(Realms::class),
                 $this->app->get(LoggerInterface::class),
             );
@@ -69,7 +69,7 @@ final class KeycloakServiceProvider extends ServiceProvider
 
         $this->app->singleton(KeycloakUserRepository::class, function () {
             return new KeycloakUserRepository(
-                $this->app->get(KeycloakHttpClient::class),
+                $this->app->get(KeycloakGuzzleClient::class),
                 $this->app->get(Realms::class)->getRealmByEnvironment(Environment::Production),
             );
         });
