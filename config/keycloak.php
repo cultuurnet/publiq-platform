@@ -58,19 +58,4 @@ return [
             ],
         ],
     ],
-    'uitid_realms' => [
-        // These are uitid realm clients (can be used for calls to other Publiq APIs like Uitpas
-        'test' => [
-            'internalName' => env('KEYCLOAK_TEST_UITID_REALM_NAME', ''),
-            'base_url' => env('KEYCLOAK_TEST_UITID_BASE_URL', ''),
-            'client_id' => env('KEYCLOAK_TEST_UITID_CLIENT_ID', ''),
-            'client_secret' => env('KEYCLOAK_TEST_UITID_CLIENT_SECRET', ''),
-        ],
-        'prod' => [
-            'internalName' => env('KEYCLOAK_PROD_UITID_REALM_NAME', ''),
-            'base_url' => env('KEYCLOAK_PROD_UITID_BASE_URL', ''),
-            'client_id' => env('KEYCLOAK_PROD_UITID_CLIENT_ID', ''),
-            'client_secret' => env('KEYCLOAK_PROD_UITID_CLIENT_SECRET', ''),
-        ],
-    ],
 ];

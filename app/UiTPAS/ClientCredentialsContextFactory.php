@@ -6,7 +6,6 @@ namespace App\UiTPAS;
 
 use App\Api\ClientCredentialsContext;
 use App\Domain\Integrations\Environment;
-use App\Keycloak\KeycloakConfig;
 
 final class ClientCredentialsContextFactory
 {
@@ -14,10 +13,10 @@ final class ClientCredentialsContextFactory
     {
         return new ClientCredentialsContext(
             Environment::Testing,
-            config(KeycloakConfig::UITID_TEST_BASE_URL),
-            config(KeycloakConfig::UITID_CLIENT_ID),
-            config(KeycloakConfig::UITID_CLIENT_SECRET),
-            config(KeycloakConfig::UITID_TEST_INTERNAL_NAME),
+            config(UiTPASConfig::UITPAS_TEST_OAUTH_TOKEN_URL->value),
+            config(UiTPASConfig::UITPAS_TEST_CLIENT_ID->value),
+            config(UiTPASConfig::UITPAS_TEST_CLIENT_SECRET->value),
+            UiTPASConfig::REALM_NAME->value,
         );
     }
 
@@ -25,10 +24,10 @@ final class ClientCredentialsContextFactory
     {
         return new ClientCredentialsContext(
             Environment::Production,
-            config(KeycloakConfig::KEYCLOAK_DOMAIN),
-            config(KeycloakConfig::KEYCLOAK_CLIENT_ID),
-            config(KeycloakConfig::KEYCLOAK_CLIENT_SECRET),
-            config(KeycloakConfig::KEYCLOAK_REALM_NAME),
+            config(UiTPASConfig::UITPAS_PROD_OAUTH_TOKEN_URL->value),
+            config(UiTPASConfig::UITPAS_PROD_CLIENT_ID->value),
+            config(UiTPASConfig::UITPAS_PROD_CLIENT_SECRET->value),
+            UiTPASConfig::REALM_NAME->value,
         );
     }
 }
