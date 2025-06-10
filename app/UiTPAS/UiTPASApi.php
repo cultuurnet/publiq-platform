@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace App\UiTPAS;
 
+use App\Api\ClientCredentialsContext;
+use App\Api\TokenStrategy\TokenStrategy;
 use App\Domain\Integrations\Environment;
 use App\Json;
-use App\Keycloak\Client\KeycloakGuzzleClient;
-use App\Keycloak\Realm;
-use App\Keycloak\TokenStrategy\TokenStrategy;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
@@ -20,7 +19,6 @@ use Psr\Log\LoggerInterface;
 final readonly class UiTPASApi implements UiTPASApiInterface
 {
     public function __construct(
-        private KeycloakGuzzleClient $keycloakHttpClient,
         private ClientInterface $client,
         private TokenStrategy $tokenStrategy,
         private LoggerInterface $logger,
@@ -29,17 +27,19 @@ final readonly class UiTPASApi implements UiTPASApiInterface
     ) {
     }
 
-    public function addPermissions(Realm $realm, string $organizerId, string $clientId): void
+    public function addPermissions(ClientCredentialsContext $context, string $organizerId, string $clientId): void
     {
         $request = new Request('PUT', 'permissions/' . $clientId, [
             'Accept' => 'application/problem+json',
             'Content-Type' => 'application/json',
         ], Json::encode($this->withBody($organizerId)));
 
+        $this->logger->debug('Adding permissions for ' . $clientId . ' to ' . $organizerId);
+
         try {
             $response = $this->sendWithBearer(
                 $request,
-                $realm
+                $context
             );
         } catch (GuzzleException $e) {
             $this->logger->error(sprintf('Failed to give %s permission to uitpas organisation %s, error %s', $organizerId, $clientId, $e->getMessage()));
@@ -70,11 +70,11 @@ final readonly class UiTPASApi implements UiTPASApiInterface
     }
 
     /** @throws GuzzleException */
-    private function sendWithBearer(RequestInterface $request, Realm $realm): ResponseInterface
+    private function sendWithBearer(RequestInterface $request, ClientCredentialsContext $credentials): ResponseInterface
     {
-        $token = $this->tokenStrategy->fetchToken($this->keycloakHttpClient, $realm);
+        $token = $this->tokenStrategy->fetchToken($credentials);
         $request = $request
-            ->withUri(new Uri($this->getEndpoint($realm) . $request->getUri()))
+            ->withUri(new Uri($this->getEndpoint($credentials) . $request->getUri()))
             ->withAddedHeader(
                 'Authorization',
                 'Bearer ' . $token
@@ -83,7 +83,7 @@ final readonly class UiTPASApi implements UiTPASApiInterface
         return $this->client->send($request);
     }
 
-    private function getEndpoint(Realm $keycloakClient): string
+    private function getEndpoint(ClientCredentialsContext $keycloakClient): string
     {
         if ($keycloakClient->environment === Environment::Testing) {
             return $this->testApiEndpoint;

@@ -2,14 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Keycloak\TokenStrategy;
+namespace App\Api\TokenStrategy;
 
+use App\Api\ClientCredentialsContext;
 use App\Json;
-use App\Keycloak\Client\KeycloakGuzzleClient;
 use App\Keycloak\Exception\KeyCloakApiFailed;
-use App\Keycloak\Realm;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Uri;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
 /*
@@ -19,16 +22,18 @@ use Psr\Log\LoggerInterface;
 
 final class ClientCredentials implements TokenStrategy
 {
+    /** @var array<string, string> */
     private array $accessToken = [];
 
     public function __construct(
+        private readonly ClientInterface $client,
         private readonly LoggerInterface $logger,
     ) {
     }
 
-    public function fetchToken(KeycloakGuzzleClient $client, Realm $realm): string
+    public function fetchToken(ClientCredentialsContext $context): string
     {
-        $key = $realm->environment->value . $realm->internalName . $realm->clientId;
+        $key = $context->getCacheKey();
 
         if (isset($this->accessToken[$key])) {
             return $this->accessToken[$key];
@@ -37,23 +42,25 @@ final class ClientCredentials implements TokenStrategy
         try {
             $request = new Request(
                 'POST',
-                'realms/' . $realm->internalName . '/protocol/openid-connect/token',
+                'realms/' . $context->realmName . '/protocol/openid-connect/token',
                 ['Content-Type' => 'application/x-www-form-urlencoded'],
                 http_build_query([
                     'grant_type' => 'client_credentials',
-                    'client_id' => $realm->clientId,
-                    'client_secret' => $realm->clientSecret,
+                    'client_id' => $context->clientId,
+                    'client_secret' => $context->clientSecret,
                 ])
             );
-            $response = $client->sendWithoutBearer($request, $realm);
+
+            $response = $this->sendWithoutBearer($request, $context);
         } catch (GuzzleException $e) {
             $this->logger->error($e->getMessage());
             throw KeyCloakApiFailed::couldNotFetchAccessToken($e->getMessage());
         }
 
         if ($response->getStatusCode() !== 200) {
-            $this->logger->error($response->getBody()->getContents());
-            throw KeyCloakApiFailed::couldNotFetchAccessToken($response->getBody()->getContents());
+            $message = $response->getBody()->getContents();
+            $this->logger->error($message);
+            throw KeyCloakApiFailed::couldNotFetchAccessToken($message);
         }
 
         $json = Json::decodeAssociatively($response->getBody()->getContents());
@@ -62,9 +69,21 @@ final class ClientCredentials implements TokenStrategy
             throw KeyCloakApiFailed::unexpectedTokenResponse();
         }
 
-        $this->logger->info('Fetched token for ' . $realm->clientId . ', token starts with ' . substr($json['access_token'], 0, 6));
-        $this->accessToken[$key] = $json['access_token'];
+        $token = $json['access_token'];
+        $this->logger->info('Fetched token for ' . $context->clientId . ', token starts with ' . substr($token, 0, 6));
+        $this->accessToken[$key] = $token;
 
-        return $this->accessToken[$key];
+        return $token;
+    }
+
+    /**
+     * @throws GuzzleException
+     */
+    public function sendWithoutBearer(RequestInterface $request, ClientCredentialsContext $context): ResponseInterface
+    {
+        $request = $request
+            ->withUri(new Uri($context->baseUrl . $request->getUri()));
+
+        return $this->client->send($request);
     }
 }

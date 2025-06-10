@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Uitpas;
 
+use App\Api\ClientCredentialsContext;
+use App\Api\TokenStrategy\ClientCredentials;
 use App\Domain\Integrations\Environment;
-use App\Keycloak\EmptyDefaultScopeConfig;
-use App\Keycloak\Realm;
-use App\Keycloak\TokenStrategy\ClientCredentials;
 use App\UiTPAS\UiTPASApi;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
@@ -27,20 +26,17 @@ final class UitpasApiTest extends TestCase
     private const CLIENT_ID = 'client-456';
 
     private LoggerInterface&MockObject $logger;
-    private Realm $realm;
+    private ClientCredentialsContext $context;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->realm = new Realm(
-            'uitid',
-            'uitid',
+        $this->context = new ClientCredentialsContext(
+            Environment::Testing,
             'https://test.publiq.be/',
             '123',
             'secret',
-            Environment::Testing,
-            new EmptyDefaultScopeConfig()
         );
 
         $this->logger = $this->createMock(LoggerInterface::class);
@@ -53,11 +49,10 @@ final class UitpasApiTest extends TestCase
             new Response(204),
         ]);
 
-        $keycloakHttpClient = $this->givenKeycloakHttpClient($this->logger, $mock);
+        $client = $this->givenClient($mock);
         $uitpasApi = new UiTPASApi(
-            $keycloakHttpClient,
-            $this->givenClient($mock),
-            new ClientCredentials($this->logger),
+            $client,
+            new ClientCredentials($client, $this->logger),
             $this->logger,
             'https://test-uitpas.publiq.be/',
             'https://uitpas.publiq.be/',
@@ -78,7 +73,7 @@ final class UitpasApiTest extends TestCase
                 return $message === $expected;
             }));
 
-        $uitpasApi->addPermissions($this->realm, self::ORG_ID, self::CLIENT_ID);
+        $uitpasApi->addPermissions($this->context, self::ORG_ID, self::CLIENT_ID);
     }
 
     public function test_it_logs_error_when_add_permissions_fails_with_exception(): void
@@ -91,11 +86,10 @@ final class UitpasApiTest extends TestCase
             ),
         ]);
 
-        $keycloakHttpClient = $this->givenKeycloakHttpClient($this->logger, $mock);
+        $client = $this->givenClient($mock);
         $uitpasApi = new UiTPASApi(
-            $keycloakHttpClient,
-            $this->givenClient($mock),
-            new ClientCredentials($this->logger),
+            $client,
+            new ClientCredentials($client, $this->logger),
             $this->logger,
             'https://test-uitpas.publiq.be/',
             'https://uitpas.publiq.be/',
@@ -106,7 +100,7 @@ final class UitpasApiTest extends TestCase
             ->method('error')
             ->with($this->stringContains('Failed to give'));
 
-        $uitpasApi->addPermissions($this->realm, self::ORG_ID, self::CLIENT_ID);
+        $uitpasApi->addPermissions($this->context, self::ORG_ID, self::CLIENT_ID);
     }
 
     public function test_it_logs_error_when_status_code_is_not_204(): void
@@ -116,11 +110,10 @@ final class UitpasApiTest extends TestCase
             new Response(400),
         ]);
 
-        $keycloakHttpClient = $this->givenKeycloakHttpClient($this->logger, $mock);
+        $client = $this->givenClient($mock);
         $uitpasApi = new UiTPASApi(
-            $keycloakHttpClient,
-            $this->givenClient($mock),
-            new ClientCredentials($this->logger),
+            $client,
+            new ClientCredentials($client, $this->logger),
             $this->logger,
             'https://test-uitpas.publiq.be/',
             'https://uitpas.publiq.be/',
@@ -131,6 +124,6 @@ final class UitpasApiTest extends TestCase
             ->method('error')
             ->with(sprintf('Failed to give %s permission to uitpas organisation %s, status code 400', self::ORG_ID, self::CLIENT_ID));
 
-        $uitpasApi->addPermissions($this->realm, self::ORG_ID, self::CLIENT_ID);
+        $uitpasApi->addPermissions($this->context, self::ORG_ID, self::CLIENT_ID);
     }
 }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Keycloak;
 
+use App\Api\TokenStrategy\ClientCredentials;
 use App\Keycloak\Client\KeycloakGuzzleClient;
-use App\Keycloak\TokenStrategy\ClientCredentials;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -16,9 +16,14 @@ trait KeycloakHttpClientFactory
 {
     protected function givenKeycloakHttpClient(LoggerInterface $logger, MockHandler $mock): KeycloakGuzzleClient
     {
+        $client = $this->givenClient($mock);
+
         return new KeycloakGuzzleClient(
-            $this->givenClient($mock),
-            new ClientCredentials($logger)
+            $client,
+            new ClientCredentials(
+                $client,
+                $logger
+            )
         );
     }
 

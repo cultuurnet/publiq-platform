@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Keycloak;
 
+use App\Api\TokenStrategy\ClientCredentials;
 use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
@@ -24,7 +25,6 @@ use App\Keycloak\Listeners\UpdateClients;
 use App\Keycloak\Repositories\EloquentKeycloakClientRepository;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Keycloak\Repositories\KeycloakUserRepository;
-use App\Keycloak\TokenStrategy\ClientCredentials;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Support\Facades\Event;
@@ -39,6 +39,7 @@ final class KeycloakServiceProvider extends ServiceProvider
             return new KeycloakGuzzleClient(
                 new Client([RequestOptions::HTTP_ERRORS => false]),
                 new ClientCredentials(
+                    new Client([RequestOptions::HTTP_ERRORS => false]),
                     $this->app->get(LoggerInterface::class),
                 ),
             );

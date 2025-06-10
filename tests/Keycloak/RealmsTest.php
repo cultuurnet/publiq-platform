@@ -7,7 +7,7 @@ namespace Tests\Keycloak;
 use App\Domain\Integrations\Environment;
 use App\Keycloak\Realm;
 use App\Keycloak\Realms;
-use App\Keycloak\DefaultScopeConfig;
+use App\Keycloak\ScopeConfig;
 use Illuminate\Support\Facades\Config;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
@@ -73,7 +73,7 @@ final class RealmsTest extends TestCase
             $this->assertEquals('client_secret_' . $i, $realm->clientSecret);
             $this->assertEquals($environment, $realm->environment);
 
-            $this->assertInstanceOf(DefaultScopeConfig::class, $realm->scopeConfig);
+            $this->assertInstanceOf(ScopeConfig::class, $realm->scopeConfig);
             $this->assertEquals($scopes[$environment->value]['search_api_id'], $realm->scopeConfig->searchApiScopeId->toString());
             $this->assertEquals($scopes[$environment->value]['entry_api_id'], $realm->scopeConfig->entryApiScopeId->toString());
             $this->assertEquals($scopes[$environment->value]['uitpas_id'], $realm->scopeConfig->uitpasScopeId->toString());

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Keycloak;
 
 use App\Domain\Integrations\IntegrationType;
-use App\Keycloak\DefaultScopeConfig;
+use App\Keycloak\ScopeConfig;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
@@ -19,13 +19,13 @@ final class ScopeConfigTest extends TestCase
     private const ENTRY_API_ID = '824c09c0-2f3a-4fa0-bde2-8bf25c9a5b74';
     private const UITPAS_ID = '0743b1c7-0ea2-46af-906e-fbb6c0317514';
 
-    private DefaultScopeConfig $scopeConfig;
+    private ScopeConfig $scopeConfig;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->scopeConfig = new DefaultScopeConfig(
+        $this->scopeConfig = new ScopeConfig(
             Uuid::fromString(self::SEARCH_API_ID),
             Uuid::fromString(self::ENTRY_API_ID),
             Uuid::fromString(self::UITPAS_ID)
