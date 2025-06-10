@@ -51,7 +51,9 @@ final class ClientCredentials implements TokenStrategy
                 ])
             );
 
-            $response = $this->sendWithoutBearer($request, $context);
+            $response = $this->client->send(
+                $request->withUri(new Uri($context->baseUrl . $request->getUri()))
+            );
         } catch (GuzzleException $e) {
             $this->logger->error($e->getMessage());
             throw KeyCloakApiFailed::couldNotFetchAccessToken($e->getMessage());
@@ -74,16 +76,5 @@ final class ClientCredentials implements TokenStrategy
         $this->accessToken[$key] = $token;
 
         return $token;
-    }
-
-    /**
-     * @throws GuzzleException
-     */
-    public function sendWithoutBearer(RequestInterface $request, ClientCredentialsContext $context): ResponseInterface
-    {
-        $request = $request
-            ->withUri(new Uri($context->baseUrl . $request->getUri()));
-
-        return $this->client->send($request);
     }
 }
