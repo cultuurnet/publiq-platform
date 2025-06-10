@@ -13,7 +13,7 @@ final readonly class ClientCredentialsContext
         public string $baseUrl,
         public string $clientId,
         public string $clientSecret,
-        public string $realmName = 'uitid',
+        public string $realmName
     ) {
     }
 

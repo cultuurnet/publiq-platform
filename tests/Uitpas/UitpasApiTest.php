@@ -37,6 +37,7 @@ final class UitpasApiTest extends TestCase
             'https://test.publiq.be/',
             '123',
             'secret',
+            'uitid'
         );
 
         $this->logger = $this->createMock(LoggerInterface::class);
@@ -66,7 +67,7 @@ final class UitpasApiTest extends TestCase
                 if ($callCount === 0) {
                     $expected = 'Fetched token for 123, token starts with my-tok';
                 } else {
-                    $expected = sprintf('Gave %s permission to uitpas organisation %s', self::ORG_ID, self::CLIENT_ID);
+                    $expected = sprintf('Gave %s permission to uitpas organisation %s', self::CLIENT_ID, self::ORG_ID);
                 }
 
                 $callCount++;
@@ -122,7 +123,7 @@ final class UitpasApiTest extends TestCase
         $this->logger
             ->expects($this->once())
             ->method('error')
-            ->with(sprintf('Failed to give %s permission to uitpas organisation %s, status code 400', self::ORG_ID, self::CLIENT_ID));
+            ->with(sprintf('Failed to give %s permission to uitpas organisation %s, status code 400', self::CLIENT_ID, self::ORG_ID));
 
         $uitpasApi->addPermissions($this->context, self::ORG_ID, self::CLIENT_ID);
     }

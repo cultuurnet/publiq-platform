@@ -34,24 +34,22 @@ final readonly class UiTPASApi implements UiTPASApiInterface
             'Content-Type' => 'application/json',
         ], Json::encode($this->withBody($organizerId)));
 
-        $this->logger->debug('Adding permissions for ' . $clientId . ' to ' . $organizerId);
-
         try {
             $response = $this->sendWithBearer(
                 $request,
                 $context
             );
         } catch (GuzzleException $e) {
-            $this->logger->error(sprintf('Failed to give %s permission to uitpas organisation %s, error %s', $organizerId, $clientId, $e->getMessage()));
+            $this->logger->error(sprintf('Failed to give %s permission to uitpas organisation %s, error %s', $clientId, $organizerId, $e->getMessage()));
             return;
         }
 
         if ($response->getStatusCode() !== 204) {
-            $this->logger->error(sprintf('Failed to give %s permission to uitpas organisation %s, status code %s', $organizerId, $clientId, $response->getStatusCode()));
+            $this->logger->error(sprintf('Failed to give %s permission to uitpas organisation %s, status code %s', $clientId, $organizerId, $response->getStatusCode()));
             return;
         }
 
-        $this->logger->info(sprintf('Gave %s permission to uitpas organisation %s', $organizerId, $clientId));
+        $this->logger->info(sprintf('Gave %s permission to uitpas organisation %s', $clientId, $organizerId));
     }
 
     private function withBody(string $organizerId): array

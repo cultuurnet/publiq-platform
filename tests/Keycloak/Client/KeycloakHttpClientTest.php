@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Keycloak\Client;
 
 use App\Api\TokenStrategy\TokenStrategy;
-use App\Keycloak\Client\KeycloakGuzzleClient;
+use App\Keycloak\Client\KeycloakHttpClient;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
@@ -14,7 +14,7 @@ use Psr\Http\Message\RequestInterface;
 use Tests\Keycloak\RealmFactory;
 use Tests\TestCase;
 
-final class KeycloakGuzzleClientTest extends TestCase
+final class KeycloakHttpClientTest extends TestCase
 {
     use RealmFactory;
 
@@ -32,7 +32,7 @@ final class KeycloakGuzzleClientTest extends TestCase
 
     public function test_it_can_send_a_request_with_bearer(): void
     {
-        $keycloakClient = new KeycloakGuzzleClient($this->clientMock, $this->tokenStrategy);
+        $keycloakClient = new KeycloakHttpClient($this->clientMock, $this->tokenStrategy);
 
         $this->tokenStrategy->expects($this->once())
             ->method('fetchToken')

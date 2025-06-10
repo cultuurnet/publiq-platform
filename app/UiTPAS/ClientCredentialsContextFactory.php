@@ -14,9 +14,10 @@ final class ClientCredentialsContextFactory
     {
         return new ClientCredentialsContext(
             Environment::Testing,
-            config(KeycloakConfig::TEST_BASE_URL),
-            config(KeycloakConfig::TEST_CLIENT_ID),
-            config(KeycloakConfig::TEST_CLIENT_SECRET),
+            config(KeycloakConfig::UITID_TEST_BASE_URL),
+            config(KeycloakConfig::UITID_CLIENT_ID),
+            config(KeycloakConfig::UITID_CLIENT_SECRET),
+            config(KeycloakConfig::UITID_TEST_INTERNAL_NAME),
         );
     }
 
@@ -27,6 +28,7 @@ final class ClientCredentialsContextFactory
             config(KeycloakConfig::KEYCLOAK_DOMAIN),
             config(KeycloakConfig::KEYCLOAK_CLIENT_ID),
             config(KeycloakConfig::KEYCLOAK_CLIENT_SECRET),
+            config(KeycloakConfig::KEYCLOAK_REALM_NAME),
         );
     }
 }

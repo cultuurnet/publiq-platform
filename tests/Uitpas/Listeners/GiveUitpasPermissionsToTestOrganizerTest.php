@@ -40,7 +40,8 @@ final class GiveUitpasPermissionsToTestOrganizerTest extends TestCase
             Environment::Testing,
             'https://account-test.uitid.be/',
             'client-id',
-            'client-secret'
+            'client-secret',
+            'uitid'
         );
         $this->listener = new AddUiTPASPermissionsToOrganizerForIntegration(
             $this->integrationRepository,

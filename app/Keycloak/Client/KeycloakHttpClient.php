@@ -12,7 +12,7 @@ use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-final readonly class KeycloakGuzzleClient
+final readonly class KeycloakHttpClient
 {
     public function __construct(
         private ClientInterface $client,

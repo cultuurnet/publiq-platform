@@ -21,7 +21,7 @@ use Throwable;
 final readonly class KeycloakApiClient implements ApiClient
 {
     public function __construct(
-        private KeycloakGuzzleClient $client,
+        private KeycloakHttpClient $client,
         private Realms $realms,
         private LoggerInterface $logger,
     ) {
