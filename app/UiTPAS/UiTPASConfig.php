@@ -9,6 +9,8 @@ enum UiTPASConfig: string
     case REALM_NAME = 'uitid';
 
     case AUTOMATIC_PERMISSIONS_ENABLED = 'uitpas.automatic_permissions_enabled';
+    case CLIENT_PERMISSIONS_LINK = 'uitpas.client_permissions_link';
+
     case TEST_ORGANISATION = 'uitpas.test.organisation';
     case TEST_API_ENDPOINT = 'uitpas.test.api_endpoint';
     case PROD_API_ENDPOINT = 'uitpas.prod.api_endpoint';
