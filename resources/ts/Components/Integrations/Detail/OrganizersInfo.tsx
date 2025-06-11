@@ -5,7 +5,7 @@ import type { Integration } from "../../../types/Integration";
 import { Card } from "../../Card";
 import { CopyText } from "../../CopyText";
 import { ButtonIcon } from "../../ButtonIcon";
-import {faCheckSquare, faTrash} from "@fortawesome/free-solid-svg-icons";
+import { faCheckSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import type { Organizer } from "../../../types/Organizer";
 import { groupBy } from "lodash";
 import { ButtonPrimary } from "../../ButtonPrimary";
@@ -16,7 +16,7 @@ import { ButtonSecondary } from "../../ButtonSecondary";
 import { OrganizersDatalist } from "./OrganizersDatalist";
 import type { UiTPASOrganizer } from "../../../types/UiTPASOrganizer";
 import { classNames } from "../../../utils/classNames";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type Props = Integration & { organizers: Organizer[] };
 
@@ -85,14 +85,16 @@ const OrganizersSection = ({
             <div className="mt-2 ml-1">
               {organizer.permissions.length > 0 ? (
                 <ul className="flex flex-col gap-1 text-sm text-gray-700">
-                  {organizer.permissions.map(
-                    (permission, id) => (
-                      <li key={id} className="flex items-start gap-2">
-                          <FontAwesomeIcon icon={faCheckSquare} className="text-green-500" size="lg" />
-                          <span>{permission}</span>
-                      </li>
-                    )
-                  )}
+                  {organizer.permissions.map((permission, id) => (
+                    <li key={id} className="flex items-start gap-2">
+                      <FontAwesomeIcon
+                        icon={faCheckSquare}
+                        className="text-green-500"
+                        size="lg"
+                      />
+                      <span>{permission}</span>
+                    </li>
+                  ))}
                 </ul>
               ) : (
                 <p className="text-sm italic text-gray-400">
