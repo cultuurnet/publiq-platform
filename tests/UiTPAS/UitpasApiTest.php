@@ -2,15 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Tests\Uitpas;
+namespace Tests\UiTPAS;
 
 use App\Api\ClientCredentialsContext;
 use App\Api\TokenStrategy\ClientCredentials;
 use App\Domain\Integrations\Environment;
-use App\Keycloak\Client;
-use App\Keycloak\EmptyDefaultScopeConfig;
-use App\Keycloak\Realm;
-use App\Keycloak\TokenStrategy\ClientCredentials;
 use App\UiTPAS\UiTPASApi;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
@@ -18,7 +14,6 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
-use Ramsey\Uuid\Uuid;
 use Tests\Keycloak\KeycloakHttpClientFactory;
 use Tests\TestCase;
 
@@ -62,6 +57,7 @@ final class UitpasApiTest extends TestCase
             $this->logger,
             'https://test-uitpas.publiq.be/',
             'https://uitpas.publiq.be/',
+            true,
         );
 
         $callCount = 0;
@@ -99,6 +95,7 @@ final class UitpasApiTest extends TestCase
             $this->logger,
             'https://test-uitpas.publiq.be/',
             'https://uitpas.publiq.be/',
+            true,
         );
 
         $this->logger
@@ -123,6 +120,7 @@ final class UitpasApiTest extends TestCase
             $this->logger,
             'https://test-uitpas.publiq.be/',
             'https://uitpas.publiq.be/',
+            true,
         );
 
         $this->logger
@@ -157,19 +155,18 @@ final class UitpasApiTest extends TestCase
             new Response(200, [], $body),
         ]);
 
-        $keycloakHttpClient = $this->givenKeycloakHttpClient($this->logger, $mock);
+        $client = $this->givenClient($mock);
         $uitpasApi = new UiTPASApi(
-            $keycloakHttpClient,
-            $this->givenClient($mock),
-            new ClientCredentials($this->logger),
+            $client,
+            new ClientCredentials($client, $this->logger),
             $this->logger,
             'https://test-uitpas.publiq.be/',
             'https://uitpas.publiq.be/',
+            true,
         );
 
         $permissions = $uitpasApi->fetchPermissions(
-            $this->realm,
-            new Client(Uuid::uuid4(), Uuid::uuid4(), 'client-456', 'client-secret', Environment::Testing),
+            $this->context,
             'org-1'
         );
 
@@ -178,5 +175,24 @@ final class UitpasApiTest extends TestCase
             'Tarieven opvragen',
             'Tickets registreren',
         ], $permissions);
+    }
+
+    public function test_get_permissions_returns_empty_array_when_feature_flag_is_false(): void
+    {
+        $mock = new MockHandler([
+            new Response(200, [], json_encode(['access_token' => self::MY_TOKEN], JSON_THROW_ON_ERROR)),
+        ]);
+
+        $client = $this->givenClient($mock);
+        $uitpasApi = new UiTPASApi(
+            $client,
+            new ClientCredentials($client, $this->logger),
+            $this->logger,
+            'https://test-uitpas.publiq.be/',
+            'https://uitpas.publiq.be/',
+            false,
+        );
+
+        $this->assertEquals([], $uitpasApi->fetchPermissions($this->context, 'org-1'));
     }
 }
