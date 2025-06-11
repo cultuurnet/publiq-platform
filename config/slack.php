@@ -8,5 +8,6 @@ return [
     'channels' => [
         'publiq_platform' => env('SLACK_PUBLIQ_PLATFORM_CHANNEL_ID'),
         'technical_support' => env('SLACK_TECHNICAL_SUPPORT_CHANNEL_ID'),
+        'uitpas_integraties' => env('SLACK_UITPAS_INTEGRATIES_CHANNEL_ID'),
     ],
 ];
