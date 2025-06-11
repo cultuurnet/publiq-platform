@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Keycloak;
 
+use App\Api\ClientCredentialsContext;
 use App\Domain\Integrations\Environment;
 
 final readonly class Realm
@@ -32,6 +33,17 @@ final readonly class Realm
             $this->clientSecret,
             $this->environment,
             $this->scopeConfig,
+        );
+    }
+
+    public function getContext(): ClientCredentialsContext
+    {
+        return new ClientCredentialsContext(
+            $this->environment,
+            $this->baseUrl,
+            $this->clientId,
+            $this->clientSecret,
+            $this->internalName
         );
     }
 

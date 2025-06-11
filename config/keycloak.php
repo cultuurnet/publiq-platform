@@ -23,6 +23,7 @@ return [
         'redirectUri' => env('KEYCLOAK_LOGIN_REDIRECT_URI', env('APP_URL') . '/callback'),
     ],
     'environments' => [
+        // These are master realm clients
         'acc' => [
             'internalName' => env('KEYCLOAK_ACC_REALM_NAME', ''),
             'base_url' => env('KEYCLOAK_ACC_BASE_URL', ''),

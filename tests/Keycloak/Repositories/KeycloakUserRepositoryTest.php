@@ -4,19 +4,18 @@ declare(strict_types=1);
 
 namespace Tests\Keycloak\Repositories;
 
+use App\Api\TokenStrategy\TokenStrategy;
 use App\Domain\Integrations\Environment;
 use App\Json;
 use App\Keycloak\Client\KeycloakHttpClient;
+use App\Keycloak\ScopeConfig;
 use App\Keycloak\Realm;
 use App\Keycloak\Repositories\KeycloakUserRepository;
-use App\Keycloak\ScopeConfig;
-use App\Keycloak\TokenStrategy\TokenStrategy;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
-use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 
 final class KeycloakUserRepositoryTest extends TestCase
@@ -36,7 +35,6 @@ final class KeycloakUserRepositoryTest extends TestCase
         $keycloakHttpClient = new KeycloakHttpClient(
             $this->client,
             $this->tokenStrategy,
-            $this->createMock(LoggerInterface::class),
         );
 
         $realm = new Realm(

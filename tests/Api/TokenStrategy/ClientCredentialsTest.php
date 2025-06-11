@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Tests\Keycloak\TokenStrategy;
+namespace Tests\Api\TokenStrategy;
 
+use App\Api\TokenStrategy\ClientCredentials;
 use App\Keycloak\Exception\KeyCloakApiFailed;
-use App\Keycloak\TokenStrategy\ClientCredentials;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
-use Tests\TestCase;
 use Psr\Log\LoggerInterface;
 use Tests\Keycloak\KeycloakHttpClientFactory;
 use Tests\Keycloak\RealmFactory;
+use Tests\TestCase;
 
 final class ClientCredentialsTest extends TestCase
 {
@@ -20,7 +20,7 @@ final class ClientCredentialsTest extends TestCase
 
     use RealmFactory;
 
-    public const ACCESS_TOKEN = 'pqeaefosdfhbsdq';
+    public const ACCESS_TOKEN = 'access-token';
 
     private LoggerInterface&MockObject $logger;
 
@@ -37,11 +37,13 @@ final class ClientCredentialsTest extends TestCase
             new Response(200, [], json_encode(['access_token' => self::ACCESS_TOKEN], JSON_THROW_ON_ERROR)),
         ]);
 
-        $clientCredentials = new ClientCredentials($this->logger);
+        $clientCredentials = new ClientCredentials(
+            $this->givenClient($mock),
+            $this->logger
+        );
 
         $token = $clientCredentials->fetchToken(
-            $this->givenKeycloakHttpClient($this->logger, $mock),
-            $this->givenTestRealm()
+            $this->givenTestRealm()->getContext()
         );
 
         $this->assertEquals(self::ACCESS_TOKEN, $token);
@@ -53,14 +55,16 @@ final class ClientCredentialsTest extends TestCase
             new Response(200, [], json_encode([], JSON_THROW_ON_ERROR)),
         ]);
 
-        $clientCredentials = new ClientCredentials($this->logger);
+        $clientCredentials = new ClientCredentials(
+            $this->givenClient($mock),
+            $this->logger
+        );
 
         $this->expectException(KeyCloakApiFailed::class);
         $this->expectExceptionCode(KeyCloakApiFailed::UNEXPECTED_TOKEN_RESPONSE);
 
         $token = $clientCredentials->fetchToken(
-            $this->givenKeycloakHttpClient($this->logger, $mock),
-            $this->givenTestRealm()
+            $this->givenTestRealm()->getContext()
         );
 
         $this->assertEquals(self::ACCESS_TOKEN, $token);
@@ -72,13 +76,14 @@ final class ClientCredentialsTest extends TestCase
             new Response(401, [], json_encode([], JSON_THROW_ON_ERROR)),
         ]);
 
-        $clientCredentials = new ClientCredentials($this->logger);
-
+        $clientCredentials = new ClientCredentials(
+            $this->givenClient($mock),
+            $this->logger
+        );
         $this->expectException(KeyCloakApiFailed::class);
         $this->expectExceptionCode(KeyCloakApiFailed::COULD_NOT_FETCH_ACCESS_TOKEN);
         $clientCredentials->fetchToken(
-            $this->givenKeycloakHttpClient($this->logger, $mock),
-            $this->givenTestRealm()
+            $this->givenTestRealm()->getContext()
         );
     }
 }
