@@ -21,6 +21,9 @@ final readonly class SlackNotifier implements Notifier
     public function postMessage(string $message): void
     {
         $response = Http::withToken($this->botToken)
+            ->withHeaders([
+                'Content-Type' => 'application/json; charset=utf-8',
+            ])
             ->post(
                 $this->baseUri . 'chat.postMessage',
                 [
