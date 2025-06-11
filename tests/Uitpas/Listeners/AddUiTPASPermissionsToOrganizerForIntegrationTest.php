@@ -22,7 +22,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
-final class GiveUitpasPermissionsToTestOrganizerTest extends TestCase
+final class AddUiTPASPermissionsToOrganizerForIntegrationTest extends TestCase
 {
     private IntegrationRepository&MockObject $integrationRepository;
     private UiTPASApiInterface&MockObject $uitpasApi;
@@ -56,6 +56,7 @@ final class GiveUitpasPermissionsToTestOrganizerTest extends TestCase
 
         $integrationId = Uuid::uuid4();
         $clientIdTest = '5f263a50-9474-4690-a962-6935d6f9a3f2';
+
         $integration = (new Integration(
             Uuid::uuid4(),
             IntegrationType::UiTPAS,
@@ -65,10 +66,8 @@ final class GiveUitpasPermissionsToTestOrganizerTest extends TestCase
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::THIRD_PARTY,
         ))->withKeycloakClients(
-            ... [
-                new Client(Uuid::uuid4(), Uuid::uuid4(), '5f263a50-9474-4690-a962-6935d6f9a3f2', 'client-test', Environment::Testing),
-                new Client(Uuid::uuid4(), Uuid::uuid4(), Uuid::uuid4()->toString(), 'client-prod', Environment::Production),
-            ]
+            new Client(Uuid::uuid4(), Uuid::uuid4(), $clientIdTest, 'client-test', Environment::Testing),
+            new Client(Uuid::uuid4(), Uuid::uuid4(), Uuid::uuid4()->toString(), 'client-prod', Environment::Production),
         );
         $this->integrationRepository
             ->expects($this->once())

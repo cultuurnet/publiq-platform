@@ -7,7 +7,6 @@ namespace App\UiTPAS\Listeners;
 use App\Api\ClientCredentialsContext;
 use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Events\IntegrationCreated;
-use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\UiTPAS\UiTPASApiInterface;
@@ -26,7 +25,7 @@ final class AddUiTPASPermissionsToOrganizerForIntegration implements ShouldQueue
     ) {
     }
 
-    public function handle(IntegrationCreated|IntegrationUpdated $event): void
+    public function handle(IntegrationCreated $event): void
     {
         $integration = $this->integrationRepository->getById($event->id);
 
