@@ -5,7 +5,7 @@ import type { Integration } from "../../../types/Integration";
 import { Card } from "../../Card";
 import { CopyText } from "../../CopyText";
 import { ButtonIcon } from "../../ButtonIcon";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import {faCheckSquare, faTrash} from "@fortawesome/free-solid-svg-icons";
 import type { Organizer } from "../../../types/Organizer";
 import { groupBy } from "lodash";
 import { ButtonPrimary } from "../../ButtonPrimary";
@@ -16,6 +16,7 @@ import { ButtonSecondary } from "../../ButtonSecondary";
 import { OrganizersDatalist } from "./OrganizersDatalist";
 import type { UiTPASOrganizer } from "../../../types/UiTPASOrganizer";
 import { classNames } from "../../../utils/classNames";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 type Props = Integration & { organizers: Organizer[] };
 
@@ -82,14 +83,13 @@ const OrganizersSection = ({
             </div>
 
             <div className="mt-2 ml-1">
-              {Array.isArray(organizer.permissions) &&
-              organizer.permissions.length > 0 ? (
+              {organizer.permissions.length > 0 ? (
                 <ul className="flex flex-col gap-1 text-sm text-gray-700">
                   {organizer.permissions.map(
-                    (permission: string, id: number) => (
+                    (permission, id) => (
                       <li key={id} className="flex items-start gap-2">
-                        <span className="text-green-600 mt-0.5">✅</span>
-                        <span>{permission}</span>
+                          <FontAwesomeIcon icon={faCheckSquare} className="text-green-500" size="lg" />
+                          <span>{permission}</span>
                       </li>
                     )
                   )}

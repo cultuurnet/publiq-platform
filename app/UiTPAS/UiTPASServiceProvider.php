@@ -6,6 +6,7 @@ namespace App\UiTPAS;
 
 use App\Api\TokenStrategy\ClientCredentials;
 use App\Domain\Integrations\Events\IntegrationCreated;
+use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Search\Sapi3\SearchService;
 use App\UiTPAS\Listeners\AddUiTPASPermissionsToOrganizerForIntegration;
@@ -61,5 +62,7 @@ final class UiTPASServiceProvider extends ServiceProvider
     private function bootstrapEventHandling(): void
     {
         Event::listen(IntegrationCreated::class, [AddUiTPASPermissionsToOrganizerForIntegration::class, 'handle']);
+        Event::listen(IntegrationUpdated::class, [AddUiTPASPermissionsToOrganizerForIntegration::class, 'handle']);
+
     }
 }

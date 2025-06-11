@@ -11,5 +11,5 @@ interface UiTPASApiInterface
     public function addPermissions(ClientCredentialsContext $context, string $organizerId, string $clientId): void;
 
     /** @return string[] */
-    public function fetchPermissions(ClientCredentialsContext $context, string $organizerId): array;
+    public function fetchPermissions(ClientCredentialsContext $context, string $organisationId, string $clientId): array;
 }

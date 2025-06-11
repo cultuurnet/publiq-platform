@@ -28,7 +28,6 @@ final readonly class GetIntegrationOrganizersWithTestOrganizer
     {
         $organizerIds = collect($integration->udbOrganizers())->map(fn (UdbOrganizer $organizer) => $organizer->organizerId);
         $UiTPASOrganizers = $this->searchClient->findUiTPASOrganizers(...$organizerIds)->getMember()?->getItems();
-        //@todo check
         $keycloakClient = $this->getClientByEnv($integration, Environment::Production);
 
         $organizers = collect($UiTPASOrganizers)->map(function (SapiOrganizer $organizer) use ($keycloakClient) {
@@ -39,7 +38,11 @@ final readonly class GetIntegrationOrganizersWithTestOrganizer
                 'id' => $id,
                 'name' => $organizer->getName()?->getValues() ?? [],
                 'status' => 'Live',
-                'permissions' => $keycloakClient ? $this->UiTPASApi->fetchPermissions($this->prodCredentialsContext, $id) : [],
+                'permissions' => $keycloakClient ? $this->UiTPASApi->fetchPermissions(
+                    $this->prodCredentialsContext,
+                    (string)$organizer->getId(),
+                    $keycloakClient->clientId
+                ) : [],
             ];
         });
 
@@ -49,7 +52,11 @@ final readonly class GetIntegrationOrganizersWithTestOrganizer
             'id' => $orgTestId,
             'name' => ['nl' => 'UiTPAS Organisatie (Regio Gent + Paspartoe)'],
             'status' => 'Test',
-            'permissions' => $keycloakClient ? $this->UiTPASApi->fetchPermissions($this->testCredentialsContext, $orgTestId) : [],
+            'permissions' => $keycloakClient ? $this->UiTPASApi->fetchPermissions(
+                $this->testCredentialsContext,
+                $orgTestId,
+                $keycloakClient->clientId
+            ) : [],
         ]);
 
         return $organizers;

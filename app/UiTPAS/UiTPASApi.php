@@ -93,13 +93,15 @@ final readonly class UiTPASApi implements UiTPASApiInterface
     }
 
     /** @return string[] */
-    public function fetchPermissions(ClientCredentialsContext $context, string $organizerId): array
+    public function fetchPermissions(ClientCredentialsContext $context, string $organisationId, string $clientId): array
     {
         if (!$this->automaticPermissionsEnabled) {
+            $this->logger->error('DISABLED');
+
             return [];
         }
 
-        $myRequest = new Request('GET', 'permissions/' . $context->clientId);
+        $myRequest = new Request('GET', 'permissions/' . $clientId);
 
         $response = $this->sendWithBearer(
             $myRequest,
@@ -109,9 +111,11 @@ final readonly class UiTPASApi implements UiTPASApiInterface
         /** @var array<int, array{organizer: array{id: string}, permissionDetails: array<int, array{label: array{nl: string}}>}> $json */
         $json = Json::decodeAssociatively($response->getBody()->getContents());
 
+        $this->logger->error($response->getBody()->getContents());
+
         return collect($json)
-            ->filter(function (array $item) use ($organizerId): bool {
-                return $item['organizer']['id'] === $organizerId;
+            ->filter(function (array $item) use ($organisationId): bool {
+                return $item['organizer']['id'] === $organisationId;
             })
             ->flatMap(function (array $item): Collection {
                 /** @var array<int, array{label: array{nl: string}}> $details */

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Domain\Integrations;
+namespace Tests\UiTPAS;
 
 use App\Api\ClientCredentialsContext;
 use App\Domain\Integrations\Environment;

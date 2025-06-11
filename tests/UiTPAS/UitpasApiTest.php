@@ -167,7 +167,8 @@ final class UitpasApiTest extends TestCase
 
         $permissions = $uitpasApi->fetchPermissions(
             $this->context,
-            'org-1'
+            'org-1',
+            'client-id'
         );
 
         $this->assertEquals([
@@ -193,6 +194,6 @@ final class UitpasApiTest extends TestCase
             false,
         );
 
-        $this->assertEquals([], $uitpasApi->fetchPermissions($this->context, 'org-1'));
+        $this->assertEquals([], $uitpasApi->fetchPermissions($this->context, 'org-1', 'client-id'));
     }
 }
