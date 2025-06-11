@@ -8,17 +8,13 @@ use App\Api\ClientCredentialsContext;
 use App\Api\TokenStrategy\TokenStrategy;
 use App\Domain\Integrations\Environment;
 use App\Json;
-use App\Keycloak\Client;
-use App\Keycloak\Client\KeycloakGuzzleClient;
-use App\Keycloak\Realm;
-use App\Keycloak\TokenStrategy\TokenStrategy;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
+use Illuminate\Support\Collection;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Illuminate\Support\Collection;
 use Psr\Log\LoggerInterface;
 
 final readonly class UiTPASApi implements UiTPASApiInterface
@@ -29,6 +25,7 @@ final readonly class UiTPASApi implements UiTPASApiInterface
         private LoggerInterface $logger,
         private string $testApiEndpoint,
         private string $prodApiEndpoint,
+        private bool $automaticPermissionsEnabled,
     ) {
     }
 
@@ -73,11 +70,11 @@ final readonly class UiTPASApi implements UiTPASApiInterface
     }
 
     /** @throws GuzzleException */
-    private function sendWithBearer(RequestInterface $request, ClientCredentialsContext $credentials): ResponseInterface
+    private function sendWithBearer(RequestInterface $request, ClientCredentialsContext $context): ResponseInterface
     {
-        $token = $this->tokenStrategy->fetchToken($credentials);
+        $token = $this->tokenStrategy->fetchToken($context);
         $request = $request
-            ->withUri(new Uri($this->getEndpoint($credentials) . $request->getUri()))
+            ->withUri(new Uri($this->getEndpoint($context) . $request->getUri()))
             ->withAddedHeader(
                 'Authorization',
                 'Bearer ' . $token
@@ -86,9 +83,9 @@ final readonly class UiTPASApi implements UiTPASApiInterface
         return $this->client->send($request);
     }
 
-    private function getEndpoint(ClientCredentialsContext $keycloakClient): string
+    private function getEndpoint(ClientCredentialsContext $context): string
     {
-        if ($keycloakClient->environment === Environment::Testing) {
+        if ($context->environment === Environment::Testing) {
             return $this->testApiEndpoint;
         }
 
@@ -96,13 +93,17 @@ final readonly class UiTPASApi implements UiTPASApiInterface
     }
 
     /** @return string[] */
-    public function fetchPermissions(Realm $realm, Client $keycloakClient, string $organizerId): array
+    public function fetchPermissions(ClientCredentialsContext $context, string $organizerId): array
     {
-        $myRequest = new Request('GET', 'permissions/' . $keycloakClient->clientId);
+        if (!$this->automaticPermissionsEnabled) {
+            return [];
+        }
+
+        $myRequest = new Request('GET', 'permissions/' . $context->clientId);
 
         $response = $this->sendWithBearer(
             $myRequest,
-            $realm
+            $context
         );
 
         /** @var array<int, array{organizer: array{id: string}, permissionDetails: array<int, array{label: array{nl: string}}>}> $json */

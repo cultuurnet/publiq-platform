@@ -7,6 +7,7 @@ namespace App\UiTPAS;
 use App\Api\TokenStrategy\ClientCredentials;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Search\Sapi3\SearchService;
 use App\UiTPAS\Listeners\AddUiTPASPermissionsToOrganizerForIntegration;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
@@ -28,6 +29,7 @@ final class UiTPASServiceProvider extends ServiceProvider
                 $this->app->get(LoggerInterface::class),
                 (string)config(UiTPASConfig::TEST_API_ENDPOINT->value),
                 (string)config(UiTPASConfig::PROD_API_ENDPOINT->value),
+                (bool)config(UiTPASConfig::AUTOMATIC_PERMISSIONS_ENABLED->value)
             );
         });
 
@@ -38,6 +40,16 @@ final class UiTPASServiceProvider extends ServiceProvider
                 ClientCredentialsContextFactory::getUitIdTestContext()
             );
         });
+
+        $this->app->singleton(GetIntegrationOrganizersWithTestOrganizer::class, function () {
+            return new GetIntegrationOrganizersWithTestOrganizer(
+                $this->app->get(SearchService::class),
+                $this->app->get(UiTPASApiInterface::class),
+                ClientCredentialsContextFactory::getUitIdTestContext(),
+                ClientCredentialsContextFactory::getUitIdProdContext(),
+            );
+        });
+
 
         if (!config(UiTPASConfig::AUTOMATIC_PERMISSIONS_ENABLED->value)) {
             return;

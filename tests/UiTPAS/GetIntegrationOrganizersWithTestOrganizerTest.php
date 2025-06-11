@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Domain\Integrations;
 
+use App\Api\ClientCredentialsContext;
 use App\Domain\Integrations\Environment;
-use App\Domain\Integrations\GetIntegrationOrganizersWithTestOrganizer;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
@@ -13,6 +13,7 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Keycloak\Client;
 use App\Search\Sapi3\SearchService;
+use App\UiTPAS\GetIntegrationOrganizersWithTestOrganizer;
 use App\UiTPAS\UiTPASApiInterface;
 use App\UiTPAS\UiTPASConfig;
 use CultuurNet\SearchV3\ValueObjects\Collection;
@@ -21,15 +22,16 @@ use CultuurNet\SearchV3\ValueObjects\PagedCollection;
 use CultuurNet\SearchV3\ValueObjects\TranslatedString;
 use Illuminate\Support\Facades\Config;
 use PHPUnit\Framework\MockObject\MockObject;
-use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
+use Tests\TestCase;
 
 final class GetIntegrationOrganizersWithTestOrganizerTest extends TestCase
 {
     private UiTPASApiInterface&MockObject $uitpasApi;
     private GetIntegrationOrganizersWithTestOrganizer $service;
-
     private Integration $integration;
+    private ClientCredentialsContext $contextTest;
+    private ClientCredentialsContext $contextProd;
 
     protected function setUp(): void
     {
@@ -37,11 +39,29 @@ final class GetIntegrationOrganizersWithTestOrganizerTest extends TestCase
 
         Config::set(UiTPASConfig::TEST_ORGANISATION->value, 'test-org');
 
+        $this->contextTest = new ClientCredentialsContext(
+            Environment::Testing,
+            'https://test.publiq.be/',
+            '123',
+            'secret',
+            'uitid'
+        );
+
+        $this->contextProd = new ClientCredentialsContext(
+            Environment::Production,
+            'https://publiq.be/',
+            '456',
+            'geheimpje',
+            'uitid'
+        );
+
         $searchClient = $this->createMock(SearchService::class);
         $this->uitpasApi = $this->createMock(UiTPASApiInterface::class);
         $this->service = new GetIntegrationOrganizersWithTestOrganizer(
             $searchClient,
-            $this->uitpasApi
+            $this->uitpasApi,
+            $this->contextTest,
+            $this->contextProd
         );
 
         $integrationId = Uuid::fromString('7186d084-8a13-47e6-82ec-451c4a314f6e');
@@ -88,8 +108,8 @@ final class GetIntegrationOrganizersWithTestOrganizerTest extends TestCase
 
         $this->uitpasApi
             ->method('fetchPermissions')
-            ->willReturnCallback(function ($realm, $client, $id) {
-                return [['id' => 'PERMISSION_' . $id]];
+            ->willReturnCallback(function (ClientCredentialsContext $context, string $organizerId) {
+                return [['id' => 'PERMISSION_' . $organizerId]];
             });
 
         $result = $this->service->getAndEnrichOrganisations($this->integration);
