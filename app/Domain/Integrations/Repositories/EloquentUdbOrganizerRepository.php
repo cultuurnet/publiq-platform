@@ -8,6 +8,7 @@ use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizers;
 use Illuminate\Support\Facades\DB;
+use Ramsey\Uuid\UuidInterface;
 
 final class EloquentUdbOrganizerRepository implements UdbOrganizerRepository
 {
@@ -35,5 +36,13 @@ final class EloquentUdbOrganizerRepository implements UdbOrganizerRepository
             ->where('organizer_id', $organizer->organizerId)
             ->where('integration_id', $organizer->integrationId->toString())
             ->delete();
+    }
+
+    public function getById(UuidInterface $id): UdbOrganizer
+    {
+        /** @var UdbOrganizerModel $model */
+        $model = UdbOrganizerModel::query()->findOrFail($id->toString());
+
+        return $model->toDomain();
     }
 }
