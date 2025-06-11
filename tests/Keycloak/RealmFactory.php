@@ -7,7 +7,7 @@ namespace Tests\Keycloak;
 use App\Domain\Integrations\Environment;
 use App\Keycloak\Realm;
 use App\Keycloak\Realms;
-use App\Keycloak\DefaultScopeConfig;
+use App\Keycloak\ScopeConfig;
 use Ramsey\Uuid\Uuid;
 
 trait RealmFactory
@@ -64,9 +64,9 @@ trait RealmFactory
         );
     }
 
-    private function getScopeConfig(): DefaultScopeConfig
+    private function getScopeConfig(): ScopeConfig
     {
-        return new DefaultScopeConfig(
+        return new ScopeConfig(
             Uuid::fromString(self::SEARCH_SCOPE_ID),
             Uuid::fromString(self::ENTRY_SCOPE_ID),
             Uuid::fromString(self::UITPAS_SCOPE_ID),

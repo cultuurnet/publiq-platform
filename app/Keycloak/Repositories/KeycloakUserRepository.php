@@ -6,17 +6,17 @@ namespace App\Keycloak\Repositories;
 
 use App\Domain\Auth\Repositories\UserRepository;
 use App\Json;
-use App\Keycloak\Client\KeycloakGuzzleClient;
+use App\Keycloak\Client\KeycloakHttpClient;
 use App\Keycloak\Realm;
 use GuzzleHttp\Psr7\Request;
 
 final class KeycloakUserRepository implements UserRepository
 {
-    private KeycloakGuzzleClient $client;
+    private KeycloakHttpClient $client;
     private Realm $realm;
 
     public function __construct(
-        KeycloakGuzzleClient $client,
+        KeycloakHttpClient $client,
         Realm $realm
     ) {
         $this->client = $client;
