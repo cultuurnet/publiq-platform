@@ -79,4 +79,11 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
             'organizer_id' => $this->organizer1->organizerId,
         ]);
     }
+
+    public function test_it_can_get_an_udb_organizer_by_id(): void
+    {
+        $this->repository->create($this->organizer1);
+
+        $this->assertEquals($this->organizer1, $this->repository->getById($this->organizer1->id));
+    }
 }

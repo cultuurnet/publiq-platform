@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Nova\Actions;
 
+use App\Domain\Integrations\Events\UdbOrganizerAdded;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
@@ -16,6 +17,7 @@ use Laravel\Nova\Actions\ActionResponse;
 use Laravel\Nova\Fields\ActionFields;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use PDOException;
 use Ramsey\Uuid\Uuid;
 
 final class AddUdbOrganizer extends Action
@@ -27,7 +29,7 @@ final class AddUdbOrganizer extends Action
     {
     }
 
-    public function handle(ActionFields $fields, Collection $integrations): ActionResponse
+    public function handle(ActionFields $fields, Collection $integrations): ActionResponse|Action
     {
         Log::info('AddUdbOrganizer action started.');
         /** @var IntegrationModel $integration */
@@ -36,13 +38,21 @@ final class AddUdbOrganizer extends Action
         /** @var string $organizationIdAsString */
         $organizationIdAsString = $fields->get('organizer_id');
 
-        $this->organizerRepository->create(
-            new UdbOrganizer(
-                Uuid::uuid4(),
-                Uuid::fromString($integration->id),
-                $organizationIdAsString
-            )
-        );
+        $id = Uuid::uuid4();
+
+        try {
+            $this->organizerRepository->create(
+                new UdbOrganizer(
+                    $id,
+                    Uuid::fromString($integration->id),
+                    $organizationIdAsString
+                )
+            );
+        } catch (PDOException) {
+            return Action::danger('Organizer "' . $organizationIdAsString . '" was already added.');
+        }
+
+        UdbOrganizerAdded::dispatch($id);
 
         return Action::message('Organizer "' . $organizationIdAsString . '" added.');
     }
