@@ -101,17 +101,18 @@ final readonly class UiTPASApi implements UiTPASApiInterface
             return [];
         }
 
-        $myRequest = new Request('GET', 'permissions/' . $clientId);
-
         $response = $this->sendWithBearer(
-            $myRequest,
+            new Request('GET', 'permissions/' . $clientId),
             $context
         );
 
+        if ($response->getStatusCode() !== 200) {
+            $this->logger->error(sprintf('Failed to fetch permissions: %s', $response->getBody()));
+            return [];
+        }
+
         /** @var array<int, array{organizer: array{id: string}, permissionDetails: array<int, array{label: array{nl: string}}>}> $json */
         $json = Json::decodeAssociatively($response->getBody()->getContents());
-
-        $this->logger->error($response->getBody()->getContents());
 
         return collect($json)
             ->filter(function (array $item) use ($organisationId): bool {

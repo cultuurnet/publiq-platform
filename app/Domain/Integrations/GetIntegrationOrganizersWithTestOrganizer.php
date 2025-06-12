@@ -9,6 +9,7 @@ use App\Domain\Integrations\Exceptions\KeycloakClientNotFound;
 use App\Keycloak\Client;
 use App\Search\Sapi3\SearchService;
 use App\UiTPAS\UiTPASApiInterface;
+use App\UiTPAS\UiTPASConfig;
 use CultuurNet\SearchV3\ValueObjects\Organizer as SapiOrganizer;
 use Illuminate\Support\Collection;
 

@@ -178,6 +178,36 @@ final class UitpasApiTest extends TestCase
         ], $permissions);
     }
 
+    public function test_it_returns_empty_error_when_permissions_api_fails(): void
+    {
+        $this->logger->expects($this->once())
+            ->method('error')
+            ->with('Failed to fetch permissions: does not exist');
+
+        $mock = new MockHandler([
+            new Response(200, [], json_encode(['access_token' => self::MY_TOKEN], JSON_THROW_ON_ERROR)),
+            new Response(404, [], 'does not exist'),
+        ]);
+
+        $client = $this->givenClient($mock);
+        $uitpasApi = new UiTPASApi(
+            $client,
+            new ClientCredentials($client, $this->logger),
+            $this->logger,
+            'https://test-uitpas.publiq.be/',
+            'https://uitpas.publiq.be/',
+            true,
+        );
+
+        $permissions = $uitpasApi->fetchPermissions(
+            $this->context,
+            'org-1',
+            'client-id'
+        );
+
+        $this->assertEmpty($permissions);
+    }
+
     public function test_get_permissions_returns_empty_array_when_feature_flag_is_false(): void
     {
         $mock = new MockHandler([
