@@ -6,6 +6,7 @@ namespace App\UiTPAS;
 
 use App\Api\TokenStrategy\ClientCredentials;
 use App\Domain\Integrations\Events\IntegrationCreated;
+use App\Domain\Integrations\GetIntegrationOrganizersWithTestOrganizer;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Search\Sapi3\SearchService;
 use App\UiTPAS\Listeners\AddUiTPASPermissionsToOrganizerForIntegration;

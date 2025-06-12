@@ -2,15 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\UiTPAS;
+namespace App\Domain\Integrations;
 
 use App\Api\ClientCredentialsContext;
-use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Exceptions\KeycloakClientNotFound;
-use App\Domain\Integrations\Integration;
-use App\Domain\Integrations\UdbOrganizer;
 use App\Keycloak\Client;
 use App\Search\Sapi3\SearchService;
+use App\UiTPAS\UiTPASApiInterface;
 use CultuurNet\SearchV3\ValueObjects\Organizer as SapiOrganizer;
 use Illuminate\Support\Collection;
 

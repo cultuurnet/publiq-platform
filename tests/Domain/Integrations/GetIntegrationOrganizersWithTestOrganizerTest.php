@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Tests\UiTPAS;
+namespace Tests\Domain\Integrations;
 
 use App\Api\ClientCredentialsContext;
 use App\Domain\Integrations\Environment;
+use App\Domain\Integrations\GetIntegrationOrganizersWithTestOrganizer;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
@@ -13,7 +14,6 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Keycloak\Client;
 use App\Search\Sapi3\SearchService;
-use App\UiTPAS\GetIntegrationOrganizersWithTestOrganizer;
 use App\UiTPAS\UiTPASApiInterface;
 use App\UiTPAS\UiTPASConfig;
 use CultuurNet\SearchV3\ValueObjects\Collection;
