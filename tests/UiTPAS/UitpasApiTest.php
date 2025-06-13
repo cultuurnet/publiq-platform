@@ -7,6 +7,10 @@ namespace Tests\UiTPAS;
 use App\Api\ClientCredentialsContext;
 use App\Api\TokenStrategy\ClientCredentials;
 use App\Domain\Integrations\Environment;
+use App\UiTPAS\Dto\UiTPASPermission;
+use App\UiTPAS\Dto\UiTPASPermissionDetail;
+use App\UiTPAS\Dto\UiTPASPermissionDetails;
+use App\UiTPAS\Dto\UiTPASPermissions;
 use App\UiTPAS\UiTPASApi;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
@@ -57,7 +61,6 @@ final class UitpasApiTest extends TestCase
             $this->logger,
             'https://test-uitpas.publiq.be/',
             'https://uitpas.publiq.be/',
-            true,
         );
 
         $callCount = 0;
@@ -95,7 +98,6 @@ final class UitpasApiTest extends TestCase
             $this->logger,
             'https://test-uitpas.publiq.be/',
             'https://uitpas.publiq.be/',
-            true,
         );
 
         $this->logger
@@ -120,7 +122,6 @@ final class UitpasApiTest extends TestCase
             $this->logger,
             'https://test-uitpas.publiq.be/',
             'https://uitpas.publiq.be/',
-            true,
         );
 
         $this->logger
@@ -135,13 +136,13 @@ final class UitpasApiTest extends TestCase
     {
         $body = json_encode([
             [
-                'organizer' => ['id' => 'wrong-id'],
+                'organizer' => ['id' => 'wrong-id', 'name' => 'wrong'],
                 'permissionDetails' => [
                     ['id' => 'WRONG', 'label' => ['nl' => 'WRONG']],
                 ],
             ],
             [
-                'organizer' => ['id' => 'org-1'],
+                'organizer' => ['id' => 'org-1', 'name' => 'correct'],
                 'permissionDetails' => [
                     ['id' => 'TARIFFS_READ', 'label' => ['nl' => 'Tarieven opvragen']],
                     ['id' => 'PASSES_READ', 'label' => ['nl' => 'Basis UiTPAS informatie ophalen']],
@@ -162,7 +163,6 @@ final class UitpasApiTest extends TestCase
             $this->logger,
             'https://test-uitpas.publiq.be/',
             'https://uitpas.publiq.be/',
-            true,
         );
 
         $permissions = $uitpasApi->fetchPermissions(
@@ -171,11 +171,16 @@ final class UitpasApiTest extends TestCase
             'client-id'
         );
 
-        $this->assertEquals([
-            'Basis UiTPAS informatie ophalen',
-            'Tarieven opvragen',
-            'Tickets registreren',
-        ], $permissions);
+        $expectedPermissions = new UiTPASPermissions([
+            new UiTPASPermission('wrong-id', 'wrong', new UiTPASPermissionDetails([new UiTPASPermissionDetail('WRONG', 'WRONG')])),
+            new UiTPASPermission('org-1', 'correct', new UiTPASPermissionDetails([
+                new UiTPASPermissionDetail('TARIFFS_READ', 'Tarieven opvragen'),
+                new UiTPASPermissionDetail('PASSES_READ', 'Basis UiTPAS informatie ophalen'),
+                new UiTPASPermissionDetail('TICKETSALES_REGISTER', 'Tickets registreren'),
+            ])),
+        ]);
+
+        $this->assertEquals($expectedPermissions, $permissions);
     }
 
     public function test_it_returns_empty_error_when_permissions_api_fails(): void
@@ -196,7 +201,6 @@ final class UitpasApiTest extends TestCase
             $this->logger,
             'https://test-uitpas.publiq.be/',
             'https://uitpas.publiq.be/',
-            true,
         );
 
         $permissions = $uitpasApi->fetchPermissions(
@@ -205,25 +209,6 @@ final class UitpasApiTest extends TestCase
             'client-id'
         );
 
-        $this->assertEmpty($permissions);
-    }
-
-    public function test_get_permissions_returns_empty_array_when_feature_flag_is_false(): void
-    {
-        $mock = new MockHandler([
-            new Response(200, [], json_encode(['access_token' => self::MY_TOKEN], JSON_THROW_ON_ERROR)),
-        ]);
-
-        $client = $this->givenClient($mock);
-        $uitpasApi = new UiTPASApi(
-            $client,
-            new ClientCredentials($client, $this->logger),
-            $this->logger,
-            'https://test-uitpas.publiq.be/',
-            'https://uitpas.publiq.be/',
-            false,
-        );
-
-        $this->assertEquals([], $uitpasApi->fetchPermissions($this->context, 'org-1', 'client-id'));
+        $this->assertEmpty($permissions->toArray());
     }
 }
