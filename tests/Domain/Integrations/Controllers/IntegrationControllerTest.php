@@ -912,6 +912,7 @@ final class IntegrationControllerTest extends TestCase
         );
         $response = $this->get($route);
 
+        $this->assertEquals(200, $response->getStatusCode());
         $response->assertOk();
     }
 
@@ -928,6 +929,7 @@ final class IntegrationControllerTest extends TestCase
         );
         $response = $this->get($route);
 
+        $this->assertEquals(200, $response->getStatusCode());
         $response->assertOk();
     }
 

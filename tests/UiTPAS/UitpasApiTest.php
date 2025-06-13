@@ -2,11 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Tests\Uitpas;
+namespace Tests\UiTPAS;
 
 use App\Api\ClientCredentialsContext;
 use App\Api\TokenStrategy\ClientCredentials;
 use App\Domain\Integrations\Environment;
+use App\UiTPAS\Dto\UiTPASPermission;
+use App\UiTPAS\Dto\UiTPASPermissionDetail;
+use App\UiTPAS\Dto\UiTPASPermissionDetails;
+use App\UiTPAS\Dto\UiTPASPermissions;
 use App\UiTPAS\UiTPASApi;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
@@ -126,5 +130,85 @@ final class UitpasApiTest extends TestCase
             ->with(sprintf('Failed to give %s permission to uitpas organisation %s, status code 400', self::CLIENT_ID, self::ORG_ID));
 
         $uitpasApi->addPermissions($this->context, self::ORG_ID, self::CLIENT_ID);
+    }
+
+    public function test_it_fetches_permissions_with_the_correct_id(): void
+    {
+        $body = json_encode([
+            [
+                'organizer' => ['id' => 'wrong-id', 'name' => 'wrong'],
+                'permissionDetails' => [
+                    ['id' => 'WRONG', 'label' => ['nl' => 'WRONG']],
+                ],
+            ],
+            [
+                'organizer' => ['id' => 'org-1', 'name' => 'correct'],
+                'permissionDetails' => [
+                    ['id' => 'TARIFFS_READ', 'label' => ['nl' => 'Tarieven opvragen']],
+                    ['id' => 'PASSES_READ', 'label' => ['nl' => 'Basis UiTPAS informatie ophalen']],
+                    ['id' => 'TICKETSALES_REGISTER', 'label' => ['nl' => 'Tickets registreren']],
+                ],
+            ],
+        ], JSON_THROW_ON_ERROR);
+
+        $mock = new MockHandler([
+            new Response(200, [], json_encode(['access_token' => self::MY_TOKEN], JSON_THROW_ON_ERROR)),
+            new Response(200, [], $body),
+        ]);
+
+        $client = $this->givenClient($mock);
+        $uitpasApi = new UiTPASApi(
+            $client,
+            new ClientCredentials($client, $this->logger),
+            $this->logger,
+            'https://test-uitpas.publiq.be/',
+            'https://uitpas.publiq.be/',
+        );
+
+        $permissions = $uitpasApi->fetchPermissions(
+            $this->context,
+            'org-1',
+            'client-id'
+        );
+
+        $expectedPermissions = new UiTPASPermissions([
+            new UiTPASPermission('wrong-id', 'wrong', new UiTPASPermissionDetails([new UiTPASPermissionDetail('WRONG', 'WRONG')])),
+            new UiTPASPermission('org-1', 'correct', new UiTPASPermissionDetails([
+                new UiTPASPermissionDetail('TARIFFS_READ', 'Tarieven opvragen'),
+                new UiTPASPermissionDetail('PASSES_READ', 'Basis UiTPAS informatie ophalen'),
+                new UiTPASPermissionDetail('TICKETSALES_REGISTER', 'Tickets registreren'),
+            ])),
+        ]);
+
+        $this->assertEquals($expectedPermissions, $permissions);
+    }
+
+    public function test_it_returns_empty_error_when_permissions_api_fails(): void
+    {
+        $this->logger->expects($this->once())
+            ->method('error')
+            ->with('Failed to fetch permissions: does not exist');
+
+        $mock = new MockHandler([
+            new Response(200, [], json_encode(['access_token' => self::MY_TOKEN], JSON_THROW_ON_ERROR)),
+            new Response(404, [], 'does not exist'),
+        ]);
+
+        $client = $this->givenClient($mock);
+        $uitpasApi = new UiTPASApi(
+            $client,
+            new ClientCredentials($client, $this->logger),
+            $this->logger,
+            'https://test-uitpas.publiq.be/',
+            'https://uitpas.publiq.be/',
+        );
+
+        $permissions = $uitpasApi->fetchPermissions(
+            $this->context,
+            'org-1',
+            'client-id'
+        );
+
+        $this->assertEmpty($permissions->toArray());
     }
 }

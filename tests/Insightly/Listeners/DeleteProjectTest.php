@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Insightly\Listeners;
+namespace Tests\Insightly\Listeners;
 
 use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Insightly\InsightlyMapping;

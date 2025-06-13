@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Keycloak\Listeners;
+namespace Tests\Keycloak\Listeners;
 
 use App\Domain\Integrations\Events\IntegrationUnblocked;
 use App\Domain\Integrations\Integration;
