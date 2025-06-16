@@ -8,6 +8,7 @@ use App\Api\ClientCredentialsContext;
 use App\Api\TokenStrategy\TokenStrategy;
 use App\Domain\Integrations\Environment;
 use App\Json;
+use App\UiTPAS\Dto\UiTPASPermissions;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
@@ -61,18 +62,24 @@ final readonly class UiTPASApi implements UiTPASApiInterface
                 ],
                 'permissionDetails' => array_map(
                     static fn ($id) => ['id' => $id],
-                    UiTPASPermissions::cases()
+                    [
+                        'TARIFFS_READ',
+                        'TICKETSALES_REGISTER',
+                        'PASSES_READ',
+                        'PASSES_INSZNUMBERS_READ',
+                        'PASSES_CHIPNUMBERS_READ',
+                    ]
                 ),
             ],
         ];
     }
 
     /** @throws GuzzleException */
-    private function sendWithBearer(RequestInterface $request, ClientCredentialsContext $credentials): ResponseInterface
+    private function sendWithBearer(RequestInterface $request, ClientCredentialsContext $context): ResponseInterface
     {
-        $token = $this->tokenStrategy->fetchToken($credentials);
+        $token = $this->tokenStrategy->fetchToken($context);
         $request = $request
-            ->withUri(new Uri($this->getEndpoint($credentials) . $request->getUri()))
+            ->withUri(new Uri($this->getEndpoint($context) . $request->getUri()))
             ->withAddedHeader(
                 'Authorization',
                 'Bearer ' . $token
@@ -81,12 +88,27 @@ final readonly class UiTPASApi implements UiTPASApiInterface
         return $this->client->send($request);
     }
 
-    private function getEndpoint(ClientCredentialsContext $keycloakClient): string
+    private function getEndpoint(ClientCredentialsContext $context): string
     {
-        if ($keycloakClient->environment === Environment::Testing) {
+        if ($context->environment === Environment::Testing) {
             return $this->testApiEndpoint;
         }
 
         return $this->prodApiEndpoint;
+    }
+
+    public function fetchPermissions(ClientCredentialsContext $context, string $organisationId, string $clientId): UiTPASPermissions
+    {
+        $response = $this->sendWithBearer(
+            new Request('GET', 'permissions/' . $clientId),
+            $context
+        );
+
+        if ($response->getStatusCode() !== 200) {
+            $this->logger->error(sprintf('Failed to fetch permissions: %s', $response->getBody()));
+            return new UiTPASPermissions();
+        }
+
+        return UiTPASPermissions::loadFromJson($response->getBody()->getContents());
     }
 }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\KeyVisibilityUpgrades\Repositories;
 
-use App\Domain\KeyVisibilityUpgrades\Models\KeyVisibilityUpgradeModel;
 use App\Domain\KeyVisibilityUpgrades\KeyVisibilityUpgrade;
+use App\Domain\KeyVisibilityUpgrades\Models\KeyVisibilityUpgradeModel;
 use Ramsey\Uuid\UuidInterface;
 
 final class EloquentKeyVisibilityUpgradeRepository implements KeyVisibilityUpgradeRepository
