@@ -7,6 +7,7 @@ namespace App\UiTPAS;
 use App\Api\TokenStrategy\ClientCredentials;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\UdbOrganizerCreated;
+use App\Domain\Integrations\GetIntegrationOrganizersWithTestOrganizer;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Notifications\Slack\SlackNotifier;
@@ -34,7 +35,6 @@ final class UiTPASServiceProvider extends ServiceProvider
                 $this->app->get(LoggerInterface::class),
                 (string)config(UiTPASConfig::TEST_API_ENDPOINT->value),
                 (string)config(UiTPASConfig::PROD_API_ENDPOINT->value),
-                (bool)config(UiTPASConfig::AUTOMATIC_PERMISSIONS_ENABLED->value)
             );
         });
 

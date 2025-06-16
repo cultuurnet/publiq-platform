@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Tests\UiTPAS;
+namespace Tests\Domain\Integrations;
 
 use App\Api\ClientCredentialsContext;
 use App\Domain\Integrations\Environment;
+use App\Domain\Integrations\GetIntegrationOrganizersWithTestOrganizer;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
@@ -13,7 +14,10 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Keycloak\Client;
 use App\Search\Sapi3\SearchService;
-use App\UiTPAS\GetIntegrationOrganizersWithTestOrganizer;
+use App\UiTPAS\Dto\UiTPASPermission;
+use App\UiTPAS\Dto\UiTPASPermissionDetail;
+use App\UiTPAS\Dto\UiTPASPermissionDetails;
+use App\UiTPAS\Dto\UiTPASPermissions;
 use App\UiTPAS\UiTPASApiInterface;
 use App\UiTPAS\UiTPASConfig;
 use CultuurNet\SearchV3\ValueObjects\Collection;
@@ -109,19 +113,25 @@ final class GetIntegrationOrganizersWithTestOrganizerTest extends TestCase
         $this->uitpasApi
             ->method('fetchPermissions')
             ->willReturnCallback(function (ClientCredentialsContext $context, string $organizerId) {
-                return [['id' => 'PERMISSION_' . $organizerId]];
+                return new UiTPASPermissions([
+                    new UiTPASPermission(
+                        $organizerId,
+                        'organizer-' . $organizerId,
+                        new UiTPASPermissionDetails([new UiTPASPermissionDetail('PERMISSION_' . $organizerId, 'label for ' . $organizerId)])
+                    ),
+                ]);
             });
 
-        $result = $this->service->getAndEnrichOrganisations($this->integration);
+        $result = $this->service->getAndEnrichOrganisations($this->integration)->toArray();
 
         $this->assertCount(2, $result);
         $this->assertSame('organizer-1', $result[0]['id']);
         $this->assertSame('Live', $result[0]['status']);
-        $this->assertSame([['id' => 'PERMISSION_organizer-1']], $result[0]['permissions']);
+        $this->assertSame(['label for organizer-1'], $result[0]['permissions']);
 
         $this->assertSame('test-org', $result[1]['id']);
         $this->assertSame('Test', $result[1]['status']);
-        $this->assertSame([['id' => 'PERMISSION_test-org']], $result[1]['permissions']);
+        $this->assertSame(['label for test-org'], $result[1]['permissions']);
     }
 
     public function test_it_handles_missing_keycloak_client(): void

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\UiTPAS;
+namespace App\Domain\Integrations;
 
 use App\Api\ClientCredentialsContext;
-use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Exceptions\KeycloakClientNotFound;
-use App\Domain\Integrations\Integration;
-use App\Domain\Integrations\UdbOrganizer;
 use App\Keycloak\Client;
 use App\Search\Sapi3\SearchService;
+use App\UiTPAS\Dto\UiTPASPermissions;
+use App\UiTPAS\UiTPASApiInterface;
+use App\UiTPAS\UiTPASConfig;
 use CultuurNet\SearchV3\ValueObjects\Organizer as SapiOrganizer;
 use Illuminate\Support\Collection;
 
@@ -38,11 +38,11 @@ final readonly class GetIntegrationOrganizersWithTestOrganizer
                 'id' => $id,
                 'name' => $organizer->getName()?->getValues() ?? [],
                 'status' => 'Live',
-                'permissions' => $keycloakClient ? $this->UiTPASApi->fetchPermissions(
+                'permissions' => $keycloakClient ? $this->getLabels($this->UiTPASApi->fetchPermissions(
                     $this->prodCredentialsContext,
                     (string)$organizer->getId(),
                     $keycloakClient->clientId
-                ) : [],
+                )) : [],
             ];
         });
 
@@ -52,11 +52,11 @@ final readonly class GetIntegrationOrganizersWithTestOrganizer
             'id' => $orgTestId,
             'name' => ['nl' => 'UiTPAS Organisatie (Regio Gent + Paspartoe)'],
             'status' => 'Test',
-            'permissions' => $keycloakClient ? $this->UiTPASApi->fetchPermissions(
+            'permissions' => $keycloakClient ? $this->getLabels($this->UiTPASApi->fetchPermissions(
                 $this->testCredentialsContext,
                 $orgTestId,
                 $keycloakClient->clientId
-            ) : [],
+            )) : [],
         ]);
 
         return $organizers;
@@ -70,5 +70,19 @@ final readonly class GetIntegrationOrganizersWithTestOrganizer
             // Handle exception, throw null
         }
         return null;
+    }
+
+    /** @return string[] */
+    private function getLabels(UiTPASPermissions $permissions): array
+    {
+        $labels = [];
+
+        foreach ($permissions as $permission) {
+            foreach ($permission->permissionDetails as $detail) {
+                $labels[] = $detail->label;
+            }
+        }
+
+        return $labels;
     }
 }
