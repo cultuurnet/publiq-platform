@@ -15,7 +15,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
-final class SendSlackMessageWhenOrganizerIsRequested implements ShouldQueue
+final class NotifyUdbOrganizerRequested implements ShouldQueue
 {
     use Queueable;
 

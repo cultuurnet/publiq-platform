@@ -38,18 +38,16 @@ final class AddUdbOrganizer extends Action
         /** @var string $organizationIdAsString */
         $organizationIdAsString = $fields->get('organizer_id');
 
-        $id = Uuid::uuid4();
-
         try {
             $this->organizerRepository->create(
                 new UdbOrganizer(
-                    $id,
+                    Uuid::uuid4(),
                     Uuid::fromString($integration->id),
                     $organizationIdAsString
                 )
             );
-        } catch (PDOException) {
-            return Action::danger('Organizer "' . $organizationIdAsString . '" was already added.');
+        } catch (PDOException $e) {
+            return Action::danger('Organizer "' . $organizationIdAsString . '" was already added.' . $e->getCode());
         }
 
         return Action::message('Organizer "' . $organizationIdAsString . '" added.');
