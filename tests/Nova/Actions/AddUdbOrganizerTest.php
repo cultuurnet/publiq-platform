@@ -6,7 +6,7 @@ namespace Tests\Nova\Actions;
 
 use App\Nova\Actions\AddUdbOrganizer;
 use Tests\TestCase;
-use App\Domain\Integrations\Events\UdbOrganizerAdded;
+use App\Domain\Integrations\Events\UdbOrganizerCreated;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use Illuminate\Support\Collection;
@@ -15,7 +15,7 @@ use Laravel\Nova\Fields\ActionFields;
 
 final class AddUdbOrganizerTest extends TestCase
 {
-    public function test_that_it_creates_a_UdbOrganizer_and_dispatches_UdbOrganizerAdded(): void
+    public function test_that_it_creates_a_UdbOrganizer_and_dispatches_UdbOrganizerCreated(): void
     {
         $repository = $this->createMock(UdbOrganizerRepository::class);
 
@@ -40,7 +40,7 @@ final class AddUdbOrganizerTest extends TestCase
         $json = $response->jsonSerialize();
 
         $this->assertEquals('Organizer "' . $organizerId . '" added.', $json['message']);
-        Event::assertDispatched(UdbOrganizerAdded::class, static function ($event) {
+        Event::assertDispatched(UdbOrganizerCreated::class, static function ($event) {
             return isset($event->id);
         });
     }
@@ -67,6 +67,6 @@ final class AddUdbOrganizerTest extends TestCase
         $json = $response->jsonSerialize();
 
         $this->assertEquals('Organizer "' . $organizerId . '" was already added.', $json['danger']);
-        Event::assertNotDispatched(UdbOrganizerAdded::class);
+        Event::assertNotDispatched(UdbOrganizerCreated::class);
     }
 }

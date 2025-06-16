@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Nova\Actions;
 
-use App\Domain\Integrations\Events\UdbOrganizerAdded;
+use App\Domain\Integrations\Events\UdbOrganizerCreated;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
@@ -51,8 +51,6 @@ final class AddUdbOrganizer extends Action
         } catch (PDOException) {
             return Action::danger('Organizer "' . $organizationIdAsString . '" was already added.');
         }
-
-        UdbOrganizerAdded::dispatch($id);
 
         return Action::message('Organizer "' . $organizationIdAsString . '" added.');
     }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\UiTPAS\Listeners;
 
-use App\Domain\Integrations\Events\UdbOrganizerAdded;
+use App\Domain\Integrations\Events\UdbOrganizerCreated;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
@@ -28,7 +28,7 @@ final class SendSlackMessageWhenOrganizerIsRequested implements ShouldQueue
     ) {
     }
 
-    public function handle(UdbOrganizerAdded $event): void
+    public function handle(UdbOrganizerCreated $event): void
     {
         $org = $this->udbOrganizerRepository->getById($event->id);
         $integration = $this->integrationRepository->getById($org->integrationId);
@@ -41,7 +41,7 @@ final class SendSlackMessageWhenOrganizerIsRequested implements ShouldQueue
     }
 
     public function failed(
-        UdbOrganizerAdded $event,
+        UdbOrganizerCreated $event,
         Throwable $throwable
     ): void {
         $this->logger->error('Failed to notify about requested udb organizer', [

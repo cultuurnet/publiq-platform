@@ -7,7 +7,7 @@ namespace App\Domain\Integrations\Events;
 use Illuminate\Foundation\Events\Dispatchable;
 use Ramsey\Uuid\UuidInterface;
 
-final readonly class UdbOrganizerAdded
+final readonly class UdbOrganizerCreated
 {
     use Dispatchable;
 

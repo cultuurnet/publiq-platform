@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Tests\UiTPAS\Listeners;
 
 use App\Domain\Integrations\Environment;
-use App\Domain\Integrations\Events\UdbOrganizerAdded;
+use App\Domain\Integrations\Events\UdbOrganizerCreated;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Keycloak\Client;
 use App\Notifications\Notifier;
-use App\UiTPAS\Listeners\SendSlackMessageWhenOrganizerIsRequested;
+use App\UiTPAS\Listeners\NotifyUdbOrganizerRequested;
 use App\UiTPAS\Slack\UdbOrganizerMessageBuilder;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
@@ -30,7 +30,7 @@ final class SendSlackMessageWhenOrganizerIsRequestedTest extends TestCase
     private Notifier&MockObject $notifier;
     private UdbOrganizerMessageBuilder $messageBuilder;
     private LoggerInterface&MockObject $logger;
-    private SendSlackMessageWhenOrganizerIsRequested $listener;
+    private NotifyUdbOrganizerRequested $listener;
 
     protected function setUp(): void
     {
@@ -42,7 +42,7 @@ final class SendSlackMessageWhenOrganizerIsRequestedTest extends TestCase
         $this->messageBuilder = new UdbOrganizerMessageBuilder('https://platform.publiq.be', 'https://acc.uitid.be/uitid/rest/admin/uitpas/clientpermissions/');
         $this->logger = $this->createMock(LoggerInterface::class);
 
-        $this->listener = new SendSlackMessageWhenOrganizerIsRequested(
+        $this->listener = new NotifyUdbOrganizerRequested(
             $this->orgRepo,
             $this->integrationRepo,
             $this->notifier,
@@ -55,7 +55,7 @@ final class SendSlackMessageWhenOrganizerIsRequestedTest extends TestCase
     {
         $uuid = Uuid::uuid4();
 
-        $event = new UdbOrganizerAdded($uuid);
+        $event = new UdbOrganizerCreated($uuid);
 
         $org = new UdbOrganizer(
             Uuid::uuid4(),
@@ -89,7 +89,7 @@ final class SendSlackMessageWhenOrganizerIsRequestedTest extends TestCase
     {
         $uuid = Uuid::uuid4();
 
-        $event = new UdbOrganizerAdded($uuid);
+        $event = new UdbOrganizerCreated($uuid);
 
         $org = new UdbOrganizer(
             Uuid::uuid4(),
@@ -118,7 +118,7 @@ final class SendSlackMessageWhenOrganizerIsRequestedTest extends TestCase
     public function test_it_logs_when_failed(): void
     {
         $uuid = Uuid::uuid4();
-        $event = new UdbOrganizerAdded($uuid);
+        $event = new UdbOrganizerCreated($uuid);
         $exception = new RuntimeException('Something went wrong');
 
         $this->logger->expects($this->once())

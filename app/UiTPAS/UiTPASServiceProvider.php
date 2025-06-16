@@ -6,13 +6,13 @@ namespace App\UiTPAS;
 
 use App\Api\TokenStrategy\ClientCredentials;
 use App\Domain\Integrations\Events\IntegrationCreated;
-use App\Domain\Integrations\Events\UdbOrganizerAdded;
+use App\Domain\Integrations\Events\UdbOrganizerCreated;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Notifications\Slack\SlackNotifier;
 use App\Search\Sapi3\SearchService;
 use App\UiTPAS\Listeners\AddUiTPASPermissionsToOrganizerForIntegration;
-use App\UiTPAS\Listeners\SendSlackMessageWhenOrganizerIsRequested;
+use App\UiTPAS\Listeners\NotifyUdbOrganizerRequested;
 use App\UiTPAS\Slack\UdbOrganizerMessageBuilder;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
@@ -63,8 +63,8 @@ final class UiTPASServiceProvider extends ServiceProvider
         });
 
 
-        $this->app->singleton(SendSlackMessageWhenOrganizerIsRequested::class, function () {
-            return new SendSlackMessageWhenOrganizerIsRequested(
+        $this->app->singleton(NotifyUdbOrganizerRequested::class, function () {
+            return new NotifyUdbOrganizerRequested(
                 $this->app->get(UdbOrganizerRepository::class),
                 $this->app->get(IntegrationRepository::class),
                 new SlackNotifier(
@@ -87,6 +87,6 @@ final class UiTPASServiceProvider extends ServiceProvider
     private function bootstrapEventHandling(): void
     {
         Event::listen(IntegrationCreated::class, [AddUiTPASPermissionsToOrganizerForIntegration::class, 'handle']);
-        Event::listen(UdbOrganizerAdded::class, [SendSlackMessageWhenOrganizerIsRequested::class, 'handle']);
+        Event::listen(UdbOrganizerCreated::class, [NotifyUdbOrganizerRequested::class, 'handle']);
     }
 }
