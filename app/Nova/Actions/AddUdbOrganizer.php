@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Nova\Actions;
 
-use App\Domain\Integrations\Events\UdbOrganizerCreated;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
@@ -47,7 +46,12 @@ final class AddUdbOrganizer extends Action
                 )
             );
         } catch (PDOException $e) {
-            return Action::danger('Organizer "' . $organizationIdAsString . '" was already added.' . $e->getCode());
+            if ($e->getCode() === 23000) {
+                // Handle integrity constraint violation
+                return Action::danger('Organizer "' . $organizationIdAsString . '" was already added.');
+            }
+
+            return Action::danger($e->getMessage());
         }
 
         return Action::message('Organizer "' . $organizationIdAsString . '" added.');

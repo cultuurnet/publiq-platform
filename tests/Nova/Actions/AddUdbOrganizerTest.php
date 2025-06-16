@@ -15,7 +15,7 @@ use Laravel\Nova\Fields\ActionFields;
 
 final class AddUdbOrganizerTest extends TestCase
 {
-    public function test_that_it_creates_a_UdbOrganizer_and_dispatches_UdbOrganizerCreated(): void
+    public function test_that_it_creates_a_UdbOrganizer(): void
     {
         $repository = $this->createMock(UdbOrganizerRepository::class);
 
@@ -40,9 +40,6 @@ final class AddUdbOrganizerTest extends TestCase
         $json = $response->jsonSerialize();
 
         $this->assertEquals('Organizer "' . $organizerId . '" added.', $json['message']);
-        Event::assertDispatched(UdbOrganizerCreated::class, static function ($event) {
-            return isset($event->id);
-        });
     }
 
     public function test_it_handles_duplicates(): void
@@ -57,7 +54,7 @@ final class AddUdbOrganizerTest extends TestCase
 
         $repository->expects($this->once())
             ->method('create')
-            ->willThrowException(new \PDOException('Db is on fire! Duplicate found'));
+            ->willThrowException(new \PDOException('Db is on fire! Duplicate found', 23000));
 
         $fields = new ActionFields(collect(['organizer_id' => $organizerId]), collect());
         $integrations = new Collection([$integration]);
