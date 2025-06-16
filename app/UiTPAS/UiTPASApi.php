@@ -62,7 +62,7 @@ final readonly class UiTPASApi implements UiTPASApiInterface
                 ],
                 'permissionDetails' => array_map(
                     static fn ($id) => ['id' => $id],
-                    UiTPASPermissionsDefaultValues::cases()
+                    UiTPASPermissionTypes::cases()
                 ),
             ],
         ];
