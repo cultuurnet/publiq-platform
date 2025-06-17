@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Repositories;
 
+use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizers;
@@ -18,6 +19,7 @@ final class EloquentUdbOrganizerRepository implements UdbOrganizerRepository
             'id' => $organizer->id->toString(),
             'integration_id' => $organizer->integrationId->toString(),
             'organizer_id' => $organizer->organizerId,
+            'status' => $organizer->status->value,
         ]);
     }
 
@@ -28,6 +30,21 @@ final class EloquentUdbOrganizerRepository implements UdbOrganizerRepository
                 $this->create($organizer);
             }
         });
+    }
+
+    public function save(UdbOrganizer $organizer): void
+    {
+        UdbOrganizerModel::query()->updateOrCreate(
+            [
+                'id' => $organizer->id->toString(),
+            ],
+            [
+                'id' => $organizer->id->toString(),
+                'integration_id' => $organizer->integrationId->toString(),
+                'organizer_id' => $organizer->organizerId,
+                'status' => $organizer->status->value,
+            ]
+        );
     }
 
     public function delete(UdbOrganizer $organizer): void
