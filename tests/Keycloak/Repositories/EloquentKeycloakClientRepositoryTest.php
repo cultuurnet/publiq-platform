@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Keycloak\Repositories;
 
 use App\Domain\Integrations\Environment;
-use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Keycloak\Client;
 use App\Keycloak\Events\ClientCreated;
 use App\Keycloak\Realms;
