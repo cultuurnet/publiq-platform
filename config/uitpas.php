@@ -14,7 +14,7 @@ return [
     ],
     'prod' => [
         'api_endpoint' => env('UITPAS_PROD_ENDPOINT', ''),
-        'oath_token_url' => env('UITPAS_PROD_OATH_TOKEN_URL', ''),
+        'oath_token_url' => env('UITPAS_PROD_OAUTH_TOKEN_URL', ''),
         'client_id' => env('UITPAS_PROD_CLIENT_ID', ''),
         'client_secret' => env('UITPAS_PROD_CLIENT_SECRET', ''),
     ],
