@@ -7,6 +7,7 @@ namespace App\Keycloak\Repositories;
 use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Environments;
 use App\Keycloak\Client;
+use App\Keycloak\Events\ClientCreated;
 use App\Keycloak\Models\KeycloakClientModel;
 use App\Keycloak\Realms;
 use Illuminate\Database\Eloquent\Model;
@@ -38,6 +39,8 @@ final class EloquentKeycloakClientRepository implements KeycloakClientRepository
                             'realm' => $this->realms->getRealmByEnvironment($client->environment)->publicName,
                         ]
                     );
+
+                ClientCreated::dispatch($client->id);
             }
         });
     }

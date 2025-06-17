@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace Tests\Keycloak\Repositories;
 
 use App\Domain\Integrations\Environment;
+use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Keycloak\Client;
+use App\Keycloak\Events\ClientCreated;
 use App\Keycloak\Realms;
 use App\Keycloak\Repositories\EloquentKeycloakClientRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
 use Tests\Keycloak\RealmFactory;
 use Tests\TestCase;
@@ -64,6 +67,8 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
             'client_id' => $clientId2,
             'realm' => Environment::Testing->value,
         ]);
+
+        Event::assertDispatched(ClientCreated::class);
     }
 
     public function test_it_can_get_all_clients_for_an_integration_id(): void
