@@ -10,11 +10,11 @@ use App\Domain\Integrations\Events\UdbOrganizerCreated;
 use App\Domain\Integrations\GetIntegrationOrganizersWithTestOrganizer;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
+use App\Notifications\MessageBuilder;
 use App\Notifications\Slack\SlackNotifier;
 use App\Search\Sapi3\SearchService;
 use App\UiTPAS\Listeners\AddUiTPASPermissionsToOrganizerForIntegration;
 use App\UiTPAS\Listeners\NotifyUdbOrganizerRequested;
-use App\UiTPAS\Slack\UdbOrganizerMessageBuilder;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Support\Facades\Event;
@@ -55,14 +55,6 @@ final class UiTPASServiceProvider extends ServiceProvider
             );
         });
 
-        $this->app->singleton(UdbOrganizerMessageBuilder::class, function () {
-            return new UdbOrganizerMessageBuilder(
-                config('app.url'),
-                config(UiTPASConfig::CLIENT_PERMISSIONS_LINK->value)
-            );
-        });
-
-
         $this->app->singleton(NotifyUdbOrganizerRequested::class, function () {
             return new NotifyUdbOrganizerRequested(
                 $this->app->get(UdbOrganizerRepository::class),
@@ -72,7 +64,7 @@ final class UiTPASServiceProvider extends ServiceProvider
                     config('slack.channels.uitpas_integraties'),
                     config('slack.baseUri')
                 ),
-                $this->app->get(UdbOrganizerMessageBuilder::class),
+                $this->app->get(MessageBuilder::class),
                 $this->app->get(LoggerInterface::class),
             );
         });

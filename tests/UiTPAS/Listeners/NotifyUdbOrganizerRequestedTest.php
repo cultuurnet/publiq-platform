@@ -11,9 +11,9 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Keycloak\Client;
+use App\Notifications\MessageBuilder;
 use App\Notifications\Notifier;
 use App\UiTPAS\Listeners\NotifyUdbOrganizerRequested;
-use App\UiTPAS\Slack\UdbOrganizerMessageBuilder;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
@@ -21,14 +21,14 @@ use RuntimeException;
 use Tests\CreateIntegration;
 use Tests\TestCase;
 
-final class SendSlackMessageWhenOrganizerIsRequestedTest extends TestCase
+final class NotifyUdbOrganizerRequestedTest extends TestCase
 {
     use CreateIntegration;
 
     private UdbOrganizerRepository&MockObject $orgRepo;
     private IntegrationRepository&MockObject $integrationRepo;
     private Notifier&MockObject $notifier;
-    private UdbOrganizerMessageBuilder $messageBuilder;
+    private MessageBuilder&MockObject $messageBuilder;
     private LoggerInterface&MockObject $logger;
     private NotifyUdbOrganizerRequested $listener;
 
@@ -39,7 +39,7 @@ final class SendSlackMessageWhenOrganizerIsRequestedTest extends TestCase
         $this->orgRepo = $this->createMock(UdbOrganizerRepository::class);
         $this->integrationRepo = $this->createMock(IntegrationRepository::class);
         $this->notifier = $this->createMock(Notifier::class);
-        $this->messageBuilder = new UdbOrganizerMessageBuilder('https://platform.publiq.be', 'https://acc.uitid.be/uitid/rest/admin/uitpas/clientpermissions/');
+        $this->messageBuilder = $this->createMock(MessageBuilder::class);
         $this->logger = $this->createMock(LoggerInterface::class);
 
         $this->listener = new NotifyUdbOrganizerRequested(
@@ -82,6 +82,10 @@ final class SendSlackMessageWhenOrganizerIsRequestedTest extends TestCase
         $this->notifier->expects($this->once())
             ->method('postMessage');
 
+        $this->messageBuilder->expects($this->once())
+            ->method('toMessageWithOrganizer')
+            ->with($integration, $org);
+
         $this->listener->handle($event);
     }
 
@@ -111,6 +115,9 @@ final class SendSlackMessageWhenOrganizerIsRequestedTest extends TestCase
 
         $this->notifier->expects($this->never())
             ->method('postMessage');
+
+        $this->messageBuilder->expects($this->never())
+            ->method('toMessageWithOrganizer');
 
         $this->listener->handle($event);
     }
