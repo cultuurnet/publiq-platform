@@ -6,6 +6,7 @@ namespace App\Domain\Integrations\Models;
 
 use App\Domain\Integrations\Events\UdbOrganizerCreated;
 use App\Domain\Integrations\UdbOrganizer;
+use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Models\UuidModel;
 use Ramsey\Uuid\Uuid;
 
@@ -17,6 +18,7 @@ final class UdbOrganizerModel extends UuidModel
         'id',
         'integration_id',
         'organizer_id',
+        'status',
     ];
 
     public function toDomain(): UdbOrganizer
@@ -25,6 +27,7 @@ final class UdbOrganizerModel extends UuidModel
             Uuid::fromString($this->id),
             Uuid::fromString($this->integration_id),
             $this->organizer_id,
+            UdbOrganizerStatus::from($this->status)
         );
     }
 

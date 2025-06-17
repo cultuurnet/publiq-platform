@@ -12,6 +12,7 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Notifications\Slack\SlackNotifier;
 use App\Search\Sapi3\SearchService;
+use App\UiTPAS\Jobs\ActivateUiTPASClientHandler;
 use App\UiTPAS\Listeners\AddUiTPASPermissionsToOrganizerForIntegration;
 use App\UiTPAS\Listeners\NotifyUdbOrganizerRequested;
 use App\UiTPAS\Slack\UdbOrganizerMessageBuilder;
@@ -62,7 +63,6 @@ final class UiTPASServiceProvider extends ServiceProvider
             );
         });
 
-
         $this->app->singleton(NotifyUdbOrganizerRequested::class, function () {
             return new NotifyUdbOrganizerRequested(
                 $this->app->get(UdbOrganizerRepository::class),
@@ -74,6 +74,15 @@ final class UiTPASServiceProvider extends ServiceProvider
                 ),
                 $this->app->get(UdbOrganizerMessageBuilder::class),
                 $this->app->get(LoggerInterface::class),
+            );
+        });
+
+        $this->app->singleton(ActivateUiTPASClientHandler::class, function () {
+            return new ActivateUiTPASClientHandler(
+                $this->app->get(UdbOrganizerRepository::class),
+                $this->app->get(IntegrationRepository::class),
+                $this->app->get(UiTPASApiInterface::class),
+                ClientCredentialsContextFactory::getUitIdProdContext(),
             );
         });
 
