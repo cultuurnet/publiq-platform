@@ -31,7 +31,7 @@ final class UdbOrganizerPolicy
 
     public function delete(UserModel $userModel, UdbOrganizerModel $organizerModel): bool
     {
-        return true;
+        return false;
     }
 
     public function restore(UserModel $userModel, UdbOrganizerModel $organizerModel): bool

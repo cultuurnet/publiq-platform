@@ -14,6 +14,8 @@ interface UdbOrganizerRepository
 
     public function createInBulk(UdbOrganizers $organizers): void;
 
+    public function save(UdbOrganizer $organizer): void;
+
     public function delete(UdbOrganizer $organizer): void;
 
     public function getById(UuidInterface $id): UdbOrganizer;
