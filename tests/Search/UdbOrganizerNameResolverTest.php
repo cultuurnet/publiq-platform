@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace Tests\Search;
 
-use App\Search\FetchNameForUdb3Organizer;
+use App\Search\UdbOrganizerNameResolver;
 use Tests\GivenUitpasOrganizers;
 use Tests\TestCase;
 
-final class FetchNameForUdb3OrganizerTest extends TestCase
+final class UdbOrganizerNameResolverTest extends TestCase
 {
     use GivenUitpasOrganizers;
 
-    private FetchNameForUdb3Organizer $fetchNameForUdb3Organizer;
+    private UdbOrganizerNameResolver $udbOrganizerNameResolver;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->fetchNameForUdb3Organizer = new FetchNameForUdb3Organizer();
+        $this->udbOrganizerNameResolver = new UdbOrganizerNameResolver();
     }
 
     public function test_it_fetches_the_name_for_a_udb3_organizer(): void
@@ -26,7 +26,7 @@ final class FetchNameForUdb3OrganizerTest extends TestCase
         $organizerId = 'b4530a99-86e9-44bc-a492-2aa6fa8f74a0';
         $name = 'Test Organizer';
 
-        $result = $this->fetchNameForUdb3Organizer->fetchName($this->givenUitpasOrganizers($organizerId, $name, 1));
+        $result = $this->udbOrganizerNameResolver->getName($this->givenUitpasOrganizers($organizerId, $name, 1));
 
         $this->assertEquals($name, $result);
     }
@@ -34,7 +34,7 @@ final class FetchNameForUdb3OrganizerTest extends TestCase
     public function test_it_handles_invalid_organizers(): void
     {
         $organizerId = 'b4530a99-86e9-44bc-a492-2aa6fa8f74a0';
-        $result = $this->fetchNameForUdb3Organizer->fetchName($this->givenUitpasOrganizers($organizerId, 'Test Organizer', 0));
+        $result = $this->udbOrganizerNameResolver->getName($this->givenUitpasOrganizers($organizerId, 'Test Organizer', 0));
 
         $this->assertNull($result);
     }

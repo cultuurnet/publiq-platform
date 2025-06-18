@@ -10,14 +10,14 @@ use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Notifications\MessageBuilder;
-use App\Search\FetchNameForUdb3Organizer;
+use App\Search\UdbOrganizerNameResolver;
 use App\Search\Sapi3\SearchService;
 
 final readonly class SlackMessageBuilder implements MessageBuilder
 {
     public function __construct(
         private SubscriptionRepository $subscriptionRepository,
-        private FetchNameForUdb3Organizer $fetchNameForUdb3Organizer,
+        private UdbOrganizerNameResolver $fetchNameForUdb3Organizer,
         private SearchService $searchService,
         private string $uitpasRootUri,
         private string $udbRootUri,
@@ -45,7 +45,7 @@ final readonly class SlackMessageBuilder implements MessageBuilder
     {
         $client = $integration->getKeycloakClientByEnv(Environment::Production);
 
-        $organizerName = $this->fetchNameForUdb3Organizer->fetchName($this->searchService->findUiTPASOrganizers($udbOrganizer->organizerId));
+        $organizerName = $this->fetchNameForUdb3Organizer->getName($this->searchService->findUiTPASOrganizers($udbOrganizer->organizerId));
 
         $message = '*:robot_face: :incoming_envelope: ' . $integration->name . ' - requested access to organisation ' . $organizerName . ' (' . $udbOrganizer->organizerId . ') *';
         $message .= PHP_EOL . PHP_EOL;

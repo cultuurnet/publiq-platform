@@ -10,7 +10,7 @@ use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Notifications\Listeners\NotifyIntegrationChanged;
 use App\Notifications\Slack\SlackMessageBuilder;
 use App\Notifications\Slack\SlackNotifier;
-use App\Search\FetchNameForUdb3Organizer;
+use App\Search\UdbOrganizerNameResolver;
 use App\Search\Sapi3\SearchService;
 use App\UiTPAS\UiTPASConfig;
 use Illuminate\Support\Facades\Event;
@@ -35,7 +35,7 @@ final class NotificationsProvider extends ServiceProvider
             fn () =>
             new SlackMessageBuilder(
                 $this->app->get(SubscriptionRepository::class),
-                $this->app->get(FetchNameForUdb3Organizer::class),
+                $this->app->get(UdbOrganizerNameResolver::class),
                 $this->app->get(SearchService::class),
                 config(UiTPASConfig::CLIENT_PERMISSIONS_URI->value),
                 config(UiTPASConfig::UDB_BASE_URI->value),

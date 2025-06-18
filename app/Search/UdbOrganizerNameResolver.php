@@ -11,9 +11,9 @@ use CultuurNet\SearchV3\ValueObjects\PagedCollection;
  * If performance starts to be an issue, a cache would be good here.
  * */
 
-final readonly class FetchNameForUdb3Organizer
+final readonly class UdbOrganizerNameResolver
 {
-    public function fetchName(PagedCollection $collection): ?string
+    public function getName(PagedCollection $collection): ?string
     {
         if ($collection->getTotalItems() < 1) {
             return null;
