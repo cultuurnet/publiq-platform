@@ -28,7 +28,6 @@ final class ActivateUiTPASClientHandler implements ShouldQueue
     {
         $udbOrganizer = $this->udbOrganizerRepository->getById($event->id);
 
-        //@todo should we return some feedback to user if call fails? Currently failures are only logged.
         $this->api->addPermissions(
             $this->prodContext,
             $udbOrganizer->organizerId,
