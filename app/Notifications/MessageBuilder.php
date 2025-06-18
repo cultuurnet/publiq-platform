@@ -10,5 +10,5 @@ use App\Domain\Integrations\UdbOrganizer;
 interface MessageBuilder
 {
     public function toMessage(Integration $integration): string;
-    public function toMessageWithOrganizer(Integration $integration, UdbOrganizer $org): string;
+    public function toMessageWithOrganizer(Integration $integration, UdbOrganizer $udbOrganizer): string;
 }

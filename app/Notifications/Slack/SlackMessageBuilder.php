@@ -10,11 +10,13 @@ use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Notifications\MessageBuilder;
+use App\UiTPAS\FetchNameForUdb3Organizer;
 
 final readonly class SlackMessageBuilder implements MessageBuilder
 {
     public function __construct(
         private SubscriptionRepository $subscriptionRepository,
+        private FetchNameForUdb3Organizer $fetchNameForUdb3Organizer,
         private string $uitpasRootUri,
         private string $udbRootUri,
         private string $appUrl
@@ -37,16 +39,18 @@ final readonly class SlackMessageBuilder implements MessageBuilder
         return $message;
     }
 
-    public function toMessageWithOrganizer(Integration $integration, UdbOrganizer $org): string
+    public function toMessageWithOrganizer(Integration $integration, UdbOrganizer $udbOrganizer): string
     {
         $client = $integration->getKeycloakClientByEnv(Environment::Production);
 
-        $message = '*:robot_face: :incoming_envelope: ' . $integration->name . ' - requested access to organisation ' . $org->organizerId . '*';
+        $organizerName = $this->fetchNameForUdb3Organizer->fetchName($udbOrganizer->organizerId);
+
+        $message = '*:robot_face: :incoming_envelope: ' . $integration->name . ' - requested access to organisation ' . $organizerName . ' (' . $udbOrganizer->organizerId . ') *';
         $message .= PHP_EOL . PHP_EOL;
         $message = $this->getBasicDetails($integration, $message);
         $message .= PHP_EOL;
         $message .= PHP_EOL . '• *Open in publiq-platform:* ' . $this->appUrl . '/admin/resources/integrations/' . $integration->id->toString();
-        $message .= PHP_EOL . '• *Open in UDB:* ' . $this->udbRootUri . 'organizers/' . $org->organizerId . '/preview';
+        $message .= PHP_EOL . '• *Open in UDB:* ' . $this->udbRootUri . 'organizers/' . $udbOrganizer->organizerId . '/preview';
         $message .= PHP_EOL . '• *Open in UiTPAS:* ' . $this->uitpasRootUri . $client->clientId;
 
         return $message;
