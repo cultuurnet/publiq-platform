@@ -28,6 +28,7 @@ final readonly class FetchNameForUdb3Organizer
         /** @var Organizer $organizer */
         $organizer = $result->getMember()?->getItems()[0];
 
-        return $organizer->getName()?->getValueForLanguage('nl') ?? $organizer->getName()?->getValueForLanguage('fr') ?? '';
+        $langCode = $organizer->getMainLanguage() ?? 'nl';
+        return $organizer->getName()?->getValueForLanguage($langCode) ?? '';
     }
 }
