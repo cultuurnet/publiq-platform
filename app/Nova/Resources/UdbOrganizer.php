@@ -6,6 +6,7 @@ namespace App\Nova\Resources;
 
 use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Nova\Resource;
+use App\Search\Sapi3\SearchService;
 use App\UiTPAS\FetchNameForUdb3Organizer;
 use App\UiTPAS\UiTPASConfig;
 use Illuminate\Support\Facades\App;
@@ -49,12 +50,16 @@ final class UdbOrganizer extends Resource
                 ->readonly(),
 
             Text::make('Name', static function (UdbOrganizerModel $model) {
+                /** @var FetchNameForUdb3Organizer $fetchNameForUdb3Organizer */
                 $fetchNameForUdb3Organizer = App::get(FetchNameForUdb3Organizer::class);
+
+                /** @var SearchService $searchService */
+                $searchService = App::get(SearchService::class);
 
                 return sprintf(
                     '<a href="%s" target="_blank" class="link-default">%s</a>',
                     config(UiTPASConfig::UDB_BASE_URI->value) . 'organizers/' . $model->toDomain()->organizerId . '/preview',
-                    $fetchNameForUdb3Organizer->fetchName($model->toDomain()->organizerId)
+                    $fetchNameForUdb3Organizer->fetchName($searchService->findUiTPASOrganizers($model->toDomain()->organizerId))
                 );
             })->asHtml(),
 
