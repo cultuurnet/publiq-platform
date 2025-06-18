@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace App\Keycloak\Models;
 
 use App\Domain\Integrations\Environment;
-use App\Keycloak\Client;
 use App\Domain\Integrations\Models\IntegrationModel;
+use App\Keycloak\Client;
+use App\Keycloak\Events\ClientCreated;
 use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -43,5 +44,12 @@ final class KeycloakClientModel extends UuidModel
     public function integration(): BelongsTo
     {
         return $this->belongsTo(IntegrationModel::class, 'integration_id');
+    }
+
+    protected static function booted(): void
+    {
+        self::created(
+            static fn (KeycloakClientModel $model) => ClientCreated::dispatch(Uuid::fromString($model->id))
+        );
     }
 }
