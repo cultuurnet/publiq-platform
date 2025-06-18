@@ -5,12 +5,17 @@ declare(strict_types=1);
 namespace App\UiTPAS;
 
 use App\Api\TokenStrategy\ClientCredentials;
+use App\Domain\Integrations\Events\UdbOrganizerCreated;
 use App\Domain\Integrations\GetIntegrationOrganizersWithTestOrganizer;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
+use App\Notifications\MessageBuilder;
+use App\Notifications\Slack\SlackNotifier;
 use App\Keycloak\Events\ClientCreated;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Search\Sapi3\SearchService;
 use App\UiTPAS\Listeners\AddUiTPASPermissionsToOrganizerForIntegration;
+use App\UiTPAS\Listeners\NotifyUdbOrganizerRequested;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Support\Facades\Event;
@@ -52,6 +57,19 @@ final class UiTPASServiceProvider extends ServiceProvider
             );
         });
 
+        $this->app->singleton(NotifyUdbOrganizerRequested::class, function () {
+            return new NotifyUdbOrganizerRequested(
+                $this->app->get(UdbOrganizerRepository::class),
+                $this->app->get(IntegrationRepository::class),
+                new SlackNotifier(
+                    config('slack.botToken'),
+                    config('slack.channels.uitpas_integraties'),
+                    config('slack.baseUri')
+                ),
+                $this->app->get(MessageBuilder::class),
+                $this->app->get(LoggerInterface::class),
+            );
+        });
 
         if (!config(UiTPASConfig::AUTOMATIC_PERMISSIONS_ENABLED->value)) {
             return;
@@ -63,5 +81,6 @@ final class UiTPASServiceProvider extends ServiceProvider
     private function bootstrapEventHandling(): void
     {
         Event::listen(ClientCreated::class, [AddUiTPASPermissionsToOrganizerForIntegration::class, 'handle']);
+        Event::listen(UdbOrganizerCreated::class, [NotifyUdbOrganizerRequested::class, 'handle']);
     }
 }

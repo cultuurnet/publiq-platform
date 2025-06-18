@@ -69,14 +69,20 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
 
     public function testDelete(): void
     {
-        $repository = new EloquentUdbOrganizerRepository();
-
-        $repository->delete($this->organizer1);
+        $this->repository->create($this->organizer1);
+        $this->repository->delete($this->organizer1);
 
         $this->assertDatabaseMissing('udb_organizers', [
             'id' => $this->organizer1->id,
             'integration_id' => $this->organizer1->integrationId,
             'organizer_id' => $this->organizer1->organizerId,
         ]);
+    }
+
+    public function test_it_can_get_an_udb_organizer_by_id(): void
+    {
+        $this->repository->create($this->organizer1);
+
+        $this->assertEquals($this->organizer1, $this->repository->getById($this->organizer1->id));
     }
 }

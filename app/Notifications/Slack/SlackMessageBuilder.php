@@ -4,15 +4,23 @@ declare(strict_types=1);
 
 namespace App\Notifications\Slack;
 
+use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationStatus;
+use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Notifications\MessageBuilder;
+use App\Search\UdbOrganizerNameResolver;
+use App\Search\Sapi3\SearchService;
 
 final readonly class SlackMessageBuilder implements MessageBuilder
 {
     public function __construct(
         private SubscriptionRepository $subscriptionRepository,
+        private UdbOrganizerNameResolver $fetchNameForUdb3Organizer,
+        private SearchService $searchService,
+        private string $uitpasRootUri,
+        private string $udbRootUri,
         private string $appUrl
     ) {
     }
@@ -24,13 +32,28 @@ final readonly class SlackMessageBuilder implements MessageBuilder
 
         $message = '*' . $this->getStatusEmoji($integrationStatus) . ' ' . $integration->name . ' - ' . $this->getStatusText($integrationStatus) . '*';
         $message .= PHP_EOL . PHP_EOL;
-        $message .= PHP_EOL . '• *Type:* _' . $integration->type->value . '_';
-        $message .= PHP_EOL . '• *Status:* _' . $integration->status->value . '_';
-        $message .= PHP_EOL . '• *Description:* _' . $integration->description . '_';
+        $message = $this->getBasicDetails($integration, $message);
         $message .= PHP_EOL . '• *Subscription:* _' . $subscription->name . '_';
         $message .= PHP_EOL . '• *Website:* _' . ($integration->website() ? $integration->website()->value : 'N/A') . '_';
         $message .= PHP_EOL;
         $message .= PHP_EOL . 'Open in publiq-platform: ' . $this->appUrl . '/admin/resources/integrations/' . $integration->id->toString();
+
+        return $message;
+    }
+
+    public function toMessageWithOrganizer(Integration $integration, UdbOrganizer $udbOrganizer): string
+    {
+        $client = $integration->getKeycloakClientByEnv(Environment::Production);
+
+        $organizerName = $this->fetchNameForUdb3Organizer->getName($this->searchService->findUiTPASOrganizers($udbOrganizer->organizerId));
+
+        $message = '*:robot_face: :incoming_envelope: ' . $integration->name . ' - requested access to organisation ' . $organizerName . ' (' . $udbOrganizer->organizerId . ') *';
+        $message .= PHP_EOL . PHP_EOL;
+        $message = $this->getBasicDetails($integration, $message);
+        $message .= PHP_EOL;
+        $message .= PHP_EOL . '• *Open in publiq-platform:* ' . $this->appUrl . '/admin/resources/integrations/' . $integration->id->toString();
+        $message .= PHP_EOL . '• *Open in UDB:* ' . $this->udbRootUri . 'organizers/' . $udbOrganizer->organizerId . '/preview';
+        $message .= PHP_EOL . '• *Open in UiTPAS:* ' . $this->uitpasRootUri . $client->clientId;
 
         return $message;
     }
@@ -57,5 +80,13 @@ final readonly class SlackMessageBuilder implements MessageBuilder
             IntegrationStatus::PendingApprovalIntegration => 'Pending Approval',
             IntegrationStatus::PendingApprovalPayment => 'Pending Payment',
         };
+    }
+
+    private function getBasicDetails(Integration $integration, string $message): string
+    {
+        $message .= PHP_EOL . '• *Status:* _' . $integration->status->value . '_';
+        $message .= PHP_EOL . '• *Description:* _' . $integration->description . '_';
+        $message .= PHP_EOL . '• *Website:* _' . ($integration->website() ? $integration->website()->value : 'N/A') . '_';
+        return $message;
     }
 }
