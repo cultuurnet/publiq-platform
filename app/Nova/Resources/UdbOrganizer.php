@@ -6,6 +6,9 @@ namespace App\Nova\Resources;
 
 use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Nova\Resource;
+use App\UiTPAS\FetchNameForUdb3Organizer;
+use App\UiTPAS\UiTPASConfig;
+use Illuminate\Support\Facades\App;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
@@ -42,8 +45,18 @@ final class UdbOrganizer extends Resource
                 ->readonly()
                 ->hideFromIndex(),
 
-            Text::make('organizer_id')
+            Text::make('organizer id', 'organizer_id')
                 ->readonly(),
+
+            Text::make('Name', static function (UdbOrganizerModel $model) {
+                $fetchNameForUdb3Organizer = App::get(FetchNameForUdb3Organizer::class);
+
+                return sprintf(
+                    '<a href="%s" target="_blank" class="link-default">%s</a>',
+                    config(UiTPASConfig::UDB_BASE_URI->value) . 'organizers/' . $model->toDomain()->organizerId . '/preview',
+                    $fetchNameForUdb3Organizer->fetchName($model->toDomain()->organizerId)
+                );
+            })->asHtml(),
 
             HasMany::make('Activity Log'),
         ];

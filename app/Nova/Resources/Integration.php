@@ -23,6 +23,7 @@ use App\Nova\Actions\UiTiDv1\CreateMissingUiTiDv1Consumers;
 use App\Nova\Actions\UnblockIntegration;
 use App\Nova\Filters\AdminInformationFilter;
 use App\Nova\Resource;
+use App\Search\Sapi3\SearchService;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -300,7 +301,7 @@ final class Integration extends Resource
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeUnblocked())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeUnblocked()),
 
-            (new AddUdbOrganizer(App::make(UdbOrganizerRepository::class)))
+            (new AddUdbOrganizer(App::make(UdbOrganizerRepository::class), App::make(SearchService::class)))
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to add an organizer?')
                 ->confirmButtonText('Add')
