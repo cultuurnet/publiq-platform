@@ -36,6 +36,6 @@ final class FetchNameForUdb3OrganizerTest extends TestCase
         $organizerId = 'b4530a99-86e9-44bc-a492-2aa6fa8f74a0';
         $result = $this->fetchNameForUdb3Organizer->fetchName($this->givenUitpasOrganizers($organizerId, 'Test Organizer', 0));
 
-        $this->assertEquals('Niet teruggevonden in UDB3', $result);
+        $this->assertNull($result);
     }
 }

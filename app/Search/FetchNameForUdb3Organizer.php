@@ -13,16 +13,16 @@ use CultuurNet\SearchV3\ValueObjects\PagedCollection;
 
 final readonly class FetchNameForUdb3Organizer
 {
-    public function fetchName(PagedCollection $collection): string
+    public function fetchName(PagedCollection $collection): ?string
     {
         if ($collection->getTotalItems() < 1) {
-            return 'Niet teruggevonden in UDB3';
+            return null;
         }
 
         /** @var Organizer $organizer */
         $organizer = $collection->getMember()?->getItems()[0];
 
         $langCode = $organizer->getMainLanguage() ?? 'nl';
-        return $organizer->getName()?->getValueForLanguage($langCode) ?? '';
+        return $organizer->getName()?->getValueForLanguage($langCode);
     }
 }

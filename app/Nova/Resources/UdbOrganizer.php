@@ -59,7 +59,7 @@ final class UdbOrganizer extends Resource
                 return sprintf(
                     '<a href="%s" target="_blank" class="link-default">%s</a>',
                     config(UiTPASConfig::UDB_BASE_URI->value) . 'organizers/' . $model->toDomain()->organizerId . '/preview',
-                    $fetchNameForUdb3Organizer->fetchName($searchService->findUiTPASOrganizers($model->toDomain()->organizerId))
+                    $fetchNameForUdb3Organizer->fetchName($searchService->findUiTPASOrganizers($model->toDomain()->organizerId)) ?? 'Niet teruggevonden in UDB3'
                 );
             })->asHtml(),
 
