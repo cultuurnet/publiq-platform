@@ -12,7 +12,7 @@ use App\UiTPAS\UiTPASApiInterface;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class ActivateUiTPASClientHandler implements ShouldQueue
+final class ActivateUiTPASClientHandler implements ShouldQueue
 {
     use Queueable;
 

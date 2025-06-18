@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Repositories;
 
-use App\Domain\Integrations\IntegrationUrl;
 use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizers;

@@ -5,17 +5,18 @@ declare(strict_types=1);
 namespace App\UiTPAS;
 
 use App\Api\TokenStrategy\ClientCredentials;
-use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\UdbOrganizerCreated;
 use App\Domain\Integrations\GetIntegrationOrganizersWithTestOrganizer;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
+use App\Notifications\MessageBuilder;
 use App\Notifications\Slack\SlackNotifier;
+use App\Keycloak\Events\ClientCreated;
+use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Search\Sapi3\SearchService;
 use App\UiTPAS\Jobs\ActivateUiTPASClientHandler;
 use App\UiTPAS\Listeners\AddUiTPASPermissionsToOrganizerForIntegration;
 use App\UiTPAS\Listeners\NotifyUdbOrganizerRequested;
-use App\UiTPAS\Slack\UdbOrganizerMessageBuilder;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Support\Facades\Event;
@@ -42,6 +43,7 @@ final class UiTPASServiceProvider extends ServiceProvider
         $this->app->singleton(AddUiTPASPermissionsToOrganizerForIntegration::class, function () {
             return new AddUiTPASPermissionsToOrganizerForIntegration(
                 $this->app->get(IntegrationRepository::class),
+                $this->app->get(KeycloakClientRepository::class),
                 $this->app->get(UiTPASApiInterface::class),
                 ClientCredentialsContextFactory::getUitIdTestContext()
             );
@@ -56,13 +58,6 @@ final class UiTPASServiceProvider extends ServiceProvider
             );
         });
 
-        $this->app->singleton(UdbOrganizerMessageBuilder::class, function () {
-            return new UdbOrganizerMessageBuilder(
-                config('app.url'),
-                config(UiTPASConfig::CLIENT_PERMISSIONS_LINK->value)
-            );
-        });
-
         $this->app->singleton(NotifyUdbOrganizerRequested::class, function () {
             return new NotifyUdbOrganizerRequested(
                 $this->app->get(UdbOrganizerRepository::class),
@@ -72,7 +67,7 @@ final class UiTPASServiceProvider extends ServiceProvider
                     config('slack.channels.uitpas_integraties'),
                     config('slack.baseUri')
                 ),
-                $this->app->get(UdbOrganizerMessageBuilder::class),
+                $this->app->get(MessageBuilder::class),
                 $this->app->get(LoggerInterface::class),
             );
         });
@@ -95,7 +90,7 @@ final class UiTPASServiceProvider extends ServiceProvider
 
     private function bootstrapEventHandling(): void
     {
-        Event::listen(IntegrationCreated::class, [AddUiTPASPermissionsToOrganizerForIntegration::class, 'handle']);
+        Event::listen(ClientCreated::class, [AddUiTPASPermissionsToOrganizerForIntegration::class, 'handle']);
         Event::listen(UdbOrganizerCreated::class, [NotifyUdbOrganizerRequested::class, 'handle']);
     }
 }

@@ -12,7 +12,7 @@ use Illuminate\Support\Collection;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\ActionFields;
 
-class RejectUdbOrganizer extends Action
+final class RejectUdbOrganizer extends Action
 {
     use InteractsWithQueue;
     use Queueable;

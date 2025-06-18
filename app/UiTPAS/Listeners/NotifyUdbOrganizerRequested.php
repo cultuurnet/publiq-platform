@@ -8,8 +8,8 @@ use App\Domain\Integrations\Events\UdbOrganizerCreated;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
+use App\Notifications\MessageBuilder;
 use App\Notifications\Notifier;
-use App\UiTPAS\Slack\UdbOrganizerMessageBuilder;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
@@ -23,7 +23,7 @@ final class NotifyUdbOrganizerRequested implements ShouldQueue
         private readonly UdbOrganizerRepository $udbOrganizerRepository,
         private readonly IntegrationRepository $integrationRepository,
         private readonly Notifier $notifier,
-        private readonly UdbOrganizerMessageBuilder $messageBuilder,
+        private readonly MessageBuilder $messageBuilder,
         private readonly LoggerInterface $logger
     ) {
     }
@@ -37,7 +37,7 @@ final class NotifyUdbOrganizerRequested implements ShouldQueue
             return;
         }
 
-        $this->notifier->postMessage($this->messageBuilder->toMessage($org, $integration));
+        $this->notifier->postMessage($this->messageBuilder->toMessageWithOrganizer($integration, $org));
     }
 
     public function failed(

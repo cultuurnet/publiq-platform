@@ -15,7 +15,7 @@ use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\ActionFields;
 use Ramsey\Uuid\Uuid;
 
-class ActivateUdbOrganizer extends Action
+final class ActivateUdbOrganizer extends Action
 {
     use InteractsWithQueue;
     use Queueable;

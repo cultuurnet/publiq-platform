@@ -14,6 +14,8 @@ use App\Nova\Resource;
 use App\UiTPAS\UiTPASConfig;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use App\Search\UdbOrganizerNameResolver;
+use App\Search\Sapi3\SearchService;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
@@ -50,8 +52,22 @@ final class UdbOrganizer extends Resource
                 ->readonly()
                 ->hideFromIndex(),
 
-            Text::make('organizer_id')
+            Text::make('organizer id', 'organizer_id')
                 ->readonly(),
+
+            Text::make('Name', static function (UdbOrganizerModel $model) {
+                /** @var UdbOrganizerNameResolver $udbOrganizerNameResolver */
+                $udbOrganizerNameResolver = App::get(UdbOrganizerNameResolver::class);
+
+                /** @var SearchService $searchService */
+                $searchService = App::get(SearchService::class);
+
+                return sprintf(
+                    '<a href="%s" target="_blank" class="link-default">%s</a>',
+                    config(UiTPASConfig::UDB_BASE_URI->value) . 'organizers/' . $model->toDomain()->organizerId . '/preview',
+                    $udbOrganizerNameResolver->getName($searchService->findUiTPASOrganizers($model->toDomain()->organizerId)) ?? 'Niet teruggevonden in UDB3'
+                );
+            })->asHtml(),
 
             Text::make('status')
                 ->readonly(),
