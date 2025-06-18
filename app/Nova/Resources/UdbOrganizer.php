@@ -6,8 +6,8 @@ namespace App\Nova\Resources;
 
 use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Nova\Resource;
+use App\Search\FetchNameForUdb3Organizer;
 use App\Search\Sapi3\SearchService;
-use App\UiTPAS\FetchNameForUdb3Organizer;
 use App\UiTPAS\UiTPASConfig;
 use Illuminate\Support\Facades\App;
 use Laravel\Nova\Fields\Field;

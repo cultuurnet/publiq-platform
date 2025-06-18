@@ -10,8 +10,8 @@ use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
 use App\Notifications\MessageBuilder;
+use App\Search\FetchNameForUdb3Organizer;
 use App\Search\Sapi3\SearchService;
-use App\UiTPAS\FetchNameForUdb3Organizer;
 
 final readonly class SlackMessageBuilder implements MessageBuilder
 {

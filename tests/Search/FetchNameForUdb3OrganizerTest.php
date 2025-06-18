@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Tests\UiTPAS;
+namespace Tests\Search;
 
-use App\UiTPAS\FetchNameForUdb3Organizer;
+use App\Search\FetchNameForUdb3Organizer;
 use Tests\GivenUitpasOrganizers;
 use Tests\TestCase;
 
