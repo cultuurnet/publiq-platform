@@ -34,7 +34,6 @@ final readonly class Sapi3SearchService implements SearchService
             return new PagedCollection();
         }
 
-        //@todo I wonder if there is a bug here, because the function has a constraint on labels:uitpas, but this one does not?
         $ids = array_map(fn (string $id) => sprintf('id:"%s"', $id), $ids);
         $searchQuery->addParameter(new Query(implode(' OR ', $ids)));
 
