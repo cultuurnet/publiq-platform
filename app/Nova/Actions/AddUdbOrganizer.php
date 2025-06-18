@@ -40,7 +40,7 @@ final class AddUdbOrganizer extends Action
         /** @var string $organizationIdAsString */
         $organizationIdAsString = $fields->get('organizer_id');
 
-        if (!$this->doesOrganisationExistInUdb3($organizationIdAsString)) {
+        if (!$this->doesOrganizerExistInUdb($organizationIdAsString)) {
             return Action::danger('Organisation "' . $organizationIdAsString . '" not found in UDB3.');
         }
 
@@ -75,7 +75,7 @@ final class AddUdbOrganizer extends Action
         ];
     }
 
-    private function doesOrganisationExistInUdb3(string $organizerId): bool
+    private function doesOrganizerExistInUdb(string $organizerId): bool
     {
         $result = $this->searchService->findUiTPASOrganizers($organizerId);
         return ($result->getTotalItems() >= 1);
