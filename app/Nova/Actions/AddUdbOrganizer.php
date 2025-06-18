@@ -7,6 +7,7 @@ namespace App\Nova\Actions;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
+use App\Search\Sapi3\SearchService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Collection;
@@ -24,8 +25,10 @@ final class AddUdbOrganizer extends Action
     use InteractsWithQueue;
     use Queueable;
 
-    public function __construct(private readonly UdbOrganizerRepository $organizerRepository)
-    {
+    public function __construct(
+        private readonly UdbOrganizerRepository $organizerRepository,
+        private readonly SearchService $searchService
+    ) {
     }
 
     public function handle(ActionFields $fields, Collection $integrations): ActionResponse|Action
@@ -36,6 +39,10 @@ final class AddUdbOrganizer extends Action
 
         /** @var string $organizationIdAsString */
         $organizationIdAsString = $fields->get('organizer_id');
+
+        if (!$this->doesOrganisationExistInUdb3($organizationIdAsString)) {
+            return Action::danger('Organisation "' . $organizationIdAsString . '" not found in UDB3.');
+        }
 
         try {
             $this->organizerRepository->create(
@@ -66,5 +73,11 @@ final class AddUdbOrganizer extends Action
                     'string'
                 ),
         ];
+    }
+
+    private function doesOrganisationExistInUdb3(string $organizerId): bool
+    {
+        $result = $this->searchService->findUiTPASOrganizers($organizerId);
+        return ($result->getTotalItems() >= 1);
     }
 }
