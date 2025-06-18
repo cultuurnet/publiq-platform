@@ -12,6 +12,8 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Notifications\MessageBuilder;
 use App\Notifications\Slack\SlackNotifier;
+use App\Keycloak\Events\ClientCreated;
+use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Search\Sapi3\SearchService;
 use App\UiTPAS\Listeners\AddUiTPASPermissionsToOrganizerForIntegration;
 use App\UiTPAS\Listeners\NotifyUdbOrganizerRequested;
@@ -41,6 +43,7 @@ final class UiTPASServiceProvider extends ServiceProvider
         $this->app->singleton(AddUiTPASPermissionsToOrganizerForIntegration::class, function () {
             return new AddUiTPASPermissionsToOrganizerForIntegration(
                 $this->app->get(IntegrationRepository::class),
+                $this->app->get(KeycloakClientRepository::class),
                 $this->app->get(UiTPASApiInterface::class),
                 ClientCredentialsContextFactory::getUitIdTestContext()
             );
@@ -78,7 +81,7 @@ final class UiTPASServiceProvider extends ServiceProvider
 
     private function bootstrapEventHandling(): void
     {
-        Event::listen(IntegrationCreated::class, [AddUiTPASPermissionsToOrganizerForIntegration::class, 'handle']);
+        Event::listen(ClientCreated::class, [AddUiTPASPermissionsToOrganizerForIntegration::class, 'handle']);
         Event::listen(UdbOrganizerCreated::class, [NotifyUdbOrganizerRequested::class, 'handle']);
     }
 }
