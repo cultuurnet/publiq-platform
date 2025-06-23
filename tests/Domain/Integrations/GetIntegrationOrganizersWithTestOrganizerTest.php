@@ -18,7 +18,6 @@ use App\Search\Sapi3\SearchService;
 use App\UiTPAS\Dto\UiTPASPermission;
 use App\UiTPAS\Dto\UiTPASPermissionDetail;
 use App\UiTPAS\Dto\UiTPASPermissionDetails;
-use App\UiTPAS\Dto\UiTPASPermissions;
 use App\UiTPAS\UiTPASApiInterface;
 use App\UiTPAS\UiTPASConfig;
 use CultuurNet\SearchV3\ValueObjects\Collection;
@@ -114,13 +113,11 @@ final class GetIntegrationOrganizersWithTestOrganizerTest extends TestCase
         $this->uitpasApi
             ->method('fetchPermissions')
             ->willReturnCallback(function (ClientCredentialsContext $context, string $organizerId) {
-                return new UiTPASPermissions([
-                    new UiTPASPermission(
-                        $organizerId,
-                        'organizer-' . $organizerId,
-                        new UiTPASPermissionDetails([new UiTPASPermissionDetail('PERMISSION_' . $organizerId, 'label for ' . $organizerId)])
-                    ),
-                ]);
+                return new UiTPASPermission(
+                    $organizerId,
+                    'organizer-' . $organizerId,
+                    new UiTPASPermissionDetails([new UiTPASPermissionDetail('PERMISSION_' . $organizerId, 'label for ' . $organizerId)])
+                );
             });
 
         $result = $this->service->getAndEnrichOrganisations($this->integration)->toArray();

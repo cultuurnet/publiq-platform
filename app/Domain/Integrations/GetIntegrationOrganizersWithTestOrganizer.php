@@ -8,7 +8,7 @@ use App\Api\ClientCredentialsContext;
 use App\Domain\Integrations\Exceptions\KeycloakClientNotFound;
 use App\Keycloak\Client;
 use App\Search\Sapi3\SearchService;
-use App\UiTPAS\Dto\UiTPASPermissions;
+use App\UiTPAS\Dto\UiTPASPermission;
 use App\UiTPAS\UiTPASApiInterface;
 use App\UiTPAS\UiTPASConfig;
 use CultuurNet\SearchV3\ValueObjects\Organizer as SapiOrganizer;
@@ -40,7 +40,7 @@ final readonly class GetIntegrationOrganizersWithTestOrganizer
                 'status' => 'Live',
                 'permissions' => $keycloakClient ? $this->getLabels($this->UiTPASApi->fetchPermissions(
                     $this->prodCredentialsContext,
-                    (string)$organizer->getId(),
+                    $id,
                     $keycloakClient->clientId
                 )) : [],
             ];
@@ -73,14 +73,16 @@ final readonly class GetIntegrationOrganizersWithTestOrganizer
     }
 
     /** @return string[] */
-    private function getLabels(UiTPASPermissions $permissions): array
+    private function getLabels(?UiTPASPermission $permission): array
     {
+        if ($permission === null) {
+            return [];
+        }
+
         $labels = [];
 
-        foreach ($permissions as $permission) {
-            foreach ($permission->permissionDetails as $detail) {
-                $labels[] = $detail->label;
-            }
+        foreach ($permission->permissionDetails as $detail) {
+            $labels[] = $detail->label;
         }
 
         return $labels;
