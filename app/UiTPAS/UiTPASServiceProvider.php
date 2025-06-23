@@ -81,15 +81,15 @@ final class UiTPASServiceProvider extends ServiceProvider
             );
         });
 
-        if (!config(UiTPASConfig::AUTOMATIC_PERMISSIONS_ENABLED->value)) {
-            return;
-        }
-
         $this->bootstrapEventHandling();
     }
 
     private function bootstrapEventHandling(): void
     {
+        if (!config(UiTPASConfig::AUTOMATIC_PERMISSIONS_ENABLED->value)) {
+            return;
+        }
+
         Event::listen(ClientCreated::class, [AddUiTPASPermissionsToOrganizerForIntegration::class, 'handle']);
         Event::listen(UdbOrganizerCreated::class, [NotifyUdbOrganizerRequested::class, 'handle']);
     }
