@@ -9,7 +9,7 @@ use App\UiTPAS\Dto\UiTPASPermissions;
 
 interface UiTPASApiInterface
 {
-    public function addPermissions(ClientCredentialsContext $context, string $organizerId, string $clientId): void;
+    public function addPermissions(ClientCredentialsContext $context, string $organizerId, string $clientId): bool;
 
     public function fetchPermissions(ClientCredentialsContext $context, string $organisationId, string $clientId): UiTPASPermissions;
 }

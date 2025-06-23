@@ -28,7 +28,7 @@ final readonly class UiTPASApi implements UiTPASApiInterface
     ) {
     }
 
-    public function addPermissions(ClientCredentialsContext $context, string $organizerId, string $clientId): void
+    public function addPermissions(ClientCredentialsContext $context, string $organizerId, string $clientId): bool
     {
         $request = new Request('PUT', 'permissions/' . $clientId, [
             'Accept' => 'application/problem+json',
@@ -42,15 +42,17 @@ final readonly class UiTPASApi implements UiTPASApiInterface
             );
         } catch (GuzzleException $e) {
             $this->logger->error(sprintf('Failed to give %s permission to uitpas organisation %s, error %s', $clientId, $organizerId, $e->getMessage()));
-            return;
+            return false;
         }
 
         if ($response->getStatusCode() !== 204) {
             $this->logger->error(sprintf('Failed to give %s permission to uitpas organisation %s, status code %s', $clientId, $organizerId, $response->getStatusCode()));
-            return;
+            return false;
         }
 
         $this->logger->info(sprintf('Gave %s permission to uitpas organisation %s', $clientId, $organizerId));
+
+        return true;
     }
 
     private function withBody(string $organizerId): array
