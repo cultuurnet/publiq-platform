@@ -2,25 +2,29 @@
 
 declare(strict_types=1);
 
-namespace Tests\UiTPAS\Jobs;
+namespace Tests\Nova\Actions;
 
 use App\Api\ClientCredentialsContext;
 use App\Domain\Integrations\Environment;
+use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Keycloak\Client;
-use App\UiTPAS\Jobs\ActivateUiTPASClient;
-use App\UiTPAS\Jobs\ActivateUiTPASClientHandler;
+use App\Nova\Actions\ActivateUdbOrganizer;
 use App\UiTPAS\UiTPASApiInterface;
+use Illuminate\Support\Collection;
+use Laravel\Nova\Fields\ActionFields;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use Tests\CreatesIntegration;
+use Tests\GivenUitpasOrganizers;
 
-final class ActivateUiTPASClientHandlerTest extends TestCase
+final class ActivateUdbOrganizerTest extends TestCase
 {
     use CreatesIntegration;
+    use GivenUitpasOrganizers;
 
     public function test_it_handles_activate_uitpas_client(): void
     {
@@ -34,7 +38,7 @@ final class ActivateUiTPASClientHandlerTest extends TestCase
             'secret',
             'uitid'
         );
-        $handler = new ActivateUiTPASClientHandler(
+        $handler = new ActivateUdbOrganizer(
             $udbOrganizerRepository,
             $integrationRepository,
             $api,
@@ -46,17 +50,18 @@ final class ActivateUiTPASClientHandlerTest extends TestCase
         $organizerId = 'organizer-123';
         $clientId = 'keycloak-client-id';
 
-        $udbOrganizer = new UdbOrganizer($id, $integrationId, $organizerId);
+        $udbOrganizer = new UdbOrganizerModel();
+        $udbOrganizer->id = $id->toString();
+        $udbOrganizer->integration_id = $integrationId->toString();
+        $udbOrganizer->organizer_id = $organizerId;
+        $udbOrganizer->status = UdbOrganizerStatus::Pending->value;
+        $udbOrganizers = new Collection();
+        $udbOrganizers->push($udbOrganizer);
 
         $integration = $this->givenThereIsAnIntegration($integrationId)
             ->withKeycloakClients(
                 new Client(Uuid::uuid4(), Uuid::uuid4(), $clientId, 'client-id-1', Environment::Testing),
             );
-
-        $udbOrganizerRepository->expects($this->once())
-            ->method('getById')
-            ->with($id)
-            ->willReturn($udbOrganizer);
 
         $integrationRepository->expects($this->once())
             ->method('getById')
@@ -69,7 +74,8 @@ final class ActivateUiTPASClientHandlerTest extends TestCase
                 $context,
                 $organizerId,
                 $clientId
-            );
+            )
+            ->willReturn(true);
 
         $udbOrganizerRepository->expects($this->once())
             ->method('update')
@@ -79,6 +85,9 @@ final class ActivateUiTPASClientHandlerTest extends TestCase
                     $actual->status === UdbOrganizerStatus::Approved;
             }));
 
-        $handler->handle(new ActivateUiTPASClient($id));
+        $handler->handle(
+            new ActionFields(collect(), collect()),
+            $udbOrganizers
+        );
     }
 }
