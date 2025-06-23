@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace App\Nova\Actions;
 
+use App\Api\ClientCredentialsContext;
 use App\Domain\Integrations\Models\UdbOrganizerModel;
-use App\UiTPAS\Jobs\ActivateUiTPASClient;
-use App\UiTPAS\Jobs\ActivateUiTPASClientHandler;
+use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
+use App\Domain\Integrations\UdbOrganizerStatus;
+use App\UiTPAS\UiTPASApiInterface;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\ActionFields;
-use Ramsey\Uuid\Uuid;
 
 final class ActivateUdbOrganizer extends Action
 {
@@ -23,19 +24,34 @@ final class ActivateUdbOrganizer extends Action
     public $name = 'Approve UDB3 organizer request';
 
     public function __construct(
-        private readonly Dispatcher $dispatcher,
-        private readonly ActivateUiTPASClientHandler $listener,
+        private readonly UdbOrganizerRepository $udbOrganizerRepository,
+        private readonly IntegrationRepository $integrationRepository,
+        private readonly UiTPASApiInterface $UiTPASApi,
+        private readonly ClientCredentialsContext $prodContext
     ) {
     }
 
     public function handle(ActionFields $fields, Collection $udbOrganizers): void
     {
-        foreach ($udbOrganizers as $udbOrganizer) {
-            if (!$udbOrganizer instanceof UdbOrganizerModel) {
+        foreach ($udbOrganizers as $udbOrganizerModel) {
+            if (!$udbOrganizerModel instanceof UdbOrganizerModel) {
                 continue;
             }
 
-            $this->dispatcher->dispatchSync(new ActivateUiTPASClient(Uuid::fromString($udbOrganizer->id)), $this->listener);
+            $udbOrganizer = $udbOrganizerModel->toDomain();
+
+            $success = $this->UiTPASApi->addPermissions(
+                $this->prodContext,
+                $udbOrganizer->organizerId,
+                $this->integrationRepository
+                    ->getById($udbOrganizer->integrationId)
+                    ->getKeycloakClientByEnv($this->prodContext->environment)
+                    ->clientId
+            );
+
+            if ($success) {
+                $this->udbOrganizerRepository->update($udbOrganizer->withStatus(UdbOrganizerStatus::Approved));
+            }
         }
     }
 }
