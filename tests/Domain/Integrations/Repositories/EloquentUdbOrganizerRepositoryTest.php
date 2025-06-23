@@ -8,6 +8,7 @@ use App\Domain\Integrations\Repositories\EloquentUdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizers;
 use App\Domain\Integrations\UdbOrganizerStatus;
+use App\Domain\Udb3Uuid;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
@@ -27,14 +28,14 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
         $this->organizer1 = new UdbOrganizer(
             Uuid::uuid4(),
             Uuid::uuid4(),
-            Uuid::uuid4()->toString(),
+            new Udb3Uuid(Uuid::uuid4()->toString()),
             UdbOrganizerStatus::Pending
         );
 
         $this->organizer2 = new UdbOrganizer(
             Uuid::uuid4(),
             Uuid::uuid4(),
-            Uuid::uuid4()->toString(),
+            new Udb3Uuid(Uuid::uuid4()->toString()),
             UdbOrganizerStatus::Pending
         );
 
@@ -75,7 +76,7 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
     public function testUpdateStatus(): void
     {
         $this->repository->create($this->organizer1);
-        $this->repository->updateStatus($this->organizer1->id->toString(), UdbOrganizerStatus::Approved);
+        $this->repository->updateStatus($this->organizer1->id, UdbOrganizerStatus::Approved);
 
         $this->assertDatabaseHas('udb_organizers', [
             'id' => $this->organizer1->id->toString(),
@@ -88,7 +89,7 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
     public function testDelete(): void
     {
         $this->repository->create($this->organizer1);
-        $this->repository->delete($this->organizer1);
+        $this->repository->delete($this->organizer1->integrationId, $this->organizer1->organizerId);
 
         $this->assertDatabaseMissing('udb_organizers', [
             'id' => $this->organizer1->id,

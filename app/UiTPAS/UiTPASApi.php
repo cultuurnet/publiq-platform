@@ -7,6 +7,7 @@ namespace App\UiTPAS;
 use App\Api\ClientCredentialsContext;
 use App\Api\TokenStrategy\TokenStrategy;
 use App\Domain\Integrations\Environment;
+use App\Domain\Udb3Uuid;
 use App\Json;
 use App\UiTPAS\Dto\UiTPASPermissions;
 use GuzzleHttp\ClientInterface;
@@ -28,7 +29,7 @@ final readonly class UiTPASApi implements UiTPASApiInterface
     ) {
     }
 
-    public function addPermissions(ClientCredentialsContext $context, string $organizerId, string $clientId): bool
+    public function addPermissions(ClientCredentialsContext $context, Udb3Uuid $organizerId, string $clientId): bool
     {
         $request = new Request('PUT', 'permissions/' . $clientId, [
             'Accept' => 'application/problem+json',
@@ -55,12 +56,12 @@ final readonly class UiTPASApi implements UiTPASApiInterface
         return true;
     }
 
-    private function withBody(string $organizerId): array
+    private function withBody(Udb3Uuid $organizerId): array
     {
         return [
             [
                 'organizer' => [
-                    'id' => $organizerId,
+                    'id' => $organizerId->toString(),
                 ],
                 'permissionDetails' => array_map(
                     static fn ($id) => ['id' => $id],
@@ -99,7 +100,7 @@ final readonly class UiTPASApi implements UiTPASApiInterface
         return $this->prodApiEndpoint;
     }
 
-    public function fetchPermissions(ClientCredentialsContext $context, string $organisationId, string $clientId): UiTPASPermissions
+    public function fetchPermissions(ClientCredentialsContext $context, Udb3Uuid $organizerId, string $clientId): UiTPASPermissions
     {
         $response = $this->sendWithBearer(
             new Request('GET', 'permissions/' . $clientId),
