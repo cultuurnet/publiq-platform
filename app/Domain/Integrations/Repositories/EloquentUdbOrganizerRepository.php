@@ -33,10 +33,7 @@ final class EloquentUdbOrganizerRepository implements UdbOrganizerRepository
 
     public function save(UdbOrganizer $organizer): void
     {
-        UdbOrganizerModel::query()->updateOrCreate(
-            [
-                'id' => $organizer->id->toString(),
-            ],
+        UdbOrganizerModel::query()->update(
             [
                 'id' => $organizer->id->toString(),
                 'integration_id' => $organizer->integrationId->toString(),
