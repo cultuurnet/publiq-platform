@@ -72,15 +72,6 @@ final class UiTPASServiceProvider extends ServiceProvider
             );
         });
 
-        $this->app->singleton(ActivateUdbOrganizer::class, function () {
-            return new ActivateUdbOrganizer(
-                $this->app->get(UdbOrganizerRepository::class),
-                $this->app->get(IntegrationRepository::class),
-                $this->app->get(UiTPASApiInterface::class),
-                ClientCredentialsContextFactory::getUitIdProdContext(),
-            );
-        });
-
         $this->bootstrapEventHandling();
     }
 
