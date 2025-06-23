@@ -44,18 +44,17 @@ final class RejectUdbOrganizerTest extends TestCase
                 return true;
             }));
 
-        $a = new RejectUdbOrganizer($udbOrganizerRepository);
         $udbOrganizers = new Collection();
         $udbOrganizers->push($this->givenUdbOrganizerModel($uuid, $integrationUuid, 'org-1'));
         $udbOrganizers->push($this->givenUdbOrganizerModel($uuid2, $integrationUuid2, 'org-2'));
 
-        $a->handle(
+        (new RejectUdbOrganizer($udbOrganizerRepository))->handle(
             new ActionFields(collect(), collect()),
             $udbOrganizers
         );
     }
 
-    public function givenUdbOrganizerModel(UuidInterface $uuid, UuidInterface $integrationUuid, string $orgId): UdbOrganizerModel
+    private function givenUdbOrganizerModel(UuidInterface $uuid, UuidInterface $integrationUuid, string $orgId): UdbOrganizerModel
     {
         $model = new UdbOrganizerModel();
         $model->id = $uuid->toString();
