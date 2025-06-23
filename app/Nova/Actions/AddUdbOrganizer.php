@@ -7,6 +7,7 @@ namespace App\Nova\Actions;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
+use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Search\Sapi3\SearchService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -49,7 +50,8 @@ final class AddUdbOrganizer extends Action
                 new UdbOrganizer(
                     Uuid::uuid4(),
                     Uuid::fromString($integration->id),
-                    $organizationIdAsString
+                    $organizationIdAsString,
+                    UdbOrganizerStatus::Pending
                 )
             );
         } catch (PDOException $e) {

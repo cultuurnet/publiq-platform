@@ -38,6 +38,7 @@ use App\Domain\Integrations\Repositories\IntegrationUrlRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizers;
+use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\KeyVisibilityUpgrades\KeyVisibilityUpgrade;
 use App\Domain\KeyVisibilityUpgrades\Repositories\KeyVisibilityUpgradeRepository;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
@@ -320,7 +321,8 @@ final class IntegrationController extends Controller
         $this->organizerRepository->delete(new UdbOrganizer(
             Uuid::uuid4(),
             Uuid::fromString($integrationId),
-            $organizerId
+            $organizerId,
+            UdbOrganizerStatus::Pending
         ));
 
         return Redirect::back();

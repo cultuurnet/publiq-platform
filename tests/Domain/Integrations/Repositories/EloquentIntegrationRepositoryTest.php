@@ -20,6 +20,7 @@ use App\Domain\Integrations\Repositories\EloquentIntegrationRepository;
 use App\Domain\Integrations\Repositories\EloquentUdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizers;
+use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\Integrations\Website;
 use App\Domain\Subscriptions\Currency;
 use App\Domain\Subscriptions\Repositories\EloquentSubscriptionRepository;
@@ -381,6 +382,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
                     Uuid::uuid4(),
                     Uuid::uuid4(),
                     Uuid::uuid4()->toString(),
+                    UdbOrganizerStatus::Pending
                 ),
             ],
         );

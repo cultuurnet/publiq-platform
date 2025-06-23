@@ -12,6 +12,7 @@ use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\UdbOrganizer;
+use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Keycloak\Client;
 use App\Search\Sapi3\SearchService;
 use App\UiTPAS\Dto\UiTPASPermission;
@@ -81,7 +82,7 @@ final class GetIntegrationOrganizersWithTestOrganizerTest extends TestCase
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::THIRD_PARTY,
         ))->withUdbOrganizers(
-            new UdbOrganizer(Uuid::uuid4(), $integrationId, $organizerId->toString()),
+            new UdbOrganizer(Uuid::uuid4(), $integrationId, $organizerId->toString(), UdbOrganizerStatus::Pending),
         );
 
         $searchClient

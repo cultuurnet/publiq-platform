@@ -7,6 +7,7 @@ namespace App\Domain\Integrations\Repositories;
 use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizers;
+use App\Domain\Integrations\UdbOrganizerStatus;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\UuidInterface;
 
@@ -31,14 +32,12 @@ final class EloquentUdbOrganizerRepository implements UdbOrganizerRepository
         });
     }
 
-    public function update(UdbOrganizer $organizer): void
+    public function updateStatus(string $organizerId, UdbOrganizerStatus $newStatus): void
     {
         UdbOrganizerModel::query()->update(
             [
-                'id' => $organizer->id->toString(),
-                'integration_id' => $organizer->integrationId->toString(),
-                'organizer_id' => $organizer->organizerId,
-                'status' => $organizer->status->value,
+                'id' => $organizerId,
+                'status' => $newStatus->value,
             ]
         );
     }

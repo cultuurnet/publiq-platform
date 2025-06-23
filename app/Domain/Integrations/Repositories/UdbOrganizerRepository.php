@@ -6,6 +6,7 @@ namespace App\Domain\Integrations\Repositories;
 
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizers;
+use App\Domain\Integrations\UdbOrganizerStatus;
 use Ramsey\Uuid\UuidInterface;
 
 interface UdbOrganizerRepository
@@ -14,7 +15,7 @@ interface UdbOrganizerRepository
 
     public function createInBulk(UdbOrganizers $organizers): void;
 
-    public function update(UdbOrganizer $organizer): void;
+    public function updateStatus(string $organizerId, UdbOrganizerStatus $newStatus): void;
 
     public function delete(UdbOrganizer $organizer): void;
 

@@ -12,17 +12,7 @@ final readonly class UdbOrganizer
         public UuidInterface $id,
         public UuidInterface $integrationId,
         public string $organizerId,
-        public UdbOrganizerStatus $status = UdbOrganizerStatus::Pending,
+        public UdbOrganizerStatus $status,
     ) {
-    }
-
-    public function withStatus(UdbOrganizerStatus $status): self
-    {
-        return new self(
-            $this->id,
-            $this->integrationId,
-            $this->organizerId,
-            $status
-        );
     }
 }

@@ -15,7 +15,6 @@ use App\Keycloak\Events\ClientCreated;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Nova\Actions\ActivateUdbOrganizer;
 use App\Search\Sapi3\SearchService;
-use App\UiTPAS\Jobs\ActivateUiTPASClientHandler;
 use App\UiTPAS\Listeners\AddUiTPASPermissionsToOrganizerForIntegration;
 use App\UiTPAS\Listeners\NotifyUdbOrganizerRequested;
 use GuzzleHttp\Client;

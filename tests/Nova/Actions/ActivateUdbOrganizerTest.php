@@ -9,7 +9,6 @@ use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
-use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Keycloak\Client;
 use App\Nova\Actions\ActivateUdbOrganizer;
@@ -78,12 +77,9 @@ final class ActivateUdbOrganizerTest extends TestCase
             ->willReturn(true);
 
         $udbOrganizerRepository->expects($this->once())
-            ->method('update')
-            ->with($this->callback(function ($actual) {
-                // check that status is updated to Approved
-                return $actual instanceof UdbOrganizer &&
-                    $actual->status === UdbOrganizerStatus::Approved;
-            }));
+            ->method('updateStatus')
+            ->with($id->toString(), UdbOrganizerStatus::Approved)
+        ;
 
         $handler->handle(
             new ActionFields(collect(), collect()),

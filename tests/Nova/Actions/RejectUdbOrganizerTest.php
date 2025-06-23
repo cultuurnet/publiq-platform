@@ -31,8 +31,8 @@ final class RejectUdbOrganizerTest extends TestCase
         $integrationUuid2 = Uuid::uuid4();
 
         $expected = [
-            new UdbOrganizer($uuid, $integrationUuid, 'org-1'),
-            new UdbOrganizer($uuid2, $integrationUuid2, 'org-2'),
+            new UdbOrganizer($uuid, $integrationUuid, 'org-1', UdbOrganizerStatus::Pending),
+            new UdbOrganizer($uuid2, $integrationUuid2, 'org-2', UdbOrganizerStatus::Pending),
         ];
 
         $callIndex = 0;

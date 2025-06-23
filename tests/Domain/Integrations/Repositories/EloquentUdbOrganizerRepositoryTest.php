@@ -27,13 +27,15 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
         $this->organizer1 = new UdbOrganizer(
             Uuid::uuid4(),
             Uuid::uuid4(),
-            Uuid::uuid4()->toString()
+            Uuid::uuid4()->toString(),
+            UdbOrganizerStatus::Pending
         );
 
         $this->organizer2 = new UdbOrganizer(
             Uuid::uuid4(),
             Uuid::uuid4(),
-            Uuid::uuid4()->toString()
+            Uuid::uuid4()->toString(),
+            UdbOrganizerStatus::Pending
         );
 
         $this->repository = new EloquentUdbOrganizerRepository();
@@ -73,7 +75,7 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
     public function testUpdateStatus(): void
     {
         $this->repository->create($this->organizer1);
-        $this->repository->update($this->organizer1->withStatus(UdbOrganizerStatus::Approved));
+        $this->repository->updateStatus($this->organizer1->id->toString(), UdbOrganizerStatus::Approved);
 
         $this->assertDatabaseHas('udb_organizers', [
             'id' => $this->organizer1->id->toString(),
