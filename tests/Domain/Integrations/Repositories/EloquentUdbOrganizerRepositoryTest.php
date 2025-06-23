@@ -73,7 +73,7 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
     public function testUpdateStatus(): void
     {
         $this->repository->create($this->organizer1);
-        $this->repository->save($this->organizer1->withStatus(UdbOrganizerStatus::Approved));
+        $this->repository->update($this->organizer1->withStatus(UdbOrganizerStatus::Approved));
 
         $this->assertDatabaseHas('udb_organizers', [
             'id' => $this->organizer1->id->toString(),

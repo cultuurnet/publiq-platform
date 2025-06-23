@@ -72,7 +72,7 @@ final class ActivateUiTPASClientHandlerTest extends TestCase
             );
 
         $udbOrganizerRepository->expects($this->once())
-            ->method('save')
+            ->method('update')
             ->with($this->callback(function ($actual) {
                 // check that status is updated to Approved
                 return $actual instanceof UdbOrganizer &&
