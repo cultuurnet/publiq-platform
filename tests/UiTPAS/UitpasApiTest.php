@@ -10,7 +10,6 @@ use App\Domain\Integrations\Environment;
 use App\UiTPAS\Dto\UiTPASPermission;
 use App\UiTPAS\Dto\UiTPASPermissionDetail;
 use App\UiTPAS\Dto\UiTPASPermissionDetails;
-use App\UiTPAS\Dto\UiTPASPermissions;
 use App\UiTPAS\UiTPASApi;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
@@ -51,6 +50,7 @@ final class UitpasApiTest extends TestCase
     {
         $mock = new MockHandler([
             new Response(200, [], json_encode(['access_token' => self::MY_TOKEN], JSON_THROW_ON_ERROR)),
+            new Response(200, [], json_encode([], JSON_THROW_ON_ERROR)),
             new Response(204),
         ]);
 
@@ -85,6 +85,7 @@ final class UitpasApiTest extends TestCase
     {
         $mock = new MockHandler([
             new Response(200, [], json_encode(['access_token' => self::MY_TOKEN], JSON_THROW_ON_ERROR)),
+            new Response(200, [], json_encode([], JSON_THROW_ON_ERROR)),
             new RequestException(
                 'Ja lap, het is kapot',
                 new Request('PUT', 'https://test-uitpas.publiq.be/permissions/' . self::CLIENT_ID)
@@ -112,6 +113,7 @@ final class UitpasApiTest extends TestCase
     {
         $mock = new MockHandler([
             new Response(200, [], json_encode(['access_token' => self::MY_TOKEN], JSON_THROW_ON_ERROR)),
+            new Response(200, [], json_encode([], JSON_THROW_ON_ERROR)),
             new Response(400),
         ]);
 
@@ -171,14 +173,11 @@ final class UitpasApiTest extends TestCase
             'client-id'
         );
 
-        $expectedPermissions = new UiTPASPermissions([
-            new UiTPASPermission('wrong-id', 'wrong', new UiTPASPermissionDetails([new UiTPASPermissionDetail('WRONG', 'WRONG')])),
-            new UiTPASPermission('org-1', 'correct', new UiTPASPermissionDetails([
-                new UiTPASPermissionDetail('TARIFFS_READ', 'Tarieven opvragen'),
-                new UiTPASPermissionDetail('PASSES_READ', 'Basis UiTPAS informatie ophalen'),
-                new UiTPASPermissionDetail('TICKETSALES_REGISTER', 'Tickets registreren'),
-            ])),
-        ]);
+        $expectedPermissions = new UiTPASPermission('org-1', 'correct', new UiTPASPermissionDetails([
+            new UiTPASPermissionDetail('TARIFFS_READ', 'Tarieven opvragen'),
+            new UiTPASPermissionDetail('PASSES_READ', 'Basis UiTPAS informatie ophalen'),
+            new UiTPASPermissionDetail('TICKETSALES_REGISTER', 'Tickets registreren'),
+        ]));
 
         $this->assertEquals($expectedPermissions, $permissions);
     }
@@ -203,12 +202,12 @@ final class UitpasApiTest extends TestCase
             'https://uitpas.publiq.be/',
         );
 
-        $permissions = $uitpasApi->fetchPermissions(
+        $permission = $uitpasApi->fetchPermissions(
             $this->context,
             'org-1',
             'client-id'
         );
 
-        $this->assertEmpty($permissions->toArray());
+        $this->assertNull($permission);
     }
 }
