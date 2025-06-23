@@ -11,11 +11,16 @@ use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Nova\Actions\ActivateUdbOrganizer;
 use App\Nova\Actions\RejectUdbOrganizer;
 use App\Nova\Resource;
+use App\Search\Sapi3\SearchService;
+use App\Search\UdbOrganizerNameResolver;
+use App\UiTPAS\ClientCredentialsContextFactory;
+use App\UiTPAS\Dto\UiTPASPermission;
+use App\UiTPAS\Dto\UiTPASPermissionDetail;
+use App\UiTPAS\UiTPASApi;
+use App\UiTPAS\UiTPASApiInterface;
 use App\UiTPAS\UiTPASConfig;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
-use App\Search\UdbOrganizerNameResolver;
-use App\Search\Sapi3\SearchService;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
@@ -83,6 +88,37 @@ final class UdbOrganizer extends Resource
                     $keycloakClient->clientId
                 );
             })->asHtml(),
+
+            Text::make('Permissions', static function (UdbOrganizerModel $model) {
+                /** @var UiTPASApi $api */
+                $api = App::get(UiTPASApiInterface::class);
+
+                /** @var IntegrationRepository $integrationRepository */
+                $integrationRepository = App::get(IntegrationRepository::class);
+
+                $udbOrganizer = $model->toDomain();
+
+                $integration = $integrationRepository->getById($udbOrganizer->integrationId);
+
+                $context = ClientCredentialsContextFactory::getUitIdProdContext();
+                $permission = $api->fetchPermissions(
+                    $context,
+                    $udbOrganizer->organizerId,
+                    $integration->getKeycloakClientByEnv($context->environment)->clientId
+                );
+
+                if (!$permission instanceof UiTPASPermission) {
+                    return '';
+                }
+
+                $items = $permission->permissionDetails->map(function (UiTPASPermissionDetail $detail) {
+                    return '<li>✅ ' . $detail->label . '</li>';
+                })->toArray();
+
+                return '<ul>' . implode('', $items) . '</ul>';
+            })
+                ->asHtml()
+                ->onlyOnDetail(),
 
             HasMany::make('Activity Log'),
         ];
