@@ -135,6 +135,7 @@ final class UitpasApiTest extends TestCase
 
         $uitpasApi->addPermissions($this->context, new UdbUuid(self::ORG_ID), self::CLIENT_ID);
 
+        $this->assertIsArray($history);
         $this->assertCount(3, $history); // token fetch, get current permissions, put updated permissions
 
         $this->assertJson((string) $history[2]['request']->getBody());
