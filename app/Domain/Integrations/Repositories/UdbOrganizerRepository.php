@@ -7,7 +7,7 @@ namespace App\Domain\Integrations\Repositories;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizers;
 use App\Domain\Integrations\UdbOrganizerStatus;
-use App\Domain\Udb3Uuid;
+use App\Domain\UdbUuid;
 use Ramsey\Uuid\UuidInterface;
 
 interface UdbOrganizerRepository
@@ -18,7 +18,7 @@ interface UdbOrganizerRepository
 
     public function updateStatus(UuidInterface $id, UdbOrganizerStatus $newStatus): void;
 
-    public function delete(UuidInterface $integrationId, Udb3Uuid $organizerId): void;
+    public function delete(UuidInterface $integrationId, UdbUuid $organizerId): void;
 
     public function getById(UuidInterface $id): UdbOrganizer;
 }

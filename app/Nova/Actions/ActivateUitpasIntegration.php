@@ -10,7 +10,7 @@ use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizers;
 use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\Organizations\Models\OrganizationModel;
-use App\Domain\Udb3Uuid;
+use App\Domain\UdbUuid;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Collection;
@@ -83,7 +83,7 @@ final class ActivateUitpasIntegration extends Action
                 new UdbOrganizer(
                     Uuid::uuid4(),
                     Uuid::fromString($integration->id),
-                    new Udb3Uuid($id),
+                    new UdbUuid($id),
                     UdbOrganizerStatus::Pending
                 )
             );

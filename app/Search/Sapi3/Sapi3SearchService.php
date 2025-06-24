@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Search\Sapi3;
 
-use App\Domain\Udb3Uuid;
+use App\Domain\UdbUuid;
 use CultuurNet\SearchV3\Parameter\Query;
 use CultuurNet\SearchV3\SearchClientInterface;
 use CultuurNet\SearchV3\SearchQuery;
@@ -27,7 +27,7 @@ final readonly class Sapi3SearchService implements SearchService
         return $this->searchClient->searchOrganizers($searchQuery);
     }
 
-    public function findUiTPASOrganizers(Udb3Uuid ...$ids): PagedCollection
+    public function findUiTPASOrganizers(UdbUuid ...$ids): PagedCollection
     {
         $searchQuery = new SearchQuery();
         $searchQuery->setEmbed(true);
@@ -35,7 +35,7 @@ final readonly class Sapi3SearchService implements SearchService
             return new PagedCollection();
         }
 
-        $ids = array_map(fn (Udb3Uuid $id) => sprintf('id:"%s"', $id->toString()), $ids);
+        $ids = array_map(fn (UdbUuid $id) => sprintf('id:"%s"', $id->toString()), $ids);
         $searchQuery->addParameter(new Query(implode(' OR ', $ids)));
 
         return $this->searchClient->searchOrganizers($searchQuery);

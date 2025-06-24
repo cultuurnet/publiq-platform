@@ -26,7 +26,7 @@ use App\Domain\Subscriptions\Currency;
 use App\Domain\Subscriptions\Repositories\EloquentSubscriptionRepository;
 use App\Domain\Subscriptions\Subscription;
 use App\Domain\Subscriptions\SubscriptionCategory;
-use App\Domain\Udb3Uuid;
+use App\Domain\UdbUuid;
 use App\Mails\Template\TemplateName;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -382,7 +382,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
                 new UdbOrganizer(
                     Uuid::uuid4(),
                     Uuid::uuid4(),
-                    new Udb3Uuid(Uuid::uuid4()->toString()),
+                    new UdbUuid(Uuid::uuid4()->toString()),
                     UdbOrganizerStatus::Pending
                 ),
             ],

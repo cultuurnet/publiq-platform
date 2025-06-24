@@ -13,7 +13,7 @@ use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizerStatus;
-use App\Domain\Udb3Uuid;
+use App\Domain\UdbUuid;
 use App\Keycloak\Client;
 use App\Search\Sapi3\SearchService;
 use App\UiTPAS\Dto\UiTPASPermission;
@@ -71,7 +71,7 @@ final class GetIntegrationOrganizersWithTestOrganizerTest extends TestCase
         );
 
         $integrationId = Uuid::fromString('7186d084-8a13-47e6-82ec-451c4a314f6e');
-        $organizerId = new Udb3Uuid('34e7ad7e-ab9b-48f6-9c4d-76ffbdf8ba00');
+        $organizerId = new UdbUuid('34e7ad7e-ab9b-48f6-9c4d-76ffbdf8ba00');
         $subscriptionId = Uuid::fromString('90366a07-62c1-40ef-bcd4-84c583d2fac3');
 
         $this->integration = (new Integration(
@@ -114,7 +114,7 @@ final class GetIntegrationOrganizersWithTestOrganizerTest extends TestCase
 
         $this->uitpasApi
             ->method('fetchPermissions')
-            ->willReturnCallback(function (ClientCredentialsContext $context, Udb3Uuid $organizerId) {
+            ->willReturnCallback(function (ClientCredentialsContext $context, UdbUuid $organizerId) {
                 return new UiTPASPermissions([
                     new UiTPASPermission(
                         $organizerId,

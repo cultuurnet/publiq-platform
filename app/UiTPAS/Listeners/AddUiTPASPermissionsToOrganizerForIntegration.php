@@ -7,7 +7,7 @@ namespace App\UiTPAS\Listeners;
 use App\Api\ClientCredentialsContext;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Domain\Udb3Uuid;
+use App\Domain\UdbUuid;
 use App\Keycloak\Events\ClientCreated;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\UiTPAS\UiTPASApiInterface;
@@ -42,7 +42,7 @@ final class AddUiTPASPermissionsToOrganizerForIntegration implements ShouldQueue
 
         $this->uitpasApi->addPermissions(
             $this->testContext,
-            new Udb3Uuid(config(UiTPASConfig::TEST_ORGANISATION->value)),
+            new UdbUuid(config(UiTPASConfig::TEST_ORGANISATION->value)),
             $keycloakClient->clientId,
         );
     }

@@ -7,7 +7,7 @@ namespace Tests\Nova\Actions;
 use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizerStatus;
-use App\Domain\Udb3Uuid;
+use App\Domain\UdbUuid;
 use App\Nova\Actions\RejectUdbOrganizer;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\ActionFields;
@@ -31,8 +31,8 @@ final class RejectUdbOrganizerTest extends TestCase
         $integrationUuid2 = Uuid::uuid4();
 
         $expected = [
-            ['integration_id' => $integrationUuid, 'organizer_id' => new Udb3Uuid('d541dbd6-b818-432d-b2be-d51dfc5c0c51')],
-            ['integration_id' => $integrationUuid2, 'organizer_id' => new Udb3Uuid('33f1722b-04fc-4652-b99f-2c96de87cf82')],
+            ['integration_id' => $integrationUuid, 'organizer_id' => new UdbUuid('d541dbd6-b818-432d-b2be-d51dfc5c0c51')],
+            ['integration_id' => $integrationUuid2, 'organizer_id' => new UdbUuid('33f1722b-04fc-4652-b99f-2c96de87cf82')],
         ];
 
         $callIndex = 0;

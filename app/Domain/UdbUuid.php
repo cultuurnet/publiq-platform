@@ -6,7 +6,7 @@ namespace App\Domain;
 
 use InvalidArgumentException;
 
-final readonly class Udb3Uuid
+final readonly class UdbUuid
 {
     // This is the regex also used in UDB3
     // Matches general UUID format but does not enforce UUIDv4 version or variant bits.

@@ -8,7 +8,7 @@ use App\Domain\Integrations\Repositories\EloquentUdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizers;
 use App\Domain\Integrations\UdbOrganizerStatus;
-use App\Domain\Udb3Uuid;
+use App\Domain\UdbUuid;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
@@ -28,14 +28,14 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
         $this->organizer1 = new UdbOrganizer(
             Uuid::uuid4(),
             Uuid::uuid4(),
-            new Udb3Uuid(Uuid::uuid4()->toString()),
+            new UdbUuid(Uuid::uuid4()->toString()),
             UdbOrganizerStatus::Pending
         );
 
         $this->organizer2 = new UdbOrganizer(
             Uuid::uuid4(),
             Uuid::uuid4(),
-            new Udb3Uuid(Uuid::uuid4()->toString()),
+            new UdbUuid(Uuid::uuid4()->toString()),
             UdbOrganizerStatus::Pending
         );
 

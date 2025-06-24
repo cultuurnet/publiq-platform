@@ -8,7 +8,7 @@ use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizerStatus;
-use App\Domain\Udb3Uuid;
+use App\Domain\UdbUuid;
 use App\Search\Sapi3\SearchService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -41,7 +41,7 @@ final class AddUdbOrganizer extends Action
         $integration = $integrations->first();
 
         try {
-            $organizationId = new Udb3Uuid((string)$fields->get('organizer_id'));
+            $organizationId = new UdbUuid((string)$fields->get('organizer_id'));
         } catch (InvalidArgumentException $e) {
             return Action::danger('Invalid organizer ID.');
         }
@@ -82,7 +82,7 @@ final class AddUdbOrganizer extends Action
         ];
     }
 
-    private function doesOrganizerExistInUdb(Udb3Uuid $organizerId): bool
+    private function doesOrganizerExistInUdb(UdbUuid $organizerId): bool
     {
         $result = $this->searchService->findUiTPASOrganizers($organizerId);
         return ($result->getTotalItems() >= 1);

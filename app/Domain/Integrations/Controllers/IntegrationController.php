@@ -42,7 +42,7 @@ use App\Domain\KeyVisibilityUpgrades\KeyVisibilityUpgrade;
 use App\Domain\KeyVisibilityUpgrades\Repositories\KeyVisibilityUpgradeRepository;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
-use App\Domain\Udb3Uuid;
+use App\Domain\UdbUuid;
 use App\Http\Controllers\Controller;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\ProjectAanvraag\ProjectAanvraagUrl;
@@ -318,7 +318,7 @@ final class IntegrationController extends Controller
 
     public function deleteOrganizer(string $integrationId, string $organizerId): RedirectResponse
     {
-        $this->organizerRepository->delete(Uuid::fromString($integrationId), new Udb3Uuid($organizerId));
+        $this->organizerRepository->delete(Uuid::fromString($integrationId), new UdbUuid($organizerId));
 
         return Redirect::back();
     }
