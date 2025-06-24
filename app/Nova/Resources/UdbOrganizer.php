@@ -147,8 +147,6 @@ final class UdbOrganizer extends Resource
         ];
     }
 
-
-
     public function actions(NovaRequest $request): array
     {
         $actions = [];
