@@ -11,6 +11,7 @@ use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Nova\Actions\ActivateUdbOrganizer;
 use App\Nova\Actions\RejectUdbOrganizer;
+use App\Nova\Filters\UdbOrganizerStatusFilter;
 use App\Nova\Resource;
 use App\Search\Sapi3\SearchService;
 use App\Search\UdbOrganizerNameResolver;
@@ -22,6 +23,7 @@ use App\UiTPAS\UiTPASApiInterface;
 use App\UiTPAS\UiTPASConfig;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
@@ -38,8 +40,6 @@ final class UdbOrganizer extends Resource
 
     public static $title = 'organizer_id';
 
-    public static $displayInNavigation = false;
-
     /**
      * @var array<string>
      */
@@ -49,6 +49,18 @@ final class UdbOrganizer extends Resource
         'organizer_id',
         'status',
     ];
+
+    public static function label(): string
+    {
+        return 'UiTPAS integrations';
+    }
+
+    public function filters(NovaRequest $request): array
+    {
+        return [
+            new UdbOrganizerStatusFilter(),
+        ];
+    }
 
     /** @return array<Field> */
     public function fields(NovaRequest $request): array
@@ -68,10 +80,16 @@ final class UdbOrganizer extends Resource
                 /** @var SearchService $searchService */
                 $searchService = App::get(SearchService::class);
 
+                $name = $udbOrganizerNameResolver->getName($searchService->findUiTPASOrganizers($model->toDomain()->organizerId));
+
+                if ($name === null) {
+                    return 'Niet teruggevonden in UDB3';
+                }
+
                 return sprintf(
                     '<a href="%s" target="_blank" class="link-default">%s</a>',
                     config(UiTPASConfig::UDB_BASE_URI->value) . 'organizers/' . $model->toDomain()->organizerId . '/preview',
-                    $udbOrganizerNameResolver->getName($searchService->findUiTPASOrganizers($model->toDomain()->organizerId)) ?? 'Niet teruggevonden in UDB3'
+                    $name
                 );
             })->asHtml(),
 
@@ -121,9 +139,15 @@ final class UdbOrganizer extends Resource
                 ->asHtml()
                 ->onlyOnDetail(),
 
+            DateTime::make('Requested on', 'created_at')
+                ->sortable()
+                ->onlyOnIndex(),
+
             HasMany::make('Activity Log'),
         ];
     }
+
+
 
     public function actions(NovaRequest $request): array
     {
