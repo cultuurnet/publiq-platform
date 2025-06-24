@@ -52,7 +52,7 @@ final class UdbOrganizer extends Resource
 
     public static function label(): string
     {
-        return 'UiTPAS integrations';
+        return 'UiTPAS organizers';
     }
 
     public function filters(NovaRequest $request): array
