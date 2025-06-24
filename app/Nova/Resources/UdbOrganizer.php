@@ -7,10 +7,13 @@ namespace App\Nova\Resources;
 use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Nova\Actions\ActivateUdbOrganizer;
 use App\Nova\Actions\RejectUdbOrganizer;
 use App\Nova\Resource;
+use App\UiTPAS\ClientCredentialsContextFactory;
+use App\UiTPAS\UiTPASApiInterface;
 use App\UiTPAS\UiTPASConfig;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -92,7 +95,14 @@ final class UdbOrganizer extends Resource
     {
         $actions = [];
         if (config(UiTPASConfig::AUTOMATIC_PERMISSIONS_ENABLED->value)) {
-            $actions[] = App::make(ActivateUdbOrganizer::class)
+            $activateUdbOrganizer = new ActivateUdbOrganizer(
+                App::make(UdbOrganizerRepository::class),
+                App::make(IntegrationRepository::class),
+                App::make(UiTPASApiInterface::class),
+                ClientCredentialsContextFactory::getUitIdProdContext(),
+            );
+
+            $actions[] = $activateUdbOrganizer
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to active this organizer in UiTPAS?')
                 ->confirmButtonText('Activate')

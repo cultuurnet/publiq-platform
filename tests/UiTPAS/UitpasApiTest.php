@@ -7,6 +7,7 @@ namespace Tests\UiTPAS;
 use App\Api\ClientCredentialsContext;
 use App\Api\TokenStrategy\ClientCredentials;
 use App\Domain\Integrations\Environment;
+use App\Domain\UdbUuid;
 use App\UiTPAS\Dto\UiTPASPermission;
 use App\UiTPAS\Dto\UiTPASPermissionDetail;
 use App\UiTPAS\Dto\UiTPASPermissionDetails;
@@ -25,7 +26,7 @@ final class UitpasApiTest extends TestCase
     use KeycloakHttpClientFactory;
 
     private const MY_TOKEN = 'my-token';
-    private const ORG_ID = 'org-123';
+    private const ORG_ID = 'd541dbd6-b818-432d-b2be-d51dfc5c0c51';
     private const CLIENT_ID = 'client-456';
 
     private LoggerInterface&MockObject $logger;
@@ -78,7 +79,7 @@ final class UitpasApiTest extends TestCase
                 return $message === $expected;
             }));
 
-        $uitpasApi->addPermissions($this->context, self::ORG_ID, self::CLIENT_ID);
+        $uitpasApi->addPermissions($this->context, new UdbUuid(self::ORG_ID), self::CLIENT_ID);
     }
 
     public function test_it_logs_error_when_add_permissions_fails_with_exception(): void
@@ -106,7 +107,7 @@ final class UitpasApiTest extends TestCase
             ->method('error')
             ->with($this->stringContains('Failed to give'));
 
-        $uitpasApi->addPermissions($this->context, self::ORG_ID, self::CLIENT_ID);
+        $uitpasApi->addPermissions($this->context, new UdbUuid(self::ORG_ID), self::CLIENT_ID);
     }
 
     public function test_it_logs_error_when_status_code_is_not_204(): void
@@ -131,20 +132,20 @@ final class UitpasApiTest extends TestCase
             ->method('error')
             ->with(sprintf('Failed to give %s permission to uitpas organisation %s, status code 400', self::CLIENT_ID, self::ORG_ID));
 
-        $uitpasApi->addPermissions($this->context, self::ORG_ID, self::CLIENT_ID);
+        $uitpasApi->addPermissions($this->context, new UdbUuid(self::ORG_ID), self::CLIENT_ID);
     }
 
     public function test_it_fetches_permissions_with_the_correct_id(): void
     {
         $body = json_encode([
             [
-                'organizer' => ['id' => 'wrong-id', 'name' => 'wrong'],
+                'organizer' => ['id' => '33f1722b-04fc-4652-b99f-2c96de87cf82', 'name' => 'wrong'],
                 'permissionDetails' => [
                     ['id' => 'WRONG', 'label' => ['nl' => 'WRONG']],
                 ],
             ],
             [
-                'organizer' => ['id' => 'org-1', 'name' => 'correct'],
+                'organizer' => ['id' => 'd541dbd6-b818-432d-b2be-d51dfc5c0c51', 'name' => 'correct'],
                 'permissionDetails' => [
                     ['id' => 'TARIFFS_READ', 'label' => ['nl' => 'Tarieven opvragen']],
                     ['id' => 'PASSES_READ', 'label' => ['nl' => 'Basis UiTPAS informatie ophalen']],
@@ -169,7 +170,7 @@ final class UitpasApiTest extends TestCase
 
         $permissions = $uitpasApi->fetchPermissions(
             $this->context,
-            'org-1',
+            new UdbUuid('d541dbd6-b818-432d-b2be-d51dfc5c0c51'),
             'client-id'
         );
 
@@ -204,7 +205,7 @@ final class UitpasApiTest extends TestCase
 
         $permission = $uitpasApi->fetchPermissions(
             $this->context,
-            'org-1',
+            new UdbUuid('d541dbd6-b818-432d-b2be-d51dfc5c0c51'),
             'client-id'
         );
 

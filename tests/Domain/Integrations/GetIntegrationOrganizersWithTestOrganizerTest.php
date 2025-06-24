@@ -13,6 +13,7 @@ use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizerStatus;
+use App\Domain\UdbUuid;
 use App\Keycloak\Client;
 use App\Search\Sapi3\SearchService;
 use App\UiTPAS\Dto\UiTPASPermission;
@@ -41,7 +42,7 @@ final class GetIntegrationOrganizersWithTestOrganizerTest extends TestCase
     {
         parent::setUp();
 
-        Config::set(UiTPASConfig::TEST_ORGANISATION->value, 'test-org');
+        Config::set(UiTPASConfig::TEST_ORGANISATION->value, '032c7f40-a1c5-4d56-aaf3-52a492262845');
 
         $this->contextTest = new ClientCredentialsContext(
             Environment::Testing,
@@ -69,7 +70,7 @@ final class GetIntegrationOrganizersWithTestOrganizerTest extends TestCase
         );
 
         $integrationId = Uuid::fromString('7186d084-8a13-47e6-82ec-451c4a314f6e');
-        $organizerId = Uuid::fromString('34e7ad7e-ab9b-48f6-9c4d-76ffbdf8ba00');
+        $organizerId = new UdbUuid('34e7ad7e-ab9b-48f6-9c4d-76ffbdf8ba00');
         $subscriptionId = Uuid::fromString('90366a07-62c1-40ef-bcd4-84c583d2fac3');
 
         $this->integration = (new Integration(
@@ -81,7 +82,7 @@ final class GetIntegrationOrganizersWithTestOrganizerTest extends TestCase
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::THIRD_PARTY,
         ))->withUdbOrganizers(
-            new UdbOrganizer(Uuid::uuid4(), $integrationId, $organizerId->toString(), UdbOrganizerStatus::Pending),
+            new UdbOrganizer(Uuid::uuid4(), $integrationId, $organizerId, UdbOrganizerStatus::Pending),
         );
 
         $searchClient
@@ -95,7 +96,7 @@ final class GetIntegrationOrganizersWithTestOrganizerTest extends TestCase
     {
         $pagedCollection = new PagedCollection();
         $org = new SapiOrganizer();
-        $org->setId('organizer-1');
+        $org->setId('33f1722b-04fc-4652-b99f-2c96de87cf82');
         $org->setName(new TranslatedString(['Test Org']));
         $collection = new Collection();
         $collection->setItems([$org]);
@@ -112,7 +113,7 @@ final class GetIntegrationOrganizersWithTestOrganizerTest extends TestCase
 
         $this->uitpasApi
             ->method('fetchPermissions')
-            ->willReturnCallback(function (ClientCredentialsContext $context, string $organizerId) {
+            ->willReturnCallback(function (ClientCredentialsContext $context, UdbUuid $organizerId) {
                 return new UiTPASPermission(
                     $organizerId,
                     'organizer-' . $organizerId,
@@ -123,13 +124,13 @@ final class GetIntegrationOrganizersWithTestOrganizerTest extends TestCase
         $result = $this->service->getAndEnrichOrganisations($this->integration)->toArray();
 
         $this->assertCount(2, $result);
-        $this->assertSame('organizer-1', $result[0]['id']);
+        $this->assertSame('33f1722b-04fc-4652-b99f-2c96de87cf82', $result[0]['id']);
         $this->assertSame('Live', $result[0]['status']);
-        $this->assertSame(['label for organizer-1'], $result[0]['permissions']);
+        $this->assertSame(['label for 33f1722b-04fc-4652-b99f-2c96de87cf82'], $result[0]['permissions']);
 
-        $this->assertSame('test-org', $result[1]['id']);
+        $this->assertSame('032c7f40-a1c5-4d56-aaf3-52a492262845', $result[1]['id']);
         $this->assertSame('Test', $result[1]['status']);
-        $this->assertSame(['label for test-org'], $result[1]['permissions']);
+        $this->assertSame(['label for 032c7f40-a1c5-4d56-aaf3-52a492262845'], $result[1]['permissions']);
     }
 
     public function test_it_handles_missing_keycloak_client(): void

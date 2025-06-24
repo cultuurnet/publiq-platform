@@ -7,6 +7,7 @@ namespace App\UiTPAS;
 use App\Api\ClientCredentialsContext;
 use App\Api\TokenStrategy\TokenStrategy;
 use App\Domain\Integrations\Environment;
+use App\Domain\UdbUuid;
 use App\Json;
 use App\UiTPAS\Dto\UiTPASPermission;
 use App\UiTPAS\Dto\UiTPASPermissions;
@@ -30,7 +31,7 @@ final readonly class UiTPASApi implements UiTPASApiInterface
     ) {
     }
 
-    public function addPermissions(ClientCredentialsContext $context, string $organizerId, string $clientId): bool
+    public function addPermissions(ClientCredentialsContext $context, UdbUuid $organizerId, string $clientId): bool
     {
         $response = $this->sendWithBearer(
             new Request('GET', 'permissions/' . $clientId),
@@ -64,7 +65,7 @@ final readonly class UiTPASApi implements UiTPASApiInterface
         return true;
     }
 
-    private function withBody(string $organizerId): array
+    private function withBody(UdbUuid $organizerId): array
     {
         return [
             'organizer' => [
