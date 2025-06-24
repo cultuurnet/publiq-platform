@@ -15,7 +15,6 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
-use Illuminate\Support\Facades\Log;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
@@ -117,7 +116,7 @@ final readonly class UiTPASApi implements UiTPASApiInterface
         return $this->prodApiEndpoint;
     }
 
-    public function fetchPermissions(ClientCredentialsContext $context, string $organisationId, string $clientId): ?UiTPASPermission
+    public function fetchPermissions(ClientCredentialsContext $context, UdbUuid $organisationId, string $clientId): ?UiTPASPermission
     {
         $response = $this->sendWithBearer(
             new Request('GET', 'permissions/' . $clientId),
@@ -132,8 +131,7 @@ final readonly class UiTPASApi implements UiTPASApiInterface
         $uiTPASPermissions = UiTPASPermissions::loadFromJson($response->getBody()->getContents());
 
         foreach ($uiTPASPermissions as $uiTPASPermission) {
-            Log::error('permissions ' . $uiTPASPermission->organizerId . ' === ' . $organisationId);
-            if ($uiTPASPermission->organizerId === $organisationId) {
+            if ($uiTPASPermission->organizerId->toString() === $organisationId->toString()) {
                 return $uiTPASPermission;
             }
         }

@@ -7,7 +7,6 @@ namespace App\UiTPAS;
 use App\Api\ClientCredentialsContext;
 use App\UiTPAS\Dto\UiTPASPermission;
 use App\Domain\UdbUuid;
-use App\UiTPAS\Dto\UiTPASPermissions;
 
 interface UiTPASApiInterface
 {
