@@ -66,7 +66,7 @@ final class AddUiTPASPermissionsToOrganizerForIntegrationTest extends TestCase
 
     public function test_it_adds_permissions_for_integration_created_event(): void
     {
-        Config::set(UiTPASConfig::TEST_ORGANISATION->value, 'org-id');
+        Config::set(UiTPASConfig::TEST_ORGANISATION->value, 'd541dbd6-b818-432d-b2be-d51dfc5c0c51');
 
         $integration = (new Integration(
             Uuid::uuid4(),
@@ -88,7 +88,7 @@ final class AddUiTPASPermissionsToOrganizerForIntegrationTest extends TestCase
             ->method('addPermissions')
             ->with(
                 $this->testContext,
-                'org-id',
+                'd541dbd6-b818-432d-b2be-d51dfc5c0c51',
                 self::CLIENT_ID
             );
 

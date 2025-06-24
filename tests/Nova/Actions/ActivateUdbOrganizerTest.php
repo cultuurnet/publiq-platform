@@ -46,7 +46,7 @@ final class ActivateUdbOrganizerTest extends TestCase
 
         $id = Uuid::uuid4();
         $integrationId = Uuid::uuid4();
-        $organizerId = 'organizer-123';
+        $organizerId = 'd541dbd6-b818-432d-b2be-d51dfc5c0c51';
         $clientId = 'keycloak-client-id';
 
         $udbOrganizer = new UdbOrganizerModel();

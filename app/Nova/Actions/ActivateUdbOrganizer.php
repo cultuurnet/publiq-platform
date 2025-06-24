@@ -50,7 +50,7 @@ final class ActivateUdbOrganizer extends Action
             );
 
             if ($success) {
-                $this->udbOrganizerRepository->updateStatus($udbOrganizer->id->toString(), UdbOrganizerStatus::Approved);
+                $this->udbOrganizerRepository->updateStatus($udbOrganizer->id, UdbOrganizerStatus::Approved);
             }
         }
     }

@@ -11,6 +11,7 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizerStatus;
+use App\Domain\UdbUuid;
 use App\Keycloak\Client;
 use App\Notifications\MessageBuilder;
 use App\Notifications\Notifier;
@@ -61,7 +62,7 @@ final class NotifyUdbOrganizerRequestedTest extends TestCase
         $org = new UdbOrganizer(
             Uuid::uuid4(),
             Uuid::uuid4(),
-            'org-1234',
+            new UdbUuid('d541dbd6-b818-432d-b2be-d51dfc5c0c51'),
             UdbOrganizerStatus::Pending
         );
 
@@ -100,7 +101,7 @@ final class NotifyUdbOrganizerRequestedTest extends TestCase
         $org = new UdbOrganizer(
             Uuid::uuid4(),
             Uuid::uuid4(),
-            'org-1234',
+            new UdbUuid('d541dbd6-b818-432d-b2be-d51dfc5c0c51'),
             UdbOrganizerStatus::Pending
         );
 

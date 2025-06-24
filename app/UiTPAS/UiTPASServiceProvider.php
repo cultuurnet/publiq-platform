@@ -13,7 +13,6 @@ use App\Notifications\MessageBuilder;
 use App\Notifications\Slack\SlackNotifier;
 use App\Keycloak\Events\ClientCreated;
 use App\Keycloak\Repositories\KeycloakClientRepository;
-use App\Nova\Actions\ActivateUdbOrganizer;
 use App\Search\Sapi3\SearchService;
 use App\UiTPAS\Listeners\AddUiTPASPermissionsToOrganizerForIntegration;
 use App\UiTPAS\Listeners\NotifyUdbOrganizerRequested;
@@ -72,24 +71,15 @@ final class UiTPASServiceProvider extends ServiceProvider
             );
         });
 
-        $this->app->singleton(ActivateUdbOrganizer::class, function () {
-            return new ActivateUdbOrganizer(
-                $this->app->get(UdbOrganizerRepository::class),
-                $this->app->get(IntegrationRepository::class),
-                $this->app->get(UiTPASApiInterface::class),
-                ClientCredentialsContextFactory::getUitIdProdContext(),
-            );
-        });
-
-        if (!config(UiTPASConfig::AUTOMATIC_PERMISSIONS_ENABLED->value)) {
-            return;
-        }
-
         $this->bootstrapEventHandling();
     }
 
     private function bootstrapEventHandling(): void
     {
+        if (!config(UiTPASConfig::AUTOMATIC_PERMISSIONS_ENABLED->value)) {
+            return;
+        }
+
         Event::listen(ClientCreated::class, [AddUiTPASPermissionsToOrganizerForIntegration::class, 'handle']);
         Event::listen(UdbOrganizerCreated::class, [NotifyUdbOrganizerRequested::class, 'handle']);
     }

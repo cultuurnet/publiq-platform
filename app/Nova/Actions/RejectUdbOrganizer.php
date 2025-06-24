@@ -28,7 +28,8 @@ final class RejectUdbOrganizer extends Action
     {
         /** @var UdbOrganizerModel $udbOrganizer */
         foreach ($udbOrganizers as $udbOrganizer) {
-            $this->udbOrganizerRepository->delete($udbOrganizer->toDomain());
+            $udbOrganizerModel = $udbOrganizer->toDomain();
+            $this->udbOrganizerRepository->delete($udbOrganizerModel->integrationId, $udbOrganizerModel->organizerId);
         }
     }
 }
