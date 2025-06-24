@@ -6,6 +6,7 @@ namespace App\Domain\Integrations;
 
 use App\Api\ClientCredentialsContext;
 use App\Domain\Integrations\Exceptions\KeycloakClientNotFound;
+use App\Domain\UdbUuid;
 use App\Keycloak\Client;
 use App\Search\Sapi3\SearchService;
 use App\UiTPAS\Dto\UiTPASPermissions;
@@ -40,7 +41,7 @@ final readonly class GetIntegrationOrganizersWithTestOrganizer
                 'status' => 'Live',
                 'permissions' => $keycloakClient ? $this->getLabels($this->UiTPASApi->fetchPermissions(
                     $this->prodCredentialsContext,
-                    (string)$organizer->getId(),
+                    new UdbUuid((string)$organizer->getId()),
                     $keycloakClient->clientId
                 )) : [],
             ];
@@ -54,7 +55,7 @@ final readonly class GetIntegrationOrganizersWithTestOrganizer
             'status' => 'Test',
             'permissions' => $keycloakClient ? $this->getLabels($this->UiTPASApi->fetchPermissions(
                 $this->testCredentialsContext,
-                $orgTestId,
+                new UdbUuid($orgTestId),
                 $keycloakClient->clientId
             )) : [],
         ]);

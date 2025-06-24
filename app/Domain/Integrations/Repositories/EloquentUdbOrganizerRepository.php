@@ -7,6 +7,8 @@ namespace App\Domain\Integrations\Repositories;
 use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizers;
+use App\Domain\Integrations\UdbOrganizerStatus;
+use App\Domain\UdbUuid;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\UuidInterface;
 
@@ -17,7 +19,8 @@ final class EloquentUdbOrganizerRepository implements UdbOrganizerRepository
         UdbOrganizerModel::query()->create([
             'id' => $organizer->id->toString(),
             'integration_id' => $organizer->integrationId->toString(),
-            'organizer_id' => $organizer->organizerId,
+            'organizer_id' => $organizer->organizerId->toString(),
+            'status' => $organizer->status->value,
         ]);
     }
 
@@ -30,11 +33,21 @@ final class EloquentUdbOrganizerRepository implements UdbOrganizerRepository
         });
     }
 
-    public function delete(UdbOrganizer $organizer): void
+    public function updateStatus(UuidInterface $id, UdbOrganizerStatus $newStatus): void
+    {
+        UdbOrganizerModel::query()->update(
+            [
+                'id' => $id->toString(),
+                'status' => $newStatus->value,
+            ]
+        );
+    }
+
+    public function delete(UuidInterface $integrationId, UdbUuid $organizerId): void
     {
         UdbOrganizerModel::query()
-            ->where('organizer_id', $organizer->organizerId)
-            ->where('integration_id', $organizer->integrationId->toString())
+            ->where('integration_id', $integrationId->toString())
+            ->where('organizer_id', $organizerId->toString())
             ->delete();
     }
 

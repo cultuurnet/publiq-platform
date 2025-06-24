@@ -7,6 +7,8 @@ namespace Tests\Domain\Integrations\Repositories;
 use App\Domain\Integrations\Repositories\EloquentUdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizers;
+use App\Domain\Integrations\UdbOrganizerStatus;
+use App\Domain\UdbUuid;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
@@ -26,13 +28,15 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
         $this->organizer1 = new UdbOrganizer(
             Uuid::uuid4(),
             Uuid::uuid4(),
-            Uuid::uuid4()->toString()
+            new UdbUuid(Uuid::uuid4()->toString()),
+            UdbOrganizerStatus::Pending
         );
 
         $this->organizer2 = new UdbOrganizer(
             Uuid::uuid4(),
             Uuid::uuid4(),
-            Uuid::uuid4()->toString()
+            new UdbUuid(Uuid::uuid4()->toString()),
+            UdbOrganizerStatus::Pending
         );
 
         $this->repository = new EloquentUdbOrganizerRepository();
@@ -46,6 +50,7 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
             'id' => $this->organizer1->id->toString(),
             'integration_id' => $this->organizer1->integrationId->toString(),
             'organizer_id' => $this->organizer1->organizerId,
+            'status' => UdbOrganizerStatus::Pending->value,
         ]);
     }
 
@@ -63,14 +68,28 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
                 'id' => $organizer->id->toString(),
                 'integration_id' => $organizer->integrationId->toString(),
                 'organizer_id' => $organizer->organizerId,
+                'status' => UdbOrganizerStatus::Pending->value,
             ]);
         }
+    }
+
+    public function testUpdateStatus(): void
+    {
+        $this->repository->create($this->organizer1);
+        $this->repository->updateStatus($this->organizer1->id, UdbOrganizerStatus::Approved);
+
+        $this->assertDatabaseHas('udb_organizers', [
+            'id' => $this->organizer1->id->toString(),
+            'integration_id' => $this->organizer1->integrationId->toString(),
+            'organizer_id' => $this->organizer1->organizerId,
+            'status' => UdbOrganizerStatus::Approved->value,
+        ]);
     }
 
     public function testDelete(): void
     {
         $this->repository->create($this->organizer1);
-        $this->repository->delete($this->organizer1);
+        $this->repository->delete($this->organizer1->integrationId, $this->organizer1->organizerId);
 
         $this->assertDatabaseMissing('udb_organizers', [
             'id' => $this->organizer1->id,

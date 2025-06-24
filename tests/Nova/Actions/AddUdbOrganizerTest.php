@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Nova\Actions;
 
+use App\Domain\Integrations\UdbOrganizer;
 use App\Nova\Actions\AddUdbOrganizer;
 use App\Search\Sapi3\SearchService;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -20,7 +21,7 @@ final class AddUdbOrganizerTest extends TestCase
 {
     use GivenUitpasOrganizers;
 
-    private const ORGANIZER_ID = 'organizer-123';
+    private const ORGANIZER_ID = 'd541dbd6-b818-432d-b2be-d51dfc5c0c51';
     private IntegrationModel $integration;
     private AddUdbOrganizer $addUdbOrganizer;
     private UdbOrganizerRepository&MockObject $repository;
@@ -47,9 +48,9 @@ final class AddUdbOrganizerTest extends TestCase
     {
         $this->repository->expects($this->once())
             ->method('create')
-            ->with($this->callback(function ($organizer) {
+            ->with($this->callback(function (UdbOrganizer $organizer) {
                 return (string)$organizer->integrationId === $this->integration->id
-                    && $organizer->organizerId === self::ORGANIZER_ID;
+                    && $organizer->organizerId->toString() === self::ORGANIZER_ID;
             }));
 
         $fields = new ActionFields(collect(['organizer_id' => self::ORGANIZER_ID]), collect());

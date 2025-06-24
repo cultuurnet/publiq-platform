@@ -7,11 +7,14 @@ namespace App\Nova\Actions;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
+use App\Domain\Integrations\UdbOrganizerStatus;
+use App\Domain\UdbUuid;
 use App\Search\Sapi3\SearchService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Actions\ActionResponse;
 use Laravel\Nova\Fields\ActionFields;
@@ -37,11 +40,14 @@ final class AddUdbOrganizer extends Action
         /** @var IntegrationModel $integration */
         $integration = $integrations->first();
 
-        /** @var string $organizationIdAsString */
-        $organizationIdAsString = $fields->get('organizer_id');
+        try {
+            $organizationId = new UdbUuid((string)$fields->get('organizer_id'));
+        } catch (InvalidArgumentException $e) {
+            return Action::danger('Invalid organizer ID.');
+        }
 
-        if (!$this->doesOrganizerExistInUdb($organizationIdAsString)) {
-            return Action::danger('Organisation "' . $organizationIdAsString . '" not found in UDB3.');
+        if (!$this->doesOrganizerExistInUdb($organizationId)) {
+            return Action::danger('Organisation "' . $organizationId . '" not found in UDB3.');
         }
 
         try {
@@ -49,19 +55,20 @@ final class AddUdbOrganizer extends Action
                 new UdbOrganizer(
                     Uuid::uuid4(),
                     Uuid::fromString($integration->id),
-                    $organizationIdAsString
+                    $organizationId,
+                    UdbOrganizerStatus::Pending
                 )
             );
         } catch (PDOException $e) {
             if ($e->getCode() === 23000) {
                 // Handle integrity constraint violation
-                return Action::danger('Organizer "' . $organizationIdAsString . '" was already added.');
+                return Action::danger('Organizer "' . $organizationId . '" was already added.');
             }
 
             return Action::danger($e->getMessage());
         }
 
-        return Action::message('Organizer "' . $organizationIdAsString . '" added.');
+        return Action::message('Organizer "' . $organizationId . '" added.');
     }
 
     public function fields(NovaRequest $request): array
@@ -75,7 +82,7 @@ final class AddUdbOrganizer extends Action
         ];
     }
 
-    private function doesOrganizerExistInUdb(string $organizerId): bool
+    private function doesOrganizerExistInUdb(UdbUuid $organizerId): bool
     {
         $result = $this->searchService->findUiTPASOrganizers($organizerId);
         return ($result->getTotalItems() >= 1);
