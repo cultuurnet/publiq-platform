@@ -25,3 +25,4 @@ database/uitpas
 /playwright
 /screenshots
 .bundle
+nova_users.php
