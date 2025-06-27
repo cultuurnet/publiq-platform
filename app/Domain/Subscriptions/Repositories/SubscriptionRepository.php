@@ -23,6 +23,13 @@ interface SubscriptionRepository
     /**
      * @throws ModelNotFoundException
      */
+    public function getByIdWithTrashed(UuidInterface $id): Subscription;
+
+    public function deleteById(UuidInterface $id): ?bool;
+
+    /**
+     * @throws ModelNotFoundException
+     */
     public function getByIntegrationTypeAndCategory(IntegrationType $integrationType, SubscriptionCategory $category): Subscription;
 
     /** @return Collection<Subscription> */
