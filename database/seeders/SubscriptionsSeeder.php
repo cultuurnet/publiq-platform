@@ -103,9 +103,12 @@ final class SubscriptionsSeeder extends Seeder
         foreach (SubscriptionUuid::cases() as $subscriptionUuid) {
             $subscription = $this->getSubscription($subscriptionUuid);
             try {
-                $subscriptionRepository->getById($subscription->id);
+                $subscriptionRepository->getByIdWithTrashed($subscription->id);
             } catch (ModelNotFoundException) {
                 $subscriptionRepository->save($subscription);
+            }
+            if ($this->isLegacySubscription($subscriptionUuid)) {
+                $subscriptionRepository->deleteById($subscription->id);
             }
         }
     }
