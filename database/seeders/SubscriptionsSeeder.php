@@ -93,6 +93,11 @@ final class SubscriptionsSeeder extends Seeder
         };
     }
 
+    private function isLegacySubscription(SubscriptionUuid $subscriptionUuid): bool
+    {
+        return in_array($subscriptionUuid, [SubscriptionUuid::PLUS_WIDGETS_PLAN]);
+    }
+
     public function run(SubscriptionRepository $subscriptionRepository): void
     {
         foreach (SubscriptionUuid::cases() as $subscriptionUuid) {
