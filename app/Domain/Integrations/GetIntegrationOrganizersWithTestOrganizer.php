@@ -41,7 +41,7 @@ final readonly class GetIntegrationOrganizersWithTestOrganizer
                 'status' => 'Live',
                 'permissions' => $keycloakClient ? $this->getLabels($this->UiTPASApi->fetchPermissions(
                     $this->prodCredentialsContext,
-                    new UdbUuid((string)$organizer->getId()),
+                    new UdbUuid($id),
                     $keycloakClient->clientId
                 )) : [],
             ];
