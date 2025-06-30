@@ -93,14 +93,22 @@ final class SubscriptionsSeeder extends Seeder
         };
     }
 
+    private function isLegacySubscription(SubscriptionUuid $subscriptionUuid): bool
+    {
+        return in_array($subscriptionUuid, [SubscriptionUuid::PLUS_WIDGETS_PLAN]);
+    }
+
     public function run(SubscriptionRepository $subscriptionRepository): void
     {
         foreach (SubscriptionUuid::cases() as $subscriptionUuid) {
             $subscription = $this->getSubscription($subscriptionUuid);
             try {
-                $subscriptionRepository->getById($subscription->id);
+                $subscriptionRepository->getByIdWithTrashed($subscription->id);
             } catch (ModelNotFoundException) {
                 $subscriptionRepository->save($subscription);
+            }
+            if ($this->isLegacySubscription($subscriptionUuid)) {
+                $subscriptionRepository->deleteById($subscription->id);
             }
         }
     }

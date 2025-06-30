@@ -43,6 +43,21 @@ final class EloquentSubscriptionRepository implements SubscriptionRepository
         return $subscription->toDomain();
     }
 
+    public function getByIdWithTrashed(UuidInterface $id): Subscription
+    {
+        /** @var SubscriptionModel $subscription */
+        $subscription = SubscriptionModel::withTrashed()->findOrFail($id->toString());
+
+        return $subscription->toDomain();
+    }
+
+    public function deleteById(UuidInterface $id): ?bool
+    {
+        /** @var SubscriptionModel $subscription */
+        $subscription = SubscriptionModel::withTrashed()->findOrFail($id->toString());
+        return $subscription->delete();
+    }
+
     /** @return Collection<Subscription> */
     public function all(): Collection
     {
