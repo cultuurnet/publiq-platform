@@ -9,6 +9,7 @@ use App\Domain\Integrations\FormRequests\UpdateIntegrationUdbOrganizersRequest;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizers;
 use App\Domain\Integrations\UdbOrganizerStatus;
+use App\Domain\UdbUuid;
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
 
@@ -28,7 +29,7 @@ final class UdbOrganizerMapper
             $organizers[] = new UdbOrganizer(
                 Uuid::uuid4(),
                 Uuid::fromString($id),
-                $organizer['id'],
+                new UdbUuid($organizer['id']),
                 UdbOrganizerStatus::Pending
             );
         }
