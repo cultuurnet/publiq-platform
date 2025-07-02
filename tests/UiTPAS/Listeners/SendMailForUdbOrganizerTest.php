@@ -14,7 +14,7 @@ use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\Mail\Mailer;
 use App\Domain\UdbUuid;
-use App\Mails\Smtp\MailerTemplate;
+use App\Mails\Smtp\MailTemplate;
 use App\Search\Sapi3\SearchService;
 use App\Search\UdbOrganizerNameResolver;
 use App\UiTPAS\Event\UdbOrganizerApproved;
@@ -88,7 +88,7 @@ final class SendMailForUdbOrganizerTest extends TestCase
             ->with($udbOrganizer->id)
             ->willReturn($udbOrganizer);
 
-        $this->mockCommonSendMailFlow($udbOrganizer->organizerId, MailerTemplate::ORGANISATION_UITPAS_REQUESTED->value);
+        $this->mockCommonSendMailFlow($udbOrganizer->organizerId, MailTemplate::ORGANISATION_UITPAS_REQUESTED->value);
 
         $this->handler->handleUdbOrganizerCreated($event);
     }
@@ -97,7 +97,7 @@ final class SendMailForUdbOrganizerTest extends TestCase
     {
         $udbId = new UdbUuid(Uuid::uuid4()->toString());
 
-        $this->mockCommonSendMailFlow($udbId, MailerTemplate::ORGANISATION_UITPAS_APPROVED->value);
+        $this->mockCommonSendMailFlow($udbId, MailTemplate::ORGANISATION_UITPAS_APPROVED->value);
 
         $this->handler->handleUdbOrganizerApproved(new UdbOrganizerApproved($udbId, Uuid::fromString(self::INTEGRATION_ID)));
     }
@@ -106,7 +106,7 @@ final class SendMailForUdbOrganizerTest extends TestCase
     {
         $udbId = new UdbUuid(Uuid::uuid4()->toString());
 
-        $this->mockCommonSendMailFlow($udbId, MailerTemplate::ORGANISATION_UITPAS_REJECTED->value);
+        $this->mockCommonSendMailFlow($udbId, MailTemplate::ORGANISATION_UITPAS_REJECTED->value);
 
         $this->handler->handleUdbOrganizerRejected(new UdbOrganizerRejected($udbId, Uuid::fromString(self::INTEGRATION_ID)));
     }

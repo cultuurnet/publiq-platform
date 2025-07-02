@@ -20,7 +20,7 @@ final readonly class SmtpMailer implements Mailer
 
     public function send(Address $from, Address $to, int $templateId, array $variables = []): void
     {
-        $subject = $this->mailerTemplateResolver->getSubject(MailerTemplate::from($templateId), $variables);
+        $subject = $this->mailerTemplateResolver->getSubject(MailTemplate::from($templateId), $variables);
         $variables['subject'] = $subject;
 
         try {
@@ -28,7 +28,7 @@ final readonly class SmtpMailer implements Mailer
                 ->from($from)
                 ->to($to->toString())
                 ->subject($subject)
-                ->html($this->mailerTemplateResolver->render(MailerTemplate::from($templateId), $variables));
+                ->html($this->mailerTemplateResolver->render(MailTemplate::from($templateId), $variables));
 
             $this->mailer->send($email);
 

@@ -20,25 +20,25 @@ final readonly class MailerTemplateBladeResolver implements MailerTemplateResolv
         private ViewFactory $view,
     ) {
         $this->templates = [
-            MailerTemplate::INTEGRATION_ACTIVATED->value => 'integration.activated',
-            MailerTemplate::ORGANISATION_UITPAS_REQUESTED->value => 'UdbOrganizer.requested',
-            MailerTemplate::ORGANISATION_UITPAS_APPROVED->value => 'UdbOrganizer.approved',
-            MailerTemplate::ORGANISATION_UITPAS_REJECTED->value => 'UdbOrganizer.rejected',
+            MailTemplate::INTEGRATION_ACTIVATED->value => 'integration.activated',
+            MailTemplate::ORGANISATION_UITPAS_REQUESTED->value => 'UdbOrganizer.requested',
+            MailTemplate::ORGANISATION_UITPAS_APPROVED->value => 'UdbOrganizer.approved',
+            MailTemplate::ORGANISATION_UITPAS_REJECTED->value => 'UdbOrganizer.rejected',
         ];
         $this->subjects = [
-            MailerTemplate::INTEGRATION_ACTIVATED->value => 'Je integratie {{ $integrationName }} is geactiveerd',
-            MailerTemplate::ORGANISATION_UITPAS_REQUESTED->value => 'Activatieaanvraag met integratie {{ $integrationName }} voor {{ $organizerName }}',
-            MailerTemplate::ORGANISATION_UITPAS_APPROVED->value => 'Je integratie {{ $integrationName }} voor {{ $organizerName }} is geactiveerd',
-            MailerTemplate::ORGANISATION_UITPAS_REJECTED->value => 'Je integratie {{ $integrationName }} voor {{ $organizerName }} is afgekeurd',
+            MailTemplate::INTEGRATION_ACTIVATED->value => 'Je integratie {{ $integrationName }} is geactiveerd',
+            MailTemplate::ORGANISATION_UITPAS_REQUESTED->value => 'Activatieaanvraag met integratie {{ $integrationName }} voor {{ $organizerName }}',
+            MailTemplate::ORGANISATION_UITPAS_APPROVED->value => 'Je integratie {{ $integrationName }} voor {{ $organizerName }} is geactiveerd',
+            MailTemplate::ORGANISATION_UITPAS_REJECTED->value => 'Je integratie {{ $integrationName }} voor {{ $organizerName }} is afgekeurd',
         ];
     }
 
-    public function getSubject(MailerTemplate $mailerTemplate, array $variables = []): string
+    public function getSubject(MailTemplate $mailerTemplate, array $variables = []): string
     {
         return $this->renderSubjectString($this->subjects[$mailerTemplate->value], $variables);
     }
 
-    public function render(MailerTemplate $mailerTemplate, array $variables = []): string
+    public function render(MailTemplate $mailerTemplate, array $variables = []): string
     {
         $template = self::TEMPLATE_ROOT . $this->templates[$mailerTemplate->value];
 

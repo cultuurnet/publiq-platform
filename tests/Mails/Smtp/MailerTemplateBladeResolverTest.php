@@ -8,7 +8,7 @@ use App\Mails\Smtp\MailerTemplateBladeResolver;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Illuminate\Contracts\View\Factory as ViewFactory;
-use App\Mails\Smtp\MailerTemplate;
+use App\Mails\Smtp\MailTemplate;
 use Illuminate\Contracts\View\View;
 use PHPUnit\Framework\MockObject\MockObject;
 
@@ -24,7 +24,7 @@ final class MailerTemplateBladeResolverTest extends TestCase
     }
 
     #[DataProvider('subjectProvider')]
-    public function testGetSubjectInterpolateCorrectly(MailerTemplate $template, array $variables, string $expected): void
+    public function testGetSubjectInterpolateCorrectly(MailTemplate $template, array $variables, string $expected): void
     {
         $this->assertSame($expected, $this->resolver->getSubject($template, $variables));
     }
@@ -33,27 +33,27 @@ final class MailerTemplateBladeResolverTest extends TestCase
     {
         return [
             'integration activated' => [
-                MailerTemplate::INTEGRATION_ACTIVATED,
+                MailTemplate::INTEGRATION_ACTIVATED,
                 ['integrationName' => 'Mijn Integratie'],
                 'Je integratie Mijn Integratie is geactiveerd',
             ],
             'uitpas requested' => [
-                MailerTemplate::ORGANISATION_UITPAS_REQUESTED,
+                MailTemplate::ORGANISATION_UITPAS_REQUESTED,
                 ['integrationName' => 'XYZ', 'organizerName' => 'De Roma'],
                 'Activatieaanvraag met integratie XYZ voor De Roma',
             ],
             'uitpas approved' => [
-                MailerTemplate::ORGANISATION_UITPAS_APPROVED,
+                MailTemplate::ORGANISATION_UITPAS_APPROVED,
                 ['integrationName' => 'XYZ', 'organizerName' => 'KVS'],
                 'Je integratie XYZ voor KVS is geactiveerd',
             ],
             'uitpas rejected' => [
-                MailerTemplate::ORGANISATION_UITPAS_REJECTED,
+                MailTemplate::ORGANISATION_UITPAS_REJECTED,
                 ['integrationName' => 'XYZ', 'organizerName' => 'KVS'],
                 'Je integratie XYZ voor KVS is afgekeurd',
             ],
             'missing variable fallback' => [
-                MailerTemplate::ORGANISATION_UITPAS_APPROVED,
+                MailTemplate::ORGANISATION_UITPAS_APPROVED,
                 ['integrationName' => 'ABC'],
                 'Je integratie ABC voor {{ $organizerName }} is geactiveerd',
             ],
@@ -74,7 +74,7 @@ final class MailerTemplateBladeResolverTest extends TestCase
             ->willReturn($view);
 
         $output = $this->resolver->render(
-            MailerTemplate::INTEGRATION_ACTIVATED,
+            MailTemplate::INTEGRATION_ACTIVATED,
             ['foo' => 'bar']
         );
 

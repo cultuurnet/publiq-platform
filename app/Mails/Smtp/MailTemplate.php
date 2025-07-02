@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Mails\Smtp;
 
-enum MailerTemplate: int
+enum MailTemplate: int
 {
     case INTEGRATION_ACTIVATED = 0;
     case ORGANISATION_UITPAS_REQUESTED = 1;

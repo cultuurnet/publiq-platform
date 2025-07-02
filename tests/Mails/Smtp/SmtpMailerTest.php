@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Mails\Smtp;
 
-use App\Mails\Smtp\MailerTemplate;
+use App\Mails\Smtp\MailTemplate;
 use App\Mails\Smtp\MailerTemplateResolver;
 use App\Mails\Smtp\SmtpMailer;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -46,13 +46,13 @@ final class SmtpMailerTest extends TestCase
         $this->mailerTemplateResolver
             ->expects($this->once())
             ->method('getSubject')
-            ->with(MailerTemplate::from($templateId))
+            ->with(MailTemplate::from($templateId))
             ->willReturn($subject);
 
         $this->mailerTemplateResolver
             ->expects($this->once())
             ->method('render')
-            ->with(MailerTemplate::from($templateId), $this->arrayHasKey('subject'))
+            ->with(MailTemplate::from($templateId), $this->arrayHasKey('subject'))
             ->willReturn($html);
 
         $this->mailer

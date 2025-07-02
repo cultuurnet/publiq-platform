@@ -10,7 +10,7 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\Mail\Mailer;
 use App\Domain\UdbUuid;
-use App\Mails\Smtp\MailerTemplate;
+use App\Mails\Smtp\MailTemplate;
 use App\Search\Sapi3\SearchService;
 use App\Search\UdbOrganizerNameResolver;
 use App\UiTPAS\Event\UdbOrganizerApproved;
@@ -42,19 +42,19 @@ final class SendMailForUdbOrganizer implements ShouldQueue
         $this->sendMail(
             $udbOrganizer->organizerId,
             $udbOrganizer->integrationId,
-            MailerTemplate::ORGANISATION_UITPAS_REQUESTED->value
+            MailTemplate::ORGANISATION_UITPAS_REQUESTED->value
         );
     }
 
     public function handleUdbOrganizerApproved(UdbOrganizerApproved $event): void
     {
-        $this->sendMail($event->udbId, $event->integrationId, MailerTemplate::ORGANISATION_UITPAS_APPROVED->value);
+        $this->sendMail($event->udbId, $event->integrationId, MailTemplate::ORGANISATION_UITPAS_APPROVED->value);
     }
 
     public function handleUdbOrganizerRejected(UdbOrganizerRejected $event): void
     {
         // Be careful here, at this point the UdbOrganizer is deleted in the db, which is why we sent both the udbId and the integrationId
-        $this->sendMail($event->udbId, $event->integrationId, MailerTemplate::ORGANISATION_UITPAS_REJECTED->value);
+        $this->sendMail($event->udbId, $event->integrationId, MailTemplate::ORGANISATION_UITPAS_REJECTED->value);
     }
 
     private function sendMail(UdbUuid $udbOrganizerId, UuidInterface $integrationId, int $templateId): void
