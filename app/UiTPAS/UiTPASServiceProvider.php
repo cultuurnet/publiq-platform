@@ -9,18 +9,29 @@ use App\Domain\Integrations\Events\UdbOrganizerCreated;
 use App\Domain\Integrations\GetIntegrationOrganizersWithTestOrganizer;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
-use App\Notifications\MessageBuilder;
-use App\Notifications\Slack\SlackNotifier;
 use App\Keycloak\Events\ClientCreated;
 use App\Keycloak\Repositories\KeycloakClientRepository;
+use App\Mails\Smtp\MailerTemplateResolver;
+use App\Mails\Smtp\SmtpMailer;
+use App\Notifications\MessageBuilder;
+use App\Notifications\Slack\SlackNotifier;
 use App\Search\Sapi3\SearchService;
+use App\Search\UdbOrganizerNameResolver;
+use App\UiTPAS\Event\UdbOrganizerApproved;
+use App\UiTPAS\Event\UdbOrganizerRejected;
 use App\UiTPAS\Listeners\AddUiTPASPermissionsToOrganizerForIntegration;
 use App\UiTPAS\Listeners\NotifyUdbOrganizerRequested;
+use App\UiTPAS\Listeners\SendMailForUdbOrganizer;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
+use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Mailer\Mailer as SymfonyMailer;
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mime\Address;
 
 final class UiTPASServiceProvider extends ServiceProvider
 {
@@ -71,6 +82,34 @@ final class UiTPASServiceProvider extends ServiceProvider
             );
         });
 
+
+        $this->app->singleton(SmtpMailer::class, function () {
+            $smtp = config('mail.mailers.smtp');
+
+            Log::error(sprintf('smtp://%s:%s@%s:%d', $smtp['username'], $smtp['password'], $smtp['host'], $smtp['port']));
+
+            return new SmtpMailer(
+                //        'smtp' => 'smtp://AKIA3ATFMDOY5ECC2IPM:BHsSUPUishzsNYNVwYUGZZWy6EIRTwmSrtQtMmK8tCMe@email-smtp.eu-west-1.amazonaws.com:587',
+                new SymfonyMailer(
+                    Transport::fromDsn(sprintf('smtp://%s:%s@%s:%d', urlencode($smtp['username']), urlencode($smtp['password']), $smtp['host'], $smtp['port']))
+                ),
+                $this->app->get(MailerTemplateResolver::class),
+                $this->app->get(LoggerInterface::class),
+            );
+        });
+
+        $this->app->singleton(SendMailForUdbOrganizer::class, function () {
+            return new SendMailForUdbOrganizer(
+                $this->app->get(SmtpMailer::class),
+                $this->app->get(UdbOrganizerRepository::class),
+                $this->app->get(IntegrationRepository::class),
+                $this->app->get(UdbOrganizerNameResolver::class),
+                $this->app->get(SearchService::class),
+                $this->app->get(UrlGenerator::class),
+                new Address(config('mail.from.address'), config('mail.from.name')),
+            );
+        });
+
         $this->bootstrapEventHandling();
     }
 
@@ -82,5 +121,9 @@ final class UiTPASServiceProvider extends ServiceProvider
 
         Event::listen(ClientCreated::class, [AddUiTPASPermissionsToOrganizerForIntegration::class, 'handle']);
         Event::listen(UdbOrganizerCreated::class, [NotifyUdbOrganizerRequested::class, 'handle']);
+
+        Event::listen(UdbOrganizerCreated::class, [SendMailForUdbOrganizer::class, 'handleUdbOrganizerCreated']);
+        Event::listen(UdbOrganizerApproved::class, [SendMailForUdbOrganizer::class, 'handleUdbOrganizerApproved']);
+        Event::listen(UdbOrganizerRejected::class, [SendMailForUdbOrganizer::class, 'handleUdbOrganizerRejected']);
     }
 }
