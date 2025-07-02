@@ -89,7 +89,6 @@ final class UiTPASServiceProvider extends ServiceProvider
             Log::error(sprintf('smtp://%s:%s@%s:%d', $smtp['username'], $smtp['password'], $smtp['host'], $smtp['port']));
 
             return new SmtpMailer(
-                //        'smtp' => 'smtp://AKIA3ATFMDOY5ECC2IPM:BHsSUPUishzsNYNVwYUGZZWy6EIRTwmSrtQtMmK8tCMe@email-smtp.eu-west-1.amazonaws.com:587',
                 new SymfonyMailer(
                     Transport::fromDsn(sprintf('smtp://%s:%s@%s:%d', urlencode($smtp['username']), urlencode($smtp['password']), $smtp['host'], $smtp['port']))
                 ),
