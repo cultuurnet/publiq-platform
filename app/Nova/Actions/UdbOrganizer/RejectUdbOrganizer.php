@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Nova\Actions;
+namespace App\Nova\Actions\UdbOrganizer;
 
 use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
+use App\UiTPAS\Event\UdbOrganizerRejected;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Collection;
@@ -26,10 +27,14 @@ final class RejectUdbOrganizer extends Action
 
     public function handle(ActionFields $fields, Collection $udbOrganizers): void
     {
-        /** @var UdbOrganizerModel $udbOrganizer */
         foreach ($udbOrganizers as $udbOrganizer) {
+            if (!$udbOrganizer instanceof UdbOrganizerModel) {
+                continue;
+            }
+
             $udbOrganizerModel = $udbOrganizer->toDomain();
             $this->udbOrganizerRepository->delete($udbOrganizerModel->integrationId, $udbOrganizerModel->organizerId);
+            UdbOrganizerRejected::dispatch($udbOrganizerModel->organizerId, $udbOrganizerModel->integrationId);
         }
     }
 }

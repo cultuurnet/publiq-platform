@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Nova\Actions;
+namespace App\Nova\Actions\UdbOrganizer;
 
 use App\Api\ClientCredentialsContext;
 use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizerStatus;
+use App\UiTPAS\Event\UdbOrganizerApproved;
 use App\UiTPAS\UiTPASApiInterface;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -51,6 +52,8 @@ final class ActivateUdbOrganizer extends Action
 
             if ($success) {
                 $this->udbOrganizerRepository->updateStatus($udbOrganizer->id, UdbOrganizerStatus::Approved);
+
+                UdbOrganizerApproved::dispatch($udbOrganizer->organizerId, $udbOrganizer->integrationId);
             }
         }
     }
