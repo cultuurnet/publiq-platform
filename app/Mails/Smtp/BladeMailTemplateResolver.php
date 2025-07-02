@@ -6,7 +6,7 @@ namespace App\Mails\Smtp;
 
 use Illuminate\Contracts\View\Factory as ViewFactory;
 
-final readonly class MailerTemplateBladeResolver implements MailerTemplateResolver
+final readonly class BladeMailTemplateResolver implements MailTemplateResolver
 {
     private const TEMPLATE_ROOT = 'mails.';
 

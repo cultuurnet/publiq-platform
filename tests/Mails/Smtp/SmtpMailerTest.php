@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Mails\Smtp;
 
 use App\Mails\Smtp\MailTemplate;
-use App\Mails\Smtp\MailerTemplateResolver;
+use App\Mails\Smtp\MailTemplateResolver;
 use App\Mails\Smtp\SmtpMailer;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -18,14 +18,14 @@ use Symfony\Component\Mime\Email;
 final class SmtpMailerTest extends TestCase
 {
     private MailerInterface&MockObject $mailer;
-    private MailerTemplateResolver&MockObject $mailerTemplateResolver;
+    private MailTemplateResolver&MockObject $mailerTemplateResolver;
     private LoggerInterface&MockObject $logger;
     private SmtpMailer $smtpMailer;
 
     protected function setUp(): void
     {
         $this->mailer = $this->createMock(MailerInterface::class);
-        $this->mailerTemplateResolver = $this->createMock(MailerTemplateResolver::class);
+        $this->mailerTemplateResolver = $this->createMock(MailTemplateResolver::class);
         $this->logger = $this->createMock(LoggerInterface::class);
 
         $this->smtpMailer = new SmtpMailer(

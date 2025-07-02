@@ -14,7 +14,7 @@ use Throwable;
 
 final readonly class SmtpMailer implements Mailer
 {
-    public function __construct(private MailerInterface $mailer, private MailerTemplateResolver $mailerTemplateResolver, private LoggerInterface $logger)
+    public function __construct(private MailerInterface $mailer, private MailTemplateResolver $mailerTemplateResolver, private LoggerInterface $logger)
     {
     }
 

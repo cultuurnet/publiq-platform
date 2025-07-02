@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Mails\Smtp;
 
-use App\Mails\Smtp\MailerTemplateBladeResolver;
+use App\Mails\Smtp\BladeMailTemplateResolver;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Illuminate\Contracts\View\Factory as ViewFactory;
@@ -12,15 +12,15 @@ use App\Mails\Smtp\MailTemplate;
 use Illuminate\Contracts\View\View;
 use PHPUnit\Framework\MockObject\MockObject;
 
-final class MailerTemplateBladeResolverTest extends TestCase
+final class BladeMailTemplateResolverTest extends TestCase
 {
     private ViewFactory&MockObject $viewFactory;
-    private MailerTemplateBladeResolver $resolver;
+    private BladeMailTemplateResolver $resolver;
 
     protected function setUp(): void
     {
         $this->viewFactory = $this->createMock(ViewFactory::class);
-        $this->resolver = new MailerTemplateBladeResolver($this->viewFactory);
+        $this->resolver = new BladeMailTemplateResolver($this->viewFactory);
     }
 
     #[DataProvider('subjectProvider')]

@@ -11,7 +11,7 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Keycloak\Events\ClientCreated;
 use App\Keycloak\Repositories\KeycloakClientRepository;
-use App\Mails\Smtp\MailerTemplateResolver;
+use App\Mails\Smtp\MailTemplateResolver;
 use App\Mails\Smtp\SmtpMailer;
 use App\Notifications\MessageBuilder;
 use App\Notifications\Slack\SlackNotifier;
@@ -92,7 +92,7 @@ final class UiTPASServiceProvider extends ServiceProvider
                 new SymfonyMailer(
                     Transport::fromDsn(sprintf('smtp://%s:%s@%s:%d', urlencode($smtp['username']), urlencode($smtp['password']), $smtp['host'], $smtp['port']))
                 ),
-                $this->app->get(MailerTemplateResolver::class),
+                $this->app->get(MailTemplateResolver::class),
                 $this->app->get(LoggerInterface::class),
             );
         });
