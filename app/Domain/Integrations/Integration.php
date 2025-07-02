@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Integrations;
 
 use App\Domain\Contacts\Contact;
+use App\Domain\Contacts\ContactType;
 use App\Domain\Coupons\Coupon;
 use App\Domain\Integrations\Exceptions\KeycloakClientNotFound;
 use App\Domain\KeyVisibilityUpgrades\KeyVisibilityUpgrade;
@@ -235,6 +236,23 @@ final class Integration
         }
 
         throw KeycloakClientNotFound::byEnvironment($environment);
+    }
+
+    /**
+     * To optimize email credits and prevent spamming we check that the same email is not sent multiple times to the same e-mail address
+     * @return Contact[]
+     */
+    public function filterUniqueContactsWithPreferredContactType(ContactType $contactType): array
+    {
+        $uniqueContacts = [];
+
+        foreach ($this->contacts() as $contact) {
+            if (!isset($uniqueContacts[$contact->email]) || $contact->type === $contactType) {
+                $uniqueContacts[$contact->email] = $contact;
+            }
+        }
+
+        return $uniqueContacts;
     }
 
     public function toArray(): array
