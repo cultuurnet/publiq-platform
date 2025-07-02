@@ -11,14 +11,16 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Keycloak\Client;
-use App\Nova\Actions\ActivateUdbOrganizer;
+use App\Nova\Actions\UdbOrganizer\ActivateUdbOrganizer;
+use App\UiTPAS\Event\UdbOrganizerApproved;
 use App\UiTPAS\UiTPASApiInterface;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\ActionFields;
-use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use Tests\CreatesIntegration;
 use Tests\GivenUitpasOrganizers;
+use Tests\TestCase;
+use Illuminate\Support\Facades\Event;
 
 final class ActivateUdbOrganizerTest extends TestCase
 {
@@ -85,5 +87,7 @@ final class ActivateUdbOrganizerTest extends TestCase
             new ActionFields(collect(), collect()),
             $udbOrganizers
         );
+
+        Event::assertDispatched(UdbOrganizerApproved::class);
     }
 }

@@ -8,8 +8,10 @@ use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\UdbUuid;
-use App\Nova\Actions\RejectUdbOrganizer;
+use App\Nova\Actions\UdbOrganizer\RejectUdbOrganizer;
+use App\UiTPAS\Event\UdbOrganizerRejected;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Event;
 use Laravel\Nova\Fields\ActionFields;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -55,6 +57,8 @@ final class RejectUdbOrganizerTest extends TestCase
             new ActionFields(collect(), collect()),
             $udbOrganizers
         );
+
+        Event::assertDispatched(UdbOrganizerRejected::class);
     }
 
     private function givenUdbOrganizerModel(UuidInterface $uuid, UuidInterface $integrationUuid, string $orgId): UdbOrganizerModel

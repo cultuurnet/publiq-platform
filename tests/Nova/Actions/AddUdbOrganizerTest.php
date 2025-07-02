@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Tests\Nova\Actions;
 
-use App\Domain\Integrations\UdbOrganizer;
-use App\Nova\Actions\AddUdbOrganizer;
-use App\Search\Sapi3\SearchService;
-use PHPUnit\Framework\MockObject\MockObject;
-use Tests\GivenUitpasOrganizers;
-use Tests\TestCase;
 use App\Domain\Integrations\Events\UdbOrganizerCreated;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
+use App\Domain\Integrations\UdbOrganizer;
+use App\Nova\Actions\UdbOrganizer\RequestUdbOrganizer;
+use App\Search\Sapi3\SearchService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
 use Laravel\Nova\Fields\ActionFields;
+use PHPUnit\Framework\MockObject\MockObject;
+use Tests\GivenUitpasOrganizers;
+use Tests\TestCase;
 
 final class AddUdbOrganizerTest extends TestCase
 {
@@ -23,7 +23,7 @@ final class AddUdbOrganizerTest extends TestCase
 
     private const ORGANIZER_ID = 'd541dbd6-b818-432d-b2be-d51dfc5c0c51';
     private IntegrationModel $integration;
-    private AddUdbOrganizer $addUdbOrganizer;
+    private RequestUdbOrganizer $addUdbOrganizer;
     private UdbOrganizerRepository&MockObject $repository;
 
     protected function setUp(): void
@@ -40,7 +40,7 @@ final class AddUdbOrganizerTest extends TestCase
             ->with(self::ORGANIZER_ID)
             ->willReturn($this->givenUitpasOrganizers($this->integration->id, 'My organisation', 1));
 
-        $this->addUdbOrganizer = new AddUdbOrganizer($this->repository, $searchService);
+        $this->addUdbOrganizer = new RequestUdbOrganizer($this->repository, $searchService);
     }
 
 
