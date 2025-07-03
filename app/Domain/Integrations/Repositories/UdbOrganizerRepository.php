@@ -16,7 +16,7 @@ interface UdbOrganizerRepository
 
     public function createInBulk(UdbOrganizers $organizers): void;
 
-    public function updateStatus(UuidInterface $id, UdbOrganizerStatus $newStatus): void;
+    public function updateStatus(UdbOrganizer $organizer, UdbOrganizerStatus $newStatus): void;
 
     public function delete(UuidInterface $integrationId, UdbUuid $organizerId): void;
 

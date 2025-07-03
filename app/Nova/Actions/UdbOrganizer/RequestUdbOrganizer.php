@@ -40,7 +40,7 @@ final class RequestUdbOrganizer extends Action
 
         try {
             $organizationId = new UdbUuid((string)$fields->get('organizer_id'));
-        } catch (InvalidArgumentException $e) {
+        } catch (InvalidArgumentException) {
             return Action::danger('Invalid organizer ID.');
         }
 
