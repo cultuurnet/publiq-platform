@@ -29,9 +29,14 @@ final class IntegrationTest extends TestCase
         $result = $integration->filterUniqueContactsWithPreferredContactType(ContactType::Contributor);
 
         $this->assertCount(3, $result);
-        $this->assertSame(ContactType::Contributor, $result['a@public.be']->type);
+
+        $this->assertArrayHasKey('a@public.be', $result);
         $this->assertArrayHasKey('b@public.be', $result);
         $this->assertArrayHasKey('c@public.be', $result);
+
+        $this->assertSame(ContactType::Contributor, $result['a@public.be']->type);
+        $this->assertSame(ContactType::Contributor, $result['b@public.be']->type);
+        $this->assertSame(ContactType::Functional, $result['c@public.be']->type);
     }
 
     private function createContact(UuidInterface $integrationId, string $email, ContactType $type): Contact
