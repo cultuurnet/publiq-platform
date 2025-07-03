@@ -94,7 +94,7 @@ final class SmtpMailerTest extends TestCase
 
         $this->logger
             ->expects($this->once())
-            ->method('critical')
+            ->method('error')
             ->with(sprintf('[TransportException] Failed to sent "%s" to %s: %s', $subject, $to->toString(), 'Transport failed'));
 
         $this->smtpMailer->send($from, $to, $templateId);
@@ -121,7 +121,7 @@ final class SmtpMailerTest extends TestCase
 
         $this->logger
             ->expects($this->once())
-            ->method('critical')
+            ->method('error')
             ->with(sprintf('[Error] Failed to sent "%s" to %s: %s', $subject, $to->toString(), 'something broke'));
 
         $this->smtpMailer->send($from, $to, $templateId);
