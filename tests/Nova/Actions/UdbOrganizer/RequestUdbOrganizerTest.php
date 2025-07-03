@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Nova\Actions;
+namespace Tests\Nova\Actions\UdbOrganizer;
 
 use App\Domain\Integrations\Events\UdbOrganizerCreated;
 use App\Domain\Integrations\Models\IntegrationModel;
@@ -17,13 +17,13 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Tests\GivenUitpasOrganizers;
 use Tests\TestCase;
 
-final class AddUdbOrganizerTest extends TestCase
+final class RequestUdbOrganizerTest extends TestCase
 {
     use GivenUitpasOrganizers;
 
     private const ORGANIZER_ID = 'd541dbd6-b818-432d-b2be-d51dfc5c0c51';
     private IntegrationModel $integration;
-    private RequestUdbOrganizer $addUdbOrganizer;
+    private RequestUdbOrganizer $handler;
     private UdbOrganizerRepository&MockObject $repository;
 
     protected function setUp(): void
@@ -40,7 +40,7 @@ final class AddUdbOrganizerTest extends TestCase
             ->with(self::ORGANIZER_ID)
             ->willReturn($this->givenUitpasOrganizers($this->integration->id, 'My organisation', 1));
 
-        $this->addUdbOrganizer = new RequestUdbOrganizer($this->repository, $searchService);
+        $this->handler = new RequestUdbOrganizer($this->repository, $searchService);
     }
 
 
@@ -56,7 +56,7 @@ final class AddUdbOrganizerTest extends TestCase
         $fields = new ActionFields(collect(['organizer_id' => self::ORGANIZER_ID]), collect());
         $integrations = new Collection([$this->integration]);
 
-        $response = $this->addUdbOrganizer->handle($fields, $integrations);
+        $response = $this->handler->handle($fields, $integrations);
 
         $json = $response->jsonSerialize();
 
@@ -72,7 +72,7 @@ final class AddUdbOrganizerTest extends TestCase
         $fields = new ActionFields(collect(['organizer_id' => self::ORGANIZER_ID]), collect());
         $integrations = new Collection([$this->integration]);
 
-        $response = $this->addUdbOrganizer->handle($fields, $integrations);
+        $response = $this->handler->handle($fields, $integrations);
 
         $json = $response->jsonSerialize();
 

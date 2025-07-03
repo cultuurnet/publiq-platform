@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Nova\Actions;
+namespace Tests\Nova\Actions\UdbOrganizer;
 
 use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;

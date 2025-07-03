@@ -9,7 +9,7 @@ use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizerStatus;
-use App\Nova\Actions\UdbOrganizer\ActivateUdbOrganizer;
+use App\Nova\Actions\UdbOrganizer\ApproveUdbOrganizer;
 use App\Nova\Actions\UdbOrganizer\RejectUdbOrganizer;
 use App\Nova\Filters\UdbOrganizerStatusFilter;
 use App\Nova\Resource;
@@ -151,7 +151,7 @@ final class UdbOrganizer extends Resource
     {
         $actions = [];
         if (config(UiTPASConfig::AUTOMATIC_PERMISSIONS_ENABLED->value)) {
-            $activateUdbOrganizer = new ActivateUdbOrganizer(
+            $activateUdbOrganizer = new ApproveUdbOrganizer(
                 App::make(UdbOrganizerRepository::class),
                 App::make(IntegrationRepository::class),
                 App::make(UiTPASApiInterface::class),

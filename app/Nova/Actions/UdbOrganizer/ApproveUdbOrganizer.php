@@ -16,7 +16,7 @@ use Illuminate\Support\Collection;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\ActionFields;
 
-final class ActivateUdbOrganizer extends Action
+final class ApproveUdbOrganizer extends Action
 {
     use InteractsWithQueue;
     use Queueable;
