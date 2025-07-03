@@ -53,7 +53,6 @@ final class SendMailForUdbOrganizer implements ShouldQueue
 
     public function handleUdbOrganizerRejected(UdbOrganizerRejected $event): void
     {
-        // Be careful here, at this point the UdbOrganizer is deleted in the db, which is why we sent both the udbId and the integrationId
         $this->sendMail($event->udbId, $event->integrationId, MailTemplate::ORGANISATION_UITPAS_REJECTED->value);
     }
 
