@@ -34,9 +34,9 @@ final readonly class SmtpMailer implements Mailer
 
             $this->logger->info(sprintf('Sent mail "%s" to %s', $subject, $to->toString()));
         } catch (TransportExceptionInterface $e) {
-            $this->logger->critical(sprintf('[TransportException] Failed to sent "%s" to %s: %s', $subject, $to->toString(), $e->getMessage()));
+            $this->logger->error(sprintf('[TransportException] Failed to sent "%s" to %s: %s', $subject, $to->toString(), $e->getMessage()));
         } catch (Throwable $e) {
-            $this->logger->critical(sprintf('[Error] Failed to sent "%s" to %s: %s', $subject, $to->toString(), $e->getMessage()));
+            $this->logger->error(sprintf('[Error] Failed to sent "%s" to %s: %s', $subject, $to->toString(), $e->getMessage()));
         }
     }
 }
