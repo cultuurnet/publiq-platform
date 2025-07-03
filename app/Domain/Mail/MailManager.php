@@ -20,6 +20,7 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Mails\Template\Template;
 use App\Mails\Template\TemplateName;
 use App\Mails\Template\Templates;
+use App\UiTPAS\UiTPASConfig;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Ramsey\Uuid\Uuid;
@@ -64,7 +65,7 @@ final class MailManager implements ShouldQueue
     {
         $integration = $this->integrationRepository->getById($event->id);
 
-        if ($integration->type === IntegrationType::UiTPAS) {
+        if ($integration->type === IntegrationType::UiTPAS && config(UiTPASConfig::AUTOMATIC_PERMISSIONS_ENABLED->value)) {
             // Temporary code, because this email is sent with new copy by SMTP
             return;
         }
