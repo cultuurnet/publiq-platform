@@ -86,8 +86,6 @@ final class UiTPASServiceProvider extends ServiceProvider
         $this->app->singleton(SmtpMailer::class, function () {
             $smtp = config('mail.mailers.smtp');
 
-            Log::error(sprintf('smtp://%s:%s@%s:%d', $smtp['username'], $smtp['password'], $smtp['host'], $smtp['port']));
-
             return new SmtpMailer(
                 new SymfonyMailer(
                     Transport::fromDsn(sprintf('smtp://%s:%s@%s:%d', urlencode($smtp['username']), urlencode($smtp['password']), $smtp['host'], $smtp['port']))
