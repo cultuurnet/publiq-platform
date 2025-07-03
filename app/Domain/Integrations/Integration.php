@@ -239,7 +239,8 @@ final class Integration
     }
 
     /**
-     * To optimize email credits and prevent spamming we check that the same email is not sent multiple times to the same e-mail address
+     * To avoid spamming, we prevent sending the same email multiple times to the same address.
+     * Some email content varies by recipient type, so we prioritize sending versions with the preferred type when possible.
      * @return Contact[]
      */
     public function filterUniqueContactsWithPreferredContactType(ContactType $contactType): array
