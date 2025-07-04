@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Nova\Actions;
+namespace App\Nova\Actions\UdbOrganizer;
 
 use App\Api\ClientCredentialsContext;
 use App\Domain\Integrations\Models\UdbOrganizerModel;
@@ -16,7 +16,7 @@ use Illuminate\Support\Collection;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\ActionFields;
 
-final class ActivateUdbOrganizer extends Action
+final class ApproveUdbOrganizer extends Action
 {
     use InteractsWithQueue;
     use Queueable;
@@ -50,7 +50,7 @@ final class ActivateUdbOrganizer extends Action
             );
 
             if ($success) {
-                $this->udbOrganizerRepository->updateStatus($udbOrganizer->id, UdbOrganizerStatus::Approved);
+                $this->udbOrganizerRepository->updateStatus($udbOrganizer, UdbOrganizerStatus::Approved);
             }
         }
     }

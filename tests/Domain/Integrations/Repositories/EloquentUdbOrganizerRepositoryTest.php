@@ -9,7 +9,9 @@ use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizers;
 use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\UdbUuid;
+use App\UiTPAS\Event\UdbOrganizerApproved;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
@@ -76,7 +78,7 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
     public function testUpdateStatus(): void
     {
         $this->repository->create($this->organizer1);
-        $this->repository->updateStatus($this->organizer1->id, UdbOrganizerStatus::Approved);
+        $this->repository->updateStatus($this->organizer1, UdbOrganizerStatus::Approved);
 
         $this->assertDatabaseHas('udb_organizers', [
             'id' => $this->organizer1->id->toString(),
@@ -84,6 +86,8 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
             'organizer_id' => $this->organizer1->organizerId,
             'status' => UdbOrganizerStatus::Approved->value,
         ]);
+
+        Event::assertDispatched(UdbOrganizerApproved::class);
     }
 
     public function testDelete(): void

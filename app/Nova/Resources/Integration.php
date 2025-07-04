@@ -14,11 +14,11 @@ use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Keycloak\KeycloakConfig;
 use App\Nova\Actions\ActivateIntegration;
 use App\Nova\Actions\ActivateUitpasIntegration;
-use App\Nova\Actions\AddUdbOrganizer;
 use App\Nova\Actions\ApproveIntegration;
 use App\Nova\Actions\BlockIntegration;
 use App\Nova\Actions\Keycloak\CreateMissingKeycloakClients;
 use App\Nova\Actions\OpenWidgetManager;
+use App\Nova\Actions\UdbOrganizer\RequestUdbOrganizer;
 use App\Nova\Actions\UiTiDv1\CreateMissingUiTiDv1Consumers;
 use App\Nova\Actions\UnblockIntegration;
 use App\Nova\Filters\AdminInformationFilter;
@@ -301,7 +301,7 @@ final class Integration extends Resource
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeUnblocked())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeUnblocked()),
 
-            (new AddUdbOrganizer(App::make(UdbOrganizerRepository::class), App::make(SearchService::class)))
+            (new RequestUdbOrganizer(App::make(UdbOrganizerRepository::class), App::make(SearchService::class)))
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to add an organizer?')
                 ->confirmButtonText('Add')

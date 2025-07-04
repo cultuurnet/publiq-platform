@@ -9,6 +9,7 @@ use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizers;
 use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\UdbUuid;
+use App\UiTPAS\Event\UdbOrganizerApproved;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\UuidInterface;
 
@@ -33,14 +34,18 @@ final class EloquentUdbOrganizerRepository implements UdbOrganizerRepository
         });
     }
 
-    public function updateStatus(UuidInterface $id, UdbOrganizerStatus $newStatus): void
+    public function updateStatus(UdbOrganizer $organizer, UdbOrganizerStatus $newStatus): void
     {
         UdbOrganizerModel::query()->update(
             [
-                'id' => $id->toString(),
+                'id' => $organizer->id->toString(),
                 'status' => $newStatus->value,
             ]
         );
+
+        if ($newStatus === UdbOrganizerStatus::Approved) {
+            UdbOrganizerApproved::dispatch($organizer->organizerId, $organizer->integrationId);
+        }
     }
 
     public function delete(UuidInterface $integrationId, UdbUuid $organizerId): void

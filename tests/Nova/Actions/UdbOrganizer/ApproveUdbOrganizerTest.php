@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Nova\Actions;
+namespace Tests\Nova\Actions\UdbOrganizer;
 
 use App\Api\ClientCredentialsContext;
 use App\Domain\Integrations\Environment;
@@ -11,16 +11,16 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Keycloak\Client;
-use App\Nova\Actions\ActivateUdbOrganizer;
+use App\Nova\Actions\UdbOrganizer\ApproveUdbOrganizer;
 use App\UiTPAS\UiTPASApiInterface;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\ActionFields;
-use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use Tests\CreatesIntegration;
 use Tests\GivenUitpasOrganizers;
+use Tests\TestCase;
 
-final class ActivateUdbOrganizerTest extends TestCase
+final class ApproveUdbOrganizerTest extends TestCase
 {
     use CreatesIntegration;
     use GivenUitpasOrganizers;
@@ -37,7 +37,7 @@ final class ActivateUdbOrganizerTest extends TestCase
             'secret',
             'uitid'
         );
-        $handler = new ActivateUdbOrganizer(
+        $handler = new ApproveUdbOrganizer(
             $udbOrganizerRepository,
             $integrationRepository,
             $api,
@@ -78,8 +78,7 @@ final class ActivateUdbOrganizerTest extends TestCase
 
         $udbOrganizerRepository->expects($this->once())
             ->method('updateStatus')
-            ->with($id->toString(), UdbOrganizerStatus::Approved)
-        ;
+            ->with($udbOrganizer->toDomain(), UdbOrganizerStatus::Approved);
 
         $handler->handle(
             new ActionFields(collect(), collect()),

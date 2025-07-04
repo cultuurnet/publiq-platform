@@ -14,11 +14,13 @@ use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationMail;
+use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationMailRepository;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Mails\Template\Template;
 use App\Mails\Template\TemplateName;
 use App\Mails\Template\Templates;
+use App\UiTPAS\UiTPASConfig;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Ramsey\Uuid\Uuid;
@@ -63,6 +65,11 @@ final class MailManager implements ShouldQueue
     {
         $integration = $this->integrationRepository->getById($event->id);
 
+        if ($integration->type === IntegrationType::UiTPAS && config(UiTPASConfig::AUTOMATIC_PERMISSIONS_ENABLED->value)) {
+            // Temporary code, because this email is sent with new copy by SMTP
+            return;
+        }
+
         $this->sendMail($integration, $this->templates->getOrFail(TemplateName::INTEGRATION_ACTIVATION_REQUEST->value));
     }
 
@@ -97,22 +104,7 @@ final class MailManager implements ShouldQueue
         ];
     }
 
-    /**
-     * To optimize email credits and prevent spamming we check that the same email is not sent multiple times to the same e-mail address
-     * @return Contact[]
-     */
-    private function getUniqueContactsWithPreferredContactType(Integration $integration, ContactType $contactType): array
-    {
-        $uniqueContacts = [];
 
-        foreach ($integration->contacts() as $contact) {
-            if (!isset($uniqueContacts[$contact->email]) || $contact->type === $contactType) {
-                $uniqueContacts[$contact->email] = $contact;
-            }
-        }
-
-        return $uniqueContacts;
-    }
 
     public function sendMail(Integration $integration, Template $template): void
     {
@@ -121,7 +113,7 @@ final class MailManager implements ShouldQueue
         }
 
         // The technical contact get  additional information in the e-mail (example a link to the satisfaction survey), so this type of contact gets preference when matching email addresses are found
-        foreach ($this->getUniqueContactsWithPreferredContactType($integration, ContactType::Technical) as $contact) {
+        foreach ($integration->filterUniqueContactsWithPreferredContactType(ContactType::Technical) as $contact) {
             $this->mailer->send(
                 $this->getFrom(),
                 new Address($contact->email, trim($contact->firstName . ' ' . $contact->lastName)),

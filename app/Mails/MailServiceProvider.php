@@ -17,6 +17,8 @@ use App\Domain\Mail\MailManager;
 use App\Mails\MailJet\MailjetConfig;
 use App\Mails\MailJet\MailjetMailer;
 use App\Mails\MailJet\SandboxMode;
+use App\Mails\Smtp\BladeMailTemplateResolver;
+use App\Mails\Smtp\MailTemplateResolver;
 use App\Mails\Template\Templates;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
@@ -55,6 +57,10 @@ final class MailServiceProvider extends ServiceProvider
                 Templates::build(config(MailjetConfig::MAILJET_TEMPLATES)),
                 config('app.url'),
             );
+        });
+
+        $this->app->singleton(MailTemplateResolver::class, function () {
+            return $this->app->get(BladeMailTemplateResolver::class);
         });
 
         Event::listen(IntegrationCreatedWithContacts::class, [MailManager::class, 'sendIntegrationCreatedMail']);

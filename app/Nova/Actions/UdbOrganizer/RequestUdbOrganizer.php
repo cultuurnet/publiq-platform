@@ -2,18 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Nova\Actions;
+namespace App\Nova\Actions\UdbOrganizer;
 
 use App\Domain\Integrations\Models\IntegrationModel;
-use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
+use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\UdbUuid;
 use App\Search\Sapi3\SearchService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Actions\ActionResponse;
@@ -23,7 +22,7 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 use PDOException;
 use Ramsey\Uuid\Uuid;
 
-final class AddUdbOrganizer extends Action
+final class RequestUdbOrganizer extends Action
 {
     use InteractsWithQueue;
     use Queueable;
@@ -36,13 +35,12 @@ final class AddUdbOrganizer extends Action
 
     public function handle(ActionFields $fields, Collection $integrations): ActionResponse|Action
     {
-        Log::info('AddUdbOrganizer action started.');
         /** @var IntegrationModel $integration */
         $integration = $integrations->first();
 
         try {
             $organizationId = new UdbUuid((string)$fields->get('organizer_id'));
-        } catch (InvalidArgumentException $e) {
+        } catch (InvalidArgumentException) {
             return Action::danger('Invalid organizer ID.');
         }
 
