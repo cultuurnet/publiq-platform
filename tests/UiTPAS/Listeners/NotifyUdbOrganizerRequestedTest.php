@@ -144,4 +144,38 @@ final class NotifyUdbOrganizerRequestedTest extends TestCase
 
         $this->listener->failed($event, $exception);
     }
+
+    public function test_it_does_not_message_approved_organizers(): void
+    {
+        $uuid = Uuid::uuid4();
+
+        $event = new UdbOrganizerCreated($uuid);
+
+        $org = new UdbOrganizer(
+            Uuid::uuid4(),
+            Uuid::uuid4(),
+            new UdbUuid('d541dbd6-b818-432d-b2be-d51dfc5c0c51'),
+            UdbOrganizerStatus::Approved
+        );
+
+        $integration = $this->givenThereIsAnIntegration($uuid, ['type' => IntegrationType::SearchApi]);
+
+        $this->orgRepo->expects($this->once())
+            ->method('getById')
+            ->with($uuid)
+            ->willReturn($org);
+
+        $this->integrationRepo->expects($this->once())
+            ->method('getById')
+            ->with($org->integrationId)
+            ->willReturn($integration);
+
+        $this->notifier->expects($this->never())
+            ->method('postMessage');
+
+        $this->messageBuilder->expects($this->never())
+            ->method('toMessageWithOrganizer');
+
+        $this->listener->handle($event);
+    }
 }
