@@ -80,8 +80,6 @@ final class SendMailForUdbOrganizerTest extends TestCase
             UdbOrganizerStatus::Pending
         );
 
-        $event = new UdbOrganizerCreated($udbOrganizer->id);
-
         $this->udbOrganizerRepository
             ->expects($this->once())
             ->method('getById')
@@ -90,7 +88,29 @@ final class SendMailForUdbOrganizerTest extends TestCase
 
         $this->mockCommonSendMailFlow($udbOrganizer->organizerId, MailTemplate::ORGANISATION_UITPAS_REQUESTED->value);
 
-        $this->handler->handleUdbOrganizerCreated($event);
+        $this->handler->handleUdbOrganizerCreated(new UdbOrganizerCreated($udbOrganizer->id));
+    }
+
+    public function testItDoesNotSendsMailOnUdbOrganizerWithStatusApproved(): void
+    {
+        $udbOrganizer = new UdbOrganizer(
+            Uuid::uuid4(),
+            Uuid::fromString(self::INTEGRATION_ID),
+            new UdbUuid(Uuid::uuid4()->toString()),
+            UdbOrganizerStatus::Approved
+        );
+
+        $this->udbOrganizerRepository
+            ->expects($this->once())
+            ->method('getById')
+            ->with($udbOrganizer->id)
+            ->willReturn($udbOrganizer);
+
+        $this->handler->handleUdbOrganizerCreated(new UdbOrganizerCreated($udbOrganizer->id));
+
+        $this->mailer
+            ->expects($this->never())
+            ->method('send');
     }
 
     public function testItSendsMailOnUdbOrganizerApproved(): void

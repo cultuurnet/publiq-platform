@@ -8,6 +8,7 @@ use App\Domain\Integrations\Events\UdbOrganizerCreated;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
+use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Notifications\MessageBuilder;
 use App\Notifications\Notifier;
 use Illuminate\Bus\Queueable;
@@ -30,14 +31,19 @@ final class NotifyUdbOrganizerRequested implements ShouldQueue
 
     public function handle(UdbOrganizerCreated $event): void
     {
-        $org = $this->udbOrganizerRepository->getById($event->id);
-        $integration = $this->integrationRepository->getById($org->integrationId);
+        $udbOrganizer = $this->udbOrganizerRepository->getById($event->id);
+        $integration = $this->integrationRepository->getById($udbOrganizer->integrationId);
 
         if ($integration->type !== IntegrationType::UiTPAS) {
             return;
         }
 
-        $this->notifier->postMessage($this->messageBuilder->toMessageWithOrganizer($integration, $org));
+        if ($udbOrganizer->status !== UdbOrganizerStatus::Pending) {
+            // In the case of an admin created organizer it will directly have status approved.
+            return;
+        }
+
+        $this->notifier->postMessage($this->messageBuilder->toMessageWithOrganizer($integration, $udbOrganizer));
     }
 
     public function failed(
