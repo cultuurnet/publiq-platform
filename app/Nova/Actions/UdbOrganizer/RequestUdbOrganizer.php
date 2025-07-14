@@ -49,14 +49,12 @@ final class RequestUdbOrganizer extends Action
         }
 
         try {
-            $this->organizerRepository->create(
-                new UdbOrganizer(
-                    Uuid::uuid4(),
-                    Uuid::fromString($integration->id),
-                    $organizationId,
-                    UdbOrganizerStatus::Pending
-                )
-            );
+            $this->organizerRepository->create(new UdbOrganizer(
+                Uuid::uuid4(),
+                Uuid::fromString($integration->id),
+                $organizationId,
+                UdbOrganizerStatus::Approved
+            ));
         } catch (PDOException $e) {
             if ($e->getCode() === 23000) {
                 // Handle integrity constraint violation
