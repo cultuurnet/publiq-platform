@@ -32,43 +32,82 @@ final readonly class UiTPASApi implements UiTPASApiInterface
 
     public function addPermissions(ClientCredentialsContext $context, UdbUuid $organizerId, string $clientId): bool
     {
-        $response = $this->sendWithBearer(
-            new Request('GET', 'permissions/' . $clientId),
-            $context
+        return $this->updatePermissions(
+            $context,
+            $organizerId,
+            $clientId,
+            function (array $permissions) use ($organizerId): array {
+                $permissions[] = $this->withBody($organizerId);
+                return $permissions;
+            },
+            'Gave %s permission to uitpas organisation %s'
         );
-        $currentPermissions = Json::decodeAssociatively($response->getBody()->getContents());
-        $currentPermissions[] = $this->withBody($organizerId);
+    }
 
-        $request = new Request('PUT', 'permissions/' . $clientId, [
-            'Accept' => 'application/problem+json',
-            'Content-Type' => 'application/json',
-        ], Json::encode($currentPermissions));
+    public function deleteAllPermissions(ClientCredentialsContext $context, UdbUuid $organizerId, string $clientId): bool
+    {
+        return $this->updatePermissions(
+            $context,
+            $organizerId,
+            $clientId,
+            function (array $permissions) use ($organizerId): array {
+                return array_values(array_filter($permissions, function ($permission) use ($organizerId) {
+                    return $permission['organizer']['id'] !== $organizerId->toString();
+                }));
+            },
+            'Removed organisation %s permissions for organizer %s'
+        );
+    }
 
+    private function updatePermissions(
+        ClientCredentialsContext $context,
+        UdbUuid $organizerId,
+        string $clientId,
+        callable $updateCallback,
+        string $successLogMessage
+    ): bool {
         try {
             $response = $this->sendWithBearer(
-                $request,
+                new Request('GET', 'permissions/' . $clientId),
                 $context
             );
+
+            $permissions = Json::decodeAssociatively($response->getBody()->getContents());
+            $updatedPermissions = $updateCallback($permissions);
+
+            $request = new Request('PUT', 'permissions/' . $clientId, [
+                'Accept' => 'application/problem+json',
+                'Content-Type' => 'application/json',
+            ], Json::encode($updatedPermissions));
+
+            $response = $this->sendWithBearer($request, $context);
+
+            if ($response->getStatusCode() !== 204) {
+                $this->logger->error(
+                    sprintf('Failed to give %s permission to uitpas organisation %s, status code %s', $clientId, $organizerId, $response->getStatusCode())
+                );
+                return false;
+            }
+
+            $this->logger->info(sprintf($successLogMessage, $clientId, $organizerId));
+            return true;
+
         } catch (GuzzleException $e) {
-            $this->logger->error(sprintf('Failed to give %s permission to uitpas organisation %s, error %s', $clientId, $organizerId, $e->getMessage()));
+            $this->logger->error(sprintf(
+                'Failed to give %s permission to uitpas organisation %s, error %s',
+                $clientId,
+                $organizerId,
+                $e->getMessage()
+            ));
             return false;
         }
-
-        if ($response->getStatusCode() !== 204) {
-            $this->logger->error(sprintf('Failed to give %s permission to uitpas organisation %s, status code %s', $clientId, $organizerId, $response->getStatusCode()));
-            return false;
-        }
-
-        $this->logger->info(sprintf('Gave %s permission to uitpas organisation %s', $clientId, $organizerId));
-
-        return true;
     }
 
     private function withBody(UdbUuid $organizerId): array
     {
         return [
             'organizer' => [
-                'id' => $organizerId,
+                'id' => $organizerId->toString(),
             ],
             'permissionDetails' => array_map(
                 static fn ($id) => ['id' => $id],
