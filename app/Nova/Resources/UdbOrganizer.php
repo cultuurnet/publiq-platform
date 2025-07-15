@@ -94,7 +94,15 @@ final class UdbOrganizer extends Resource
                 );
             })->asHtml(),
 
-            Text::make('status')
+            Text::make('Status', static function (UdbOrganizerModel $model) {
+                $udbOrganizerStatus = $model->toDomain()->status;
+                return sprintf(
+                    '<span style="color: %s">%s</span>',
+                    $udbOrganizerStatus === UdbOrganizerStatus::Approved ? 'green' : 'black',
+                    $udbOrganizerStatus->name
+                );
+            })
+                ->asHtml()
                 ->readonly(),
 
             Text::make('UiTPAS', static function (UdbOrganizerModel $model) {
