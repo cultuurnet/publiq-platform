@@ -12,6 +12,7 @@ import { router } from "@inertiajs/react";
 import { Link } from "../../Link";
 import { Alert } from "../../Alert";
 import { IntegrationClientCredentials } from "../../IntegrationClientCredential";
+import {IntegrationType} from "../../../types/IntegrationType";
 
 type Props = Pick<
   Integration,
@@ -113,6 +114,17 @@ export const CredentialsAuthClients = ({
                 />
               )}
             </div>
+
+            {status === IntegrationStatus.Active && type === IntegrationType.UiTPAS && (
+                <ButtonPrimary
+                className="self-start"
+                onClick={() => {
+                    router.get(`/nl/integraties/${id}?tab=organisations`);
+                }}
+              >
+                {t("details.organizers_info.ask_extra_permissions")}
+              </ButtonPrimary>
+            )}
           </div>
         </div>
       )}
