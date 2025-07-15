@@ -160,7 +160,7 @@ export const OrganizersInfo = ({ id, organizers }: Props) => {
 
   return (
     <>
-      <Heading level={4} className="font-semibold">
+      <Heading level={3} className="font-semibold">
         {t("details.organizers_info.title")}
       </Heading>
       <p>{t("details.organizers_info.description")}</p>
