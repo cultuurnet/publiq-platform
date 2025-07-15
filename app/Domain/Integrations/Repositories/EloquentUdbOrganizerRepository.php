@@ -23,6 +23,10 @@ final class EloquentUdbOrganizerRepository implements UdbOrganizerRepository
             'organizer_id' => $organizer->organizerId->toString(),
             'status' => $organizer->status->value,
         ]);
+
+        if ($organizer->status === UdbOrganizerStatus::Approved) {
+            UdbOrganizerApproved::dispatch($organizer->organizerId, $organizer->integrationId);
+        }
     }
 
     public function createInBulk(UdbOrganizers $organizers): void
