@@ -36,13 +36,10 @@ final class ActivateIntegration extends Action
         $organizationIdAsString = $fields->get('organization');
         $organizationId = Uuid::fromString($organizationIdAsString);
 
-        /** @var string $couponCode */
-        $couponCode = $fields->get('coupon');
-
         $this->integrationRepository->activateWithOrganization(
             Uuid::fromString($integration->id),
             $organizationId,
-            $couponCode
+            null
         );
 
         return Action::message('Integration "' . $integration->name . '" activated.');
@@ -58,12 +55,6 @@ final class ActivateIntegration extends Action
                 ->rules(
                     'required',
                     'exists:organizations,id'
-                ),
-            Text::make('Coupon', 'coupon')
-                ->rules(
-                    'nullable',
-                    'string',
-                    'exists:coupons,code'
                 ),
         ];
     }
