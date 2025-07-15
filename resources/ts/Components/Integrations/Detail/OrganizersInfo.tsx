@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Heading } from "../../Heading";
-import { useTranslation } from "react-i18next";
+import {Trans, useTranslation} from "react-i18next";
 import type { Integration } from "../../../types/Integration";
 import { Card } from "../../Card";
 import { CopyText } from "../../CopyText";
@@ -56,7 +56,7 @@ const OrganizersSection = ({
   return (
     <>
       <Heading level={4} className="font-semibold">
-        {sectionName}
+          <Trans i18nKey={`details.organizers_info.${sectionName.toLowerCase()}.title`} />
       </Heading>
       <div className="gap-0">
         {organizers.map((organizer, index) => (
