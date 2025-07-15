@@ -8,6 +8,7 @@ use App\Api\ClientCredentialsContext;
 use App\Api\TokenStrategy\ClientCredentials;
 use App\Domain\Integrations\Environment;
 use App\Domain\UdbUuid;
+use App\Json;
 use App\UiTPAS\Dto\UiTPASPermission;
 use App\UiTPAS\Dto\UiTPASPermissionDetail;
 use App\UiTPAS\Dto\UiTPASPermissionDetails;
@@ -138,12 +139,12 @@ final class UitpasApiTest extends TestCase
         $this->assertIsArray($history);
         $this->assertCount(3, $history); // token fetch, get current permissions, put updated permissions
 
-        $this->assertJson((string) $history[2]['request']->getBody());
+        $this->assertJson((string)$history[2]['request']->getBody());
         $decodedBody = json_decode((string)$history[2]['request']->getBody(), true, 512, JSON_THROW_ON_ERROR);
 
         //checking of new and old permissions exists
         $this->assertCount(2, $decodedBody);
-        $this->assertSame(self::ORG_ID, $decodedBody[1]['organizer']['id']['value']);
+        $this->assertSame(self::ORG_ID, $decodedBody[1]['organizer']['id']);
         $this->assertEquals('CHECKINS_WRITE', $decodedBody[1]['permissionDetails'][0]['id']);
     }
 
@@ -279,5 +280,53 @@ final class UitpasApiTest extends TestCase
         );
 
         $this->assertNull($permission);
+    }
+
+    public function test_delete_all_permissions_successfully(): void
+    {
+        $originalPermissions = [
+            ['organizer' => ['id' => self::ORG_ID]],
+            ['organizer' => ['id' => 'another-id']],
+        ];
+
+        $expectedPermissions = [
+            ['organizer' => ['id' => 'another-id']],
+        ];
+
+        $mockHandler = new MockHandler([
+            new Response(200, [], json_encode(['access_token' => self::MY_TOKEN], JSON_THROW_ON_ERROR)),
+            new Response(200, [], Json::encode($originalPermissions)), // GET permissions
+            new Response(204), // PUT updated permissions
+        ]);
+
+        $container = [];
+        $history = Middleware::history($container);
+
+        $stack = HandlerStack::create($mockHandler);
+        $stack->push($history);
+
+        $client = new Client(['handler' => $stack]);
+
+        $uitpasApi = new UiTPASApi(
+            $client,
+            new ClientCredentials($client, $this->logger),
+            $this->logger,
+            'https://test-uitpas.publiq.be/',
+            'https://uitpas.publiq.be/',
+        );
+
+        $result = $uitpasApi->deleteAllPermissions(
+            $this->context,
+            new UdbUuid(self::ORG_ID),
+            self::CLIENT_ID
+        );
+
+        $this->assertTrue($result);
+
+        /** @var Request $putRequest */
+        $putRequest = $container[2]['request'];
+        $this->assertEquals('PUT', $putRequest->getMethod());
+        $putBody = Json::decodeAssociatively($putRequest->getBody()->getContents());
+        $this->assertEquals($expectedPermissions, $putBody);
     }
 }

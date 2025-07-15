@@ -11,6 +11,7 @@ use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Nova\Actions\UdbOrganizer\ApproveUdbOrganizer;
 use App\Nova\Actions\UdbOrganizer\RejectUdbOrganizer;
+use App\Nova\Actions\UdbOrganizer\RevokeUdbOrganizer;
 use App\Nova\Filters\UdbOrganizerStatusFilter;
 use App\Nova\Resource;
 use App\Search\Sapi3\SearchService;
@@ -93,7 +94,15 @@ final class UdbOrganizer extends Resource
                 );
             })->asHtml(),
 
-            Text::make('status')
+            Text::make('Status', static function (UdbOrganizerModel $model) {
+                $udbOrganizerStatus = $model->toDomain()->status;
+                return sprintf(
+                    '<span style="color: %s">%s</span>',
+                    $udbOrganizerStatus === UdbOrganizerStatus::Approved ? 'green' : 'black',
+                    $udbOrganizerStatus->name
+                );
+            })
+                ->asHtml()
                 ->readonly(),
 
             Text::make('UiTPAS', static function (UdbOrganizerModel $model) {
@@ -151,14 +160,21 @@ final class UdbOrganizer extends Resource
     {
         $actions = [];
         if (config(UiTPASConfig::AUTOMATIC_PERMISSIONS_ENABLED->value)) {
-            $activateUdbOrganizer = new ApproveUdbOrganizer(
+            $approveUdbOrganizer = new ApproveUdbOrganizer(
                 App::make(UdbOrganizerRepository::class),
                 App::make(IntegrationRepository::class),
                 App::make(UiTPASApiInterface::class),
                 ClientCredentialsContextFactory::getUitIdProdContext(),
             );
 
-            $actions[] = $activateUdbOrganizer
+            $revokeUdbOrganizer = new RevokeUdbOrganizer(
+                App::make(UdbOrganizerRepository::class),
+                App::make(IntegrationRepository::class),
+                App::make(UiTPASApiInterface::class),
+                ClientCredentialsContextFactory::getUitIdProdContext(),
+            );
+
+            $actions[] = $approveUdbOrganizer
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to active this organizer in UiTPAS?')
                 ->confirmButtonText('Activate')
@@ -173,6 +189,14 @@ final class UdbOrganizer extends Resource
                 ->cancelButtonText('Cancel')
                 ->canRun(fn (Request $request, UdbOrganizerModel $model) => $model->toDomain()->status === UdbOrganizerStatus::Pending)
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->isStatusPending());
+
+            $actions[] = $revokeUdbOrganizer
+                ->exceptOnIndex()
+                ->confirmText('Are you sure you want to revoke these organizer permissions?')
+                ->confirmButtonText('Revoke')
+                ->cancelButtonText('Cancel')
+                ->canRun(fn (Request $request, UdbOrganizerModel $model) => $model->toDomain()->status === UdbOrganizerStatus::Approved)
+                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->isStatusApproved());
         }
 
         return $actions;
@@ -181,5 +205,10 @@ final class UdbOrganizer extends Resource
     private function isStatusPending(): bool
     {
         return $this->status === UdbOrganizerStatus::Pending->value;
+    }
+
+    private function isStatusApproved(): bool
+    {
+        return $this->status === UdbOrganizerStatus::Approved->value;
     }
 }

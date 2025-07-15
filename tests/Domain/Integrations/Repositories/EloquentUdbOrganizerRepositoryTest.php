@@ -54,6 +54,32 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
             'organizer_id' => $this->organizer1->organizerId,
             'status' => UdbOrganizerStatus::Pending->value,
         ]);
+
+        Event::assertNotDispatched(UdbOrganizerApproved::class);
+    }
+
+    public function testCreateWithDirectApproval(): void
+    {
+        $org = new UdbOrganizer(
+            Uuid::uuid4(),
+            Uuid::uuid4(),
+            new UdbUuid(Uuid::uuid4()->toString()),
+            UdbOrganizerStatus::Approved
+        );
+
+        $this->repository->create($org);
+
+        $this->assertDatabaseHas('udb_organizers', [
+            'id' => $org->id->toString(),
+            'integration_id' => $org->integrationId->toString(),
+            'organizer_id' => $org->organizerId,
+            'status' => UdbOrganizerStatus::Approved->value,
+        ]);
+
+        Event::assertDispatched(UdbOrganizerApproved::class, static function (UdbOrganizerApproved $event) use ($org) {
+            return $org->organizerId === $event->udbId &&
+                   $org->integrationId->toString() === $event->integrationId->toString();
+        });
     }
 
     public function testCreateInBulk(): void
@@ -78,6 +104,8 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
     public function testUpdateStatus(): void
     {
         $this->repository->create($this->organizer1);
+        $this->repository->create($this->organizer2);
+
         $this->repository->updateStatus($this->organizer1, UdbOrganizerStatus::Approved);
 
         $this->assertDatabaseHas('udb_organizers', [
@@ -85,6 +113,13 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
             'integration_id' => $this->organizer1->integrationId->toString(),
             'organizer_id' => $this->organizer1->organizerId,
             'status' => UdbOrganizerStatus::Approved->value,
+        ]);
+
+        $this->assertDatabaseHas('udb_organizers', [
+            'id' => $this->organizer2->id->toString(),
+            'integration_id' => $this->organizer2->integrationId->toString(),
+            'organizer_id' => $this->organizer2->organizerId,
+            'status' => UdbOrganizerStatus::Pending->value,
         ]);
 
         Event::assertDispatched(UdbOrganizerApproved::class);
