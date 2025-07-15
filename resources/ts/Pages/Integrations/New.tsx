@@ -83,8 +83,7 @@ const New = ({ subscriptions }: Props) => {
     });
   }
 
-  const isCouponFieldVisible =
-    false;
+  const isCouponFieldVisible = false;
 
   const isPricingInfoVisible = (
     [IntegrationType.SearchApi, IntegrationType.Widgets] as IntegrationType[]
