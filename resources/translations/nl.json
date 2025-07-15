@@ -224,7 +224,7 @@
       "pending_approval_integration": "In Aanvraag",
       "pending_approval_payment": "In Aanvraag",
       "pending_approval_integration_description": "Voor de live-integratie is goedkeuring van publiq nodig. Alle informatie om vlot live te kunnen gaan vind je <0>hier</0>.",
-      "before_going_live_link": "https://docs.publiq.be/docs/uitdatabank/entry-api/requirements-before-going-live",
+      "before_going_live_link": "https://docs.publiq.be/docs/uitdatabank/entry-api/getting-started",
       "pending_approval_payment_description": "Aan de slag met echte data en evenementen? Activeer je Search API integratie (vanaf 125 euro per jaar).",
       "activate": "Activatie aanvragen"
     },
