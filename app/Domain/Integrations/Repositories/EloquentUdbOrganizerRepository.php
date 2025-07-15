@@ -40,12 +40,13 @@ final class EloquentUdbOrganizerRepository implements UdbOrganizerRepository
 
     public function updateStatus(UdbOrganizer $organizer, UdbOrganizerStatus $newStatus): void
     {
-        UdbOrganizerModel::query()->update(
-            [
-                'id' => $organizer->id->toString(),
+        UdbOrganizerModel::query()
+            ->where('id', $organizer->id->toString())
+            ->update(
+                [
                 'status' => $newStatus->value,
             ]
-        );
+            );
 
         if ($newStatus === UdbOrganizerStatus::Approved) {
             UdbOrganizerApproved::dispatch($organizer->organizerId, $organizer->integrationId);
