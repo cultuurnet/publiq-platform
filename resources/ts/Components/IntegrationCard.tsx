@@ -23,8 +23,8 @@ import { classNames } from "../utils/classNames";
 import { usePolling } from "../hooks/usePolling";
 import { ButtonSecondary } from "./ButtonSecondary";
 import { IntegrationClientCredentials } from "./IntegrationClientCredential";
-import {ButtonPrimary} from "./ButtonPrimary";
-import {router} from "@inertiajs/react";
+import { ButtonPrimary } from "./ButtonPrimary";
+import { router } from "@inertiajs/react";
 
 const productTypeToPath = {
   uitpas: "/uitpas/getting-started",
@@ -166,16 +166,17 @@ export const IntegrationCard = ({
                   />
                 )}
               </div>
-              {status === IntegrationStatus.Active && type === IntegrationType.UiTPAS && (
-                <ButtonPrimary
+              {status === IntegrationStatus.Active &&
+                type === IntegrationType.UiTPAS && (
+                  <ButtonPrimary
                     className="self-start"
                     onClick={() => {
-                        router.get(`/nl/integraties/${id}?tab=organisations`);
+                      router.get(`/nl/integraties/${id}?tab=organisations`);
                     }}
-                >
+                  >
                     {t("details.organizers_info.ask_extra_permissions")}
-                </ButtonPrimary>
-              )}
+                  </ButtonPrimary>
+                )}
             </div>
           </section>
         )}

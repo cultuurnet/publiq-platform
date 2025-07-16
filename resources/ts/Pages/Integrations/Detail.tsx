@@ -156,14 +156,14 @@ const Detail = ({
                     oldCredentialsExpirationDate={oldCredentialsExpirationDate}
                   />
                 </Tabs.Item>
-                  {isUitpasIntegration && (
-                      <Tabs.Item
-                          type="organisations"
-                          label={t("details.organizers_info.title")}
-                      >
-                          <OrganizersInfo {...integration} organizers={organizers} />
-                      </Tabs.Item>
-                  )}
+                {isUitpasIntegration && (
+                  <Tabs.Item
+                    type="organisations"
+                    label={t("details.organizers_info.title")}
+                  >
+                    <OrganizersInfo {...integration} organizers={organizers} />
+                  </Tabs.Item>
+                )}
                 <Tabs.Item
                   type="settings"
                   label={t("details.integration_settings.title")}
