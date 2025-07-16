@@ -29,6 +29,10 @@ final class MailServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->singleton(MailTemplateResolver::class, function () {
+            return $this->app->get(BladeMailTemplateResolver::class);
+        });
+
         if (!config(MailjetConfig::TRANSACTIONAL_EMAILS_ENABLED)) {
             return;
         }
@@ -57,10 +61,6 @@ final class MailServiceProvider extends ServiceProvider
                 Templates::build(config(MailjetConfig::MAILJET_TEMPLATES)),
                 config('app.url'),
             );
-        });
-
-        $this->app->singleton(MailTemplateResolver::class, function () {
-            return $this->app->get(BladeMailTemplateResolver::class);
         });
 
         Event::listen(IntegrationCreatedWithContacts::class, [MailManager::class, 'sendIntegrationCreatedMail']);
