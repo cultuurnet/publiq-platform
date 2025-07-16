@@ -14,6 +14,7 @@ use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Actions\ActionResponse;
 use Laravel\Nova\Fields\ActionFields;
 use Laravel\Nova\Fields\Select;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Ramsey\Uuid\Uuid;
 
@@ -35,10 +36,13 @@ final class ActivateIntegration extends Action
         $organizationIdAsString = $fields->get('organization');
         $organizationId = Uuid::fromString($organizationIdAsString);
 
+        /** @var string $couponCode */
+        $couponCode = $fields->get('coupon');
+
         $this->integrationRepository->activateWithOrganization(
             Uuid::fromString($integration->id),
             $organizationId,
-            null
+            $couponCode
         );
 
         return Action::message('Integration "' . $integration->name . '" activated.');
@@ -54,6 +58,12 @@ final class ActivateIntegration extends Action
                 ->rules(
                     'required',
                     'exists:organizations,id'
+                ),
+            Text::make('Coupon', 'coupon')
+                ->rules(
+                    'nullable',
+                    'string',
+                    'exists:coupons,code'
                 ),
         ];
     }
