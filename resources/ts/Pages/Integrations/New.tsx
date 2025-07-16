@@ -83,7 +83,10 @@ const New = ({ subscriptions }: Props) => {
     });
   }
 
-  const isCouponFieldVisible = false;
+  const isCouponFieldVisible =
+      (activeType === IntegrationType.SearchApi ||
+          activeType === IntegrationType.Widgets) &&
+      data.subscriptionId === basicPricingPlan?.id;
 
   const isPricingInfoVisible = (
     [IntegrationType.SearchApi, IntegrationType.Widgets] as IntegrationType[]
