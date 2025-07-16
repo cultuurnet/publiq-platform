@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Heading } from "../../Heading";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import type { Integration } from "../../../types/Integration";
 import { Card } from "../../Card";
 import { CopyText } from "../../CopyText";
@@ -17,6 +17,7 @@ import { OrganizersDatalist } from "./OrganizersDatalist";
 import type { UiTPASOrganizer } from "../../../types/UiTPASOrganizer";
 import { classNames } from "../../../utils/classNames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link } from "../../Link";
 
 type Props = Integration & { organizers: Organizer[] };
 
@@ -55,9 +56,26 @@ const OrganizersSection = ({
 
   return (
     <>
-      <Heading level={4} className="font-semibold">
-        {sectionName}
+      <Heading level={4} className="font-semibold mt-4">
+        <Trans
+          i18nKey={`details.organizers_info.${sectionName.toLowerCase()}.title`}
+        />
       </Heading>
+      {sectionName !== "Live" && (
+        <p className="text-gray-600">
+          <Trans
+            i18nKey="details.organizers_info.test.description"
+            t={t}
+            components={[
+              <Link
+                key={t("details.organizers_info.test.description")}
+                href={t("details.organizers_info.test.link")}
+                className="text-publiq-blue-dark hover:underline mb-3"
+              />,
+            ]}
+          />
+        </p>
+      )}
       <div className="gap-0">
         {organizers.map((organizer, index) => (
           <Card
@@ -84,7 +102,7 @@ const OrganizersSection = ({
 
             <div className="mt-2 ml-1">
               {organizer.permissions.length > 0 ? (
-                <ul className="flex flex-col gap-1 text-sm text-gray-700">
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-1 text-sm text-gray-700">
                   {organizer.permissions.map((permission, id) => (
                     <li key={id} className="flex items-start gap-2">
                       <FontAwesomeIcon
@@ -159,8 +177,8 @@ export const OrganizersInfo = ({ id, organizers }: Props) => {
   const byStatus = groupBy(organizers, "status");
 
   return (
-    <>
-      <Heading level={4} className="font-semibold">
+    <div className={"flex flex-col gap-2"}>
+      <Heading level={3} className="font-semibold">
         {t("details.organizers_info.title")}
       </Heading>
       <p>{t("details.organizers_info.description")}</p>
@@ -174,6 +192,6 @@ export const OrganizersInfo = ({ id, organizers }: Props) => {
         sectionName="Live"
         organizers={byStatus["Live"]}
       />
-    </>
+    </div>
   );
 };

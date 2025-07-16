@@ -224,7 +224,7 @@
       "pending_approval_integration": "In Aanvraag",
       "pending_approval_payment": "In Aanvraag",
       "pending_approval_integration_description": "Voor de live-integratie is goedkeuring van publiq nodig. Alle informatie om vlot live te kunnen gaan vind je <0>hier</0>.",
-      "before_going_live_link": "https://docs.publiq.be/docs/uitdatabank/entry-api/requirements-before-going-live",
+      "before_going_live_link": "https://docs.publiq.be/docs/uitdatabank/entry-api/getting-started",
       "pending_approval_payment_description": "Aan de slag met echte data en evenementen? Activeer je Search API integratie (vanaf 125 euro per jaar).",
       "activate": "Activatie aanvragen"
     },
@@ -291,6 +291,15 @@
       "description": "Hieronder vind je een overzicht van de UiTdatabank organisaties waarvoor je acties kan uitvoeren in de UiTPAS API.",
       "no_permissions": "Geen rechten toegekend",
       "add": "Organisatie toevoegen",
+      "ask_extra_permissions": "Vraag extra rechten voor organisaties",
+      "test": {
+        "title": "Testomgeving",
+        "description": "Voor de live-integratie is goedkeuring van publiq nodig. Alle informatie om vlot live te kunnen gaan vind je <0>hier</0>. Wij geven je toegang tot een testomgeving zodat je alvast kan beginnen met ontwikkelen. Deze testomgeving bevat testdata en wordt gedeeld door alle integratoren.",
+        "link": "https://docs.publiq.be/docs/uitpas/getting-started#1-start-on-the-test-environment"
+      },
+      "live": {
+        "title": "Productieomgeving"
+      },
       "update_dialog": {
         "question": "Geef de UiTdatabank-organisaties op waarvoor je acties in UiTPAS wilt uitvoeren."
       },

@@ -225,6 +225,7 @@
       "pending_approval_payment": "Pending approval",
       "pending_approval_integration_description": "Approval from publiq is necessary for the live integration. All information to smoothly go live can be found <0>here</0>.",
       "pending_approval_payment_description": "Ready to work with real data and events? Activate your Search API integration (from €125 per year)",
+      "before_going_live_link": "https://docs.publiq.be/docs/uitdatabank/entry-api/getting-started",
       "here": "here.",
       "activate": "Activate"
     },
