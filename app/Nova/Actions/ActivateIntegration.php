@@ -50,7 +50,7 @@ final class ActivateIntegration extends Action
 
     public function fields(NovaRequest $request): array
     {
-        return [
+        $fields = [
             Select::make('Organization', 'organization')
                 ->options(
                     OrganizationModel::query()->pluck('name', 'id')
@@ -59,12 +59,16 @@ final class ActivateIntegration extends Action
                     'required',
                     'exists:organizations,id'
                 ),
-            Text::make('Coupon', 'coupon')
+        ];
+        if (config('coupons.enabled')) {
+            $fields[] = Text::make('Coupon', 'coupon')
                 ->rules(
                     'nullable',
                     'string',
                     'exists:coupons,code'
-                ),
-        ];
+                );
+        }
+
+        return $fields;
     }
 }

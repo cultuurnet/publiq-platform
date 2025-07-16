@@ -19,6 +19,7 @@ import type { Subscription } from "../../types/Subscription";
 import { useGetPricingPlans } from "../../hooks/useGetPricingPlans";
 import { SubscriptionCategory } from "../../types/SubscriptionCategory";
 import { Alert } from "../../Components/Alert";
+import { usePageProps } from "../../hooks/usePageProps";
 
 type Props = {
   subscriptions: Subscription[];
@@ -29,6 +30,8 @@ const New = ({ subscriptions }: Props) => {
   const { i18n } = useTranslation();
 
   const integrationTypesInfo = useIntegrationTypesInfo();
+
+  const { config } = usePageProps();
 
   const url = new URL(document.location.href);
   // This is enforced in the backend
@@ -84,6 +87,7 @@ const New = ({ subscriptions }: Props) => {
   }
 
   const isCouponFieldVisible =
+    config.coupons.enabled &&
     (activeType === IntegrationType.SearchApi ||
       activeType === IntegrationType.Widgets) &&
     data.subscriptionId === basicPricingPlan?.id;
