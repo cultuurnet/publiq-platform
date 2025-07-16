@@ -102,7 +102,7 @@ const OrganizersSection = ({
 
             <div className="mt-2 ml-1">
               {organizer.permissions.length > 0 ? (
-                <ul className="flex flex-col gap-1 text-sm text-gray-700">
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-1 text-sm text-gray-700">
                   {organizer.permissions.map((permission, id) => (
                     <li key={id} className="flex items-start gap-2">
                       <FontAwesomeIcon
