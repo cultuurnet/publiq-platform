@@ -177,7 +177,7 @@ export const OrganizersInfo = ({ id, organizers }: Props) => {
   const byStatus = groupBy(organizers, "status");
 
   return (
-    <>
+    <div className={"flex flex-col gap-2"}>
       <Heading level={3} className="font-semibold">
         {t("details.organizers_info.title")}
       </Heading>
@@ -192,6 +192,6 @@ export const OrganizersInfo = ({ id, organizers }: Props) => {
         sectionName="Live"
         organizers={byStatus["Live"]}
       />
-    </>
+    </div>
   );
 };
