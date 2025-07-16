@@ -12,14 +12,15 @@ use CultuurNet\SearchV3\ValueObjects\PagedCollection;
 
 final readonly class Sapi3SearchService implements SearchService
 {
-    public function __construct(private SearchClientInterface $searchClient)
-    {
+    public function __construct(
+        private SearchClientInterface $searchClient
+    ) {
     }
 
     public function searchUiTPASOrganizer(string $name): PagedCollection
     {
         $searchQuery = new SearchQuery();
-        $searchQuery->addParameter(new Query('labels:UiTPAS*'));
+        $this->addUiTPASLabels($searchQuery);
         $searchQuery->addParameter(new Name($name));
         $searchQuery->setLimit(5);
         $searchQuery->setEmbed(true);
@@ -37,7 +38,14 @@ final readonly class Sapi3SearchService implements SearchService
 
         $ids = array_map(fn (UdbUuid $id) => sprintf('id:"%s"', $id->toString()), $ids);
         $searchQuery->addParameter(new Query(implode(' OR ', $ids)));
+        $this->addUiTPASLabels($searchQuery);
 
         return $this->searchClient->searchOrganizers($searchQuery);
+    }
+
+    public function addUiTPASLabels(SearchQuery $searchQuery): void
+    {
+        // CUA = internal label for orgs created by Publiq
+        $searchQuery->addParameter(new Query('labels:UiTPAS* OR labels:Paspartoe or labels:CUA'));
     }
 }

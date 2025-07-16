@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Nova\Actions\UdbOrganizer;
 
+use App\Api\ClientCredentialsContext;
 use App\Domain\Integrations\Models\IntegrationModel;
+use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\UdbUuid;
 use App\Search\Sapi3\SearchService;
+use App\UiTPAS\UiTPASApiInterface;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Collection;
@@ -29,7 +32,10 @@ final class RequestUdbOrganizer extends Action
 
     public function __construct(
         private readonly UdbOrganizerRepository $organizerRepository,
-        private readonly SearchService $searchService
+        private readonly SearchService $searchService,
+        private readonly IntegrationRepository $integrationRepository,
+        private readonly UiTPASApiInterface $UiTPASApi,
+        private readonly ClientCredentialsContext $prodContext
     ) {
     }
 
@@ -45,18 +51,31 @@ final class RequestUdbOrganizer extends Action
         }
 
         if (!$this->doesOrganizerExistInUdb($organizationId)) {
-            return Action::danger('Organisation "' . $organizationId . '" not found in UDB3.');
+            return Action::danger('Organizer "' . $organizationId . '" not found in UDB3.');
         }
 
         try {
-            $this->organizerRepository->create(
-                new UdbOrganizer(
-                    Uuid::uuid4(),
-                    Uuid::fromString($integration->id),
-                    $organizationId,
-                    UdbOrganizerStatus::Pending
-                )
+            $udbOrganizer = new UdbOrganizer(
+                Uuid::uuid4(),
+                Uuid::fromString($integration->id),
+                $organizationId,
+                UdbOrganizerStatus::Approved
             );
+
+            $success = $this->UiTPASApi->addPermissions(
+                $this->prodContext,
+                $udbOrganizer->organizerId,
+                $this->integrationRepository
+                    ->getById($udbOrganizer->integrationId)
+                    ->getKeycloakClientByEnv($this->prodContext->environment)
+                    ->clientId
+            );
+
+            if (!$success) {
+                return Action::danger('Failed to set permissions in UiTPAS.');
+            }
+
+            $this->organizerRepository->create($udbOrganizer);
         } catch (PDOException $e) {
             if ($e->getCode() === 23000) {
                 // Handle integrity constraint violation

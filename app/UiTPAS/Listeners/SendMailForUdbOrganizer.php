@@ -8,6 +8,7 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Events\UdbOrganizerCreated;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
+use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\Mail\Mailer;
 use App\Domain\UdbUuid;
 use App\Mails\Smtp\MailTemplate;
@@ -39,6 +40,12 @@ final class SendMailForUdbOrganizer implements ShouldQueue
     public function handleUdbOrganizerCreated(UdbOrganizerCreated $event): void
     {
         $udbOrganizer = $this->udbOrganizerRepository->getById($event->id);
+
+        if ($udbOrganizer->status !== UdbOrganizerStatus::Pending) {
+            // In the case of an admin created organizer it will directly have status approved.
+            return;
+        }
+
         $this->sendMail(
             $udbOrganizer->organizerId,
             $udbOrganizer->integrationId,

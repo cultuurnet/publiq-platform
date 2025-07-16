@@ -24,6 +24,8 @@ use App\Nova\Actions\UnblockIntegration;
 use App\Nova\Filters\AdminInformationFilter;
 use App\Nova\Resource;
 use App\Search\Sapi3\SearchService;
+use App\UiTPAS\ClientCredentialsContextFactory;
+use App\UiTPAS\UiTPASApiInterface;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -301,7 +303,13 @@ final class Integration extends Resource
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->canBeUnblocked())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->canBeUnblocked()),
 
-            (new RequestUdbOrganizer(App::make(UdbOrganizerRepository::class), App::make(SearchService::class)))
+            (new RequestUdbOrganizer(
+                App::make(UdbOrganizerRepository::class),
+                App::make(SearchService::class),
+                App::make(IntegrationRepository::class),
+                App::make(UiTPASApiInterface::class),
+                ClientCredentialsContextFactory::getUitIdProdContext(),
+            ))
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to add an organizer?')
                 ->confirmButtonText('Add')
