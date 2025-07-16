@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Heading } from "../../Heading";
-import {Trans, useTranslation} from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import type { Integration } from "../../../types/Integration";
 import { Card } from "../../Card";
 import { CopyText } from "../../CopyText";
@@ -17,6 +17,7 @@ import { OrganizersDatalist } from "./OrganizersDatalist";
 import type { UiTPASOrganizer } from "../../../types/UiTPASOrganizer";
 import { classNames } from "../../../utils/classNames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link } from "../../Link";
 
 type Props = Integration & { organizers: Organizer[] };
 
@@ -55,9 +56,26 @@ const OrganizersSection = ({
 
   return (
     <>
-      <Heading level={4} className="font-semibold">
-          <Trans i18nKey={`details.organizers_info.${sectionName.toLowerCase()}.title`} />
+      <Heading level={4} className="font-semibold mt-4">
+        <Trans
+          i18nKey={`details.organizers_info.${sectionName.toLowerCase()}.title`}
+        />
       </Heading>
+      {sectionName !== "Live" && (
+        <p className="text-gray-600">
+          <Trans
+            i18nKey="details.organizers_info.test.description"
+            t={t}
+            components={[
+              <Link
+                key={t("details.organizers_info.test.description")}
+                href={t("details.organizers_info.test.link")}
+                className="text-publiq-blue-dark hover:underline mb-3"
+              />,
+            ]}
+          />
+        </p>
+      )}
       <div className="gap-0">
         {organizers.map((organizer, index) => (
           <Card
