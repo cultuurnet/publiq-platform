@@ -63,12 +63,6 @@ export const IntegrationClientCredentials = ({
           client={client}
         />
       ))}
-      {clientWithLabels.length &&
-        !isLive &&
-        type === IntegrationType.UiTPAS &&
-        status !== IntegrationStatus.Active && (
-          <Alert variant={"info"}>{t("details.credentials.waiting")}</Alert>
-        )}
     </>
   );
 };
