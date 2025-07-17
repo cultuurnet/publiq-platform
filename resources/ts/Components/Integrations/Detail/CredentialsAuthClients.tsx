@@ -83,9 +83,6 @@ export const CredentialsAuthClients = ({
             </Heading>
             <IntegrationClientCredentials
               client={testClient}
-              status={status}
-              type={type}
-              isLive={false}
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -97,9 +94,6 @@ export const CredentialsAuthClients = ({
               <div className="flex flex-col gap-3">
                 <IntegrationClientCredentials
                   client={prodClient}
-                  status={status}
-                  type={type}
-                  isLive={true}
                 />
               </div>
             )}

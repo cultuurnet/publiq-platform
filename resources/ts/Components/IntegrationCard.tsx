@@ -103,9 +103,6 @@ export const IntegrationCard = ({
             <div className="flex flex-col gap-2">
               <IntegrationClientCredentials
                 client={testClient}
-                status={status}
-                type={type}
-                isLive={false}
               />
             </div>
           </section>
@@ -160,9 +157,6 @@ export const IntegrationCard = ({
                 {status === IntegrationStatus.Active && (
                   <IntegrationClientCredentials
                     client={prodClient}
-                    status={status}
-                    type={type}
-                    isLive={true}
                   />
                 )}
               </div>

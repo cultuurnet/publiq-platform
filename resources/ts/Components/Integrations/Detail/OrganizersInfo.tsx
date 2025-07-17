@@ -84,7 +84,7 @@ const OrganizersSection = ({
           >
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2 md:gap-4">
               <Heading level={5} className="font-semibold text-publiq-gray-600">
-                {organizer.name[i18n.language]}
+                {organizer.name[i18n.language]}cwx
               </Heading>
               <div className="flex-shrink-0 flex max-sm:flex-col gap-4">
                 <CopyText text={organizer.id} />

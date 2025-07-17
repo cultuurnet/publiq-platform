@@ -1,11 +1,7 @@
-import { CopyText } from "./CopyText";
+import {CopyText} from "./CopyText";
 import React from "react";
-import { useTranslation } from "react-i18next";
-import { IntegrationType } from "../types/IntegrationType";
-import { IntegrationStatus } from "../types/IntegrationStatus";
-import { Alert } from "./Alert";
-import type { Integration } from "../types/Integration";
-import type { AuthClient } from "../types/Credentials";
+import {useTranslation} from "react-i18next";
+import type {AuthClient} from "../types/Credentials";
 
 type Props = {
   client: {
@@ -35,15 +31,9 @@ export const IntegrationClientCredential = ({ client }: Props) => {
 
 export const IntegrationClientCredentials = ({
   client,
-  status,
-  type,
-  isLive,
-}: Pick<Integration, "status" | "type"> & {
+}: {
   client: AuthClient | undefined;
-  isLive: boolean;
 }) => {
-  const { t } = useTranslation();
-
   const clientWithLabels = [
     {
       label: "details.credentials.client_id",
