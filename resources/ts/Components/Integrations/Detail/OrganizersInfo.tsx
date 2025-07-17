@@ -36,6 +36,7 @@ const OrganizersSection = ({
   const form = useForm<{ organizers: UiTPASOrganizer[] }>({
     organizers: [],
   });
+  const uitpasTestOrg = import.meta.env.VITE_UITPAS_TEST_ORG;
 
   const handleDeleteOrganizer = () => {
     router.delete(`/integrations/${id}/organizers/${toBeDeletedId}`, {
@@ -84,7 +85,20 @@ const OrganizersSection = ({
           >
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2 md:gap-4">
               <Heading level={5} className="font-semibold text-publiq-gray-600">
-                {organizer.name[i18n.language]}cwx
+                {organizer.name[i18n.language]}
+
+                {organizer.status === "Test" &&
+                  organizer.id === uitpasTestOrg && (
+                    <span className="text-xs text-gray-500 ml-2">
+                      <a
+                        href={t("welcome_section.card.uitpas.test_dataset_url")}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        ({t("integrations.documentation.test_dataset")})
+                      </a>
+                    </span>
+                  )}
               </Heading>
               <div className="flex-shrink-0 flex max-sm:flex-col gap-4">
                 <CopyText text={organizer.id} />

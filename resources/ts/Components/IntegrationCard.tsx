@@ -101,9 +101,7 @@ export const IntegrationCard = ({
               {t("integrations.test")}
             </Heading>
             <div className="flex flex-col gap-2">
-              <IntegrationClientCredentials
-                client={testClient}
-              />
+              <IntegrationClientCredentials client={testClient} />
             </div>
           </section>
         )}
@@ -155,9 +153,7 @@ export const IntegrationCard = ({
                   <ActivationRequest id={id} type={type} />
                 )}
                 {status === IntegrationStatus.Active && (
-                  <IntegrationClientCredentials
-                    client={prodClient}
-                  />
+                  <IntegrationClientCredentials client={prodClient} />
                 )}
               </div>
               {status === IntegrationStatus.Active &&

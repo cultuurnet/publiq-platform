@@ -81,9 +81,7 @@ export const CredentialsAuthClients = ({
             <Heading className="font-semibold flex min-w-[5rem]" level={4}>
               {t("details.credentials.test")}
             </Heading>
-            <IntegrationClientCredentials
-              client={testClient}
-            />
+            <IntegrationClientCredentials client={testClient} />
           </div>
           <div className="flex flex-col gap-2">
             <Heading className="font-semibold min-w-[5rem]" level={4}>
@@ -92,9 +90,7 @@ export const CredentialsAuthClients = ({
             <StatusLight status={status} />
             {status === IntegrationStatus.Active && (
               <div className="flex flex-col gap-3">
-                <IntegrationClientCredentials
-                  client={prodClient}
-                />
+                <IntegrationClientCredentials client={prodClient} />
               </div>
             )}
             <div className="flex flex-col gap-3 align-center">

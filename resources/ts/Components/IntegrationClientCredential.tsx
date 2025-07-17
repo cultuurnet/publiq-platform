@@ -1,7 +1,7 @@
-import {CopyText} from "./CopyText";
+import { CopyText } from "./CopyText";
 import React from "react";
-import {useTranslation} from "react-i18next";
-import type {AuthClient} from "../types/Credentials";
+import { useTranslation } from "react-i18next";
+import type { AuthClient } from "../types/Credentials";
 
 type Props = {
   client: {
