@@ -11,6 +11,9 @@ type Config = {
     enabled: boolean;
     dsn: string;
   };
+  coupons: {
+    enabled: boolean;
+  };
 };
 
 export type PageProps = {
