@@ -1,10 +1,6 @@
 import { CopyText } from "./CopyText";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { IntegrationType } from "../types/IntegrationType";
-import { IntegrationStatus } from "../types/IntegrationStatus";
-import { Alert } from "./Alert";
-import type { Integration } from "../types/Integration";
 import type { AuthClient } from "../types/Credentials";
 
 type Props = {
@@ -35,15 +31,9 @@ export const IntegrationClientCredential = ({ client }: Props) => {
 
 export const IntegrationClientCredentials = ({
   client,
-  status,
-  type,
-  isLive,
-}: Pick<Integration, "status" | "type"> & {
+}: {
   client: AuthClient | undefined;
-  isLive: boolean;
 }) => {
-  const { t } = useTranslation();
-
   const clientWithLabels = [
     {
       label: "details.credentials.client_id",
@@ -63,12 +53,6 @@ export const IntegrationClientCredentials = ({
           client={client}
         />
       ))}
-      {clientWithLabels.length &&
-        !isLive &&
-        type === IntegrationType.UiTPAS &&
-        status !== IntegrationStatus.Active && (
-          <Alert variant={"info"}>{t("details.credentials.waiting")}</Alert>
-        )}
     </>
   );
 };

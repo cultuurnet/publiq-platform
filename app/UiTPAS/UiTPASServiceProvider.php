@@ -83,11 +83,9 @@ final class UiTPASServiceProvider extends ServiceProvider
 
 
         $this->app->singleton(SmtpMailer::class, function () {
-            $smtp = config('mail.mailers.smtp');
-
             return new SmtpMailer(
                 new SymfonyMailer(
-                    Transport::fromDsn(sprintf('smtp://%s:%s@%s:%d', urlencode($smtp['username']), urlencode($smtp['password']), $smtp['host'], $smtp['port']))
+                    Transport::fromDsn($this->getSmtpDsn())
                 ),
                 $this->app->get(MailTemplateResolver::class),
                 $this->app->get(LoggerInterface::class),
@@ -121,5 +119,26 @@ final class UiTPASServiceProvider extends ServiceProvider
         Event::listen(UdbOrganizerCreated::class, [SendMailForUdbOrganizer::class, 'handleUdbOrganizerCreated']);
         Event::listen(UdbOrganizerApproved::class, [SendMailForUdbOrganizer::class, 'handleUdbOrganizerApproved']);
         Event::listen(UdbOrganizerRejected::class, [SendMailForUdbOrganizer::class, 'handleUdbOrganizerRejected']);
+    }
+
+    private function getSmtpDsn(): string
+    {
+        $smtp = config('mail.mailers.smtp');
+
+        if (!empty($smtp['username']) && !empty($smtp['password'])) {
+            return sprintf(
+                'smtp://%s:%s@%s:%d',
+                urlencode($smtp['username']),
+                urlencode($smtp['password']),
+                $smtp['host'],
+                $smtp['port']
+            );
+        }
+
+        return sprintf(
+            'smtp://%s:%d',
+            $smtp['host'],
+            $smtp['port']
+        );
     }
 }
