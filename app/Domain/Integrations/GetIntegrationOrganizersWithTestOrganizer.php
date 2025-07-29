@@ -83,7 +83,10 @@ final readonly class GetIntegrationOrganizersWithTestOrganizer
         $labels = [];
 
         foreach ($permission->permissionDetails as $detail) {
-            $labels[] = $detail->label;
+            $labels[] = [
+                'id' => $detail->id,
+                'label' => ucfirst($detail->label)
+            ];
         }
 
         return $labels;

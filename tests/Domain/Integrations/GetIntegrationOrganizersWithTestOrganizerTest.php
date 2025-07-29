@@ -126,11 +126,13 @@ final class GetIntegrationOrganizersWithTestOrganizerTest extends TestCase
         $this->assertCount(2, $result);
         $this->assertSame('33f1722b-04fc-4652-b99f-2c96de87cf82', $result[0]['id']);
         $this->assertSame('Live', $result[0]['status']);
-        $this->assertSame(['label for 33f1722b-04fc-4652-b99f-2c96de87cf82'], $result[0]['permissions']);
+        $this->assertSame('PERMISSION_33f1722b-04fc-4652-b99f-2c96de87cf82', $result[0]['permissions'][0]['id']);
+        $this->assertSame('Label for 33f1722b-04fc-4652-b99f-2c96de87cf82', $result[0]['permissions'][0]['label']);
 
         $this->assertSame('032c7f40-a1c5-4d56-aaf3-52a492262845', $result[1]['id']);
         $this->assertSame('Test', $result[1]['status']);
-        $this->assertSame(['label for 032c7f40-a1c5-4d56-aaf3-52a492262845'], $result[1]['permissions']);
+        $this->assertSame('PERMISSION_032c7f40-a1c5-4d56-aaf3-52a492262845', $result[1]['permissions'][0]['id']);
+        $this->assertSame('Label for 032c7f40-a1c5-4d56-aaf3-52a492262845', $result[1]['permissions'][0]['label']);
     }
 
     public function test_it_handles_missing_keycloak_client(): void

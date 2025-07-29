@@ -18,6 +18,7 @@ import type { UiTPASOrganizer } from "../../../types/UiTPASOrganizer";
 import { classNames } from "../../../utils/classNames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "../../Link";
+import {Tooltip} from "../../Tooltip";
 
 type Props = Integration & { organizers: Organizer[] };
 
@@ -33,6 +34,7 @@ const OrganizersSection = ({
   const { t, i18n } = useTranslation();
   const [toBeDeletedId, setToBeDeletedId] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [hoveredPermissionId, setHoveredPermissionId] = useState<number | null>(null);
   const form = useForm<{ organizers: UiTPASOrganizer[] }>({
     organizers: [],
   });
@@ -117,16 +119,27 @@ const OrganizersSection = ({
             <div className="mt-2 ml-1">
               {organizer.permissions.length > 0 ? (
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-1 text-sm text-gray-700">
-                  {organizer.permissions.map((permission, id) => (
-                    <li key={id} className="flex items-start gap-2">
-                      <FontAwesomeIcon
-                        icon={faCheckSquare}
-                        className="text-green-500"
-                        size="lg"
-                      />
-                      <span>{permission}</span>
-                    </li>
-                  ))}
+                    {organizer.permissions.map((permission, id) => {
+                        const isHovered = hoveredPermissionId === id;
+                        return (
+                            <li key={id} className="flex items-start gap-2">
+                                <Tooltip visible={isHovered} text={permission.id} className="w-auto">
+                                    <div
+                                        onMouseEnter={() => setHoveredPermissionId(id)}
+                                        onMouseLeave={() => setHoveredPermissionId(null)}
+                                        className="flex items-center gap-2"
+                                    >
+                                        <FontAwesomeIcon
+                                            icon={faCheckSquare}
+                                            className="text-green-500"
+                                            size="lg"
+                                        />
+                                        {permission.label}
+                                    </div>
+                                </Tooltip>
+                            </li>
+                        );
+                    })}
                 </ul>
               ) : (
                 <p className="text-sm italic text-gray-400">
