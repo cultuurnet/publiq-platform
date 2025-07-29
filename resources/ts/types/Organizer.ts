@@ -3,5 +3,5 @@ export type Organizer = {
   name: { [key: string]: string };
   description: string;
   status: "Live" | "Test";
-  permissions: Array<{id: string, label: string}>;
+  permissions: Array<{ id: string; label: string }>;
 };
