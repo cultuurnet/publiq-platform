@@ -35,6 +35,9 @@ final class HandleInertiaRequests extends Middleware
                     'dsn' => config('sentry.dsn'),
                     'enabled' => config('app.sentry.enabled'),
                 ],
+                'coupons' => [
+                    'enabled' => config('coupons.enabled'),
+                ],
             ],
             'widgetConfig' => [
                 'url' => config('uitidwidget.url'),
