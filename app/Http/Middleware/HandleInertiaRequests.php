@@ -36,7 +36,7 @@ final class HandleInertiaRequests extends Middleware
                     'enabled' => config('app.sentry.enabled'),
                 ],
                 'features' => [
-                    'coupons' => config('features.coupons'),
+                    'coupons' => config('app.features.coupons'),
                 ],
             ],
             'widgetConfig' => [

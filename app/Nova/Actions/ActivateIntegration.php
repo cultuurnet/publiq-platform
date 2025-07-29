@@ -60,7 +60,7 @@ final class ActivateIntegration extends Action
                     'exists:organizations,id'
                 ),
         ];
-        if (config('features.coupons')) {
+        if (config('app.features.coupons')) {
             $fields[] = Text::make('Coupon', 'coupon')
                 ->rules(
                     'nullable',
