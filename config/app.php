@@ -229,4 +229,7 @@ return [
     'sentry' => [
         'enabled' => env('SENTRY_LARAVEL_ENABLED', true),
     ],
+    'features' => [
+        'coupons' => env('COUPONS_ENABLED', true),
+    ],
 ];

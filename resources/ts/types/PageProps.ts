@@ -11,8 +11,8 @@ type Config = {
     enabled: boolean;
     dsn: string;
   };
-  coupons: {
-    enabled: boolean;
+  features: {
+    coupons: boolean;
   };
 };
 

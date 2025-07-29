@@ -87,7 +87,7 @@ const New = ({ subscriptions }: Props) => {
   }
 
   const isCouponFieldVisible =
-    config.coupons.enabled &&
+    config.features.coupons &&
     (activeType === IntegrationType.SearchApi ||
       activeType === IntegrationType.Widgets) &&
     data.subscriptionId === basicPricingPlan?.id;
