@@ -89,7 +89,7 @@ return [
 
     'passwords' => env('NOVA_PASSWORDS', null),
 
-    'users' => require __DIR__ . '/../nova_users.php',
+    'users' => file_exists(__DIR__ . '/../nova_users.php') ? require __DIR__ . '/../nova_users.php' : ['dev+e2etest-admin@publiq.be'],
 
     /*
     |--------------------------------------------------------------------------
