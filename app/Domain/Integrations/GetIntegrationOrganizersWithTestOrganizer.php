@@ -73,7 +73,7 @@ final readonly class GetIntegrationOrganizersWithTestOrganizer
         return null;
     }
 
-    /** @return string[] */
+    /** @return array<int, array{id: string, label: string}> */
     private function getLabels(?UiTPASPermission $permission): array
     {
         if ($permission === null) {
@@ -85,7 +85,7 @@ final readonly class GetIntegrationOrganizersWithTestOrganizer
         foreach ($permission->permissionDetails as $detail) {
             $labels[] = [
                 'id' => $detail->id,
-                'label' => ucfirst($detail->label)
+                'label' => ucfirst($detail->label),
             ];
         }
 
