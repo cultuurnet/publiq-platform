@@ -6,6 +6,9 @@ namespace Tests\Domain\Integrations;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
+use App\Domain\Integrations\UdbOrganizer;
+use App\Domain\Integrations\UdbOrganizerStatus;
+use App\Domain\UdbUuid;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Tests\CreateIntegration;
@@ -42,5 +45,25 @@ final class IntegrationTest extends TestCase
     private function createContact(UuidInterface $integrationId, string $email, ContactType $type): Contact
     {
         return new Contact(Uuid::uuid4(), $integrationId, $email, $type, 'John', 'Snow');
+    }
+
+    public function testGetUdbOrganizerByOrgId(): void
+    {
+        $integrationId = Uuid::uuid4();
+        $orgId = new UdbUuid(Uuid::uuid4()->toString());
+        $organizer = new UdbOrganizer(Uuid::uuid4(), $integrationId, $orgId, UdbOrganizerStatus::Pending);
+        $udbOrganizer = $this->givenThereIsAnIntegration($integrationId)
+            ->withUdbOrganizers($organizer);
+
+        $result = $udbOrganizer->getUdbOrganizerByOrgId($orgId);
+
+        $this->assertSame($organizer, $result);
+    }
+
+    public function testGetUdbOrganizerByOrgIdReturnsNull(): void
+    {
+        $udbOrganizer = $this->givenThereIsAnIntegration(Uuid::uuid4());
+
+        $this->assertNull($udbOrganizer->getUdbOrganizerByOrgId(new UdbUuid(Uuid::uuid4()->toString())));
     }
 }

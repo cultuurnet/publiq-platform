@@ -10,6 +10,7 @@ use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\UdbUuid;
 use App\Models\UuidModel;
 use App\UiTPAS\Event\UdbOrganizerDeleted;
+use App\UiTPAS\Event\UdbOrganizerRequested;
 use Ramsey\Uuid\Uuid;
 
 final class UdbOrganizerModel extends UuidModel
@@ -36,7 +37,12 @@ final class UdbOrganizerModel extends UuidModel
     protected static function booted(): void
     {
         self::created(
-            static fn (self $model) => UdbOrganizerCreated::dispatch(Uuid::fromString($model->id))
+            static function (self $model) {
+                UdbOrganizerCreated::dispatch(Uuid::fromString($model->id));
+                if ($model->status === UdbOrganizerStatus::Pending->value) {
+                    UdbOrganizerRequested::dispatch(new UdbUuid($model->id), Uuid::fromString($model->integration_id));
+                }
+            },
         );
         self::deleted(
             static fn (self $model) => UdbOrganizerDeleted::dispatch(
