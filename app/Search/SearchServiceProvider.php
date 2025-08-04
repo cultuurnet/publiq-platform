@@ -9,6 +9,7 @@ use App\Search\Sapi3\SearchService;
 use CultuurNet\SearchV3\SearchClient;
 use CultuurNet\SearchV3\Serializer\Serializer;
 use GuzzleHttp\Client;
+use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Support\ServiceProvider;
 
 final class SearchServiceProvider extends ServiceProvider
@@ -25,7 +26,8 @@ final class SearchServiceProvider extends ServiceProvider
                         ],
                     ]),
                     new Serializer()
-                )
+                ),
+                $this->app->make(CacheRepository::class)
             );
         });
 

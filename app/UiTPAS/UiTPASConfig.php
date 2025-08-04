@@ -11,6 +11,8 @@ enum UiTPASConfig: string
     case AUTOMATIC_PERMISSIONS_ENABLED = 'uitpas.automatic_permissions_enabled';
     case CLIENT_PERMISSIONS_URI = 'uitpas.client_permissions_uri';
     case UDB_BASE_URI = 'uitpas.udb_base_uri';
+    case UDB_IO_BASE_URI = 'uitpas.udb_base_io_uri';
+
 
     case TEST_ORGANISATION = 'uitpas.test.organisation';
     case TEST_API_ENDPOINT = 'uitpas.test.api_endpoint';
