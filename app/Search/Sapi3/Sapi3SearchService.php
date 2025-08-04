@@ -55,7 +55,7 @@ final readonly class Sapi3SearchService implements SearchService
     private function getUiTPasLabels(): array
     {
         return $this->cache->remember('uitpas_labels', now()->addHours(24), function () {
-            $uri = config(UiTPASConfig::UDB_IO_BASE_URI->value) . 'uitpas/labels';
+            $uri = config(UiTPASConfig::UDB_BASE_IO_URI->value) . 'uitpas/labels';
             $content = Json::decodeAssociatively((string)file_get_contents($uri));
 
             return array_map(
