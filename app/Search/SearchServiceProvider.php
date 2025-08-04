@@ -6,6 +6,8 @@ namespace App\Search;
 
 use App\Search\Sapi3\Sapi3SearchService;
 use App\Search\Sapi3\SearchService;
+use App\Search\UiTPAS\CachedUiTPASLabelProvider;
+use App\Search\UiTPAS\HttpUiTPASLabelProvider;
 use CultuurNet\SearchV3\SearchClient;
 use CultuurNet\SearchV3\Serializer\Serializer;
 use GuzzleHttp\Client;
@@ -27,7 +29,10 @@ final class SearchServiceProvider extends ServiceProvider
                     ]),
                     new Serializer()
                 ),
-                $this->app->make(CacheRepository::class)
+                new CachedUiTPASLabelProvider(
+                    new HttpUiTPASLabelProvider(),
+                    $this->app->make(CacheRepository::class)
+                )
             );
         });
 
