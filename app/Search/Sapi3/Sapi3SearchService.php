@@ -46,7 +46,7 @@ final readonly class Sapi3SearchService implements SearchService
     }
 
 
-    public function addUiTPASLabels(SearchQuery $searchQuery): void
+    private function addUiTPASLabels(SearchQuery $searchQuery): void
     {
         $labels = $this->uiTPASLabelProvider->getLabels();
         $searchQuery->addParameter(new Query(implode(' OR ', $labels)));
