@@ -11,15 +11,18 @@ use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Domain\UdbUuid;
 use App\Keycloak\Client;
 use App\Keycloak\Events\ClientCreated;
 use App\Keycloak\Repositories\KeycloakClientRepository;
+use App\UiTPAS\Event\UdbOrganizerApproved;
 use App\UiTPAS\Listeners\AddUiTPASPermissionsToOrganizerForIntegration;
 use App\UiTPAS\UiTPASApiInterface;
 use App\UiTPAS\UiTPASConfig;
 use Illuminate\Support\Facades\Config;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
+use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
@@ -34,6 +37,8 @@ final class AddUiTPASPermissionsToOrganizerForIntegrationTest extends TestCase
     private UiTPASApiInterface&MockObject $uitpasApi;
     private AddUiTPASPermissionsToOrganizerForIntegration $listener;
     private ClientCredentialsContext $testContext;
+    private ClientCredentialsContext $prodContext;
+    private LoggerInterface&MockObject $logger;
 
     protected function setUp(): void
     {
@@ -48,6 +53,7 @@ final class AddUiTPASPermissionsToOrganizerForIntegrationTest extends TestCase
             ->willReturn(new Client(Uuid::uuid4(), Uuid::fromString(self::INTEGRATION_ID), self::CLIENT_ID, 'client-test', Environment::Testing));
 
         $this->uitpasApi = $this->createMock(UiTPASApiInterface::class);
+        $this->logger = $this->createMock(LoggerInterface::class);
 
         $this->testContext = new ClientCredentialsContext(
             Environment::Testing,
@@ -56,11 +62,20 @@ final class AddUiTPASPermissionsToOrganizerForIntegrationTest extends TestCase
             'client-secret',
             'uitid'
         );
+        $this->prodContext = new ClientCredentialsContext(
+            Environment::Production,
+            'https://account-prod.uitid.be/',
+            'client-id',
+            'client-secret',
+            'uitid'
+        );
         $this->listener = new AddUiTPASPermissionsToOrganizerForIntegration(
             $this->integrationRepository,
             $this->keycloakClientRepository,
             $this->uitpasApi,
-            $this->testContext
+            $this->testContext,
+            $this->prodContext,
+            $this->logger
         );
     }
 
@@ -92,7 +107,7 @@ final class AddUiTPASPermissionsToOrganizerForIntegrationTest extends TestCase
                 self::CLIENT_ID
             );
 
-        $this->listener->handle(new ClientCreated(Uuid::fromString(self::CLIENT_ID)));
+        $this->listener->handleCreateTestPermissions(new ClientCreated(Uuid::fromString(self::CLIENT_ID)));
     }
 
     #[dataProvider('wrongTypes')]
@@ -117,7 +132,7 @@ final class AddUiTPASPermissionsToOrganizerForIntegrationTest extends TestCase
             ->expects($this->never())
             ->method('addPermissions');
 
-        $this->listener->handle(new ClientCreated(Uuid::fromString(self::CLIENT_ID)));
+        $this->listener->handleCreateTestPermissions(new ClientCreated(Uuid::fromString(self::CLIENT_ID)));
     }
 
     public static function wrongTypes(): array
@@ -131,20 +146,12 @@ final class AddUiTPASPermissionsToOrganizerForIntegrationTest extends TestCase
 
     public function test_it_only_handles_test_clients(): void
     {
-        $uuid4 = '5ed9a8a2-4069-4558-8960-f2621ccd71d9';
-
-        $keycloakClientRepository = $this->createMock(KeycloakClientRepository::class);
-        $keycloakClientRepository
-            ->method('getById')
-            ->with($uuid4)
-            ->willReturn(new Client(Uuid::uuid4(), Uuid::fromString(self::INTEGRATION_ID), $uuid4, 'client-test', Environment::Production));
-
         $this->integrationRepository
             ->expects($this->once())
             ->method('getById')
             ->with(self::INTEGRATION_ID)
             ->willReturn((new Integration(
-                Uuid::uuid4(),
+                Uuid::fromString(self::INTEGRATION_ID),
                 IntegrationType::UiTPAS,
                 'My uitpast test',
                 'Lorum ipsum',
@@ -157,12 +164,58 @@ final class AddUiTPASPermissionsToOrganizerForIntegrationTest extends TestCase
             ->expects($this->never())
             ->method('addPermissions');
 
-        $listener = new AddUiTPASPermissionsToOrganizerForIntegration(
+        $listener = $this->createListenerWithProdContext();
+        $listener->handleCreateTestPermissions(new ClientCreated(Uuid::fromString(self::CLIENT_ID)));
+    }
+
+    public function test_it_adds_permissions_for_production_client(): void
+    {
+        $organizerId = new UdbUuid('5ed9a8a2-4069-4558-8960-f2621ccd71d9');
+
+        $this->integrationRepository
+            ->expects($this->once())
+            ->method('getById')
+            ->with(self::INTEGRATION_ID)
+            ->willReturn((new Integration(
+                Uuid::fromString(self::INTEGRATION_ID),
+                IntegrationType::UiTPAS,
+                'My uitpast test',
+                'Lorum ipsum',
+                Uuid::uuid4(),
+                IntegrationStatus::Draft,
+                IntegrationPartnerStatus::THIRD_PARTY,
+            ))->withKeycloakClients(
+                new Client(Uuid::uuid4(), Uuid::fromString(self::INTEGRATION_ID), self::CLIENT_ID, 'client-prod', Environment::Production)
+            ));
+
+
+        $this->uitpasApi
+            ->expects($this->once())
+            ->method('addPermissions')
+            ->with(
+                $this->prodContext,
+                $organizerId,
+                self::CLIENT_ID
+            );
+
+        $this->listener->handleCreateProductionPermissions(new UdbOrganizerApproved($organizerId, Uuid::fromString(self::INTEGRATION_ID)));
+    }
+
+    private function createListenerWithProdContext(): AddUiTPASPermissionsToOrganizerForIntegration
+    {
+        $keycloakClientRepository = $this->createMock(KeycloakClientRepository::class);
+        $keycloakClientRepository
+            ->method('getById')
+            ->with(self::CLIENT_ID)
+            ->willReturn(new Client(Uuid::uuid4(), Uuid::fromString(self::INTEGRATION_ID), self::CLIENT_ID, 'client-prod', Environment::Production));
+
+        return new AddUiTPASPermissionsToOrganizerForIntegration(
             $this->integrationRepository,
             $keycloakClientRepository,
             $this->uitpasApi,
-            $this->testContext
+            $this->testContext,
+            $this->prodContext,
+            $this->logger
         );
-        $listener->handle(new ClientCreated(Uuid::fromString($uuid4)));
     }
 }

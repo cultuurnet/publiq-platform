@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\UiTPAS\Listeners;
 
-use App\Domain\Integrations\Events\UdbOrganizerCreated;
+use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Notifications\MessageBuilder;
 use App\Notifications\Notifier;
+use App\UiTPAS\Event\UdbOrganizerRequested;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Psr\Log\LoggerInterface;
@@ -21,7 +21,6 @@ final class NotifyUdbOrganizerRequested implements ShouldQueue
     use Queueable;
 
     public function __construct(
-        private readonly UdbOrganizerRepository $udbOrganizerRepository,
         private readonly IntegrationRepository $integrationRepository,
         private readonly Notifier $notifier,
         private readonly MessageBuilder $messageBuilder,
@@ -29,16 +28,17 @@ final class NotifyUdbOrganizerRequested implements ShouldQueue
     ) {
     }
 
-    public function handle(UdbOrganizerCreated $event): void
+    public function handleUdbOrganizerRequested(UdbOrganizerRequested $event): void
     {
-        $udbOrganizer = $this->udbOrganizerRepository->getById($event->id);
-        $integration = $this->integrationRepository->getById($udbOrganizer->integrationId);
+        $integration = $this->integrationRepository->getById($event->integrationId);
 
         if ($integration->type !== IntegrationType::UiTPAS) {
             return;
         }
 
-        if ($udbOrganizer->status !== UdbOrganizerStatus::Pending) {
+        $udbOrganizer = $integration->getUdbOrganizerByOrgId($event->udbId);
+
+        if ($udbOrganizer === null || $udbOrganizer->status !== UdbOrganizerStatus::Pending) {
             // In the case of an admin created organizer it will directly have status approved.
             return;
         }
@@ -46,12 +46,39 @@ final class NotifyUdbOrganizerRequested implements ShouldQueue
         $this->notifier->postMessage($this->messageBuilder->toMessageWithOrganizer($integration, $udbOrganizer));
     }
 
+    public function handleIntegrationActivationRequested(IntegrationActivationRequested $event): void
+    {
+        $integration = $this->integrationRepository->getById($event->id);
+        if ($integration->type !== IntegrationType::UiTPAS) {
+            return;
+        }
+
+        $udbOrganizer =  $integration->udbOrganizers();
+
+        foreach ($udbOrganizer as $organizer) {
+            if ($organizer->status !== UdbOrganizerStatus::Pending) {
+                // In the case of an admin created organizer it will directly have status approved.
+                continue;
+            }
+            $this->notifier->postMessage($this->messageBuilder->toMessageWithOrganizer($integration, $organizer));
+        }
+    }
+
     public function failed(
-        UdbOrganizerCreated $event,
+        UdbOrganizerRequested|IntegrationActivationRequested $event,
         Throwable $throwable
     ): void {
+        if ($event instanceof IntegrationActivationRequested) {
+            $this->logger->error('Failed to notify about requested udb organizers', [
+                'integration_id' => $event->id->toString(),
+                'exception' => $throwable,
+            ]);
+            return;
+        }
+
         $this->logger->error('Failed to notify about requested udb organizer', [
-            'org_id' => $event->id->toString(),
+            'integration_id' => $event->integrationId->toString(),
+            'udb_id' => $event->udbId->toString(),
             'exception' => $throwable,
         ]);
     }

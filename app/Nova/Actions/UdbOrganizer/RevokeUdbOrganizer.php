@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace App\Nova\Actions\UdbOrganizer;
 
-use App\Api\ClientCredentialsContext;
 use App\Domain\Integrations\Models\UdbOrganizerModel;
-use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
-use App\UiTPAS\UiTPASApiInterface;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Collection;
@@ -24,9 +21,6 @@ final class RevokeUdbOrganizer extends Action
 
     public function __construct(
         private readonly UdbOrganizerRepository $udbOrganizerRepository,
-        private readonly IntegrationRepository $integrationRepository,
-        private readonly UiTPASApiInterface $UiTPASApi,
-        private readonly ClientCredentialsContext $prodContext,
     ) {
     }
 
@@ -40,15 +34,6 @@ final class RevokeUdbOrganizer extends Action
             $udbOrganizer = $udbOrganizerModel->toDomain();
 
             $this->udbOrganizerRepository->delete($udbOrganizer->integrationId, $udbOrganizer->organizerId);
-
-            $this->UiTPASApi->deleteAllPermissions(
-                $this->prodContext,
-                $udbOrganizer->organizerId,
-                $this->integrationRepository
-                    ->getById($udbOrganizer->integrationId)
-                    ->getKeycloakClientByEnv($this->prodContext->environment)
-                    ->clientId
-            );
         }
     }
 }
