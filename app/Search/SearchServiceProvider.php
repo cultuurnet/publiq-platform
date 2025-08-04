@@ -13,24 +13,30 @@ use CultuurNet\SearchV3\Serializer\Serializer;
 use GuzzleHttp\Client;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Support\ServiceProvider;
+use Psr\Log\LoggerInterface;
 
 final class SearchServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
         $this->app->singleton(Sapi3SearchService::class, function () {
+            $client = new Client([
+                'base_uri' => config('search.base_uri'),
+                'headers' => [
+                    'X-Api-Key' => config('search.api_key'),
+                ],
+            ]);
+
             return new Sapi3SearchService(
                 new SearchClient(
-                    new Client([
-                        'base_uri' => config('search.base_uri'),
-                        'headers' => [
-                            'X-Api-Key' => config('search.api_key'),
-                        ],
-                    ]),
+                    $client,
                     new Serializer()
                 ),
                 new CachedUiTPASLabelProvider(
-                    new HttpUiTPASLabelProvider(),
+                    new HttpUiTPASLabelProvider(
+                        $client,
+                        $this->app->get(LoggerInterface::class),
+                    ),
                     $this->app->make(CacheRepository::class)
                 )
             );
