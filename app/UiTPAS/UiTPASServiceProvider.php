@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\UiTPAS;
 
 use App\Api\TokenStrategy\ClientCredentials;
+use App\Domain\Integrations\Events\IntegrationActivationRequested;
+use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\Events\UdbOrganizerCreated;
 use App\Domain\Integrations\GetIntegrationOrganizersWithTestOrganizer;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
@@ -18,12 +20,10 @@ use App\Notifications\Slack\SlackNotifier;
 use App\Search\Sapi3\SearchService;
 use App\Search\UdbOrganizerNameResolver;
 use App\UiTPAS\Event\UdbOrganizerApproved;
-use App\UiTPAS\Event\UdbOrganizerDeleted;
 use App\UiTPAS\Event\UdbOrganizerRejected;
 use App\UiTPAS\Event\UdbOrganizerRequested;
 use App\UiTPAS\Listeners\AddUiTPASPermissionsToOrganizerForIntegration;
 use App\UiTPAS\Listeners\NotifyUdbOrganizerRequested;
-use App\UiTPAS\Listeners\RevokeUiTPASPermissions;
 use App\UiTPAS\Listeners\SendUiTPASMails;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
@@ -117,25 +117,6 @@ final class UiTPASServiceProvider extends ServiceProvider
 
         Event::listen(ClientCreated::class, [AddUiTPASPermissionsToOrganizerForIntegration::class, 'handle']);
         Event::listen(UdbOrganizerCreated::class, [NotifyUdbOrganizerRequested::class, 'handle']);
-
-        Event::listen(UdbOrganizerCreated::class, [SendMailForUdbOrganizer::class, 'handleUdbOrganizerCreated']);
-        Event::listen(UdbOrganizerApproved::class, [SendMailForUdbOrganizer::class, 'handleUdbOrganizerApproved']);
-        Event::listen(UdbOrganizerRejected::class, [SendMailForUdbOrganizer::class, 'handleUdbOrganizerRejected']);
-    }
-
-    private function getSmtpDsn(): string
-    {
-        $smtp = config('mail.mailers.smtp');
-
-        if (!empty($smtp['username']) && !empty($smtp['password'])) {
-            return sprintf(
-                'smtp://%s:%s@%s:%d',
-                urlencode($smtp['username']),
-                urlencode($smtp['password']),
-                $smtp['host'],
-                $smtp['port']
-            );
-        }
 
         Event::listen(IntegrationCreatedWithContacts::class, [SendUiTPASMails::class, 'handleIntegrationCreatedWithContacts']);
         Event::listen(IntegrationActivationRequested::class, [SendUiTPASMails::class, 'handleIntegrationActivationRequested']);
