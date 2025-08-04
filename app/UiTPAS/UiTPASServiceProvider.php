@@ -135,10 +135,10 @@ final class UiTPASServiceProvider extends ServiceProvider
             );
         }
 
-        return sprintf(
-            'smtp://%s:%d',
-            $smtp['host'],
-            $smtp['port']
-        );
+        Event::listen(IntegrationCreatedWithContacts::class, [SendUiTPASMails::class, 'handleIntegrationCreatedWithContacts']);
+        Event::listen(IntegrationActivationRequested::class, [SendUiTPASMails::class, 'handleIntegrationActivationRequested']);
+        Event::listen(UdbOrganizerRequested::class, [SendUiTPASMails::class, 'handleUdbOrganizerRequested']);
+        Event::listen(UdbOrganizerApproved::class, [SendUiTPASMails::class, 'handleUdbOrganizerApproved']);
+        Event::listen(UdbOrganizerRejected::class, [SendUiTPASMails::class, 'handleUdbOrganizerRejected']);
     }
 }
