@@ -20,14 +20,16 @@ final readonly class BladeMailTemplateResolver implements MailTemplateResolver
         private ViewFactory $view,
     ) {
         $this->templates = [
-            MailTemplate::INTEGRATION_ACTIVATED->value => 'integration.activated',
+            MailTemplate::INTEGRATION_CREATED->value => 'integration.uitpas.created',
             MailTemplate::ORGANISATION_UITPAS_REQUESTED->value => 'UdbOrganizer.requested',
+            MailTemplate::INTEGRATION_ACTIVATED->value => 'integration.uitpas.activated',
             MailTemplate::ORGANISATION_UITPAS_APPROVED->value => 'UdbOrganizer.approved',
             MailTemplate::ORGANISATION_UITPAS_REJECTED->value => 'UdbOrganizer.rejected',
         ];
         $this->subjects = [
-            MailTemplate::INTEGRATION_ACTIVATED->value => 'Je integratie {{ $integrationName }} is geactiveerd',
+            MailTemplate::INTEGRATION_CREATED->value => 'Je integratie {{ $integrationName }} is succesvol aangemaakt!',
             MailTemplate::ORGANISATION_UITPAS_REQUESTED->value => 'Activatieaanvraag met integratie {{ $integrationName }} voor {{ $organizerName }}',
+            MailTemplate::INTEGRATION_ACTIVATED->value => 'Je integratie {{ $integrationName }} is geactiveerd!',
             MailTemplate::ORGANISATION_UITPAS_APPROVED->value => 'Je integratie {{ $integrationName }} voor {{ $organizerName }} is geactiveerd',
             MailTemplate::ORGANISATION_UITPAS_REJECTED->value => 'Je integratie {{ $integrationName }} voor {{ $organizerName }} is afgekeurd',
         ];
