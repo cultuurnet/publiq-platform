@@ -18,10 +18,13 @@ use App\Notifications\Slack\SlackNotifier;
 use App\Search\Sapi3\SearchService;
 use App\Search\UdbOrganizerNameResolver;
 use App\UiTPAS\Event\UdbOrganizerApproved;
+use App\UiTPAS\Event\UdbOrganizerDeleted;
 use App\UiTPAS\Event\UdbOrganizerRejected;
+use App\UiTPAS\Event\UdbOrganizerRequested;
 use App\UiTPAS\Listeners\AddUiTPASPermissionsToOrganizerForIntegration;
 use App\UiTPAS\Listeners\NotifyUdbOrganizerRequested;
-use App\UiTPAS\Listeners\SendMailForUdbOrganizer;
+use App\UiTPAS\Listeners\RevokeUiTPASPermissions;
+use App\UiTPAS\Listeners\SendUiTPASMails;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Routing\UrlGenerator;
@@ -85,17 +88,16 @@ final class UiTPASServiceProvider extends ServiceProvider
         $this->app->singleton(SmtpMailer::class, function () {
             return new SmtpMailer(
                 new SymfonyMailer(
-                    Transport::fromDsn($this->getSmtpDsn())
+                    Transport::fromDsn(config('mail.mailers.smtp.dsn'))
                 ),
                 $this->app->get(MailTemplateResolver::class),
                 $this->app->get(LoggerInterface::class),
             );
         });
 
-        $this->app->singleton(SendMailForUdbOrganizer::class, function () {
-            return new SendMailForUdbOrganizer(
+        $this->app->singleton(SendUiTPASMails::class, function () {
+            return new SendUiTPASMails(
                 $this->app->get(SmtpMailer::class),
-                $this->app->get(UdbOrganizerRepository::class),
                 $this->app->get(IntegrationRepository::class),
                 $this->app->get(UdbOrganizerNameResolver::class),
                 $this->app->get(SearchService::class),
