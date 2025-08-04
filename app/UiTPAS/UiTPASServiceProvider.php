@@ -6,9 +6,10 @@ namespace App\UiTPAS;
 
 use App\Api\TokenStrategy\ClientCredentials;
 use App\Domain\Integrations\Events\UdbOrganizerCreated;
+use App\Domain\Integrations\Events\IntegrationActivationRequested;
+use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\GetIntegrationOrganizersWithTestOrganizer;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Keycloak\Events\ClientCreated;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Mails\Smtp\MailTemplateResolver;
@@ -18,10 +19,13 @@ use App\Notifications\Slack\SlackNotifier;
 use App\Search\Sapi3\SearchService;
 use App\Search\UdbOrganizerNameResolver;
 use App\UiTPAS\Event\UdbOrganizerApproved;
+use App\UiTPAS\Event\UdbOrganizerDeleted;
 use App\UiTPAS\Event\UdbOrganizerRejected;
 use App\UiTPAS\Listeners\AddUiTPASPermissionsToOrganizerForIntegration;
 use App\UiTPAS\Listeners\NotifyUdbOrganizerRequested;
 use App\UiTPAS\Listeners\SendMailForUdbOrganizer;
+use App\UiTPAS\Listeners\RevokeUiTPASPermissions;
+use App\UiTPAS\Listeners\SendUiTPASMails;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Routing\UrlGenerator;
@@ -54,7 +58,9 @@ final class UiTPASServiceProvider extends ServiceProvider
                 $this->app->get(IntegrationRepository::class),
                 $this->app->get(KeycloakClientRepository::class),
                 $this->app->get(UiTPASApiInterface::class),
-                ClientCredentialsContextFactory::getUitIdTestContext()
+                ClientCredentialsContextFactory::getUitIdTestContext(),
+                ClientCredentialsContextFactory::getUitIdProdContext(),
+                $this->app->get(LoggerInterface::class),
             );
         });
 
@@ -69,7 +75,6 @@ final class UiTPASServiceProvider extends ServiceProvider
 
         $this->app->singleton(NotifyUdbOrganizerRequested::class, function () {
             return new NotifyUdbOrganizerRequested(
-                $this->app->get(UdbOrganizerRepository::class),
                 $this->app->get(IntegrationRepository::class),
                 new SlackNotifier(
                     config('slack.botToken'),
@@ -113,8 +118,11 @@ final class UiTPASServiceProvider extends ServiceProvider
             return;
         }
 
-        Event::listen(ClientCreated::class, [AddUiTPASPermissionsToOrganizerForIntegration::class, 'handle']);
-        Event::listen(UdbOrganizerCreated::class, [NotifyUdbOrganizerRequested::class, 'handle']);
+        Event::listen(ClientCreated::class, [AddUiTPASPermissionsToOrganizerForIntegration::class, 'handleCreateTestPermissions']);
+        Event::listen(UdbOrganizerApproved::class, [AddUiTPASPermissionsToOrganizerForIntegration::class, 'handleCreateProductionPermissions']);
+        Event::listen(UdbOrganizerDeleted::class, [RevokeUiTPASPermissions::class, 'handle']);
+
+        Event::listen(UdbOrganizerRequested::class, [NotifyUdbOrganizerRequested::class, 'handle']);
 
         Event::listen(UdbOrganizerCreated::class, [SendMailForUdbOrganizer::class, 'handleUdbOrganizerCreated']);
         Event::listen(UdbOrganizerApproved::class, [SendMailForUdbOrganizer::class, 'handleUdbOrganizerApproved']);
