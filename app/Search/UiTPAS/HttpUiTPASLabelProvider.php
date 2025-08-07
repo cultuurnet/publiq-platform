@@ -29,9 +29,6 @@ final readonly class HttpUiTPASLabelProvider implements UiTPASLabelProvider
             return [];
         }
 
-        return array_map(
-            static fn (string $value) => 'labels:' . $value,
-            Json::decodeAssociatively($response->getBody()->getContents())
-        );
+        return Json::decodeAssociatively($response->getBody()->getContents());
     }
 }

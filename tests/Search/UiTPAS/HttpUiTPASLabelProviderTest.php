@@ -6,7 +6,6 @@ namespace Tests\Search\UiTPAS;
 
 use App\Json;
 use App\Search\UiTPAS\HttpUiTPASLabelProvider;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
@@ -17,11 +16,14 @@ final class HttpUiTPASLabelProviderTest extends TestCase
 {
     public function test_it_returns_labels_on_success(): void
     {
-        $jsonResponse = Json::encode(['uitpas-gent', 'uitpas-antwerpen']);
+        // link naar integratie toevoegen op admin overview
+
+        $stream = $this->createMock(StreamInterface::class);
+        $stream->method('getContents')->willReturn(Json::encode(['uitpas-gent', 'uitpas-antwerpen']));
 
         $response = $this->createMock(ResponseInterface::class);
         $response->method('getStatusCode')->willReturn(200);
-        $response->method('getBody')->willReturn($this->createStreamMock($jsonResponse));
+        $response->method('getBody')->willReturn($stream);
 
         $client = $this->createMock(ClientInterface::class);
         $client->method('send')->willReturn($response);
@@ -36,7 +38,7 @@ final class HttpUiTPASLabelProviderTest extends TestCase
 
         $labels = $provider->getLabels();
 
-        $this->assertSame(['labels:uitpas-gent', 'labels:uitpas-antwerpen'], $labels);
+        $this->assertSame(['uitpas-gent', 'uitpas-antwerpen'], $labels);
     }
 
     public function test_it_logs_and_returns_empty_array_on_failure(): void
@@ -60,12 +62,5 @@ final class HttpUiTPASLabelProviderTest extends TestCase
         $labels = $provider->getLabels();
 
         $this->assertSame([], $labels);
-    }
-
-    private function createStreamMock(string $contents): StreamInterface&MockObject
-    {
-        $stream = $this->getMockBuilder(StreamInterface::class)->getMock();
-        $stream->method('getContents')->willReturn($contents);
-        return $stream;
     }
 }
