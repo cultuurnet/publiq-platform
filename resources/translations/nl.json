@@ -249,7 +249,9 @@
         "organizers": {
           "title": "UiTdatabank organisaties",
           "info": "Geef de UiTdatabank organisaties op waarvoor je acties in UiTPAS wilt uitvoeren.",
-          "label": "Organisaties"
+          "extra_info": "Heb je nog geen UiTPAS-klant voor deze integratie, maar wil je toch al UiTPAS activeren? Stuur dan een mailtje naar <0>technical-support@publiq.be</0>.",
+          "label": "Organisaties",
+          "email": "mailto:technical-support@publiq.be"
         }
       }
     },
