@@ -10,7 +10,6 @@ use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\Mail\Mailer;
 use App\Domain\UdbUuid;
 use App\Mails\Smtp\MailTemplate;
