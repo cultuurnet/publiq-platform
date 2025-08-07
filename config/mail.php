@@ -44,7 +44,7 @@ return [
         ],
 
         'mailpit' => [
-            'dsn' => env('MAILPIT_DSN'),
+            'dsn' => env('MAILPIT_API_URL'),
         ],
 
         'ses' => [

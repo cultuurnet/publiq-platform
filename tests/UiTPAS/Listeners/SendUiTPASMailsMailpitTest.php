@@ -108,7 +108,7 @@ final class SendUiTPASMailsMailpitTest extends TestCase
         string $subject
     ): void {
         if (empty($this->mailpitUri)) {
-            $this->markTestSkipped('MAILPIT_DSN is not set, skipping email tests.');
+            $this->markTestSkipped('MAILPIT_API_URL is not set, skipping email tests.');
         }
 
         if ($event instanceof UdbOrganizerApproved || $event instanceof UdbOrganizerRejected || $event instanceof UdbOrganizerRequested) {
