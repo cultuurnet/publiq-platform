@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Tests\Search\Sapi3;
 
 use App\Domain\UdbUuid;
+use App\Search\Sapi3\Name;
 use App\Search\Sapi3\Sapi3SearchService;
 use App\Search\UiTPAS\UiTPASLabelProvider;
+use CultuurNet\SearchV3\Parameter\Query;
 use CultuurNet\SearchV3\SearchClientInterface;
 use CultuurNet\SearchV3\SearchQuery;
 use CultuurNet\SearchV3\ValueObjects\PagedCollection;
@@ -20,18 +22,18 @@ final class Sapi3SearchServiceTest extends TestCase
         $labelProvider = $this->createMock(UiTPASLabelProvider::class);
         $labelProvider->expects($this->once())
             ->method('getLabels')
-            ->willReturn(['labels:uitpas-gent', 'labels:uitpas-antwerpen']);
+            ->willReturn(['uitpas-gent', 'uitpas-antwerpen']);
         $searchClient = $this->createMock(SearchClientInterface::class);
         $searchClient->expects($this->once())
             ->method('searchOrganizers')
             ->with($this->callback(function (SearchQuery $result) {
-                $params = $result->toArray();
+                $q = new SearchQuery(true);
+                $q->addParameter(new Query('labels:uitpas-gent OR labels:uitpas-antwerpen'));
+                $q->setLimit(5);
+                $q->addParameter(new Name('test organizer'));
 
-                return $params['name'] === 'test organizer' &&
-                    str_contains($params['q'], 'labels:uitpas-gent') &&
-                    str_contains($params['q'], 'labels:uitpas-antwerpen') &&
-                    $params['limit'] === 5 &&
-                    $params['embed'] === true;
+                $this->assertSame($q->toArray(), $result->toArray());
+                return true;
             }))
             ->willReturn(new PagedCollection());
 
@@ -44,7 +46,7 @@ final class Sapi3SearchServiceTest extends TestCase
         $labelProvider = $this->createMock(UiTPASLabelProvider::class);
         $labelProvider->expects($this->once())
             ->method('getLabels')
-            ->willReturn(['labels:uitpas-antwerpen']);
+            ->willReturn(['uitpas-antwerpen']);
 
         $uuid1 = new UdbUuid(Uuid::uuid4()->toString());
         $uuid2 = new UdbUuid(Uuid::uuid4()->toString());
@@ -53,12 +55,12 @@ final class Sapi3SearchServiceTest extends TestCase
         $searchClient->expects($this->once())
             ->method('searchOrganizers')
             ->with($this->callback(function (SearchQuery $result) use ($uuid1, $uuid2) {
-                $params = $result->toArray();
+                $q = new SearchQuery(true);
+                $q->addParameter(new Query(sprintf('id:"%s" OR id:"%s"', $uuid1->toString(), $uuid2->toString())));
+                $q->addParameter(new Query('labels:uitpas-antwerpen'));
 
-                return str_contains($params['q'], 'id:"' . $uuid1->toString() . '"') &&
-                    str_contains($params['q'], 'id:"' . $uuid2->toString() . '"') &&
-                    str_contains($params['q'], 'labels:uitpas-antwerpen') &&
-                    $params['embed'] === true;
+                $this->assertSame($result->toArray(), $q->toArray());
+                return true;
             }))
             ->willReturn(new PagedCollection());
 
