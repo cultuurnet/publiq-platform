@@ -80,7 +80,7 @@ final class UdbOrganizer extends Resource
 
                 return sprintf(
                     '<a href="%s" class="link-default">%s</a>',
-                    '/admin/resources/integrations/' . $model->toDomain()->integrationId->toString(),
+                    config('nova.path') . '/resources/integrations/' . $model->toDomain()->integrationId->toString(),
                     $integration->name ?? 'NA'
                 );
             })->asHtml(),
