@@ -123,8 +123,8 @@ final class UdbOrganizer extends Resource
                 $keycloakClient = $integration->getKeycloakClientByEnv(Environment::Production);
 
                 return sprintf(
-                    '<a class="link-default" target="_blank" href="https://test.uitid.be/uitid/rest/admin/uitpas/clientpermissions/%s">Open in UiTPAS</a>',
-                    $keycloakClient->clientId
+                    '<a class="link-default" target="_blank" href="%s">Open in UiTPAS</a>',
+                    config(UiTPASConfig::CLIENT_PERMISSIONS_URI->value) . $keycloakClient->clientId
                 );
             })->asHtml(),
 
