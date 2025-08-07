@@ -74,6 +74,17 @@ final class UdbOrganizer extends Resource
             Text::make('organizer id', 'organizer_id')
                 ->readonly(),
 
+            Text::make('Integration', static function (UdbOrganizerModel $model) {
+                $integrationRepository = App::get(IntegrationRepository::class);
+                $integration = $integrationRepository->getById($model->toDomain()->integrationId);
+
+                return sprintf(
+                    '<a href="%s" class="link-default">%s</a>',
+                    config('nova.path') . '/resources/integrations/' . $model->toDomain()->integrationId->toString(),
+                    $integration->name
+                );
+            })->asHtml(),
+
             Text::make('Name', static function (UdbOrganizerModel $model) {
                 /** @var UdbOrganizerNameResolver $udbOrganizerNameResolver */
                 $udbOrganizerNameResolver = App::get(UdbOrganizerNameResolver::class);
