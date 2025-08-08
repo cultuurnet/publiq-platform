@@ -11,6 +11,7 @@ use App\Domain\Integrations\Exceptions\KeycloakClientNotFound;
 use App\Domain\KeyVisibilityUpgrades\KeyVisibilityUpgrade;
 use App\Domain\Organizations\Organization;
 use App\Domain\Subscriptions\Subscription;
+use App\Domain\UdbUuid;
 use App\Keycloak\Client;
 use App\Keycloak\Client as KeycloakClient;
 use App\UiTiDv1\UiTiDv1Consumer;
@@ -279,5 +280,16 @@ final class Integration
             'website' => $this->website->value ?? null,
             'coupon' => $this->coupon ?? null,
         ];
+    }
+
+    public function getUdbOrganizerByOrgId(UdbUuid $udbId): ?UdbOrganizer
+    {
+        foreach ($this->udbOrganizers as $udbOrganizer) {
+            if ($udbOrganizer->organizerId->value === $udbId->value) {
+                return $udbOrganizer;
+            }
+        }
+
+        return null;
     }
 }

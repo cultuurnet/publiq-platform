@@ -1,6 +1,6 @@
 @include('mails.partials.header')
 
-<p>We hebben je aanvraag tot activatie voor de integratie met naam {{ $integrationName }} voor de organisator <strong>{{ $organizerName }}</strong> goed ontvangen.</p>
+<p>We hebben je aanvraag tot activatie voor de integratie met naam {{ $integrationName }} voor de organisator(en) <strong>{{ $organizerName }}</strong> goed ontvangen.</p>
 
 <h2>Bouw je voor de eerste keer een integratie met UiTPAS?</h2>
 <p>We vragen dan een kleine <strong>live demo</strong> om de correcte werking even te valideren. Contacteer
