@@ -34,15 +34,15 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidInterface;
+use Tests\GivenSubscription;
 use Tests\TestCase;
 
 final class EloquentIntegrationRepositoryTest extends TestCase
 {
     use RefreshDatabase;
+    use GivenSubscription;
 
     private EloquentIntegrationRepository $integrationRepository;
-    private EloquentSubscriptionRepository $subscriptionRepository;
 
     protected function setUp(): void
     {
@@ -60,7 +60,7 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         $integrationId = Uuid::uuid4();
         $subscriptionId = Uuid::uuid4();
 
-        $subscription = $this->givenThereIsASubscription($subscriptionId);
+        $this->givenThereIsASubscription($subscriptionId);
 
         $technicalContact = new Contact(
             Uuid::uuid4(),
@@ -875,29 +875,5 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'first_name' => 'Grote',
             'last_name' => 'Smurf',
         ]);
-    }
-
-    private function givenThereIsASubscription(
-        ?UuidInterface $id = null,
-        ?string $name = null,
-        ?string $description = null,
-        ?SubscriptionCategory $category = null,
-        ?IntegrationType $integrationType = null,
-        ?Currency $currency = null,
-        ?float $price = null,
-        ?float $fee = null
-    ): Subscription {
-        $subscription = new Subscription(
-            $id ?? Uuid::uuid4(),
-            $name ?? 'Mock Subscription',
-            $description ?? 'Mock description',
-            $category ?? SubscriptionCategory::Basic,
-            $integrationType ?? IntegrationType::SearchApi,
-            $currency ?? Currency::EUR,
-            $price ?? 100.0,
-            $fee ?? 50.0
-        );
-        $this->subscriptionRepository->save($subscription);
-        return $subscription;
     }
 }

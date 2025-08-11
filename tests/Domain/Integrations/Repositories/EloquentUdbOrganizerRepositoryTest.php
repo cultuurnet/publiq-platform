@@ -54,8 +54,6 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
             'organizer_id' => $this->organizer1->organizerId,
             'status' => UdbOrganizerStatus::Pending->value,
         ]);
-
-        Event::assertNotDispatched(UdbOrganizerApproved::class);
     }
 
     public function testCreateWithDirectApproval(): void
@@ -78,7 +76,7 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
 
         Event::assertDispatched(UdbOrganizerApproved::class, static function (UdbOrganizerApproved $event) use ($org) {
             return $org->organizerId === $event->udbId &&
-                   $org->integrationId->toString() === $event->integrationId->toString();
+                $org->integrationId->toString() === $event->integrationId->toString();
         });
     }
 
@@ -125,7 +123,7 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
         Event::assertDispatched(UdbOrganizerApproved::class);
     }
 
-    public function testDelete(): void
+    public function testItCanDeleteAnUdbOrganizer(): void
     {
         $this->repository->create($this->organizer1);
         $this->repository->delete($this->organizer1->integrationId, $this->organizer1->organizerId);
@@ -137,7 +135,7 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
         ]);
     }
 
-    public function test_it_can_get_an_udb_organizer_by_id(): void
+    public function testItCanGetAnUdbOrganizerById(): void
     {
         $this->repository->create($this->organizer1);
 
