@@ -35,7 +35,7 @@ final class BladeMailTemplateResolverTest extends TestCase
             'integration activated' => [
                 MailTemplate::INTEGRATION_ACTIVATED,
                 ['integrationName' => 'Mijn Integratie'],
-                'Je integratie Mijn Integratie is geactiveerd',
+                'Je integratie Mijn Integratie is geactiveerd!',
             ],
             'uitpas requested' => [
                 MailTemplate::ORGANISATION_UITPAS_REQUESTED,
