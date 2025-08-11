@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Search\Sapi3;
 
 use App\Domain\UdbUuid;
+use App\Search\UiTPAS\UiTPASLabelProvider;
 use CultuurNet\SearchV3\Parameter\Query;
 use CultuurNet\SearchV3\SearchClientInterface;
 use CultuurNet\SearchV3\SearchQuery;
@@ -13,7 +14,8 @@ use CultuurNet\SearchV3\ValueObjects\PagedCollection;
 final readonly class Sapi3SearchService implements SearchService
 {
     public function __construct(
-        private SearchClientInterface $searchClient
+        private SearchClientInterface $searchClient,
+        private UiTPASLabelProvider $uiTPASLabelProvider,
     ) {
     }
 
@@ -43,9 +45,14 @@ final readonly class Sapi3SearchService implements SearchService
         return $this->searchClient->searchOrganizers($searchQuery);
     }
 
-    public function addUiTPASLabels(SearchQuery $searchQuery): void
+
+    private function addUiTPASLabels(SearchQuery $searchQuery): void
     {
-        // CUA = internal label for orgs created by Publiq
-        $searchQuery->addParameter(new Query('labels:UiTPAS* OR labels:Paspartoe or labels:CUA'));
+        $labels = array_map(
+            static fn (string $value) => 'labels:' . $value,
+            $this->uiTPASLabelProvider->getLabels()
+        );
+
+        $searchQuery->addParameter(new Query(implode(' OR ', $labels)));
     }
 }

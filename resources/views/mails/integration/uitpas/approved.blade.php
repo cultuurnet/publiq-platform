@@ -1,9 +1,14 @@
 @include('mails.partials.header')
 
-<p>Je integratie met naam {{ $integrationName }} is geactiveerd voor de organisatie {{ $organizerName }}🎉.</p>
+<p>Je integratie met naam {{ $integrationName }} is geactiveerd voor de organisator <strong>{{ $organizerName }}</strong>.</p>
 
 <p>Je toegangssleutels voor de liveomgeving vind je op je integratiepagina:
     <a href="{{ $integrationDetailpage }}">{{ $integrationDetailpage }}</a>.</p>
+
+@include('mails.partials.button', [
+    'buttonText' => 'Bekijk integratie',
+    'organisationUrl' => $integrationDetailpage
+])
 
 <p>We horen ook graag van je hoe voor jou de integratie met onze API’s verliep. Wil je daarom onderstaande vragenlijst
     invullen?</p>

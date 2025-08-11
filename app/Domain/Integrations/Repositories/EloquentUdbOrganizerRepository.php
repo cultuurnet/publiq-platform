@@ -44,8 +44,8 @@ final class EloquentUdbOrganizerRepository implements UdbOrganizerRepository
             ->where('id', $organizer->id->toString())
             ->update(
                 [
-                'status' => $newStatus->value,
-            ]
+                    'status' => $newStatus->value,
+                ]
             );
 
         if ($newStatus === UdbOrganizerStatus::Approved) {
@@ -55,10 +55,12 @@ final class EloquentUdbOrganizerRepository implements UdbOrganizerRepository
 
     public function delete(UuidInterface $integrationId, UdbUuid $organizerId): void
     {
-        UdbOrganizerModel::query()
+        $model = UdbOrganizerModel::query()
             ->where('integration_id', $integrationId->toString())
             ->where('organizer_id', $organizerId->toString())
-            ->delete();
+            ->firstOrFail();
+
+        $model->delete();
     }
 
     public function getById(UuidInterface $id): UdbOrganizer

@@ -171,21 +171,7 @@ final class UdbOrganizer extends Resource
     {
         $actions = [];
         if (config(UiTPASConfig::AUTOMATIC_PERMISSIONS_ENABLED->value)) {
-            $approveUdbOrganizer = new ApproveUdbOrganizer(
-                App::make(UdbOrganizerRepository::class),
-                App::make(IntegrationRepository::class),
-                App::make(UiTPASApiInterface::class),
-                ClientCredentialsContextFactory::getUitIdProdContext(),
-            );
-
-            $revokeUdbOrganizer = new RevokeUdbOrganizer(
-                App::make(UdbOrganizerRepository::class),
-                App::make(IntegrationRepository::class),
-                App::make(UiTPASApiInterface::class),
-                ClientCredentialsContextFactory::getUitIdProdContext(),
-            );
-
-            $actions[] = $approveUdbOrganizer
+            $actions[] = (new ApproveUdbOrganizer(App::make(UdbOrganizerRepository::class)))
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to active this organizer in UiTPAS?')
                 ->confirmButtonText('Activate')
@@ -201,7 +187,7 @@ final class UdbOrganizer extends Resource
                 ->canRun(fn (Request $request, UdbOrganizerModel $model) => $model->toDomain()->status === UdbOrganizerStatus::Pending)
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->isStatusPending());
 
-            $actions[] = $revokeUdbOrganizer
+            $actions[] = (new RevokeUdbOrganizer(App::make(UdbOrganizerRepository::class)))
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to revoke these organizer permissions?')
                 ->confirmButtonText('Revoke')

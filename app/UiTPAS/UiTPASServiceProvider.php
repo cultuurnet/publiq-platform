@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\UiTPAS;
 
 use App\Api\TokenStrategy\ClientCredentials;
-use App\Domain\Integrations\Events\UdbOrganizerCreated;
+use App\Domain\Integrations\Events\IntegrationActivationRequested;
+use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\GetIntegrationOrganizersWithTestOrganizer;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Keycloak\Events\ClientCreated;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Mails\Smtp\MailTemplateResolver;
@@ -18,10 +18,13 @@ use App\Notifications\Slack\SlackNotifier;
 use App\Search\Sapi3\SearchService;
 use App\Search\UdbOrganizerNameResolver;
 use App\UiTPAS\Event\UdbOrganizerApproved;
+use App\UiTPAS\Event\UdbOrganizerDeleted;
 use App\UiTPAS\Event\UdbOrganizerRejected;
+use App\UiTPAS\Event\UdbOrganizerRequested;
 use App\UiTPAS\Listeners\AddUiTPASPermissionsToOrganizerForIntegration;
 use App\UiTPAS\Listeners\NotifyUdbOrganizerRequested;
-use App\UiTPAS\Listeners\SendMailForUdbOrganizer;
+use App\UiTPAS\Listeners\RevokeUiTPASPermissions;
+use App\UiTPAS\Listeners\SendUiTPASMails;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Routing\UrlGenerator;
@@ -54,7 +57,9 @@ final class UiTPASServiceProvider extends ServiceProvider
                 $this->app->get(IntegrationRepository::class),
                 $this->app->get(KeycloakClientRepository::class),
                 $this->app->get(UiTPASApiInterface::class),
-                ClientCredentialsContextFactory::getUitIdTestContext()
+                ClientCredentialsContextFactory::getUitIdTestContext(),
+                ClientCredentialsContextFactory::getUitIdProdContext(),
+                $this->app->get(LoggerInterface::class),
             );
         });
 
@@ -69,7 +74,6 @@ final class UiTPASServiceProvider extends ServiceProvider
 
         $this->app->singleton(NotifyUdbOrganizerRequested::class, function () {
             return new NotifyUdbOrganizerRequested(
-                $this->app->get(UdbOrganizerRepository::class),
                 $this->app->get(IntegrationRepository::class),
                 new SlackNotifier(
                     config('slack.botToken'),
@@ -85,17 +89,16 @@ final class UiTPASServiceProvider extends ServiceProvider
         $this->app->singleton(SmtpMailer::class, function () {
             return new SmtpMailer(
                 new SymfonyMailer(
-                    Transport::fromDsn($this->getSmtpDsn())
+                    Transport::fromDsn(config('mail.mailers.smtp.dsn'))
                 ),
                 $this->app->get(MailTemplateResolver::class),
                 $this->app->get(LoggerInterface::class),
             );
         });
 
-        $this->app->singleton(SendMailForUdbOrganizer::class, function () {
-            return new SendMailForUdbOrganizer(
+        $this->app->singleton(SendUiTPASMails::class, function () {
+            return new SendUiTPASMails(
                 $this->app->get(SmtpMailer::class),
-                $this->app->get(UdbOrganizerRepository::class),
                 $this->app->get(IntegrationRepository::class),
                 $this->app->get(UdbOrganizerNameResolver::class),
                 $this->app->get(SearchService::class),
@@ -113,32 +116,16 @@ final class UiTPASServiceProvider extends ServiceProvider
             return;
         }
 
-        Event::listen(ClientCreated::class, [AddUiTPASPermissionsToOrganizerForIntegration::class, 'handle']);
-        Event::listen(UdbOrganizerCreated::class, [NotifyUdbOrganizerRequested::class, 'handle']);
+        Event::listen(ClientCreated::class, [AddUiTPASPermissionsToOrganizerForIntegration::class, 'handleCreateTestPermissions']);
+        Event::listen(UdbOrganizerApproved::class, [AddUiTPASPermissionsToOrganizerForIntegration::class, 'handleCreateProductionPermissions']);
+        Event::listen(UdbOrganizerDeleted::class, [RevokeUiTPASPermissions::class, 'handle']);
 
-        Event::listen(UdbOrganizerCreated::class, [SendMailForUdbOrganizer::class, 'handleUdbOrganizerCreated']);
-        Event::listen(UdbOrganizerApproved::class, [SendMailForUdbOrganizer::class, 'handleUdbOrganizerApproved']);
-        Event::listen(UdbOrganizerRejected::class, [SendMailForUdbOrganizer::class, 'handleUdbOrganizerRejected']);
-    }
+        Event::listen(UdbOrganizerRequested::class, [NotifyUdbOrganizerRequested::class, 'handle']);
 
-    private function getSmtpDsn(): string
-    {
-        $smtp = config('mail.mailers.smtp');
-
-        if (!empty($smtp['username']) && !empty($smtp['password'])) {
-            return sprintf(
-                'smtp://%s:%s@%s:%d',
-                urlencode($smtp['username']),
-                urlencode($smtp['password']),
-                $smtp['host'],
-                $smtp['port']
-            );
-        }
-
-        return sprintf(
-            'smtp://%s:%d',
-            $smtp['host'],
-            $smtp['port']
-        );
+        Event::listen(IntegrationCreatedWithContacts::class, [SendUiTPASMails::class, 'handleIntegrationCreatedWithContacts']);
+        Event::listen(IntegrationActivationRequested::class, [SendUiTPASMails::class, 'handleIntegrationActivationRequested']);
+        Event::listen(UdbOrganizerRequested::class, [SendUiTPASMails::class, 'handleUdbOrganizerRequested']);
+        Event::listen(UdbOrganizerApproved::class, [SendUiTPASMails::class, 'handleUdbOrganizerApproved']);
+        Event::listen(UdbOrganizerRejected::class, [SendUiTPASMails::class, 'handleUdbOrganizerRejected']);
     }
 }
