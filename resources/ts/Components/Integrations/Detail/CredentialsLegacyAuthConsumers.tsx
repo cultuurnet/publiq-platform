@@ -35,12 +35,14 @@ export const CredentialsLegacyAuthConsumers = ({
   oldCredentialsExpirationDate: oldCredentialsExpirationDateString,
 }: Props) => {
   const { t, i18n } = useTranslation();
-  const oldCredentialsExpirationDate = new Date(
-    oldCredentialsExpirationDateString
-  );
-  const timeLeft = formatDistanceToNow(oldCredentialsExpirationDate, {
-    locale: languageToLocale[i18n.language],
-  });
+  const oldCredentialsExpirationDate = oldCredentialsExpirationDateString
+    ? new Date(oldCredentialsExpirationDateString)
+    : null;
+  const timeLeft = oldCredentialsExpirationDate
+    ? formatDistanceToNow(oldCredentialsExpirationDate, {
+        locale: languageToLocale[i18n.language],
+      })
+    : null;
 
   return (
     <div className="flex w-full max-lg:flex-col gap-6 border-b pb-10 border-gray-300">
@@ -76,7 +78,7 @@ export const CredentialsLegacyAuthConsumers = ({
                   </div>
                 )}
                 {keyVisibility === KeyVisibility.all &&
-                  oldCredentialsExpirationDate && (
+                  !!oldCredentialsExpirationDate && (
                     <Alert variant="info">
                       {t("details.credentials.info", {
                         date: oldCredentialsExpirationDate.toLocaleDateString(),
