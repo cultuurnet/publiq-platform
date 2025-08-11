@@ -79,13 +79,6 @@ final class SendUiTPASMails implements ShouldQueue
             return;
         }
 
-        /*
-        if ($udbOrganizer->status !== UdbOrganizerStatus::Pending) {
-            // In the case of an admin created organizer it will directly have status approved.
-            return;
-        }
-        */
-
         $this->sendMailWithSingleOrganizer(
             $event->integrationId,
             $event->udbId,

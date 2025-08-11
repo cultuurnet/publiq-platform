@@ -57,17 +57,13 @@ final class SendUiTPASMailsMailpitTest extends TestCase
 
     private SendUiTPASMails $listener;
     private UuidInterface $subscriptionId;
-    private ?string $mailpitUri = null;
+    private string $mailpitUri;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->mailpitUri = config('mail.mailers.mailpit.dsn');
-
-        if ($this->mailpitUri === null) {
-            return;
-        }
+        $this->mailpitUri = config('mail.mailers.mailpit.api_url');
 
         $searchService = $this->createMock(SearchService::class);
         $searchService
@@ -107,10 +103,6 @@ final class SendUiTPASMailsMailpitTest extends TestCase
         string $name,
         string $subject
     ): void {
-        if (empty($this->mailpitUri)) {
-            $this->markTestSkipped('MAILPIT_DSN is not set, skipping email tests.');
-        }
-
         if ($event instanceof UdbOrganizerApproved || $event instanceof UdbOrganizerRejected || $event instanceof UdbOrganizerRequested) {
             $integrationId = $event->integrationId;
         } else {

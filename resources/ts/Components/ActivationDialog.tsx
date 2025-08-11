@@ -5,7 +5,7 @@ import { ButtonPrimary } from "./ButtonPrimary";
 import { FormElement } from "./FormElement";
 import { Input } from "./Input";
 import { useForm } from "@inertiajs/react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { IntegrationType } from "../types/IntegrationType";
 import { useIsMobile } from "../hooks/useIsMobile";
 import type { Subscription } from "../types/Subscription";
@@ -16,6 +16,7 @@ import { CouponInfoContext } from "../Context/CouponInfo";
 import type { Organization } from "../types/Organization";
 import type { UiTPASOrganizer } from "../types/UiTPASOrganizer";
 import { OrganizersDatalist } from "./Integrations/Detail/OrganizersDatalist";
+import { Link } from "./Link";
 
 const PriceOverview = ({
   coupon,
@@ -275,6 +276,23 @@ export const ActivationDialog = ({
                 organizationForm.setData("organizers", organizers)
               }
             />
+            <p>
+              <Trans
+                i18nKey="integrations.activation_dialog.uitpas.organizers.extra_info"
+                t={t}
+                components={[
+                  <Link
+                    key={t(
+                      "integrations.activation_dialog.uitpas.organizers.extra_info"
+                    )}
+                    href={t(
+                      "integrations.activation_dialog.uitpas.organizers.email"
+                    )}
+                    className="text-publiq-blue-dark hover:underline mb-3"
+                  />,
+                ]}
+              />
+            </p>
           </div>
         )}
         {isBillingInfoAndPriceOverviewVisible && (

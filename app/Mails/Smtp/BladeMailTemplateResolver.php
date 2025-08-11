@@ -21,10 +21,10 @@ final readonly class BladeMailTemplateResolver implements MailTemplateResolver
     ) {
         $this->templates = [
             MailTemplate::INTEGRATION_CREATED->value => 'integration.uitpas.created',
-            MailTemplate::ORGANISATION_UITPAS_REQUESTED->value => 'UdbOrganizer.requested',
-            MailTemplate::INTEGRATION_ACTIVATED->value => 'integration.uitpas.activated',
-            MailTemplate::ORGANISATION_UITPAS_APPROVED->value => 'UdbOrganizer.approved',
-            MailTemplate::ORGANISATION_UITPAS_REJECTED->value => 'UdbOrganizer.rejected',
+            MailTemplate::ORGANISATION_UITPAS_REQUESTED->value => 'integration.uitpas.requested',
+            MailTemplate::INTEGRATION_ACTIVATED->value => 'integration.activated',
+            MailTemplate::ORGANISATION_UITPAS_APPROVED->value => 'integration.uitpas.approved',
+            MailTemplate::ORGANISATION_UITPAS_REJECTED->value => 'integration.uitpas.rejected',
         ];
         $this->subjects = [
             MailTemplate::INTEGRATION_CREATED->value => 'Je integratie {{ $integrationName }} is succesvol aangemaakt!',

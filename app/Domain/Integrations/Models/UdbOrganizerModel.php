@@ -40,6 +40,9 @@ final class UdbOrganizerModel extends UuidModel
             static function (self $model) {
                 UdbOrganizerCreated::dispatch(Uuid::fromString($model->id));
                 if ($model->status === UdbOrganizerStatus::Pending->value) {
+                    /* This event signals that an integrator has requested an organizer, as opposed to UdbOrganizerCreated, which is dispatched for every new organizer (regardless of status).
+                    * The distinction allows handling different flows: "requested" (pending, by integrator) vs "approved" (created by admin in Nova).
+                    */
                     UdbOrganizerRequested::dispatch(new UdbUuid($model->id), Uuid::fromString($model->integration_id));
                 }
             },
