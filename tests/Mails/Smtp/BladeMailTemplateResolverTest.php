@@ -70,7 +70,7 @@ final class BladeMailTemplateResolverTest extends TestCase
         $this->viewFactory
             ->expects($this->once())
             ->method('make')
-            ->with('mails.integration.uitpas.activated', ['foo' => 'bar'])
+            ->with('mails.integration.activated', ['foo' => 'bar'])
             ->willReturn($view);
 
         $output = $this->resolver->render(
