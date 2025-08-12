@@ -33,10 +33,6 @@ final class MailServiceProvider extends ServiceProvider
             return $this->app->get(BladeMailTemplateResolver::class);
         });
 
-        if (!config(MailjetConfig::TRANSACTIONAL_EMAILS_ENABLED)) {
-            return;
-        }
-
         $this->app->singleton(Mailer::class, function () {
             return new MailjetMailer(
                 new Client(
