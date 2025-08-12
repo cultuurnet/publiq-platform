@@ -43,6 +43,13 @@ export const CredentialsLegacyAuthConsumers = ({
         locale: languageToLocale[i18n.language],
       })
     : null;
+  const isExpired = oldCredentialsExpirationDate
+    ? oldCredentialsExpirationDate < new Date()
+    : false;
+
+  if (isExpired) {
+    return null;
+  }
 
   return (
     <div className="flex w-full max-lg:flex-col gap-6 border-b pb-10 border-gray-300">
