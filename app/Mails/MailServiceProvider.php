@@ -15,15 +15,15 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Mail\Mailer;
 use App\Domain\Mail\MailManager;
 use App\Mails\MailJet\MailjetConfig;
-use App\Mails\MailJet\MailjetMailer;
-use App\Mails\MailJet\SandboxMode;
 use App\Mails\Smtp\BladeMailTemplateResolver;
 use App\Mails\Smtp\MailTemplateResolver;
+use App\Mails\Smtp\SmtpMailer;
 use App\Mails\Template\Templates;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
-use Mailjet\Client;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Mailer\Mailer as SymfonyMailer;
+use Symfony\Component\Mailer\Transport;
 
 final class MailServiceProvider extends ServiceProvider
 {
@@ -34,18 +34,12 @@ final class MailServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(Mailer::class, function () {
-            return new MailjetMailer(
-                new Client(
-                    config(MailjetConfig::API_KEY),
-                    config(MailjetConfig::API_SECRET),
-                    true,
-                    ['version' => 'v3.1']
+            return new SmtpMailer(
+                new SymfonyMailer(
+                    Transport::fromDsn(config('mail.mailers.smtp.dsn'))
                 ),
+                $this->app->get(MailTemplateResolver::class),
                 $this->app->get(LoggerInterface::class),
-                new SandboxMode(
-                    config(MailjetConfig::SANDBOX_MODE),
-                    config(MailjetConfig::SANDBOX_ALLOWED_DOMAINS)
-                )
             );
         });
 

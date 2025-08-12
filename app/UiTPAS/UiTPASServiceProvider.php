@@ -9,6 +9,7 @@ use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\GetIntegrationOrganizersWithTestOrganizer;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Domain\Mail\Mailer;
 use App\Keycloak\Events\ClientCreated;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Mails\Smtp\MailTemplateResolver;
@@ -85,20 +86,9 @@ final class UiTPASServiceProvider extends ServiceProvider
             );
         });
 
-
-        $this->app->singleton(SmtpMailer::class, function () {
-            return new SmtpMailer(
-                new SymfonyMailer(
-                    Transport::fromDsn(config('mail.mailers.smtp.dsn'))
-                ),
-                $this->app->get(MailTemplateResolver::class),
-                $this->app->get(LoggerInterface::class),
-            );
-        });
-
         $this->app->singleton(SendUiTPASMails::class, function () {
             return new SendUiTPASMails(
-                $this->app->get(SmtpMailer::class),
+                $this->app->get(Mailer::class),
                 $this->app->get(IntegrationRepository::class),
                 $this->app->get(UdbOrganizerNameResolver::class),
                 $this->app->get(SearchService::class),
