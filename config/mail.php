@@ -35,6 +35,11 @@ return [
     |
     */
 
+    'timers' => [
+        'expiration_timers' => env('MAILJET_EXPIRATION_TIMERS'),
+        'expiration_timers_final_reminder' => env('MAILJET_EXPIRATION_TIMERS_FINAL_REMINDER'),
+    ],
+
     'mailers' => [
         'smtp' => [
             'transport' => 'smtp',

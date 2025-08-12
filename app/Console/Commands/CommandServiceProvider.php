@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Mails\MailConfig;
 use App\Mails\MailJet\MailjetConfig;
 use Illuminate\Support\ServiceProvider;
 use Psr\Log\LoggerInterface;
@@ -17,8 +18,8 @@ final class CommandServiceProvider extends ServiceProvider
             return new SearchExpiredIntegrations(
                 $this->app->get(IntegrationRepository::class),
                 $this->app->get(LoggerInterface::class),
-                config(MailjetConfig::MAILJET_EXPIRATION_TIMERS),
-                config(MailjetConfig::MAILJET_EXPIRATION_TIMERS_FINAL_REMINDER),
+                config(MailConfig::INTEGRATION_EXPIRATION_TIMER->value),
+                config(MailConfig::INTEGRATION_EXPIRATION_TIMER_FINAL_REMINDER->value),
             );
         });
     }
