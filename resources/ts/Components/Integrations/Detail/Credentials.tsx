@@ -17,7 +17,7 @@ import { KeycloakEnvironment } from "../../../types/KeycloakEnvironment";
 
 type Props = Integration & {
   email: string;
-  oldCredentialsExpirationDate: string;
+  keyVisibleUntil: string;
 };
 
 export type Credentials = {
@@ -37,7 +37,7 @@ export const Credentials = ({
   keyVisibilityUpgrade,
   legacyAuthConsumers,
   authClients,
-  oldCredentialsExpirationDate,
+  keyVisibleUntil,
 }: Props) => {
   const { t } = useTranslation();
   const hasCredentials =
@@ -96,7 +96,7 @@ export const Credentials = ({
           type={type}
           subscription={subscription}
           keyVisibility={keyVisibility}
-          oldCredentialsExpirationDate={oldCredentialsExpirationDate}
+          keyVisibleUntil={keyVisibleUntil}
         />
       )}
       <CredentialsAuthClients
