@@ -35,7 +35,7 @@ export const Link = ({
   hasExternalIcon = false,
   ...props
 }: LinkProps) => {
-  const isExternal = isExternalLink(href);
+  const isExternal = href ? isExternalLink(href) : false;
 
   return (
     <>
