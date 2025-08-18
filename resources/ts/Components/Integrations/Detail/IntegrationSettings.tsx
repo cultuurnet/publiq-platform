@@ -12,7 +12,7 @@ import { QuestionDialog } from "../../QuestionDialog";
 import { KeyVisibility } from "../../../types/KeyVisibility";
 import type { IntegrationUrl } from "../../../types/IntegrationUrl";
 import type { Integration } from "../../../types/Integration";
-import type { FormDataConvertible, FormDataType } from "@inertiajs/core";
+import type { FormDataType } from "@inertiajs/core";
 
 export const NEW_URL_ID_PREFIX = "new-";
 

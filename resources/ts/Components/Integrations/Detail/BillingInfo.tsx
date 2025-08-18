@@ -12,7 +12,7 @@ import { PricingPlanContext } from "../../../Context/PricingPlan";
 import { formatCurrency } from "../../../utils/formatCurrency";
 import { formatPricing } from "../../../utils/formatPricing";
 import type { Integration } from "../../../types/Integration";
-import { Organization } from "../../../types/Organization";
+import type { Organization } from "../../../types/Organization";
 
 type Props = Integration;
 
