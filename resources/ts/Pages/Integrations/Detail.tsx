@@ -28,7 +28,7 @@ type Props = {
   integration: Integration;
   email: string;
   subscriptions: Subscription[];
-  oldCredentialsExpirationDate: string;
+  keyVisibleUntil: string;
   errors: Record<string, string | undefined>;
   organizers: Organizer[];
 };
@@ -37,7 +37,7 @@ const Detail = ({
   integration,
   email,
   subscriptions,
-  oldCredentialsExpirationDate,
+  keyVisibleUntil,
   organizers,
   errors,
 }: Props) => {
@@ -153,7 +153,7 @@ const Detail = ({
                   <Credentials
                     {...integration}
                     email={email}
-                    oldCredentialsExpirationDate={oldCredentialsExpirationDate}
+                    keyVisibleUntil={keyVisibleUntil}
                   />
                 </Tabs.Item>
                 {isUitpasIntegration && (

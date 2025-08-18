@@ -16,7 +16,7 @@ type Props = Pick<
   Integration,
   "id" | "status" | "subscription" | "type" | "keyVisibility"
 > &
-  Credentials & { email: string; oldCredentialsExpirationDate: string };
+  Credentials & { email: string; keyVisibleUntil: string };
 
 const languageToLocale: { [key: string]: Locale } = {
   nl: nlBE,
@@ -32,20 +32,18 @@ export const CredentialsLegacyAuthConsumers = ({
   subscription,
   type,
   keyVisibility,
-  oldCredentialsExpirationDate: oldCredentialsExpirationDateString,
+  keyVisibleUntil: keyVisibleUntilDateString,
 }: Props) => {
   const { t, i18n } = useTranslation();
-  const oldCredentialsExpirationDate = oldCredentialsExpirationDateString
-    ? new Date(oldCredentialsExpirationDateString)
+  const keyVisibleUntil = keyVisibleUntilDateString
+    ? new Date(keyVisibleUntilDateString)
     : null;
-  const timeLeft = oldCredentialsExpirationDate
-    ? formatDistanceToNow(oldCredentialsExpirationDate, {
+  const timeLeft = keyVisibleUntil
+    ? formatDistanceToNow(keyVisibleUntil, {
         locale: languageToLocale[i18n.language],
       })
     : null;
-  const isExpired = oldCredentialsExpirationDate
-    ? oldCredentialsExpirationDate < new Date()
-    : false;
+  const isExpired = keyVisibleUntil ? keyVisibleUntil < new Date() : false;
 
   if (isExpired) {
     return null;
@@ -84,15 +82,14 @@ export const CredentialsLegacyAuthConsumers = ({
                     <CopyText isSecret text={legacyProdConsumer.apiKey} />
                   </div>
                 )}
-                {keyVisibility === KeyVisibility.all &&
-                  !!oldCredentialsExpirationDate && (
-                    <Alert variant="info">
-                      {t("details.credentials.info", {
-                        date: oldCredentialsExpirationDate.toLocaleDateString(),
-                        amount: timeLeft,
-                      })}
-                    </Alert>
-                  )}
+                {keyVisibility === KeyVisibility.all && !!keyVisibleUntil && (
+                  <Alert variant="info">
+                    {t("details.credentials.info", {
+                      date: keyVisibleUntil.toLocaleDateString(),
+                      amount: timeLeft,
+                    })}
+                  </Alert>
+                )}
               </div>
             )}
             {status === IntegrationStatus.Draft &&
