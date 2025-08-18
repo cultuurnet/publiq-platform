@@ -12,6 +12,7 @@ import { PricingPlanContext } from "../../../Context/PricingPlan";
 import { formatCurrency } from "../../../utils/formatCurrency";
 import { formatPricing } from "../../../utils/formatPricing";
 import type { Integration } from "../../../types/Integration";
+import type { Organization } from "../../../types/Organization";
 
 type Props = Integration;
 
@@ -24,7 +25,7 @@ export const BillingInfo = ({
 }: Props) => {
   const { t } = useTranslation();
   const initialFormValues = {
-    organization,
+    organization: organization ?? ({} as Organization),
   };
 
   const { data, setData, patch, errors: err } = useForm(initialFormValues);
