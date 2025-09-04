@@ -10,4 +10,5 @@ enum SubscriptionCategory: string
     case Basic = 'Basic';
     case Plus = 'Plus';
     case Custom = 'Custom';
+    case Uitnetwerk = 'Uitnetwerk';
 }
