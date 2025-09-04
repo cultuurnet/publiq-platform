@@ -69,7 +69,7 @@
       }
     },
     "uitnetwerk": {
-      "title": "I am a member of the UiT network or I provide technical support to a UiT network member.",
+      "title": "I am a member of (or work on behalf of a member of) the UiT network.",
       "price": "Refer to membership",
       "description": {
         "search-api": "For UiTnetwork members only.",
