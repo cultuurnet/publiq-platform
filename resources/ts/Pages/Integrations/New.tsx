@@ -69,9 +69,6 @@ const New = ({ subscriptions }: Props) => {
   const basicPricingPlan = pricingPlans.find(
     (it) => it.category === SubscriptionCategory.Basic
   );
-  const uitnetwerkPricingPlan = pricingPlans.find(
-    (it) => it.category === SubscriptionCategory.Uitnetwerk
-  );
 
   const defaultPricingPlan = freePricingPlan ?? basicPricingPlan;
 
