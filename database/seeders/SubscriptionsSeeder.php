@@ -90,6 +90,26 @@ final class SubscriptionsSeeder extends Seeder
                 0,
                 0
             ),
+            SubscriptionUuid::UITNETWERK_SEARCH_API_PLAN => new Subscription(
+                $subscriptionId,
+                'Search API - UiTnetwerk Plan',
+                'UiTnetwerk Plan for integrating with Search API',
+                SubscriptionCategory::Uitnetwerk,
+                IntegrationType::SearchApi,
+                Currency::EUR,
+                0,
+                0
+            ),
+            SubscriptionUuid::UITNETWERK_WIDGETS_PLAN => new Subscription(
+                $subscriptionId,
+                'Widgets - UiTnetwerk Plan',
+                'UiTnetwerk Plan for integrating with Widgets',
+                SubscriptionCategory::Uitnetwerk,
+                IntegrationType::Widgets,
+                Currency::EUR,
+                0,
+                0
+            ),
         };
     }
 
