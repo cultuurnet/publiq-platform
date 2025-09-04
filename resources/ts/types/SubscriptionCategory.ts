@@ -5,6 +5,7 @@ export const SubscriptionCategory = {
   Basic: "Basic",
   Plus: "Plus",
   Custom: "Custom",
+  UiTnetwerk: "UiTnetwerk",
 } as const;
 
 export type SubscriptionCategory = Values<typeof SubscriptionCategory>;
