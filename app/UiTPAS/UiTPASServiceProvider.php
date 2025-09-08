@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\UiTPAS;
 
-use App\Api\ClientCredentialsContext;
 use App\Api\TokenStrategy\ClientCredentials;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
