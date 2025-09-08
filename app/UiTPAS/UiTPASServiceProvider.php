@@ -85,7 +85,6 @@ final class UiTPASServiceProvider extends ServiceProvider
             );
         });
 
-
         $this->app->singleton(SmtpMailer::class, function () {
             return new SmtpMailer(
                 new SymfonyMailer(
@@ -104,6 +103,15 @@ final class UiTPASServiceProvider extends ServiceProvider
                 $this->app->get(SearchService::class),
                 $this->app->get(UrlGenerator::class),
                 new Address(config('mail.from.address'), config('mail.from.name')),
+            );
+        });
+
+        $this->app->singleton(RevokeUiTPASPermissions::class, function () {
+            return new RevokeUiTPASPermissions(
+                $this->app->get(IntegrationRepository::class),
+                $this->app->get(UiTPASApiInterface::class),
+                ClientCredentialsContextFactory::getUitIdProdContext(),
+                $this->app->get(LoggerInterface::class),
             );
         });
 
