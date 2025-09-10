@@ -121,7 +121,7 @@ export const BillingInfo = ({
                     <Input
                       type="text"
                       name="organization.address.street"
-                      value={data.organization.address.street}
+                      value={data.organization?.address?.street ?? ""}
                       onChange={(e) =>
                         setData("organization", {
                           // We know organization exists
@@ -143,7 +143,7 @@ export const BillingInfo = ({
                     <Input
                       type="text"
                       name="organization.address.zip"
-                      value={data.organization.address.zip}
+                      value={data.organization?.address?.zip ?? ""}
                       onChange={(e) =>
                         setData("organization", {
                           // We know organization exists
@@ -165,7 +165,7 @@ export const BillingInfo = ({
                     <Input
                       type="text"
                       name="organization.address.city"
-                      value={data.organization?.address.city}
+                      value={data.organization?.address?.city ?? ""}
                       onChange={(e) =>
                         setData("organization", {
                           // We know organization exists
