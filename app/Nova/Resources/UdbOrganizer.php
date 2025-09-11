@@ -89,7 +89,6 @@ final class UdbOrganizer extends Resource
                     config('nova.path') . '/resources/integrations/' . $model->toDomain()->integrationId->toString(),
                     $integration->name
                 );
-
             })->asHtml(),
 
             Text::make('Name', static function (UdbOrganizerModel $model) {
