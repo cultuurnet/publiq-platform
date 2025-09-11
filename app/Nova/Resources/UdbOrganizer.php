@@ -23,7 +23,7 @@ use App\UiTPAS\Dto\UiTPASPermissionDetail;
 use App\UiTPAS\UiTPASApi;
 use App\UiTPAS\UiTPASApiInterface;
 use App\UiTPAS\UiTPASConfig;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Laravel\Nova\Fields\DateTime;
@@ -53,6 +53,13 @@ final class UdbOrganizer extends Resource
         'status',
     ];
 
+    public static function indexQuery(NovaRequest $request, Builder $query): Builder
+    {
+        return $query->whereHas('integration', function ($q) {
+            $q->whereNull('deleted_at');
+        });
+    }
+
     public static function label(): string
     {
         return 'UiTPAS organizers';
@@ -78,11 +85,7 @@ final class UdbOrganizer extends Resource
 
             Text::make('Integration', static function (UdbOrganizerModel $model) {
                 $integrationRepository = App::get(IntegrationRepository::class);
-                try {
-                    $integration = $integrationRepository->getById($model->toDomain()->integrationId);
-                } catch (ModelNotFoundException) {
-                    return 'Integration not found';
-                }
+                $integration = $integrationRepository->getById($model->toDomain()->integrationId);
 
                 return sprintf(
                     '<a href="%s" class="link-default">%s</a>',
@@ -131,8 +134,6 @@ final class UdbOrganizer extends Resource
                     $keycloakClient = $integration->getKeycloakClientByEnv(Environment::Production);
                 } catch (KeycloakClientNotFound) {
                     return 'No Keycloak client found';
-                } catch (ModelNotFoundException) {
-                    return 'Integration not found';
                 }
 
                 return sprintf(
