@@ -11,10 +11,13 @@ use App\Domain\UdbUuid;
 use App\Models\UuidModel;
 use App\UiTPAS\Event\UdbOrganizerDeleted;
 use App\UiTPAS\Event\UdbOrganizerRequested;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 
 final class UdbOrganizerModel extends UuidModel
 {
+    use SoftDeletes;
+
     protected $table = 'udb_organizers';
 
     protected $fillable = [

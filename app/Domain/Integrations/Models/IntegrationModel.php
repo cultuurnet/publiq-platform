@@ -138,6 +138,11 @@ final class IntegrationModel extends UuidModel
         self::softDeleted(
             static fn (IntegrationModel $integrationModel) => IntegrationDeleted::dispatch(Uuid::fromString($integrationModel->id))
         );
+        self::softDeleted(function ($integration) {
+            $integration->udbOrganizers()->each(function ($organizer) {
+                $organizer->delete();
+            });
+        });
     }
 
     public function delete(): ?bool
