@@ -12,8 +12,6 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Mail\Mailer;
 use App\Keycloak\Events\ClientCreated;
 use App\Keycloak\Repositories\KeycloakClientRepository;
-use App\Mails\Smtp\MailTemplateResolver;
-use App\Mails\Smtp\SmtpMailer;
 use App\Notifications\MessageBuilder;
 use App\Notifications\Slack\SlackNotifier;
 use App\Search\Sapi3\SearchService;
@@ -32,8 +30,6 @@ use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Mailer\Mailer as SymfonyMailer;
-use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mime\Address;
 
 final class UiTPASServiceProvider extends ServiceProvider

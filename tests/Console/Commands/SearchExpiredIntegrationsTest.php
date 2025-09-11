@@ -8,7 +8,6 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Events\ActivationExpired;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
-use App\Mails\MailJet\MailjetConfig;
 use App\Mails\Template\TemplateName;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;

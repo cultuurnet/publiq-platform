@@ -6,7 +6,6 @@ namespace App\Console\Commands;
 
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Mails\MailConfig;
-use App\Mails\MailJet\MailjetConfig;
 use Illuminate\Support\ServiceProvider;
 use Psr\Log\LoggerInterface;
 
