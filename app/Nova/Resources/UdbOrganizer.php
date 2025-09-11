@@ -127,8 +127,7 @@ final class UdbOrganizer extends Resource
                 $integrationRepository = App::get(IntegrationRepository::class);
                 $integration = $integrationRepository->getById($model->toDomain()->integrationId);
                 try {
-                    // The acceptance server does not have a production environment, so we fallback to testing if production is not found
-                    // Also, sometimes because issues on the keycloak side the Prod keys are not generated, breaking the entire admin udb organizer screen
+                    // Sometimes because issues on the keycloak side the Prod keys are not generated, breaking the entire admin udb organizer screen
                     $keycloakClient = $integration->getKeycloakClientByEnv(Environment::Production);
                 } catch (\Throwable) {
                     try {
