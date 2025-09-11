@@ -67,6 +67,14 @@
         "search-api": "We will contact you for a tailored solution that meets your use case and target audience.",
         "widgets": "We will contact you for a tailored solution that meets your use case and target audience."
       }
+    },
+    "uitnetwerk": {
+      "title": "I am a member of (or work on behalf of a member of) the UiT network.",
+      "price": "Refer to membership",
+      "description": {
+        "search-api": "For UiTnetwerk members only.",
+        "widgets": "For UiTnetwerk members only."
+      }
     }
   },
   "home": {
