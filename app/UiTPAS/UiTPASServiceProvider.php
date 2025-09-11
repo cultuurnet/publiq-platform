@@ -128,7 +128,8 @@ final class UiTPASServiceProvider extends ServiceProvider
         Event::listen(UdbOrganizerApproved::class, [AddUiTPASPermissionsToOrganizerForIntegration::class, 'handleCreateProductionPermissions']);
         Event::listen(UdbOrganizerDeleted::class, [RevokeUiTPASPermissions::class, 'handle']);
 
-        Event::listen(UdbOrganizerRequested::class, [NotifyUdbOrganizerRequested::class, 'handle']);
+        Event::listen(UdbOrganizerRequested::class, [NotifyUdbOrganizerRequested::class, 'handleUdbOrganizerRequested']);
+        Event::listen(IntegrationActivationRequested::class, [NotifyUdbOrganizerRequested::class, 'handleIntegrationActivationRequested']);
 
         Event::listen(IntegrationCreatedWithContacts::class, [SendUiTPASMails::class, 'handleIntegrationCreatedWithContacts']);
         Event::listen(IntegrationActivationRequested::class, [SendUiTPASMails::class, 'handleIntegrationActivationRequested']);
