@@ -132,8 +132,7 @@ final class UdbOrganizer extends Resource
                     $keycloakClient = $integration->getKeycloakClientByEnv(Environment::Production);
                 } catch (KeycloakClientNotFound) {
                     return 'No Keycloak client found';
-                }
-                catch (ModelNotFoundException) {
+                } catch (ModelNotFoundException) {
                     return 'Integration not found';
                 }
 

@@ -128,11 +128,8 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
         $this->repository->create($this->organizer1);
         $this->repository->delete($this->organizer1->integrationId, $this->organizer1->organizerId);
 
-        $this->assertDatabaseMissing('udb_organizers', [
-            'id' => $this->organizer1->id,
-            'integration_id' => $this->organizer1->integrationId,
-            'organizer_id' => $this->organizer1->organizerId,
-        ]);
+        $result = $this->getConnection()->select('SELECT * FROM udb_organizers WHERE id = ? and deleted_AT IS NOT NULL', [$this->organizer1->id]);
+        $this->assertCount(1, $result);
     }
 
     public function testItCanGetAnUdbOrganizerById(): void
