@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\UiTPAS;
 
 use App\Api\TokenStrategy\ClientCredentials;
-use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\GetIntegrationOrganizersWithTestOrganizer;
