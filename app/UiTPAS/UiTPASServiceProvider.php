@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\UiTPAS;
 
 use App\Api\TokenStrategy\ClientCredentials;
+use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\GetIntegrationOrganizersWithTestOrganizer;
@@ -128,7 +129,8 @@ final class UiTPASServiceProvider extends ServiceProvider
         Event::listen(UdbOrganizerApproved::class, [AddUiTPASPermissionsToOrganizerForIntegration::class, 'handleCreateProductionPermissions']);
         Event::listen(UdbOrganizerDeleted::class, [RevokeUiTPASPermissions::class, 'handle']);
 
-        Event::listen(UdbOrganizerRequested::class, [NotifyUdbOrganizerRequested::class, 'handle']);
+        Event::listen(UdbOrganizerRequested::class, [NotifyUdbOrganizerRequested::class, 'handleUdbOrganizerRequested']);
+        Event::listen(IntegrationActivationRequested::class, [NotifyUdbOrganizerRequested::class, 'handleIntegrationActivationRequested']);
 
         Event::listen(IntegrationCreatedWithContacts::class, [SendUiTPASMails::class, 'handleIntegrationCreatedWithContacts']);
         Event::listen(IntegrationActivationRequested::class, [SendUiTPASMails::class, 'handleIntegrationActivationRequested']);
