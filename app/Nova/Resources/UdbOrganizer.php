@@ -140,8 +140,7 @@ final class UdbOrganizer extends Resource
                     '<a class="link-default" target="_blank" href="%s">Open in UiTPAS</a>',
                     config(UiTPASConfig::CLIENT_PERMISSIONS_URI->value) . $keycloakClient->clientId
                 );
-            })->
-            asHtml(),
+            })->asHtml(),
 
             Text::make('Permissions', static function (UdbOrganizerModel $model) {
                 /** @var UiTPASApi $api */
