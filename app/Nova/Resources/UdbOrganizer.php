@@ -131,7 +131,12 @@ final class UdbOrganizer extends Resource
                     // Also, sometimes because issues on the keycloak side the Prod keys are not generated, breaking the entire admin udb organizer screen
                     $keycloakClient = $integration->getKeycloakClientByEnv(Environment::Production);
                 } catch (\Throwable) {
-                    $keycloakClient = $integration->getKeycloakClientByEnv(Environment::Testing);
+                    try {
+                        $keycloakClient = $integration->getKeycloakClientByEnv(Environment::Testing);
+                    } catch (\Throwable) {
+                        // If testing also fails, we do not show a link
+                        return 'No Keycloak client found';
+                    }
                 }
 
                 return sprintf(
