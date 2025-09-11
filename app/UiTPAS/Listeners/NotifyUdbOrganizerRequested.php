@@ -31,6 +31,7 @@ final class NotifyUdbOrganizerRequested implements ShouldQueue
     public function handleUdbOrganizerRequested(UdbOrganizerRequested $event): void
     {
         $integration = $this->integrationRepository->getById($event->integrationId);
+
         if ($integration->type !== IntegrationType::UiTPAS) {
             return;
         }
