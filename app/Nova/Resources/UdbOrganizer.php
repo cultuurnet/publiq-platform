@@ -22,6 +22,7 @@ use App\UiTPAS\Dto\UiTPASPermissionDetail;
 use App\UiTPAS\UiTPASApi;
 use App\UiTPAS\UiTPASApiInterface;
 use App\UiTPAS\UiTPASConfig;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Laravel\Nova\Fields\DateTime;
@@ -76,13 +77,18 @@ final class UdbOrganizer extends Resource
 
             Text::make('Integration', static function (UdbOrganizerModel $model) {
                 $integrationRepository = App::get(IntegrationRepository::class);
-                $integration = $integrationRepository->getById($model->toDomain()->integrationId);
+                try {
+                    $integration = $integrationRepository->getById($model->toDomain()->integrationId);
+                } catch (ModelNotFoundException) {
+                    return 'Integration not found';
+                }
 
                 return sprintf(
                     '<a href="%s" class="link-default">%s</a>',
                     config('nova.path') . '/resources/integrations/' . $model->toDomain()->integrationId->toString(),
                     $integration->name
                 );
+
             })->asHtml(),
 
             Text::make('Name', static function (UdbOrganizerModel $model) {
@@ -120,7 +126,13 @@ final class UdbOrganizer extends Resource
                 /** @var IntegrationRepository $integrationRepository */
                 $integrationRepository = App::get(IntegrationRepository::class);
                 $integration = $integrationRepository->getById($model->toDomain()->integrationId);
-                $keycloakClient = $integration->getKeycloakClientByEnv(Environment::Production);
+                try {
+                    // The acceptance server does not have a production environment, so we fallback to testing if production is not found
+                    // Also, sometimes because issues on the keycloak side the Prod keys are not generated, breaking the entire admin udb organizer screen
+                    $keycloakClient = $integration->getKeycloakClientByEnv(Environment::Production);
+                } catch (\Throwable) {
+                    $keycloakClient = $integration->getKeycloakClientByEnv(Environment::Testing);
+                }
 
                 return sprintf(
                     '<a class="link-default" target="_blank" href="%s">Open in UiTPAS</a>',
