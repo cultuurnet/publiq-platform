@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Nova\Resources;
 
 use App\Domain\Integrations\Environment;
+use App\Domain\Integrations\Exceptions\KeycloakClientNotFound;
 use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
@@ -125,24 +126,23 @@ final class UdbOrganizer extends Resource
             Text::make('UiTPAS', static function (UdbOrganizerModel $model) {
                 /** @var IntegrationRepository $integrationRepository */
                 $integrationRepository = App::get(IntegrationRepository::class);
-                $integration = $integrationRepository->getById($model->toDomain()->integrationId);
                 try {
+                    $integration = $integrationRepository->getById($model->toDomain()->integrationId);
                     // Sometimes because issues on the keycloak side the Prod keys are not generated, breaking the entire admin udb organizer screen
                     $keycloakClient = $integration->getKeycloakClientByEnv(Environment::Production);
-                } catch (\Throwable) {
-                    try {
-                        $keycloakClient = $integration->getKeycloakClientByEnv(Environment::Testing);
-                    } catch (\Throwable) {
-                        // If testing also fails, we do not show a link
-                        return 'No Keycloak client found';
-                    }
+                } catch (KeycloakClientNotFound) {
+                    return 'No Keycloak client found';
+                }
+                catch (ModelNotFoundException) {
+                    return 'Integration not found';
                 }
 
                 return sprintf(
                     '<a class="link-default" target="_blank" href="%s">Open in UiTPAS</a>',
                     config(UiTPASConfig::CLIENT_PERMISSIONS_URI->value) . $keycloakClient->clientId
                 );
-            })->asHtml(),
+            })->
+            asHtml(),
 
             Text::make('Permissions', static function (UdbOrganizerModel $model) {
                 /** @var UiTPASApi $api */
