@@ -10,6 +10,8 @@ use App\Domain\Integrations\UdbOrganizers;
 use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\UdbUuid;
 use App\UiTPAS\Event\UdbOrganizerApproved;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
@@ -128,8 +130,8 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
         $this->repository->create($this->organizer1);
         $this->repository->delete($this->organizer1->integrationId, $this->organizer1->organizerId);
 
-        $result = $this->getConnection()->select('SELECT * FROM udb_organizers WHERE id = ? and deleted_AT IS NOT NULL', [$this->organizer1->id]);
-        $this->assertCount(1, $result);
+        $this->expectException(ModelNotFoundException::class);
+        $this->repository->getById($this->organizer1->id);
     }
 
     public function testItCanGetAnUdbOrganizerById(): void
