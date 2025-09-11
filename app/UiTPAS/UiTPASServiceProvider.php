@@ -85,7 +85,6 @@ final class UiTPASServiceProvider extends ServiceProvider
             );
         });
 
-
         $this->app->singleton(SmtpMailer::class, function () {
             return new SmtpMailer(
                 new SymfonyMailer(
@@ -107,6 +106,15 @@ final class UiTPASServiceProvider extends ServiceProvider
             );
         });
 
+        $this->app->singleton(RevokeUiTPASPermissions::class, function () {
+            return new RevokeUiTPASPermissions(
+                $this->app->get(IntegrationRepository::class),
+                $this->app->get(UiTPASApiInterface::class),
+                ClientCredentialsContextFactory::getUitIdProdContext(),
+                $this->app->get(LoggerInterface::class),
+            );
+        });
+
         $this->bootstrapEventHandling();
     }
 
@@ -120,7 +128,8 @@ final class UiTPASServiceProvider extends ServiceProvider
         Event::listen(UdbOrganizerApproved::class, [AddUiTPASPermissionsToOrganizerForIntegration::class, 'handleCreateProductionPermissions']);
         Event::listen(UdbOrganizerDeleted::class, [RevokeUiTPASPermissions::class, 'handle']);
 
-        Event::listen(UdbOrganizerRequested::class, [NotifyUdbOrganizerRequested::class, 'handle']);
+        Event::listen(UdbOrganizerRequested::class, [NotifyUdbOrganizerRequested::class, 'handleUdbOrganizerRequested']);
+        Event::listen(IntegrationActivationRequested::class, [NotifyUdbOrganizerRequested::class, 'handleIntegrationActivationRequested']);
 
         Event::listen(IntegrationCreatedWithContacts::class, [SendUiTPASMails::class, 'handleIntegrationCreatedWithContacts']);
         Event::listen(IntegrationActivationRequested::class, [SendUiTPASMails::class, 'handleIntegrationActivationRequested']);
