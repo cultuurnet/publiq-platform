@@ -11,10 +11,14 @@ use App\Domain\UdbUuid;
 use App\Models\UuidModel;
 use App\UiTPAS\Event\UdbOrganizerDeleted;
 use App\UiTPAS\Event\UdbOrganizerRequested;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 
 final class UdbOrganizerModel extends UuidModel
 {
+    use SoftDeletes;
+
     protected $table = 'udb_organizers';
 
     protected $fillable = [
@@ -53,5 +57,10 @@ final class UdbOrganizerModel extends UuidModel
                 Uuid::fromString($model->integration_id)
             )
         );
+    }
+
+    public function integration(): BelongsTo
+    {
+        return $this->belongsTo(IntegrationModel::class);
     }
 }

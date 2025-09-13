@@ -135,9 +135,12 @@ final class IntegrationModel extends UuidModel
         self::updated(
             static fn (IntegrationModel $integrationModel) => IntegrationUpdated::dispatch(Uuid::fromString($integrationModel->id))
         );
-        self::softDeleted(
-            static fn (IntegrationModel $integrationModel) => IntegrationDeleted::dispatch(Uuid::fromString($integrationModel->id))
-        );
+        self::softDeleted(function (IntegrationModel $integrationModel) {
+            IntegrationDeleted::dispatch(Uuid::fromString($integrationModel->id));
+            $integrationModel->udbOrganizers()->each(function ($organizer) {
+                $organizer->delete();
+            });
+        });
     }
 
     public function delete(): ?bool

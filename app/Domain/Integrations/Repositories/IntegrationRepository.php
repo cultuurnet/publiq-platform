@@ -10,6 +10,7 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\UdbOrganizers;
 use App\Mails\Template\TemplateName;
 use App\Pagination\PaginatedCollection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface;
 
@@ -24,6 +25,7 @@ interface IntegrationRepository
      */
     public function saveWithCoupon(Integration $integration, string $couponCode): void;
     public function update(Integration $integration): void;
+    /** @throws ModelNotFoundException */
     public function getById(UuidInterface $id): Integration;
     public function getByIdWithTrashed(UuidInterface $id): Integration;
     public function deleteById(UuidInterface $id): ?bool;
