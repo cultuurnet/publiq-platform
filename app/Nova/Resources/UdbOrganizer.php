@@ -117,8 +117,8 @@ final class UdbOrganizer extends Resource
             Text::make('Status', static function (UdbOrganizerModel $model) {
                 $udbOrganizerStatus = $model->toDomain()->status;
                 return sprintf(
-                    '<span style="color: %s">%s</span>',
-                    $udbOrganizerStatus === UdbOrganizerStatus::Approved ? 'green' : 'black',
+                    '<span%s>%s</span>',
+                    $udbOrganizerStatus === UdbOrganizerStatus::Approved ? ' style="color: green"' : '',
                     $udbOrganizerStatus->name
                 );
             })
