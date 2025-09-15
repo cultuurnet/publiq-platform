@@ -45,7 +45,7 @@ use Ramsey\Uuid\UuidInterface;
  * @property string $name
  * @property string $description
  * @property string $subscription_id
- * @property string $organization_id
+ * @property ?string $organization_id
  * @property CouponModel|null $coupon
  * @property SubscriptionModel|null $subscription
  * @property KeyVisibilityUpgradeModel|null $keyVisibilityUpgrade
