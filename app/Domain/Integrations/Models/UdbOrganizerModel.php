@@ -11,6 +11,7 @@ use App\Domain\UdbUuid;
 use App\Models\UuidModel;
 use App\UiTPAS\Event\UdbOrganizerDeleted;
 use App\UiTPAS\Event\UdbOrganizerRequested;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Ramsey\Uuid\Uuid;
 
 final class UdbOrganizerModel extends UuidModel
@@ -53,5 +54,10 @@ final class UdbOrganizerModel extends UuidModel
                 Uuid::fromString($model->integration_id)
             )
         );
+    }
+
+    public function integration(): BelongsTo
+    {
+        return $this->belongsTo(IntegrationModel::class);
     }
 }
