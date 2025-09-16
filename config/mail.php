@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Domain\Integrations\IntegrationType;
+
 return [
 
     /*
@@ -36,10 +38,19 @@ return [
     */
 
     'timers' => [
-        'expiration_timers' => env('MAILJET_EXPIRATION_TIMERS'),
-        'expiration_timers_final_reminder' => env('MAILJET_EXPIRATION_TIMERS_FINAL_REMINDER'),
+        'expiration_timers' => [
+            IntegrationType::EntryApi->value => env('MAILJET_EXPIRATION_TIMER_ENTRY_API'),
+            IntegrationType::SearchApi->value => env('MAILJET_EXPIRATION_TIMER_SEARCH_API'),
+            IntegrationType::UiTPAS->value => env('MAILJET_EXPIRATION_TIMER_UITPAS'),
+            IntegrationType::Widgets->value => env('MAILJET_EXPIRATION_TIMER_WIDGETS'),
+        ],
+        'expiration_timers_final_reminder' => [
+            IntegrationType::EntryApi->value => env('MAILJET_FINAL_EXPIRATION_TIMER_ENTRY_API'),
+            IntegrationType::SearchApi->value => env('MAILJET_FINAL_EXPIRATION_TIMER_SEARCH_API'),
+            IntegrationType::UiTPAS->value => env('MAILJET_FINAL_EXPIRATION_TIMER_UITPAS'),
+            IntegrationType::Widgets->value => env('MAILJET_FINAL_EXPIRATION_TIMER_WIDGETS'),
+        ],
     ],
-
     'mailers' => [
         'smtp' => [
             'transport' => 'smtp',
