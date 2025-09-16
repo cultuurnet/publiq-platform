@@ -49,7 +49,7 @@ final readonly class Sapi3SearchService implements SearchService
     private function addUiTPASLabels(SearchQuery $searchQuery): void
     {
         $labels = array_map(
-            static fn (string $value) => 'labels:' . $value,
+            static fn (string $value) => 'labels:"' . $value . '"',
             $this->uiTPASLabelProvider->getLabels()
         );
 
