@@ -40,7 +40,6 @@ final readonly class Sapi3SearchService implements SearchService
 
         $ids = array_map(fn (UdbUuid $id) => sprintf('id:"%s"', $id->toString()), $ids);
         $searchQuery->addParameter(new Query(implode(' OR ', $ids)));
-        $this->addUiTPASLabels($searchQuery);
 
         return $this->searchClient->searchOrganizers($searchQuery);
     }
