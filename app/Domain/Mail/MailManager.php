@@ -43,11 +43,6 @@ final class MailManager implements ShouldQueue
     {
         $integration = $this->integrationRepository->getById($event->id);
 
-        if ($integration->type === IntegrationType::UiTPAS && config(UiTPASConfig::AUTOMATIC_PERMISSIONS_ENABLED->value)) {
-            // Temporary code, because this email is sent with new copy by SMTP
-            return;
-        }
-
         $this->sendMail($integration, $this->templates->getOrFail(TemplateName::INTEGRATION_CREATED->value));
     }
 
