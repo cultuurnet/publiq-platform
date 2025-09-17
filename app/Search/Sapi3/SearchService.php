@@ -11,4 +11,5 @@ interface SearchService
 {
     public function searchUiTPASOrganizer(string $name): PagedCollection;
     public function findUiTPASOrganizers(UdbUuid ...$ids): PagedCollection;
+    public function findOrganizers(UdbUuid ...$ids): PagedCollection;
 }

@@ -101,7 +101,7 @@ final class UdbOrganizer extends Resource
                 /** @var SearchService $searchService */
                 $searchService = App::get(SearchService::class);
 
-                $name = $udbOrganizerNameResolver->getName($searchService->findUiTPASOrganizers($model->toDomain()->organizerId));
+                $name = $udbOrganizerNameResolver->getName($searchService->findOrganizers($model->toDomain()->organizerId));
 
                 if ($name === null) {
                     return 'Niet teruggevonden in UDB3';

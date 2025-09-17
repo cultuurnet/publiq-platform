@@ -45,7 +45,7 @@ final readonly class SlackMessageBuilder implements MessageBuilder
     {
         $client = $integration->getKeycloakClientByEnv(Environment::Production);
 
-        $organizerName = $this->fetchNameForUdb3Organizer->getName($this->searchService->findUiTPASOrganizers($udbOrganizer->organizerId));
+        $organizerName = $this->fetchNameForUdb3Organizer->getName($this->searchService->findOrganizers($udbOrganizer->organizerId));
 
         $message = '*:robot_face: :incoming_envelope: ' . $integration->name . ' - requested access to organisation ' . $organizerName . ' (' . $udbOrganizer->organizerId . ') *';
         $message .= PHP_EOL . PHP_EOL;

@@ -52,7 +52,7 @@ final class SendUiTPASMails implements ShouldQueue
 
         $organizerNames = array_filter(array_map(
             fn ($udbOrganizer) => $this->udbOrganizerNameResolver->getName(
-                $this->searchService->findUiTPASOrganizers($udbOrganizer->organizerId)
+                $this->searchService->findOrganizers($udbOrganizer->organizerId)
             ),
             $integration->udbOrganizers()
         ));
@@ -115,7 +115,7 @@ final class SendUiTPASMails implements ShouldQueue
         }
 
         $organizerName = $this->udbOrganizerNameResolver->getName(
-            $this->searchService->findUiTPASOrganizers($udbOrganizerId)
+            $this->searchService->findOrganizers($udbOrganizerId)
         ) ?? '';
 
         $this->sendMail($integrationId, $template, $organizerName);

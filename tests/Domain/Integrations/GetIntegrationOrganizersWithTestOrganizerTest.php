@@ -86,7 +86,7 @@ final class GetIntegrationOrganizersWithTestOrganizerTest extends TestCase
         );
 
         $searchClient
-            ->method('findUiTPASOrganizers')
+            ->method('findOrganizers')
             ->willReturn(
                 $this->givenUitpasOrganizers()
             );
