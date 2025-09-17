@@ -9,6 +9,8 @@ use App\Keycloak\Client\KeycloakHttpClient;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Http\Message\RequestInterface;
 use Tests\Keycloak\RealmFactory;
@@ -54,5 +56,38 @@ final class KeycloakHttpClientTest extends TestCase
         $result = $keycloakClient->sendWithBearer($request, $this->givenAcceptanceRealm());
 
         $this->assertEquals('Response body', $result->getBody()->getContents());
+    }
+
+    #[dataProvider('errorResponseProvider')]
+    public function test_it_retries_on_unauthorized_response(Response $errorResponse): void
+    {
+        $keycloakClient = new KeycloakHttpClient($this->clientMock, $this->tokenStrategy);
+
+        $this->tokenStrategy->expects($this->exactly(2))
+            ->method('fetchToken')
+            ->with($this->givenAcceptanceRealm()->getMasterRealm()->getContext())
+            ->willReturn(self::MY_SECRET_TOKEN);
+
+        $request = new Request('GET', '/endpoint');
+        $successfulResponse = new Response(200, [], 'Successful response');
+
+        $this->clientMock
+            ->expects($this->exactly(2))
+            ->method('send')
+            ->with($this->callback(function (RequestInterface $request) {
+                return $request->getUri()->__toString() === $this->givenAcceptanceRealm()->getMasterRealm()->baseUrl . '/endpoint'
+                    && $request->getHeader('Authorization')[0] === 'Bearer ' . self::MY_SECRET_TOKEN;
+            }))
+            ->willReturnOnConsecutiveCalls($errorResponse, $successfulResponse);
+
+        $result = $keycloakClient->sendWithBearer($request, $this->givenAcceptanceRealm());
+
+        $this->assertEquals('Successful response', $result->getBody()->getContents());
+    }
+
+    public static function errorResponseProvider(): Iterator
+    {
+        yield '401 Unauthorized' => [new Response(401, [], 'Unauthorized')];
+        yield '403 Forbidden' => [new Response(403, [], 'Forbidden')];
     }
 }
