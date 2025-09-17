@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Nova\Resources;
 
 use App\Domain\Integrations\Environment;
+use App\Domain\Integrations\Exceptions\KeycloakClientNotFound;
 use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
@@ -22,6 +23,7 @@ use App\UiTPAS\Dto\UiTPASPermissionDetail;
 use App\UiTPAS\UiTPASApi;
 use App\UiTPAS\UiTPASApiInterface;
 use App\UiTPAS\UiTPASConfig;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Laravel\Nova\Fields\DateTime;
@@ -50,6 +52,13 @@ final class UdbOrganizer extends Resource
         'organizer_id',
         'status',
     ];
+
+    public static function indexQuery(NovaRequest $request, Builder $query): Builder
+    {
+        return $query->whereHas('integration', function ($q) {
+            $q->whereNull('deleted_at');
+        });
+    }
 
     public static function label(): string
     {
@@ -108,8 +117,8 @@ final class UdbOrganizer extends Resource
             Text::make('Status', static function (UdbOrganizerModel $model) {
                 $udbOrganizerStatus = $model->toDomain()->status;
                 return sprintf(
-                    '<span style="color: %s">%s</span>',
-                    $udbOrganizerStatus === UdbOrganizerStatus::Approved ? 'green' : 'black',
+                    '<span%s>%s</span>',
+                    $udbOrganizerStatus === UdbOrganizerStatus::Approved ? ' style="color: green"' : '',
                     $udbOrganizerStatus->name
                 );
             })
@@ -119,8 +128,14 @@ final class UdbOrganizer extends Resource
             Text::make('UiTPAS', static function (UdbOrganizerModel $model) {
                 /** @var IntegrationRepository $integrationRepository */
                 $integrationRepository = App::get(IntegrationRepository::class);
-                $integration = $integrationRepository->getById($model->toDomain()->integrationId);
-                $keycloakClient = $integration->getKeycloakClientByEnv(Environment::Production);
+
+                try {
+                    $integration = $integrationRepository->getById($model->toDomain()->integrationId);
+                    // Sometimes the Prod keys are not generated, breaking the entire admin udb organizer screen
+                    $keycloakClient = $integration->getKeycloakClientByEnv(Environment::Production);
+                } catch (KeycloakClientNotFound) {
+                    return 'No Keycloak client found';
+                }
 
                 return sprintf(
                     '<a class="link-default" target="_blank" href="%s">Open in UiTPAS</a>',

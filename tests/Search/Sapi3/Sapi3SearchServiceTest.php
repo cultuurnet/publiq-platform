@@ -22,13 +22,13 @@ final class Sapi3SearchServiceTest extends TestCase
         $labelProvider = $this->createMock(UiTPASLabelProvider::class);
         $labelProvider->expects($this->once())
             ->method('getLabels')
-            ->willReturn(['uitpas-gent', 'uitpas-antwerpen']);
+            ->willReturn(['uitpas gent', 'uitpas antwerpen']);
         $searchClient = $this->createMock(SearchClientInterface::class);
         $searchClient->expects($this->once())
             ->method('searchOrganizers')
             ->with($this->callback(function (SearchQuery $result) {
                 $q = new SearchQuery(true);
-                $q->addParameter(new Query('labels:uitpas-gent OR labels:uitpas-antwerpen'));
+                $q->addParameter(new Query('labels:"uitpas gent" OR labels:"uitpas antwerpen"'));
                 $q->setLimit(5);
                 $q->addParameter(new Name('test organizer'));
 
@@ -46,7 +46,7 @@ final class Sapi3SearchServiceTest extends TestCase
         $labelProvider = $this->createMock(UiTPASLabelProvider::class);
         $labelProvider->expects($this->once())
             ->method('getLabels')
-            ->willReturn(['uitpas-antwerpen']);
+            ->willReturn(['uitpas gent', 'uitpas antwerpen']);
 
         $uuid1 = new UdbUuid(Uuid::uuid4()->toString());
         $uuid2 = new UdbUuid(Uuid::uuid4()->toString());
@@ -57,7 +57,7 @@ final class Sapi3SearchServiceTest extends TestCase
             ->with($this->callback(function (SearchQuery $result) use ($uuid1, $uuid2) {
                 $q = new SearchQuery(true);
                 $q->addParameter(new Query(sprintf('id:"%s" OR id:"%s"', $uuid1->toString(), $uuid2->toString())));
-                $q->addParameter(new Query('labels:uitpas-antwerpen'));
+                $q->addParameter(new Query('labels:"uitpas gent" OR labels:"uitpas antwerpen"'));
 
                 $this->assertSame($result->toArray(), $q->toArray());
                 return true;
