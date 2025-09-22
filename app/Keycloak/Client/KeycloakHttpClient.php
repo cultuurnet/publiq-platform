@@ -11,6 +11,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 final readonly class KeycloakHttpClient
 {
@@ -32,6 +33,16 @@ final readonly class KeycloakHttpClient
                 'Bearer ' . $this->tokenStrategy->fetchToken($realm->getMasterRealm()->getContext())
             );
 
-        return $this->client->send($request);
+        $response = $this->client->send($request);
+
+        if (in_array($response->getStatusCode(), [Response::HTTP_UNAUTHORIZED, Response::HTTP_FORBIDDEN], true)) {
+            $retryRequest = $request->withHeader(
+                'Authorization',
+                'Bearer ' . $this->tokenStrategy->fetchToken($realm->getMasterRealm()->getContext())
+            );
+            $response = $this->client->send($retryRequest);
+        }
+
+        return $response;
     }
 }
