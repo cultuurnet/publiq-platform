@@ -28,7 +28,7 @@ final readonly class GetIntegrationOrganizersWithTestOrganizer
     public function getAndEnrichOrganisations(Integration $integration): Collection
     {
         $organizerIds = collect($integration->udbOrganizers())->map(fn (UdbOrganizer $organizer) => $organizer->organizerId);
-        $UiTPASOrganizers = $this->searchClient->findUiTPASOrganizers(...$organizerIds)->getMember()?->getItems();
+        $UiTPASOrganizers = $this->searchClient->findOrganizers(...$organizerIds)->getMember()?->getItems();
         $keycloakClient = $this->getClientByEnv($integration, Environment::Production);
 
         $organizers = collect($UiTPASOrganizers)->map(function (SapiOrganizer $organizer) use ($keycloakClient) {
