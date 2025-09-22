@@ -32,6 +32,16 @@ final readonly class Sapi3SearchService implements SearchService
 
     public function findUiTPASOrganizers(UdbUuid ...$ids): PagedCollection
     {
+        return $this->internalFindOrganizers(true, ...$ids);
+    }
+
+    public function findOrganizers(UdbUuid ...$ids): PagedCollection
+    {
+        return $this->internalFindOrganizers(false, ...$ids);
+    }
+
+    private function internalFindOrganizers(bool $onlyUiTPAS, UdbUuid ...$ids): PagedCollection
+    {
         $searchQuery = new SearchQuery();
         $searchQuery->setEmbed(true);
         if (empty($ids)) {
@@ -40,11 +50,12 @@ final readonly class Sapi3SearchService implements SearchService
 
         $ids = array_map(fn (UdbUuid $id) => sprintf('id:"%s"', $id->toString()), $ids);
         $searchQuery->addParameter(new Query(implode(' OR ', $ids)));
-        $this->addUiTPASLabels($searchQuery);
+        if ($onlyUiTPAS) {
+            $this->addUiTPASLabels($searchQuery);
+        }
 
         return $this->searchClient->searchOrganizers($searchQuery);
     }
-
 
     private function addUiTPASLabels(SearchQuery $searchQuery): void
     {
