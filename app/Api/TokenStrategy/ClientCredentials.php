@@ -75,4 +75,9 @@ final class ClientCredentials implements TokenStrategy
 
         return $token;
     }
+
+    public function clearToken(ClientCredentialsContext $context): void
+    {
+        unset($this->accessToken[$context->getCacheKey()]);
+    }
 }
