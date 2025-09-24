@@ -36,6 +36,7 @@ final readonly class KeycloakHttpClient
         $response = $this->client->send($request);
 
         if (in_array($response->getStatusCode(), [Response::HTTP_UNAUTHORIZED, Response::HTTP_FORBIDDEN], true)) {
+            $this->tokenStrategy->clearToken($realm->getMasterRealm()->getContext());
             $retryRequest = $request->withHeader(
                 'Authorization',
                 'Bearer ' . $this->tokenStrategy->fetchToken($realm->getMasterRealm()->getContext())
