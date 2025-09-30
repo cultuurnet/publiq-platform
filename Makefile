@@ -88,10 +88,10 @@ npm-types-check:
 npm-ci: npm-format npm-lint-check npm-types-check
 
 e2e-install:
-	docker compose exec $(DOCKER_COMPOSE_OPTIONS) platform npx playwright install chromium --with-deps
+	npx playwright install chromium --with-deps
 
 test-e2e:
-	docker-compose exec $(DOCKER_COMPOSE_OPTIONS) platform npx playwright test $(options)
+	npx playwright test $(options)
 
 test-e2e-filter:
-	docker-compose exec $(DOCKER_COMPOSE_OPTIONS) platform npx playwright test "$(filter)" $(options)
+	npx playwright test "$(filter)" $(options)
