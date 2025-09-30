@@ -5,7 +5,6 @@ UPDATE_HOSTS=${HAS_SUDO:-true}
 HOSTS="platform.publiq.local"
 
 if [ "$UPDATE_HOSTS" = "true" ]; then
-        echo "i am here"
   MISSING_HOSTS=""
 
   set -- $HOSTS
