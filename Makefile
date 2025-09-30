@@ -1,32 +1,35 @@
 .PHONY: up down bash install composer-install npm-install key-generate migrate lint stan ci config
 
 up:
-	vendor/bin/sail up -d
+	docker compose up -d
 
 down:
-	vendor/bin/sail down
+	docker compose down
 
 restart: down up
 
 destroy:
-	vendor/bin/sail down -v
+	docker compose down -v
 
 bash:
-	docker-compose exec laravel bash
+	docker compose exec platform bash
+
+bash-xdebug:
+	docker compose exec platform-xdebug bash
 
 config:
-	./config.sh
+	sh ./docker/config.sh
 
 install: composer-install key-generate migrate seed npm-install npm-build
 
 composer-install:
-	vendor/bin/sail composer install
+	docker compose exec platform composer install
 
 key-generate:
-	vendor/bin/sail artisan key:generate
+	docker compose exec platform artisan key:generate
 
 migrate:
-	vendor/bin/sail artisan migrate
+	docker compose exec platform artisan migrate
 
 seed:
 	vendor/bin/sail artisan db:seed
