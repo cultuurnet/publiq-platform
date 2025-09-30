@@ -32,13 +32,13 @@ composer-install:
 	docker compose exec $(DOCKER_COMPOSE_OPTIONS) platform composer install
 
 key-generate:
-	docker compose exec $(DOCKER_COMPOSE_OPTIONS) platform artisan key:generate
+	docker compose exec $(DOCKER_COMPOSE_OPTIONS) platform php artisan key:generate
 
 migrate:
-	docker compose exec $(DOCKER_COMPOSE_OPTIONS) platform artisan migrate
+	docker compose exec $(DOCKER_COMPOSE_OPTIONS) platform php artisan migrate
 
 seed:
-	docker compose exec $(DOCKER_COMPOSE_OPTIONS) platform artisan db:seed
+	docker compose exec $(DOCKER_COMPOSE_OPTIONS) platform php artisan db:seed
 
 horizon:
 	vendor/bin/sail artisan horizon
