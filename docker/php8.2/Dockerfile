@@ -23,16 +23,12 @@ RUN echo "error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT" > $PHP_INI_DIR/co
 
 RUN a2enmod rewrite
 
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -y nodejs
 
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/web
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
-
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 
 COPY xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
