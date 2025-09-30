@@ -61,6 +61,7 @@ test-insightly:
 ci: lint stan test
 
 npm-install:
+	docker compose exec platform npm config set cache /var/www/html/.npm --global
 	docker compose exec $(DOCKER_COMPOSE_OPTIONS) platform npm install
 
 npm-dev:
