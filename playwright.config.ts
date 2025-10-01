@@ -15,7 +15,9 @@ export default defineConfig({
   expect: {
     timeout: 5000,
   },
-  reporter: "html",
+  reporter: process.env.CI
+    ? [['list'], ['junit', { outputFile: './e2e/test-results.xml' }]]
+    : [['html']],
   use: {
     baseURL: process.env.E2E_TEST_BASE_URL,
     trace: "on-first-retry",
