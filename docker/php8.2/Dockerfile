@@ -23,7 +23,7 @@ RUN echo "error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT" > $PHP_INI_DIR/co
 
 RUN a2enmod rewrite
 
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
