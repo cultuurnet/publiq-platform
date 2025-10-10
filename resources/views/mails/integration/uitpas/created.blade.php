@@ -1,6 +1,6 @@
 @include('mails.partials.header')
 
-<p>Je integratie met naam {{ $integrationName }} is zonet aangemaakt op het publiq platform. Je kan meteen
+<p>Je integratie met naam {{ $integrationName }} is zonet met succes aangemaakt op het publiq platform. Je kan meteen
     starten met de ontwikkeling van je integratie op onze testomgeving. Je toegangssleutels vind je op je
     integratiepagina: <a href="{{ $integrationDetailpage }}">{{ $integrationDetailpage }}</a>.</p>
 
@@ -33,11 +33,9 @@
             href="https://docs.publiq.be/docs/authentication/methods/client-access-token">client access tokens</a>.
         Vraag daarbij enkel een nieuw token wanneer het oude token vervallen is, aan de hand van <em>expires_in</em>.
     </li>
-    <li>Voor de registratie van kansentarieven is het belangrijk om <a
-            href="https://docs.publiq.be/docs/uitpas/ticket-sales/registering">onze gids</a> nauwgezet te volgen.
+    <li>Voor de registratie van kansentarieven is het belangrijk om deze gids nauwgezet te volgen: <a
+            href="https://docs.publiq.be/docs/uitpas/ticket-sales/registering">https://docs.publiq.be/docs/uitpas/ticket-sales/registering</a>
     </li>
-    <li><a href="https://publiq.stoplight.io/docs/uitpas/introduction">Documentatie over de de UiTPAS API - voor alle acties gerelateerd aan de UiTPAS-kaart</a></li>
-    <li><a href="https://publiq.stoplight.io/docs/uitdatabank/entry-api/introduction">Documentatie over de entry API - voor alle acties gerelateerd aan de invoer van events in de UiTdatabank</a></li>
     <li>Zorg er ook zeker voor dat wanneer een betaling niet doorgaat (bv annulatie achteraf), <a
             href="https://docs.publiq.be/docs/uitpas/uitpas-api/reference/operations/delete-a-ticket-sale">het
             geregistreerde kansentarief geannuleerd wordt</a> (anders zou de gemeente onterecht terug betalen!)

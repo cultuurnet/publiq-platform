@@ -11,7 +11,7 @@ export const ButtonLinkSecondary = ({
   className,
   ...props
 }: Props) => {
-  const isExternal = !href.startsWith("/") && !href.startsWith("#");
+  const isExternal = !(href?.startsWith("/") || href?.startsWith("#"));
 
   return (
     <>

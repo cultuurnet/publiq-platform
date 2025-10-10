@@ -16,3 +16,8 @@ parameters:
         - identifier: missingType.generics
         - identifier: missingType.iterableValue
 
+services:
+    -
+        class: App\PhpStan\EventListenerMethodExistsRule
+        tags:
+            - phpstan.rules.rule

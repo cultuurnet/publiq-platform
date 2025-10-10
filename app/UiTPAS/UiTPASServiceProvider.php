@@ -11,6 +11,8 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Mail\Mailer;
 use App\Keycloak\Events\ClientCreated;
 use App\Keycloak\Repositories\KeycloakClientRepository;
+use App\Mails\Smtp\MailTemplateResolver;
+use App\Mails\Smtp\SmtpMailer;
 use App\Notifications\MessageBuilder;
 use App\Notifications\Slack\SlackNotifier;
 use App\Search\Sapi3\SearchService;
@@ -29,6 +31,8 @@ use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Mailer\Mailer as SymfonyMailer;
+use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mime\Address;
 
 final class UiTPASServiceProvider extends ServiceProvider
@@ -81,6 +85,16 @@ final class UiTPASServiceProvider extends ServiceProvider
             );
         });
 
+        $this->app->singleton(SmtpMailer::class, function () {
+            return new SmtpMailer(
+                new SymfonyMailer(
+                    Transport::fromDsn(config('mail.mailers.smtp.dsn'))
+                ),
+                $this->app->get(MailTemplateResolver::class),
+                $this->app->get(LoggerInterface::class),
+            );
+        });
+
         $this->app->singleton(SendUiTPASMails::class, function () {
             return new SendUiTPASMails(
                 $this->app->get(Mailer::class),
@@ -89,6 +103,15 @@ final class UiTPASServiceProvider extends ServiceProvider
                 $this->app->get(SearchService::class),
                 $this->app->get(UrlGenerator::class),
                 new Address(config('mail.from.address'), config('mail.from.name')),
+            );
+        });
+
+        $this->app->singleton(RevokeUiTPASPermissions::class, function () {
+            return new RevokeUiTPASPermissions(
+                $this->app->get(IntegrationRepository::class),
+                $this->app->get(UiTPASApiInterface::class),
+                ClientCredentialsContextFactory::getUitIdProdContext(),
+                $this->app->get(LoggerInterface::class),
             );
         });
 
@@ -101,7 +124,8 @@ final class UiTPASServiceProvider extends ServiceProvider
         Event::listen(UdbOrganizerApproved::class, [AddUiTPASPermissionsToOrganizerForIntegration::class, 'handleCreateProductionPermissions']);
         Event::listen(UdbOrganizerDeleted::class, [RevokeUiTPASPermissions::class, 'handle']);
 
-        Event::listen(UdbOrganizerRequested::class, [NotifyUdbOrganizerRequested::class, 'handle']);
+        Event::listen(UdbOrganizerRequested::class, [NotifyUdbOrganizerRequested::class, 'handleUdbOrganizerRequested']);
+        Event::listen(IntegrationActivationRequested::class, [NotifyUdbOrganizerRequested::class, 'handleIntegrationActivationRequested']);
 
         Event::listen(IntegrationActivationRequested::class, [SendUiTPASMails::class, 'handleIntegrationActivationRequested']);
         Event::listen(UdbOrganizerRequested::class, [SendUiTPASMails::class, 'handleUdbOrganizerRequested']);

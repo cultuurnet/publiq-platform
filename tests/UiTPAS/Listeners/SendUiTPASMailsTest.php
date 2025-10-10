@@ -87,7 +87,7 @@ final class SendUiTPASMailsTest extends TestCase
             ->willReturn($integration);
 
         $this->searchService
-            ->method('findUiTPASOrganizers')
+            ->method('findOrganizers')
             ->willReturn($this->givenUitpasOrganizers());
 
         $this->urlGenerator

@@ -185,13 +185,13 @@ final class IntegrationController extends Controller
     public function show(string $id): Response
     {
         $integration = $this->integrationRepository->getById(Uuid::fromString($id));
-        $oldCredentialsExpirationDate = $this->getExpirationDateForOldCredentials($integration->getKeyVisibilityUpgrade());
+        $keyVisibleUntil = $this->getExpirationDateForOldCredentials($integration->getKeyVisibilityUpgrade());
 
         $organizers = $this->getIntegrationOrganizersWithTestOrganizer->getAndEnrichOrganisations($integration);
 
         return Inertia::render('Integrations/Detail', [
             'integration' => $integration->toArray(),
-            'oldCredentialsExpirationDate' => $oldCredentialsExpirationDate,
+            'keyVisibleUntil' => $keyVisibleUntil,
             'email' => Auth::user()?->email,
             'subscriptions' => $this->subscriptionRepository->all(),
             'organizers' => $organizers,
