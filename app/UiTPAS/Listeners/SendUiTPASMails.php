@@ -6,13 +6,13 @@ namespace App\UiTPAS\Listeners;
 
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
-use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Mail\Mailer;
 use App\Domain\UdbUuid;
-use App\Mails\Smtp\MailTemplate;
+use App\Mails\Template\MailTemplate;
+use App\Mails\Template\TemplateName;
 use App\Search\Sapi3\SearchService;
 use App\Search\UdbOrganizerNameResolver;
 use App\UiTPAS\Event\UdbOrganizerApproved;
@@ -38,11 +38,6 @@ final class SendUiTPASMails implements ShouldQueue
     ) {
     }
 
-    public function handleIntegrationCreatedWithContacts(IntegrationCreatedWithContacts $event): void
-    {
-        $this->sendMail($event->id, MailTemplate::INTEGRATION_CREATED);
-    }
-
     public function handleIntegrationActivationRequested(IntegrationActivationRequested $event): void
     {
         $integration = $this->integrationRepository->getById($event->id);
@@ -59,7 +54,7 @@ final class SendUiTPASMails implements ShouldQueue
 
         $this->sendMail(
             $integration->id,
-            MailTemplate::ORGANISATION_UITPAS_REQUESTED,
+            TemplateName::ORGANISATION_UITPAS_REQUESTED,
             implode(', ', $organizerNames)
         );
     }
@@ -82,7 +77,7 @@ final class SendUiTPASMails implements ShouldQueue
         $this->sendMailWithSingleOrganizer(
             $event->integrationId,
             $event->udbId,
-            MailTemplate::ORGANISATION_UITPAS_REQUESTED
+            TemplateName::ORGANISATION_UITPAS_REQUESTED
         );
     }
 
@@ -91,7 +86,7 @@ final class SendUiTPASMails implements ShouldQueue
         $this->sendMailWithSingleOrganizer(
             $event->integrationId,
             $event->udbId,
-            MailTemplate::ORGANISATION_UITPAS_APPROVED
+            TemplateName::ORGANISATION_UITPAS_APPROVED
         );
     }
 
@@ -100,14 +95,14 @@ final class SendUiTPASMails implements ShouldQueue
         $this->sendMailWithSingleOrganizer(
             $event->integrationId,
             $event->udbId,
-            MailTemplate::ORGANISATION_UITPAS_REJECTED
+            TemplateName::ORGANISATION_UITPAS_REJECTED
         );
     }
 
     private function sendMailWithSingleOrganizer(
         UuidInterface $integrationId,
         UdbUuid $udbOrganizerId,
-        MailTemplate $template
+        TemplateName $template
     ): void {
         $integration = $this->integrationRepository->getById($integrationId);
         if ($integration->type !== IntegrationType::UiTPAS) {
@@ -123,13 +118,18 @@ final class SendUiTPASMails implements ShouldQueue
 
     private function sendMail(
         UuidInterface $integrationId,
-        MailTemplate $template,
+        TemplateName $templateName,
         ?string $organizerName = null
     ): void {
         $integration = $this->integrationRepository->getById($integrationId);
         if ($integration->type !== IntegrationType::UiTPAS) {
             return;
         }
+
+        $mailTemplate = new MailTemplate(
+            $templateName,
+            $integration->type
+        );
 
         $contacts = $integration->filterUniqueContactsWithPreferredContactType(ContactType::Technical);
         foreach ($contacts as $contact) {
@@ -146,7 +146,7 @@ final class SendUiTPASMails implements ShouldQueue
             $this->mailer->send(
                 $this->from,
                 new Address($contact->email, trim($contact->firstName . ' ' . $contact->lastName)),
-                $template->value,
+                $mailTemplate,
                 $context
             );
         }

@@ -6,7 +6,6 @@ namespace App\UiTPAS;
 
 use App\Api\TokenStrategy\ClientCredentials;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
-use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\GetIntegrationOrganizersWithTestOrganizer;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Mail\Mailer;
@@ -98,17 +97,12 @@ final class UiTPASServiceProvider extends ServiceProvider
 
     private function bootstrapEventHandling(): void
     {
-        if (!config(UiTPASConfig::AUTOMATIC_PERMISSIONS_ENABLED->value)) {
-            return;
-        }
-
         Event::listen(ClientCreated::class, [AddUiTPASPermissionsToOrganizerForIntegration::class, 'handleCreateTestPermissions']);
         Event::listen(UdbOrganizerApproved::class, [AddUiTPASPermissionsToOrganizerForIntegration::class, 'handleCreateProductionPermissions']);
         Event::listen(UdbOrganizerDeleted::class, [RevokeUiTPASPermissions::class, 'handle']);
 
         Event::listen(UdbOrganizerRequested::class, [NotifyUdbOrganizerRequested::class, 'handle']);
 
-        Event::listen(IntegrationCreatedWithContacts::class, [SendUiTPASMails::class, 'handleIntegrationCreatedWithContacts']);
         Event::listen(IntegrationActivationRequested::class, [SendUiTPASMails::class, 'handleIntegrationActivationRequested']);
         Event::listen(UdbOrganizerRequested::class, [SendUiTPASMails::class, 'handleUdbOrganizerRequested']);
         Event::listen(UdbOrganizerApproved::class, [SendUiTPASMails::class, 'handleUdbOrganizerApproved']);

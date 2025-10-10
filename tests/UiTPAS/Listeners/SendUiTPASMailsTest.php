@@ -7,7 +7,6 @@ namespace Tests\UiTPAS\Listeners;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
-use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
@@ -15,7 +14,8 @@ use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\Mail\Mailer;
 use App\Domain\UdbUuid;
-use App\Mails\Smtp\MailTemplate;
+use App\Mails\Template\MailTemplate;
+use App\Mails\Template\TemplateName;
 use App\Search\Sapi3\SearchService;
 use App\Search\UdbOrganizerNameResolver;
 use App\UiTPAS\Event\UdbOrganizerApproved;
@@ -65,7 +65,7 @@ final class SendUiTPASMailsTest extends TestCase
     }
 
     #[DataProvider('eventProvider')]
-    public function test_it_sends_mail_for_valid_event(object $event, string $method, int $templateId, UdbOrganizerStatus $udbOrganizerStatus = UdbOrganizerStatus::Approved): void
+    public function test_it_sends_mail_for_valid_event(object $event, string $method, MailTemplate $mailTemplate, UdbOrganizerStatus $udbOrganizerStatus = UdbOrganizerStatus::Approved): void
     {
         $integrationId = Uuid::fromString(self::INTEGRATION_ID);
         $organizerId = new UdbUuid(self::ORGANIZER_ID);
@@ -100,7 +100,7 @@ final class SendUiTPASMailsTest extends TestCase
             ->with(
                 new Address('noreply@publiq.be', 'Publiq'),
                 $this->callback(fn (Address $address) => $address->getAddress() === '1@publiq.be'),
-                $templateId,
+                $mailTemplate,
                 $this->callback(fn (array $vars) => $vars['firstName'] === 'John')
             );
 
@@ -113,31 +113,38 @@ final class SendUiTPASMailsTest extends TestCase
         $organizerId = new UdbUuid(self::ORGANIZER_ID);
 
         return [
-            'integration_created' => [
-                new IntegrationCreatedWithContacts($integrationId),
-                'handleIntegrationCreatedWithContacts',
-                MailTemplate::INTEGRATION_CREATED->value,
-            ],
             'activation_requested' => [
                 new IntegrationActivationRequested($integrationId),
                 'handleIntegrationActivationRequested',
-                MailTemplate::ORGANISATION_UITPAS_REQUESTED->value,
+                new MailTemplate(
+                    TemplateName::ORGANISATION_UITPAS_REQUESTED,
+                    IntegrationType::UiTPAS
+                ),
             ],
             'organizer_requested' => [
                 new UdbOrganizerRequested($organizerId, $integrationId),
                 'handleUdbOrganizerRequested',
-                MailTemplate::ORGANISATION_UITPAS_REQUESTED->value,
+                new MailTemplate(
+                    TemplateName::ORGANISATION_UITPAS_REQUESTED,
+                    IntegrationType::UiTPAS
+                ),
                 UdbOrganizerStatus::Pending,
             ],
             'organizer_approved' => [
                 new UdbOrganizerApproved($organizerId, $integrationId),
                 'handleUdbOrganizerApproved',
-                MailTemplate::ORGANISATION_UITPAS_APPROVED->value,
+                new MailTemplate(
+                    TemplateName::ORGANISATION_UITPAS_APPROVED,
+                    IntegrationType::UiTPAS
+                ),
             ],
             'organizer_rejected' => [
                 new UdbOrganizerRejected($organizerId, $integrationId),
                 'handleUdbOrganizerRejected',
-                MailTemplate::ORGANISATION_UITPAS_REJECTED->value,
+                new MailTemplate(
+                    TemplateName::ORGANISATION_UITPAS_REJECTED,
+                    IntegrationType::UiTPAS
+                ),
             ],
         ];
     }
@@ -155,8 +162,8 @@ final class SendUiTPASMailsTest extends TestCase
 
         $this->mailer->expects($this->never())->method('send');
 
-        $this->handler->handleIntegrationCreatedWithContacts(
-            new IntegrationCreatedWithContacts(Uuid::fromString(self::INTEGRATION_ID))
+        $this->handler->handleIntegrationActivationRequested(
+            new IntegrationActivationRequested(Uuid::fromString(self::INTEGRATION_ID))
         );
     }
 
@@ -173,8 +180,8 @@ final class SendUiTPASMailsTest extends TestCase
 
         $this->mailer->expects($this->never())->method('send');
 
-        $this->handler->handleIntegrationCreatedWithContacts(
-            new IntegrationCreatedWithContacts(Uuid::fromString(self::INTEGRATION_ID))
+        $this->handler->handleIntegrationActivationRequested(
+            new IntegrationActivationRequested(Uuid::fromString(self::INTEGRATION_ID))
         );
     }
 

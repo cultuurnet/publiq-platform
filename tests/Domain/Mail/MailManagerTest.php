@@ -9,7 +9,6 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Events\ActivationExpired;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
-use App\Domain\Integrations\Events\IntegrationApproved;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Integration;
@@ -21,9 +20,8 @@ use App\Domain\Integrations\Repositories\IntegrationMailRepository;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Mail\Mailer;
 use App\Domain\Mail\MailManager;
-use App\Mails\Template\Template;
+use App\Mails\Template\MailTemplate;
 use App\Mails\Template\TemplateName;
-use App\Mails\Template\Templates;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Ramsey\Uuid\Uuid;
@@ -33,12 +31,6 @@ use Tests\TestCase;
 final class MailManagerTest extends TestCase
 {
     private const INTEGRATION_ID = '9e6d778f-ef44-45b3-b842-26b6d71bcad7';
-    private const TEMPLATE_ACTIVATED_ID = 2;
-    private const TEMPLATE_CREATED_ID = 3;
-    private const TEMPLATE_INTEGRATION_ACTIVATION_REMINDER = 4;
-    private const TEMPLATE_ACTIVATION_REQUESTED_ID = 5;
-    private const TEMPLATE_DELETED_ID = 6;
-    private const TEMPLATE_INTEGRATION_FINAL_ACTIVATION_REMINDER = 7;
 
     private MailManager $mailManager;
     private Mailer&MockObject $mailer;
@@ -61,7 +53,6 @@ final class MailManagerTest extends TestCase
             $this->mailer,
             $this->integrationRepository,
             $this->integrationMailRepository,
-            Templates::build($this->getTemplateConfig()),
             'http://www.example.com'
         );
 
@@ -124,7 +115,7 @@ final class MailManagerTest extends TestCase
     public function testSendMail(
         object $event,
         string $method,
-        Template $template,
+        MailTemplate $template,
         bool $useGetByIdWithTrashed = false,
     ): void {
         $this->integrationRepository
@@ -153,7 +144,7 @@ final class MailManagerTest extends TestCase
 
                     return true;
                 }),
-                $template->id,
+                $template,
                 // Because with() is called with all callbacks at the same time, we have to pass currentEmail as reference
                 $this->callback(function ($parameters) use (&$currentEmail) {
                     $this->assertEquals([
@@ -186,27 +177,22 @@ final class MailManagerTest extends TestCase
             TemplateName::INTEGRATION_CREATED->value => [
                 'event' => new IntegrationCreatedWithContacts(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationCreatedMail',
-                'template' => new Template(TemplateName::INTEGRATION_CREATED, self::TEMPLATE_CREATED_ID, true),
+                'template' => new MailTemplate(TemplateName::INTEGRATION_CREATED, IntegrationType::SearchApi),
             ],
             TemplateName::INTEGRATION_ACTIVATED->value => [
                 'event' => new IntegrationActivated(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationActivatedMail',
-                'template' => new Template(TemplateName::INTEGRATION_ACTIVATED, self::TEMPLATE_ACTIVATED_ID, true),
-            ],
-            'integration_approved' => [
-                'event' => new IntegrationApproved(Uuid::fromString(self::INTEGRATION_ID)),
-                'method' => 'sendIntegrationApprovedMail',
-                'template' => new Template(TemplateName::INTEGRATION_ACTIVATED, self::TEMPLATE_ACTIVATED_ID, true),
+                'template' => new MailTemplate(TemplateName::INTEGRATION_ACTIVATED, IntegrationType::SearchApi),
             ],
             TemplateName::INTEGRATION_ACTIVATION_REQUEST->value => [
                 'event' => new IntegrationActivationRequested(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationActivationRequestMail',
-                'template' => new Template(TemplateName::INTEGRATION_ACTIVATION_REQUEST, self::TEMPLATE_ACTIVATION_REQUESTED_ID, true),
+                'template' => new MailTemplate(TemplateName::INTEGRATION_ACTIVATION_REQUEST, IntegrationType::SearchApi),
             ],
             TemplateName::INTEGRATION_DELETED->value => [
                 'event' => new IntegrationDeleted(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'sendIntegrationDeletedMail',
-                'template' => new Template(TemplateName::INTEGRATION_DELETED, self::TEMPLATE_DELETED_ID, true),
+                'template' => new MailTemplate(TemplateName::INTEGRATION_DELETED, IntegrationType::SearchApi),
                 'useGetByIdWithTrashed' => true,
             ],
             TemplateName::INTEGRATION_ACTIVATION_REMINDER->value => [
@@ -215,7 +201,7 @@ final class MailManagerTest extends TestCase
                     TemplateName::INTEGRATION_ACTIVATION_REMINDER
                 ),
                 'method' => 'sendActivationReminderEmail',
-                'template' => new Template(TemplateName::INTEGRATION_ACTIVATION_REMINDER, self::TEMPLATE_INTEGRATION_ACTIVATION_REMINDER, true),
+                'template' => new MailTemplate(TemplateName::INTEGRATION_ACTIVATION_REMINDER, IntegrationType::SearchApi),
             ],
             TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER->value => [
                 'event' => new ActivationExpired(
@@ -223,37 +209,7 @@ final class MailManagerTest extends TestCase
                     TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER
                 ),
                 'method' => 'sendActivationReminderEmail',
-                'template' => new Template(TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER, self::TEMPLATE_INTEGRATION_FINAL_ACTIVATION_REMINDER, true),
-            ],
-        ];
-    }
-
-    private function getTemplateConfig(): array
-    {
-        return [
-            TemplateName::INTEGRATION_CREATED->value => [
-                'id' => self::TEMPLATE_CREATED_ID,
-                'enabled' => true,
-            ],
-            TemplateName::INTEGRATION_ACTIVATED->value => [
-                'id' => self::TEMPLATE_ACTIVATED_ID,
-                'enabled' => true,
-            ],
-            TemplateName::INTEGRATION_ACTIVATION_REMINDER->value => [
-                'id' => self::TEMPLATE_INTEGRATION_ACTIVATION_REMINDER,
-                'enabled' => true,
-            ],
-            TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER->value => [
-                'id' => self::TEMPLATE_INTEGRATION_FINAL_ACTIVATION_REMINDER,
-                'enabled' => true,
-            ],
-            TemplateName::INTEGRATION_ACTIVATION_REQUEST->value => [
-                'id' => self::TEMPLATE_ACTIVATION_REQUESTED_ID,
-                'enabled' => true,
-            ],
-            TemplateName::INTEGRATION_DELETED->value => [
-                'id' => self::TEMPLATE_DELETED_ID,
-                'enabled' => true,
+                'template' => new MailTemplate(TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER, IntegrationType::SearchApi),
             ],
         ];
     }

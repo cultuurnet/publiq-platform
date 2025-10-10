@@ -14,11 +14,9 @@ use App\Domain\Integrations\Repositories\IntegrationMailRepository;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Mail\Mailer;
 use App\Domain\Mail\MailManager;
-use App\Mails\MailJet\MailjetConfig;
 use App\Mails\Smtp\BladeMailTemplateResolver;
 use App\Mails\Smtp\MailTemplateResolver;
 use App\Mails\Smtp\SmtpMailer;
-use App\Mails\Template\Templates;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Psr\Log\LoggerInterface;
@@ -48,7 +46,6 @@ final class MailServiceProvider extends ServiceProvider
                 $this->app->get(Mailer::class),
                 $this->app->get(IntegrationRepository::class),
                 $this->app->get(IntegrationMailRepository::class),
-                Templates::build(config(MailjetConfig::MAILJET_TEMPLATES)),
                 config('app.url'),
             );
         });

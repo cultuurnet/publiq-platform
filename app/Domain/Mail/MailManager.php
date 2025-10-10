@@ -14,13 +14,10 @@ use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationMail;
-use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationMailRepository;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Mails\Template\Template;
+use App\Mails\Template\MailTemplate;
 use App\Mails\Template\TemplateName;
-use App\Mails\Template\Templates;
-use App\UiTPAS\UiTPASConfig;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Ramsey\Uuid\Uuid;
@@ -34,7 +31,6 @@ final class MailManager implements ShouldQueue
         private readonly Mailer $mailer,
         private readonly IntegrationRepository $integrationRepository,
         private readonly IntegrationMailRepository $integrationMailRepository,
-        private readonly Templates $templates,
         private readonly string $baseUrl
     ) {
     }
@@ -43,19 +39,20 @@ final class MailManager implements ShouldQueue
     {
         $integration = $this->integrationRepository->getById($event->id);
 
-        $this->sendMail($integration, $this->templates->getOrFail(TemplateName::INTEGRATION_CREATED->value));
+        $this->sendMail($integration, new MailTemplate(
+            TemplateName::INTEGRATION_CREATED,
+            $integration->type
+        ));
     }
 
     public function sendIntegrationActivatedMail(IntegrationActivated $event): void
     {
         $integration = $this->integrationRepository->getById($event->id);
 
-        if ($integration->type === IntegrationType::UiTPAS && config(UiTPASConfig::AUTOMATIC_PERMISSIONS_ENABLED->value)) {
-            // Temporary code, because this email is sent with new copy by SMTP
-            return;
-        }
-
-        $this->sendMail($integration, $this->templates->getOrFail(TemplateName::INTEGRATION_ACTIVATED->value));
+        $this->sendMail($integration, new MailTemplate(
+            TemplateName::INTEGRATION_ACTIVATED,
+            $integration->type
+        ));
     }
 
     public function sendIntegrationApprovedMail(IntegrationApproved $event): void
@@ -63,33 +60,40 @@ final class MailManager implements ShouldQueue
         $integration = $this->integrationRepository->getById($event->id);
 
         // Currently the same e-mail as integration activated
-        $this->sendMail($integration, $this->templates->getOrFail(TemplateName::INTEGRATION_ACTIVATED->value));
+        $this->sendMail($integration, new MailTemplate(
+            TemplateName::INTEGRATION_ACTIVATED,
+            $integration->type
+        ));
     }
 
     public function sendIntegrationActivationRequestMail(IntegrationActivationRequested $event): void
     {
         $integration = $this->integrationRepository->getById($event->id);
 
-        if ($integration->type === IntegrationType::UiTPAS && config(UiTPASConfig::AUTOMATIC_PERMISSIONS_ENABLED->value)) {
-            // Temporary code, because this email is sent with new copy by SMTP
-            return;
-        }
-
-        $this->sendMail($integration, $this->templates->getOrFail(TemplateName::INTEGRATION_ACTIVATION_REQUEST->value));
+        $this->sendMail($integration, new MailTemplate(
+            TemplateName::INTEGRATION_ACTIVATION_REQUEST,
+            $integration->type
+        ));
     }
 
     public function sendIntegrationDeletedMail(IntegrationDeleted $event): void
     {
         $integration = $this->integrationRepository->getByIdWithTrashed($event->id);
 
-        $this->sendMail($integration, $this->templates->getOrFail(TemplateName::INTEGRATION_DELETED->value));
+        $this->sendMail($integration, new MailTemplate(
+            TemplateName::INTEGRATION_DELETED,
+            $integration->type
+        ));
     }
 
     public function sendActivationReminderEmail(ActivationExpired $event): void
     {
         $integration = $this->integrationRepository->getById($event->id);
 
-        $this->sendMail($integration, $this->templates->getOrFail($event->templateName->value));
+        $this->sendMail($integration, new MailTemplate(
+            $event->templateName,
+            $integration->type
+        ));
     }
 
     private function getFrom(): Address
@@ -109,20 +113,14 @@ final class MailManager implements ShouldQueue
         ];
     }
 
-
-
-    public function sendMail(Integration $integration, Template $template): void
+    public function sendMail(Integration $integration, MailTemplate $template): void
     {
-        if (!$template->enabled) {
-            return;
-        }
-
-        // The technical contact get  additional information in the e-mail (example a link to the satisfaction survey), so this type of contact gets preference when matching email addresses are found
+        // The technical contact get  additional information in the e-mail (example: a link to the satisfaction survey), so this type of contact gets preference when matching email addresses are found
         foreach ($integration->filterUniqueContactsWithPreferredContactType(ContactType::Technical) as $contact) {
             $this->mailer->send(
                 $this->getFrom(),
                 new Address($contact->email, trim($contact->firstName . ' ' . $contact->lastName)),
-                $template->id,
+                $template,
                 $this->getIntegrationVariables($contact, $integration)
             );
         }
