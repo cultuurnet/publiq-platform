@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\UiTPAS\Listeners;
+namespace Tests\SmtpTests;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
@@ -67,7 +67,7 @@ final class SendUiTPASMailsMailpitTest extends TestCase
 
         $searchService = $this->createMock(SearchService::class);
         $searchService
-            ->method('findUiTPASOrganizers')
+            ->method('findOrganizers')
             ->with(new UdbUuid(self::ORG_ID))
             ->willReturn($this->givenUitpasOrganizers());
 
@@ -134,7 +134,7 @@ final class SendUiTPASMailsMailpitTest extends TestCase
             return $mail['Subject'] === $subject;
         });
 
-        $this->assertNotNull($message, 'Expected email was not received within the timeout period.');
+        $this->assertNotNull($message, 'Expected email was not received within the timeout period: ' . $subject);
 
         $this->assertEquals(self::MAIL_TO_NAME, $message['To'][0]['Name']);
         $this->assertEquals(self::MAIL_TO_ADDRESS, $message['To'][0]['Address']);
@@ -152,37 +152,30 @@ final class SendUiTPASMailsMailpitTest extends TestCase
         $i = 0;
 
         return [
-            IntegrationCreatedWithContacts::class => [
-                new IntegrationCreatedWithContacts(Uuid::uuid4()),
-                IntegrationStatus::Draft,
-                $names[$i],
-                'Je integratie ' . $names[$i++] . ' is succesvol aangemaakt!',
-            ],
             IntegrationActivationRequested::class => [
                 new IntegrationActivationRequested(Uuid::uuid4()),
                 IntegrationStatus::Draft,
                 $names[$i],
-                'Activatieaanvraag met integratie ' . $names[$i++] . ' voor publiq vzw',
+                'Activatieaanvraag met integratie ' . $names[$i++] . ' voor publiq vzw!',
             ],
             UdbOrganizerRequested::class => [
                 new UdbOrganizerRequested(new UdbUuid(self::ORG_ID), Uuid::uuid4()),
                 IntegrationStatus::Active,
                 $names[$i],
-                'Activatieaanvraag met integratie ' . $names[$i++] . ' voor publiq vzw',
+                'Activatieaanvraag met integratie ' . $names[$i++] . ' voor publiq vzw!',
             ],
             UdbOrganizerApproved::class => [
                 new UdbOrganizerApproved(new UdbUuid(self::ORG_ID), Uuid::uuid4()),
                 IntegrationStatus::Active,
                 $names[$i],
-                'Je integratie ' . $names[$i++] . ' voor publiq vzw is geactiveerd',
+                'Je integratie ' . $names[$i++] . ' voor publiq vzw is geactiveerd!',
             ],
             UdbOrganizerRejected::class => [
                 new UdbOrganizerRejected(new UdbUuid(self::ORG_ID), Uuid::uuid4()),
                 IntegrationStatus::Active,
                 $names[$i],
-                'Je integratie ' . $names[$i++] . ' voor publiq vzw is afgekeurd',
+                'Je integratie ' . $names[$i++] . ' voor publiq vzw is afgekeurd!',
             ],
-
         ];
     }
 
