@@ -67,4 +67,67 @@ final class BladeMailTemplateResolverTest extends TestCase
 
         $this->assertSame('<html>content</html>', $output);
     }
+
+    public function testRenderUsesSpecificTemplateIfExists(): void
+    {
+        $template = new MailTemplate(
+            TemplateName::INTEGRATION_ACTIVATED,
+            IntegrationType::EntryApi
+        );
+        $variables = ['foo' => 'bar'];
+        $specificTemplate = 'mails.entry-api.integration.activated';
+
+        $view = $this->createMock(View::class);
+        $view->expects($this->once())
+            ->method('render')
+            ->willReturn('<html>specific</html>');
+
+        $this->viewFactory
+            ->expects($this->once())
+            ->method('exists')
+            ->with($specificTemplate)
+            ->willReturn(true);
+
+        $this->viewFactory
+            ->expects($this->once())
+            ->method('make')
+            ->with($specificTemplate, $variables)
+            ->willReturn($view);
+
+        $output = $this->resolver->render($template, $variables);
+
+        $this->assertSame('<html>specific</html>', $output);
+    }
+
+    public function testRenderUsesGenericTemplateIfSpecificDoesNotExist(): void
+    {
+        $template = new MailTemplate(
+            TemplateName::INTEGRATION_ACTIVATED,
+            IntegrationType::EntryApi
+        );
+        $variables = ['foo' => 'bar'];
+        $specificTemplate = 'mails.entry-api.integration.activated';
+        $genericTemplate = 'mails.integration.activated';
+
+        $view = $this->createMock(View::class);
+        $view->expects($this->once())
+            ->method('render')
+            ->willReturn('<html>generic</html>');
+
+        $this->viewFactory
+            ->expects($this->once())
+            ->method('exists')
+            ->with($specificTemplate)
+            ->willReturn(false);
+
+        $this->viewFactory
+            ->expects($this->once())
+            ->method('make')
+            ->with($genericTemplate, $variables)
+            ->willReturn($view);
+
+        $output = $this->resolver->render($template, $variables);
+
+        $this->assertSame('<html>generic</html>', $output);
+    }
 }
