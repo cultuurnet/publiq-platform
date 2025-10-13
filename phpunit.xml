@@ -6,7 +6,7 @@
         <testsuite name="Tests">
             <directory>./tests</directory>
             <exclude>./tests/Insightly/HttpInsightlyClientTest.php</exclude>
-            <exclude>./tests/UiTPAS/Listeners/SendUiTPASMailsMailpitTest.php</exclude>
+            <exclude>./tests/SmtpTests</exclude>
         </testsuite>
     </testsuites>
     <coverage/>
