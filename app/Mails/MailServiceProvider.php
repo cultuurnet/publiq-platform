@@ -47,14 +47,16 @@ final class MailServiceProvider extends ServiceProvider
                 $this->app->get(IntegrationRepository::class),
                 $this->app->get(IntegrationMailRepository::class),
                 config('app.url'),
+                config('mail.from.address'),
+                config('mail.from.name')
             );
         });
 
-        Event::listen(IntegrationCreatedWithContacts::class, [MailManager::class, 'sendIntegrationCreatedMail']);
-        Event::listen(IntegrationActivated::class, [MailManager::class, 'sendIntegrationActivatedMail']);
-        Event::listen(IntegrationApproved::class, [MailManager::class, 'sendIntegrationApprovedMail']);
-        Event::listen(ActivationExpired::class, [MailManager::class, 'sendActivationReminderEmail']);
-        Event::listen(IntegrationActivationRequested::class, [MailManager::class, 'sendIntegrationActivationRequestMail']);
-        Event::listen(IntegrationDeleted::class, [MailManager::class, 'sendIntegrationDeletedMail']);
+        Event::listen(IntegrationCreatedWithContacts::class, [MailManager::class, 'handleIntegrationCreatedWithContacts']);
+        Event::listen(IntegrationActivated::class, [MailManager::class, 'handleIntegrationActivated']);
+        Event::listen(IntegrationApproved::class, [MailManager::class, 'handleIntegrationApproved']);
+        Event::listen(ActivationExpired::class, [MailManager::class, 'handleActivationExpired']);
+        Event::listen(IntegrationActivationRequested::class, [MailManager::class, 'handleIntegrationActivationRequested']);
+        Event::listen(IntegrationDeleted::class, [MailManager::class, 'handleIntegrationDeleted']);
     }
 }

@@ -6,73 +6,63 @@ namespace Tests\SmtpTests;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
+use App\Domain\Integrations\Events\ActivationExpired;
+use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
+use App\Domain\Integrations\Events\IntegrationApproved;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
+use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\EloquentIntegrationRepository;
 use App\Domain\Integrations\Repositories\EloquentUdbOrganizerRepository;
+use App\Domain\Integrations\Repositories\IntegrationMailRepository;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\Mail\Mailer;
+use App\Domain\Mail\MailManager;
 use App\Domain\Subscriptions\Repositories\EloquentSubscriptionRepository;
 use App\Domain\UdbUuid;
-use App\Search\Sapi3\SearchService;
-use App\Search\UdbOrganizerNameResolver;
-use App\UiTPAS\Event\UdbOrganizerApproved;
-use App\UiTPAS\Event\UdbOrganizerRejected;
-use App\UiTPAS\Event\UdbOrganizerRequested;
-use App\UiTPAS\Listeners\SendUiTPASMails;
-use CultuurNet\SearchV3\ValueObjects\Collection;
-use CultuurNet\SearchV3\ValueObjects\Organizer as SapiOrganizer;
-use CultuurNet\SearchV3\ValueObjects\PagedCollection;
-use CultuurNet\SearchV3\ValueObjects\TranslatedString;
+use App\Mails\Template\TemplateName;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Routing\UrlGenerator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
-use Symfony\Component\Mime\Address;
 use Tests\GivenSubscription;
 use Tests\TestCase;
 
-final class SendUiTPASMailsMailpitTest extends TestCase
+final class MailManagerMailpitTest extends TestCase
 {
-    use RefreshDatabase;
     use GivenSubscription;
     use MailpitTester;
+    use RefreshDatabase;
 
     private const ORG_ID = '33f1722b-04fc-4652-b99f-2c96de87cf82';
+    private const BASE_URL = 'http://www.example.com';
     private const MAIL_FROM_ADDRESS = 'admin@publiq.be';
     private const MAIL_FROM_NAME = 'Mister Admin';
     private const MAIL_TO_NAME = 'John Snow';
-    private const MAIL_TO_ADDRESS = 'john@publiq.be';
+    private const MAIL_TO_ADDRESS = 'jane@publiq.be';
 
+    private MailManager $listener;
     private EloquentIntegrationRepository $integrationRepository;
     private EloquentUdbOrganizerRepository $udbOrganizerRepository;
-    private SendUiTPASMails $listener;
     private UuidInterface $subscriptionId;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $searchService = $this->createMock(SearchService::class);
-        $searchService
-            ->method('findOrganizers')
-            ->with(new UdbUuid(self::ORG_ID))
-            ->willReturn($this->givenUitpasOrganizers());
-
-        $this->listener = new SendUiTPASMails(
-            app(Mailer::class),
-            app(IntegrationRepository::class),
-            app(UdbOrganizerNameResolver::class),
-            $searchService,
-            app(UrlGenerator::class),
-            new Address(self::MAIL_FROM_ADDRESS, self::MAIL_FROM_NAME),
+        $this->listener = new MailManager(
+            $this->app->get(Mailer::class),
+            $this->app->get(IntegrationRepository::class),
+            $this->app->get(IntegrationMailRepository::class),
+            self::BASE_URL,
+            self::MAIL_FROM_ADDRESS,
+            self::MAIL_FROM_NAME,
         );
 
         $this->integrationRepository = new EloquentIntegrationRepository(
@@ -87,40 +77,34 @@ final class SendUiTPASMailsMailpitTest extends TestCase
         // This method also saves the subscription in the repository.
         $this->givenThereIsASubscription(
             id: $this->subscriptionId,
-            integrationType: IntegrationType::UiTPAS
+            integrationType: IntegrationType::EntryApi
         );
     }
 
     #[DataProvider('mails')]
-    public function testMailWasSentIntegrationCreatedWithContacts(
-        IntegrationCreatedWithContacts|IntegrationActivationRequested|UdbOrganizerRequested|UdbOrganizerApproved|UdbOrganizerRejected $event,
+    public function testMailWasSent(
+        IntegrationCreatedWithContacts|IntegrationActivated|IntegrationApproved|IntegrationActivationRequested|IntegrationDeleted|ActivationExpired $event,
         IntegrationStatus $integrationStatus,
         string $name,
         string $subject
     ): void {
-        if ($event instanceof UdbOrganizerApproved || $event instanceof UdbOrganizerRejected || $event instanceof UdbOrganizerRequested) {
-            $integrationId = $event->integrationId;
-        } else {
-            $integrationId = $event->id;
-        }
-
         $integration = (new Integration(
-            $integrationId,
-            IntegrationType::UiTPAS,
+            $event->id,
+            IntegrationType::EntryApi,
             $name,
-            'Uitpas Integration description',
+            'Entry API Integration description',
             $this->subscriptionId,
             $integrationStatus,
             IntegrationPartnerStatus::THIRD_PARTY,
         ))->withContacts(
-            new Contact(Uuid::uuid4(), $integrationId, self::MAIL_TO_ADDRESS, ContactType::Contributor, 'John', 'Snow')
+            new Contact(Uuid::uuid4(), $event->id, self::MAIL_TO_ADDRESS, ContactType::Contributor, 'John', 'Snow')
         )->withUdbOrganizers(
-            new UdbOrganizer(Uuid::uuid4(), $integrationId, new UdbUuid(self::ORG_ID), UdbOrganizerStatus::Pending),
+            new UdbOrganizer(Uuid::uuid4(), $event->id, new UdbUuid(self::ORG_ID), UdbOrganizerStatus::Pending),
         );
 
         // The events dispatched inside are not dispatched, so we manually call the handle method.
         $this->integrationRepository->save($integration);
-        $this->udbOrganizerRepository->create(new UdbOrganizer(Uuid::uuid4(), $integrationId, new UdbUuid(self::ORG_ID), UdbOrganizerStatus::Pending));
+        $this->udbOrganizerRepository->create(new UdbOrganizer(Uuid::uuid4(), $event->id, new UdbUuid(self::ORG_ID), UdbOrganizerStatus::Pending));
 
         $method = 'handle' . class_basename($event);
         $this->listener->$method($event);
@@ -141,49 +125,57 @@ final class SendUiTPASMailsMailpitTest extends TestCase
     public static function mails(): array
     {
         $names = [];
-        foreach (range(1, 4) as $i) {
+        foreach (range(1, 10) as $i) {
             $names[] = substr(uniqid('', true) . $i, 0, 10);
         }
         $i = 0;
 
         return [
+            IntegrationCreatedWithContacts::class => [
+                new IntegrationCreatedWithContacts(Uuid::uuid4()),
+                IntegrationStatus::Draft,
+                $names[$i],
+                'Je integratie ' . $names[$i++] . ' is succesvol aangemaakt!',
+            ],
+            IntegrationActivated::class => [
+                new IntegrationActivated(Uuid::uuid4()),
+                IntegrationStatus::Draft,
+                $names[$i],
+                'Je integratie ' . $names[$i++] . ' is geactiveerd!',
+            ],
+
+            IntegrationApproved::class => [
+                new IntegrationApproved(Uuid::uuid4()),
+                IntegrationStatus::Draft,
+                $names[$i],
+                'Je integratie ' . $names[$i++] . ' is geactiveerd!',
+            ],
             IntegrationActivationRequested::class => [
                 new IntegrationActivationRequested(Uuid::uuid4()),
                 IntegrationStatus::Draft,
                 $names[$i],
-                'Activatieaanvraag met integratie ' . $names[$i++] . ' voor publiq vzw!',
+                'Activatieaanvraag met integratie ' . $names[$i++] . '',
             ],
-            UdbOrganizerRequested::class => [
-                new UdbOrganizerRequested(new UdbUuid(self::ORG_ID), Uuid::uuid4()),
-                IntegrationStatus::Active,
+
+            IntegrationDeleted::class => [
+                new IntegrationDeleted(Uuid::uuid4()),
+                IntegrationStatus::Draft,
                 $names[$i],
-                'Activatieaanvraag met integratie ' . $names[$i++] . ' voor publiq vzw!',
+                'Integratie ' . $names[$i++] . ' is definitief verwijderd',
             ],
-            UdbOrganizerApproved::class => [
-                new UdbOrganizerApproved(new UdbUuid(self::ORG_ID), Uuid::uuid4()),
-                IntegrationStatus::Active,
+
+            ActivationExpired::class => [
+                new ActivationExpired(Uuid::uuid4(), TemplateName::INTEGRATION_ACTIVATION_REMINDER),
+                IntegrationStatus::Draft,
                 $names[$i],
-                'Je integratie ' . $names[$i++] . ' voor publiq vzw is geactiveerd!',
+                'Hulp nodig met je Integratie ' . $names[$i++] . '?',
             ],
-            UdbOrganizerRejected::class => [
-                new UdbOrganizerRejected(new UdbUuid(self::ORG_ID), Uuid::uuid4()),
-                IntegrationStatus::Active,
+            ActivationExpired::class . '_final' => [
+                new ActivationExpired(Uuid::uuid4(), TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER),
+                IntegrationStatus::Draft,
                 $names[$i],
-                'Je integratie ' . $names[$i] . ' voor publiq vzw is afgekeurd!',
+                'Je integratie ' . $names[$i++] . ' wordt binnenkort verwijderd',
             ],
         ];
-    }
-
-    private function givenUitpasOrganizers(): PagedCollection
-    {
-        $pagedCollection = new PagedCollection();
-        $org = new SapiOrganizer();
-        $org->setId(self::ORG_ID);
-        $org->setName(new TranslatedString(['nl' => 'publiq vzw']));
-        $collection = new Collection();
-        $collection->setItems([$org]);
-        $pagedCollection->setMember($collection);
-        $pagedCollection->setTotalItems(1);
-        return $pagedCollection;
     }
 }

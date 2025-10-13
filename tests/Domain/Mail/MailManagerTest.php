@@ -53,7 +53,9 @@ final class MailManagerTest extends TestCase
             $this->mailer,
             $this->integrationRepository,
             $this->integrationMailRepository,
-            'http://www.example.com'
+            'http://www.example.com',
+            'technical-support@publiq.be',
+            'publiq-platform'
         );
 
         $this->contacts = [
@@ -176,22 +178,22 @@ final class MailManagerTest extends TestCase
         return [
             TemplateName::INTEGRATION_CREATED->value => [
                 'event' => new IntegrationCreatedWithContacts(Uuid::fromString(self::INTEGRATION_ID)),
-                'method' => 'sendIntegrationCreatedMail',
+                'method' => 'handleIntegrationCreatedWithContacts',
                 'template' => new MailTemplate(TemplateName::INTEGRATION_CREATED, IntegrationType::SearchApi),
             ],
             TemplateName::INTEGRATION_ACTIVATED->value => [
                 'event' => new IntegrationActivated(Uuid::fromString(self::INTEGRATION_ID)),
-                'method' => 'sendIntegrationActivatedMail',
+                'method' => 'handleIntegrationActivated',
                 'template' => new MailTemplate(TemplateName::INTEGRATION_ACTIVATED, IntegrationType::SearchApi),
             ],
             TemplateName::INTEGRATION_ACTIVATION_REQUEST->value => [
                 'event' => new IntegrationActivationRequested(Uuid::fromString(self::INTEGRATION_ID)),
-                'method' => 'sendIntegrationActivationRequestMail',
+                'method' => 'handleIntegrationActivationRequested',
                 'template' => new MailTemplate(TemplateName::INTEGRATION_ACTIVATION_REQUEST, IntegrationType::SearchApi),
             ],
             TemplateName::INTEGRATION_DELETED->value => [
                 'event' => new IntegrationDeleted(Uuid::fromString(self::INTEGRATION_ID)),
-                'method' => 'sendIntegrationDeletedMail',
+                'method' => 'handleIntegrationDeleted',
                 'template' => new MailTemplate(TemplateName::INTEGRATION_DELETED, IntegrationType::SearchApi),
                 'useGetByIdWithTrashed' => true,
             ],
@@ -200,7 +202,7 @@ final class MailManagerTest extends TestCase
                     Uuid::fromString(self::INTEGRATION_ID),
                     TemplateName::INTEGRATION_ACTIVATION_REMINDER
                 ),
-                'method' => 'sendActivationReminderEmail',
+                'method' => 'handleActivationExpired',
                 'template' => new MailTemplate(TemplateName::INTEGRATION_ACTIVATION_REMINDER, IntegrationType::SearchApi),
             ],
             TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER->value => [
@@ -208,7 +210,7 @@ final class MailManagerTest extends TestCase
                     Uuid::fromString(self::INTEGRATION_ID),
                     TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER
                 ),
-                'method' => 'sendActivationReminderEmail',
+                'method' => 'handleActivationExpired',
                 'template' => new MailTemplate(TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER, IntegrationType::SearchApi),
             ],
         ];
