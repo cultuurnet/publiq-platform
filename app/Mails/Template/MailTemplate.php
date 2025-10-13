@@ -10,7 +10,6 @@ final readonly class MailTemplate
 {
     public function __construct(public TemplateName $name, public IntegrationType $type)
     {
-
     }
 
     public function getSubject(): string
