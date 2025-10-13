@@ -2,11 +2,11 @@
 
 <p>Je integratie met naam {{ $integrationName }} is zonet met succes aangemaakt op het publiq platform. Je kan meteen
     starten met de ontwikkeling van je integratie op onze testomgeving. Je toegangssleutels vind je op je
-    integratiepagina: <a href="{{ $integrationDetailpage }}">{{ $integrationDetailpage }}</a>.</p>
+    integratiepagina: <a href="{{ $url }}">{{ $url }}</a>.</p>
 
 @include('mails.partials.button', [
     'buttonText' => 'Bekijk integratie',
-    'organisationUrl' => $integrationDetailpage
+    'organisationUrl' => $url
 ])
 
 @if ($type === 'search-api')
