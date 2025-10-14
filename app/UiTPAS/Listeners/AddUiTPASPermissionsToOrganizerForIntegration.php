@@ -66,7 +66,7 @@ final class AddUiTPASPermissionsToOrganizerForIntegration implements ShouldQueue
         );
 
         if (!$success) {
-            $organizer = $this->udbOrganizerRepository->getByOrganizerId($event->integrationId, $event->udbId);
+            $organizer = $this->udbOrganizerRepository->getByIntegrationAndOrganizerId($event->integrationId, $event->udbId);
             $this->udbOrganizerRepository->updateStatus($organizer, UdbOrganizerStatus::Pending);
 
             $this->logger->critical(

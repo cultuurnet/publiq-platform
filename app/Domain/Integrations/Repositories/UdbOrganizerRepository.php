@@ -22,5 +22,5 @@ interface UdbOrganizerRepository
 
     public function getById(UuidInterface $id): UdbOrganizer;
 
-    public function getByOrganizerId(UuidInterface $integrationId, UdbUuid $organizerId): UdbOrganizer;
+    public function getByIntegrationAndOrganizerId(UuidInterface $integrationId, UdbUuid $organizerId): UdbOrganizer;
 }
