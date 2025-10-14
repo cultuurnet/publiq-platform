@@ -10,7 +10,7 @@ use App\Domain\UdbUuid;
 
 interface UiTPASApiInterface
 {
-    public function updatePermissions(ClientCredentialsContext $context, UdbUuid $organizerId, string $clientId): bool;
+    public function addPermissions(ClientCredentialsContext $context, UdbUuid $organizerId, string $clientId): bool;
 
     public function fetchPermissions(ClientCredentialsContext $context, UdbUuid $organisationId, string $clientId): ?UiTPASPermission;
 
