@@ -11,6 +11,7 @@ use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
+use App\Domain\UdbUuid;
 use App\Keycloak\KeycloakConfig;
 use App\Nova\Actions\ActivateIntegration;
 use App\Nova\Actions\ActivateUitpasIntegration;
@@ -21,9 +22,13 @@ use App\Nova\Actions\OpenWidgetManager;
 use App\Nova\Actions\UdbOrganizer\RequestUdbOrganizer;
 use App\Nova\Actions\UiTiDv1\CreateMissingUiTiDv1Consumers;
 use App\Nova\Actions\UnblockIntegration;
+use App\Nova\Actions\UiTPAS\SynchronizeUiTPASPermissions;
 use App\Nova\Filters\AdminInformationFilter;
 use App\Nova\Resource;
 use App\Search\Sapi3\SearchService;
+use App\UiTPAS\ClientCredentialsContextFactory;
+use App\UiTPAS\UiTPASApiInterface;
+use App\UiTPAS\UiTPASConfig;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -41,6 +46,7 @@ use Laravel\Nova\Http\Requests\ActionRequest;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Query\Search\SearchableRelation;
 use Laravel\Nova\ResourceTool;
+use Psr\Log\LoggerInterface;
 use Publiq\InsightlyLink\InsightlyLink;
 use Publiq\InsightlyLink\InsightlyType;
 
@@ -309,6 +315,21 @@ final class Integration extends Resource
                 ->confirmText('Are you sure you want to add an organizer?')
                 ->confirmButtonText('Add')
                 ->cancelButtonText('Cancel')
+                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->isUiTPAS())
+                ->canRun(fn (Request $request, IntegrationModel $model) => $model->isUiTPAS()),
+
+            (new SynchronizeUiTPASPermissions(
+                ClientCredentialsContextFactory::getUitIdTestContext(),
+                new UdbUuid((string)config(UiTPASConfig::TEST_ORGANISATION->value)),
+                ClientCredentialsContextFactory::getUitIdProdContext(),
+                App::make(UiTPASApiInterface::class),
+                App::make(LoggerInterface::class),
+            ))
+                ->exceptOnIndex()
+                ->confirmText('Are you sure you want to synchronize all UiTPAS permissions for this integration?')
+                ->confirmButtonText('Synchronize')
+                ->cancelButtonText('Cancel')
+                ->withName('Synchronize UiTPAS permissions')
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->isUiTPAS())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->isUiTPAS()),
 
