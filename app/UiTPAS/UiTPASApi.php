@@ -73,6 +73,14 @@ final readonly class UiTPASApi implements UiTPASApiInterface
             );
 
             $permissions = Json::decodeAssociatively($response->getBody()->getContents());
+
+            foreach($permissions as $permission) {
+                if (isset($permission['organizer']['id']) && $permission['organizer']['id'] === $organizerId->toString()) {
+                    // Permission already exists, no need to update
+                    return true;
+                }
+            }
+
             $updatedPermissions = $updateCallback($permissions);
 
             $request = new Request('PUT', 'permissions/' . $clientId, [
