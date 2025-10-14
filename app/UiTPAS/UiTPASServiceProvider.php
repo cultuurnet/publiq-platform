@@ -9,6 +9,7 @@ use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\GetIntegrationOrganizersWithTestOrganizer;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Keycloak\Events\ClientCreated;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Mails\Smtp\MailTemplateResolver;
@@ -59,6 +60,7 @@ final class UiTPASServiceProvider extends ServiceProvider
                 $this->app->get(UiTPASApiInterface::class),
                 ClientCredentialsContextFactory::getUitIdTestContext(),
                 ClientCredentialsContextFactory::getUitIdProdContext(),
+                $this->app->get(UdbOrganizerRepository::class),
                 $this->app->get(LoggerInterface::class),
             );
         });
