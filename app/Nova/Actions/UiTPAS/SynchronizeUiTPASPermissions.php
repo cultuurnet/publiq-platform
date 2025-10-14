@@ -18,9 +18,11 @@ use Laravel\Nova\Actions\ActionModelCollection;
 use Laravel\Nova\Fields\ActionFields;
 use Psr\Log\LoggerInterface;
 
-class SynchronizeUiTPASPermissions extends Action
+final class SynchronizeUiTPASPermissions extends Action
 {
-    use InteractsWithQueue, Queueable, SerializesModels;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     public function __construct(
         private readonly ClientCredentialsContext $testContext,
@@ -52,11 +54,11 @@ class SynchronizeUiTPASPermissions extends Action
 
             $this->uitpasApi->updatePermissions($this->testContext, $this->demoOrgId, $keycloakClientTestId);
 
-            $this->logger->info(sprintf("Restoring UiTPAS permissions for integration %s", $integration->id));
+            $this->logger->info(sprintf('Restoring UiTPAS permissions for integration %s', $integration->id));
 
             foreach ($integration->udbOrganizers() as $organizer) {
                 if ($organizer->status !== UdbOrganizerStatus::Approved) {
-                    $this->logger->info(sprintf("Skipping organizer %s because its status is %s", $organizer->organizerId, $organizer->status->value));
+                    $this->logger->info(sprintf('Skipping organizer %s because its status is %s', $organizer->organizerId, $organizer->status->value));
                     continue;
                 }
 
@@ -64,7 +66,7 @@ class SynchronizeUiTPASPermissions extends Action
 
                 if (!$success) {
                     $errors[] = $organizer->id;
-                    $this->logger->error(sprintf("Failed to restore UiTPAS permissions for organizer %s and Keycloak client %s", $organizer->organizerId, $keycloakClientProdId));
+                    $this->logger->error(sprintf('Failed to restore UiTPAS permissions for organizer %s and Keycloak client %s', $organizer->organizerId, $keycloakClientProdId));
                 }
             }
         }

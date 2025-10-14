@@ -11,6 +11,9 @@ use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
+use App\Domain\Integrations\UdbOrganizer;
+use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\UdbUuid;
 use App\Keycloak\Client;
 use App\Keycloak\Events\ClientCreated;
@@ -30,10 +33,11 @@ final class AddUiTPASPermissionsToOrganizerForIntegrationTest extends TestCase
 {
     private const CLIENT_ID = '5f263a50-9474-4690-a962-6935d6f9a3f2';
     private const INTEGRATION_ID = '373572ec-c7aa-4107-a7f9-403860953b71';
+    private const ORG_ID = '5ed9a8a2-4069-4558-8960-f2621ccd71d9';
 
     private IntegrationRepository&MockObject $integrationRepository;
     private KeycloakClientRepository&MockObject $keycloakClientRepository;
-
+    private UdbOrganizerRepository&MockObject $udbOrganizerRepository;
     private UiTPASApiInterface&MockObject $uitpasApi;
     private AddUiTPASPermissionsToOrganizerForIntegration $listener;
     private ClientCredentialsContext $testContext;
@@ -46,6 +50,16 @@ final class AddUiTPASPermissionsToOrganizerForIntegrationTest extends TestCase
 
         $this->integrationRepository = $this->createMock(IntegrationRepository::class);
         $this->keycloakClientRepository = $this->createMock(KeycloakClientRepository::class);
+        $this->udbOrganizerRepository = $this->createMock(UdbOrganizerRepository::class);
+        $this->udbOrganizerRepository
+            ->method('getByIntegrationAndOrganizerId')
+            ->with(Uuid::fromString(self::INTEGRATION_ID), new UdbUuid(self::ORG_ID))
+            ->willReturn(new UdbOrganizer(
+                Uuid::uuid4(),
+                Uuid::fromString(self::INTEGRATION_ID),
+                new UdbUuid(self::ORG_ID),
+                UdbOrganizerStatus::Approved,
+            ));
 
         $this->keycloakClientRepository
             ->method('getById')
@@ -75,6 +89,7 @@ final class AddUiTPASPermissionsToOrganizerForIntegrationTest extends TestCase
             $this->uitpasApi,
             $this->testContext,
             $this->prodContext,
+            $this->udbOrganizerRepository,
             $this->logger
         );
     }
@@ -170,7 +185,7 @@ final class AddUiTPASPermissionsToOrganizerForIntegrationTest extends TestCase
 
     public function test_it_adds_permissions_for_production_client(): void
     {
-        $organizerId = new UdbUuid('5ed9a8a2-4069-4558-8960-f2621ccd71d9');
+        $organizerId = new UdbUuid(self::ORG_ID);
 
         $this->integrationRepository
             ->expects($this->once())
@@ -215,6 +230,7 @@ final class AddUiTPASPermissionsToOrganizerForIntegrationTest extends TestCase
             $this->uitpasApi,
             $this->testContext,
             $this->prodContext,
+            $this->udbOrganizerRepository,
             $this->logger
         );
     }

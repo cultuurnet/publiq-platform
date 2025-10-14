@@ -71,7 +71,8 @@ final class EloquentUdbOrganizerRepository implements UdbOrganizerRepository
         return $model->toDomain();
     }
 
-    public function getByIntegrationAndOrganizerId(UuidInterface $integrationId, UdbUuid $organizerId): UdbOrganizer {
+    public function getByIntegrationAndOrganizerId(UuidInterface $integrationId, UdbUuid $organizerId): UdbOrganizer
+    {
         return UdbOrganizerModel::query()
             ->where('integration_id', $integrationId->toString())
             ->where('organizer_id', $organizerId->toString())
