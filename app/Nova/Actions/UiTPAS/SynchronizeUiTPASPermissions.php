@@ -34,6 +34,8 @@ class SynchronizeUiTPASPermissions extends Action
 
     public function handle(ActionFields $fields, ActionModelCollection $actionModelCollection): void
     {
+        //@todo move to async job
+
         $errors = [];
         foreach ($actionModelCollection as $integrationModel) {
             if (!$integrationModel instanceof IntegrationModel) {
@@ -48,7 +50,7 @@ class SynchronizeUiTPASPermissions extends Action
             $keycloakClientTestId = $integration->getKeycloakClientByEnv($this->testContext->environment)->clientId;
             $keycloakClientProdId = $integration->getKeycloakClientByEnv($this->prodContext->environment)->clientId;
 
-            $this->uitpasApi->addPermissions($this->testContext, $this->demoOrgId, $keycloakClientTestId);
+            $this->uitpasApi->updatePermissions($this->testContext, $this->demoOrgId, $keycloakClientTestId);
 
             $this->logger->info(sprintf("Restoring UiTPAS permissions for integration %s", $integration->id));
 
@@ -58,7 +60,7 @@ class SynchronizeUiTPASPermissions extends Action
                     continue;
                 }
 
-                $success = $this->uitpasApi->addPermissions($this->prodContext, $organizer->organizerId, $keycloakClientProdId);
+                $success = $this->uitpasApi->updatePermissions($this->prodContext, $organizer->organizerId, $keycloakClientProdId);
 
                 if (!$success) {
                     $errors[] = $organizer->id;

@@ -47,7 +47,7 @@ final class AddUiTPASPermissionsToOrganizerForIntegration implements ShouldQueue
             return;
         }
 
-        $this->UiTPASApi->addPermissions(
+        $this->UiTPASApi->updatePermissions(
             $this->testContext,
             new UdbUuid(config(UiTPASConfig::TEST_ORGANISATION->value)),
             $keycloakClient->clientId,
@@ -56,7 +56,7 @@ final class AddUiTPASPermissionsToOrganizerForIntegration implements ShouldQueue
 
     public function handleCreateProductionPermissions(UdbOrganizerApproved $event): void
     {
-        $success = $this->UiTPASApi->addPermissions(
+        $success = $this->UiTPASApi->updatePermissions(
             $this->prodContext,
             $event->udbId,
             $this->integrationRepository

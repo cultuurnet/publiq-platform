@@ -100,7 +100,7 @@ final class AddUiTPASPermissionsToOrganizerForIntegrationTest extends TestCase
 
         $this->uitpasApi
             ->expects($this->once())
-            ->method('addPermissions')
+            ->method('updatePermissions')
             ->with(
                 $this->testContext,
                 'd541dbd6-b818-432d-b2be-d51dfc5c0c51',
@@ -130,7 +130,7 @@ final class AddUiTPASPermissionsToOrganizerForIntegrationTest extends TestCase
 
         $this->uitpasApi
             ->expects($this->never())
-            ->method('addPermissions');
+            ->method('updatePermissions');
 
         $this->listener->handleCreateTestPermissions(new ClientCreated(Uuid::fromString(self::CLIENT_ID)));
     }
@@ -162,7 +162,7 @@ final class AddUiTPASPermissionsToOrganizerForIntegrationTest extends TestCase
 
         $this->uitpasApi
             ->expects($this->never())
-            ->method('addPermissions');
+            ->method('updatePermissions');
 
         $listener = $this->createListenerWithProdContext();
         $listener->handleCreateTestPermissions(new ClientCreated(Uuid::fromString(self::CLIENT_ID)));
@@ -191,7 +191,7 @@ final class AddUiTPASPermissionsToOrganizerForIntegrationTest extends TestCase
 
         $this->uitpasApi
             ->expects($this->once())
-            ->method('addPermissions')
+            ->method('updatePermissions')
             ->with(
                 $this->prodContext,
                 $organizerId,

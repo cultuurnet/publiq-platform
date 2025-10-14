@@ -30,9 +30,9 @@ final readonly class UiTPASApi implements UiTPASApiInterface
     ) {
     }
 
-    public function addPermissions(ClientCredentialsContext $context, UdbUuid $organizerId, string $clientId): bool
+    public function updatePermissions(ClientCredentialsContext $context, UdbUuid $organizerId, string $clientId): bool
     {
-        return $this->updatePermissions(
+        return $this->sentToApi(
             $context,
             $organizerId,
             $clientId,
@@ -46,7 +46,7 @@ final readonly class UiTPASApi implements UiTPASApiInterface
 
     public function deleteAllPermissions(ClientCredentialsContext $context, UdbUuid $organizerId, string $clientId): bool
     {
-        return $this->updatePermissions(
+        return $this->sentToApi(
             $context,
             $organizerId,
             $clientId,
@@ -59,7 +59,7 @@ final readonly class UiTPASApi implements UiTPASApiInterface
         );
     }
 
-    private function updatePermissions(
+    private function sentToApi(
         ClientCredentialsContext $context,
         UdbUuid $organizerId,
         string $clientId,
