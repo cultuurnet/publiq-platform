@@ -10,7 +10,7 @@ export async function createIntegrationAsIntegrator(
   await page.goto("/nl/integraties");
   await page
     .getByRole("main")
-    .getByRole("link", { name: "Integratie toevoegen" })
+    .getByRole("link", { name: "Integratie toevoegen", exact: true })
     .click();
 
   if (integrationType === IntegrationType.EntryApi) {
