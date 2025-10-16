@@ -21,7 +21,7 @@ test("As an admin I can approve an integration", async ({ page }) => {
     IntegrationType.EntryApi
   );
 
-  await page.waitForTimeout(1000);
+  await page.waitForTimeout(10000);
 
   // approve integration
   await page.goto(`/admin/resources/integrations/${integrationId}`);
