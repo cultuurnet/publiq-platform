@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Mails\Smtp;
 
-use App\Mails\Smtp\MailTemplate;
+use App\Domain\Integrations\IntegrationType;
 use App\Mails\Smtp\MailTemplateResolver;
 use App\Mails\Smtp\SmtpMailer;
+use App\Mails\Template\MailTemplate;
+use App\Mails\Template\TemplateName;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -21,12 +23,15 @@ final class SmtpMailerTest extends TestCase
     private MailTemplateResolver&MockObject $mailerTemplateResolver;
     private LoggerInterface&MockObject $logger;
     private SmtpMailer $smtpMailer;
+    private MailTemplate $mailTemplate;
 
     protected function setUp(): void
     {
         $this->mailer = $this->createMock(MailerInterface::class);
         $this->mailerTemplateResolver = $this->createMock(MailTemplateResolver::class);
         $this->logger = $this->createMock(LoggerInterface::class);
+
+        $this->mailTemplate = new MailTemplate(TemplateName::INTEGRATION_CREATED, IntegrationType::EntryApi);
 
         $this->smtpMailer = new SmtpMailer(
             $this->mailer,
@@ -39,20 +44,19 @@ final class SmtpMailerTest extends TestCase
     {
         $from = new Address('from@publiq.be');
         $to = new Address('to@publiq.be');
-        $templateId = 0;
         $subject = 'Welkom bij Publiq';
         $html = '<p>Hello</p>';
 
         $this->mailerTemplateResolver
             ->expects($this->once())
             ->method('getSubject')
-            ->with(MailTemplate::from($templateId))
+            ->with($this->mailTemplate)
             ->willReturn($subject);
 
         $this->mailerTemplateResolver
             ->expects($this->once())
             ->method('render')
-            ->with(MailTemplate::from($templateId), $this->arrayHasKey('subject'))
+            ->with($this->mailTemplate, $this->arrayHasKey('subject'))
             ->willReturn($html);
 
         $this->mailer
@@ -70,14 +74,13 @@ final class SmtpMailerTest extends TestCase
             ->method('info')
             ->with(sprintf('Sent mail "%s" to %s', $subject, $to->toString()));
 
-        $this->smtpMailer->send($from, $to, $templateId);
+        $this->smtpMailer->send($from, $to, $this->mailTemplate);
     }
 
     public function testMailFailedToSendWithTransportException(): void
     {
         $from = new Address('from@publiq.be');
         $to = new Address('to@publiq.be');
-        $templateId = 1;
         $subject = 'Transport Error';
         $html = '<p>Oops</p>';
 
@@ -97,14 +100,13 @@ final class SmtpMailerTest extends TestCase
             ->method('error')
             ->with(sprintf('[TransportException] Failed to sent "%s" to %s: %s', $subject, $to->toString(), 'Transport failed'));
 
-        $this->smtpMailer->send($from, $to, $templateId);
+        $this->smtpMailer->send($from, $to, $this->mailTemplate);
     }
 
     public function testMailFailedToSendWithGenericThrowable(): void
     {
         $from = new Address('from@publiq.be');
         $to = new Address('to@publiq.be');
-        $templateId = 2;
         $subject = 'Throwable Error';
         $html = '<p>Oops</p>';
 
@@ -124,6 +126,6 @@ final class SmtpMailerTest extends TestCase
             ->method('error')
             ->with(sprintf('[Error] Failed to sent "%s" to %s: %s', $subject, $to->toString(), 'something broke'));
 
-        $this->smtpMailer->send($from, $to, $templateId);
+        $this->smtpMailer->send($from, $to, $this->mailTemplate);
     }
 }

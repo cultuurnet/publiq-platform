@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Mails\Smtp;
 
 use App\Domain\Mail\Mailer;
+use App\Mails\Template\MailTemplate;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
@@ -18,9 +19,9 @@ final readonly class SmtpMailer implements Mailer
     {
     }
 
-    public function send(Address $from, Address $to, int $templateId, array $variables = []): void
+    public function send(Address $from, Address $to, MailTemplate $mailTemplate, array $variables = []): void
     {
-        $subject = $this->mailerTemplateResolver->getSubject(MailTemplate::from($templateId), $variables);
+        $subject = $this->mailerTemplateResolver->getSubject($mailTemplate, $variables);
         $variables['subject'] = $subject;
 
         try {
@@ -28,7 +29,7 @@ final readonly class SmtpMailer implements Mailer
                 ->from($from)
                 ->to($to->toString())
                 ->subject($subject)
-                ->html($this->mailerTemplateResolver->render(MailTemplate::from($templateId), $variables));
+                ->html($this->mailerTemplateResolver->render($mailTemplate, $variables));
 
             $this->mailer->send($email);
 

@@ -185,31 +185,29 @@ final class UdbOrganizer extends Resource
     public function actions(NovaRequest $request): array
     {
         $actions = [];
-        if (config(UiTPASConfig::AUTOMATIC_PERMISSIONS_ENABLED->value)) {
-            $actions[] = (new ApproveUdbOrganizer(App::make(UdbOrganizerRepository::class)))
-                ->exceptOnIndex()
-                ->confirmText('Are you sure you want to active this organizer in UiTPAS?')
-                ->confirmButtonText('Activate')
-                ->cancelButtonText('Cancel')
-                ->canRun(fn (Request $request, UdbOrganizerModel $model) => $model->toDomain()->status === UdbOrganizerStatus::Pending)
-                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->isStatusPending());
+        $actions[] = (new ApproveUdbOrganizer(App::make(UdbOrganizerRepository::class)))
+            ->exceptOnIndex()
+            ->confirmText('Are you sure you want to active this organizer in UiTPAS?')
+            ->confirmButtonText('Activate')
+            ->cancelButtonText('Cancel')
+            ->canRun(fn (Request $request, UdbOrganizerModel $model) => $model->toDomain()->status === UdbOrganizerStatus::Pending)
+            ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->isStatusPending());
 
-            $actions[] = App::make(RejectUdbOrganizer::class)
-                ->exceptOnIndex()
-                ->confirmText('Are you sure you want to reject this organizer request?')
-                ->confirmButtonText('Reject')
-                ->cancelButtonText('Cancel')
-                ->canRun(fn (Request $request, UdbOrganizerModel $model) => $model->toDomain()->status === UdbOrganizerStatus::Pending)
-                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->isStatusPending());
+        $actions[] = App::make(RejectUdbOrganizer::class)
+            ->exceptOnIndex()
+            ->confirmText('Are you sure you want to reject this organizer request?')
+            ->confirmButtonText('Reject')
+            ->cancelButtonText('Cancel')
+            ->canRun(fn (Request $request, UdbOrganizerModel $model) => $model->toDomain()->status === UdbOrganizerStatus::Pending)
+            ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->isStatusPending());
 
-            $actions[] = (new RevokeUdbOrganizer(App::make(UdbOrganizerRepository::class)))
-                ->exceptOnIndex()
-                ->confirmText('Are you sure you want to revoke these organizer permissions?')
-                ->confirmButtonText('Revoke')
-                ->cancelButtonText('Cancel')
-                ->canRun(fn (Request $request, UdbOrganizerModel $model) => $model->toDomain()->status === UdbOrganizerStatus::Approved)
-                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->isStatusApproved());
-        }
+        $actions[] = (new RevokeUdbOrganizer(App::make(UdbOrganizerRepository::class)))
+            ->exceptOnIndex()
+            ->confirmText('Are you sure you want to revoke these organizer permissions?')
+            ->confirmButtonText('Revoke')
+            ->cancelButtonText('Cancel')
+            ->canRun(fn (Request $request, UdbOrganizerModel $model) => $model->toDomain()->status === UdbOrganizerStatus::Approved)
+            ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->isStatusApproved());
 
         return $actions;
     }
