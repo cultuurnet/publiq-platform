@@ -7,6 +7,8 @@ namespace App\UiTPAS\Listeners;
 use App\Api\ClientCredentialsContext;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
+use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\UdbUuid;
 use App\Keycloak\Events\ClientCreated;
 use App\Keycloak\Repositories\KeycloakClientRepository;
@@ -27,6 +29,7 @@ final class AddUiTPASPermissionsToOrganizerForIntegration implements ShouldQueue
         private readonly UiTPASApiInterface $UiTPASApi,
         private readonly ClientCredentialsContext $testContext,
         private readonly ClientCredentialsContext $prodContext,
+        private readonly UdbOrganizerRepository $udbOrganizerRepository,
         private readonly LoggerInterface $logger,
     ) {
     }
@@ -44,7 +47,7 @@ final class AddUiTPASPermissionsToOrganizerForIntegration implements ShouldQueue
             return;
         }
 
-        $this->UiTPASApi->addPermissions(
+        $this->UiTPASApi->updatePermissions(
             $this->testContext,
             new UdbUuid(config(UiTPASConfig::TEST_ORGANISATION->value)),
             $keycloakClient->clientId,
@@ -53,7 +56,7 @@ final class AddUiTPASPermissionsToOrganizerForIntegration implements ShouldQueue
 
     public function handleCreateProductionPermissions(UdbOrganizerApproved $event): void
     {
-        $success = $this->UiTPASApi->addPermissions(
+        $success = $this->UiTPASApi->updatePermissions(
             $this->prodContext,
             $event->udbId,
             $this->integrationRepository
@@ -63,6 +66,9 @@ final class AddUiTPASPermissionsToOrganizerForIntegration implements ShouldQueue
         );
 
         if (!$success) {
+            $organizer = $this->udbOrganizerRepository->getByIntegrationAndOrganizerId($event->integrationId, $event->udbId);
+            $this->udbOrganizerRepository->updateStatus($organizer, UdbOrganizerStatus::Pending);
+
             $this->logger->critical(
                 'Failed to add UiTPAS permissions for organizer - The UiTPAS API might be down',
                 [

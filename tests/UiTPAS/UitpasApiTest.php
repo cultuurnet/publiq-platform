@@ -83,7 +83,7 @@ final class UitpasApiTest extends TestCase
                 return $message === $expected;
             }));
 
-        $uitpasApi->addPermissions($this->context, new UdbUuid(self::ORG_ID), self::CLIENT_ID);
+        $uitpasApi->updatePermissions($this->context, new UdbUuid(self::ORG_ID), self::CLIENT_ID);
     }
 
     public function test_it_adds_permissions_successfully_and_keeps_the_current_permissions(): void
@@ -134,7 +134,7 @@ final class UitpasApiTest extends TestCase
                 return $message === $expected;
             }));
 
-        $uitpasApi->addPermissions($this->context, new UdbUuid(self::ORG_ID), self::CLIENT_ID);
+        $uitpasApi->updatePermissions($this->context, new UdbUuid(self::ORG_ID), self::CLIENT_ID);
 
         $this->assertIsArray($history);
         $this->assertCount(3, $history); // token fetch, get current permissions, put updated permissions
@@ -173,7 +173,7 @@ final class UitpasApiTest extends TestCase
             ->method('error')
             ->with($this->stringContains('Failed to give'));
 
-        $uitpasApi->addPermissions($this->context, new UdbUuid(self::ORG_ID), self::CLIENT_ID);
+        $uitpasApi->updatePermissions($this->context, new UdbUuid(self::ORG_ID), self::CLIENT_ID);
     }
 
     public function test_it_logs_error_when_status_code_is_not_204(): void
@@ -198,7 +198,7 @@ final class UitpasApiTest extends TestCase
             ->method('error')
             ->with(sprintf('Failed to give %s permission to uitpas organisation %s, status code 400', self::CLIENT_ID, self::ORG_ID));
 
-        $uitpasApi->addPermissions($this->context, new UdbUuid(self::ORG_ID), self::CLIENT_ID);
+        $uitpasApi->updatePermissions($this->context, new UdbUuid(self::ORG_ID), self::CLIENT_ID);
     }
 
     public function test_it_fetches_permissions_with_the_correct_id(): void
