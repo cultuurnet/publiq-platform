@@ -17,7 +17,7 @@ if [ "$UPDATE_HOSTS" = "true" ]; then
   set -- $MISSING_HOSTS
   for MISSING_HOST; do
     echo "$MISSING_HOST has to be in your hosts-file, to add you need sudo privileges"
-    sudo sh -c "echo '127.0.0.1 $MISSING_HOST' >> /etc/hosts"
+    sudo sh -c "echo \"\n127.0.0.1 $MISSING_HOST\" >> /etc/hosts"
   done
 fi
 
