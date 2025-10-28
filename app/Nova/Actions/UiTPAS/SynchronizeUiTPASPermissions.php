@@ -36,9 +36,7 @@ final class SynchronizeUiTPASPermissions extends Action
 
     public function handle(ActionFields $fields, ActionModelCollection $actionModelCollection): void
     {
-        //@todo move to async job
-
-        $errors = [];
+        $failedOrganizerIds = [];
         foreach ($actionModelCollection as $integrationModel) {
             if (!$integrationModel instanceof IntegrationModel) {
                 continue;
@@ -65,14 +63,15 @@ final class SynchronizeUiTPASPermissions extends Action
                 $success = $this->uitpasApi->updatePermissions($this->prodContext, $organizer->organizerId, $keycloakClientProdId);
 
                 if (!$success) {
-                    $errors[] = $organizer->id;
+                    $failedOrganizerIds[] = $organizer->id;
+
                     $this->logger->error(sprintf('Failed to restore UiTPAS permissions for organizer %s and Keycloak client %s', $organizer->organizerId, $keycloakClientProdId));
                 }
             }
         }
 
-        if ($errors !== []) {
-            Action::danger('Some permissions could not be restored: ' . implode(', ', $errors));
+        if ($failedOrganizerIds !== []) {
+            Action::danger('Some permissions could not be restored for organizers: ' . implode(', ', $failedOrganizerIds));
             return;
         }
 
