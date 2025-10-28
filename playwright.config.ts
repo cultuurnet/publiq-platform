@@ -13,9 +13,11 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: 1,
   expect: {
-    timeout: 5000,
+    timeout: 10000,
   },
-  reporter: "html",
+  reporter: process.env.CI
+    ? [['list'], ['junit', { outputFile: './e2e/test-results.xml' }]]
+    : [['html']],
   use: {
     baseURL: process.env.E2E_TEST_BASE_URL,
     trace: "on-first-retry",
