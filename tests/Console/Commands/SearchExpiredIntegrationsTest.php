@@ -8,7 +8,6 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Integrations\Events\ActivationExpired;
 use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
-use App\Mails\MailJet\MailjetConfig;
 use App\Mails\Template\TemplateName;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -52,8 +51,6 @@ final class SearchExpiredIntegrationsTest extends TestCase
 
     public function test_can_handle_search_expired_integrations(): void
     {
-        $this->mockConfigForEmail(false);
-
         $integrationId = Uuid::uuid4()->toString();
         $integrationId2 = Uuid::uuid4()->toString();
 
@@ -72,11 +69,6 @@ final class SearchExpiredIntegrationsTest extends TestCase
                 default => false,
             };
         });
-    }
-
-    private function mockConfigForEmail(bool $enabled): void
-    {
-        config()->set(MailjetConfig::TRANSACTIONAL_EMAILS_ENABLED, $enabled);
     }
 
     private function getPendingCommand(string $command, array $params = []): PendingCommand
