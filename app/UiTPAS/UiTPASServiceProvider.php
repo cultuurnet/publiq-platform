@@ -30,6 +30,7 @@ use App\UiTPAS\Listeners\SendUiTPASMails;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Routing\UrlGenerator;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Psr\Log\LoggerInterface;
@@ -115,6 +116,16 @@ final class UiTPASServiceProvider extends ServiceProvider
                 $this->app->get(UiTPASApiInterface::class),
                 ClientCredentialsContextFactory::getUitIdProdContext(),
                 $this->app->get(LoggerInterface::class),
+            );
+        });
+
+        $this->app->singleton(SynchronizeUiTPASPermissionsHandler::class, function () {
+            return new SynchronizeUiTPASPermissionsHandler(
+                ClientCredentialsContextFactory::getUitIdTestContext(),
+                new UdbUuid((string)config(UiTPASConfig::TEST_ORGANISATION->value)),
+                ClientCredentialsContextFactory::getUitIdProdContext(),
+                App::make(UiTPASApiInterface::class),
+                App::make(LoggerInterface::class),
             );
         });
 

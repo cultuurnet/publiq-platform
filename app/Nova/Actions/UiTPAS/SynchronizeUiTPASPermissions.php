@@ -4,19 +4,14 @@ declare(strict_types=1);
 
 namespace App\Nova\Actions\UiTPAS;
 
-use App\Api\ClientCredentialsContext;
-use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Models\IntegrationModel;
-use App\Domain\Integrations\UdbOrganizerStatus;
-use App\Domain\UdbUuid;
-use App\UiTPAS\UiTPASApiInterface;
+use App\UiTPAS\SynchronizeUiTPASPermissionsHandler;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Actions\ActionModelCollection;
 use Laravel\Nova\Fields\ActionFields;
-use Psr\Log\LoggerInterface;
 
 final class SynchronizeUiTPASPermissions extends Action
 {
@@ -25,55 +20,26 @@ final class SynchronizeUiTPASPermissions extends Action
     use SerializesModels;
 
     public function __construct(
-        private readonly ClientCredentialsContext $testContext,
-        private readonly UdbUuid $demoOrgId,
-        private readonly ClientCredentialsContext $prodContext,
-        private readonly UiTPASApiInterface $uitpasApi,
-        private readonly LoggerInterface $logger
+        private readonly SynchronizeUiTPASPermissionsHandler $handler,
     ) {
 
     }
 
     public function handle(ActionFields $fields, ActionModelCollection $actionModelCollection): void
     {
-        $failedOrganizerIds = [];
         foreach ($actionModelCollection as $integrationModel) {
             if (!$integrationModel instanceof IntegrationModel) {
                 continue;
             }
 
-            if ($integrationModel->type !== IntegrationType::UiTPAS) {
-                continue;
-            }
+            $result = $this->handler->handle($integrationModel->toDomain());
 
-            $integration = $integrationModel->toDomain();
-            $keycloakClientTestId = $integration->getKeycloakClientByEnv($this->testContext->environment)->clientId;
-            $keycloakClientProdId = $integration->getKeycloakClientByEnv($this->prodContext->environment)->clientId;
-
-            $this->uitpasApi->updatePermissions($this->testContext, $this->demoOrgId, $keycloakClientTestId);
-
-            $this->logger->info(sprintf('Restoring UiTPAS permissions for integration %s', $integration->id));
-
-            foreach ($integration->udbOrganizers() as $organizer) {
-                if ($organizer->status !== UdbOrganizerStatus::Approved) {
-                    $this->logger->info(sprintf('Skipping organizer %s because its status is %s', $organizer->organizerId, $organizer->status->value));
-                    continue;
-                }
-
-                $success = $this->uitpasApi->updatePermissions($this->prodContext, $organizer->organizerId, $keycloakClientProdId);
-
-                if (!$success) {
-                    $failedOrganizerIds[] = $organizer->id;
-
-                    $this->logger->error(sprintf('Failed to restore UiTPAS permissions for organizer %s and Keycloak client %s', $organizer->organizerId, $keycloakClientProdId));
-                }
+            if ($result->success === false) {
+                Action::danger('Some permissions could not be restored for organizers: ' . implode(', ', $result->failedOrganizerIds));
+                return;
             }
         }
 
-        if ($failedOrganizerIds !== []) {
-            Action::danger('Some permissions could not be restored for organizers: ' . implode(', ', $failedOrganizerIds));
-            return;
-        }
 
         Action::message('UiTPAS permissions restored successfully.');
     }
