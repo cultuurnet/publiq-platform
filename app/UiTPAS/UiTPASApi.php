@@ -30,15 +30,14 @@ final readonly class UiTPASApi implements UiTPASApiInterface
     ) {
     }
 
-    public function addPermissions(ClientCredentialsContext $context, UdbUuid $organizerId, string $clientId): bool
+    public function updatePermissions(ClientCredentialsContext $context, UdbUuid $organizerId, string $clientId): bool
     {
-        return $this->updatePermissions(
+        return $this->sentToApi(
             $context,
             $organizerId,
             $clientId,
             function (array $permissions) use ($organizerId): array {
-                $permissions[] = $this->withBody($organizerId);
-                return $permissions;
+                return (new UpdatePermissionsHelper())->merge($permissions, $organizerId);
             },
             'Gave %s permission to uitpas organisation %s'
         );
@@ -46,7 +45,7 @@ final readonly class UiTPASApi implements UiTPASApiInterface
 
     public function deleteAllPermissions(ClientCredentialsContext $context, UdbUuid $organizerId, string $clientId): bool
     {
-        return $this->updatePermissions(
+        return $this->sentToApi(
             $context,
             $organizerId,
             $clientId,
@@ -59,7 +58,7 @@ final readonly class UiTPASApi implements UiTPASApiInterface
         );
     }
 
-    private function updatePermissions(
+    private function sentToApi(
         ClientCredentialsContext $context,
         UdbUuid $organizerId,
         string $clientId,
@@ -73,6 +72,7 @@ final readonly class UiTPASApi implements UiTPASApiInterface
             );
 
             $permissions = Json::decodeAssociatively($response->getBody()->getContents());
+
             $updatedPermissions = $updateCallback($permissions);
 
             $request = new Request('PUT', 'permissions/' . $clientId, [
@@ -91,7 +91,6 @@ final readonly class UiTPASApi implements UiTPASApiInterface
 
             $this->logger->info(sprintf($successLogMessage, $clientId, $organizerId));
             return true;
-
         } catch (GuzzleException $e) {
             $this->logger->error(sprintf(
                 'Failed to give %s permission to uitpas organisation %s, error %s',
@@ -101,35 +100,6 @@ final readonly class UiTPASApi implements UiTPASApiInterface
             ));
             return false;
         }
-    }
-
-    private function withBody(UdbUuid $organizerId): array
-    {
-        return [
-            'organizer' => [
-                'id' => $organizerId->toString(),
-            ],
-            'permissionDetails' => array_map(
-                static fn ($id) => ['id' => $id],
-                [
-                    'CHECKINS_WRITE',
-                    'EVENTS_READ',
-                    'EVENTS_UPDATE',
-                    'TICKETSALES_REGISTER',
-                    'TICKETSALES_SEARCH',
-                    'ORGANIZERS_SEARCH',
-                    'TARIFFS_READ',
-                    'MEMBERSHIP_PRICES_READ',
-                    'PASSES_READ',
-                    'PASSES_INSZNUMBERS_READ',
-                    'PASSES_CHIPNUMBERS_READ',
-                    'REWARDS_READ',
-                    'REWARDS_WRITE',
-                    'REWARDS_REDEEM',
-                    'REWARDS_PASSHOLDERS_READ',
-                ]
-            ),
-        ];
     }
 
     /** @throws GuzzleException */
