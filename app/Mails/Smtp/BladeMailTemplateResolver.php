@@ -9,7 +9,7 @@ use Illuminate\Contracts\View\Factory as ViewFactory;
 
 final readonly class BladeMailTemplateResolver implements MailTemplateResolver
 {
-    private const TEMPLATE_ROOT = 'mails';
+    private const TEMPLATE_ROOT = 'mails.integration';
 
     public function __construct(
         private ViewFactory $view,

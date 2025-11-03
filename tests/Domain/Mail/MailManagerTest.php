@@ -113,6 +113,34 @@ final class MailManagerTest extends TestCase
             ->withContacts(...$this->contacts);
     }
 
+    public function testDoNoTSentUiTPASMailTwice(): void
+    {
+        $integration = (new Integration(
+            Uuid::fromString(self::INTEGRATION_ID),
+            IntegrationType::UiTPAS,
+            'Mock Integration',
+            'Mock description',
+            Uuid::uuid4(),
+            IntegrationStatus::Active,
+            IntegrationPartnerStatus::THIRD_PARTY,
+        ))
+            ->withContacts(...$this->contacts);
+
+        $this->integrationRepository
+            ->expects($this->once())
+            ->method('getById')
+            ->with(self::INTEGRATION_ID)
+            ->willReturn($integration);
+
+        $this->mailManager->handleIntegrationActivated(
+            new IntegrationActivated(Uuid::fromString(self::INTEGRATION_ID))
+        );
+
+        $this->mailer
+            ->expects($this->never())
+            ->method('send');
+    }
+
     #[DataProvider('mailDataProvider')]
     public function testSendMail(
         object $event,

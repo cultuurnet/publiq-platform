@@ -75,7 +75,7 @@ final class BladeMailTemplateResolverTest extends TestCase
             IntegrationType::EntryApi
         );
         $variables = ['foo' => 'bar'];
-        $specificTemplate = 'mails.entry-api.integration.activated';
+        $specificTemplate = 'mails.integration.entry-api.activated';
 
         $view = $this->createMock(View::class);
         $view->expects($this->once())
@@ -106,7 +106,7 @@ final class BladeMailTemplateResolverTest extends TestCase
             IntegrationType::EntryApi
         );
         $variables = ['foo' => 'bar'];
-        $specificTemplate = 'mails.entry-api.integration.activated';
+        $specificTemplate = 'mails.integration.entry-api.activated';
         $genericTemplate = 'mails.integration.activated';
 
         $view = $this->createMock(View::class);
