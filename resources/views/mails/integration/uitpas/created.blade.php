@@ -2,11 +2,11 @@
 
 <p>Je integratie met naam {{ $integrationName }} is zonet met succes aangemaakt op het publiq platform. Je kan meteen
     starten met de ontwikkeling van je integratie op onze testomgeving. Je toegangssleutels vind je op je
-    integratiepagina: <a href="{{ $integrationDetailpage }}">{{ $integrationDetailpage }}</a>.</p>
+    integratiepagina: <a href="{{ $url }}">{{ $url }}</a>.</p>
 
 @include('mails.partials.button', [
     'buttonText' => 'Bekijk integratie',
-    'organisationUrl' => $integrationDetailpage
+    'organisationUrl' => $url
 ])
 
 <h2>Test-omgeving</h2>
@@ -15,7 +15,7 @@
 <ul>
     <li>[TEST] UiTPAS Organisatie (Regio Gent + Paspartoe) met ID 0ce87cbc-9299-4528-8d35-92225dc9489f</li>
 </ul>
-<p>Je vindt alvast alle informatie in onze documentatie.</p>
+<p>Je vindt alvast alle informatie in <a href="https://publiq.stoplight.io/docs/uitpas/getting-started">onze documentatie</a>.</p>
 
 <h2>Productie-omgeving</h2>
 <p>Wanneer je klaar bent om naar productie te gaan, klik dan op “Activatie aanvragen” in je integratie op publiq
