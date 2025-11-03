@@ -49,6 +49,18 @@ $ make install
 $ make npm-dev
 ```
 
+## Mailpit
+Mailpit is a tool for capturing and viewing emails sent from your project during development. It provides a web-based GUI to inspect outgoing emails without actually sending them to real recipients.
+
+The Docker setup for this project includes Mailpit by default. To prevent port collisions you can configure the following environment variables in your `.env` file:
+
+```
+MAILPIT_GUI_PORT="8025"
+MAILPIT_SMTP_PORT="1025"
+```
+
+You can access the Mailpit web interface at [http://localhost:8025/](http://localhost:8025/) to view and manage captured emails (might be a different port if you changed the MAILPIT_GUI_PORT env variable.
+
 ## Updating
 
 After pulling new changes via git, you can update the backend and frontend applications by re-running `make install`.
