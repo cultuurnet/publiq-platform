@@ -141,4 +141,11 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
 
         $this->assertEquals($this->organizer1, $this->repository->getById($this->organizer1->id));
     }
+
+    public function testItCanGetByIntegrationAndOrganizerId(): void
+    {
+        $this->repository->create($this->organizer1);
+
+        $this->assertEquals($this->organizer1, $this->repository->getByIntegrationAndOrganizerId($this->organizer1->integrationId, $this->organizer1->organizerId));
+    }
 }

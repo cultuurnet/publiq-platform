@@ -162,28 +162,32 @@ export const ContactInfo = ({
     [updateContactForm.data.contributors, toBeEditedId]
   );
 
-  const [formContactType, setFormContactType] = useState("" as ContactType);
-
-  const toBeEditedContact = useMemo(() => {
+  const toBeEditedContactData = useMemo(() => {
     if (updateContactForm.data.functional.id === toBeEditedId) {
-      setFormContactType(ContactType.Functional);
-      // TODO: Remove as Contact: This is a temp fix for https://jira.publiq.be/browse/PPF-443
-      return updateContactForm.data.functional as Contact;
+      return {
+        contact: updateContactForm.data.functional as Contact,
+        type: ContactType.Functional,
+      };
     }
     if (updateContactForm.data.technical.id === toBeEditedId) {
-      setFormContactType(ContactType.Technical);
-      // TODO: Remove as Contact: This is a temp fix for https://jira.publiq.be/browse/PPF-443
-      return updateContactForm.data.technical as Contact;
+      return {
+        contact: updateContactForm.data.technical as Contact,
+        type: ContactType.Technical,
+      };
     }
-    setFormContactType(ContactType.Contributor);
-    // TODO: Remove as Contact: This is a temp fix for https://jira.publiq.be/browse/PPF-443
-    return foundContributor! as Contact;
+    return {
+      contact: foundContributor! as Contact,
+      type: ContactType.Contributor,
+    };
   }, [
     foundContributor,
     toBeEditedId,
     updateContactForm.data.functional,
     updateContactForm.data.technical,
   ]);
+
+  const toBeEditedContact = toBeEditedContactData.contact;
+  const formContactType = toBeEditedContactData.type;
 
   return (
     <>

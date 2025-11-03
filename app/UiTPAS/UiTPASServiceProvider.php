@@ -8,6 +8,8 @@ use App\Api\TokenStrategy\ClientCredentials;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\GetIntegrationOrganizersWithTestOrganizer;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
+use App\Domain\UdbUuid;
 use App\Domain\Mail\Mailer;
 use App\Keycloak\Events\ClientCreated;
 use App\Keycloak\Repositories\KeycloakClientRepository;
@@ -26,6 +28,7 @@ use App\UiTPAS\Listeners\SendUiTPASMails;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Routing\UrlGenerator;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Psr\Log\LoggerInterface;
@@ -55,6 +58,7 @@ final class UiTPASServiceProvider extends ServiceProvider
                 $this->app->get(UiTPASApiInterface::class),
                 ClientCredentialsContextFactory::getUitIdTestContext(),
                 ClientCredentialsContextFactory::getUitIdProdContext(),
+                $this->app->get(UdbOrganizerRepository::class),
                 $this->app->get(LoggerInterface::class),
             );
         });
@@ -98,6 +102,16 @@ final class UiTPASServiceProvider extends ServiceProvider
                 $this->app->get(UiTPASApiInterface::class),
                 ClientCredentialsContextFactory::getUitIdProdContext(),
                 $this->app->get(LoggerInterface::class),
+            );
+        });
+
+        $this->app->singleton(SynchronizeUiTPASPermissionsHandler::class, function () {
+            return new SynchronizeUiTPASPermissionsHandler(
+                ClientCredentialsContextFactory::getUitIdTestContext(),
+                new UdbUuid((string)config(UiTPASConfig::TEST_ORGANISATION->value)),
+                ClientCredentialsContextFactory::getUitIdProdContext(),
+                App::make(UiTPASApiInterface::class),
+                App::make(LoggerInterface::class),
             );
         });
 

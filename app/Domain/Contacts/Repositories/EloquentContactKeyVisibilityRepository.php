@@ -13,11 +13,15 @@ final class EloquentContactKeyVisibilityRepository implements ContactKeyVisibili
 {
     public function save(string $email, KeyVisibility $keyVisibility): void
     {
-        ContactKeyVisibilityModel::query()->updateOrCreate([
-            'id' => Uuid::uuid4(),
-            'email' => $email,
-            'key_visibility' => $keyVisibility,
-        ]);
+        ContactKeyVisibilityModel::query()->updateOrCreate(
+            [
+                'email'  => $email,
+            ],
+            [
+                'id' => Uuid::uuid4(),
+                'key_visibility' => $keyVisibility,
+            ]
+        );
     }
 
     public function findByEmail(string $email): KeyVisibility

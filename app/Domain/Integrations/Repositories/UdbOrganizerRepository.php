@@ -21,4 +21,6 @@ interface UdbOrganizerRepository
     public function delete(UuidInterface $integrationId, UdbUuid $organizerId): void;
 
     public function getById(UuidInterface $id): UdbOrganizer;
+
+    public function getByIntegrationAndOrganizerId(UuidInterface $integrationId, UdbUuid $organizerId): UdbOrganizer;
 }

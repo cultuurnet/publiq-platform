@@ -1,87 +1,97 @@
 .PHONY: up down bash install composer-install npm-install key-generate migrate lint stan ci config
 
+ifeq ($(CI),true)
+DOCKER_COMPOSE_OPTIONS = -u 451:451 -T
+else
+DOCKER_COMPOSE_OPTIONS = -T
+endif
+
 up:
-	vendor/bin/sail up -d
+	docker compose up -d
 
 down:
-	vendor/bin/sail down
+	docker compose down
 
 restart: down up
 
 destroy:
-	vendor/bin/sail down -v
+	docker compose down -v
 
 bash:
-	docker-compose exec laravel bash
+	docker compose exec platform bash
+
+bash-xdebug:
+	docker compose exec platform-xdebug bash
 
 config:
-	./config.sh
+	sh ./docker/config.sh
 
 install: composer-install key-generate migrate seed npm-install npm-build
 
 composer-install:
-	vendor/bin/sail composer install
+	docker compose exec $(DOCKER_COMPOSE_OPTIONS) platform composer install
 
 key-generate:
-	vendor/bin/sail artisan key:generate
+	docker compose exec $(DOCKER_COMPOSE_OPTIONS) platform php artisan key:generate
 
 migrate:
-	vendor/bin/sail artisan migrate
+	docker compose exec $(DOCKER_COMPOSE_OPTIONS) platform php artisan migrate
 
 seed:
-	vendor/bin/sail artisan db:seed
+	docker compose exec $(DOCKER_COMPOSE_OPTIONS) platform php artisan db:seed
 
 horizon:
-	vendor/bin/sail artisan horizon
+	docker compose exec platform artisan horizon
 
 lint:
-	vendor/bin/sail composer lint
+	docker compose exec platform composer lint
 
 stan:
-	vendor/bin/sail composer stan
+	docker compose exec platform composer stan
 
 test:
-	vendor/bin/sail composer test
+	docker compose exec platform composer test
 
 test-filter:
-	vendor/bin/sail composer test -- --filter=$(filter)
+	docker compose exec platform composer test -- --filter=$(filter)
 
 test-insightly:
-	vendor/bin/sail composer test tests/Insightly/HttpInsightlyClientTest.php
+	docker compose exec platform composer test tests/Insightly/HttpInsightlyClientTest.php
 
 ci: lint stan test
 
 npm-install:
-	vendor/bin/sail npm install
+	docker compose exec platform npm config set cache /var/www/html/.npm --global
+	docker compose exec $(DOCKER_COMPOSE_OPTIONS) platform npm install
 
 npm-dev:
-	vendor/bin/sail npm run dev
+	docker compose exec platform npm run dev
 
 npm-build:
-	vendor/bin/sail npm run build
+	docker compose exec $(DOCKER_COMPOSE_OPTIONS) platform npm run build
 
 npm-format:
-	vendor/bin/sail npm run format
+	docker compose exec platform npm run format
 
 npm-format-check:
-	vendor/bin/sail npm run format:check
+	docker compose exec platform npm run format:check
 
 npm-lint:
-	vendor/bin/sail npm run lint
+	docker compose exec platform npm run lint
 
 npm-lint-check:
-	vendor/bin/sail npm run lint:check
+	docker compose exec platform npm run lint:check
 
 npm-types-check:
-	vendor/bin/sail npm run types:check
+	docker compose exec platform npm run types:check
 
 npm-ci: npm-format npm-lint-check npm-types-check
 
 e2e-install:
-	docker-compose exec laravel npx playwright install chromium --with-deps
+	npx playwright install chromium --with-deps
 
 test-e2e:
-	docker-compose exec laravel npx playwright test $(options)
+	npx playwright test $(options)
 
 test-e2e-filter:
-	docker-compose exec laravel npx playwright test "$(filter)" $(options)
+	npx playwright test "$(filter)" $(options)
