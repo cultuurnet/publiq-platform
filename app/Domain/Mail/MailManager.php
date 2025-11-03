@@ -77,6 +77,10 @@ final class MailManager implements ShouldQueue
     {
         $integration = $this->integrationRepository->getById($event->id);
 
+        if($integration->type === IntegrationType::UiTPAS) {
+            return;
+        }
+
         $this->sendMail($integration, new MailTemplate(
             TemplateName::INTEGRATION_ACTIVATION_REQUEST,
             $integration->type
