@@ -6,15 +6,13 @@ namespace App\UiTPAS;
 
 use App\Api\TokenStrategy\ClientCredentials;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
-use App\Domain\Integrations\Events\IntegrationCreatedWithContacts;
 use App\Domain\Integrations\GetIntegrationOrganizersWithTestOrganizer;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\UdbUuid;
+use App\Domain\Mail\Mailer;
 use App\Keycloak\Events\ClientCreated;
 use App\Keycloak\Repositories\KeycloakClientRepository;
-use App\Mails\Smtp\MailTemplateResolver;
-use App\Mails\Smtp\SmtpMailer;
 use App\Notifications\MessageBuilder;
 use App\Notifications\Slack\SlackNotifier;
 use App\Search\Sapi3\SearchService;
@@ -34,8 +32,6 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Mailer\Mailer as SymfonyMailer;
-use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mime\Address;
 
 final class UiTPASServiceProvider extends ServiceProvider
@@ -89,19 +85,9 @@ final class UiTPASServiceProvider extends ServiceProvider
             );
         });
 
-        $this->app->singleton(SmtpMailer::class, function () {
-            return new SmtpMailer(
-                new SymfonyMailer(
-                    Transport::fromDsn(config('mail.mailers.smtp.dsn'))
-                ),
-                $this->app->get(MailTemplateResolver::class),
-                $this->app->get(LoggerInterface::class),
-            );
-        });
-
         $this->app->singleton(SendUiTPASMails::class, function () {
             return new SendUiTPASMails(
-                $this->app->get(SmtpMailer::class),
+                $this->app->get(Mailer::class),
                 $this->app->get(IntegrationRepository::class),
                 $this->app->get(UdbOrganizerNameResolver::class),
                 $this->app->get(SearchService::class),
@@ -134,10 +120,6 @@ final class UiTPASServiceProvider extends ServiceProvider
 
     private function bootstrapEventHandling(): void
     {
-        if (!config(UiTPASConfig::AUTOMATIC_PERMISSIONS_ENABLED->value)) {
-            return;
-        }
-
         Event::listen(ClientCreated::class, [AddUiTPASPermissionsToOrganizerForIntegration::class, 'handleCreateTestPermissions']);
         Event::listen(UdbOrganizerApproved::class, [AddUiTPASPermissionsToOrganizerForIntegration::class, 'handleCreateProductionPermissions']);
         Event::listen(UdbOrganizerDeleted::class, [RevokeUiTPASPermissions::class, 'handle']);
@@ -145,7 +127,6 @@ final class UiTPASServiceProvider extends ServiceProvider
         Event::listen(UdbOrganizerRequested::class, [NotifyUdbOrganizerRequested::class, 'handleUdbOrganizerRequested']);
         Event::listen(IntegrationActivationRequested::class, [NotifyUdbOrganizerRequested::class, 'handleIntegrationActivationRequested']);
 
-        Event::listen(IntegrationCreatedWithContacts::class, [SendUiTPASMails::class, 'handleIntegrationCreatedWithContacts']);
         Event::listen(IntegrationActivationRequested::class, [SendUiTPASMails::class, 'handleIntegrationActivationRequested']);
         Event::listen(UdbOrganizerRequested::class, [SendUiTPASMails::class, 'handleUdbOrganizerRequested']);
         Event::listen(UdbOrganizerApproved::class, [SendUiTPASMails::class, 'handleUdbOrganizerApproved']);

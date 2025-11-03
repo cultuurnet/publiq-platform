@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\Mails\Smtp;
 
+use App\Domain\Integrations\IntegrationType;
 use App\Mails\Smtp\BladeMailTemplateResolver;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
+use App\Mails\Template\MailTemplate;
+use App\Mails\Template\TemplateName;
 use Illuminate\Contracts\View\Factory as ViewFactory;
-use App\Mails\Smtp\MailTemplate;
 use Illuminate\Contracts\View\View;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
 final class BladeMailTemplateResolverTest extends TestCase
 {
@@ -33,29 +35,14 @@ final class BladeMailTemplateResolverTest extends TestCase
     {
         return [
             'integration activated' => [
-                MailTemplate::INTEGRATION_ACTIVATED,
+                new MailTemplate(TemplateName::INTEGRATION_ACTIVATED, IntegrationType::EntryApi),
                 ['integrationName' => 'Mijn Integratie'],
                 'Je integratie Mijn Integratie is geactiveerd!',
             ],
-            'uitpas requested' => [
-                MailTemplate::ORGANISATION_UITPAS_REQUESTED,
-                ['integrationName' => 'XYZ', 'organizerName' => 'De Roma'],
-                'Activatieaanvraag met integratie XYZ voor De Roma',
-            ],
-            'uitpas approved' => [
-                MailTemplate::ORGANISATION_UITPAS_APPROVED,
-                ['integrationName' => 'XYZ', 'organizerName' => 'KVS'],
-                'Je integratie XYZ voor KVS is geactiveerd',
-            ],
-            'uitpas rejected' => [
-                MailTemplate::ORGANISATION_UITPAS_REJECTED,
-                ['integrationName' => 'XYZ', 'organizerName' => 'KVS'],
-                'Je integratie XYZ voor KVS is afgekeurd',
-            ],
             'missing variable fallback' => [
-                MailTemplate::ORGANISATION_UITPAS_APPROVED,
+                new MailTemplate(TemplateName::ORGANISATION_UITPAS_APPROVED, IntegrationType::UiTPAS),
                 ['integrationName' => 'ABC'],
-                'Je integratie ABC voor {{ $organizerName }} is geactiveerd',
+                'Je integratie ABC voor {{ $organizerName }} is geactiveerd!',
             ],
         ];
     }
@@ -74,10 +61,73 @@ final class BladeMailTemplateResolverTest extends TestCase
             ->willReturn($view);
 
         $output = $this->resolver->render(
-            MailTemplate::INTEGRATION_ACTIVATED,
+            new MailTemplate(TemplateName::INTEGRATION_ACTIVATED, IntegrationType::EntryApi),
             ['foo' => 'bar']
         );
 
         $this->assertSame('<html>content</html>', $output);
+    }
+
+    public function testRenderUsesSpecificTemplateIfExists(): void
+    {
+        $template = new MailTemplate(
+            TemplateName::INTEGRATION_ACTIVATED,
+            IntegrationType::EntryApi
+        );
+        $variables = ['foo' => 'bar'];
+        $specificTemplate = 'mails.integration.entry-api.activated';
+
+        $view = $this->createMock(View::class);
+        $view->expects($this->once())
+            ->method('render')
+            ->willReturn('<html>specific</html>');
+
+        $this->viewFactory
+            ->expects($this->once())
+            ->method('exists')
+            ->with($specificTemplate)
+            ->willReturn(true);
+
+        $this->viewFactory
+            ->expects($this->once())
+            ->method('make')
+            ->with($specificTemplate, $variables)
+            ->willReturn($view);
+
+        $output = $this->resolver->render($template, $variables);
+
+        $this->assertSame('<html>specific</html>', $output);
+    }
+
+    public function testRenderUsesGenericTemplateIfSpecificDoesNotExist(): void
+    {
+        $template = new MailTemplate(
+            TemplateName::INTEGRATION_ACTIVATED,
+            IntegrationType::EntryApi
+        );
+        $variables = ['foo' => 'bar'];
+        $specificTemplate = 'mails.integration.entry-api.activated';
+        $genericTemplate = 'mails.integration.activated';
+
+        $view = $this->createMock(View::class);
+        $view->expects($this->once())
+            ->method('render')
+            ->willReturn('<html>generic</html>');
+
+        $this->viewFactory
+            ->expects($this->once())
+            ->method('exists')
+            ->with($specificTemplate)
+            ->willReturn(false);
+
+        $this->viewFactory
+            ->expects($this->once())
+            ->method('make')
+            ->with($genericTemplate, $variables)
+            ->willReturn($view);
+
+        $output = $this->resolver->render($template, $variables);
+
+        $this->assertSame('<html>generic</html>', $output);
     }
 }

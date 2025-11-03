@@ -1,12 +1,11 @@
 @include('mails.partials.header')
 
-<p>Je integratie met naam {{ $integrationName }} is geactiveerd🎉.</p>
+<p>Je integratie met naam {{ $integrationName }} is geactiveerd.🎉</p>
 
-<p>Je toegangssleutels voor de liveomgeving vind je op je integratiepagina:
-    <a href="{{ $url }}">{{ $url }}</a>.</p>
+<p>Je widget haalt voortaan live data op uit de UiTdatabank. Je scripttag voor je widget vind je op je integratiepagina {{ $url }} en kan je nu embedden in je website.</p>
 
 @include('mails.partials.button', [
-    'buttonText' => 'Bekijk integratie',
+    'buttonText' => 'Bekijk widgets',
     'organisationUrl' => $url
 ])
 

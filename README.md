@@ -140,6 +140,20 @@ The code formatter Prettier is used for javascript/typescript files. To make sur
   }
 }
 ```
+
+## Mailpit
+Mailpit is a tool for capturing and viewing emails sent from your project during development. It provides a web-based GUI to inspect outgoing emails without actually sending them to real recipients.
+
+The Docker setup for this project includes Mailpit by default. To prevent port collisions you can configure the following environment variables in your .env file:
+
+```
+MAIL_DSN="smtp://mailpit:1025"
+MAILPIT_API_URL="http://mailpit:8025"
+```
+
+You can access the Mailpit web interface at http://localhost:8025/ to view and manage captured emails (might be a different port if you changed the MAILPIT_GUI_PORT env variable).
+
+
 ## Dependabot
 
 This project uses dependabot to keep libraries up-to-date.

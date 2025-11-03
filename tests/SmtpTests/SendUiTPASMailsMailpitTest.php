@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\UiTPAS\Listeners;
+namespace Tests\SmtpTests;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
@@ -17,9 +17,9 @@ use App\Domain\Integrations\Repositories\EloquentUdbOrganizerRepository;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizerStatus;
+use App\Domain\Mail\Mailer;
 use App\Domain\Subscriptions\Repositories\EloquentSubscriptionRepository;
 use App\Domain\UdbUuid;
-use App\Mails\Smtp\SmtpMailer;
 use App\Search\Sapi3\SearchService;
 use App\Search\UdbOrganizerNameResolver;
 use App\UiTPAS\Event\UdbOrganizerApproved;
@@ -32,7 +32,6 @@ use CultuurNet\SearchV3\ValueObjects\PagedCollection;
 use CultuurNet\SearchV3\ValueObjects\TranslatedString;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Routing\UrlGenerator;
-use Illuminate\Support\Facades\Http;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -44,8 +43,8 @@ final class SendUiTPASMailsMailpitTest extends TestCase
 {
     use RefreshDatabase;
     use GivenSubscription;
+    use MailpitTester;
 
-    private const TIMEOUT_SECONDS_MAIL = 5;
     private const ORG_ID = '33f1722b-04fc-4652-b99f-2c96de87cf82';
     private const MAIL_FROM_ADDRESS = 'admin@publiq.be';
     private const MAIL_FROM_NAME = 'Mister Admin';
@@ -54,25 +53,21 @@ final class SendUiTPASMailsMailpitTest extends TestCase
 
     private EloquentIntegrationRepository $integrationRepository;
     private EloquentUdbOrganizerRepository $udbOrganizerRepository;
-
     private SendUiTPASMails $listener;
     private UuidInterface $subscriptionId;
-    private string $mailpitUri;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->mailpitUri = config('mail.mailers.mailpit.api_url');
-
         $searchService = $this->createMock(SearchService::class);
         $searchService
-            ->method('findUiTPASOrganizers')
+            ->method('findOrganizers')
             ->with(new UdbUuid(self::ORG_ID))
             ->willReturn($this->givenUitpasOrganizers());
 
         $this->listener = new SendUiTPASMails(
-            app(SmtpMailer::class),
+            app(Mailer::class),
             app(IntegrationRepository::class),
             app(UdbOrganizerNameResolver::class),
             $searchService,
@@ -134,7 +129,7 @@ final class SendUiTPASMailsMailpitTest extends TestCase
             return $mail['Subject'] === $subject;
         });
 
-        $this->assertNotNull($message, 'Expected email was not received within the timeout period.');
+        $this->assertNotNull($message, 'Expected email was not received within the timeout period: ' . $subject);
 
         $this->assertEquals(self::MAIL_TO_NAME, $message['To'][0]['Name']);
         $this->assertEquals(self::MAIL_TO_ADDRESS, $message['To'][0]['Address']);
@@ -146,67 +141,37 @@ final class SendUiTPASMailsMailpitTest extends TestCase
     public static function mails(): array
     {
         $names = [];
-        foreach (range(1, 5) as $i) {
+        foreach (range(1, 4) as $i) {
             $names[] = substr(uniqid('', true) . $i, 0, 10);
         }
         $i = 0;
 
         return [
-            IntegrationCreatedWithContacts::class => [
-                new IntegrationCreatedWithContacts(Uuid::uuid4()),
-                IntegrationStatus::Draft,
-                $names[$i],
-                'Je integratie ' . $names[$i++] . ' is succesvol aangemaakt!',
-            ],
             IntegrationActivationRequested::class => [
                 new IntegrationActivationRequested(Uuid::uuid4()),
                 IntegrationStatus::Draft,
                 $names[$i],
-                'Activatieaanvraag met integratie ' . $names[$i++] . ' voor publiq vzw',
+                'Activatieaanvraag met integratie ' . $names[$i++] . ' voor publiq vzw!',
             ],
             UdbOrganizerRequested::class => [
                 new UdbOrganizerRequested(new UdbUuid(self::ORG_ID), Uuid::uuid4()),
                 IntegrationStatus::Active,
                 $names[$i],
-                'Activatieaanvraag met integratie ' . $names[$i++] . ' voor publiq vzw',
+                'Activatieaanvraag met integratie ' . $names[$i++] . ' voor publiq vzw!',
             ],
             UdbOrganizerApproved::class => [
                 new UdbOrganizerApproved(new UdbUuid(self::ORG_ID), Uuid::uuid4()),
                 IntegrationStatus::Active,
                 $names[$i],
-                'Je integratie ' . $names[$i++] . ' voor publiq vzw is geactiveerd',
+                'Je integratie ' . $names[$i++] . ' voor publiq vzw is geactiveerd!',
             ],
             UdbOrganizerRejected::class => [
                 new UdbOrganizerRejected(new UdbUuid(self::ORG_ID), Uuid::uuid4()),
                 IntegrationStatus::Active,
                 $names[$i],
-                'Je integratie ' . $names[$i++] . ' voor publiq vzw is afgekeurd',
+                'Je integratie ' . $names[$i] . ' voor publiq vzw is afgekeurd!',
             ],
-
         ];
-    }
-
-    private function waitForMail(callable $matcher): ?array
-    {
-        $start = time();
-
-        while ((time() - $start) < self::TIMEOUT_SECONDS_MAIL) {
-            $response = Http::get($this->mailpitUri . '/api/v1/messages');
-
-            if (!$response->successful()) {
-                usleep(250);
-                continue;
-            }
-
-            $messages = $response->json('messages');
-            foreach ($messages as $message) {
-                if ($matcher($message)) {
-                    return $message;
-                }
-            }
-        }
-
-        return null;
     }
 
     private function givenUitpasOrganizers(): PagedCollection
