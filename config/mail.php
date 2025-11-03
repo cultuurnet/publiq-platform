@@ -39,16 +39,16 @@ return [
 
     'timers' => [
         'expiration_timers' => [
-            IntegrationType::EntryApi->value => (int)env('MAILJET_EXPIRATION_TIMER_ENTRY_API'),
-            IntegrationType::SearchApi->value => (int)env('MAILJET_EXPIRATION_TIMER_SEARCH_API'),
-            IntegrationType::UiTPAS->value => (int)env('MAILJET_EXPIRATION_TIMER_UITPAS'),
-            IntegrationType::Widgets->value => (int)env('MAILJET_EXPIRATION_TIMER_WIDGETS'),
+            IntegrationType::EntryApi->value => (int)env('MAIL_EXPIRATION_TIMER_ENTRY_API'),
+            IntegrationType::SearchApi->value => (int)env('MAIL_EXPIRATION_TIMER_SEARCH_API'),
+            IntegrationType::UiTPAS->value => (int)env('MAIL_EXPIRATION_TIMER_UITPAS'),
+            IntegrationType::Widgets->value => (int)env('MAIL_EXPIRATION_TIMER_WIDGETS'),
         ],
         'expiration_timers_final_reminder' => [
-            IntegrationType::EntryApi->value => (int)env('MAILJET_FINAL_EXPIRATION_TIMER_ENTRY_API'),
-            IntegrationType::SearchApi->value => (int)env('MAILJET_FINAL_EXPIRATION_TIMER_SEARCH_API'),
-            IntegrationType::UiTPAS->value => (int)env('MAILJET_FINAL_EXPIRATION_TIMER_UITPAS'),
-            IntegrationType::Widgets->value => (int)env('MAILJET_FINAL_EXPIRATION_TIMER_WIDGETS'),
+            IntegrationType::EntryApi->value => (int)env('MAIL_FINAL_EXPIRATION_TIMER_ENTRY_API'),
+            IntegrationType::SearchApi->value => (int)env('MAIL_FINAL_EXPIRATION_TIMER_SEARCH_API'),
+            IntegrationType::UiTPAS->value => (int)env('MAIL_FINAL_EXPIRATION_TIMER_UITPAS'),
+            IntegrationType::Widgets->value => (int)env('MAIL_FINAL_EXPIRATION_TIMER_WIDGETS'),
         ],
     ],
     'mailers' => [
