@@ -2,7 +2,7 @@ import { expect, type Page } from "@playwright/test";
 import { faker } from "@faker-js/faker";
 
 export async function createCoupon(page: Page) {
-  await page.goto("/admin");
+  await page.goto("/admin/resources/integrations");
   await page.getByRole("link", { name: "Coupons" }).click();
   await page.getByRole("link", { name: "Create Coupon" }).click();
 

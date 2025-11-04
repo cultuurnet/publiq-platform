@@ -12,7 +12,7 @@ const IntegrationTypeSubscriptionMap: Record<IntegrationType, string> = {
 export async function createIntegration(page: Page, type: IntegrationType) {
   // Make the integration
   const name = faker.word.adjective();
-  await page.goto("/admin");
+  await page.goto("/admin/resources/integrations");
   await page.getByRole("link", { name: "Integrations" }).click();
   await page.getByRole("link", { name: "Create Integration" }).click();
   await page.getByPlaceholder("Name").fill(name);

@@ -2,7 +2,7 @@ import { expect, Page } from "@playwright/test";
 import { fakerNL_BE as faker } from "@faker-js/faker";
 
 export async function createOrganization(page: Page) {
-  await page.goto("/admin");
+  await page.goto("/admin/resources/integrations");
   await page.getByRole("link", { name: "Organizations" }).click();
   await page.getByRole("link", { name: "Create Organization" }).click();
   const name = faker.company.name();
