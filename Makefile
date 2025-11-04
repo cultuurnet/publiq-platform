@@ -26,7 +26,7 @@ bash-xdebug:
 config:
 	sh ./docker/config.sh
 
-install: composer-install key-generate migrate seed npm-install npm-build
+install: composer-install key-generate migrate seed npm-install npm-build optimize
 
 composer-install:
 	docker compose exec $(DOCKER_COMPOSE_OPTIONS) platform composer install
@@ -42,6 +42,9 @@ seed:
 
 horizon:
 	docker compose exec platform artisan horizon
+
+optimize:
+	docker compose exec platform php artisan optimize
 
 lint:
 	docker compose exec platform composer lint
