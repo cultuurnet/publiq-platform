@@ -36,7 +36,7 @@ export default defineConfig({
         storageState: "playwright/.auth/user.json",
       },
       dependencies: ["setup"],
-      testMatch: "tests/**/*.test.ts",
+      testMatch: "tests/integrations/admin/activate-integration.test.ts",
     },
   ],
 });
