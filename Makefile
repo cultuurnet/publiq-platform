@@ -44,7 +44,7 @@ horizon:
 	docker compose exec platform artisan horizon
 
 optimize:
-	docker compose exec platform php artisan optimize
+	docker compose exec $(DOCKER_COMPOSE_OPTIONS) platform php artisan optimize
 
 lint:
 	docker compose exec platform composer lint
