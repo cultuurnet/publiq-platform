@@ -38,6 +38,9 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
+      - name: Install dependencies
+        run: make composer-install
+
       - name: Start application stack
         run: |
           docker compose up -d
@@ -48,7 +51,7 @@ jobs:
             if curl -sSf http://localhost:8000/ > /dev/null; then
               echo "App is up"; exit 0; fi; echo "Waiting for app..."; sleep 5; done; exit 1
 
-      - name: Install app (make install)
+      - name: Install app
         run: make install
 
       - name: Run Playwright setup project
