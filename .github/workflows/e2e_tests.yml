@@ -26,6 +26,11 @@ jobs:
       - name: Create .env file
         run: cp .env.ci .env
 
+      - name: Ensure writable storage and cache directories
+        run: |
+          mkdir -p storage/logs bootstrap/cache
+          sudo chmod -R 777 storage bootstrap/cache
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
