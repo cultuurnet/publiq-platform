@@ -5,8 +5,8 @@ on:
   pull_request:
 
 jobs:
-  test:
-    name: Run tests
+  e2e-test:
+    name: Run E2E tests
     runs-on: ubuntu-latest
 
     services:
@@ -43,7 +43,7 @@ jobs:
       - name: 🐢 Setup NodeJS
         uses: actions/setup-node@v3
         with:
-          node-version: 18.14
+          node-version: 18.19
 
       - name: 🔢 Create .env file
         run: cp .env.ci .env
