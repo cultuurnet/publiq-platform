@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-24.04
 
     env:
-      E2E_TEST_BASE_URL: http://localhost:80
+      E2E_TEST_BASE_URL: http://localhost:8000
       KEYCLOAK_LOGIN_ENABLED: ${{ secrets.KEYCLOAK_LOGIN_ENABLED || 'false' }}
       E2E_TEST_ADMIN_EMAIL: ${{ secrets.E2E_TEST_ADMIN_EMAIL }}
       E2E_TEST_ADMIN_PASSWORD: ${{ secrets.E2E_TEST_ADMIN_PASSWORD }}
@@ -50,7 +50,7 @@ jobs:
       - name: Wait for application to be healthy
         run: |
           for i in {1..60}; do
-            if curl -sSf http://localhost/ > /dev/null; then
+            if curl -sSf http://localhost:8000/ > /dev/null; then
               echo "App is up"; exit 0; fi; echo "Waiting for app..."; sleep 5; done; exit 1
 
       - name: Install app
