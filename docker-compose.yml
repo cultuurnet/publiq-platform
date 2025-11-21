@@ -1,56 +1,31 @@
+# For more information: https://laravel.com/docs/sail
 services:
-    platform-base-php-8-2:
-        build: docker/php8.2
-        volumes:
-            - .:/var/www/html:cached
-        working_dir: /var/www/html
-        healthcheck:
-            test: curl http://127.0.0.1:80/
-            start_period: 5s
-            interval: 5s
-            timeout: 5s
-            retries: 10
-        depends_on:
-            mysql:
-                condition: service_healthy
-            redis:
-                condition: service_healthy
-            mailpit:
-                condition: service_healthy
-    platform:
-        container_name: platform.publiq
-        networks:
-            publiq-platform:
-                aliases:
-                    - platform.publiq.local
-        extends:
-            service: platform-base-php-8-2
+    laravel:
+        build:
+            context: ./vendor/laravel/sail/runtimes/8.2
+            dockerfile: Dockerfile
+            args:
+                WWWGROUP: '${WWWGROUP}'
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
         ports:
-            - '8000:80'
+            - '${APP_PORT:-80}:80'
             - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
-#     platform-xdebug:
-#         container_name: platform-xdebug.publiq
-#         restart: no
-#         extends:
-#             service: platform-base-php-8-2
-#         profiles:
-#             - xdebug
-#         networks:
-#             publiq-platform:
-#                 aliases:
-#                     - platform-xdebug.publiq.local
-#         build:
-#             context: docker/php8.2
-#             args:
-#                 ENABLE_XDEBUG: "true"
-#         environment:
-#             XDEBUG_MODE: debug
-#             XDEBUG_CONFIG: client_host=host.docker.internal
-#         ports:
-#             - '8001:80'  # Explicitly override to port 8001
+        environment:
+            WWWUSER: '${WWWUSER}'
+            LARAVEL_SAIL: 1
+            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
+            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+        volumes:
+            - '.:/var/www/html'
+        networks:
+            - sail
+        depends_on:
+            - mysql
+            - redis
+            - mailpit
     mysql:
         image: 'mysql/mysql-server:8.0'
-        container_name: mysql.publiq
         ports:
             - '${FORWARD_DB_PORT:-3306}:3306'
         environment:
@@ -61,64 +36,52 @@ services:
             MYSQL_PASSWORD: '${DB_PASSWORD}'
             MYSQL_ALLOW_EMPTY_PASSWORD: 1
         volumes:
-            - 'platform-mysql:/var/lib/mysql'
-            - './docker/mysql:/docker-entrypoint-initdb.d'
+            - 'sail-mysql:/var/lib/mysql'
+            - './vendor/laravel/sail/database/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
         networks:
-            publiq-platform:
-                aliases:
-                    - mysql.publiq.local
+            - sail
         healthcheck:
             test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
             retries: 3
             timeout: 5s
     redis:
         image: 'redis:alpine'
-        container_name: redis.publiq
         ports:
             - '${FORWARD_REDIS_PORT:-6379}:6379'
         volumes:
-            - 'platform-redis:/data'
+            - 'sail-redis:/data'
         networks:
-            publiq-platform:
-                aliases:
-                    - redis.publiq.local
+            - sail
         healthcheck:
             test: ["CMD", "redis-cli", "ping"]
             retries: 3
             timeout: 5s
     mailpit:
         image: axllent/mailpit:latest
-        container_name: mailpit.publiq
+        hostname: 'mailpit'
+        container_name: mailpit.ppf
         restart: unless-stopped
         volumes:
-            - 'platform-mailpit:/data'
+            - 'sail-mailpit:/data'
         ports:
-            - ${MAILPIT_GUI_PORT:-8025}:8025
-            - ${MAILPIT_SMTP_PORT:-1025}:1025
+            - 8025:8025
+            - 1025:1025
         networks:
-            publiq-platform:
+            sail:
                 aliases:
-                    - mailpit.publiq.local
+                    - mailpit.ppf.local
         environment:
             MP_MAX_MESSAGES: 5000
             MP_DATABASE: /data/mailpit.db
             MP_SMTP_AUTH_ACCEPT_ANY: 1
             MP_SMTP_AUTH_ALLOW_INSECURE: 1
-        healthcheck:
-            test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:8025/api/v1/info"]
-            start_period: 5s
-            interval: 5s
-            timeout: 5s
-            retries: 10
-
 networks:
-    publiq-platform:
-        name: platform
+    sail:
         driver: bridge
 volumes:
-    platform-mysql:
+    sail-mysql:
         driver: local
-    platform-redis:
+    sail-redis:
         driver: local
-    platform-mailpit:
+    sail-mailpit:
         driver: local
