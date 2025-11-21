@@ -1,8 +1,6 @@
 name: CI
 
-on:
-  push:
-  pull_request:
+on: push
 
 jobs:
   e2e-test:
@@ -59,7 +57,7 @@ jobs:
       - name: 📂 Migrate database
         run: php artisan migrate --force
 
-      - name: Install npm dependencies
+      - name: 📦 Install npm dependencies
         run: npm ci
 
       - name: 💅🏻 Build frontend assets
@@ -84,6 +82,7 @@ jobs:
       - name: 🎭 Run Playwright E2E tests
         env:
           APP_URL: http://127.0.0.1:8000
+          E2E_TEST_BASE_URL: http://127.0.0.1:8000
           E2E_TEST_ADMIN_EMAIL: ${{ secrets.E2E_TEST_ADMIN_EMAIL }}
           E2E_TEST_ADMIN_PASSWORD: ${{ secrets.E2E_TEST_ADMIN_PASSWORD }}
           E2E_TEST_EMAIL: ${{ secrets.E2E_TEST_EMAIL }}
