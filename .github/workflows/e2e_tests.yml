@@ -26,11 +26,6 @@ jobs:
       - name: Create .env file
         run: cp .env.ci .env
 
-      - name: Ensure writable storage and cache directories
-        run: |
-          mkdir -p storage/logs bootstrap/cache
-          sudo chmod -R 777 storage bootstrap/cache
-
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -51,6 +46,12 @@ jobs:
       - name: Start application stack
         run: |
           docker compose up -d
+
+      - name: Ensure writable storage, cache directories and root
+        run: |
+          mkdir -p storage/logs bootstrap/cache
+          sudo chmod -R 777 storage bootstrap/cache
+          sudo chmod -R 777 /var/www/html
 
       - name: Install app
         run: make install-e2e
