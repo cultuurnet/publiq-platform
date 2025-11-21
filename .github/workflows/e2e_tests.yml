@@ -38,8 +38,10 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
-      - name: Install dependencies
-        run: make composer-install
+      - name: Install composer dependencies
+        run: |
+          composer config "http-basic.nova.laravel.com" "${{ secrets.NOVA_USERNAME }}" "${{ secrets.NOVA_PASSWORD }}"
+          composer install --quiet --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
       - name: Start application stack
         run: |
