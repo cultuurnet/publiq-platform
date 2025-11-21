@@ -48,7 +48,7 @@ jobs:
           docker compose up -d
 
       - name: Install app
-        run: make install
+        run: make install-e2e
 
       - name: Run Playwright setup project
         run: npx playwright test --project=setup

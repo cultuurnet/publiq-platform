@@ -19,6 +19,8 @@ config:
 
 install: composer-install key-generate migrate seed npm-install npm-build
 
+install-e2e: key-generate migrate seed npm-install npm-build
+
 composer-install:
 	vendor/bin/sail composer install
 
