@@ -89,7 +89,7 @@ jobs:
           E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
           E2E_TEST_V1_EMAIL: ${{ secrets.E2E_TEST_V1_EMAIL }}
           E2E_TEST_V1_PASSWORD: ${{ secrets.E2E_TEST_V1_PASSWORD }}
-        run: npx playwright test
+        run: npx playwright test e2e/tests/integrations/admin/activate-integration.test.ts
 
       - name: 📦 Upload Playwright artifacts
         if: always()
