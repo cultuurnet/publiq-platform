@@ -44,8 +44,7 @@ jobs:
           node-version: 18.19
 
       - name: 🔐 Create .env from GitHub secret
-        run:
-          printf "%s" "${{ secrets.ENV }}" > .env
+        run: echo "${{ secrets.ENV }}" > .env
 
       - name: 📦 Install composer dependencies
         run: |
