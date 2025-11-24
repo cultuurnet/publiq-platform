@@ -7,20 +7,26 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export default defineConfig({
   testDir: "e2e",
-  timeout: 3 * 60 * 1000,
+  timeout: 60 * 1000,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  // Disable retries both locally and in CI
+  retries: 0,
   workers: 1,
   expect: {
     timeout: 10000,
   },
+  // In CI, also generate the HTML report so it can be uploaded as an artifact.
   reporter: process.env.CI
-    ? [['list'], ['junit', { outputFile: './e2e/test-results.xml' }]]
+    ? [['list'], ['junit', { outputFile: './e2e/test-results.xml' }], ['html']]
     : [['html']],
   use: {
     baseURL: process.env.E2E_TEST_BASE_URL,
-    trace: "on-first-retry",
+    // Capture as much context as possible when something fails in CI.
+    // Traces, screenshots and videos will be available in artifacts.
+    trace: process.env.CI ? 'retain-on-failure' : 'on-first-retry',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
   },
   projects: [
     {

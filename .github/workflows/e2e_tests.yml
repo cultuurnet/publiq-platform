@@ -1,0 +1,113 @@
+name: CI
+
+on: push
+
+jobs:
+  e2e-test:
+    name: Run E2E tests
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: false
+          MYSQL_ROOT_PASSWORD: secret
+          MYSQL_USER: sail
+          MYSQL_PASSWORD: password
+          MYSQL_DATABASE: platform
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: 📤 Checkout project
+        uses: actions/checkout@v3
+
+      - name: 📩 Fetch vendor from cache
+        uses: actions/cache@v3
+        id: cache
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('**/composer.lock') }}
+
+      - name: 🐘 Setup PHP
+        uses: shivammathur/setup-php@master
+        with:
+          php-version: "8.2"
+        env:
+          update: true
+
+      - name: 🐢 Setup NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.19
+
+      - name: 🔐 Create .env from GitHub secret
+        run: |
+          cat << 'EOF' > .env
+          ${{ secrets.ENV }}
+          EOF
+
+      - name: Check KEYCLOAK_LOGIN_DOMAIN accessibility
+        run: |
+          curl -v --connect-timeout 10 https://$KEYCLOAK_LOGIN_DOMAIN || exit 1
+        env:
+          KEYCLOAK_LOGIN_DOMAIN: account-acc.uitid.be
+
+      - name: 📦 Install composer dependencies
+        run: |
+          composer config "http-basic.nova.laravel.com" "${{ secrets.NOVA_USERNAME }}" "${{ secrets.NOVA_PASSWORD }}"
+          composer install --quiet --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+      - name: 🔑 Generate a laravel key
+        run: php artisan key:generate
+
+      - name: 📂 Migrate database
+        run: php artisan migrate --force
+
+      - name: 📦 Install npm dependencies
+        run: npm ci
+
+      - name: 💅🏻 Build frontend assets
+        run: npm run build
+
+      - name: 🎭 Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: 🚀 Start Laravel server
+        run: php artisan serve --host=127.0.0.1 --port=8000 &
+
+      - name: ⏳ Wait for Laravel to boot
+        run: |
+          for i in {1..10}; do
+            if curl -s http://127.0.0.1:8000 > /dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          exit 1
+
+      - name: 🎭 Run Playwright E2E tests
+        env:
+          E2E_TEST_BASE_URL: http://127.0.0.1:8000
+          E2E_TEST_ADMIN_EMAIL: ${{ secrets.E2E_TEST_ADMIN_EMAIL }}
+          E2E_TEST_ADMIN_PASSWORD: ${{ secrets.E2E_TEST_ADMIN_PASSWORD }}
+          E2E_TEST_EMAIL: ${{ secrets.E2E_TEST_EMAIL }}
+          E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
+          E2E_TEST_V1_EMAIL: ${{ secrets.E2E_TEST_V1_EMAIL }}
+          E2E_TEST_V1_PASSWORD: ${{ secrets.E2E_TEST_V1_PASSWORD }}
+        run: npx playwright test e2e/tests/integrations/admin/activate-integration.test.ts
+
+      - name: 📦 Upload Playwright artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-artifacts
+          path: |
+            playwright-report/
+            test-results/
+            e2e/test-results.xml
+            **/playwright*.zip
+            storage/logs/
+          retention-days: 7
