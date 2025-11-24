@@ -15,12 +15,17 @@ export default defineConfig({
   expect: {
     timeout: 10000,
   },
+  // In CI, also generate the HTML report so it can be uploaded as an artifact.
   reporter: process.env.CI
-    ? [['list'], ['junit', { outputFile: './e2e/test-results.xml' }]]
+    ? [['list'], ['junit', { outputFile: './e2e/test-results.xml' }], ['html']]
     : [['html']],
   use: {
     baseURL: process.env.E2E_TEST_BASE_URL,
-    trace: "on-first-retry",
+    // Capture as much context as possible when something fails in CI.
+    // Traces, screenshots and videos will be available in artifacts.
+    trace: process.env.CI ? 'retain-on-failure' : 'on-first-retry',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
   },
   projects: [
     {
