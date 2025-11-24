@@ -91,7 +91,8 @@ jobs:
           E2E_TEST_V1_PASSWORD: ${{ secrets.E2E_TEST_V1_PASSWORD }}
           KEYCLOAK_LOGIN_CLIENT_ID: ${{ secrets.KEYCLOAK_LOGIN_CLIENT_ID }}
           KEYCLOAK_LOGIN_CLIENT_SECRET: ${{ secrets.KEYCLOAK_LOGIN_CLIENT_SECRET }}
-          KEYCLOAK_LOGIN_REALM_NAME: ${{ secrets.KEYCLOAK_LOGIN_REALM_NAME }}
+          KEYCLOAK_ACC_CLIENT_ID: ${{ secrets.KEYCLOAK_ACC_CLIENT_ID }}
+          KEYCLOAK_ACC_CLIENT_SECRET: ${{ secrets.KEYCLOAK_ACC_CLIENT_SECRET
         run: |
           echo "Using Keycloak login client id: $KEYCLOAK_LOGIN_CLIENT_ID"
           npx playwright test e2e/tests/integrations/admin/activate-integration.test.ts
