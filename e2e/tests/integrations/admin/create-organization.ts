@@ -2,8 +2,8 @@ import { expect, Page } from "@playwright/test";
 import { fakerNL_BE as faker } from "@faker-js/faker";
 
 export async function createOrganization(page: Page) {
-  await page.goto("/admin");
-  await page.getByRole("link", { name: "Organizations" }).click();
+  await page.goto("/admin/resources/organizations");
+  console.log(await page.content());
   await page.getByRole("link", { name: "Create Organization" }).click();
   const name = faker.company.name();
   await page.getByPlaceholder("Name").fill(name);

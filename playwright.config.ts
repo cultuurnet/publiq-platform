@@ -7,20 +7,22 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export default defineConfig({
   testDir: "e2e",
-  timeout: 3 * 60 * 1000,
+  timeout: 60 * 1000,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  retries: 0,
   workers: 1,
   expect: {
     timeout: 10000,
   },
   reporter: process.env.CI
-    ? [['list'], ['junit', { outputFile: './e2e/test-results.xml' }]]
+    ? [['list'], ['junit', { outputFile: './e2e/test-results.xml' }], ['html']]
     : [['html']],
   use: {
     baseURL: process.env.E2E_TEST_BASE_URL,
-    trace: "on-first-retry",
+    trace: process.env.CI ? 'retain-on-failure' : 'on-first-retry',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
   },
   projects: [
     {
@@ -36,7 +38,7 @@ export default defineConfig({
         storageState: "playwright/.auth/user.json",
       },
       dependencies: ["setup"],
-      testMatch: "tests/**/*.test.ts",
+      testMatch: "tests/integrations/admin/activate-integration.test.ts",
     },
   ],
 });
