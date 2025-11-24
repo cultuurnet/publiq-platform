@@ -7,10 +7,11 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export default defineConfig({
   testDir: "e2e",
-  timeout: 3 * 60 * 1000,
+  timeout: 60 * 1000,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  // Disable retries both locally and in CI
+  retries: 0,
   workers: 1,
   expect: {
     timeout: 10000,
