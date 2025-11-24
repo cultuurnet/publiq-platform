@@ -43,29 +43,9 @@ jobs:
         with:
           node-version: 18.19
 
-      - name: 🔢 Create .env file
-        run: cp .env.ci .env
-
-      - name: 🔧 Inject CI secrets into .env (idempotent)
-        run: |
-          update_env() {
-            key="$1"; value="$2";
-            awk -v k="$key" -v v="$value" -F= '
-              BEGIN{OFS="="}
-              {
-                if ($1==k) { print k, v; f=1 }
-                else { print $0 }
-              }
-              END{ if (!f) print k, v }
-            ' .env > .env.tmp && mv .env.tmp .env
-          }
-
-          update_env APP_URL http://127.0.0.1:8000
-          update_env KEYCLOAK_LOGIN_CLIENT_ID "${{ secrets.KEYCLOAK_LOGIN_CLIENT_ID }}"
-          update_env KEYCLOAK_LOGIN_CLIENT_SECRET "${{ secrets.KEYCLOAK_LOGIN_CLIENT_SECRET }}"
-          update_env KEYCLOAK_LOGIN_REDIRECT_URI http://127.0.0.1:8000/auth/callback
-          update_env KEYCLOAK_ACC_CLIENT_ID "${{ secrets.KEYCLOAK_ACC_CLIENT_ID }}"
-          update_env KEYCLOAK_ACC_CLIENT_SECRET "${{ secrets.KEYCLOAK_ACC_CLIENT_SECRET }}"
+      - name: 🔐 Create .env from GitHub secret
+        run:
+          printf "%s" "${{ secrets.ENV }}" > .env
 
       - name: 📦 Install composer dependencies
         run: |
