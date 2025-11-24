@@ -46,6 +46,27 @@ jobs:
       - name: 🔢 Create .env file
         run: cp .env.ci .env
 
+      - name: 🔧 Inject CI secrets into .env (idempotent)
+        run: |
+          update_env() {
+            key="$1"; value="$2";
+            awk -v k="$key" -v v="$value" -F= '
+              BEGIN{OFS="="}
+              {
+                if ($1==k) { print k, v; f=1 }
+                else { print $0 }
+              }
+              END{ if (!f) print k, v }
+            ' .env > .env.tmp && mv .env.tmp .env
+          }
+
+          update_env APP_URL http://127.0.0.1:8000
+          update_env KEYCLOAK_LOGIN_CLIENT_ID "${{ secrets.KEYCLOAK_LOGIN_CLIENT_ID }}"
+          update_env KEYCLOAK_LOGIN_CLIENT_SECRET "${{ secrets.KEYCLOAK_LOGIN_CLIENT_SECRET }}"
+          update_env KEYCLOAK_LOGIN_REDIRECT_URI http://127.0.0.1:8000/auth/callback
+          update_env KEYCLOAK_ACC_CLIENT_ID "${{ secrets.KEYCLOAK_ACC_CLIENT_ID }}"
+          update_env KEYCLOAK_ACC_CLIENT_SECRET "${{ secrets.KEYCLOAK_ACC_CLIENT_SECRET }}"
+
       - name: 📦 Install composer dependencies
         run: |
           composer config "http-basic.nova.laravel.com" "${{ secrets.NOVA_USERNAME }}" "${{ secrets.NOVA_PASSWORD }}"
@@ -81,7 +102,6 @@ jobs:
 
       - name: 🎭 Run Playwright E2E tests
         env:
-          APP_URL: http://127.0.0.1:8000
           E2E_TEST_BASE_URL: http://127.0.0.1:8000
           E2E_TEST_ADMIN_EMAIL: ${{ secrets.E2E_TEST_ADMIN_EMAIL }}
           E2E_TEST_ADMIN_PASSWORD: ${{ secrets.E2E_TEST_ADMIN_PASSWORD }}
@@ -89,13 +109,7 @@ jobs:
           E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
           E2E_TEST_V1_EMAIL: ${{ secrets.E2E_TEST_V1_EMAIL }}
           E2E_TEST_V1_PASSWORD: ${{ secrets.E2E_TEST_V1_PASSWORD }}
-          KEYCLOAK_LOGIN_CLIENT_ID: ${{ secrets.KEYCLOAK_LOGIN_CLIENT_ID }}
-          KEYCLOAK_LOGIN_CLIENT_SECRET: ${{ secrets.KEYCLOAK_LOGIN_CLIENT_SECRET }}
-          KEYCLOAK_ACC_CLIENT_ID: ${{ secrets.KEYCLOAK_ACC_CLIENT_ID }}
-          KEYCLOAK_ACC_CLIENT_SECRET: ${{ secrets.KEYCLOAK_ACC_CLIENT_SECRET }}   
-        run: |
-          echo "Using Keycloak login client id: $KEYCLOAK_LOGIN_CLIENT_ID"
-          npx playwright test e2e/tests/integrations/admin/activate-integration.test.ts
+        run: npx playwright test e2e/tests/integrations/admin/activate-integration.test.ts
 
       - name: 📦 Upload Playwright artifacts
         if: always()
