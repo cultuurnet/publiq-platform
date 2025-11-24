@@ -49,6 +49,12 @@ jobs:
           ${{ secrets.ENV }}
           EOF
 
+      - name: Check KEYCLOAK_LOGIN_DOMAIN accessibility
+        run: |
+          curl -v --connect-timeout 10 https://$KEYCLOAK_LOGIN_DOMAIN || exit 1
+        env:
+          KEYCLOAK_LOGIN_DOMAIN: account-acc.uitid.be
+
       - name: 📦 Install composer dependencies
         run: |
           composer config "http-basic.nova.laravel.com" "${{ secrets.NOVA_USERNAME }}" "${{ secrets.NOVA_PASSWORD }}"
