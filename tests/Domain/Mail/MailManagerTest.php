@@ -184,6 +184,7 @@ final class MailManagerTest extends TestCase
                         'firstName' => $this->contacts[$currentEmail]->firstName,
                         'lastName' => $this->contacts[$currentEmail]->lastName,
                         'contactType' => $this->contacts[$currentEmail]->type->value,
+                        'showContentCheck' => false,
                     ], $parameters);
 
                     return true;
