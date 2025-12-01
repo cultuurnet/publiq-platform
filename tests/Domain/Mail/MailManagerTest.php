@@ -100,17 +100,6 @@ final class MailManagerTest extends TestCase
                 'Smurf'
             ),
         ];
-
-        $this->integration = (new Integration(
-            Uuid::fromString(self::INTEGRATION_ID),
-            IntegrationType::SearchApi,
-            'Mock Integration',
-            'Mock description',
-            Uuid::uuid4(),
-            IntegrationStatus::Active,
-            IntegrationPartnerStatus::THIRD_PARTY,
-        ))
-            ->withContacts(...$this->contacts);
     }
 
     public function testDoNoTSentUiTPASMailTwice(): void
@@ -143,11 +132,23 @@ final class MailManagerTest extends TestCase
 
     #[DataProvider('mailDataProvider')]
     public function testSendMail(
+        IntegrationType $integrationType,
         object $event,
         string $method,
         MailTemplate $template,
+        bool $showContentCheck,
         bool $useGetByIdWithTrashed = false,
     ): void {
+        $this->integration = (new Integration(
+            Uuid::fromString(self::INTEGRATION_ID),
+            $integrationType,
+            'Mock Integration',
+            'Mock description',
+            Uuid::uuid4(),
+            IntegrationStatus::Active,
+            IntegrationPartnerStatus::THIRD_PARTY,
+        ))->withContacts(...$this->contacts);
+
         $this->integrationRepository
             ->expects($this->once())
             ->method($useGetByIdWithTrashed ? 'getByIdWithTrashed' : 'getById')
@@ -176,14 +177,15 @@ final class MailManagerTest extends TestCase
                 }),
                 $template,
                 // Because with() is called with all callbacks at the same time, we have to pass currentEmail as reference
-                $this->callback(function ($parameters) use (&$currentEmail) {
+                $this->callback(function ($parameters) use (&$currentEmail, $integrationType, $showContentCheck) {
                     $this->assertEquals([
                         'url' => 'http://www.example.com/nl/integraties/' . self::INTEGRATION_ID,
                         'integrationName' => 'Mock Integration',
-                        'type' => 'search-api',
+                        'type' => $integrationType->value,
                         'firstName' => $this->contacts[$currentEmail]->firstName,
                         'lastName' => $this->contacts[$currentEmail]->lastName,
                         'contactType' => $this->contacts[$currentEmail]->type->value,
+                        'showContentCheck' => $showContentCheck,
                     ], $parameters);
 
                     return true;
@@ -205,41 +207,67 @@ final class MailManagerTest extends TestCase
     {
         return [
             TemplateName::INTEGRATION_CREATED->value => [
+                'integrationType' => IntegrationType::SearchApi,
                 'event' => new IntegrationCreatedWithContacts(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'handleIntegrationCreatedWithContacts',
                 'template' => new MailTemplate(TemplateName::INTEGRATION_CREATED, IntegrationType::SearchApi),
+                'showContentCheck' => false,
             ],
             TemplateName::INTEGRATION_ACTIVATED->value => [
+                'integrationType' => IntegrationType::SearchApi,
                 'event' => new IntegrationActivated(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'handleIntegrationActivated',
                 'template' => new MailTemplate(TemplateName::INTEGRATION_ACTIVATED, IntegrationType::SearchApi),
+                'showContentCheck' => false,
             ],
-            TemplateName::INTEGRATION_ACTIVATION_REQUEST->value => [
+            TemplateName::INTEGRATION_ACTIVATION_REQUEST->value . IntegrationType::EntryApi->value => [
+                'integrationType' => IntegrationType::EntryApi,
+                'event' => new IntegrationActivationRequested(Uuid::fromString(self::INTEGRATION_ID)),
+                'method' => 'handleIntegrationActivationRequested',
+                'template' => new MailTemplate(TemplateName::INTEGRATION_ACTIVATION_REQUEST, IntegrationType::EntryApi),
+                'showContentCheck' => true,
+            ],
+            TemplateName::INTEGRATION_ACTIVATION_REQUEST->value . IntegrationType::SearchApi->value => [
+                'integrationType' => IntegrationType::SearchApi,
                 'event' => new IntegrationActivationRequested(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'handleIntegrationActivationRequested',
                 'template' => new MailTemplate(TemplateName::INTEGRATION_ACTIVATION_REQUEST, IntegrationType::SearchApi),
+                'showContentCheck' => false,
+            ],
+            TemplateName::INTEGRATION_ACTIVATION_REQUEST->value . IntegrationType::Widgets->value => [
+                'integrationType' => IntegrationType::Widgets,
+                'event' => new IntegrationActivationRequested(Uuid::fromString(self::INTEGRATION_ID)),
+                'method' => 'handleIntegrationActivationRequested',
+                'template' => new MailTemplate(TemplateName::INTEGRATION_ACTIVATION_REQUEST, IntegrationType::Widgets),
+                'showContentCheck' => false,
             ],
             TemplateName::INTEGRATION_DELETED->value => [
+                'integrationType' => IntegrationType::SearchApi,
                 'event' => new IntegrationDeleted(Uuid::fromString(self::INTEGRATION_ID)),
                 'method' => 'handleIntegrationDeleted',
                 'template' => new MailTemplate(TemplateName::INTEGRATION_DELETED, IntegrationType::SearchApi),
+                'showContentCheck' => false,
                 'useGetByIdWithTrashed' => true,
             ],
             TemplateName::INTEGRATION_ACTIVATION_REMINDER->value => [
+                'integrationType' => IntegrationType::SearchApi,
                 'event' => new ActivationExpired(
                     Uuid::fromString(self::INTEGRATION_ID),
                     TemplateName::INTEGRATION_ACTIVATION_REMINDER
                 ),
                 'method' => 'handleActivationExpired',
                 'template' => new MailTemplate(TemplateName::INTEGRATION_ACTIVATION_REMINDER, IntegrationType::SearchApi),
+                'showContentCheck' => false,
             ],
             TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER->value => [
+                'integrationType' => IntegrationType::SearchApi,
                 'event' => new ActivationExpired(
                     Uuid::fromString(self::INTEGRATION_ID),
                     TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER
                 ),
                 'method' => 'handleActivationExpired',
                 'template' => new MailTemplate(TemplateName::INTEGRATION_FINAL_ACTIVATION_REMINDER, IntegrationType::SearchApi),
+                'showContentCheck' => false,
             ],
         ];
     }

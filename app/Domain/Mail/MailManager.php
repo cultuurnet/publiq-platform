@@ -121,6 +121,7 @@ final class MailManager implements ShouldQueue
             'integrationName' => $integration->name,
             'url' => $this->baseUrl . '/nl/integraties/' . $integration->id,
             'type' => $integration->type->value,
+            'showContentCheck' => $integration->type === IntegrationType::EntryApi,
         ];
     }
 
