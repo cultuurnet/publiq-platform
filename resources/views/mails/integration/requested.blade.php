@@ -10,7 +10,7 @@
         check"</em>.</p>
 @endif
 
-<p>Ons team zal je aanvraag zo spoedig mogelijk verwerken en de testevenementen beoordelen.
+<p>Ons team zal je aanvraag zo spoedig mogelijk verwerken.
     Bij activatie ontvang je een bevestigingsmail met je toegang tot de live omgeving.</p>
 
 <p>Heb je nog verdere vragen, contacteer <a href="mailto:technical-support@publiq.be">technical-support@publiq.be</a>.
