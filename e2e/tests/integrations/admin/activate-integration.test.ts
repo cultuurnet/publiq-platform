@@ -8,6 +8,17 @@ import { IntegrationStatus } from "@app-types/IntegrationStatus";
 test.use({ storageState: "playwright/.auth/admin.json" });
 
 test("As an admin I can activate an integration", async ({ page }) => {
+  page.on('console', msg => console.log('BROWSER LOG:', msg.text()));
+  page.on('pageerror', err => console.log('BROWSER ERROR:', err.message));
+
+  const testTargetUrl = `/admin/resources/integrations/`;
+  await page.goto(testTargetUrl);
+
+  await page.waitForLoadState('networkidle');
+  await page.waitForTimeout(2000); // Give Nova time to mount
+
+  await page.screenshot({ path: 'test-results/nova-page.png' });
+
   // create organization
   const { id: organizationId } = await createOrganization(page);
 

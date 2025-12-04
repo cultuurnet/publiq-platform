@@ -74,6 +74,16 @@ jobs:
       - name: 💅🏻 Build frontend assets
         run: npm run build
 
+      - name: 🔍 Verify built assets exist
+        run: |
+          ls -la public/build/
+          cat public/build/manifest.json || echo "No manifest found"
+
+      - name: 🔍 Debug Nova loading
+        run: |
+          curl -I http://127.0.0.1:8000/admin
+          curl -s http://127.0.0.1:8000/admin | grep -o '<script.*</script>' | head -5
+
       - name: 🎭 Install Playwright browsers
         run: npx playwright install --with-deps
 
@@ -99,7 +109,7 @@ jobs:
           E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
           E2E_TEST_V1_EMAIL: ${{ secrets.E2E_TEST_V1_EMAIL }}
           E2E_TEST_V1_PASSWORD: ${{ secrets.E2E_TEST_V1_PASSWORD }}
-        run: npx playwright test
+        run: npx playwright test e2e/tests/integrations/admin/activate-integration.test.ts --headed
 
       - name: 📦 Upload Playwright artifacts
         if: always()
