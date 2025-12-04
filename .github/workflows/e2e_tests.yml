@@ -79,11 +79,6 @@ jobs:
           ls -la public/build/
           cat public/build/manifest.json || echo "No manifest found"
 
-      - name: 🔍 Debug Nova loading
-        run: |
-          curl -I http://127.0.0.1:8000/admin
-          curl -s http://127.0.0.1:8000/admin | grep -o '<script.*</script>' | head -5
-
       - name: 🎭 Install Playwright browsers
         run: npx playwright install --with-deps
 
