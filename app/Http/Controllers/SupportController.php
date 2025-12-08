@@ -5,17 +5,18 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Router\TranslatedRoute;
+use Illuminate\Http\Client\Response;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
-use Inertia\Response;
+use Inertia\Response as InertiaResponse;
 
 final class SupportController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(Request $request): InertiaResponse
     {
         $slackStatus = $request->query->get('slackStatus');
 
@@ -37,6 +38,8 @@ final class SupportController extends Controller
                     'channel' => $channelID,
                     'emails' => [$email],
                 ]);
+
+            assert($response instanceof Response);
 
             $body = json_decode(
                 json: $response->body(),
