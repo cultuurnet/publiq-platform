@@ -23,7 +23,7 @@ fi
 
 APPCONFIG_ROOTDIR=${APPCONFIG:-'../appconfig'}
 
-DIR="${APPCONFIG_ROOTDIR}/files/platform/docker"
+DIR="${APPCONFIG_ROOTDIR}/templates/docker/platform"
 if [ -d "$DIR" ]; then
   cp -R "$DIR"/* .
   mv env .env

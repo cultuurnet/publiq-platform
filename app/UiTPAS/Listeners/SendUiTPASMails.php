@@ -136,7 +136,7 @@ final class SendUiTPASMails implements ShouldQueue
             $context = [
                 'firstName' => $contact->firstName,
                 'integrationName' => $integration->name,
-                'integrationDetailpage' => $this->urlGenerator->route('nl.integrations.show', $integration->id),
+                'url' => $this->urlGenerator->route('nl.integrations.show', $integration->id),
             ];
 
             if ($organizerName !== null) {
