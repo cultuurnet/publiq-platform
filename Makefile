@@ -40,6 +40,9 @@ migrate:
 seed:
 	docker compose exec $(DOCKER_COMPOSE_OPTIONS) platform php artisan db:seed
 
+publish:
+	docker compose exec $(DOCKER_COMPOSE_OPTIONS) platform php artisan nova:publish
+
 horizon:
 	docker compose exec platform artisan horizon
 
