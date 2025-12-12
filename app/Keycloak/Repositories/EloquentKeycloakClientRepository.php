@@ -63,6 +63,17 @@ final readonly class EloquentKeycloakClientRepository implements KeycloakClientR
     }
 
     /**
+     * @throws ModelNotFoundException<Model>
+     */
+    public function getByClientId(string $clientId): Client
+    {
+        return KeycloakClientModel::query()
+            ->where('client_id', $clientId)
+            ->firstOrFail()
+            ->toDomain();
+    }
+
+    /**
      * @inheritDoc
      */
     public function getByIntegrationIds(array $integrationIds): array
