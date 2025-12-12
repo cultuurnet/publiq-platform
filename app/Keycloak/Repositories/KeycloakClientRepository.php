@@ -29,6 +29,11 @@ interface KeycloakClientRepository
     public function getById(UuidInterface $id): Client;
 
     /**
+     * @throws ModelNotFoundException<Model>
+     */
+    public function getByClientId(string $clientId): Client;
+
+    /**
      * @param array<UuidInterface> $integrationIds
      * @return Client[]
      */
