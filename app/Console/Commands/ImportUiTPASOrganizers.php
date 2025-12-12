@@ -58,19 +58,19 @@ final class ImportUiTPASOrganizers extends Command
             $totalOrganizers += count($organizerIds);
             $organizersByClient[$row['clientid']] = $organizerIds;
         }
-        /*
-                if (!$this->confirm(sprintf("Do you want to import %s organizers for %s integrations?", $totalOrganizers, count($csvData)))) {
-                    $this->info('Import cancelled.');
-                    return 0;
-                }
-        */
+
+        if (!$this->confirm(sprintf("Do you want to import %s organizers for %s integrations?", $totalOrganizers, count($csvData)))) {
+            $this->info('Import cancelled.');
+            return 0;
+        }
+
         $progressBar = $this->startProgressBar($totalOrganizers);
 
         $processedCount = 0;
         foreach ($csvData as $row) {
             $clientId = $row['clientid'];
             try {
-                $integration = $this->keycloakClientRepository->getByClientId($clientId);
+                $client = $this->keycloakClientRepository->getByClientId($clientId);
             } catch (ModelNotFoundException) {
                 $this->error(sprintf('Client %s not found.', $clientId));
                 continue;
@@ -80,10 +80,10 @@ final class ImportUiTPASOrganizers extends Command
                 $processedCount++;
 
                 // Create organizer without triggering model events to avoid sending emails
-                UdbOrganizerModel::withoutEvents(static function () use ($integration, $organizerId) {
+                UdbOrganizerModel::withoutEvents(static function () use ($client, $organizerId) {
                     UdbOrganizerModel::query()->create([
                         'id' => Uuid::uuid4()->toString(),
-                        'integration_id' => $integration->integrationId,
+                        'integration_id' => $client->integrationId,
                         'organizer_id' => $organizerId,
                         'status' => UdbOrganizerStatus::Approved->value,
                     ]);
