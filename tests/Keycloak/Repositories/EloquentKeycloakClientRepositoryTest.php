@@ -8,6 +8,7 @@ use App\Domain\Integrations\Environment;
 use App\Keycloak\Client;
 use App\Keycloak\Realms;
 use App\Keycloak\Repositories\EloquentKeycloakClientRepository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
 use Tests\Keycloak\RealmFactory;
@@ -198,6 +199,71 @@ final class EloquentKeycloakClientRepositoryTest extends TestCase
         $this->assertEquals(Environment::Production->value, $missingEnvironments->get(2)->value);
     }
 
+    public function test_it_can_get_client_by_id(): void
+    {
+        $integrationId = Uuid::uuid4();
+        $clientUuid = Uuid::uuid4();
+        $clientId = 'test-client-id';
+
+        $client = new Client(
+            $clientUuid,
+            $integrationId,
+            $clientId,
+            'client-secret',
+            Environment::Acceptance
+        );
+
+        $this->repository->create($client);
+
+        $result = $this->repository->getById($clientUuid);
+
+        $this->assertInstanceOf(Client::class, $result);
+        $this->assertEquals($clientUuid->toString(), $result->id->toString());
+        $this->assertEquals($integrationId->toString(), $result->integrationId->toString());
+        $this->assertEquals($clientId, $result->clientId);
+        $this->assertEquals('client-secret', $result->clientSecret);
+        $this->assertEquals(Environment::Acceptance, $result->environment);
+    }
+
+    public function test_it_throws_exception_when_getting_client_by_non_existent_id(): void
+    {
+        $this->expectException(ModelNotFoundException::class);
+
+        $this->repository->getById(Uuid::uuid4());
+    }
+
+    public function test_it_can_get_client_by_client_id(): void
+    {
+        $integrationId = Uuid::uuid4();
+        $clientUuid = Uuid::uuid4();
+        $clientId = 'test-client-id';
+
+        $client = new Client(
+            $clientUuid,
+            $integrationId,
+            $clientId,
+            'client-secret',
+            Environment::Testing
+        );
+
+        $this->repository->create($client);
+
+        $result = $this->repository->getByClientId($clientId);
+
+        $this->assertInstanceOf(Client::class, $result);
+        $this->assertEquals($clientUuid->toString(), $result->id->toString());
+        $this->assertEquals($integrationId->toString(), $result->integrationId->toString());
+        $this->assertEquals($clientId, $result->clientId);
+        $this->assertEquals('client-secret', $result->clientSecret);
+        $this->assertEquals(Environment::Testing, $result->environment);
+    }
+
+    public function test_it_throws_exception_when_getting_client_by_non_existent_client_id(): void
+    {
+        $this->expectException(ModelNotFoundException::class);
+
+        $this->repository->getByClientId('non-existent-client-id');
+    }
 
     private function assertClientMatches(array $actual, array $expected): void
     {

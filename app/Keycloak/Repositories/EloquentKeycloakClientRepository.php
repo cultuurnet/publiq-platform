@@ -14,9 +14,9 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\UuidInterface;
 
-final class EloquentKeycloakClientRepository implements KeycloakClientRepository
+final readonly class EloquentKeycloakClientRepository implements KeycloakClientRepository
 {
-    public function __construct(private readonly Realms $realms)
+    public function __construct(private Realms $realms)
     {
     }
 
@@ -58,6 +58,17 @@ final class EloquentKeycloakClientRepository implements KeycloakClientRepository
     {
         return KeycloakClientModel::query()
             ->where('id', $id->toString())
+            ->firstOrFail()
+            ->toDomain();
+    }
+
+    /**
+     * @throws ModelNotFoundException<Model>
+     */
+    public function getByClientId(string $clientId): Client
+    {
+        return KeycloakClientModel::query()
+            ->where('client_id', $clientId)
             ->firstOrFail()
             ->toDomain();
     }
