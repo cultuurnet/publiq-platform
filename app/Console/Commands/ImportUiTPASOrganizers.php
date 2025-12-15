@@ -59,7 +59,7 @@ final class ImportUiTPASOrganizers extends Command
             $organizersByClient[$row['clientid']] = $organizerIds;
         }
 
-        if (!$this->confirm(sprintf("Do you want to import %s organizers for %s integrations?", $totalOrganizers, count($csvData)))) {
+        if (!$this->confirm(sprintf('Do you want to import %s organizers for %s integrations?', $totalOrganizers, count($csvData)))) {
             $this->info('Import cancelled.');
             return 0;
         }
