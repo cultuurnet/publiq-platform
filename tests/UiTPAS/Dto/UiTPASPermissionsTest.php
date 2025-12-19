@@ -6,6 +6,8 @@ namespace Tests\UiTPAS\Dto;
 
 use App\Domain\UdbUuid;
 use App\Json;
+use App\UiTPAS\Dto\UiTPASPermission;
+use App\UiTPAS\Dto\UiTPASPermissionDetail;
 use App\UiTPAS\Dto\UiTPASPermissions;
 use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
@@ -26,14 +28,19 @@ final class UiTPASPermissionsTest extends TestCase
 
         $uitpasPermissions = UiTPASPermissions::loadFromJson(Json::encode($permissions));
         $this->assertCount(1, $uitpasPermissions);
+
+        /** @var UiTPASPermission $uitpasPermission */
         $uitpasPermission = $uitpasPermissions[0];
         $this->assertEquals(new UdbUuid('f668a72f-a35a-4758-ac62-948f1302eae5'), $uitpasPermission->organizerId);
         $this->assertEquals('publiq VZW', $uitpasPermission->organizerName);
         $this->assertCount(2, $uitpasPermission->permissionDetails);
-        $this->assertEquals('TARIFFS_READ', $uitpasPermission->permissionDetails[0]->id);
-        $this->assertEquals('Tarieven opvragen', $uitpasPermission->permissionDetails[0]->label);
-        $this->assertEquals('PASSES_READ', $uitpasPermission->permissionDetails[1]->id);
-        $this->assertEquals('Basis UiTPAS informatie ophalen', $uitpasPermission->permissionDetails[1]->label);
+
+        /** @var UiTPASPermissionDetail[] $permissionDetails */
+        $permissionDetails = $uitpasPermission->permissionDetails;
+        $this->assertEquals('TARIFFS_READ', $permissionDetails[0]->id);
+        $this->assertEquals('Tarieven opvragen', $permissionDetails[0]->label);
+        $this->assertEquals('PASSES_READ', $permissionDetails[1]->id);
+        $this->assertEquals('Basis UiTPAS informatie ophalen', $permissionDetails[1]->label);
     }
 
     public function test_it_filters_incomplete_organizers(): void
@@ -58,7 +65,11 @@ final class UiTPASPermissionsTest extends TestCase
         ];
 
         $uitpasPermissions = UiTPASPermissions::loadFromJson(Json::encode($permissions));
+
         $this->assertCount(1, $uitpasPermissions);
-        $this->assertEquals(new UdbUuid('f668a72f-a35a-4758-ac62-948f1302eae5'), $uitpasPermissions[0]->organizerId);
+
+        /** @var UiTPASPermission $uitpasPermission */
+        $uitpasPermission = $uitpasPermissions[0];
+        $this->assertEquals(new UdbUuid('f668a72f-a35a-4758-ac62-948f1302eae5'), $uitpasPermission->organizerId);
     }
 }
