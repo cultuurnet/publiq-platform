@@ -39,8 +39,6 @@ final class SupportController extends Controller
                     'emails' => [$email],
                 ]);
 
-            assert($response instanceof Response);
-
             $body = json_decode(
                 json: $response->body(),
                 associative: true,

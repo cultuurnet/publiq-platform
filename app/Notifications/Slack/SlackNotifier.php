@@ -32,8 +32,6 @@ final readonly class SlackNotifier implements Notifier
                 ]
             );
 
-        assert($response instanceof Response);
-
         $this->handleResponse($response, 'Failed to post message.');
     }
 
