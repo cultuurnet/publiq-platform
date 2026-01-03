@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\SmtpTests;
 
-use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
 trait MailpitTester
