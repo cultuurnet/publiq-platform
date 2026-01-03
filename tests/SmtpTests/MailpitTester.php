@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\SmtpTests;
 
-use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
 trait MailpitTester
@@ -17,8 +16,6 @@ trait MailpitTester
 
         while ((time() - $start) < self::TIMEOUT_SECONDS_MAIL) {
             $response = Http::get(config('mail.mailers.mailpit.api_url') . '/api/v1/messages');
-
-            assert($response instanceof Response);
 
             if (!$response->successful()) {
                 usleep(250);
