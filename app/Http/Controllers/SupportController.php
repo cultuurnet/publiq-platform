@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Router\TranslatedRoute;
-use Illuminate\Http\Client\Response;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -38,8 +37,6 @@ final class SupportController extends Controller
                     'channel' => $channelID,
                     'emails' => [$email],
                 ]);
-
-            assert($response instanceof Response);
 
             $body = json_decode(
                 json: $response->body(),
