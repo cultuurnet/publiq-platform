@@ -7,6 +7,7 @@ namespace App\Console\Commands;
 use App\Console\Commands\Helper\CsvReader;
 use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Domain\Integrations\UdbOrganizerStatus;
+use App\Domain\UdbUuid;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -81,12 +82,25 @@ final class ImportUiTPASOrganizers extends Command
 
                 // Create organizer without triggering model events to avoid sending emails
                 UdbOrganizerModel::withoutEvents(static function () use ($client, $organizerId) {
-                    UdbOrganizerModel::query()->create([
-                        'id' => Uuid::uuid4()->toString(),
-                        'integration_id' => $client->integrationId,
-                        'organizer_id' => $organizerId,
-                        'status' => UdbOrganizerStatus::Approved->value,
-                    ]);
+                    try {
+                        new UdbUuid($organizerId);
+                    } catch (\InvalidArgumentException) {
+                        // Skip invalid UUIDs
+                        return;
+                    }
+
+                    $organizer = UdbOrganizerModel::firstOrNew(
+                        [
+                            'integration_id' => $client->integrationId,
+                            'organizer_id' => $organizerId,
+                        ]
+                    );
+
+                    if (empty($organizer->id)) {
+                        $organizer->id = Uuid::uuid4()->toString();
+                        $organizer->status = UdbOrganizerStatus::Approved->value;
+                        $organizer->save();
+                    }
                 });
 
                 $progressBar->advance();
@@ -120,3 +134,5 @@ final class ImportUiTPASOrganizers extends Command
         return $progressBar;
     }
 }
+
+// su - www-data -s '/bin/bash' -c '/var/www/platform-api/artisan import-uitpas-organizers import/new-import.csv'
