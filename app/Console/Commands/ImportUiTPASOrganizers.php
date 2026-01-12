@@ -134,5 +134,3 @@ final class ImportUiTPASOrganizers extends Command
         return $progressBar;
     }
 }
-
-// su - www-data -s '/bin/bash' -c '/var/www/platform-api/artisan import-uitpas-organizers import/new-import.csv'
