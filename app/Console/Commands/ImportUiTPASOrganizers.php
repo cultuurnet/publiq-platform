@@ -7,10 +7,12 @@ namespace App\Console\Commands;
 use App\Console\Commands\Helper\CsvReader;
 use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Domain\Integrations\UdbOrganizerStatus;
+use App\Domain\UdbUuid;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\File;
+use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Console\Helper\ProgressBar;
 
@@ -22,6 +24,7 @@ final class ImportUiTPASOrganizers extends Command
 
     public function __construct(
         private readonly KeycloakClientRepository $keycloakClientRepository,
+        private readonly LoggerInterface $logger,
     ) {
         parent::__construct();
     }
@@ -80,13 +83,24 @@ final class ImportUiTPASOrganizers extends Command
                 $processedCount++;
 
                 // Create organizer without triggering model events to avoid sending emails
-                UdbOrganizerModel::withoutEvents(static function () use ($client, $organizerId) {
-                    UdbOrganizerModel::query()->create([
-                        'id' => Uuid::uuid4()->toString(),
-                        'integration_id' => $client->integrationId,
-                        'organizer_id' => $organizerId,
-                        'status' => UdbOrganizerStatus::Approved->value,
-                    ]);
+                UdbOrganizerModel::withoutEvents(function () use ($client, $organizerId) {
+                    try {
+                        new UdbUuid($organizerId);
+                    } catch (\InvalidArgumentException) {
+                        $this->logger->warning(sprintf('Invalid UUID encountered during import: %s', $organizerId));
+                        return;
+                    }
+
+                    UdbOrganizerModel::firstOrCreate(
+                        [
+                            'integration_id' => $client->integrationId,
+                            'organizer_id' => $organizerId,
+                        ],
+                        [
+                            'id' => Uuid::uuid4()->toString(),
+                            'status' => UdbOrganizerStatus::Approved->value,
+                        ]
+                    );
                 });
 
                 $progressBar->advance();
