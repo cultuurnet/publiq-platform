@@ -71,6 +71,23 @@ final class SearchExpiredIntegrationsTest extends TestCase
         });
     }
 
+    public function test_it_does_not_send_mails_to_integrations_on_hold(): void
+    {
+        $integrationId = Uuid::uuid4()->toString();
+        $integrationIdOnHold = Uuid::uuid4()->toString();
+
+        $this->createIntegrationWithContacts($integrationId, 8);
+        $this->createIntegrationWithContacts($integrationIdOnHold, 8, onHold: true);
+
+        $this->getPendingCommand('integration:search-expired-integrations --force')
+            ->expectsOutput(sprintf('Dispatched ActivationExpired for integration %s', $integrationId))
+            ->assertExitCode(Command::SUCCESS);
+
+        Event::assertDispatched(ActivationExpired::class, static function (ActivationExpired $event) use ($integrationId, $integrationIdOnHold) {
+            return $event->id->toString() === $integrationId && $event->id->toString() !== $integrationIdOnHold;
+        });
+    }
+
     private function getPendingCommand(string $command, array $params = []): PendingCommand
     {
         $command = $this->artisan($command, $params);
@@ -78,7 +95,7 @@ final class SearchExpiredIntegrationsTest extends TestCase
         return $command;
     }
 
-    private function createIntegrationWithContacts(string $integrationId, int $monthsAgo): void
+    private function createIntegrationWithContacts(string $integrationId, int $monthsAgo, bool $onHold = false): void
     {
         DB::table('integrations')->insert([
             'id' => $integrationId,
@@ -105,5 +122,13 @@ final class SearchExpiredIntegrationsTest extends TestCase
             'first_name' => 'Bril',
             'last_name' => 'Smurf',
         ]);
+
+        if ($onHold) {
+            DB::table('admin_information')->insert([
+                'id' => Uuid::uuid4()->toString(),
+                'integration_id' => $integrationId,
+                'on_hold' => true,
+            ]);
+        }
     }
 }
