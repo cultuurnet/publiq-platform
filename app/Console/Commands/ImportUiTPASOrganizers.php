@@ -12,6 +12,7 @@ use App\Keycloak\Repositories\KeycloakClientRepository;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\File;
+use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Console\Helper\ProgressBar;
 
@@ -23,6 +24,7 @@ final class ImportUiTPASOrganizers extends Command
 
     public function __construct(
         private readonly KeycloakClientRepository $keycloakClientRepository,
+        private readonly LoggerInterface $logger,
     ) {
         parent::__construct();
     }
@@ -81,26 +83,24 @@ final class ImportUiTPASOrganizers extends Command
                 $processedCount++;
 
                 // Create organizer without triggering model events to avoid sending emails
-                UdbOrganizerModel::withoutEvents(static function () use ($client, $organizerId) {
+                UdbOrganizerModel::withoutEvents(function () use ($client, $organizerId) {
                     try {
                         new UdbUuid($organizerId);
                     } catch (\InvalidArgumentException) {
-                        // Skip invalid UUIDs
+                        $this->logger->warning(sprintf('Invalid UUID encountered during import: %s', $organizerId));
                         return;
                     }
 
-                    $organizer = UdbOrganizerModel::firstOrNew(
+                    UdbOrganizerModel::firstOrCreate(
                         [
                             'integration_id' => $client->integrationId,
                             'organizer_id' => $organizerId,
+                        ],
+                        [
+                            'id' => Uuid::uuid4()->toString(),
+                            'status' => UdbOrganizerStatus::Approved->value,
                         ]
                     );
-
-                    if (empty($organizer->id)) {
-                        $organizer->id = Uuid::uuid4()->toString();
-                        $organizer->status = UdbOrganizerStatus::Approved->value;
-                        $organizer->save();
-                    }
                 });
 
                 $progressBar->advance();
