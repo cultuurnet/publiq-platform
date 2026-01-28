@@ -10,6 +10,7 @@ use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizerStatus;
+use App\Keycloak\Repositories\EloquentKeycloakClientRepository;
 use App\Nova\Actions\UdbOrganizer\ApproveUdbOrganizer;
 use App\Nova\Actions\UdbOrganizer\RejectUdbOrganizer;
 use App\Nova\Actions\UdbOrganizer\RevokeUdbOrganizer;
@@ -24,6 +25,7 @@ use App\UiTPAS\UiTPASApi;
 use App\UiTPAS\UiTPASApiInterface;
 use App\UiTPAS\UiTPASConfig;
 use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Laravel\Nova\Fields\DateTime;
@@ -112,6 +114,23 @@ final class UdbOrganizer extends Resource
                     config(UiTPASConfig::UDB_BASE_URI->value) . 'organizers/' . $model->toDomain()->organizerId . '/preview',
                     $name
                 );
+            })->asHtml(),
+
+            Text::make('Environment', static function (UdbOrganizerModel $model) {
+                /** @var EloquentKeycloakClientRepository $keycloakClientRepository */
+                $keycloakClientRepository = App::get(EloquentKeycloakClientRepository::class);
+
+                if ($model->toDomain()->clientId === null) {
+                    return Environment::Production->name;
+                }
+
+                try {
+                    $keycloakClient = $keycloakClientRepository->getById($model->toDomain()->clientId);
+                } catch (ModelNotFoundException) {
+                    return Environment::Production->name;
+                }
+
+                return $keycloakClient->environment->name;
             })->asHtml(),
 
             Text::make('Status', static function (UdbOrganizerModel $model) {
