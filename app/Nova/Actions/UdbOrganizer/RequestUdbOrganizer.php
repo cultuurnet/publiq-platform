@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Nova\Actions\UdbOrganizer;
 
+use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Models\IntegrationModel;
+use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizerStatus;
@@ -30,6 +32,7 @@ final class RequestUdbOrganizer extends Action
     public function __construct(
         private readonly UdbOrganizerRepository $organizerRepository,
         private readonly SearchService $searchService,
+        private readonly IntegrationRepository $integrationRepository,
     ) {
     }
 
@@ -49,11 +52,16 @@ final class RequestUdbOrganizer extends Action
         }
 
         try {
+            $productionClient = $this->integrationRepository
+                ->getById(Uuid::fromString($integration->id))
+                ->getKeycloakClientByEnv(Environment::Production);
+
             $udbOrganizer = new UdbOrganizer(
                 Uuid::uuid4(),
                 Uuid::fromString($integration->id),
                 $organizationId,
-                UdbOrganizerStatus::Approved
+                UdbOrganizerStatus::Approved,
+                $productionClient->id
             );
 
             $this->organizerRepository->create($udbOrganizer);

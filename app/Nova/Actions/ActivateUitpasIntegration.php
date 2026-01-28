@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Nova\Actions;
 
+use App\Domain\Integrations\Environment;
+use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\UdbOrganizer;
@@ -48,7 +50,10 @@ final class ActivateUitpasIntegration extends Action
             Uuid::fromString($integration->id),
             $organizationId,
             null,
-            $this->getUdbOrganizers($organizers, $integration)
+            $this->getUdbOrganizers(
+                $organizers,
+                $this->integrationRepository->getById(Uuid::fromString($integration->id))
+            )
         );
 
         return Action::message('Integration "' . $integration->name . '" activated.');
@@ -73,18 +78,21 @@ final class ActivateUitpasIntegration extends Action
         ];
     }
 
-    private function getUdbOrganizers(string $organizers, IntegrationModel $integration): UdbOrganizers
+    private function getUdbOrganizers(string $organizers, Integration $integration): UdbOrganizers
     {
         $organizersAsIds = array_map('trim', explode(',', $organizers));
         $output = new UdbOrganizers();
+
+        $productionClient = $integration->getKeycloakClientByEnv(Environment::Production);
 
         foreach ($organizersAsIds as $id) {
             $output->add(
                 new UdbOrganizer(
                     Uuid::uuid4(),
-                    Uuid::fromString($integration->id),
+                    $integration->id,
                     new UdbUuid($id),
-                    UdbOrganizerStatus::Pending
+                    UdbOrganizerStatus::Pending,
+                    $productionClient->id
                 )
             );
         }

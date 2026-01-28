@@ -23,6 +23,7 @@ final class UdbOrganizerModel extends UuidModel
         'integration_id',
         'organizer_id',
         'status',
+        'client_id',
     ];
 
     public function toDomain(): UdbOrganizer
@@ -31,7 +32,8 @@ final class UdbOrganizerModel extends UuidModel
             Uuid::fromString($this->id),
             Uuid::fromString($this->integration_id),
             new UdbUuid($this->organizer_id),
-            UdbOrganizerStatus::from($this->status)
+            UdbOrganizerStatus::from($this->status),
+            Uuid::fromString($this->client_id)
         );
     }
 
