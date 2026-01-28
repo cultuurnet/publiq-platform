@@ -14,7 +14,7 @@ final readonly class UdbOrganizer
         public UuidInterface $integrationId,
         public UdbUuid $organizerId,
         public UdbOrganizerStatus $status,
-        public UuidInterface $clientId,
+        public ?UuidInterface $clientId,
     ) {
     }
 }

@@ -33,7 +33,7 @@ final class UdbOrganizerModel extends UuidModel
             Uuid::fromString($this->integration_id),
             new UdbUuid($this->organizer_id),
             UdbOrganizerStatus::from($this->status),
-            Uuid::fromString($this->client_id)
+            empty($this->client_id) ? null : Uuid::fromString($this->client_id)
         );
     }
 

@@ -22,7 +22,7 @@ final class EloquentUdbOrganizerRepository implements UdbOrganizerRepository
             'integration_id' => $organizer->integrationId->toString(),
             'organizer_id' => $organizer->organizerId->toString(),
             'status' => $organizer->status->value,
-            'client_id' => $organizer->clientId->toString(),
+            'client_id' => empty($organizer->clientId) ? null : $organizer->clientId->toString(),
         ]);
 
         if ($organizer->status === UdbOrganizerStatus::Approved) {
