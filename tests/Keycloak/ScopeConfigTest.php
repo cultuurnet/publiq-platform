@@ -9,11 +9,11 @@ use App\Keycloak\ScopeConfig;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
-use Tests\CreatesIntegration;
+use Tests\CreatesTestData;
 
 final class ScopeConfigTest extends TestCase
 {
-    use CreatesIntegration;
+    use CreatesTestData;
 
     private const SEARCH_API_ID = '41255857-b8ad-44ce-9a17-db72540461b7';
     private const ENTRY_API_ID = '824c09c0-2f3a-4fa0-bde2-8bf25c9a5b74';

@@ -4,44 +4,58 @@ declare(strict_types=1);
 
 namespace Tests\Domain\Integrations\Repositories;
 
+use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Repositories\EloquentUdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizers;
 use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\UdbUuid;
+use App\Keycloak\Client;
+use App\Keycloak\Repositories\EloquentKeycloakClientRepository;
 use App\UiTPAS\Event\UdbOrganizerApproved;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
+use Tests\Keycloak\RealmFactory;
 use Tests\TestCase;
 
 final class EloquentUdbOrganizerRepositoryTest extends TestCase
 {
     use RefreshDatabase;
+    use RealmFactory;
 
     private UdbOrganizer $organizer1;
     private UdbOrganizer $organizer2;
     private EloquentUdbOrganizerRepository $repository;
+    private Client $keycloakClient;
 
     protected function setUp(): void
     {
         parent::setUp();
 
+        $this->keycloakClient = new Client(Uuid::uuid4(), Uuid::uuid4(), Uuid::uuid4()->toString(), 'client-id-1', Environment::Testing);
+        ;
+
         $this->organizer1 = new UdbOrganizer(
             Uuid::uuid4(),
             Uuid::uuid4(),
             new UdbUuid(Uuid::uuid4()->toString()),
-            UdbOrganizerStatus::Pending
+            UdbOrganizerStatus::Pending,
+            $this->keycloakClient->id
         );
 
         $this->organizer2 = new UdbOrganizer(
             Uuid::uuid4(),
             Uuid::uuid4(),
             new UdbUuid(Uuid::uuid4()->toString()),
-            UdbOrganizerStatus::Pending
+            UdbOrganizerStatus::Pending,
+            $this->keycloakClient->id
         );
 
         $this->repository = new EloquentUdbOrganizerRepository();
+
+        $keycloakRepo = new EloquentKeycloakClientRepository($this->givenAllRealms());
+        $keycloakRepo->create($this->keycloakClient);
     }
 
     public function testCreate(): void
@@ -62,7 +76,8 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
             Uuid::uuid4(),
             Uuid::uuid4(),
             new UdbUuid(Uuid::uuid4()->toString()),
-            UdbOrganizerStatus::Approved
+            UdbOrganizerStatus::Approved,
+            $this->keycloakClient->id
         );
 
         $this->repository->create($org);

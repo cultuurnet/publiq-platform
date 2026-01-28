@@ -29,6 +29,7 @@ use App\Domain\Subscriptions\Currency;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Domain\Subscriptions\Subscription;
 use App\Domain\Subscriptions\SubscriptionCategory;
+use App\Keycloak\Models\KeycloakClientModel;
 use App\ProjectAanvraag\ProjectAanvraagUrl;
 use App\Router\TranslatedRoute;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -245,6 +246,7 @@ final class IntegrationControllerTest extends TestCase
         $integration = $this->givenThereIsAnIntegration(integrationType: $integrationType, subscriptionId: $subscription->id);
 
         $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $this->givenThereIsAKeycloakClient($integration);
 
         $response = $this->post(
             "/integrations/{$integration->id}/activation",
@@ -286,6 +288,7 @@ final class IntegrationControllerTest extends TestCase
         $coupon = $this->givenThereIsACoupon();
 
         $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $this->givenThereIsAKeycloakClient($integration);
 
         $response = $this->post(
             "/integrations/{$integration->id}/activation",
@@ -985,6 +988,17 @@ final class IntegrationControllerTest extends TestCase
         ]);
 
         return $integration;
+    }
+
+    private function givenThereIsAKeycloakClient(Integration $integration, Environment $environment = Environment::Production): void
+    {
+        $keycloakClientModel = new KeycloakClientModel();
+        $keycloakClientModel->id = Uuid::uuid4()->toString();
+        $keycloakClientModel->integration_id = $integration->id->toString();
+        $keycloakClientModel->client_id = 'test-client-' . $environment->value;
+        $keycloakClientModel->client_secret = 'test-secret-' . $environment->value;
+        $keycloakClientModel->realm = $environment->value;
+        $keycloakClientModel->save();
     }
 
     private function givenThereIsALoginUrlForIntegration(Integration $integration): IntegrationUrl

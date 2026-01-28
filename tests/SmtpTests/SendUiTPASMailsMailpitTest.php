@@ -115,12 +115,12 @@ final class SendUiTPASMailsMailpitTest extends TestCase
         ))->withContacts(
             new Contact(Uuid::uuid4(), $integrationId, self::MAIL_TO_ADDRESS, ContactType::Contributor, 'John', 'Snow')
         )->withUdbOrganizers(
-            new UdbOrganizer(Uuid::uuid4(), $integrationId, new UdbUuid(self::ORG_ID), UdbOrganizerStatus::Pending),
+            new UdbOrganizer(Uuid::uuid4(), $integrationId, new UdbUuid(self::ORG_ID), UdbOrganizerStatus::Pending, Uuid::uuid4()),
         );
 
         // The events dispatched inside are not dispatched, so we manually call the handle method.
         $this->integrationRepository->save($integration);
-        $this->udbOrganizerRepository->create(new UdbOrganizer(Uuid::uuid4(), $integrationId, new UdbUuid(self::ORG_ID), UdbOrganizerStatus::Pending));
+        $this->udbOrganizerRepository->create(new UdbOrganizer(Uuid::uuid4(), $integrationId, new UdbUuid(self::ORG_ID), UdbOrganizerStatus::Pending, Uuid::uuid4()));
 
         $method = 'handle' . class_basename($event);
         $this->listener->$method($event);

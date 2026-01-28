@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Nova\Actions\UdbOrganizer;
 
 use App\Domain\Integrations\Models\IntegrationModel;
+use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Nova\Actions\UdbOrganizer\RequestUdbOrganizer;
@@ -13,14 +14,15 @@ use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\ActionFields;
 use PDOException;
 use PHPUnit\Framework\MockObject\MockObject;
-use Tests\CreatesIntegration;
+use Ramsey\Uuid\Uuid;
+use Tests\CreatesTestData;
 use Tests\GivenUitpasOrganizers;
 use Tests\TestCase;
 
 final class RequestUdbOrganizerTest extends TestCase
 {
     use GivenUitpasOrganizers;
-    use CreatesIntegration;
+    use CreatesTestData;
 
     private const ORGANIZER_ID = 'd541dbd6-b818-432d-b2be-d51dfc5c0c51';
     private const INTEGRATION_ID = '68498691-4ff0-8010-ae61-c1ece25eaf38';
@@ -28,6 +30,7 @@ final class RequestUdbOrganizerTest extends TestCase
     private RequestUdbOrganizer $handler;
     private UdbOrganizerRepository&MockObject $udbOrganizerRepository;
     private SearchService&MockObject $searchService;
+    private IntegrationRepository&MockObject $integrationRepository;
 
     protected function setUp(): void
     {
@@ -38,15 +41,24 @@ final class RequestUdbOrganizerTest extends TestCase
 
         $this->udbOrganizerRepository = $this->createMock(UdbOrganizerRepository::class);
         $this->searchService = $this->createMock(SearchService::class);
+        $this->integrationRepository = $this->createMock(IntegrationRepository::class);
 
         $this->handler = new RequestUdbOrganizer(
             $this->udbOrganizerRepository,
             $this->searchService,
+            $this->integrationRepository,
         );
     }
 
     public function test_that_it_creates_a_UdbOrganizer(): void
     {
+        $integration = $this->givenThereIsAnIntegration(Uuid::fromString(self::INTEGRATION_ID));
+        $integration = $integration->withKeycloakClients($this->givenThereIsAKeycloakClient($integration));
+
+        $this->integrationRepository->expects($this->once())
+            ->method('getById')
+            ->willReturn($integration);
+
         $this->searchService->expects($this->once())
             ->method('findUiTPASOrganizers')
             ->with(self::ORGANIZER_ID)
@@ -88,6 +100,13 @@ final class RequestUdbOrganizerTest extends TestCase
 
     public function test_it_handles_duplicates(): void
     {
+        $integration = $this->givenThereIsAnIntegration(Uuid::fromString(self::INTEGRATION_ID));
+        $integration = $integration->withKeycloakClients($this->givenThereIsAKeycloakClient($integration));
+
+        $this->integrationRepository->expects($this->once())
+            ->method('getById')
+            ->willReturn($integration);
+
         $this->searchService->expects($this->once())
             ->method('findUiTPASOrganizers')
             ->with(self::ORGANIZER_ID)
