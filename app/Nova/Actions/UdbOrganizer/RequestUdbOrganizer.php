@@ -19,6 +19,7 @@ use InvalidArgumentException;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Actions\ActionResponse;
 use Laravel\Nova\Fields\ActionFields;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use PDOException;
@@ -52,16 +53,17 @@ final class RequestUdbOrganizer extends Action
         }
 
         try {
-            $productionClient = $this->integrationRepository
+            $environment = Environment::from((string)$fields->get('environment'));
+            $keycloakClient = $this->integrationRepository
                 ->getById(Uuid::fromString($integration->id))
-                ->getKeycloakClientByEnv(Environment::Production);
+                ->getKeycloakClientByEnv($environment);
 
             $udbOrganizer = new UdbOrganizer(
                 Uuid::uuid4(),
                 Uuid::fromString($integration->id),
                 $organizationId,
                 UdbOrganizerStatus::Approved,
-                $productionClient->id
+                $keycloakClient->id
             );
 
             $this->organizerRepository->create($udbOrganizer);
@@ -85,6 +87,13 @@ final class RequestUdbOrganizer extends Action
                     'required',
                     'string'
                 ),
+            Select::make('Environment', 'environment')
+                ->options([
+                    Environment::Testing->value => 'Test',
+                    Environment::Production->value => 'Production',
+                ])
+                ->default(Environment::Production->value)
+                ->rules('required'),
         ];
     }
 
