@@ -13,12 +13,12 @@ use App\Keycloak\Converters\IntegrationUrlConverter;
 use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
-use Tests\CreatesIntegration;
+use Tests\CreatesTestData;
 use Tests\Keycloak\RealmFactory;
 
 final class IntegrationUrlConverterTest extends TestCase
 {
-    use CreatesIntegration;
+    use CreatesTestData;
 
     use RealmFactory;
 

@@ -82,7 +82,7 @@ final class GetIntegrationOrganizersWithTestOrganizerTest extends TestCase
             IntegrationStatus::Draft,
             IntegrationPartnerStatus::THIRD_PARTY,
         ))->withUdbOrganizers(
-            new UdbOrganizer(Uuid::uuid4(), $integrationId, $organizerId, UdbOrganizerStatus::Pending),
+            new UdbOrganizer(Uuid::uuid4(), $integrationId, $organizerId, UdbOrganizerStatus::Pending, Uuid::uuid4()),
         );
 
         $searchClient

@@ -20,14 +20,14 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
-use Tests\CreatesIntegration;
+use Tests\CreatesTestData;
 use Tests\Keycloak\KeycloakHttpClientFactory;
 use Tests\Keycloak\RealmFactory;
 use Tests\TestCase;
 
 final class UpdateClientsTest extends TestCase
 {
-    use CreatesIntegration;
+    use CreatesTestData;
     use KeycloakHttpClientFactory;
 
     use RealmFactory;

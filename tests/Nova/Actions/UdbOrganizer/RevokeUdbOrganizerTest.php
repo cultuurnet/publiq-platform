@@ -13,12 +13,12 @@ use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\ActionFields;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
-use Tests\CreatesIntegration;
+use Tests\CreatesTestData;
 use Tests\GivenUitpasOrganizers;
 
 final class RevokeUdbOrganizerTest extends TestCase
 {
-    use CreatesIntegration;
+    use CreatesTestData;
     use GivenUitpasOrganizers;
 
     public function test_it_revokes_permissions_and_deletes_udb_organizer(): void
@@ -31,6 +31,7 @@ final class RevokeUdbOrganizerTest extends TestCase
         $udbOrganizer->integration_id = $integrationId->toString();
         $udbOrganizer->organizer_id = $organizerId->toString();
         $udbOrganizer->status = UdbOrganizerStatus::Pending->value;
+        $udbOrganizer->client_id = Uuid::uuid4()->toString();
         $udbOrganizers = new Collection();
         $udbOrganizers->push($udbOrganizer);
 

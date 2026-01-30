@@ -79,14 +79,16 @@ final class SynchronizeUiTPASPermissionsHandlerTest extends TestCase
                 Uuid::uuid4(),
                 Uuid::uuid4(),
                 new UdbUuid(Uuid::uuid4()->toString()),
-                UdbOrganizerStatus::Approved
+                UdbOrganizerStatus::Approved,
+                Uuid::uuid4()
             ),
             // Pending organizer should be skipped
             new UdbOrganizer(
                 Uuid::uuid4(),
                 Uuid::uuid4(),
                 new UdbUuid(Uuid::uuid4()->toString()),
-                UdbOrganizerStatus::Pending
+                UdbOrganizerStatus::Pending,
+                Uuid::uuid4()
             )
         );
 
@@ -119,13 +121,15 @@ final class SynchronizeUiTPASPermissionsHandlerTest extends TestCase
                 Uuid::uuid4(),
                 Uuid::uuid4(),
                 new UdbUuid($orgId),
-                UdbOrganizerStatus::Approved
+                UdbOrganizerStatus::Approved,
+                Uuid::uuid4()
             ),
             new UdbOrganizer(
                 Uuid::uuid4(),
                 Uuid::uuid4(),
                 new UdbUuid($orgId2),
-                UdbOrganizerStatus::Approved
+                UdbOrganizerStatus::Approved,
+                Uuid::uuid4()
             )
         );
 

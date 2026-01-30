@@ -306,6 +306,7 @@ final class Integration extends Resource
             (new RequestUdbOrganizer(
                 App::make(UdbOrganizerRepository::class),
                 App::make(SearchService::class),
+                App::make(IntegrationRepository::class),
             ))
                 ->exceptOnIndex()
                 ->confirmText('Are you sure you want to add an organizer?')

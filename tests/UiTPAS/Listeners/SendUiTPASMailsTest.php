@@ -31,12 +31,12 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Mime\Address;
-use Tests\CreatesIntegration;
+use Tests\CreatesTestData;
 use Tests\TestCase;
 
 final class SendUiTPASMailsTest extends TestCase
 {
-    use CreatesIntegration;
+    use CreatesTestData;
 
     private const INTEGRATION_ID = '6863edd2-f728-8010-8014-da344a5e8213';
     private const ORGANIZER_ID = '33f1722b-04fc-4652-b99f-2c96de87cf82';
@@ -78,7 +78,7 @@ final class SendUiTPASMailsTest extends TestCase
                 new Contact(Uuid::uuid4(), $integrationId, '1@publiq.be', ContactType::Contributor, 'John', 'Snow')
             )
             ->withUdbOrganizers(
-                new UdbOrganizer(Uuid::uuid4(), $integrationId, $organizerId, $udbOrganizerStatus)
+                new UdbOrganizer(Uuid::uuid4(), $integrationId, $organizerId, $udbOrganizerStatus, Uuid::uuid4())
             );
 
         $this->integrationRepository

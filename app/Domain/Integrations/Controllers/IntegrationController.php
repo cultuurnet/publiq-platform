@@ -307,7 +307,7 @@ final class IntegrationController extends Controller
 
         $organizerIds = collect($integration->udbOrganizers())->map(fn (UdbOrganizer $organizer) => $organizer->organizerId);
         $newOrganizers = array_filter(
-            UdbOrganizerMapper::mapUpdateOrganizers($request, $integrationId),
+            UdbOrganizerMapper::mapUpdateOrganizers($request, $integration),
             fn (UdbOrganizer $organizer) => !in_array($organizer->organizerId, $organizerIds->toArray(), true)
         );
 
@@ -330,6 +330,7 @@ final class IntegrationController extends Controller
             return $guardCouponResult;
         }
 
+        $integration = $this->integrationRepository->getById(Uuid::fromString($id));
         $organization = OrganizationMapper::mapActivationRequest($request);
         $this->organizationRepository->save($organization);
 
@@ -337,7 +338,7 @@ final class IntegrationController extends Controller
             Uuid::fromString($id),
             $organization->id,
             $request->input('coupon'),
-            UdbOrganizerMapper::mapActivationRequest($request, $id)
+            UdbOrganizerMapper::mapActivationRequest($request, $integration)
         );
 
         return Redirect::back();

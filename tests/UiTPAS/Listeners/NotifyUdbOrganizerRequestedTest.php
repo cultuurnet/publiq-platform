@@ -60,7 +60,8 @@ final class NotifyUdbOrganizerRequestedTest extends TestCase
             Uuid::uuid4(),
             $integrationId,
             new UdbUuid(Uuid::uuid4()->toString()),
-            UdbOrganizerStatus::Pending
+            UdbOrganizerStatus::Pending,
+            Uuid::uuid4()
         );
 
         $integration = $this->givenThereIsAnIntegration($integrationId, ['type' => IntegrationType::UiTPAS])
@@ -97,7 +98,8 @@ final class NotifyUdbOrganizerRequestedTest extends TestCase
             Uuid::uuid4(),
             $integrationId,
             new UdbUuid(Uuid::uuid4()->toString()),
-            UdbOrganizerStatus::Pending
+            UdbOrganizerStatus::Pending,
+            Uuid::uuid4()
         );
 
         $integration = $this->givenThereIsAnIntegration($integrationId, ['type' => IntegrationType::SearchApi]);
@@ -145,7 +147,8 @@ final class NotifyUdbOrganizerRequestedTest extends TestCase
             Uuid::uuid4(),
             $integrationId,
             new UdbUuid(Uuid::uuid4()->toString()),
-            UdbOrganizerStatus::Approved
+            UdbOrganizerStatus::Approved,
+            Uuid::uuid4()
         );
 
         $integration = $this->givenThereIsAnIntegration($integrationId, ['type' => IntegrationType::SearchApi]);
@@ -174,7 +177,8 @@ final class NotifyUdbOrganizerRequestedTest extends TestCase
             Uuid::uuid4(),
             $integrationId,
             $udbId,
-            UdbOrganizerStatus::Pending
+            UdbOrganizerStatus::Pending,
+            Uuid::uuid4()
         );
 
         $integration = $this->givenThereIsAnIntegration($integrationId, ['type' => IntegrationType::UiTPAS])

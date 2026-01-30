@@ -14,14 +14,14 @@ use App\Keycloak\Repositories\KeycloakClientRepository;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
-use Tests\CreatesIntegration;
+use Tests\CreatesTestData;
 use Tests\Keycloak\KeycloakHttpClientFactory;
 use Tests\Keycloak\RealmFactory;
 use Tests\TestCase;
 
 final class UnblockClientsTest extends TestCase
 {
-    use CreatesIntegration;
+    use CreatesTestData;
     use KeycloakHttpClientFactory;
     use RealmFactory;
 
