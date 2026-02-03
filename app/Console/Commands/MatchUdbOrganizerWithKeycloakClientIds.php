@@ -11,9 +11,9 @@ use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Throwable;
 
-final class MigrateUdbOrganizerClientIds extends Command
+final class MatchUdbOrganizerWithKeycloakClientIds extends Command
 {
-    protected $signature = 'udb-organizer:migrate-client-ids';
+    protected $signature = 'udb-organizer:match-udb-organizer-with-client-id';
 
     protected $description = 'Migrate UdbOrganizers with no client_id to use Production Keycloak client';
 
