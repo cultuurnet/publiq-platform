@@ -8,57 +8,61 @@ use App\Api\ClientCredentialsContext;
 use App\Domain\Integrations\Exceptions\KeycloakClientNotFound;
 use App\Domain\UdbUuid;
 use App\Keycloak\Client;
+use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Search\Sapi3\SearchService;
 use App\UiTPAS\Dto\UiTPASPermission;
 use App\UiTPAS\UiTPASApiInterface;
 use App\UiTPAS\UiTPASConfig;
 use CultuurNet\SearchV3\ValueObjects\Organizer as SapiOrganizer;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 
 final readonly class GetIntegrationOrganizersWithTestOrganizer
 {
     public function __construct(
-        private SearchService $searchClient,
+        private SearchService $testSearchService,
+        private SearchService $prodSearchService,
         private UiTPASApiInterface $UiTPASApi,
         private ClientCredentialsContext $testCredentialsContext,
         private ClientCredentialsContext $prodCredentialsContext,
+        private KeycloakClientRepository $keycloakClientRepository,
     ) {
     }
 
     public function getAndEnrichOrganisations(Integration $integration): Collection
     {
-        $organizerIds = collect($integration->udbOrganizers())->map(fn (UdbOrganizer $organizer) => $organizer->organizerId);
-        $UiTPASOrganizers = $this->searchClient->findOrganizers(...$organizerIds)->getMember()?->getItems();
-        $keycloakClient = $this->getClientByEnv($integration, Environment::Production);
+        $prodOrganizers = $testOrganizers = [];
+        $keycloakClientCache = [];
+        foreach ($integration->udbOrganizers() as $udbOrganizer) {
+            //@todo this can be simplified once client id can no longer be null
+            try {
+                if ($udbOrganizer->clientId === null) {
+                    $prodOrganizers[] = $udbOrganizer;
+                    continue;
+                }
 
-        $organizers = collect($UiTPASOrganizers)->map(function (SapiOrganizer $organizer) use ($keycloakClient) {
-            $id = explode('/', $organizer->getId() ?? '');
-            $id = $id[count($id) - 1];
+                $keycloakClient = $this->keycloakClientRepository->getById($udbOrganizer->clientId);
+                $keycloakClientCache[$udbOrganizer->clientId->toString()] = $keycloakClient;
 
-            return [
-                'id' => $id,
-                'name' => $organizer->getName()?->getValues() ?? [],
-                'status' => 'Live',
-                'permissions' => $keycloakClient ? $this->getLabels($this->UiTPASApi->fetchPermissions(
-                    $this->prodCredentialsContext,
-                    new UdbUuid($id),
-                    $keycloakClient->clientId
-                )) : [],
-            ];
-        });
+                if ($keycloakClient->environment === Environment::Production) {
+                    $prodOrganizers[] = $udbOrganizer;
+                } else {
+                    $testOrganizers[] = $udbOrganizer;
+                }
+            } catch (ModelNotFoundException) {
+                $prodOrganizers[] = $udbOrganizer;
+            }
+        }
 
-        $keycloakClient = $this->getClientByEnv($integration, Environment::Testing);
-        $orgTestId = (string)config(UiTPASConfig::TEST_ORGANISATION->value);
-        $organizers->push([
-            'id' => $orgTestId,
-            'name' => ['nl' => 'UiTPAS Organisatie (Regio Gent + Paspartoe)'],
-            'status' => 'Test',
-            'permissions' => $keycloakClient ? $this->getLabels($this->UiTPASApi->fetchPermissions(
-                $this->testCredentialsContext,
-                new UdbUuid($orgTestId),
-                $keycloakClient->clientId
-            )) : [],
-        ]);
+        $organizers = collect()
+            ->merge($this->mapOrganizers($this->testSearchService, $this->testCredentialsContext, $testOrganizers, 'Test', $integration, $keycloakClientCache))
+            ->merge($this->mapOrganizers($this->prodSearchService, $this->prodCredentialsContext, $prodOrganizers, 'Live', $integration, $keycloakClientCache));
+
+        // Only add demo user if not already added from the database.
+        $testOrgId = (string)config(UiTPASConfig::TEST_ORGANISATION->value);
+        if (!$organizers->contains(fn (array $organizer) => $organizer['id'] === $testOrgId)) {
+            $organizers = $organizers->merge($this->addTestOrganizer($integration));
+        }
 
         return $organizers;
     }
@@ -90,5 +94,75 @@ final readonly class GetIntegrationOrganizersWithTestOrganizer
         }
 
         return $labels;
+    }
+
+    public function addTestOrganizer(Integration $integration): Collection
+    {
+        $output = collect();
+        $keycloakClient = $this->getClientByEnv($integration, Environment::Testing);
+        $orgTestId = (string)config(UiTPASConfig::TEST_ORGANISATION->value);
+        $output->push([
+            'id' => $orgTestId,
+            'name' => ['nl' => 'UiTPAS Organisatie (Regio Gent + Paspartoe)'],
+            'status' => 'Test',
+            'permissions' => $keycloakClient ? $this->getLabels($this->UiTPASApi->fetchPermissions(
+                $this->testCredentialsContext,
+                new UdbUuid($orgTestId),
+                $keycloakClient->clientId
+            )) : [],
+        ]);
+
+        return $output;
+    }
+
+    private function mapOrganizers(
+        SearchService $searchService,
+        ClientCredentialsContext $context,
+        array $udbOrganizers,
+        string $status,
+        Integration $integration,
+        array $keycloakClientCache
+    ): Collection {
+        $organizerIds = array_map(fn (UdbOrganizer $item) => $item->organizerId, $udbOrganizers);
+
+        // Fetch organizers from UDB and index by organizer ID
+        $UiTPASOrganizers = collect($searchService->findOrganizers(...$organizerIds)->getMember()?->getItems() ?? [])->keyBy(function (SapiOrganizer $organizer) {
+            $id = explode('/', $organizer->getId() ?? '');
+            return $id[count($id) - 1];
+        });
+
+        $organizers = collect();
+
+        foreach ($udbOrganizers as $udbOrganizer) {
+            if (!$udbOrganizer instanceof UdbOrganizer) {
+                continue;
+            }
+
+            $organizer = $UiTPASOrganizers->get($udbOrganizer->organizerId->toString());
+
+            if (!$organizer) {
+                continue;
+            }
+
+            if ($udbOrganizer->clientId === null) {
+                //@todo This if can be removed later if clientId is no longer nullable
+                $keycloakClient = $this->getClientByEnv($integration, Environment::Production);
+            } else {
+                $keycloakClient = $keycloakClientCache[$udbOrganizer->clientId->toString()] ?? null;
+            }
+
+            $organizers->push([
+                'id' => $udbOrganizer->organizerId->toString(),
+                'name' => $organizer->getName()?->getValues() ?? [],
+                'status' => $status,
+                'permissions' => $keycloakClient ? $this->getLabels($this->UiTPASApi->fetchPermissions(
+                    $context,
+                    $udbOrganizer->organizerId,
+                    $keycloakClient->clientId
+                )) : [],
+            ]);
+        }
+
+        return $organizers;
     }
 }

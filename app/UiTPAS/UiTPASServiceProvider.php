@@ -16,6 +16,7 @@ use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Notifications\MessageBuilder;
 use App\Notifications\Slack\SlackNotifier;
 use App\Search\Sapi3\SearchService;
+use App\Search\SearchServiceProvider;
 use App\Search\UdbOrganizerNameResolver;
 use App\UiTPAS\Event\UdbOrganizerApproved;
 use App\UiTPAS\Event\UdbOrganizerDeleted;
@@ -65,10 +66,12 @@ final class UiTPASServiceProvider extends ServiceProvider
 
         $this->app->singleton(GetIntegrationOrganizersWithTestOrganizer::class, function () {
             return new GetIntegrationOrganizersWithTestOrganizer(
-                $this->app->get(SearchService::class),
+                $this->app->get(SearchServiceProvider::TEST_SEARCH_SERVICE),
+                $this->app->get(SearchServiceProvider::PROD_SEARCH_SERVICE),
                 $this->app->get(UiTPASApiInterface::class),
                 ClientCredentialsContextFactory::getUitIdTestContext(),
                 ClientCredentialsContextFactory::getUitIdProdContext(),
+                $this->app->get(KeycloakClientRepository::class),
             );
         });
 
