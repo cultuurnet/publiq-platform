@@ -18,6 +18,8 @@ use Psr\Log\LoggerInterface;
 
 final class SearchServiceProvider extends ServiceProvider
 {
+    public const TEST_SEARCH_SERVICE = 'TEST_SAPI3_SEARCH_SERVICE';
+
     public function register(): void
     {
         $this->app->singleton(Sapi3SearchService::class, function () {
@@ -35,6 +37,29 @@ final class SearchServiceProvider extends ServiceProvider
                     new HttpUiTPASLabelProvider(
                         new Client([
                             'base_uri' => config(UiTPASConfig::UDB_BASE_IO_URI->value),
+                        ]),
+                        $this->app->get(LoggerInterface::class),
+                    ),
+                    $this->app->make(CacheRepository::class)
+                )
+            );
+        });
+
+        $this->app->singleton(self::TEST_SEARCH_SERVICE, function () {
+            return new Sapi3SearchService(
+                new SearchClient(
+                    new Client([
+                        'base_uri' => config('search.base_test_uri'),
+                        'headers' => [
+                            'X-Api-Key' => config('search.api_test_key'),
+                        ],
+                    ]),
+                    new Serializer()
+                ),
+                new CachedUiTPASLabelProvider(
+                    new HttpUiTPASLabelProvider(
+                        new Client([
+                            'base_uri' => config(UiTPASConfig::UDB_BASE_TEST_IO_URI->value),
                         ]),
                         $this->app->get(LoggerInterface::class),
                     ),
