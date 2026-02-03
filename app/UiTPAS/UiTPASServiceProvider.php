@@ -67,7 +67,7 @@ final class UiTPASServiceProvider extends ServiceProvider
         $this->app->singleton(GetIntegrationOrganizersWithTestOrganizer::class, function () {
             return new GetIntegrationOrganizersWithTestOrganizer(
                 $this->app->get(SearchServiceProvider::TEST_SEARCH_SERVICE),
-                $this->app->get(SearchService::class),
+                $this->app->get(SearchServiceProvider::PROD_SEARCH_SERVICE),
                 $this->app->get(UiTPASApiInterface::class),
                 ClientCredentialsContextFactory::getUitIdTestContext(),
                 ClientCredentialsContextFactory::getUitIdProdContext(),
