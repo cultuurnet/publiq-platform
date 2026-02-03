@@ -9,7 +9,6 @@ use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Keycloak\Models\KeycloakClientModel;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Psr\Log\LoggerInterface;
 use Throwable;
 
 final class MigrateUdbOrganizerClientIds extends Command
@@ -17,12 +16,6 @@ final class MigrateUdbOrganizerClientIds extends Command
     protected $signature = 'udb-organizer:migrate-client-ids';
 
     protected $description = 'Migrate UdbOrganizers with no client_id to use Production Keycloak client';
-
-    public function __construct(
-        private readonly LoggerInterface $logger,
-    ) {
-        parent::__construct();
-    }
 
     public function handle(): int
     {
@@ -62,14 +55,14 @@ final class MigrateUdbOrganizerClientIds extends Command
                 $successCount++;
             } catch (ModelNotFoundException) {
                 $failureCount++;
-                $this->logger->error(sprintf(
+                $this->error(sprintf(
                     'ERROR: No Production Keycloak client found for integration %s (UdbOrganizer: %s)',
                     $udbOrganizer->integration_id,
                     $udbOrganizer->id
                 ));
             } catch (Throwable $e) {
                 $failureCount++;
-                $this->logger->error(sprintf(
+                $this->error(sprintf(
                     'ERROR: Failed to migrate UdbOrganizer %s: %s',
                     $udbOrganizer->id,
                     $e->getMessage()
