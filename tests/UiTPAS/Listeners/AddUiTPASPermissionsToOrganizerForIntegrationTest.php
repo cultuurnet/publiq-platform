@@ -59,6 +59,7 @@ final class AddUiTPASPermissionsToOrganizerForIntegrationTest extends TestCase
                 Uuid::fromString(self::INTEGRATION_ID),
                 new UdbUuid(self::ORG_ID),
                 UdbOrganizerStatus::Approved,
+                Uuid::uuid4()
             ));
 
         $this->keycloakClientRepository

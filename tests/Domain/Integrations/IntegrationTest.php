@@ -51,7 +51,7 @@ final class IntegrationTest extends TestCase
     {
         $integrationId = Uuid::uuid4();
         $orgId = new UdbUuid(Uuid::uuid4()->toString());
-        $organizer = new UdbOrganizer(Uuid::uuid4(), $integrationId, $orgId, UdbOrganizerStatus::Pending);
+        $organizer = new UdbOrganizer(Uuid::uuid4(), $integrationId, $orgId, UdbOrganizerStatus::Pending, Uuid::uuid4());
         $udbOrganizer = $this->givenThereIsAnIntegration($integrationId)
             ->withUdbOrganizers($organizer);
 

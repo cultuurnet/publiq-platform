@@ -11,13 +11,13 @@ use App\Nova\Actions\UdbOrganizer\ApproveUdbOrganizer;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\ActionFields;
 use Ramsey\Uuid\Uuid;
-use Tests\CreatesIntegration;
+use Tests\CreatesTestData;
 use Tests\GivenUitpasOrganizers;
 use Tests\TestCase;
 
 final class ApproveUdbOrganizerTest extends TestCase
 {
-    use CreatesIntegration;
+    use CreatesTestData;
     use GivenUitpasOrganizers;
 
     public function test_it_handles_activate_uitpas_client(): void
@@ -34,6 +34,7 @@ final class ApproveUdbOrganizerTest extends TestCase
         $udbOrganizer->integration_id = $integrationId->toString();
         $udbOrganizer->organizer_id = $organizerId;
         $udbOrganizer->status = UdbOrganizerStatus::Pending->value;
+        $udbOrganizer->client_id = Uuid::uuid4()->toString();
         $udbOrganizers = new Collection();
         $udbOrganizers->push($udbOrganizer);
 

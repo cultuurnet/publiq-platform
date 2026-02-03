@@ -7,6 +7,7 @@ namespace Tests\Domain\Integrations\Repositories;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Coupons\Models\CouponModel;
+use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Exceptions\InconsistentIntegrationType;
@@ -27,6 +28,9 @@ use App\Domain\Subscriptions\Repositories\EloquentSubscriptionRepository;
 use App\Domain\Subscriptions\Subscription;
 use App\Domain\Subscriptions\SubscriptionCategory;
 use App\Domain\UdbUuid;
+use App\Keycloak\Client;
+use App\Keycloak\Models\KeycloakClientModel;
+use App\Keycloak\Repositories\EloquentKeycloakClientRepository;
 use App\Mails\Template\TemplateName;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -34,13 +38,17 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
+use Tests\CreatesTestData;
 use Tests\GivenSubscription;
+use Tests\Keycloak\RealmFactory;
 use Tests\TestCase;
 
 final class EloquentIntegrationRepositoryTest extends TestCase
 {
     use RefreshDatabase;
+    use CreatesTestData;
     use GivenSubscription;
+    use RealmFactory;
 
     private EloquentIntegrationRepository $integrationRepository;
 
@@ -377,13 +385,20 @@ final class EloquentIntegrationRepositoryTest extends TestCase
 
         $this->integrationRepository->save($searchIntegration);
 
+        // Create keycloak client for production environment
+        $keycloakClient = new Client(Uuid::uuid4(), $integrationId, 'test-client-prod', 'test-secret-prod', Environment::Production);
+
+        (new EloquentKeycloakClientRepository($this->givenAllRealms()))
+            ->create($keycloakClient);
+
         $organizers = new UdbOrganizers(
             [
                 new UdbOrganizer(
                     Uuid::uuid4(),
-                    Uuid::uuid4(),
+                    $integrationId,
                     new UdbUuid(Uuid::uuid4()->toString()),
-                    UdbOrganizerStatus::Pending
+                    UdbOrganizerStatus::Pending,
+                    $keycloakClient->id
                 ),
             ],
         );
@@ -437,6 +452,15 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         );
 
         $this->integrationRepository->save($searchIntegration);
+
+        // Create keycloak client for production environment
+        $keycloakClientModel = new KeycloakClientModel();
+        $keycloakClientModel->id = Uuid::uuid4()->toString();
+        $keycloakClientModel->integration_id = $integrationId->toString();
+        $keycloakClientModel->client_id = 'test-client-prod';
+        $keycloakClientModel->client_secret = 'test-secret-prod';
+        $keycloakClientModel->realm = 'prod';
+        $keycloakClientModel->save();
 
         $organizationId = Uuid::uuid4();
         $this->integrationRepository->requestActivation($integrationId, $organizationId, $couponCode);

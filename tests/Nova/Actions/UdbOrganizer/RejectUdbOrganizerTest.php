@@ -68,6 +68,7 @@ final class RejectUdbOrganizerTest extends TestCase
         $model->integration_id = $integrationUuid->toString();
         $model->organizer_id = $orgId;
         $model->status = UdbOrganizerStatus::Pending->value;
+        $model->client_id  = Uuid::uuid4()->toString();
         return $model;
     }
 }

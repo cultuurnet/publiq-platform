@@ -18,7 +18,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
-use Tests\CreatesIntegration;
+use Tests\CreatesTestData;
 use Tests\Keycloak\KeycloakHttpClientFactory;
 use Tests\Keycloak\RealmFactory;
 use Tests\TestCase;
@@ -26,7 +26,7 @@ use Tests\TestCase;
 final class KeycloakApiClientTest extends TestCase
 {
     use KeycloakHttpClientFactory;
-    use CreatesIntegration;
+    use CreatesTestData;
     use RealmFactory;
 
     private const INTEGRATION_ID = '824c09c0-2f3a-4fa0-bde2-8bf25c9a5b74';

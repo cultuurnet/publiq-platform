@@ -11,12 +11,12 @@ use App\Domain\Integrations\IntegrationUrlType;
 use App\Keycloak\Converters\IntegrationToKeycloakClientConverter;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Ramsey\Uuid\Uuid;
-use Tests\CreatesIntegration;
+use Tests\CreatesTestData;
 use Tests\TestCase;
 
 final class IntegrationToKeycloakClientConverterTest extends TestCase
 {
-    use CreatesIntegration;
+    use CreatesTestData;
 
     #[DataProvider('integrationDataProvider')]
     public function test_integration_converted_to_keycloak_format(IntegrationPartnerStatus $partnerStatus, bool $serviceAccountsEnabled, bool $standardFlowEnabled): void

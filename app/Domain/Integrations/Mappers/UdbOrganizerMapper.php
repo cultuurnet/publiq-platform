@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Mappers;
 
+use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\FormRequests\RequestActivationRequest;
 use App\Domain\Integrations\FormRequests\UpdateIntegrationUdbOrganizersRequest;
+use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizers;
 use App\Domain\Integrations\UdbOrganizerStatus;
@@ -18,32 +20,35 @@ final class UdbOrganizerMapper
     /**
      * @return UdbOrganizer[]
      */
-    public static function map(Request $request, string $id): array
+    public static function map(Request $request, Integration $integration): array
     {
         /**
          * @var UdbOrganizer[] $organizers
          */
         $organizers = [];
 
+        $productionClient = $integration->getKeycloakClientByEnv(Environment::Production);
+
         foreach ($request->input('organizers') ?? [] as $organizer) {
             $organizers[] = new UdbOrganizer(
                 Uuid::uuid4(),
-                Uuid::fromString($id),
+                $integration->id,
                 new UdbUuid($organizer['id']),
-                UdbOrganizerStatus::Pending
+                UdbOrganizerStatus::Pending,
+                $productionClient->id
             );
         }
 
         return $organizers;
     }
 
-    public static function mapUpdateOrganizers(UpdateIntegrationUdbOrganizersRequest $request, string $id): array
+    public static function mapUpdateOrganizers(UpdateIntegrationUdbOrganizersRequest $request, Integration $integration): array
     {
-        return self::map($request, $id);
+        return self::map($request, $integration);
     }
 
-    public static function mapActivationRequest(RequestActivationRequest $request, string $id): UdbOrganizers
+    public static function mapActivationRequest(RequestActivationRequest $request, Integration $integration): UdbOrganizers
     {
-        return new UdbOrganizers(self::map($request, $id));
+        return new UdbOrganizers(self::map($request, $integration));
     }
 }
