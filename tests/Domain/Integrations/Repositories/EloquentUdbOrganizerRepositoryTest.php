@@ -34,7 +34,6 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
         parent::setUp();
 
         $this->keycloakClient = new Client(Uuid::uuid4(), Uuid::uuid4(), Uuid::uuid4()->toString(), 'client-id-1', Environment::Testing);
-        ;
 
         $this->organizer1 = new UdbOrganizer(
             Uuid::uuid4(),
