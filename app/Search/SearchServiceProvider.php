@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Search;
 
 use App\Search\Sapi3\Sapi3SearchService;
-use App\Search\Sapi3\SearchService;
 use App\Search\UiTPAS\CachedUiTPASLabelProvider;
 use App\Search\UiTPAS\HttpUiTPASLabelProvider;
 use App\UiTPAS\UiTPASConfig;
@@ -18,9 +17,12 @@ use Psr\Log\LoggerInterface;
 
 final class SearchServiceProvider extends ServiceProvider
 {
+    public const TEST_SEARCH_SERVICE = 'TEST_SAPI3_SEARCH_SERVICE';
+    public const PROD_SEARCH_SERVICE = 'PROD_SAPI3_SEARCH_SERVICE';
+
     public function register(): void
     {
-        $this->app->singleton(Sapi3SearchService::class, function () {
+        $this->app->singleton(self::PROD_SEARCH_SERVICE, function () {
             return new Sapi3SearchService(
                 new SearchClient(
                     new Client([
@@ -43,6 +45,27 @@ final class SearchServiceProvider extends ServiceProvider
             );
         });
 
-        $this->app->bind(SearchService::class, Sapi3SearchService::class);
+        $this->app->singleton(self::TEST_SEARCH_SERVICE, function () {
+            return new Sapi3SearchService(
+                new SearchClient(
+                    new Client([
+                        'base_uri' => config('search.base_test_uri'),
+                        'headers' => [
+                            'X-Api-Key' => config('search.api_test_key'),
+                        ],
+                    ]),
+                    new Serializer()
+                ),
+                new CachedUiTPASLabelProvider(
+                    new HttpUiTPASLabelProvider(
+                        new Client([
+                            'base_uri' => config(UiTPASConfig::UDB_BASE_TEST_IO_URI->value),
+                        ]),
+                        $this->app->get(LoggerInterface::class),
+                    ),
+                    $this->app->make(CacheRepository::class)
+                )
+            );
+        });
     }
 }

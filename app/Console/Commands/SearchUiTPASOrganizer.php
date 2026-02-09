@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Search\SearchServiceProvider;
 use App\Search\Sapi3\SearchService;
 use CultuurNet\SearchV3\ValueObjects\Organizer;
 use Illuminate\Console\Command;
@@ -14,13 +15,13 @@ final class SearchUiTPASOrganizer extends Command
 
     protected $description = 'Search UiTPAS organizer by name.';
 
-    public function __construct(private readonly SearchService $searchService)
-    {
-        parent::__construct();
-    }
+    private SearchService $searchService;
+
 
     public function handle(): int
     {
+        $this->searchService = $this->laravel->get(SearchServiceProvider::PROD_SEARCH_SERVICE);
+
         $name = $this->argument('name');
 
         $this->info('Searching UiTPAS organizer by name: ' . $name);
