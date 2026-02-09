@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Nova\Actions\UdbOrganizer;
 
+use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
@@ -71,10 +72,12 @@ final class RequestUdbOrganizerTest extends TestCase
                     && $organizer->organizerId->toString() === self::ORGANIZER_ID;
             }));
 
-        $fields = new ActionFields(collect(['organizer_id' => self::ORGANIZER_ID]), collect());
         $integrations = new Collection([$this->integrationModel]);
 
-        $response = $this->handler->handle($fields, $integrations);
+        $response = $this->handler->handle(new ActionFields(
+            collect(['organizer_id' => self::ORGANIZER_ID, 'environment' => Environment::Production->value]),
+            collect()
+        ), $integrations);
 
         $json = $response->jsonSerialize();
 
@@ -116,10 +119,12 @@ final class RequestUdbOrganizerTest extends TestCase
             ->method('create')
             ->willThrowException(new PDOException('Db is on fire! Duplicate found', 23000));
 
-        $fields = new ActionFields(collect(['organizer_id' => self::ORGANIZER_ID]), collect());
         $integrations = new Collection([$this->integrationModel]);
 
-        $response = $this->handler->handle($fields, $integrations);
+        $response = $this->handler->handle(new ActionFields(
+            collect(['organizer_id' => self::ORGANIZER_ID, 'environment' => Environment::Production->value]),
+            collect()
+        ), $integrations);
 
         $json = $response->jsonSerialize();
 
