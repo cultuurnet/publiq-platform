@@ -11,7 +11,7 @@ return new class () extends Migration {
     {
         Schema::table('udb_organizers', static function (Blueprint $table) {
             $table->uuid('client_id')->nullable()->after('organizer_id');
-            $table->foreign('client_id')->references('id')->on('keycloak_clients')->onDelete('cascade');
+            $table->foreign('client_id')->references('id')->on('keycloak_clients')->cascadeOnDelete();
         });
     }
 
