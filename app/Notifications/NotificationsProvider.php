@@ -12,7 +12,6 @@ use App\Notifications\Slack\SlackMessageBuilder;
 use App\Notifications\Slack\SlackNotifier;
 use App\Search\SearchServiceProvider;
 use App\Search\UdbOrganizerNameResolver;
-use App\Search\Sapi3\SearchService;
 use App\UiTPAS\UiTPASConfig;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;

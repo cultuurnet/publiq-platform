@@ -15,7 +15,6 @@ use App\Keycloak\Events\ClientCreated;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Notifications\MessageBuilder;
 use App\Notifications\Slack\SlackNotifier;
-use App\Search\Sapi3\SearchService;
 use App\Search\SearchServiceProvider;
 use App\Search\UdbOrganizerNameResolver;
 use App\UiTPAS\Event\UdbOrganizerApproved;

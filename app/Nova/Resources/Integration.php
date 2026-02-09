@@ -24,7 +24,6 @@ use App\Nova\Actions\UnblockIntegration;
 use App\Nova\Actions\UiTPAS\SynchronizeUiTPASPermissions;
 use App\Nova\Filters\AdminInformationFilter;
 use App\Nova\Resource;
-use App\Search\Sapi3\SearchService;
 use App\Search\SearchServiceProvider;
 use App\UiTPAS\SynchronizeUiTPASPermissionsHandler;
 use Illuminate\Contracts\Database\Eloquent\Builder;
