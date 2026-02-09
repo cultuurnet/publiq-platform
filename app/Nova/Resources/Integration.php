@@ -25,6 +25,7 @@ use App\Nova\Actions\UiTPAS\SynchronizeUiTPASPermissions;
 use App\Nova\Filters\AdminInformationFilter;
 use App\Nova\Resource;
 use App\Search\Sapi3\SearchService;
+use App\Search\SearchServiceProvider;
 use App\UiTPAS\SynchronizeUiTPASPermissionsHandler;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -305,7 +306,7 @@ final class Integration extends Resource
 
             (new RequestUdbOrganizer(
                 App::make(UdbOrganizerRepository::class),
-                App::make(SearchService::class),
+                App::make(SearchServiceProvider::PROD_SEARCH_SERVICE),
                 App::make(IntegrationRepository::class),
             ))
                 ->exceptOnIndex()

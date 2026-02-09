@@ -93,7 +93,7 @@ final class UiTPASServiceProvider extends ServiceProvider
                 $this->app->get(Mailer::class),
                 $this->app->get(IntegrationRepository::class),
                 $this->app->get(UdbOrganizerNameResolver::class),
-                $this->app->get(SearchService::class),
+                $this->app->get(SearchServiceProvider::PROD_SEARCH_SERVICE),
                 $this->app->get(UrlGenerator::class),
                 new Address(config('mail.from.address'), config('mail.from.name')),
             );
