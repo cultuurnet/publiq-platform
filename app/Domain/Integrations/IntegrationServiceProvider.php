@@ -8,6 +8,7 @@ use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Listeners\ActivateIntegration;
 use App\Domain\Integrations\Listeners\UpgradeKeyVisibility;
 use App\Domain\Integrations\Repositories\EloquentIntegrationMailRepository;
+use App\Domain\Integrations\Controllers\UdbOrganizerController;
 use App\Domain\Integrations\Repositories\EloquentIntegrationRepository;
 use App\Domain\Integrations\Repositories\EloquentIntegrationUrlRepository;
 use App\Domain\Integrations\Repositories\EloquentUdbOrganizerRepository;
@@ -16,6 +17,7 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\IntegrationUrlRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\KeyVisibilityUpgrades\Events\KeyVisibilityUpgradeCreated;
+use App\Search\SearchServiceProvider;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
@@ -28,6 +30,12 @@ final class IntegrationServiceProvider extends ServiceProvider
         $this->app->bind(IntegrationUrlRepository::class, EloquentIntegrationUrlRepository::class);
         $this->app->bind(UdbOrganizerRepository::class, EloquentUdbOrganizerRepository::class);
         $this->app->bind(IntegrationMailRepository::class, EloquentIntegrationMailRepository::class);
+
+        $this->app->singleton(UdbOrganizerController::class, function () {
+            return new UdbOrganizerController(
+                $this->app->get(SearchServiceProvider::PROD_SEARCH_SERVICE),
+            );
+        });
 
         Event::listen(IntegrationCreated::class, [ActivateIntegration::class, 'handle']);
         Event::listen(KeyVisibilityUpgradeCreated::class, [UpgradeKeyVisibility::class, 'handle']);
