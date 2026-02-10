@@ -8,6 +8,7 @@ use App\Domain\Auth\Repositories\UserRepository;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Contacts\Repositories\ContactRepository;
+use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
@@ -16,6 +17,7 @@ use App\Domain\Integrations\Events\IntegrationUnblocked;
 use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\ProjectAanvraag\ProjectAanvraagClient;
 use App\ProjectAanvraag\Requests\SyncWidgetRequest;
 use App\UiTiDv1\Events\ConsumerCreated;
@@ -37,6 +39,7 @@ final class SyncWidget implements ShouldQueue
         private readonly IntegrationRepository $integrationRepository,
         private readonly ContactRepository $contactRepository,
         private readonly UiTiDv1ConsumerRepository $uiTiDv1ConsumerRepository,
+        private readonly KeycloakClientRepository $keycloakClientRepository,
         private readonly int $groupId,
         private readonly UserRepository $userRepository,
         private readonly LoggerInterface $logger
@@ -162,6 +165,39 @@ final class SyncWidget implements ShouldQueue
             return;
         }
 
+        $keycloakClients = $this->keycloakClientRepository->getByIntegrationId($integration->id);
+        if (count($keycloakClients) === 0) {
+            $this->logger->info(
+                'Integration {integrationId} has no Keycloak clients, skipping widget creation',
+                ['integrationId' => $integration->id->toString()]
+            );
+            return;
+        }
+        $testClientId = null;
+        $liveClientId = null;
+        foreach ($keycloakClients as $keycloakClient) {
+            if ($keycloakClient->environment === Environment::Testing) {
+                $testClientId = $keycloakClient->clientId;
+            }
+            if ($keycloakClient->environment === Environment::Production) {
+                $liveClientId = $keycloakClient->clientId;
+            }
+        }
+        if ($testClientId === null) {
+            $this->logger->info(
+                'Integration {integrationId} has no Keycloak testing client, skipping widget creation',
+                ['integrationId' => $integration->id->toString()]
+            );
+            return;
+        }
+        if ($liveClientId === null) {
+            $this->logger->info(
+                'Integration {integrationId} has no Keycloak production client, skipping widget creation',
+                ['integrationId' => $integration->id->toString()]
+            );
+            return;
+        }
+
         $this->projectAanvraagClient->syncWidget(
             new SyncWidgetRequest(
                 $integration->id,
@@ -171,7 +207,9 @@ final class SyncWidget implements ShouldQueue
                 $integration->status,
                 $this->groupId,
                 $testKey,
-                $liveKey
+                $liveKey,
+                $testClientId,
+                $liveClientId
             )
         );
     }
