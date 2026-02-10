@@ -99,6 +99,7 @@ final class ImportUiTPASOrganizers extends Command
                         [
                             'id' => Uuid::uuid4()->toString(),
                             'status' => UdbOrganizerStatus::Approved->value,
+                            'client_id' => $client->id,
                         ]
                     );
                 });
