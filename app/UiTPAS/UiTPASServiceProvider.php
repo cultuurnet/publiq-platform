@@ -15,7 +15,6 @@ use App\Keycloak\Events\ClientCreated;
 use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\Notifications\MessageBuilder;
 use App\Notifications\Slack\SlackNotifier;
-use App\Search\Sapi3\SearchService;
 use App\Search\SearchServiceProvider;
 use App\Search\UdbOrganizerNameResolver;
 use App\UiTPAS\Event\UdbOrganizerApproved;
@@ -93,7 +92,7 @@ final class UiTPASServiceProvider extends ServiceProvider
                 $this->app->get(Mailer::class),
                 $this->app->get(IntegrationRepository::class),
                 $this->app->get(UdbOrganizerNameResolver::class),
-                $this->app->get(SearchService::class),
+                $this->app->get(SearchServiceProvider::PROD_SEARCH_SERVICE),
                 $this->app->get(UrlGenerator::class),
                 new Address(config('mail.from.address'), config('mail.from.name')),
             );
