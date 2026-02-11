@@ -20,7 +20,6 @@ use Illuminate\Support\Collection;
 final readonly class GetIntegrationOrganizersWithTestOrganizer
 {
     public function __construct(
-        private SearchService $testSearchService,
         private SearchService $prodSearchService,
         private UiTPASApiInterface $UiTPASApi,
         private ClientCredentialsContext $testCredentialsContext,
