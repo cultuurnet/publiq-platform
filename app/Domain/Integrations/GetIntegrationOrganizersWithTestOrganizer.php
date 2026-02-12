@@ -20,7 +20,6 @@ use Illuminate\Support\Collection;
 final readonly class GetIntegrationOrganizersWithTestOrganizer
 {
     public function __construct(
-        private SearchService $testSearchService,
         private SearchService $prodSearchService,
         private UiTPASApiInterface $UiTPASApi,
         private ClientCredentialsContext $testCredentialsContext,
@@ -31,7 +30,7 @@ final readonly class GetIntegrationOrganizersWithTestOrganizer
 
     public function getAndEnrichOrganisations(Integration $integration): Collection
     {
-        $prodOrganizers = $testOrganizers = [];
+        $prodOrganizers = [];
         $keycloakClientCache = [];
         foreach ($integration->udbOrganizers() as $udbOrganizer) {
             //@todo this can be simplified once client id can no longer be null
@@ -44,27 +43,15 @@ final readonly class GetIntegrationOrganizersWithTestOrganizer
                 $keycloakClient = $this->keycloakClientRepository->getById($udbOrganizer->clientId);
                 $keycloakClientCache[$udbOrganizer->clientId->toString()] = $keycloakClient;
 
-                if ($keycloakClient->environment === Environment::Production) {
-                    $prodOrganizers[] = $udbOrganizer;
-                } else {
-                    $testOrganizers[] = $udbOrganizer;
-                }
+                $prodOrganizers[] = $udbOrganizer;
             } catch (ModelNotFoundException) {
                 $prodOrganizers[] = $udbOrganizer;
             }
         }
 
-        $organizers = collect()
-            ->merge($this->mapOrganizers($this->testSearchService, $this->testCredentialsContext, $testOrganizers, 'Test', $integration, $keycloakClientCache))
+        return collect()
+            ->merge($this->addTestOrganizer($integration))
             ->merge($this->mapOrganizers($this->prodSearchService, $this->prodCredentialsContext, $prodOrganizers, 'Live', $integration, $keycloakClientCache));
-
-        // Only add demo user if not already added from the database.
-        $testOrgId = (string)config(UiTPASConfig::TEST_ORGANISATION->value);
-        if (!$organizers->contains(fn (array $organizer) => $organizer['id'] === $testOrgId)) {
-            $organizers = $organizers->merge($this->addTestOrganizer($integration));
-        }
-
-        return $organizers;
     }
 
     private function getClientByEnv(Integration $integration, Environment $environment): ?Client

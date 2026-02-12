@@ -17,7 +17,6 @@ use App\Nova\Actions\UdbOrganizer\RevokeUdbOrganizer;
 use App\Nova\Filters\UdbOrganizerStatusFilter;
 use App\Nova\Resource;
 use App\Search\Sapi3\SearchService;
-use App\Search\SearchServiceProvider;
 use App\Search\UdbOrganizerNameResolver;
 use App\UiTPAS\ClientCredentialsContextFactory;
 use App\UiTPAS\Dto\UiTPASPermission;
@@ -102,7 +101,7 @@ final class UdbOrganizer extends Resource
                 $udbOrganizerNameResolver = App::get(UdbOrganizerNameResolver::class);
 
                 /** @var SearchService $searchService */
-                $searchService = App::get(SearchServiceProvider::PROD_SEARCH_SERVICE);
+                $searchService = App::get(SearchService::class);
 
                 $name = $udbOrganizerNameResolver->getName($searchService->findOrganizers($model->toDomain()->organizerId));
 
