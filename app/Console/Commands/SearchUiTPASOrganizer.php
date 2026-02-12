@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Search\SearchServiceProvider;
 use App\Search\Sapi3\SearchService;
 use CultuurNet\SearchV3\ValueObjects\Organizer;
 use Illuminate\Console\Command;
@@ -20,7 +19,7 @@ final class SearchUiTPASOrganizer extends Command
 
     public function handle(): int
     {
-        $this->searchService = $this->laravel->get(SearchServiceProvider::PROD_SEARCH_SERVICE);
+        $this->searchService = $this->laravel->get(SearchService::class);
 
         $name = $this->argument('name');
 
