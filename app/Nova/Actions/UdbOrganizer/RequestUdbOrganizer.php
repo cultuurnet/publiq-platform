@@ -93,7 +93,8 @@ final class RequestUdbOrganizer extends Action
                     Environment::Production->value => 'Production',
                 ])
                 ->default(Environment::Production->value)
-                ->rules('required'),
+                ->rules('required')
+                ->readonly(),
         ];
     }
 
