@@ -8,6 +8,7 @@ use App\Domain\Auth\Repositories\UserRepository;
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\ContactRepository;
+use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
@@ -19,6 +20,7 @@ use App\Domain\Integrations\IntegrationStatus;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Json;
+use App\Keycloak\Client;
 use App\ProjectAanvraag\Listeners\SyncWidget;
 use App\ProjectAanvraag\ProjectAanvraagClient;
 use App\ProjectAanvraag\ProjectAanvraagUrl;
@@ -155,6 +157,8 @@ final class SyncWidgetTest extends TestCase
             IntegrationPartnerStatus::THIRD_PARTY,
         );
 
+        $integration = $this->givenThereAreClients($integration);
+
         $this->integrationRepository->expects($this->once())
             ->method('getById')
             ->with($integrationId)
@@ -215,6 +219,27 @@ final class SyncWidgetTest extends TestCase
             ->willReturn([$testConsumer, $productionConsumer]);
     }
 
+    private function givenThereAreClients(Integration $integration): Integration
+    {
+        $testClient = new Client(
+            Uuid::uuid4(),
+            $integration->id,
+            'client-id-testing',
+            'client-secret-testing',
+            Environment::Testing
+        );
+
+        $productionClient = new Client(
+            Uuid::uuid4(),
+            $integration->id,
+            'client-id-production',
+            'client-secret-production',
+            Environment::Production
+        );
+
+        return $integration->withKeycloakClients($testClient, $productionClient);
+    }
+
     private function assertRequest(Integration $integration, string $state): void
     {
         $expectedRequest = new Request(
@@ -228,6 +253,8 @@ final class SyncWidgetTest extends TestCase
                 'groupId' => 123,
                 'testApiKeySapi3' => 'api-key-testing',
                 'liveApiKeySapi3' => 'api-key-production',
+                'testClientId' => 'client-id-testing',
+                'liveClientId' => 'client-id-production',
                 'state' => $state,
             ])
         );

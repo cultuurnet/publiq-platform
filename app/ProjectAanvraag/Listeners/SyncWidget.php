@@ -8,12 +8,14 @@ use App\Domain\Auth\Repositories\UserRepository;
 use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Events\ContactCreated;
 use App\Domain\Contacts\Repositories\ContactRepository;
+use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationBlocked;
 use App\Domain\Integrations\Events\IntegrationCreated;
 use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Events\IntegrationUnblocked;
 use App\Domain\Integrations\Events\IntegrationUpdated;
+use App\Domain\Integrations\Exceptions\KeycloakClientNotFound;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\ProjectAanvraag\ProjectAanvraagClient;
@@ -162,6 +164,25 @@ final class SyncWidget implements ShouldQueue
             return;
         }
 
+        try {
+            $testClient = $integration->getKeycloakClientByEnv(Environment::Testing);
+        } catch (KeycloakClientNotFound) {
+            $this->logger->info(
+                'Integration {integrationId} has no Keycloak testing client, skipping widget creation',
+                ['integrationId' => $integration->id->toString()]
+            );
+            return;
+        }
+        try {
+            $liveClient = $integration->getKeycloakClientByEnv(Environment::Production);
+        } catch (KeycloakClientNotFound) {
+            $this->logger->info(
+                'Integration {integrationId} has no Keycloak production client, skipping widget creation',
+                ['integrationId' => $integration->id->toString()]
+            );
+            return;
+        }
+
         $this->projectAanvraagClient->syncWidget(
             new SyncWidgetRequest(
                 $integration->id,
@@ -171,7 +192,9 @@ final class SyncWidget implements ShouldQueue
                 $integration->status,
                 $this->groupId,
                 $testKey,
-                $liveKey
+                $liveKey,
+                $testClient->clientId,
+                $liveClient->clientId
             )
         );
     }

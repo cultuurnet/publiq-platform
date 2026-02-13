@@ -38,6 +38,8 @@ final readonly class ProjectAanvraagClient
                 'groupId' => $syncWidgetRequest->groupId,
                 'testApiKeySapi3' => $syncWidgetRequest->testApiKeySapi3,
                 'liveApiKeySapi3' => $syncWidgetRequest->liveApiKeySapi3,
+                'testClientId' => $syncWidgetRequest->testClientId,
+                'liveClientId' => $syncWidgetRequest->liveClientId,
                 'state' => $this->integrationStatusToWidgetStatus($syncWidgetRequest->status),
             ])
         );
