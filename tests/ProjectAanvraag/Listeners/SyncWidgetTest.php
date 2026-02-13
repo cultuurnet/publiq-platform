@@ -21,7 +21,6 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Json;
 use App\Keycloak\Client;
-use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\ProjectAanvraag\Listeners\SyncWidget;
 use App\ProjectAanvraag\ProjectAanvraagClient;
 use App\ProjectAanvraag\ProjectAanvraagUrl;
@@ -50,8 +49,6 @@ final class SyncWidgetTest extends TestCase
 
     private UiTiDv1ConsumerRepository&MockObject $uiTiDv1ConsumerRepository;
 
-    private KeycloakClientRepository&MockObject $keycloakClientRepository;
-
     private UserRepository&MockObject $userRepository;
 
     private SyncWidget $syncWidget;
@@ -64,7 +61,6 @@ final class SyncWidgetTest extends TestCase
         $this->integrationRepository = $this->createMock(IntegrationRepository::class);
         $this->contactRepository = $this->createMock(ContactRepository::class);
         $this->uiTiDv1ConsumerRepository = $this->createMock(UiTiDv1ConsumerRepository::class);
-        $this->keycloakClientRepository = $this->createMock(KeycloakClientRepository::class);
         $this->userRepository = $this->createMock(UserRepository::class);
         $logger = $this->createMock(LoggerInterface::class);
 
@@ -76,7 +72,6 @@ final class SyncWidgetTest extends TestCase
             $this->integrationRepository,
             $this->contactRepository,
             $this->uiTiDv1ConsumerRepository,
-            $this->keycloakClientRepository,
             123,
             $this->userRepository,
             $logger
@@ -91,8 +86,6 @@ final class SyncWidgetTest extends TestCase
 
         $this->givenThereAreConsumers($integration->id);
 
-        $this->givenThereAreClients($integration->id);
-
         $this->assertRequest($integration, 'application_sent');
 
         $this->syncWidget->handleIntegrationCreated(new IntegrationCreated($integration->id));
@@ -105,8 +98,6 @@ final class SyncWidgetTest extends TestCase
         $this->givenThereIsAContact($integration->id);
 
         $this->givenThereAreConsumers($integration->id);
-
-        $this->givenThereAreClients($integration->id);
 
         $this->assertRequest($integration, 'active');
 
@@ -121,8 +112,6 @@ final class SyncWidgetTest extends TestCase
 
         $this->givenThereAreConsumers($integration->id);
 
-        $this->givenThereAreClients($integration->id);
-
         $this->assertRequest($integration, 'blocked');
 
         $this->syncWidget->handleIntegrationBlocked(new IntegrationBlocked($integration->id));
@@ -136,8 +125,6 @@ final class SyncWidgetTest extends TestCase
 
         $this->givenThereAreConsumers($integration->id);
 
-        $this->givenThereAreClients($integration->id);
-
         $this->assertRequest($integration, 'blocked');
 
         $this->syncWidget->handleIntegrationDeleted(new IntegrationDeleted($integration->id));
@@ -150,8 +137,6 @@ final class SyncWidgetTest extends TestCase
         $this->givenThereIsAContact($integration->id);
 
         $this->givenThereAreConsumers($integration->id);
-
-        $this->givenThereAreClients($integration->id);
 
         $this->assertRequest($integration, 'active');
 
@@ -171,6 +156,8 @@ final class SyncWidgetTest extends TestCase
             $integrationStatus,
             IntegrationPartnerStatus::THIRD_PARTY,
         );
+
+        $integration = $this->givenThereAreClients($integration);
 
         $this->integrationRepository->expects($this->once())
             ->method('getById')
@@ -232,11 +219,11 @@ final class SyncWidgetTest extends TestCase
             ->willReturn([$testConsumer, $productionConsumer]);
     }
 
-    private function givenThereAreClients(UuidInterface $integrationId): void
+    private function givenThereAreClients(Integration $integration): Integration
     {
         $testClient = new Client(
             Uuid::uuid4(),
-            $integrationId,
+            $integration->id,
             'client-id-testing',
             'client-secret-testing',
             Environment::Testing
@@ -244,16 +231,13 @@ final class SyncWidgetTest extends TestCase
 
         $productionClient = new Client(
             Uuid::uuid4(),
-            $integrationId,
+            $integration->id,
             'client-id-production',
             'client-secret-production',
             Environment::Production
         );
 
-        $this->keycloakClientRepository->expects($this->once())
-            ->method('getByIntegrationId')
-            ->with($integrationId)
-            ->willReturn([$testClient, $productionClient]);
+        return $integration->withKeycloakClients($testClient, $productionClient);
     }
 
     private function assertRequest(Integration $integration, string $state): void

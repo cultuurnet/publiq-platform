@@ -14,7 +14,6 @@ use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Events\IntegrationUnblocked;
 use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\ProjectAanvraag\Listeners\SyncWidget;
 use App\UiTiDv1\Events\ConsumerCreated;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
@@ -51,7 +50,6 @@ final class ProjectAanvraagServiceProvider extends ServiceProvider
                 $this->app->get(IntegrationRepository::class),
                 $this->app->get(ContactRepository::class),
                 $this->app->get(UiTiDv1ConsumerRepository::class),
-                $this->app->get(KeycloakClientRepository::class),
                 (int) end($groups),
                 $this->app->get(UserRepository::class),
                 $this->app->get(LoggerInterface::class)
