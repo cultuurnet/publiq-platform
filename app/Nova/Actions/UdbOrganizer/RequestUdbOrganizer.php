@@ -53,7 +53,7 @@ final class RequestUdbOrganizer extends Action
         }
 
         try {
-            $environment = Environment::from((string)$fields->get('environment'));
+            $environment = Environment::Production;
             $keycloakClient = $this->integrationRepository
                 ->getById(Uuid::fromString($integration->id))
                 ->getKeycloakClientByEnv($environment);
