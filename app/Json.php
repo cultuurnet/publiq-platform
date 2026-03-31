@@ -14,6 +14,11 @@ final class Json
         return json_encode($value, JSON_THROW_ON_ERROR, self::$depth);
     }
 
+    public static function decode(string $data): mixed
+    {
+        return json_decode($data, false, self::$depth, JSON_THROW_ON_ERROR);
+    }
+
     public static function decodeAssociatively(string $json): mixed
     {
         return json_decode($json, true, self::$depth, JSON_THROW_ON_ERROR);
