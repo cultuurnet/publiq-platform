@@ -26,23 +26,23 @@ final class UpdatePermissionsHelperTest extends TestCase
         $result = $this->helper->merge([], $this->organizerId);
 
         $this->assertCount(1, $result);
-        $this->assertEquals($this->organizerId->toString(), $result[0]['organizer']['id']);
-        $this->assertGreaterThan(0, count($result[0]['permissionDetails']));
+        $this->assertEquals($this->organizerId->toString(), $result[0]->organizer->id);
+        $this->assertGreaterThan(0, count($result[0]->permissionDetails));
     }
 
     public function test_merge_adds_only_missing_permissions_when_organizer_exists(): void
     {
-        $result = $this->helper->merge([
-            [
-                'organizer' => ['id' => $this->organizerId->toString()],
-                'permissionDetails' => [
-                    ['id' => 'CHECKINS_WRITE'],
-                    ['id' => 'EVENTS_READ'],
-                ],
+        $existing = (object) [
+            'organizer' => (object) ['id' => $this->organizerId->toString()],
+            'permissionDetails' => [
+                (object) ['id' => 'CHECKINS_WRITE'],
+                (object) ['id' => 'EVENTS_READ'],
             ],
-        ], $this->organizerId);
+        ];
 
-        $resultPermissionIds = array_column($result[0]['permissionDetails'], 'id');
+        $result = $this->helper->merge([$existing], $this->organizerId);
+
+        $resultPermissionIds = array_column($result[0]->permissionDetails, 'id');
         $this->assertContains('CHECKINS_WRITE', $resultPermissionIds);
         $this->assertContains('EVENTS_READ', $resultPermissionIds);
         $this->assertContains('REWARDS_PASSHOLDERS_READ', $resultPermissionIds);
@@ -51,15 +51,15 @@ final class UpdatePermissionsHelperTest extends TestCase
 
     public function test_merge_does_not_duplicate_permissions(): void
     {
-        $allPermissionDetails = array_map(fn ($id) => ['id' => $id], UpdatePermissionsHelper::PERMISSION_LIST);
-        $result = $this->helper->merge([
-            [
-                'organizer' => ['id' => $this->organizerId->toString()],
-                'permissionDetails' => $allPermissionDetails,
-            ],
-        ], $this->organizerId);
+        $allPermissionDetails = array_map(fn ($id) => (object) ['id' => $id], UpdatePermissionsHelper::PERMISSION_LIST);
+        $existing = (object) [
+            'organizer' => (object) ['id' => $this->organizerId->toString()],
+            'permissionDetails' => $allPermissionDetails,
+        ];
 
-        $resultPermissionIds = array_column($result[0]['permissionDetails'], 'id');
+        $result = $this->helper->merge([$existing], $this->organizerId);
+
+        $resultPermissionIds = array_column($result[0]->permissionDetails, 'id');
         $this->assertCount(count(UpdatePermissionsHelper::PERMISSION_LIST), $resultPermissionIds);
         $this->assertEqualsCanonicalizing(
             UpdatePermissionsHelper::PERMISSION_LIST,

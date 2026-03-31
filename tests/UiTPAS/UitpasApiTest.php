@@ -282,6 +282,49 @@ final class UitpasApiTest extends TestCase
         $this->assertNull($permission);
     }
 
+    public function test_it_preserves_empty_objects_in_organizer_when_updating_permissions(): void
+    {
+        $currentPermissions = [
+            [
+                'organizer' => [
+                    'id' => 'f668a72f-a35a-4758-ac62-948f1302eae5',
+                    'name' => 'some organizer',
+                    'cardSystems' => [
+                        ['id' => 1, 'name' => 'sys', 'links' => new \stdClass()],
+                    ],
+                ],
+                'permissionDetails' => [],
+            ],
+        ];
+
+        $mock = new MockHandler([
+            new Response(200, [], json_encode(['access_token' => self::MY_TOKEN], JSON_THROW_ON_ERROR)),
+            new Response(200, [], Json::encode($currentPermissions)),
+            new Response(204),
+        ]);
+
+        $container = [];
+        $handlerStack = HandlerStack::create($mock);
+        $handlerStack->push(Middleware::history($container));
+
+        $client = new Client(['handler' => $handlerStack]);
+        $uitpasApi = new UiTPASApi(
+            $client,
+            new ClientCredentials($client, $this->logger),
+            $this->logger,
+            'https://test-uitpas.publiq.be/',
+            'https://uitpas.publiq.be/',
+        );
+
+        $uitpasApi->updatePermissions($this->context, new UdbUuid(self::ORG_ID), self::CLIENT_ID);
+
+        /** @var Request $putRequest */
+        $putRequest = $container[2]['request'];
+        $putBody = $putRequest->getBody()->getContents();
+
+        $this->assertStringContainsString('"links":{}', $putBody);
+    }
+
     public function test_delete_all_permissions_successfully(): void
     {
         $originalPermissions = [

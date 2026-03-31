@@ -51,7 +51,7 @@ final readonly class UiTPASApi implements UiTPASApiInterface
             $clientId,
             function (array $permissions) use ($organizerId): array {
                 return array_values(array_filter($permissions, function ($permission) use ($organizerId) {
-                    return $permission['organizer']['id'] !== $organizerId->toString();
+                    return $permission->organizer->id !== $organizerId->toString();
                 }));
             },
             'Removed organisation %s permissions for organizer %s'
@@ -65,13 +65,15 @@ final readonly class UiTPASApi implements UiTPASApiInterface
         callable $updateCallback,
         string $successLogMessage
     ): bool {
+        $this->logger->debug($this->getEndpoint($context));
+
         try {
             $response = $this->sendWithBearer(
                 new Request('GET', 'permissions/' . $clientId),
                 $context
             );
 
-            $permissions = Json::decodeAssociatively($response->getBody()->getContents());
+            $permissions = Json::decode($response->getBody()->getContents());
 
             $updatedPermissions = $updateCallback($permissions);
 
@@ -86,6 +88,7 @@ final readonly class UiTPASApi implements UiTPASApiInterface
                 $this->logger->error(
                     sprintf('Failed to give %s permission to uitpas organisation %s, status code %s', $clientId, $organizerId, $response->getStatusCode())
                 );
+                $this->logger->debug($response->getBody()->getContents());
                 return false;
             }
 
@@ -119,9 +122,10 @@ final readonly class UiTPASApi implements UiTPASApiInterface
     private function getEndpoint(ClientCredentialsContext $context): string
     {
         if ($context->environment === Environment::Testing) {
+            $this->logger->debug('TEST');
             return $this->testApiEndpoint;
         }
-
+        $this->logger->debug('PROD');
         return $this->prodApiEndpoint;
     }
 

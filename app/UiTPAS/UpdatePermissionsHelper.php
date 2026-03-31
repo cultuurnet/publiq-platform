@@ -33,25 +33,21 @@ final class UpdatePermissionsHelper
     {
         $existingPermissionIndex = null;
         foreach ($permissions as $index => $permission) {
-            if ($permission['organizer']['id'] === $organizerId->toString()) {
+            if ($permission->organizer->id === $organizerId->toString()) {
                 $existingPermissionIndex = $index;
                 break;
             }
         }
 
         if ($existingPermissionIndex !== null) {
-            // Merge permission details
-            $newPermissionDetails = $this->withBody($organizerId)['permissionDetails'];
-            $existingPermissionDetails = $permissions[$existingPermissionIndex]['permissionDetails'] ?? [];
+            $newPermissionDetails = $this->withBody($organizerId)->permissionDetails;
+            $existingPermissionDetails = $permissions[$existingPermissionIndex]->permissionDetails ?? [];
 
-            // Extract existing permission IDs to avoid duplicates
             $existingIds = array_column($existingPermissionDetails, 'id');
-            $newIds = array_column($newPermissionDetails, 'id');
 
-            // Add only new permissions that don't already exist
             foreach ($newPermissionDetails as $newPermission) {
-                if (!in_array($newPermission['id'], $existingIds, true)) {
-                    $permissions[$existingPermissionIndex]['permissionDetails'][] = $newPermission;
+                if (!in_array($newPermission->id, $existingIds, true)) {
+                    $permissions[$existingPermissionIndex]->permissionDetails[] = $newPermission;
                 }
             }
         } else {
@@ -60,16 +56,15 @@ final class UpdatePermissionsHelper
         return $permissions;
     }
 
-    private function withBody(UdbUuid $organizerId): array
+    private function withBody(UdbUuid $organizerId): \stdClass
     {
-        return [
-            'organizer' => [
-                'id' => $organizerId->toString(),
-            ],
-            'permissionDetails' => array_map(
-                static fn ($id) => ['id' => $id],
-                self::PERMISSION_LIST
-            ),
-        ];
+        $body = new \stdClass();
+        $body->organizer = new \stdClass();
+        $body->organizer->id = $organizerId->toString();
+        $body->permissionDetails = array_map(
+            static fn (string $id): \stdClass => (object) ['id' => $id],
+            self::PERMISSION_LIST
+        );
+        return $body;
     }
 }
