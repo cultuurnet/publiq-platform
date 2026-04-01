@@ -206,8 +206,8 @@ final class UdbOrganizer extends Resource
         $actions = [];
         $actions[] = (new ApproveUdbOrganizer(App::make(UdbOrganizerRepository::class)))
             ->exceptOnIndex()
-            ->confirmText('Are you sure you want to active this organizer in UiTPAS?')
-            ->confirmButtonText('Activate')
+            ->confirmText('Are you sure you want to approve this organizer in UiTPAS?')
+            ->confirmButtonText('Approve')
             ->cancelButtonText('Cancel')
             ->canRun(fn (Request $request, UdbOrganizerModel $model) => $model->toDomain()->status === UdbOrganizerStatus::Pending)
             ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->isStatusPending());
