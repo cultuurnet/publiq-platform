@@ -78,7 +78,7 @@ final readonly class UiTPASApi implements UiTPASApiInterface
             $request = new Request('PUT', 'permissions/' . $clientId, [
                 'Accept' => 'application/problem+json',
                 'Content-Type' => 'application/json',
-            ], Json::encode($updatedPermissions));
+            ], Json::encodePreservingEmptyObjects($updatedPermissions));
 
             $response = $this->sendWithBearer($request, $context);
 
