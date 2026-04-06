@@ -12,7 +12,7 @@
         "cultuurnet/search-v3": "dev-main",
         "guzzlehttp/guzzle": "^7.2",
         "guzzlehttp/oauth-subscriber": "^0.8",
-        "inertiajs/inertia-laravel": "^2.0.0",
+        "inertiajs/inertia-laravel": "^3.0.1",
         "laravel/framework": "^v12.1.1",
         "laravel/horizon": "^5.10",
         "laravel/nova": "^5.0",
