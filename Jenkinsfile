@@ -19,7 +19,7 @@ pipeline {
         }
 
         stage('Setup and build') {
-            agent { label 'ubuntu && 20.04 && php8.2 && nodejs18' }
+            agent { label 'ubuntu && 20.04 && php8.2 && nodejs22' }
             environment {
                 GIT_SHORT_COMMIT = util.shortCommitRef()
                 ARTIFACT_VERSION = "${env.PIPELINE_VERSION}" + '+sha.' + "${env.GIT_SHORT_COMMIT}"
