@@ -27,7 +27,7 @@ pipeline {
                         steps {
                 sh label: 'Install rubygems', script: 'bundle install --deployment'
                 withCredentials([usernamePassword(credentialsId: 'nova.laravel.com', usernameVariable: 'USER', passwordVariable: 'PASSWORD')]) {
-                sh label: 'Build binaries', script: "bundle exec rake build NOVA_USER=${env.USER} NOVA_LICENSE_KEY=${env.PASSWORD}"
+                sh label: 'Build binaries', script: 'bundle exec rake build NOVA_USER=${USER} NOVA_LICENSE_KEY=${PASSWORD}'
                 }
                 sh label: 'Build artifact', script: "bundle exec rake build_artifact ARTIFACT_VERSION=${env.ARTIFACT_VERSION}"
                 archiveArtifacts artifacts: "pkg/*${env.ARTIFACT_VERSION}*.deb", onlyIfSuccessful: true
