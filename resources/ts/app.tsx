@@ -2,16 +2,14 @@ import "./bootstrap";
 import type { ReactNode } from "react";
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { createInertiaApp } from "@inertiajs/react";
+import { createInertiaApp, type ResolvedComponent } from "@inertiajs/react";
 import { initializeI18n } from "./i18n/initializeI18n";
 import * as Sentry from "@sentry/browser";
 import type { PageProps } from "./types/PageProps";
 import Layout from "./layouts/Layout";
 
 type Page = {
-  default: {
-    layout?: unknown;
-  };
+  default: ResolvedComponent;
 };
 
 createInertiaApp<PageProps>({
