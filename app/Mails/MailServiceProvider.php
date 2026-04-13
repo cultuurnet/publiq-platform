@@ -31,7 +31,7 @@ final class MailServiceProvider extends ServiceProvider
             return $this->app->get(BladeMailTemplateResolver::class);
         });
 
-        $this->app->singleton(Mailer::class, function () {
+        $this->app->bind(Mailer::class, function () {
             return new SmtpMailer(
                 new SymfonyMailer(
                     Transport::fromDsn(config('mail.mailers.smtp.dsn'))
@@ -41,7 +41,7 @@ final class MailServiceProvider extends ServiceProvider
             );
         });
 
-        $this->app->singleton(MailManager::class, function () {
+        $this->app->bind(MailManager::class, function () {
             return new MailManager(
                 $this->app->get(Mailer::class),
                 $this->app->get(IntegrationRepository::class),
