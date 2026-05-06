@@ -240,8 +240,7 @@ export const IntegrationCard = ({
           {type === IntegrationType.EntryApi && (
             <Link
               href={t("integrations.documentation.action_url", {
-                product:
-                  "/uitdatabank/entry-api/getting-started",
+                product: "/uitdatabank/entry-api/getting-started",
               })}
               className="text-publiq-blue"
             >
