@@ -20,11 +20,11 @@
 <p>Om snel van start te kunnen gaan raden we je zeker aan om volgende documentatie door te nemen:</p>
 
 <ul>
-    <li><a href="https://publiq.stoplight.io/docs/authentication" target="_blank">Authenticatie</a></li>
+    <li><a href="https://docs.publiq.be/docs/authentication/introduction" target="_blank">Authenticatie</a></li>
     @if ($type === 'search-api')
-        <li><a href="https://publiq.stoplight.io/docs/uitdatabank/search-api/introduction">Search API</a></li>
+        <li><a href="https://docs.publiq.be/docs/uitdatabank/search-api/introduction">Search API</a></li>
     @elseif ($type === 'entry-api')
-        <li><a href="https://publiq.stoplight.io/docs/uitdatabank/entry-api/introduction">Entry API</a></li>
+        <li><a href="https://docs.publiq.be/docs/uitdatabank/entry-api/introduction">Entry API</a></li>
     @endif
 </ul>
 @endif
