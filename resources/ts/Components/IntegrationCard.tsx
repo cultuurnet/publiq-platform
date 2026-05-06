@@ -241,7 +241,7 @@ export const IntegrationCard = ({
             <Link
               href={t("integrations.documentation.action_url", {
                 product:
-                  "/uitdatabank/entry-api%2Frequirements-before-going-live",
+                  "/uitdatabank/entry-api/getting-started",
               })}
               className="text-publiq-blue"
             >
