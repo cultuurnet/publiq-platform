@@ -3,10 +3,6 @@ name: Enable automerge on dependabot PRs
 on:
   pull_request_target:
 
-permissions:
-  pull-requests: write
-  contents: write
-
 jobs:
   autoapprove:
     name: Auto-Approve a PR by dependabot
@@ -16,7 +12,7 @@ jobs:
       - name: Auto approve
         uses: cognitedata/auto-approve-dependabot-action@v3.0.1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.DEPENDABOT_AUTOMERGE_TOKEN }}
 
   automerge:
     name: Enable automerge on dependabot PRs
@@ -27,4 +23,4 @@ jobs:
       - name: Enable automerge on dependabot PRs
         uses: daneden/enable-automerge-action@v1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.DEPENDABOT_AUTOMERGE_TOKEN }}
