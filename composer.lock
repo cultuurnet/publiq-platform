@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5bc00b61c016aeb21dd560bd21c13235",
+    "content-hash": "8757e3010effb624ac8c32daef72eaf6",
     "packages": [
         {
             "name": "Publiq/insightly-link",
@@ -1487,26 +1487,27 @@
         },
         {
             "name": "guzzlehttp/oauth-subscriber",
-            "version": "0.8.2",
+            "version": "0.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/oauth-subscriber.git",
-                "reference": "f8bb30a752063523d17e21caa2dd6483962f7995"
+                "reference": "025ba1eada20f9c9a7dd8a5a38e478852b722186"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/oauth-subscriber/zipball/f8bb30a752063523d17e21caa2dd6483962f7995",
-                "reference": "f8bb30a752063523d17e21caa2dd6483962f7995",
+                "url": "https://api.github.com/repos/guzzle/oauth-subscriber/zipball/025ba1eada20f9c9a7dd8a5a38e478852b722186",
+                "reference": "025ba1eada20f9c9a7dd8a5a38e478852b722186",
                 "shasum": ""
             },
             "require": {
-                "guzzlehttp/guzzle": "^7.9",
-                "guzzlehttp/psr7": "^2.7",
+                "guzzlehttp/guzzle": "^7.10",
+                "guzzlehttp/psr7": "^2.8",
                 "php": "^7.2.5 || ^8.0"
             },
             "require-dev": {
                 "bamarni/composer-bin-plugin": "^1.8.2",
-                "phpunit/phpunit": "^8.5.36 || ^9.6.15"
+                "guzzlehttp/test-server": "^0.3.2",
+                "phpunit/phpunit": "^8.5.52 || ^9.6.34"
             },
             "suggest": {
                 "ext-openssl": "Required to sign using RSA-SHA1"
@@ -1556,7 +1557,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/oauth-subscriber/issues",
-                "source": "https://github.com/guzzle/oauth-subscriber/tree/0.8.2"
+                "source": "https://github.com/guzzle/oauth-subscriber/tree/0.9.0"
             },
             "funding": [
                 {
@@ -1572,7 +1573,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-05-16T22:55:01+00:00"
+            "time": "2026-05-19T19:47:59+00:00"
         },
         {
             "name": "guzzlehttp/promises",
