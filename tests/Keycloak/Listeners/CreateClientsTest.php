@@ -162,12 +162,11 @@ final class CreateClientsTest extends TestCase
                     $this->assertEquals($this->integration->id, $integrationArgument->id);
 
                     $env = $realm->environment->value;
-                    $this->assertArrayHasKey($env, $clients);
+                    if (!array_key_exists($env, $clients)) {
+                        self::fail("Missing client for environment '$env'");
+                    }
 
-                    $this->assertEquals($this->integration->id, $integrationArgument->id);
-                    $this->assertArrayHasKey($realm->environment->value, $clients);
-
-                    return $clients[$realm->environment->value];
+                    return $clients[$env];
                 }
             );
 
