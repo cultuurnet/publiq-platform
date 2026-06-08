@@ -19,7 +19,7 @@
         "@fortawesome/react-fontawesome": "^3.3.1",
         "@inertiajs/react": "^3.0.3",
         "@sentry/browser": "^10.53.1",
-        "date-fns": "^4.1.0",
+        "date-fns": "^4.4.0",
         "dotenv": "^17.4.2",
         "i18next": "^26.0.8",
         "i18next-browser-languagedetector": "^8.2.1",
