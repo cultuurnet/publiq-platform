@@ -1488,21 +1488,21 @@
         },
         {
             "name": "guzzlehttp/oauth-subscriber",
-            "version": "0.9.2",
+            "version": "0.9.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/oauth-subscriber.git",
-                "reference": "38771e8f0a2f39e3c20b0df520f907fd0a40bacc"
+                "reference": "edc31108fda1940bc0470a5cb99026823e4f633a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/oauth-subscriber/zipball/38771e8f0a2f39e3c20b0df520f907fd0a40bacc",
-                "reference": "38771e8f0a2f39e3c20b0df520f907fd0a40bacc",
+                "url": "https://api.github.com/repos/guzzle/oauth-subscriber/zipball/edc31108fda1940bc0470a5cb99026823e4f633a",
+                "reference": "edc31108fda1940bc0470a5cb99026823e4f633a",
                 "shasum": ""
             },
             "require": {
-                "guzzlehttp/guzzle": "^7.11",
-                "guzzlehttp/psr7": "^2.11",
+                "guzzlehttp/guzzle": "^7.12.3",
+                "guzzlehttp/psr7": "^2.12.3",
                 "php": "^7.2.5 || ^8.0"
             },
             "require-dev": {
@@ -1559,7 +1559,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/oauth-subscriber/issues",
-                "source": "https://github.com/guzzle/oauth-subscriber/tree/0.9.2"
+                "source": "https://github.com/guzzle/oauth-subscriber/tree/0.9.3"
             },
             "funding": [
                 {
@@ -1575,7 +1575,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-06-12T21:50:40+00:00"
+            "time": "2026-06-23T15:35:45+00:00"
         },
         {
             "name": "guzzlehttp/promises",
