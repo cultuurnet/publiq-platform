@@ -27,6 +27,10 @@ DIR="${APPCONFIG_ROOTDIR}/templates/docker/platform"
 if [ -d "$DIR" ]; then
   cp -R "$DIR"/* .
   mv env .env
+  if [ -f .env.local ]; then
+    printf '\n' >> .env
+    cat .env.local >> .env
+  fi
 else
   echo "Error: missing appconfig. The appconfig repository must be cloned at ${APPCONFIG_ROOTDIR}."
   exit 1
