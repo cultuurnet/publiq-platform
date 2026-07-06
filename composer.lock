@@ -1360,16 +1360,16 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "7.12.3",
+            "version": "7.13.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "9aa17bcdd777ee31df9fc83c337ca4ca2340def3"
+                "reference": "bcd989ad36c92d42a3715379af91f2defee5b8dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/9aa17bcdd777ee31df9fc83c337ca4ca2340def3",
-                "reference": "9aa17bcdd777ee31df9fc83c337ca4ca2340def3",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/bcd989ad36c92d42a3715379af91f2defee5b8dd",
+                "reference": "bcd989ad36c92d42a3715379af91f2defee5b8dd",
                 "shasum": ""
             },
             "require": {
@@ -1387,8 +1387,8 @@
             "require-dev": {
                 "bamarni/composer-bin-plugin": "^1.8.2",
                 "ext-curl": "*",
-                "guzzle/client-integration-tests": "3.0.2",
-                "guzzlehttp/test-server": "^0.5.1",
+                "guzzle/client-integration-tests": "3.0.3",
+                "guzzlehttp/test-server": "^0.6",
                 "php-http/message-factory": "^1.1",
                 "phpunit/phpunit": "^8.5.52 || ^9.6.34",
                 "psr/log": "^1.1 || ^2.0 || ^3.0"
@@ -1468,7 +1468,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
-                "source": "https://github.com/guzzle/guzzle/tree/7.12.3"
+                "source": "https://github.com/guzzle/guzzle/tree/7.13.2"
             },
             "funding": [
                 {
@@ -1484,7 +1484,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-06-23T15:29:02+00:00"
+            "time": "2026-07-05T19:00:11+00:00"
         },
         {
             "name": "guzzlehttp/oauth-subscriber",
@@ -1868,16 +1868,16 @@
         },
         {
             "name": "inertiajs/inertia-laravel",
-            "version": "v3.1.0",
+            "version": "v3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/inertiajs/inertia-laravel.git",
-                "reference": "f588ce4a5beb25d166f4e372bac0c7f46a4f52ac"
+                "reference": "022d54f1c125f57eef2b5f90bdecf69ee1df3e72"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/inertiajs/inertia-laravel/zipball/f588ce4a5beb25d166f4e372bac0c7f46a4f52ac",
-                "reference": "f588ce4a5beb25d166f4e372bac0c7f46a4f52ac",
+                "url": "https://api.github.com/repos/inertiajs/inertia-laravel/zipball/022d54f1c125f57eef2b5f90bdecf69ee1df3e72",
+                "reference": "022d54f1c125f57eef2b5f90bdecf69ee1df3e72",
                 "shasum": ""
             },
             "require": {
@@ -1895,8 +1895,7 @@
                 "laravel/pint": "^1.16",
                 "mockery/mockery": "^1.3.3",
                 "orchestra/testbench": "^9.2|^10.0|^11.0",
-                "phpunit/phpunit": "^11.5|^12.0",
-                "roave/security-advisories": "dev-master"
+                "phpunit/phpunit": "^11.5|^12.0"
             },
             "suggest": {
                 "ext-pcntl": "Recommended when running the Inertia SSR server via the `inertia:start-ssr` artisan command."
@@ -1935,9 +1934,9 @@
             ],
             "support": {
                 "issues": "https://github.com/inertiajs/inertia-laravel/issues",
-                "source": "https://github.com/inertiajs/inertia-laravel/tree/v3.1.0"
+                "source": "https://github.com/inertiajs/inertia-laravel/tree/v3.1.1"
             },
-            "time": "2026-04-30T15:30:29+00:00"
+            "time": "2026-07-02T12:45:54+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
@@ -2527,17 +2526,17 @@
         },
         {
             "name": "laravel/nova",
-            "version": "5.9.1",
+            "version": "5.9.3",
             "source": {
                 "type": "git",
                 "url": "git@github.com:laravel/nova.git",
-                "reference": "fd5d7bda354feff41b0aa274d62f826c593a4d73"
+                "reference": "0ff2c943a60942aa5c24d948fd6e6848bf64114a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://nova.laravel.com/dist/laravel/nova/laravel-nova-fd5d7bda354feff41b0aa274d62f826c593a4d73-zip-7f395f.zip",
-                "reference": "fd5d7bda354feff41b0aa274d62f826c593a4d73",
-                "shasum": "1825f53206d1fcd9fb40c308366b419664e0426e"
+                "url": "https://nova.laravel.com/dist/laravel/nova/laravel-nova-0ff2c943a60942aa5c24d948fd6e6848bf64114a-zip-fdf894.zip",
+                "reference": "0ff2c943a60942aa5c24d948fd6e6848bf64114a",
+                "shasum": "e9cbd2f6053cd2e6fb19c0382e5f8aeca3c0de11"
             },
             "require": {
                 "brick/money": "^0.8|^0.9|^0.10|^0.11|^0.12|^0.13",
@@ -2704,10 +2703,10 @@
                 "laravel"
             ],
             "support": {
-                "source": "https://github.com/laravel/nova/tree/v5.9.1",
+                "source": "https://github.com/laravel/nova/tree/v5.9.3",
                 "issues": "https://github.com/laravel/nova/issues"
             },
-            "time": "2026-06-24T15:21:04+00:00"
+            "time": "2026-07-02T02:52:36+00:00"
         },
         {
             "name": "laravel/passkeys",
