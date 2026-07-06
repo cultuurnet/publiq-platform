@@ -86,8 +86,7 @@ export const IntegrationCard = ({
 
   usePolling(!hasAnyCredentials, { only: ["credentials"] });
   const CardIcon = integrationTypesInfo.find((i) => i.type === type)?.Icon as
-    | typeof IconSearchApi
-    | undefined;
+    typeof IconSearchApi | undefined;
 
   const credentials = (
     <>
