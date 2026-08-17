@@ -7,7 +7,7 @@
     "require": {
         "php": "^8.2.0",
         "ext-simplexml": "*",
-        "auth0/auth0-php": "^8.6",
+        "auth0/auth0-php": "^9.0",
         "barryvdh/laravel-debugbar": "^4.0",
         "cultuurnet/search-v3": "dev-main",
         "guzzlehttp/guzzle": "^7.2",
