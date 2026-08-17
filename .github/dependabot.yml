@@ -12,3 +12,10 @@ updates:
       interval: weekly
       day: monday
       time: "02:15"
+    groups:
+      react:
+        patterns:
+          - react
+          - react-dom
+          - "@types/react"
+          - "@types/react-dom"
