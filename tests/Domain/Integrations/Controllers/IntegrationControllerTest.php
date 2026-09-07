@@ -665,12 +665,12 @@ final class IntegrationControllerTest extends TestCase
 
         $integration = $this->givenThereIsAnIntegration();
         $this->givenTheActingUserIsAContactOnIntegration($integration);
-        $functionalContact = $this->givenThereIsAFunctionalContactOnIntegration($integration);
+        $contributorContact = $this->givenThereIsAContributorContactOnIntegration($integration);
 
-        $this->delete("/integrations/{$integration->id}/contacts/{$functionalContact->id}");
+        $this->delete("/integrations/{$integration->id}/contacts/{$contributorContact->id}");
 
         $this->assertSoftDeleted('contacts', [
-            'id' => $functionalContact->id->toString(),
+            'id' => $contributorContact->id->toString(),
         ]);
     }
 
@@ -687,6 +687,40 @@ final class IntegrationControllerTest extends TestCase
 
         $this->assertNotSoftDeleted('contacts', [
             'id' => $functionalContact->id->toString(),
+        ]);
+    }
+
+    public function test_it_can_not_destroy_a_functional_contact_even_though_it_is_a_contact_on_the_integration(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $functionalContact = $this->givenThereIsAFunctionalContactOnIntegration($integration);
+
+        $response = $this->delete("/integrations/{$integration->id}/contacts/{$functionalContact->id}");
+
+        $response->assertForbidden();
+
+        $this->assertNotSoftDeleted('contacts', [
+            'id' => $functionalContact->id->toString(),
+        ]);
+    }
+
+    public function test_it_can_not_destroy_a_technical_contact_even_though_it_is_a_contact_on_the_integration(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $technicalContact = $this->givenThereIsATechnicalContactOnIntegration($integration);
+
+        $response = $this->delete("/integrations/{$integration->id}/contacts/{$technicalContact->id}");
+
+        $response->assertForbidden();
+
+        $this->assertNotSoftDeleted('contacts', [
+            'id' => $technicalContact->id->toString(),
         ]);
     }
 
@@ -1119,6 +1153,52 @@ final class IntegrationControllerTest extends TestCase
             'jane.doe@test.com',
             ContactType::Functional,
             'Jane',
+            'Doe',
+        );
+
+        ContactModel::query()->insert([
+            'id' => $contact->id,
+            'integration_id' => $contact->integrationId,
+            'email' => $contact->email,
+            'type' => $contact->type,
+            'first_name' => $contact->firstName,
+            'last_name' => $contact->lastName,
+        ]);
+
+        return $contact;
+    }
+
+    private function givenThereIsATechnicalContactOnIntegration(Integration $integration): Contact
+    {
+        $contact = new Contact(
+            Uuid::uuid4(),
+            $integration->id,
+            'john.doe@test.com',
+            ContactType::Technical,
+            'John',
+            'Doe',
+        );
+
+        ContactModel::query()->insert([
+            'id' => $contact->id,
+            'integration_id' => $contact->integrationId,
+            'email' => $contact->email,
+            'type' => $contact->type,
+            'first_name' => $contact->firstName,
+            'last_name' => $contact->lastName,
+        ]);
+
+        return $contact;
+    }
+
+    private function givenThereIsAContributorContactOnIntegration(Integration $integration): Contact
+    {
+        $contact = new Contact(
+            Uuid::uuid4(),
+            $integration->id,
+            'jack.doe@test.com',
+            ContactType::Contributor,
+            'Jack',
             'Doe',
         );
 
