@@ -6,6 +6,7 @@ namespace App\Domain\Integrations\Controllers;
 
 use App\Domain\Auth\CurrentUser;
 use App\Domain\Contacts\ContactType;
+use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Contacts\Repositories\ContactKeyVisibilityRepository;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Coupons\Repositories\CouponRepository;
@@ -273,6 +274,10 @@ final class IntegrationController extends Controller
     public function deleteContact(Request $request, string $id, string $contactId): RedirectResponse
     {
         try {
+            $contactModel = ContactModel::query()->findOrFail($contactId);
+
+            $this->authorize('delete', $contactModel);
+
             $this->contactRepository->delete(Uuid::fromString($contactId));
         } catch (ModelNotFoundException) {
             // We can redirect back to integrations, even if not successful
