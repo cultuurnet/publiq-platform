@@ -33,6 +33,7 @@ use App\Domain\Integrations\Mappers\UdbOrganizerMapper;
 use App\Domain\Integrations\Mappers\UpdateContactInfoMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationUrlsMapper;
+use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\IntegrationUrlRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
@@ -318,6 +319,13 @@ final class IntegrationController extends Controller
 
     public function deleteOrganizer(string $integrationId, string $organizerId): RedirectResponse
     {
+        $organizerModel = UdbOrganizerModel::query()
+            ->where('integration_id', $integrationId)
+            ->where('organizer_id', $organizerId)
+            ->firstOrFail();
+
+        $this->authorize('delete', $organizerModel);
+
         $this->organizerRepository->delete(Uuid::fromString($integrationId), new UdbUuid($organizerId));
 
         return Redirect::back();
