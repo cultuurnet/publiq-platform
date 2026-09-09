@@ -7,6 +7,8 @@ namespace App\Domain\Auth;
 use App\Domain\Auth\Controllers\AccessController;
 use App\Domain\Auth\Models\UserModel;
 use App\Domain\Auth\Repositories\UserRepository;
+use App\Domain\Contacts\Models\ContactModel;
+use App\Domain\Contacts\Policies\ContactPolicy;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Keycloak\Repositories\KeycloakUserRepository;
 use Auth0\SDK\Auth0;
@@ -46,6 +48,15 @@ final class AuthServiceProvider extends ServiceProvider
             $contacts = $contactRepository->getByIntegrationIdAndEmail(Uuid::fromString($integrationId), $user->email);
 
             return $contacts->count() > 0;
+        });
+
+        Gate::define('delete-contact', function (UserModel $user, string $integrationId, string $contactId): bool {
+            $contactModel = ContactModel::query()
+                ->where('id', $contactId)
+                ->where('integration_id', $integrationId)
+                ->firstOrFail();
+
+            return $this->app->make(ContactPolicy::class)->delete($user, $contactModel);
         });
     }
 }
