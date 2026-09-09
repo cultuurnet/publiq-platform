@@ -38,6 +38,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Validation\UnauthorizedException;
+use Inertia\Testing\AssertableInertia as Assert;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Tests\TestCase;
@@ -687,6 +688,25 @@ final class IntegrationControllerTest extends TestCase
 
         $this->assertNotSoftDeleted('contacts', [
             'id' => $functionalContact->id->toString(),
+        ]);
+    }
+
+    public function test_it_can_not_destroy_a_contact_belonging_to_a_different_integration(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+
+        $otherIntegration = $this->givenThereIsAnIntegration();
+        $contributorOnOtherIntegration = $this->givenThereIsAContributorContactOnIntegration($otherIntegration);
+
+        $response = $this->delete("/integrations/{$integration->id}/contacts/{$contributorOnOtherIntegration->id}");
+
+        $response->assertInertia(fn (Assert $page) => $page->component('Error', false)->where('statusCode', 404));
+
+        $this->assertDatabaseHas('contacts', [
+            'id' => $contributorOnOtherIntegration->id->toString(),
         ]);
     }
 
