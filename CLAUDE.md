@@ -2,27 +2,7 @@
 
 ## Authorization layering
 
-- Web routes are authorized via `Gate::define()` abilities consumed through
-  `can:ability,routeParam1,routeParam2` route middleware (see
-  `App\Domain\Auth\AuthServiceProvider`, e.g. `access-integration`,
-  `delete-contact`). Route params passed to `can:` middleware are resolved as
-  raw strings via `$request->route($name)` — they are **not** Eloquent models,
-  since these routes don't use route-model binding.
-- Policy classes (registered in `App\Providers\AuthServiceProvider`'s
-  `$policies` map) are consumed **only by Nova**, which auto-applies them to
-  its own resource CRUD actions. Before this fix, there was not a single
-  `$this->authorize()` / `Gate::authorize()` call anywhere in a web
-  controller — don't assume a registered policy is actually enforced on the
-  public API just because the class exists and looks correct.
-- Don't call a Policy class directly from a Gate/web controller. A Policy is
-  written for a single-resource context (e.g. `ContactPolicy` only ever knows
-  about one `ContactModel`, never which integration it belongs to). A web
-  Gate often needs more context (e.g. scoping a contact lookup to the
-  integration id in the URL) than the Policy's signature allows. Reusing the
-  Policy anyway couples "Nova admin authorization" to "public API
-  authorization" — someone editing the Policy for Nova reasons can silently
-  change public API behavior.
-  - Instead, extract the actual business rule into the domain layer (e.g. an
-    enum method like `ContactType::isDeletable()`), matching the existing
-    style of `Integration::contactHasAccess()`. Both the Nova Policy and the
-    web Gate then depend on that same neutral rule, not on each other.
+- Web routes are authorized via `Gate::define()` abilities consumed through `can:ability,routeParam1,routeParam2` route middleware (see `App\Domain\Auth\AuthServiceProvider`, e.g. `access-integration`, `delete-contact`). Route params passed to `can:` middleware are resolved as raw strings via `$request->route($name)` — they are **not** Eloquent models, since these routes don't use route-model binding.
+- Policy classes (registered in `App\Providers\AuthServiceProvider`'s `$policies` map) are consumed **only by Nova**, which auto-applies them to its own resource CRUD actions. Before this fix, there was not a single `$this->authorize()` / `Gate::authorize()` call anywhere in a web controller — don't assume a registered policy is actually enforced on the public API just because the class exists and looks correct.
+- Don't call a Policy class directly from a Gate/web controller. A Policy is written for a single-resource context (e.g. `ContactPolicy` only ever knows about one `ContactModel`, never which integration it belongs to). A web Gate often needs more context (e.g. scoping a contact lookup to the integration id in the URL) than the Policy's signature allows. Reusing the Policy anyway couples "Nova admin authorization" to "public API authorization" — someone editing the Policy for Nova reasons can silently change public API behavior.
+  - Instead, extract the actual business rule into the domain layer (e.g. an enum method like `ContactType::isDeletable()`), matching the existing style of `Integration::contactHasAccess()`. Both the Nova Policy and the web Gate then depend on that same neutral rule, not on each other.
