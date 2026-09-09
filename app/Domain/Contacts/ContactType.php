@@ -9,4 +9,9 @@ enum ContactType: string
     case Functional = 'functional';
     case Technical = 'technical';
     case Contributor = 'contributor';
+
+    public function isDeletable(): bool
+    {
+        return $this === self::Contributor;
+    }
 }
