@@ -39,6 +39,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Validation\UnauthorizedException;
 use Inertia\Testing\AssertableInertia as Assert;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Tests\TestCase;
@@ -660,21 +661,6 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
-    public function test_it_can_destroy_a_contact(): void
-    {
-        $this->actingAs(UserModel::createSystemUser());
-
-        $integration = $this->givenThereIsAnIntegration();
-        $this->givenTheActingUserIsAContactOnIntegration($integration);
-        $contributorContact = $this->givenThereIsAContributorContactOnIntegration($integration);
-
-        $this->delete("/integrations/{$integration->id}/contacts/{$contributorContact->id}");
-
-        $this->assertSoftDeleted('contacts', [
-            'id' => $contributorContact->id->toString(),
-        ]);
-    }
-
     public function test_it_can_not_destroy_a_contact_if_unauthorized(): void
     {
         $this->actingAs(UserModel::createSystemUser());
@@ -710,38 +696,43 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
-    public function test_it_can_not_destroy_a_functional_contact_even_though_it_is_a_contact_on_the_integration(): void
+    #[DataProvider('contactTypeProvider')]
+    public function test_it_can_only_destroy_deletable_contacts(ContactType $contactType): void
     {
         $this->actingAs(UserModel::createSystemUser());
 
         $integration = $this->givenThereIsAnIntegration();
         $this->givenTheActingUserIsAContactOnIntegration($integration);
-        $functionalContact = $this->givenThereIsAFunctionalContactOnIntegration($integration);
+        $contact = match ($contactType) {
+            ContactType::Functional => $this->givenThereIsAFunctionalContactOnIntegration($integration),
+            ContactType::Technical => $this->givenThereIsATechnicalContactOnIntegration($integration),
+            ContactType::Contributor => $this->givenThereIsAContributorContactOnIntegration($integration),
+        };
 
-        $response = $this->delete("/integrations/{$integration->id}/contacts/{$functionalContact->id}");
+        $response = $this->delete("/integrations/{$integration->id}/contacts/{$contact->id}");
+
+        if ($contactType->isDeletable()) {
+            $this->assertSoftDeleted('contacts', [
+                'id' => $contact->id->toString(),
+            ]);
+
+            return;
+        }
 
         $response->assertForbidden();
 
         $this->assertNotSoftDeleted('contacts', [
-            'id' => $functionalContact->id->toString(),
+            'id' => $contact->id->toString(),
         ]);
     }
 
-    public function test_it_can_not_destroy_a_technical_contact_even_though_it_is_a_contact_on_the_integration(): void
+    public static function contactTypeProvider(): array
     {
-        $this->actingAs(UserModel::createSystemUser());
-
-        $integration = $this->givenThereIsAnIntegration();
-        $this->givenTheActingUserIsAContactOnIntegration($integration);
-        $technicalContact = $this->givenThereIsATechnicalContactOnIntegration($integration);
-
-        $response = $this->delete("/integrations/{$integration->id}/contacts/{$technicalContact->id}");
-
-        $response->assertForbidden();
-
-        $this->assertNotSoftDeleted('contacts', [
-            'id' => $technicalContact->id->toString(),
-        ]);
+        return [
+            'a functional contact is not deletable' => [ContactType::Functional],
+            'a technical contact is not deletable' => [ContactType::Technical],
+            'a contributor contact is deletable' => [ContactType::Contributor],
+        ];
     }
 
     public function test_it_can_add_a_contact_if_authorized(): void
