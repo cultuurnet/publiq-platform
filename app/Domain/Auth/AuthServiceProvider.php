@@ -8,6 +8,7 @@ use App\Domain\Auth\Controllers\AccessController;
 use App\Domain\Auth\Models\UserModel;
 use App\Domain\Auth\Repositories\UserRepository;
 use App\Domain\Contacts\Repositories\ContactRepository;
+use App\Domain\Integrations\Models\IntegrationUrlModel;
 use App\Keycloak\Repositories\KeycloakUserRepository;
 use Auth0\SDK\Auth0;
 use Auth0\SDK\Contract\Auth0Interface;
@@ -46,6 +47,15 @@ final class AuthServiceProvider extends ServiceProvider
             $contacts = $contactRepository->getByIntegrationIdAndEmail(Uuid::fromString($integrationId), $user->email);
 
             return $contacts->count() > 0;
+        });
+
+        Gate::define('delete-integration-url', function (UserModel $user, string $integrationId, string $urlId): bool {
+            $integrationUrlModel = IntegrationUrlModel::query()
+                ->where('id', $urlId)
+                ->where('integration_id', $integrationId)
+                ->firstOrFail();
+
+            return $integrationUrlModel->toDomain()->type->isDeletable();
         });
     }
 }

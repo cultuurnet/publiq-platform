@@ -33,7 +33,6 @@ use App\Domain\Integrations\Mappers\UdbOrganizerMapper;
 use App\Domain\Integrations\Mappers\UpdateContactInfoMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationMapper;
 use App\Domain\Integrations\Mappers\UpdateIntegrationUrlsMapper;
-use App\Domain\Integrations\Models\IntegrationUrlModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\IntegrationUrlRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
@@ -211,10 +210,6 @@ final class IntegrationController extends Controller
     public function destroyUrl(Request $request, string $id, string $urlId): RedirectResponse
     {
         try {
-            $integrationUrlModel = IntegrationUrlModel::query()->findOrFail($urlId);
-
-            $this->authorize('delete', $integrationUrlModel);
-
             $this->integrationUrlRepository->deleteById(Uuid::fromString($urlId));
         } catch (ModelNotFoundException) {
             // We can redirect back to integrations, even if not successful
@@ -236,12 +231,8 @@ final class IntegrationController extends Controller
             )
             ->map(fn (IntegrationUrl $url) => $url->id);
 
-        $urlModelsToDelete = IntegrationUrlModel::query()
-            ->whereIn('id', $toDeleteUrlIds->map(fn ($urlId) => $urlId->toString()))
-            ->get();
-
-        foreach ($urlModelsToDelete as $integrationUrlModel) {
-            $this->authorize('delete', $integrationUrlModel);
+        foreach ($toDeleteUrlIds as $urlId) {
+            $this->authorize('delete-integration-url', [$id, $urlId->toString()]);
         }
 
         $this->integrationUrlRepository->deleteByIds($toDeleteUrlIds);
