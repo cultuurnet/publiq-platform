@@ -38,6 +38,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Validation\UnauthorizedException;
+use Inertia\Testing\AssertableInertia as Assert;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Tests\TestCase;
@@ -444,6 +445,25 @@ final class IntegrationControllerTest extends TestCase
 
         $this->assertDatabaseHas('integrations_urls', [
             'id' => $integrationUrl->id,
+        ]);
+    }
+
+    public function test_it_can_not_destroy_an_integration_url_belonging_to_a_different_integration(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+
+        $otherIntegration = $this->givenThereIsAnIntegration();
+        $urlOnOtherIntegration = $this->givenThereIsALoginUrlForIntegration($otherIntegration);
+
+        $response = $this->delete("/integrations/{$integration->id}/urls/{$urlOnOtherIntegration->id}");
+
+        $response->assertInertia(fn (Assert $page) => $page->component('Error', false)->where('statusCode', 404));
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'id' => $urlOnOtherIntegration->id,
         ]);
     }
 
