@@ -600,7 +600,7 @@ final class IntegrationControllerTest extends TestCase
 
         $integration = $this->givenThereIsAnIntegration();
         $this->givenTheActingUserIsAContactOnIntegration($integration);
-        $functionalContact = $this->givenThereIsAFunctionalContactOnIntegration($integration);
+        $functionalContact = $this->givenThereIsAContactOnIntegration($integration);
 
         $response = $this->patch(
             "/integrations/{$integration->id}/contacts",
@@ -633,7 +633,7 @@ final class IntegrationControllerTest extends TestCase
         $this->actingAs(UserModel::createSystemUser());
 
         $integration = $this->givenThereIsAnIntegration();
-        $functionalContact = $this->givenThereIsAFunctionalContactOnIntegration($integration);
+        $functionalContact = $this->givenThereIsAContactOnIntegration($integration);
 
         $response = $this->patch(
             "/integrations/{$integration->id}/contacts",
@@ -666,7 +666,7 @@ final class IntegrationControllerTest extends TestCase
         $this->actingAs(UserModel::createSystemUser());
 
         $integration = $this->givenThereIsAnIntegration();
-        $functionalContact = $this->givenThereIsAFunctionalContactOnIntegration($integration);
+        $functionalContact = $this->givenThereIsAContactOnIntegration($integration);
 
         $response = $this->delete("/integrations/{$integration->id}/contacts/{$functionalContact->id}");
 
@@ -685,7 +685,7 @@ final class IntegrationControllerTest extends TestCase
         $this->givenTheActingUserIsAContactOnIntegration($integration);
 
         $otherIntegration = $this->givenThereIsAnIntegration();
-        $contributorOnOtherIntegration = $this->givenThereIsAContributorContactOnIntegration($otherIntegration);
+        $contributorOnOtherIntegration = $this->givenThereIsAContactOnIntegration($otherIntegration, ContactType::Contributor);
 
         $response = $this->delete("/integrations/{$integration->id}/contacts/{$contributorOnOtherIntegration->id}");
 
@@ -703,11 +703,7 @@ final class IntegrationControllerTest extends TestCase
 
         $integration = $this->givenThereIsAnIntegration();
         $this->givenTheActingUserIsAContactOnIntegration($integration);
-        $contact = match ($contactType) {
-            ContactType::Functional => $this->givenThereIsAFunctionalContactOnIntegration($integration),
-            ContactType::Technical => $this->givenThereIsATechnicalContactOnIntegration($integration),
-            ContactType::Contributor => $this->givenThereIsAContributorContactOnIntegration($integration),
-        };
+        $contact = $this->givenThereIsAContactOnIntegration($integration, $contactType);
 
         $response = $this->delete("/integrations/{$integration->id}/contacts/{$contact->id}");
 
@@ -1156,61 +1152,21 @@ final class IntegrationControllerTest extends TestCase
         return $contact;
     }
 
-    private function givenThereIsAFunctionalContactOnIntegration(Integration $integration): Contact
+    private function givenThereIsAContactOnIntegration(Integration $integration, ContactType $type = ContactType::Functional): Contact
     {
+        [$email, $firstName, $lastName] = match ($type) {
+            ContactType::Functional => ['jane.doe@test.com', 'Jane', 'Doe'],
+            ContactType::Technical => ['john.doe@test.com', 'John', 'Doe'],
+            ContactType::Contributor => ['jack.doe@test.com', 'Jack', 'Doe'],
+        };
+
         $contact = new Contact(
             Uuid::uuid4(),
             $integration->id,
-            'jane.doe@test.com',
-            ContactType::Functional,
-            'Jane',
-            'Doe',
-        );
-
-        ContactModel::query()->insert([
-            'id' => $contact->id,
-            'integration_id' => $contact->integrationId,
-            'email' => $contact->email,
-            'type' => $contact->type,
-            'first_name' => $contact->firstName,
-            'last_name' => $contact->lastName,
-        ]);
-
-        return $contact;
-    }
-
-    private function givenThereIsATechnicalContactOnIntegration(Integration $integration): Contact
-    {
-        $contact = new Contact(
-            Uuid::uuid4(),
-            $integration->id,
-            'john.doe@test.com',
-            ContactType::Technical,
-            'John',
-            'Doe',
-        );
-
-        ContactModel::query()->insert([
-            'id' => $contact->id,
-            'integration_id' => $contact->integrationId,
-            'email' => $contact->email,
-            'type' => $contact->type,
-            'first_name' => $contact->firstName,
-            'last_name' => $contact->lastName,
-        ]);
-
-        return $contact;
-    }
-
-    private function givenThereIsAContributorContactOnIntegration(Integration $integration): Contact
-    {
-        $contact = new Contact(
-            Uuid::uuid4(),
-            $integration->id,
-            'jack.doe@test.com',
-            ContactType::Contributor,
-            'Jack',
-            'Doe',
+            $email,
+            $type,
+            $firstName,
+            $lastName,
         );
 
         ContactModel::query()->insert([
