@@ -32,7 +32,7 @@ final class ContactPolicy
 
     public function delete(UserModel $userModel, ContactModel $contactModel): bool
     {
-        return $contactModel->type === ContactType::Contributor->value;
+        return ContactType::from($contactModel->type)->isDeletable();
     }
 
     public function restore(UserModel $userModel, ContactModel $contactModel): bool
