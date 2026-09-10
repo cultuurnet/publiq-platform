@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Rules;
 
+use App\Domain\Integrations\IntegrationUrlType;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
@@ -36,7 +37,8 @@ final readonly class UniqueIntegrationUrl implements ValidationRule
             if ($currentUrl['environment'] !== $url['environment']) {
                 continue;
             }
-            if (trim(($currentUrl['url'] ?? '')) !== trim($url['url'] ?? '')) {
+
+            if (!$this->isDuplicate($currentUrl, $url)) {
                 continue;
             }
 
@@ -46,5 +48,17 @@ final readonly class UniqueIntegrationUrl implements ValidationRule
 
             $fail('validation.distinct')->translate();
         }
+    }
+
+    /**
+     * @param array<string, mixed> $currentUrl
+     * @param array<string, mixed> $url
+     */
+    private function isDuplicate(array $currentUrl, array $url): bool
+    {
+        $isLoginType = $currentUrl['type'] === IntegrationUrlType::Login->value;
+        $isSameUrl = trim(($currentUrl['url'] ?? '')) === trim($url['url'] ?? '');
+
+        return $isLoginType || $isSameUrl;
     }
 }
