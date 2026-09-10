@@ -422,14 +422,14 @@ final class IntegrationControllerTest extends TestCase
 
         $integration = $this->givenThereIsAnIntegration();
         $this->givenTheActingUserIsAContactOnIntegration($integration);
-        $integrationUrl = $this->givenThereIsALoginUrlForIntegration($integration);
+        $urls = $this->givenThereAreMultipleUrlsForIntegration($integration);
 
-        $response = $this->delete("/integrations/{$integration->id}/urls/{$integrationUrl->id}");
+        $response = $this->delete("/integrations/{$integration->id}/urls/{$urls->callbackUrls[0]->id}");
 
         $response->assertRedirect('/');
 
         $this->assertDatabaseMissing('integrations_urls', [
-            'id' => $integrationUrl->id,
+            'id' => $urls->callbackUrls[0]->id,
         ]);
     }
 
@@ -438,6 +438,23 @@ final class IntegrationControllerTest extends TestCase
         $this->actingAs(UserModel::createSystemUser());
 
         $integration = $this->givenThereIsAnIntegration();
+        $integrationUrl = $this->givenThereIsALoginUrlForIntegration($integration);
+
+        $response = $this->delete("/integrations/{$integration->id}/urls/{$integrationUrl->id}");
+
+        $response->assertForbidden();
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'id' => $integrationUrl->id,
+        ]);
+    }
+
+    public function test_it_can_not_destroy_a_login_url_even_though_it_is_a_contact_on_the_integration(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
         $integrationUrl = $this->givenThereIsALoginUrlForIntegration($integration);
 
         $response = $this->delete("/integrations/{$integration->id}/urls/{$integrationUrl->id}");
@@ -538,15 +555,53 @@ final class IntegrationControllerTest extends TestCase
 
         $integration = $this->givenThereIsAnIntegration();
         $this->givenTheActingUserIsAContactOnIntegration($integration);
-        $this->givenThereAreMultipleUrlsForIntegration($integration);
+        $urls = $this->givenThereAreMultipleUrlsForIntegration($integration);
+
+        $response = $this->put("/integrations/{$integration->id}/urls", [
+            'urls' => [
+                [
+                    'id' => $urls->loginUrl->id->toString(),
+                    'environment' => $urls->loginUrl->environment->value,
+                    'type' => $urls->loginUrl->type->value,
+                    'url' => $urls->loginUrl->url,
+                ],
+            ],
+        ]);
+
+        $response->assertRedirect('/');
+
+        $this->assertDatabaseCount('integrations_urls', 1);
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'id' => $urls->loginUrl->id->toString(),
+        ]);
+    }
+
+    public function test_it_can_not_delete_the_login_url_via_update(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $urls = $this->givenThereAreMultipleUrlsForIntegration($integration);
 
         $response = $this->put("/integrations/{$integration->id}/urls", [
             'urls' => [],
         ]);
 
-        $response->assertRedirect('/');
+        $response->assertForbidden();
 
-        $this->assertDatabaseCount('integrations_urls', 0);
+        $this->assertDatabaseHas('integrations_urls', [
+            'id' => $urls->loginUrl->id->toString(),
+        ]);
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'id' => $urls->callbackUrls[0]->id->toString(),
+        ]);
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'id' => $urls->logoutUrls[0]->id->toString(),
+        ]);
     }
 
     public function test_it_can_not_update_integration_urls_if_unauthorized(): void

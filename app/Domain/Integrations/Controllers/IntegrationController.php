@@ -225,13 +225,13 @@ final class IntegrationController extends Controller
 
         $this->integrationUrlRepository->updateUrls($updatedUrls);
 
-        $toDeleteUrlIds = $currentUrls
-            ->filter(
-                fn (IntegrationUrl $url) => $updatedUrls->doesntContain('id', '=', $url->id)
-            )
-            ->map(fn (IntegrationUrl $url) => $url->id);
+        $toDeleteUrls = $currentUrls->filter(
+            fn (IntegrationUrl $url) => $updatedUrls->doesntContain('id', '=', $url->id)
+        );
 
-        $this->integrationUrlRepository->deleteByIds($toDeleteUrlIds);
+        abort_if($toDeleteUrls->contains(fn (IntegrationUrl $url) => !$url->type->isDeletable()), 403);
+
+        $this->integrationUrlRepository->deleteByIds($toDeleteUrls->map(fn (IntegrationUrl $url) => $url->id));
 
         return Redirect::back();
     }

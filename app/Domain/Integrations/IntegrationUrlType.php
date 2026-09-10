@@ -13,4 +13,9 @@ enum IntegrationUrlType: string
     case Login = 'login';
     case Callback = 'callback';
     case Logout = 'logout';
+
+    public function isDeletable(): bool
+    {
+        return $this !== self::Login;
+    }
 }
