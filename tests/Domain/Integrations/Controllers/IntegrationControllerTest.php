@@ -416,6 +416,52 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
+    public function test_it_can_not_store_a_second_login_url_for_the_same_environment(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $this->givenThereIsALoginUrlForIntegration($integration);
+
+        $response = $this->post("/integrations/{$integration->id}/urls", [
+            'environment' => Environment::Testing->value,
+            'type' => IntegrationUrlType::Login->value,
+            'url' => 'https://localhost:3000/other-login',
+        ]);
+
+        $response->assertSessionHasErrors('type');
+
+        $this->assertDatabaseMissing('integrations_urls', [
+            'url' => 'https://localhost:3000/other-login',
+        ]);
+
+        $this->assertDatabaseCount('integrations_urls', 1);
+    }
+
+    public function test_it_can_store_a_login_url_for_a_different_environment(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $this->givenThereIsALoginUrlForIntegration($integration);
+
+        $response = $this->post("/integrations/{$integration->id}/urls", [
+            'environment' => Environment::Production->value,
+            'type' => IntegrationUrlType::Login->value,
+            'url' => 'https://localhost:3000/other-login',
+        ]);
+
+        $response->assertRedirect('/');
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'environment' => Environment::Production->value,
+            'type' => IntegrationUrlType::Login->value,
+            'url' => 'https://localhost:3000/other-login',
+        ]);
+    }
+
     public function test_it_can_destroy_an_integration_url(): void
     {
         $this->actingAs(UserModel::createSystemUser());
@@ -529,6 +575,37 @@ final class IntegrationControllerTest extends TestCase
             'environment' => Environment::Testing->value,
             'type' => IntegrationUrlType::Login->value,
             'url' => 'https://new.login',
+        ]);
+    }
+
+    public function test_it_can_not_add_a_second_login_url_for_the_same_environment_via_update(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $urls = $this->givenThereAreMultipleUrlsForIntegration($integration);
+
+        $response = $this->put("/integrations/{$integration->id}/urls", [
+            'urls' => [
+                [
+                    'id' => $urls->loginUrl->id->toString(),
+                    'environment' => $urls->loginUrl->environment->value,
+                    'type' => $urls->loginUrl->type->value,
+                    'url' => $urls->loginUrl->url,
+                ],
+                [
+                    'environment' => $urls->loginUrl->environment->value,
+                    'type' => IntegrationUrlType::Login->value,
+                    'url' => 'https://second.login',
+                ],
+            ],
+        ]);
+
+        $response->assertSessionHasErrors();
+
+        $this->assertDatabaseMissing('integrations_urls', [
+            'url' => 'https://second.login',
         ]);
     }
 
