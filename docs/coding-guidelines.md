@@ -17,8 +17,6 @@ Use **readonly properties** with constructor promotion for immutable class prope
 
 When working on this codebase, prefer:
 
-- Extracting logic into testable classes with interfaces over inline implementation
-- Constructor injection over service locator patterns
 - Explicit code over clever abstractions
 - Integration with existing patterns over introducing new ones
 - Inline expressions over unnecessary local variables (if a variable is only used once and doesn't improve readability, inline it)
@@ -64,7 +62,6 @@ Comments are acceptable when explaining **why** something is done (not **what**)
 ## Restrictions
 
 - **Never** modify files in `vendor/`
-- **Never** commit `.env` or credentials files
 - **Avoid** adding dependencies without team discussion
 - **Always** run `make ci` before considering work complete
 
