@@ -483,6 +483,54 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
+    public function test_it_can_not_store_a_duplicate_callback_url_for_the_same_environment(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+
+        $this->post("/integrations/{$integration->id}/urls", [
+            'environment' => Environment::Testing->value,
+            'type' => IntegrationUrlType::Callback->value,
+            'url' => 'https://localhost:3000/callback',
+        ])->assertRedirect('/');
+
+        $response = $this->post("/integrations/{$integration->id}/urls", [
+            'environment' => Environment::Testing->value,
+            'type' => IntegrationUrlType::Callback->value,
+            'url' => 'https://localhost:3000/callback',
+        ]);
+
+        $response->assertSessionHasErrors('url');
+
+        $this->assertDatabaseCount('integrations_urls', 1);
+    }
+
+    public function test_it_can_store_a_second_distinct_callback_url_for_the_same_environment(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+
+        $this->post("/integrations/{$integration->id}/urls", [
+            'environment' => Environment::Testing->value,
+            'type' => IntegrationUrlType::Callback->value,
+            'url' => 'https://localhost:3000/callback',
+        ])->assertRedirect('/');
+
+        $response = $this->post("/integrations/{$integration->id}/urls", [
+            'environment' => Environment::Testing->value,
+            'type' => IntegrationUrlType::Callback->value,
+            'url' => 'https://localhost:3000/other-callback',
+        ]);
+
+        $response->assertRedirect('/');
+
+        $this->assertDatabaseCount('integrations_urls', 2);
+    }
+
     public function test_it_can_destroy_an_integration_url(): void
     {
         $this->actingAs(UserModel::createSystemUser());

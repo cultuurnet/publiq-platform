@@ -26,7 +26,12 @@ final class StoreIntegrationUrlRequest extends FormRequest
                 new Enum(IntegrationUrlType::class),
                 $unique->singleLoginUrl(),
             ],
-            'url' => ['required', 'url:http,https', 'max:255'],
+            'url' => [
+                'required',
+                'url:http,https',
+                'max:255',
+                $unique->distinctUrl($this->input('type')),
+            ],
         ];
     }
 }
