@@ -55,9 +55,9 @@ Comments are acceptable when explaining **why** something is done (not **what**)
 
 ## Testing
 
-- Use `@test` annotation style for test methods
+- Use `testXxx()` method-name style for test methods, not `@test`/`#[Test]` annotations
 - Mock objects use intersection types: `Connection&MockObject`
-- Prefer separate test methods over data providers for clarity
+- `#[DataProvider]` is fine for parameterized cases
 - Test file location mirrors source: `app/Foo/Bar.php` → `tests/Foo/BarTest.php`
 - When you change or add frontend behavior, add or update a Playwright E2E test under `e2e/` covering it
 
@@ -70,7 +70,6 @@ Comments are acceptable when explaining **why** something is done (not **what**)
 
 ## AI Restrictions
 
-- **Never** create commits - only humans commit code
 - **Plan** larger changes but implement step by step, waiting for human review between steps
 
 ## Workflow
