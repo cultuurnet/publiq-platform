@@ -1,5 +1,7 @@
 # Coding guidelines
 
+See [Coding Guidelines](docs/coding-guidelines.md) for general code style, conventions and security guidelines.
+
 ## Authorization layering
 
 - Web routes are authorized via `Gate::define()` abilities consumed through `can:ability,routeParam1,routeParam2` route middleware (see `App\Domain\Auth\AuthServiceProvider`, e.g. `access-integration`, `delete-contact`). Route params passed to `can:` middleware are resolved as raw strings via `$request->route($name)` — they are **not** Eloquent models, since these routes don't use route-model binding.
