@@ -564,6 +564,25 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
+    public function test_it_can_not_destroy_an_integration_url_belonging_to_a_different_integration(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+
+        $otherIntegration = $this->givenThereIsAnIntegration();
+        $urlOnOtherIntegration = $this->givenThereIsALoginUrlForIntegration($otherIntegration);
+
+        $response = $this->delete("/integrations/{$integration->id}/urls/{$urlOnOtherIntegration->id}");
+
+        $response->assertInertia(fn (Assert $page) => $page->component('Error', false)->where('statusCode', 404));
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'id' => $urlOnOtherIntegration->id,
+        ]);
+    }
+
     public function test_it_can_not_destroy_a_login_url_even_though_it_is_a_contact_on_the_integration(): void
     {
         $this->actingAs(UserModel::createSystemUser());
