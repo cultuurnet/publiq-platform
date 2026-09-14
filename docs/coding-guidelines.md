@@ -56,6 +56,7 @@ Comments are acceptable when explaining **why** something is done (not **what**)
 - Mock objects use intersection types: `Connection&MockObject`
 - Prefer separate test methods over data providers for clarity
 - Test file location mirrors source: `app/Foo/Bar.php` → `tests/Foo/BarTest.php`
+- When you change or add frontend behavior, add or update a Playwright E2E test under `e2e/` covering it
 
 ## Restrictions
 
