@@ -68,6 +68,7 @@ Comments are acceptable when explaining **why** something is done (not **what**)
 ## AI Restrictions
 
 - **Plan** larger changes but implement step by step, waiting for human review between steps
+- When opening a pull request, follow the structure in `.github/pull_request_template.md`
 
 ## Workflow
 
