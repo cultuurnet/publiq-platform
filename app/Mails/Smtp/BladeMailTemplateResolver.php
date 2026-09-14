@@ -6,6 +6,7 @@ namespace App\Mails\Smtp;
 
 use App\Mails\Template\MailTemplate;
 use Illuminate\Contracts\View\Factory as ViewFactory;
+use InvalidArgumentException;
 
 final readonly class BladeMailTemplateResolver implements MailTemplateResolver
 {
@@ -24,14 +25,23 @@ final readonly class BladeMailTemplateResolver implements MailTemplateResolver
 
     public function render(MailTemplate $mailerTemplate, array $variables = []): string
     {
-        $specificTemplate = implode('.', [self::TEMPLATE_ROOT, $mailerTemplate->type->value,  $mailerTemplate->name->value]);
-        $genericTemplate = implode('.', [self::TEMPLATE_ROOT, $mailerTemplate->name->value]);
+        $specificTemplate = $this->buildTemplatePath($mailerTemplate->type->value, $mailerTemplate->name->value);
+        $genericTemplate = $this->buildTemplatePath($mailerTemplate->name->value);
 
         if ($this->view->exists($specificTemplate)) {
             return $this->view->make($specificTemplate, $variables)->render();
         }
 
-        return $this->view->make($genericTemplate, $variables)->render();
+        if ($this->view->exists($genericTemplate)) {
+            return $this->view->make($genericTemplate, $variables)->render();
+        }
+
+        throw new InvalidArgumentException('No mail template view found for "' . $mailerTemplate->name->value . '".');
+    }
+
+    private function buildTemplatePath(string ...$segments): string
+    {
+        return implode('.', [self::TEMPLATE_ROOT, ...$segments]);
     }
 
     private function renderSubjectString(string $subject, array $variables): string

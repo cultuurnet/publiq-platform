@@ -91,12 +91,14 @@ Route::group(['middleware' => 'auth'], static function () {
 
         Route::patch('/integrations/{id}/contacts', [IntegrationController::class, 'updateContacts']);
         Route::post('/integrations/{id}/contacts', [IntegrationController::class, 'storeContact']);
-        Route::delete('/integrations/{id}/contacts/{contactId}', [IntegrationController::class, 'deleteContact']);
+        Route::delete('/integrations/{id}/contacts/{contactId}', [IntegrationController::class, 'deleteContact'])
+            ->middleware('can:delete-contact,id,contactId');
 
         Route::patch('/integrations/{id}/organization', [IntegrationController::class, 'updateOrganization']);
 
         Route::post('/integrations/{id}/organizers', [IntegrationController::class, 'updateOrganizers']);
-        Route::delete('/integrations/{id}/organizers/{organizerId}', [IntegrationController::class, 'deleteOrganizer']);
+        Route::delete('/integrations/{id}/organizers/{organizerId}', [IntegrationController::class, 'deleteOrganizer'])
+            ->middleware('can:delete-organizer,id,organizerId');
 
         Route::post('/integrations/{id}/activation', [IntegrationController::class, 'requestActivation']);
 

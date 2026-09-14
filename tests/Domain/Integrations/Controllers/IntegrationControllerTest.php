@@ -22,6 +22,9 @@ use App\Domain\Integrations\IntegrationUrlType;
 use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Models\IntegrationUrlModel;
+use App\Domain\Integrations\Models\UdbOrganizerModel;
+use App\Domain\Integrations\UdbOrganizer;
+use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\Organizations\Organization;
@@ -29,6 +32,7 @@ use App\Domain\Subscriptions\Currency;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Domain\Subscriptions\Subscription;
 use App\Domain\Subscriptions\SubscriptionCategory;
+use App\Domain\UdbUuid;
 use App\Keycloak\Models\KeycloakClientModel;
 use App\ProjectAanvraag\ProjectAanvraagUrl;
 use App\Router\TranslatedRoute;
@@ -39,6 +43,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Validation\UnauthorizedException;
 use Inertia\Testing\AssertableInertia as Assert;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Tests\TestCase;
@@ -201,6 +206,23 @@ final class IntegrationControllerTest extends TestCase
 
         $this->assertNotSoftDeleted('integrations', [
             'id' => $integration->id->toString(),
+        ]);
+    }
+
+    public function test_it_can_not_destroy_an_organizer_even_though_it_is_a_contact_on_the_integration(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $organizer = $this->givenThereIsAnOrganizerOnIntegration($integration);
+
+        $response = $this->delete("/integrations/{$integration->id}/organizers/{$organizer->organizerId}");
+
+        $response->assertForbidden();
+
+        $this->assertDatabaseHas('udb_organizers', [
+            'id' => $organizer->id->toString(),
         ]);
     }
 
@@ -415,20 +437,114 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
+    public function test_it_can_not_store_a_second_login_url_for_the_same_environment(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $this->givenThereIsALoginUrlForIntegration($integration);
+
+        $response = $this->post("/integrations/{$integration->id}/urls", [
+            'environment' => Environment::Testing->value,
+            'type' => IntegrationUrlType::Login->value,
+            'url' => 'https://localhost:3000/other-login',
+        ]);
+
+        $response->assertSessionHasErrors('type');
+
+        $this->assertDatabaseMissing('integrations_urls', [
+            'url' => 'https://localhost:3000/other-login',
+        ]);
+
+        $this->assertDatabaseCount('integrations_urls', 1);
+    }
+
+    public function test_it_can_store_a_login_url_for_a_different_environment(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $this->givenThereIsALoginUrlForIntegration($integration);
+
+        $response = $this->post("/integrations/{$integration->id}/urls", [
+            'environment' => Environment::Production->value,
+            'type' => IntegrationUrlType::Login->value,
+            'url' => 'https://localhost:3000/other-login',
+        ]);
+
+        $response->assertRedirect('/');
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'environment' => Environment::Production->value,
+            'type' => IntegrationUrlType::Login->value,
+            'url' => 'https://localhost:3000/other-login',
+        ]);
+    }
+
+    public function test_it_can_not_store_a_duplicate_callback_url_for_the_same_environment(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+
+        $this->post("/integrations/{$integration->id}/urls", [
+            'environment' => Environment::Testing->value,
+            'type' => IntegrationUrlType::Callback->value,
+            'url' => 'https://localhost:3000/callback',
+        ])->assertRedirect('/');
+
+        $response = $this->post("/integrations/{$integration->id}/urls", [
+            'environment' => Environment::Testing->value,
+            'type' => IntegrationUrlType::Callback->value,
+            'url' => 'https://localhost:3000/callback',
+        ]);
+
+        $response->assertSessionHasErrors('url');
+
+        $this->assertDatabaseCount('integrations_urls', 1);
+    }
+
+    public function test_it_can_store_a_second_distinct_callback_url_for_the_same_environment(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+
+        $this->post("/integrations/{$integration->id}/urls", [
+            'environment' => Environment::Testing->value,
+            'type' => IntegrationUrlType::Callback->value,
+            'url' => 'https://localhost:3000/callback',
+        ])->assertRedirect('/');
+
+        $response = $this->post("/integrations/{$integration->id}/urls", [
+            'environment' => Environment::Testing->value,
+            'type' => IntegrationUrlType::Callback->value,
+            'url' => 'https://localhost:3000/other-callback',
+        ]);
+
+        $response->assertRedirect('/');
+
+        $this->assertDatabaseCount('integrations_urls', 2);
+    }
+
     public function test_it_can_destroy_an_integration_url(): void
     {
         $this->actingAs(UserModel::createSystemUser());
 
         $integration = $this->givenThereIsAnIntegration();
         $this->givenTheActingUserIsAContactOnIntegration($integration);
-        $integrationUrl = $this->givenThereIsALoginUrlForIntegration($integration);
+        $urls = $this->givenThereAreMultipleUrlsForIntegration($integration);
 
-        $response = $this->delete("/integrations/{$integration->id}/urls/{$integrationUrl->id}");
+        $response = $this->delete("/integrations/{$integration->id}/urls/{$urls->callbackUrls[0]->id}");
 
         $response->assertRedirect('/');
 
         $this->assertDatabaseMissing('integrations_urls', [
-            'id' => $integrationUrl->id,
+            'id' => $urls->callbackUrls[0]->id,
         ]);
     }
 
@@ -464,6 +580,23 @@ final class IntegrationControllerTest extends TestCase
 
         $this->assertDatabaseHas('integrations_urls', [
             'id' => $urlOnOtherIntegration->id,
+        ]);
+    }
+
+    public function test_it_can_not_destroy_a_login_url_even_though_it_is_a_contact_on_the_integration(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $integrationUrl = $this->givenThereIsALoginUrlForIntegration($integration);
+
+        $response = $this->delete("/integrations/{$integration->id}/urls/{$integrationUrl->id}");
+
+        $response->assertForbidden();
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'id' => $integrationUrl->id,
         ]);
     }
 
@@ -550,21 +683,127 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
+    public function test_it_can_not_add_a_second_login_url_for_the_same_environment_via_update(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $urls = $this->givenThereAreMultipleUrlsForIntegration($integration);
+
+        $response = $this->put("/integrations/{$integration->id}/urls", [
+            'urls' => [
+                [
+                    'id' => $urls->loginUrl->id->toString(),
+                    'environment' => $urls->loginUrl->environment->value,
+                    'type' => $urls->loginUrl->type->value,
+                    'url' => $urls->loginUrl->url,
+                ],
+                [
+                    'environment' => $urls->loginUrl->environment->value,
+                    'type' => IntegrationUrlType::Login->value,
+                    'url' => 'https://second.login',
+                ],
+            ],
+        ]);
+
+        $response->assertSessionHasErrors();
+
+        $this->assertDatabaseMissing('integrations_urls', [
+            'url' => 'https://second.login',
+        ]);
+    }
+
     public function test_it_can_delete_integration_urls_via_update(): void
     {
         $this->actingAs(UserModel::createSystemUser());
 
         $integration = $this->givenThereIsAnIntegration();
         $this->givenTheActingUserIsAContactOnIntegration($integration);
-        $this->givenThereAreMultipleUrlsForIntegration($integration);
+        $urls = $this->givenThereAreMultipleUrlsForIntegration($integration);
+
+        $response = $this->put("/integrations/{$integration->id}/urls", [
+            'urls' => [
+                [
+                    'id' => $urls->loginUrl->id->toString(),
+                    'environment' => $urls->loginUrl->environment->value,
+                    'type' => $urls->loginUrl->type->value,
+                    'url' => $urls->loginUrl->url,
+                ],
+            ],
+        ]);
+
+        $response->assertRedirect('/');
+
+        $this->assertDatabaseCount('integrations_urls', 1);
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'id' => $urls->loginUrl->id->toString(),
+        ]);
+    }
+
+    public function test_it_can_not_delete_the_login_url_via_update(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $urls = $this->givenThereAreMultipleUrlsForIntegration($integration);
 
         $response = $this->put("/integrations/{$integration->id}/urls", [
             'urls' => [],
         ]);
 
-        $response->assertRedirect('/');
+        $response->assertForbidden();
 
-        $this->assertDatabaseCount('integrations_urls', 0);
+        $this->assertDatabaseHas('integrations_urls', [
+            'id' => $urls->loginUrl->id->toString(),
+        ]);
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'id' => $urls->callbackUrls[0]->id->toString(),
+        ]);
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'id' => $urls->logoutUrls[0]->id->toString(),
+        ]);
+    }
+
+    public function test_it_does_not_persist_url_changes_when_the_login_url_is_deleted_via_update(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $urls = $this->givenThereAreMultipleUrlsForIntegration($integration);
+
+        $response = $this->put("/integrations/{$integration->id}/urls", [
+            'urls' => [
+                [
+                    'id' => $urls->callbackUrls[0]->id->toString(),
+                    'type' => IntegrationUrlType::Callback->value,
+                    'environment' => Environment::Production->value,
+                    'url' => 'https://updated.callback',
+                ],
+            ],
+        ]);
+
+        $response->assertForbidden();
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'id' => $urls->callbackUrls[0]->id->toString(),
+            'url' => $urls->callbackUrls[0]->url,
+        ]);
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'id' => $urls->loginUrl->id->toString(),
+            'url' => $urls->loginUrl->url,
+        ]);
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'id' => $urls->logoutUrls[0]->id->toString(),
+            'url' => $urls->logoutUrls[0]->url,
+        ]);
     }
 
     public function test_it_can_not_update_integration_urls_if_unauthorized(): void
@@ -618,7 +857,7 @@ final class IntegrationControllerTest extends TestCase
 
         $integration = $this->givenThereIsAnIntegration();
         $this->givenTheActingUserIsAContactOnIntegration($integration);
-        $functionalContact = $this->givenThereIsAFunctionalContactOnIntegration($integration);
+        $functionalContact = $this->givenThereIsAContactOnIntegration($integration);
 
         $response = $this->patch(
             "/integrations/{$integration->id}/contacts",
@@ -651,7 +890,7 @@ final class IntegrationControllerTest extends TestCase
         $this->actingAs(UserModel::createSystemUser());
 
         $integration = $this->givenThereIsAnIntegration();
-        $functionalContact = $this->givenThereIsAFunctionalContactOnIntegration($integration);
+        $functionalContact = $this->givenThereIsAContactOnIntegration($integration);
 
         $response = $this->patch(
             "/integrations/{$integration->id}/contacts",
@@ -679,27 +918,12 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
-    public function test_it_can_destroy_a_contact(): void
-    {
-        $this->actingAs(UserModel::createSystemUser());
-
-        $integration = $this->givenThereIsAnIntegration();
-        $this->givenTheActingUserIsAContactOnIntegration($integration);
-        $functionalContact = $this->givenThereIsAFunctionalContactOnIntegration($integration);
-
-        $this->delete("/integrations/{$integration->id}/contacts/{$functionalContact->id}");
-
-        $this->assertSoftDeleted('contacts', [
-            'id' => $functionalContact->id->toString(),
-        ]);
-    }
-
     public function test_it_can_not_destroy_a_contact_if_unauthorized(): void
     {
         $this->actingAs(UserModel::createSystemUser());
 
         $integration = $this->givenThereIsAnIntegration();
-        $functionalContact = $this->givenThereIsAFunctionalContactOnIntegration($integration);
+        $functionalContact = $this->givenThereIsAContactOnIntegration($integration);
 
         $response = $this->delete("/integrations/{$integration->id}/contacts/{$functionalContact->id}");
 
@@ -708,6 +932,60 @@ final class IntegrationControllerTest extends TestCase
         $this->assertNotSoftDeleted('contacts', [
             'id' => $functionalContact->id->toString(),
         ]);
+    }
+
+    public function test_it_can_not_destroy_a_contact_belonging_to_a_different_integration(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+
+        $otherIntegration = $this->givenThereIsAnIntegration();
+        $contributorOnOtherIntegration = $this->givenThereIsAContactOnIntegration($otherIntegration, ContactType::Contributor);
+
+        $response = $this->delete("/integrations/{$integration->id}/contacts/{$contributorOnOtherIntegration->id}");
+
+        $response->assertInertia(fn (Assert $page) => $page->component('Error', false)->where('statusCode', 404));
+
+        $this->assertDatabaseHas('contacts', [
+            'id' => $contributorOnOtherIntegration->id->toString(),
+        ]);
+    }
+
+    #[DataProvider('contactTypeProvider')]
+    public function test_it_can_only_destroy_deletable_contacts(ContactType $contactType): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $contact = $this->givenThereIsAContactOnIntegration($integration, $contactType);
+
+        $response = $this->delete("/integrations/{$integration->id}/contacts/{$contact->id}");
+
+        if ($contactType->isDeletable()) {
+            $this->assertSoftDeleted('contacts', [
+                'id' => $contact->id->toString(),
+            ]);
+
+            return;
+        }
+
+        $response->assertForbidden();
+
+        $this->assertNotSoftDeleted('contacts', [
+            'id' => $contact->id->toString(),
+        ]);
+    }
+
+    public static function contactTypeProvider(): array
+    {
+        return [
+            'a functional contact is not deletable' => [ContactType::Functional],
+            'a technical contact is not deletable' => [ContactType::Technical],
+            'a contributor contact is deletable' => [ContactType::Contributor],
+        ];
     }
 
     public function test_it_can_add_a_contact_if_authorized(): void
@@ -1021,6 +1299,27 @@ final class IntegrationControllerTest extends TestCase
         $keycloakClientModel->save();
     }
 
+    private function givenThereIsAnOrganizerOnIntegration(Integration $integration): UdbOrganizer
+    {
+        $organizer = new UdbOrganizer(
+            Uuid::uuid4(),
+            $integration->id,
+            new UdbUuid(Uuid::uuid4()->toString()),
+            UdbOrganizerStatus::Approved,
+            null,
+        );
+
+        UdbOrganizerModel::query()->insert([
+            'id' => $organizer->id->toString(),
+            'integration_id' => $organizer->integrationId->toString(),
+            'organizer_id' => $organizer->organizerId->toString(),
+            'status' => $organizer->status->value,
+            'client_id' => null,
+        ]);
+
+        return $organizer;
+    }
+
     private function givenThereIsALoginUrlForIntegration(Integration $integration): IntegrationUrl
     {
         $integrationUrl = new IntegrationUrl(
@@ -1131,15 +1430,21 @@ final class IntegrationControllerTest extends TestCase
         return $contact;
     }
 
-    private function givenThereIsAFunctionalContactOnIntegration(Integration $integration): Contact
+    private function givenThereIsAContactOnIntegration(Integration $integration, ContactType $type = ContactType::Functional): Contact
     {
+        [$email, $firstName, $lastName] = match ($type) {
+            ContactType::Functional => ['jane.doe@test.com', 'Jane', 'Doe'],
+            ContactType::Technical => ['john.doe@test.com', 'John', 'Doe'],
+            ContactType::Contributor => ['jack.doe@test.com', 'Jack', 'Doe'],
+        };
+
         $contact = new Contact(
             Uuid::uuid4(),
             $integration->id,
-            'jane.doe@test.com',
-            ContactType::Functional,
-            'Jane',
-            'Doe',
+            $email,
+            $type,
+            $firstName,
+            $lastName,
         );
 
         ContactModel::query()->insert([

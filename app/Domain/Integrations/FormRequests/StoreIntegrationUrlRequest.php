@@ -6,6 +6,7 @@ namespace App\Domain\Integrations\FormRequests;
 
 use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\IntegrationUrlType;
+use App\Domain\Integrations\Rules\IntegrationUrlUniqueness;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
@@ -16,10 +17,21 @@ final class StoreIntegrationUrlRequest extends FormRequest
      */
     public function rules(): array
     {
+        $unique = new IntegrationUrlUniqueness($this->route('id'), $this->input('environment'));
+
         return [
             'environment' => ['required', new Enum(Environment::class)],
-            'type' => ['required', new Enum(IntegrationUrlType::class)],
-            'url' => ['required', 'url:http,https', 'max:255'],
+            'type' => [
+                'required',
+                new Enum(IntegrationUrlType::class),
+                $unique->singleLoginUrl(),
+            ],
+            'url' => [
+                'required',
+                'url:http,https',
+                'max:255',
+                $unique->distinctUrl($this->input('type')),
+            ],
         ];
     }
 }
