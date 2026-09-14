@@ -750,6 +750,43 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
+    public function test_it_does_not_persist_url_changes_when_the_login_url_is_deleted_via_update(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $urls = $this->givenThereAreMultipleUrlsForIntegration($integration);
+
+        $response = $this->put("/integrations/{$integration->id}/urls", [
+            'urls' => [
+                [
+                    'id' => $urls->callbackUrls[0]->id->toString(),
+                    'type' => IntegrationUrlType::Callback->value,
+                    'environment' => Environment::Production->value,
+                    'url' => 'https://updated.callback',
+                ],
+            ],
+        ]);
+
+        $response->assertForbidden();
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'id' => $urls->callbackUrls[0]->id->toString(),
+            'url' => $urls->callbackUrls[0]->url,
+        ]);
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'id' => $urls->loginUrl->id->toString(),
+            'url' => $urls->loginUrl->url,
+        ]);
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'id' => $urls->logoutUrls[0]->id->toString(),
+            'url' => $urls->logoutUrls[0]->url,
+        ]);
+    }
+
     public function test_it_can_not_update_integration_urls_if_unauthorized(): void
     {
         $this->actingAs(UserModel::createSystemUser());
