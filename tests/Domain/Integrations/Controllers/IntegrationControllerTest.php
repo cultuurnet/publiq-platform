@@ -22,6 +22,9 @@ use App\Domain\Integrations\IntegrationUrlType;
 use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Models\IntegrationUrlModel;
+use App\Domain\Integrations\Models\UdbOrganizerModel;
+use App\Domain\Integrations\UdbOrganizer;
+use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\Organizations\Address;
 use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\Organizations\Organization;
@@ -29,6 +32,7 @@ use App\Domain\Subscriptions\Currency;
 use App\Domain\Subscriptions\Models\SubscriptionModel;
 use App\Domain\Subscriptions\Subscription;
 use App\Domain\Subscriptions\SubscriptionCategory;
+use App\Domain\UdbUuid;
 use App\Keycloak\Models\KeycloakClientModel;
 use App\ProjectAanvraag\ProjectAanvraagUrl;
 use App\Router\TranslatedRoute;
@@ -202,6 +206,23 @@ final class IntegrationControllerTest extends TestCase
 
         $this->assertNotSoftDeleted('integrations', [
             'id' => $integration->id->toString(),
+        ]);
+    }
+
+    public function test_it_can_not_destroy_an_organizer_even_though_it_is_a_contact_on_the_integration(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $organizer = $this->givenThereIsAnOrganizerOnIntegration($integration);
+
+        $response = $this->delete("/integrations/{$integration->id}/organizers/{$organizer->organizerId}");
+
+        $response->assertForbidden();
+
+        $this->assertDatabaseHas('udb_organizers', [
+            'id' => $organizer->id->toString(),
         ]);
     }
 
@@ -416,6 +437,100 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
+    public function test_it_can_not_store_a_second_login_url_for_the_same_environment(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $this->givenThereIsALoginUrlForIntegration($integration);
+
+        $response = $this->post("/integrations/{$integration->id}/urls", [
+            'environment' => Environment::Testing->value,
+            'type' => IntegrationUrlType::Login->value,
+            'url' => 'https://localhost:3000/other-login',
+        ]);
+
+        $response->assertSessionHasErrors('type');
+
+        $this->assertDatabaseMissing('integrations_urls', [
+            'url' => 'https://localhost:3000/other-login',
+        ]);
+
+        $this->assertDatabaseCount('integrations_urls', 1);
+    }
+
+    public function test_it_can_store_a_login_url_for_a_different_environment(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $this->givenThereIsALoginUrlForIntegration($integration);
+
+        $response = $this->post("/integrations/{$integration->id}/urls", [
+            'environment' => Environment::Production->value,
+            'type' => IntegrationUrlType::Login->value,
+            'url' => 'https://localhost:3000/other-login',
+        ]);
+
+        $response->assertRedirect('/');
+
+        $this->assertDatabaseHas('integrations_urls', [
+            'environment' => Environment::Production->value,
+            'type' => IntegrationUrlType::Login->value,
+            'url' => 'https://localhost:3000/other-login',
+        ]);
+    }
+
+    public function test_it_can_not_store_a_duplicate_callback_url_for_the_same_environment(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+
+        $this->post("/integrations/{$integration->id}/urls", [
+            'environment' => Environment::Testing->value,
+            'type' => IntegrationUrlType::Callback->value,
+            'url' => 'https://localhost:3000/callback',
+        ])->assertRedirect('/');
+
+        $response = $this->post("/integrations/{$integration->id}/urls", [
+            'environment' => Environment::Testing->value,
+            'type' => IntegrationUrlType::Callback->value,
+            'url' => 'https://localhost:3000/callback',
+        ]);
+
+        $response->assertSessionHasErrors('url');
+
+        $this->assertDatabaseCount('integrations_urls', 1);
+    }
+
+    public function test_it_can_store_a_second_distinct_callback_url_for_the_same_environment(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+
+        $this->post("/integrations/{$integration->id}/urls", [
+            'environment' => Environment::Testing->value,
+            'type' => IntegrationUrlType::Callback->value,
+            'url' => 'https://localhost:3000/callback',
+        ])->assertRedirect('/');
+
+        $response = $this->post("/integrations/{$integration->id}/urls", [
+            'environment' => Environment::Testing->value,
+            'type' => IntegrationUrlType::Callback->value,
+            'url' => 'https://localhost:3000/other-callback',
+        ]);
+
+        $response->assertRedirect('/');
+
+        $this->assertDatabaseCount('integrations_urls', 2);
+    }
+
     public function test_it_can_destroy_an_integration_url(): void
     {
         $this->actingAs(UserModel::createSystemUser());
@@ -546,6 +661,37 @@ final class IntegrationControllerTest extends TestCase
             'environment' => Environment::Testing->value,
             'type' => IntegrationUrlType::Login->value,
             'url' => 'https://new.login',
+        ]);
+    }
+
+    public function test_it_can_not_add_a_second_login_url_for_the_same_environment_via_update(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $urls = $this->givenThereAreMultipleUrlsForIntegration($integration);
+
+        $response = $this->put("/integrations/{$integration->id}/urls", [
+            'urls' => [
+                [
+                    'id' => $urls->loginUrl->id->toString(),
+                    'environment' => $urls->loginUrl->environment->value,
+                    'type' => $urls->loginUrl->type->value,
+                    'url' => $urls->loginUrl->url,
+                ],
+                [
+                    'environment' => $urls->loginUrl->environment->value,
+                    'type' => IntegrationUrlType::Login->value,
+                    'url' => 'https://second.login',
+                ],
+            ],
+        ]);
+
+        $response->assertSessionHasErrors();
+
+        $this->assertDatabaseMissing('integrations_urls', [
+            'url' => 'https://second.login',
         ]);
     }
 
@@ -1095,6 +1241,27 @@ final class IntegrationControllerTest extends TestCase
         $keycloakClientModel->client_secret = 'test-secret-' . $environment->value;
         $keycloakClientModel->realm = $environment->value;
         $keycloakClientModel->save();
+    }
+
+    private function givenThereIsAnOrganizerOnIntegration(Integration $integration): UdbOrganizer
+    {
+        $organizer = new UdbOrganizer(
+            Uuid::uuid4(),
+            $integration->id,
+            new UdbUuid(Uuid::uuid4()->toString()),
+            UdbOrganizerStatus::Approved,
+            null,
+        );
+
+        UdbOrganizerModel::query()->insert([
+            'id' => $organizer->id->toString(),
+            'integration_id' => $organizer->integrationId->toString(),
+            'organizer_id' => $organizer->organizerId->toString(),
+            'status' => $organizer->status->value,
+            'client_id' => null,
+        ]);
+
+        return $organizer;
     }
 
     private function givenThereIsALoginUrlForIntegration(Integration $integration): IntegrationUrl

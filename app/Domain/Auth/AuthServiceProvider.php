@@ -11,6 +11,7 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Models\ContactModel;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Integrations\Models\IntegrationUrlModel;
+use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Keycloak\Repositories\KeycloakUserRepository;
 use Auth0\SDK\Auth0;
 use Auth0\SDK\Contract\Auth0Interface;
@@ -58,6 +59,15 @@ final class AuthServiceProvider extends ServiceProvider
                 ->firstOrFail();
 
             return $integrationUrlModel->toDomain()->type->isDeletable();
+        });
+
+        Gate::define('delete-organizer', function (UserModel $user, string $integrationId, string $organizerId): bool {
+            UdbOrganizerModel::query()
+                ->where('integration_id', $integrationId)
+                ->where('organizer_id', $organizerId)
+                ->firstOrFail();
+
+            return false;
         });
 
         Gate::define('delete-contact', function (UserModel $user, string $integrationId, string $contactId): bool {
