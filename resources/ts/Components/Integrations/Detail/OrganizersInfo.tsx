@@ -4,18 +4,15 @@ import { Trans, useTranslation } from "react-i18next";
 import type { Integration } from "../../../types/Integration";
 import { Card } from "../../Card";
 import { CopyText } from "../../CopyText";
-import { ButtonIcon } from "../../ButtonIcon";
-import { faCheckSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faCheckSquare } from "@fortawesome/free-solid-svg-icons";
 import type { Organizer } from "../../../types/Organizer";
 import { groupBy } from "lodash";
 import { ButtonPrimary } from "../../ButtonPrimary";
-import { QuestionDialog } from "../../QuestionDialog";
 import { router, useForm } from "@inertiajs/react";
 import { Dialog } from "../../Dialog";
 import { ButtonSecondary } from "../../ButtonSecondary";
 import { OrganizersDatalist } from "./OrganizersDatalist";
 import type { UiTPASOrganizer } from "../../../types/UiTPASOrganizer";
-import { classNames } from "../../../utils/classNames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "../../Link";
 import { Tooltip } from "../../Tooltip";
@@ -32,7 +29,6 @@ const OrganizersSection = ({
   sectionName: Organizer["status"];
 }) => {
   const { t, i18n } = useTranslation();
-  const [toBeDeletedId, setToBeDeletedId] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [hoveredPermissionId, setHoveredPermissionId] = useState<number | null>(
     null
@@ -41,13 +37,6 @@ const OrganizersSection = ({
     organizers: [],
   });
   const uitpasTestOrg = import.meta.env.VITE_UITPAS_TEST_ORG;
-
-  const handleDeleteOrganizer = () => {
-    router.delete(`/integrations/${id}/organizers/${toBeDeletedId}`, {
-      preserveScroll: true,
-      preserveState: false,
-    });
-  };
 
   const handleUpdateOrganizers = () =>
     router.post(`/integrations/${id}/organizers`, form.data, {
@@ -106,15 +95,6 @@ const OrganizersSection = ({
               </Heading>
               <div className="flex-shrink-0 flex max-sm:flex-col gap-4">
                 <CopyText text={organizer.id} />
-                <ButtonIcon
-                  data-testid={organizer.name[i18n.language]}
-                  icon={faTrash}
-                  className={classNames(
-                    sectionName !== "Live" && "invisible max-sm:hidden",
-                    "text-icon-gray"
-                  )}
-                  onClick={() => setToBeDeletedId(organizer.id)}
-                />
               </div>
             </div>
 
@@ -164,19 +144,6 @@ const OrganizersSection = ({
           {t("details.organizers_info.add")}
         </ButtonPrimary>
       )}
-      <QuestionDialog
-        isVisible={!!toBeDeletedId}
-        onClose={() => {
-          setToBeDeletedId("");
-        }}
-        title={t("details.organizers_info.delete_dialog.title")}
-        question={t("details.organizers_info.delete_dialog.question", {
-          name: organizers.find((organizer) => organizer.id === toBeDeletedId)
-            ?.name[i18n.language],
-        })}
-        onConfirm={handleDeleteOrganizer}
-        onCancel={() => setToBeDeletedId("")}
-      />
       <Dialog
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
