@@ -38,7 +38,12 @@ final readonly class UniqueIntegrationUrl implements ValidationRule
                 continue;
             }
 
-            if (!$this->isDuplicate($currentUrl, $url)) {
+            // A login URL is unique per integration/environment, so any second login entry is a
+            // duplicate regardless of its url text; other types only clash on an identical url.
+            $isLoginType = $currentUrl['type'] === IntegrationUrlType::Login->value;
+            $isSameUrl = trim(($currentUrl['url'] ?? '')) === trim($url['url'] ?? '');
+
+            if (!$isLoginType && !$isSameUrl) {
                 continue;
             }
 
@@ -48,17 +53,5 @@ final readonly class UniqueIntegrationUrl implements ValidationRule
 
             $fail('validation.distinct')->translate();
         }
-    }
-
-    /**
-     * @param array<string, mixed> $currentUrl
-     * @param array<string, mixed> $url
-     */
-    private function isDuplicate(array $currentUrl, array $url): bool
-    {
-        $isLoginType = $currentUrl['type'] === IntegrationUrlType::Login->value;
-        $isSameUrl = trim(($currentUrl['url'] ?? '')) === trim($url['url'] ?? '');
-
-        return $isLoginType || $isSameUrl;
     }
 }
