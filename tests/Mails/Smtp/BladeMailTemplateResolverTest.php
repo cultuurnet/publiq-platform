@@ -10,6 +10,7 @@ use App\Mails\Template\MailTemplate;
 use App\Mails\Template\TemplateName;
 use Illuminate\Contracts\View\Factory as ViewFactory;
 use Illuminate\Contracts\View\View;
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -53,6 +54,13 @@ final class BladeMailTemplateResolverTest extends TestCase
         $view->expects($this->once())
             ->method('render')
             ->willReturn('<html>content</html>');
+
+        $this->viewFactory
+            ->method('exists')
+            ->willReturnMap([
+                ['mails.integration.entry-api.activated', false],
+                ['mails.integration.activated', true],
+            ]);
 
         $this->viewFactory
             ->expects($this->once())
@@ -115,10 +123,11 @@ final class BladeMailTemplateResolverTest extends TestCase
             ->willReturn('<html>generic</html>');
 
         $this->viewFactory
-            ->expects($this->once())
             ->method('exists')
-            ->with($specificTemplate)
-            ->willReturn(false);
+            ->willReturnMap([
+                [$specificTemplate, false],
+                [$genericTemplate, true],
+            ]);
 
         $this->viewFactory
             ->expects($this->once())
@@ -129,5 +138,25 @@ final class BladeMailTemplateResolverTest extends TestCase
         $output = $this->resolver->render($template, $variables);
 
         $this->assertSame('<html>generic</html>', $output);
+    }
+
+    public function testRenderThrowsWhenNoTemplateExists(): void
+    {
+        $template = new MailTemplate(
+            TemplateName::INTEGRATION_ACTIVATED,
+            IntegrationType::EntryApi
+        );
+
+        $this->viewFactory
+            ->method('exists')
+            ->willReturn(false);
+
+        $this->viewFactory
+            ->expects($this->never())
+            ->method('make');
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->resolver->render($template, ['foo' => 'bar']);
     }
 }

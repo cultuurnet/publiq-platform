@@ -6,6 +6,7 @@ namespace App\Mails\Smtp;
 
 use App\Mails\Template\MailTemplate;
 use Illuminate\Contracts\View\Factory as ViewFactory;
+use InvalidArgumentException;
 
 final readonly class BladeMailTemplateResolver implements MailTemplateResolver
 {
@@ -31,7 +32,11 @@ final readonly class BladeMailTemplateResolver implements MailTemplateResolver
             return $this->view->make($specificTemplate, $variables)->render();
         }
 
-        return $this->view->make($genericTemplate, $variables)->render();
+        if ($this->view->exists($genericTemplate)) {
+            return $this->view->make($genericTemplate, $variables)->render();
+        }
+
+        throw new InvalidArgumentException('No mail template view found for "' . $mailerTemplate->name->value . '".');
     }
 
     private function renderSubjectString(string $subject, array $variables): string
