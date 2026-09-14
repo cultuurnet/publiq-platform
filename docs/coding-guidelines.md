@@ -10,6 +10,9 @@
 
 Use **readonly properties** with constructor promotion for immutable class properties (project targets PHP 8.2).
 
+- Use `final readonly class` with promoted public properties for DTOs (see `app/UiTPAS/Dto` for examples)
+- Pass data across layers (e.g. controller → action, HTTP payload → domain) as a DTO instead of a raw array, so shape and types are enforced by the compiler
+
 ## Preferences
 
 When working on this codebase, prefer:
