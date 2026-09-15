@@ -301,10 +301,6 @@
       "add": "Add organizer",
       "update_dialog": {
         "question": "Select the UiTdatabank organizers for which you can execute actions in UiTPAS."
-      },
-      "delete_dialog": {
-        "title": "Remove organizer",
-        "question": "Are you sure you want to remove {{name}} from your integration?"
       }
     },
     "billing_info": {
