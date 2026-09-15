@@ -88,13 +88,8 @@ final class ActivateUitpasIntegrationTest extends TestCase
         $organization = new OrganizationModel();
         $organization->id = $organizationId->toString();
 
-        $domainIntegration = $this->givenThereIsAnIntegration($integrationId);
-        $domainIntegration = $domainIntegration->withKeycloakClients($this->givenThereIsAKeycloakClient($domainIntegration));
-
-        $this->integrationRepository->expects($this->once())
-            ->method('getById')
-            ->with($this->callback(fn ($id) => $id->equals($integrationId)))
-            ->willReturn($domainIntegration);
+        $this->integrationRepository->expects($this->never())
+            ->method('getById');
 
         $this->integrationRepository->expects($this->once())
             ->method('activateWithOrganization')

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Nova\Actions;
 
 use App\Domain\Integrations\Environment;
-use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\UdbOrganizer;
@@ -25,6 +24,7 @@ use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 final class ActivateUitpasIntegration extends Action
 {
@@ -48,14 +48,13 @@ final class ActivateUitpasIntegration extends Action
         /** @var ?string $organizers */
         $organizers = $fields->get('organizers');
 
+        $integrationId = Uuid::fromString($integration->id);
+
         $this->integrationRepository->activateWithOrganization(
-            Uuid::fromString($integration->id),
+            $integrationId,
             $organizationId,
             null,
-            $this->getUdbOrganizers(
-                $organizers,
-                $this->integrationRepository->getById(Uuid::fromString($integration->id))
-            )
+            $this->getUdbOrganizers($organizers, $integrationId)
         );
 
         return Action::message('Integration "' . $integration->name . '" activated.');
@@ -79,19 +78,20 @@ final class ActivateUitpasIntegration extends Action
         ];
     }
 
-    private function getUdbOrganizers(?string $organizers, Integration $integration): UdbOrganizers
+    private function getUdbOrganizers(?string $organizers, UuidInterface $integrationId): UdbOrganizers
     {
-        $output = new UdbOrganizers();
+        $organizerIds = array_filter(array_map('trim', explode(',', $organizers ?? '')));
 
-        if ($organizers === null || trim($organizers) === '') {
-            return $output;
+        if ($organizerIds === []) {
+            return new UdbOrganizers();
         }
 
-        $organizersAsIds = array_filter(array_map('trim', explode(',', $organizers)));
-
+        $integration = $this->integrationRepository->getById($integrationId);
         $productionClient = $integration->getKeycloakClientByEnv(Environment::Production);
 
-        foreach ($organizersAsIds as $id) {
+        $output = new UdbOrganizers();
+
+        foreach ($organizerIds as $id) {
             $output->add(
                 new UdbOrganizer(
                     Uuid::uuid4(),
