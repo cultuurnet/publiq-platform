@@ -81,23 +81,25 @@ const OrganizersSection = ({
                   >
                     {organizer.name[i18n.language]}
 
-                {organizer.status === "Test" &&
-                  organizer.id === uitpasTestOrg && (
-                    <span className="text-xs text-gray-500 ml-2">
-                      <a
-                        href={t("welcome_section.card.uitpas.test_dataset_url")}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        ({t("integrations.documentation.test_dataset")})
-                      </a>
-                    </span>
-                  )}
-              </Heading>
-              <div className="flex-shrink-0 flex max-sm:flex-col gap-4">
-                <CopyText text={organizer.id} />
-              </div>
-            </div>
+                    {organizer.status === "Test" &&
+                      organizer.id === uitpasTestOrg && (
+                        <span className="text-xs text-gray-500 ml-2">
+                          <a
+                            href={t(
+                              "welcome_section.card.uitpas.test_dataset_url"
+                            )}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            ({t("integrations.documentation.test_dataset")})
+                          </a>
+                        </span>
+                      )}
+                  </Heading>
+                  <div className="flex-shrink-0 flex max-sm:flex-col gap-4">
+                    <CopyText text={organizer.id} />
+                  </div>
+                </div>
 
                 <div className="mt-2 ml-1">
                   {organizer.permissions.length > 0 ? (
