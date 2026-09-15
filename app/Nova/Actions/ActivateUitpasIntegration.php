@@ -44,7 +44,7 @@ final class ActivateUitpasIntegration extends Action
         $organization = $fields->get('organization');
         $organizationId = Uuid::fromString($organization->id);
 
-        /** @var string $organizers */
+        /** @var ?string $organizers */
         $organizers = $fields->get('organizers');
 
         $this->integrationRepository->activateWithOrganization(
@@ -78,10 +78,15 @@ final class ActivateUitpasIntegration extends Action
         ];
     }
 
-    private function getUdbOrganizers(string $organizers, Integration $integration): UdbOrganizers
+    private function getUdbOrganizers(?string $organizers, Integration $integration): UdbOrganizers
     {
-        $organizersAsIds = array_map('trim', explode(',', $organizers));
         $output = new UdbOrganizers();
+
+        if ($organizers === null || trim($organizers) === '') {
+            return $output;
+        }
+
+        $organizersAsIds = array_filter(array_map('trim', explode(',', $organizers)));
 
         $productionClient = $integration->getKeycloakClientByEnv(Environment::Production);
 

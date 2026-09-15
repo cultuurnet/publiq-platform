@@ -75,4 +75,48 @@ final class ActivateUitpasIntegrationTest extends TestCase
 
         $this->assertEquals('Integration "My UiTPAS integration" activated.', $json['message']);
     }
+
+    public function test_it_activates_the_integration_when_no_organizers_are_given(): void
+    {
+        $integrationId = Uuid::uuid4();
+        $organizationId = Uuid::uuid4();
+
+        $integration = new IntegrationModel();
+        $integration->id = $integrationId->toString();
+        $integration->name = 'My UiTPAS integration';
+
+        $organization = new OrganizationModel();
+        $organization->id = $organizationId->toString();
+
+        $domainIntegration = $this->givenThereIsAnIntegration($integrationId);
+        $domainIntegration = $domainIntegration->withKeycloakClients($this->givenThereIsAKeycloakClient($domainIntegration));
+
+        $this->integrationRepository->expects($this->once())
+            ->method('getById')
+            ->with($this->callback(fn ($id) => $id->equals($integrationId)))
+            ->willReturn($domainIntegration);
+
+        $this->integrationRepository->expects($this->once())
+            ->method('activateWithOrganization')
+            ->with(
+                $this->callback(fn ($id) => $id->equals($integrationId)),
+                $this->callback(fn ($id) => $id->equals($organizationId)),
+                null,
+                $this->callback(fn (UdbOrganizers $organizers) => count($organizers) === 0)
+            );
+
+        $fields = new ActionFields(
+            collect([
+                'organization' => $organization,
+                'organizers' => null,
+            ]),
+            collect()
+        );
+
+        $response = $this->handler->handle($fields, new Collection([$integration]));
+
+        $json = $response->jsonSerialize();
+
+        $this->assertEquals('Integration "My UiTPAS integration" activated.', $json['message']);
+    }
 }
