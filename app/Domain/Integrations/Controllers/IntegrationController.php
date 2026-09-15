@@ -304,11 +304,11 @@ final class IntegrationController extends Controller
     {
         $integration = $this->integrationRepository->getById(Uuid::fromString($integrationId));
 
-        $organizerIds = collect($integration->udbOrganizers())->map(fn (UdbOrganizer $organizer) => $organizer->organizerId->toString());
-        $newOrganizers = array_filter(
-            UdbOrganizerMapper::mapUpdateOrganizers($request, $integration),
-            fn (UdbOrganizer $organizer) => !in_array($organizer->organizerId->toString(), $organizerIds->toArray(), true)
-        );
+        $newOrganizers = collect(UdbOrganizerMapper::mapUpdateOrganizers($request, $integration))
+            ->reject(fn (UdbOrganizer $organizer) => $integration->getUdbOrganizerByOrgId($organizer->organizerId) !== null)
+            ->unique(fn (UdbOrganizer $organizer) => $organizer->organizerId->toString())
+            ->values()
+            ->all();
 
         try {
             $this->organizerRepository->createInBulk(new UdbOrganizers($newOrganizers));

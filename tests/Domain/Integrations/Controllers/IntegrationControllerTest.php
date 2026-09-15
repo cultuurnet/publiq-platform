@@ -272,12 +272,14 @@ final class IntegrationControllerTest extends TestCase
             ],
         ]);
 
-        // The organizer is already attached, so it is silently filtered out
-        // before the insert is attempted: no 500, no error, no duplicate row.
         $response->assertRedirect('/');
         $response->assertSessionDoesntHaveErrors();
 
         $this->assertDatabaseCount('udb_organizers', 1);
+        $this->assertDatabaseHas('udb_organizers', [
+            'integration_id' => $integration->id->toString(),
+            'organizer_id' => $organizer->organizerId->toString(),
+        ]);
     }
 
     public function test_it_can_not_add_the_same_new_organizer_twice_in_one_request(): void
@@ -291,9 +293,8 @@ final class IntegrationControllerTest extends TestCase
         $organizerId = Uuid::uuid4()->toString();
 
         // Both entries are "new" from the integration's current point of view,
-        // so the pre-filter can't catch this: the second insert in the same
-        // request hits the unique constraint, which should be caught instead
-        // of bubbling up as a 500.
+        // so the pre-filter can't catch this on its own: deduplication within
+        // the request relies on the unique() call before the insert.
         $response = $this->post("/integrations/{$integration->id}/organizers", [
             'organizers' => [
                 [
@@ -308,11 +309,13 @@ final class IntegrationControllerTest extends TestCase
         ]);
 
         $response->assertRedirect('/');
-        $response->assertSessionHasErrors('duplicate_organizer');
+        $response->assertSessionDoesntHaveErrors();
 
-        // The bulk insert runs in a single transaction, so the unique
-        // constraint violation on the second entry rolls back the first too.
-        $this->assertDatabaseCount('udb_organizers', 0);
+        $this->assertDatabaseCount('udb_organizers', 1);
+        $this->assertDatabaseHas('udb_organizers', [
+            'integration_id' => $integration->id->toString(),
+            'organizer_id' => $organizerId,
+        ]);
     }
 
     public function test_it_can_not_request_activation_if_not_authorized(): void
