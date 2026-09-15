@@ -11,6 +11,7 @@ use App\Nova\Resources\Organization as OrganizationResource;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\Rule;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Actions\ActionResponse;
 use Laravel\Nova\Fields\ActionFields;
@@ -57,7 +58,7 @@ final class ActivateIntegration extends Action
                 ->withoutTrashed()
                 ->rules(
                     'required',
-                    'exists:organizations,id'
+                    Rule::exists('organizations', 'id')->whereNull('deleted_at')
                 ),
         ];
         if (config('app.features.coupons')) {
