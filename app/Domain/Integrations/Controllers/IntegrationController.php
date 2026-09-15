@@ -304,13 +304,17 @@ final class IntegrationController extends Controller
     {
         $integration = $this->integrationRepository->getById(Uuid::fromString($integrationId));
 
-        $organizerIds = collect($integration->udbOrganizers())->map(fn (UdbOrganizer $organizer) => $organizer->organizerId);
+        $organizerIds = collect($integration->udbOrganizers())->map(fn (UdbOrganizer $organizer) => $organizer->organizerId->toString());
         $newOrganizers = array_filter(
             UdbOrganizerMapper::mapUpdateOrganizers($request, $integration),
-            fn (UdbOrganizer $organizer) => !in_array($organizer->organizerId, $organizerIds->toArray(), true)
+            fn (UdbOrganizer $organizer) => !in_array($organizer->organizerId->toString(), $organizerIds->toArray(), true)
         );
 
-        $this->organizerRepository->createInBulk(new UdbOrganizers($newOrganizers));
+        try {
+            $this->organizerRepository->createInBulk(new UdbOrganizers($newOrganizers));
+        } catch (UniqueConstraintViolationException) {
+            return Redirect::back()->withErrors(['duplicate_organizer' => __('errors.organizer.duplicate')]);
+        }
 
         return Redirect::back();
     }

@@ -226,6 +226,95 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
+    public function test_it_can_add_a_new_organizer(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $this->givenThereIsAKeycloakClient($integration);
+
+        $organizerId = Uuid::uuid4()->toString();
+
+        $response = $this->post("/integrations/{$integration->id}/organizers", [
+            'organizers' => [
+                [
+                    'id' => $organizerId,
+                    'name' => 'Test Organizer',
+                ],
+            ],
+        ]);
+
+        $response->assertRedirect('/');
+        $response->assertSessionDoesntHaveErrors();
+
+        $this->assertDatabaseHas('udb_organizers', [
+            'integration_id' => $integration->id->toString(),
+            'organizer_id' => $organizerId,
+        ]);
+    }
+
+    public function test_it_can_not_add_an_organizer_that_is_already_active_on_the_integration(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $this->givenThereIsAKeycloakClient($integration);
+        $organizer = $this->givenThereIsAnOrganizerOnIntegration($integration);
+
+        $response = $this->post("/integrations/{$integration->id}/organizers", [
+            'organizers' => [
+                [
+                    'id' => $organizer->organizerId->toString(),
+                    'name' => 'Test Organizer',
+                ],
+            ],
+        ]);
+
+        // The organizer is already attached, so it is silently filtered out
+        // before the insert is attempted: no 500, no error, no duplicate row.
+        $response->assertRedirect('/');
+        $response->assertSessionDoesntHaveErrors();
+
+        $this->assertDatabaseCount('udb_organizers', 1);
+    }
+
+    public function test_it_can_not_add_the_same_new_organizer_twice_in_one_request(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $this->givenThereIsAKeycloakClient($integration);
+
+        $organizerId = Uuid::uuid4()->toString();
+
+        // Both entries are "new" from the integration's current point of view,
+        // so the pre-filter can't catch this: the second insert in the same
+        // request hits the unique constraint, which should be caught instead
+        // of bubbling up as a 500.
+        $response = $this->post("/integrations/{$integration->id}/organizers", [
+            'organizers' => [
+                [
+                    'id' => $organizerId,
+                    'name' => 'Test Organizer',
+                ],
+                [
+                    'id' => $organizerId,
+                    'name' => 'Test Organizer',
+                ],
+            ],
+        ]);
+
+        $response->assertRedirect('/');
+        $response->assertSessionHasErrors('duplicate_organizer');
+
+        // The bulk insert runs in a single transaction, so the unique
+        // constraint violation on the second entry rolls back the first too.
+        $this->assertDatabaseCount('udb_organizers', 0);
+    }
+
     public function test_it_can_not_request_activation_if_not_authorized(): void
     {
         $this->actingAs(UserModel::createSystemUser());
