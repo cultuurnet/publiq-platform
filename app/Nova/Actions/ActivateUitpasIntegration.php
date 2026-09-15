@@ -13,13 +13,14 @@ use App\Domain\Integrations\UdbOrganizers;
 use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\UdbUuid;
+use App\Nova\Resources\Organization as OrganizationResource;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Actions\ActionResponse;
 use Laravel\Nova\Fields\ActionFields;
-use Laravel\Nova\Fields\Select;
+use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Ramsey\Uuid\Uuid;
@@ -39,9 +40,9 @@ final class ActivateUitpasIntegration extends Action
         /** @var IntegrationModel $integration */
         $integration = $integrations->first();
 
-        /** @var string $organizationIdAsString */
-        $organizationIdAsString = $fields->get('organization');
-        $organizationId = Uuid::fromString($organizationIdAsString);
+        /** @var OrganizationModel $organization */
+        $organization = $fields->get('organization');
+        $organizationId = Uuid::fromString($organization->id);
 
         /** @var string $organizers */
         $organizers = $fields->get('organizers');
@@ -62,10 +63,9 @@ final class ActivateUitpasIntegration extends Action
     public function fields(NovaRequest $request): array
     {
         return [
-            Select::make('Organization', 'organization')
-                ->options(
-                    OrganizationModel::query()->pluck('name', 'id')
-                )
+            BelongsTo::make('Organization', 'organization', OrganizationResource::class)
+                ->searchable()
+                ->withoutTrashed()
                 ->rules(
                     'required',
                     'exists:organizations,id'
