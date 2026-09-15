@@ -36,14 +36,13 @@ final class ActivateIntegration extends Action
 
         /** @var OrganizationModel $organization */
         $organization = $fields->get('organization');
-        $organizationId = Uuid::fromString($organization->id);
 
         /** @var string $couponCode */
         $couponCode = $fields->get('coupon');
 
         $this->integrationRepository->activateWithOrganization(
             Uuid::fromString($integration->id),
-            $organizationId,
+            Uuid::fromString($organization->id),
             $couponCode
         );
 

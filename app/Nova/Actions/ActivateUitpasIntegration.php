@@ -43,7 +43,6 @@ final class ActivateUitpasIntegration extends Action
 
         /** @var OrganizationModel $organization */
         $organization = $fields->get('organization');
-        $organizationId = Uuid::fromString($organization->id);
 
         /** @var ?string $organizers */
         $organizers = $fields->get('organizers');
@@ -52,7 +51,7 @@ final class ActivateUitpasIntegration extends Action
 
         $this->integrationRepository->activateWithOrganization(
             $integrationId,
-            $organizationId,
+            Uuid::fromString($organization->id),
             null,
             $this->getUdbOrganizers($organizers, $integrationId)
         );
