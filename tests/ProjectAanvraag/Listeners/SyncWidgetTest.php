@@ -21,6 +21,8 @@ use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Json;
 use App\Keycloak\Client;
+use App\Keycloak\Events\ClientCreated;
+use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\ProjectAanvraag\Listeners\SyncWidget;
 use App\ProjectAanvraag\ProjectAanvraagClient;
 use App\ProjectAanvraag\ProjectAanvraagUrl;
@@ -49,6 +51,8 @@ final class SyncWidgetTest extends TestCase
 
     private UiTiDv1ConsumerRepository&MockObject $uiTiDv1ConsumerRepository;
 
+    private KeycloakClientRepository&MockObject $keycloakClientRepository;
+
     private UserRepository&MockObject $userRepository;
 
     private SyncWidget $syncWidget;
@@ -61,6 +65,7 @@ final class SyncWidgetTest extends TestCase
         $this->integrationRepository = $this->createMock(IntegrationRepository::class);
         $this->contactRepository = $this->createMock(ContactRepository::class);
         $this->uiTiDv1ConsumerRepository = $this->createMock(UiTiDv1ConsumerRepository::class);
+        $this->keycloakClientRepository = $this->createMock(KeycloakClientRepository::class);
         $this->userRepository = $this->createMock(UserRepository::class);
         $logger = $this->createMock(LoggerInterface::class);
 
@@ -72,6 +77,7 @@ final class SyncWidgetTest extends TestCase
             $this->integrationRepository,
             $this->contactRepository,
             $this->uiTiDv1ConsumerRepository,
+            $this->keycloakClientRepository,
             123,
             $this->userRepository,
             $logger
@@ -89,6 +95,26 @@ final class SyncWidgetTest extends TestCase
         $this->assertRequest($integration, 'application_sent');
 
         $this->syncWidget->handleIntegrationCreated(new IntegrationCreated($integration->id));
+    }
+
+    public function test_it_handles_client_created(): void
+    {
+        $integration = $this->givenThereIsAnIntegration(IntegrationStatus::PendingApprovalIntegration);
+
+        $this->givenThereIsAContact($integration->id);
+
+        $this->givenThereAreConsumers($integration->id);
+
+        $keycloakClient = $integration->getKeycloakClientByEnv(Environment::Testing);
+
+        $this->keycloakClientRepository->expects($this->once())
+            ->method('getById')
+            ->with($keycloakClient->id)
+            ->willReturn($keycloakClient);
+
+        $this->assertRequest($integration, 'application_sent');
+
+        $this->syncWidget->handleClientCreated(new ClientCreated($keycloakClient->id));
     }
 
     public function test_it_handles_integration_activated(): void

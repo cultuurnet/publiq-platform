@@ -14,14 +14,16 @@ use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Events\IntegrationUnblocked;
 use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Keycloak\Events\ClientCreated;
+use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\ProjectAanvraag\Listeners\SyncWidget;
-use App\UiTiDv1\Events\ConsumerCreated;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 
 final class ProjectAanvraagServiceProvider extends ServiceProvider
 {
@@ -42,15 +44,21 @@ final class ProjectAanvraagServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(SyncWidget::class, function () {
-            $groups = config('uitidv1.environments.prod.groups.widgets');
-            $groups = explode(',', str_replace(' ', '', $groups));
+            $groupId = (int) config('project_aanvraag.widget_group_id');
+
+            if ($groupId <= 0) {
+                throw new RuntimeException(
+                    'PROJECT_AANVRAAG_WIDGET_GROUP_ID is missing or invalid, refusing to sync widgets with group id ' . $groupId
+                );
+            }
 
             return new SyncWidget(
                 $this->app->get(ProjectAanvraagClient::class),
                 $this->app->get(IntegrationRepository::class),
                 $this->app->get(ContactRepository::class),
                 $this->app->get(UiTiDv1ConsumerRepository::class),
-                (int) end($groups),
+                $this->app->get(KeycloakClientRepository::class),
+                $groupId,
                 $this->app->get(UserRepository::class),
                 $this->app->get(LoggerInterface::class)
             );
@@ -59,7 +67,7 @@ final class ProjectAanvraagServiceProvider extends ServiceProvider
         if (config('project_aanvraag.create_widget', false)) {
             Event::listen(IntegrationCreated::class, [SyncWidget::class, 'handleIntegrationCreated']);
             Event::listen(ContactCreated::class, [SyncWidget::class, 'handleContactCreated']);
-            Event::listen(ConsumerCreated::class, [SyncWidget::class, 'handleConsumerCreated']);
+            Event::listen(ClientCreated::class, [SyncWidget::class, 'handleClientCreated']);
 
             Event::listen(IntegrationActivated::class, [SyncWidget::class, 'handleIntegrationActivated']);
             Event::listen(IntegrationBlocked::class, [SyncWidget::class, 'handleIntegrationBlocked']);

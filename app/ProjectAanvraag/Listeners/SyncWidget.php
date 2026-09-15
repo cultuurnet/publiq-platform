@@ -18,9 +18,10 @@ use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Exceptions\KeycloakClientNotFound;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Keycloak\Events\ClientCreated;
+use App\Keycloak\Repositories\KeycloakClientRepository;
 use App\ProjectAanvraag\ProjectAanvraagClient;
 use App\ProjectAanvraag\Requests\SyncWidgetRequest;
-use App\UiTiDv1\Events\ConsumerCreated;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use App\UiTiDv1\UiTiDv1Environment;
 use Illuminate\Bus\Queueable;
@@ -39,6 +40,7 @@ final class SyncWidget implements ShouldQueue
         private readonly IntegrationRepository $integrationRepository,
         private readonly ContactRepository $contactRepository,
         private readonly UiTiDv1ConsumerRepository $uiTiDv1ConsumerRepository,
+        private readonly KeycloakClientRepository $keycloakClientRepository,
         private readonly int $groupId,
         private readonly UserRepository $userRepository,
         private readonly LoggerInterface $logger
@@ -56,10 +58,10 @@ final class SyncWidget implements ShouldQueue
         $this->handle($contact->integrationId);
     }
 
-    public function handleConsumerCreated(ConsumerCreated $consumerCreated): void
+    public function handleClientCreated(ClientCreated $clientCreated): void
     {
-        $consumer = $this->uiTiDv1ConsumerRepository->getById($consumerCreated->id);
-        $this->handle($consumer->integrationId);
+        $client = $this->keycloakClientRepository->getById($clientCreated->id);
+        $this->handle($client->integrationId);
     }
 
     public function handleIntegrationActivated(IntegrationActivated $integrationActivated): void
@@ -202,7 +204,7 @@ final class SyncWidget implements ShouldQueue
     public function failed(
         IntegrationCreated|
         ContactCreated|
-        ConsumerCreated|
+        ClientCreated|
         IntegrationActivated|
         IntegrationBlocked|
         IntegrationUnblocked|
@@ -218,7 +220,7 @@ final class SyncWidget implements ShouldQueue
             IntegrationDeleted::class,
             IntegrationUpdated::class => 'integration',
             ContactCreated::class => 'contact',
-            ConsumerCreated::class => 'consumer',
+            ClientCreated::class => 'client',
         };
 
         $this->logger->error('Failed to create widget', [
