@@ -16,8 +16,10 @@ final readonly class SyncWidgetRequest
         public string $summary,
         public IntegrationStatus $status,
         public int $groupId,
-        public string $testApiKeySapi3,
-        public string $liveApiKeySapi3,
+        // Null for integrations without UiTiD v1 consumers, i.e. everything created after UiTiD v1 consumer
+        // creation was switched off.
+        public ?string $testApiKeySapi3,
+        public ?string $liveApiKeySapi3,
         public string $testClientId,
         public string $liveClientId,
     ) {
