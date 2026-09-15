@@ -44,41 +44,42 @@ const OrganizersSection = ({
       preserveState: false,
     });
 
-  if (!organizers?.length) {
-    return null;
-  }
-
   return (
     <>
-      <Heading level={4} className="font-semibold mt-4">
-        <Trans
-          i18nKey={`details.organizers_info.${sectionName.toLowerCase()}.title`}
-        />
-      </Heading>
-      {sectionName !== "Live" && (
-        <p className="text-gray-600">
-          <Trans
-            i18nKey="details.organizers_info.test.description"
-            t={t}
-            components={[
-              <Link
-                key={t("details.organizers_info.test.description")}
-                href={t("details.organizers_info.test.link")}
-                className="text-publiq-blue-dark hover:underline mb-3"
-              />,
-            ]}
-          />
-        </p>
-      )}
-      <div className="gap-0">
-        {organizers.map((organizer, index) => (
-          <Card
-            key={organizer.id}
-            className={`m-0 drop-shadow-none border border-gray-200 border-t-0 first:border-t z-[${organizers.length - index}]`}
-          >
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2 md:gap-4">
-              <Heading level={5} className="font-semibold text-publiq-gray-600">
-                {organizer.name[i18n.language]}
+      {!!organizers?.length && (
+        <>
+          <Heading level={4} className="font-semibold mt-4">
+            <Trans
+              i18nKey={`details.organizers_info.${sectionName.toLowerCase()}.title`}
+            />
+          </Heading>
+          {sectionName !== "Live" && (
+            <p className="text-gray-600">
+              <Trans
+                i18nKey="details.organizers_info.test.description"
+                t={t}
+                components={[
+                  <Link
+                    key={t("details.organizers_info.test.description")}
+                    href={t("details.organizers_info.test.link")}
+                    className="text-publiq-blue-dark hover:underline mb-3"
+                  />,
+                ]}
+              />
+            </p>
+          )}
+          <div className="gap-0">
+            {organizers.map((organizer, index) => (
+              <Card
+                key={organizer.id}
+                className={`m-0 drop-shadow-none border border-gray-200 border-t-0 first:border-t z-[${organizers.length - index}]`}
+              >
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2 md:gap-4">
+                  <Heading
+                    level={5}
+                    className="font-semibold text-publiq-gray-600"
+                  >
+                    {organizer.name[i18n.language]}
 
                 {organizer.status === "Test" &&
                   organizer.id === uitpasTestOrg && (
@@ -98,44 +99,48 @@ const OrganizersSection = ({
               </div>
             </div>
 
-            <div className="mt-2 ml-1">
-              {organizer.permissions.length > 0 ? (
-                <ul className="grid grid-cols-1 md:grid-cols-2 gap-1 text-sm text-gray-700">
-                  {organizer.permissions.map((permission, id) => {
-                    const isHovered = hoveredPermissionId === id;
-                    return (
-                      <li key={id} className="flex items-start gap-2">
-                        <Tooltip
-                          visible={isHovered}
-                          text={permission.id}
-                          className="w-auto"
-                        >
-                          <div
-                            onMouseEnter={() => setHoveredPermissionId(id)}
-                            onMouseLeave={() => setHoveredPermissionId(null)}
-                            className="flex items-center gap-2"
-                          >
-                            <FontAwesomeIcon
-                              icon={faCheckSquare}
-                              className="text-green-500"
-                              size="lg"
-                            />
-                            {permission.label}
-                          </div>
-                        </Tooltip>
-                      </li>
-                    );
-                  })}
-                </ul>
-              ) : (
-                <p className="text-sm italic text-gray-400">
-                  {t("details.organizers_info.no_permissions")}
-                </p>
-              )}
-            </div>
-          </Card>
-        ))}
-      </div>
+                <div className="mt-2 ml-1">
+                  {organizer.permissions.length > 0 ? (
+                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-1 text-sm text-gray-700">
+                      {organizer.permissions.map((permission, id) => {
+                        const isHovered = hoveredPermissionId === id;
+                        return (
+                          <li key={id} className="flex items-start gap-2">
+                            <Tooltip
+                              visible={isHovered}
+                              text={permission.id}
+                              className="w-auto"
+                            >
+                              <div
+                                onMouseEnter={() => setHoveredPermissionId(id)}
+                                onMouseLeave={() =>
+                                  setHoveredPermissionId(null)
+                                }
+                                className="flex items-center gap-2"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faCheckSquare}
+                                  className="text-green-500"
+                                  size="lg"
+                                />
+                                {permission.label}
+                              </div>
+                            </Tooltip>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  ) : (
+                    <p className="text-sm italic text-gray-400">
+                      {t("details.organizers_info.no_permissions")}
+                    </p>
+                  )}
+                </div>
+              </Card>
+            ))}
+          </div>
+        </>
+      )}
       {sectionName === "Live" && (
         <ButtonPrimary
           className="self-start"
