@@ -299,6 +299,7 @@
       "title": "Organizers",
       "description": "Below you see an overview of the UiTdatabank organizers for which you can execute actions in the UiTPAS API.",
       "add": "Add organizer",
+      "already_added": "already added",
       "update_dialog": {
         "question": "Select the UiTdatabank organizers for which you can execute actions in UiTPAS."
       },
