@@ -19,7 +19,7 @@ pipeline {
         }
 
         stage('Setup and build') {
-            agent { label 'ubuntu && 20.04 && php8.2 && nodejs22' }
+            agent { label 'ubuntu && 24.04 && php8.2 && nodejs22' }
             environment {
                 GIT_SHORT_COMMIT = util.shortCommitRef()
                 ARTIFACT_VERSION = "${env.PIPELINE_VERSION}" + '+sha.' + "${env.GIT_SHORT_COMMIT}"
@@ -67,7 +67,7 @@ pipeline {
         }
 
         stage('Deploy to acceptance') {
-            agent { label 'ubuntu && 20.04' }
+            agent { label 'ubuntu && 24.04' }
             options { skipDefaultCheckout() }
             environment {
                 APPLICATION_ENVIRONMENT = 'acceptance'
@@ -84,7 +84,7 @@ pipeline {
         }
 
         stage('Acceptance tests') {
-            agent { label 'ubuntu && 20.04 && nodejs22' }
+            agent { label 'ubuntu && 24.04 && nodejs22' }
             environment {
                 E2E_TEST_BASE_URL      = 'https://platform-acc.publiq.be'
                 KEYCLOAK_LOGIN_ENABLED = 'true'
@@ -132,7 +132,7 @@ pipeline {
 
         stage('Deploy to testing') {
             input { message "Deploy to Testing?" }
-            agent { label 'ubuntu && 20.04' }
+            agent { label 'ubuntu && 24.04' }
             options { skipDefaultCheckout() }
             environment {
                 APPLICATION_ENVIRONMENT = 'testing'
@@ -151,7 +151,7 @@ pipeline {
 
         stage('Deploy to production') {
             input { message "Deploy to Production?" }
-            agent { label 'ubuntu && 20.04' }
+            agent { label 'ubuntu && 24.04' }
             options { skipDefaultCheckout() }
             environment {
                 APPLICATION_ENVIRONMENT = 'production'
