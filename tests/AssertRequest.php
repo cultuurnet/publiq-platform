@@ -13,6 +13,7 @@ trait AssertRequest
     {
         self::assertEquals($expected->getHeaders(), $actual->getHeaders());
         self::assertEquals($expected->getMethod(), $actual->getMethod());
+        self::assertEquals((string) $expected->getUri(), (string) $actual->getUri());
         self::assertEquals($expected->getBody()->getContents(), $actual->getBody()->getContents());
 
         return true;

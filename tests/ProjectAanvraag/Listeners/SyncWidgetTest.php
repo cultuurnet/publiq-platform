@@ -309,7 +309,7 @@ final class SyncWidgetTest extends TestCase
     ): void {
         $expectedRequest = new Request(
             'POST',
-            ProjectAanvraagUrl::getBaseUri() . '/projects',
+            ProjectAanvraagUrl::getBaseUri() . 'project/' . $integration->id->toString(),
             [],
             Json::encode([
                 'userId' => 'google-oauth2|102486314601596809843',
