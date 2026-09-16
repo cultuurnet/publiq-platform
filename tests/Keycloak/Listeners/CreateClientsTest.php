@@ -13,6 +13,7 @@ use App\Keycloak\Client;
 use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Events\ClientsCreated;
 use App\Keycloak\Events\MissingClientsDetected;
+use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Listeners\CreateClients;
 use App\Keycloak\Realm;
 use App\Keycloak\Realms;
@@ -217,6 +218,35 @@ final class CreateClientsTest extends TestCase
             ->with(sprintf('%s - already has all Keycloak clients', $integrationId));
 
         $this->handler->handleCreatingMissingClients(new MissingClientsDetected($integrationId));
+
+        Event::assertNotDispatched(ClientsCreated::class);
+    }
+
+    public function test_it_does_not_dispatch_clients_created_when_all_keycloak_calls_fail(): void
+    {
+        $this->integrationRepository->expects($this->once())
+            ->method('getById')
+            ->with($this->integration->id)
+            ->willReturn($this->integration);
+
+        $this->apiClient->expects($this->exactly($this->realms->count()))
+            ->method('createClient')
+            ->willThrowException(KeyCloakApiFailed::failedToCreateClient('Something went wrong'));
+
+        $this->apiClient->expects($this->never())
+            ->method('addScopeToClient');
+
+        $this->keycloakClientRepository->expects($this->once())
+            ->method('create')
+            ->with();
+
+        $this->logger->expects($this->never())
+            ->method('info');
+
+        $this->logger->expects($this->exactly($this->realms->count()))
+            ->method('error');
+
+        $this->handler->handleCreateClients(new IntegrationCreated($this->integration->id));
 
         Event::assertNotDispatched(ClientsCreated::class);
     }
