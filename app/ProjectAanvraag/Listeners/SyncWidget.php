@@ -18,8 +18,7 @@ use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Exceptions\KeycloakClientNotFound;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Keycloak\Events\ClientCreated;
-use App\Keycloak\Repositories\KeycloakClientRepository;
+use App\Keycloak\Events\ClientsCreated;
 use App\ProjectAanvraag\ProjectAanvraagClient;
 use App\ProjectAanvraag\Requests\SyncWidgetRequest;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
@@ -40,7 +39,6 @@ final class SyncWidget implements ShouldQueue
         private readonly IntegrationRepository $integrationRepository,
         private readonly ContactRepository $contactRepository,
         private readonly UiTiDv1ConsumerRepository $uiTiDv1ConsumerRepository,
-        private readonly KeycloakClientRepository $keycloakClientRepository,
         private readonly int $groupId,
         private readonly UserRepository $userRepository,
         private readonly LoggerInterface $logger
@@ -58,10 +56,9 @@ final class SyncWidget implements ShouldQueue
         $this->handle($contact->integrationId);
     }
 
-    public function handleClientCreated(ClientCreated $clientCreated): void
+    public function handleClientsCreated(ClientsCreated $clientsCreated): void
     {
-        $client = $this->keycloakClientRepository->getById($clientCreated->id);
-        $this->handle($client->integrationId);
+        $this->handle($clientsCreated->id);
     }
 
     public function handleIntegrationActivated(IntegrationActivated $integrationActivated): void
@@ -185,7 +182,7 @@ final class SyncWidget implements ShouldQueue
     public function failed(
         IntegrationCreated|
         ContactCreated|
-        ClientCreated|
+        ClientsCreated|
         IntegrationActivated|
         IntegrationBlocked|
         IntegrationUnblocked|
@@ -199,9 +196,9 @@ final class SyncWidget implements ShouldQueue
             IntegrationBlocked::class,
             IntegrationUnblocked::class,
             IntegrationDeleted::class,
-            IntegrationUpdated::class => 'integration',
+            IntegrationUpdated::class,
+            ClientsCreated::class => 'integration',
             ContactCreated::class => 'contact',
-            ClientCreated::class => 'client',
         };
 
         $this->logger->error('Failed to create widget', [

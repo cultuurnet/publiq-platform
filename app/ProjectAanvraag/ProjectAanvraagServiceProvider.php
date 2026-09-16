@@ -14,8 +14,7 @@ use App\Domain\Integrations\Events\IntegrationDeleted;
 use App\Domain\Integrations\Events\IntegrationUnblocked;
 use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
-use App\Keycloak\Events\ClientCreated;
-use App\Keycloak\Repositories\KeycloakClientRepository;
+use App\Keycloak\Events\ClientsCreated;
 use App\ProjectAanvraag\Listeners\SyncWidget;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use GuzzleHttp\Client;
@@ -57,7 +56,6 @@ final class ProjectAanvraagServiceProvider extends ServiceProvider
                 $this->app->get(IntegrationRepository::class),
                 $this->app->get(ContactRepository::class),
                 $this->app->get(UiTiDv1ConsumerRepository::class),
-                $this->app->get(KeycloakClientRepository::class),
                 $groupId,
                 $this->app->get(UserRepository::class),
                 $this->app->get(LoggerInterface::class)
@@ -67,7 +65,7 @@ final class ProjectAanvraagServiceProvider extends ServiceProvider
         if (config('project_aanvraag.create_widget', false)) {
             Event::listen(IntegrationCreated::class, [SyncWidget::class, 'handleIntegrationCreated']);
             Event::listen(ContactCreated::class, [SyncWidget::class, 'handleContactCreated']);
-            Event::listen(ClientCreated::class, [SyncWidget::class, 'handleClientCreated']);
+            Event::listen(ClientsCreated::class, [SyncWidget::class, 'handleClientsCreated']);
 
             Event::listen(IntegrationActivated::class, [SyncWidget::class, 'handleIntegrationActivated']);
             Event::listen(IntegrationBlocked::class, [SyncWidget::class, 'handleIntegrationBlocked']);
