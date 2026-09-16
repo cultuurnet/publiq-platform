@@ -4,18 +4,15 @@ import { Trans, useTranslation } from "react-i18next";
 import type { Integration } from "../../../types/Integration";
 import { Card } from "../../Card";
 import { CopyText } from "../../CopyText";
-import { ButtonIcon } from "../../ButtonIcon";
-import { faCheckSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faCheckSquare } from "@fortawesome/free-solid-svg-icons";
 import type { Organizer } from "../../../types/Organizer";
 import { groupBy } from "lodash";
 import { ButtonPrimary } from "../../ButtonPrimary";
-import { QuestionDialog } from "../../QuestionDialog";
 import { router, useForm } from "@inertiajs/react";
 import { Dialog } from "../../Dialog";
 import { ButtonSecondary } from "../../ButtonSecondary";
 import { OrganizersDatalist } from "./OrganizersDatalist";
 import type { UiTPASOrganizer } from "../../../types/UiTPASOrganizer";
-import { classNames } from "../../../utils/classNames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "../../Link";
 import { Tooltip } from "../../Tooltip";
@@ -32,7 +29,6 @@ const OrganizersSection = ({
   sectionName: Organizer["status"];
 }) => {
   const { t, i18n } = useTranslation();
-  const [toBeDeletedId, setToBeDeletedId] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [hoveredPermissionId, setHoveredPermissionId] = useState<number | null>(
     null
@@ -42,120 +38,111 @@ const OrganizersSection = ({
   });
   const uitpasTestOrg = import.meta.env.VITE_UITPAS_TEST_ORG;
 
-  const handleDeleteOrganizer = () => {
-    router.delete(`/integrations/${id}/organizers/${toBeDeletedId}`, {
-      preserveScroll: true,
-      preserveState: false,
-    });
-  };
-
   const handleUpdateOrganizers = () =>
     router.post(`/integrations/${id}/organizers`, form.data, {
       preserveScroll: false,
       preserveState: false,
     });
 
-  if (!organizers?.length) {
-    return null;
-  }
-
   return (
     <>
-      <Heading level={4} className="font-semibold mt-4">
-        <Trans
-          i18nKey={`details.organizers_info.${sectionName.toLowerCase()}.title`}
-        />
-      </Heading>
-      {sectionName !== "Live" && (
-        <p className="text-gray-600">
-          <Trans
-            i18nKey="details.organizers_info.test.description"
-            t={t}
-            components={[
-              <Link
-                key={t("details.organizers_info.test.description")}
-                href={t("details.organizers_info.test.link")}
-                className="text-publiq-blue-dark hover:underline mb-3"
-              />,
-            ]}
-          />
-        </p>
-      )}
-      <div className="gap-0">
-        {organizers.map((organizer, index) => (
-          <Card
-            key={organizer.id}
-            className={`m-0 drop-shadow-none border border-gray-200 border-t-0 first:border-t z-[${organizers.length - index}]`}
-          >
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2 md:gap-4">
-              <Heading level={5} className="font-semibold text-publiq-gray-600">
-                {organizer.name[i18n.language]}
+      {!!organizers?.length && (
+        <>
+          <Heading level={4} className="font-semibold mt-4">
+            <Trans
+              i18nKey={`details.organizers_info.${sectionName.toLowerCase()}.title`}
+            />
+          </Heading>
+          {sectionName !== "Live" && (
+            <p className="text-gray-600">
+              <Trans
+                i18nKey="details.organizers_info.test.description"
+                t={t}
+                components={[
+                  <Link
+                    key={t("details.organizers_info.test.description")}
+                    href={t("details.organizers_info.test.link")}
+                    className="text-publiq-blue-dark hover:underline mb-3"
+                  />,
+                ]}
+              />
+            </p>
+          )}
+          <div className="gap-0">
+            {organizers.map((organizer, index) => (
+              <Card
+                key={organizer.id}
+                className={`m-0 drop-shadow-none border border-gray-200 border-t-0 first:border-t z-[${organizers.length - index}]`}
+              >
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2 md:gap-4">
+                  <Heading
+                    level={5}
+                    className="font-semibold text-publiq-gray-600"
+                  >
+                    {organizer.name[i18n.language]}
 
-                {organizer.status === "Test" &&
-                  organizer.id === uitpasTestOrg && (
-                    <span className="text-xs text-gray-500 ml-2">
-                      <a
-                        href={t("welcome_section.card.uitpas.test_dataset_url")}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        ({t("integrations.documentation.test_dataset")})
-                      </a>
-                    </span>
-                  )}
-              </Heading>
-              <div className="flex-shrink-0 flex max-sm:flex-col gap-4">
-                <CopyText text={organizer.id} />
-                <ButtonIcon
-                  data-testid={organizer.name[i18n.language]}
-                  icon={faTrash}
-                  className={classNames(
-                    sectionName !== "Live" && "invisible max-sm:hidden",
-                    "text-icon-gray"
-                  )}
-                  onClick={() => setToBeDeletedId(organizer.id)}
-                />
-              </div>
-            </div>
-
-            <div className="mt-2 ml-1">
-              {organizer.permissions.length > 0 ? (
-                <ul className="grid grid-cols-1 md:grid-cols-2 gap-1 text-sm text-gray-700">
-                  {organizer.permissions.map((permission, id) => {
-                    const isHovered = hoveredPermissionId === id;
-                    return (
-                      <li key={id} className="flex items-start gap-2">
-                        <Tooltip
-                          visible={isHovered}
-                          text={permission.id}
-                          className="w-auto"
-                        >
-                          <div
-                            onMouseEnter={() => setHoveredPermissionId(id)}
-                            onMouseLeave={() => setHoveredPermissionId(null)}
-                            className="flex items-center gap-2"
+                    {organizer.status === "Test" &&
+                      organizer.id === uitpasTestOrg && (
+                        <span className="text-xs text-gray-500 ml-2">
+                          <a
+                            href={t(
+                              "welcome_section.card.uitpas.test_dataset_url"
+                            )}
+                            target="_blank"
+                            rel="noreferrer"
                           >
-                            <FontAwesomeIcon
-                              icon={faCheckSquare}
-                              className="text-green-500"
-                              size="lg"
-                            />
-                            {permission.label}
-                          </div>
-                        </Tooltip>
-                      </li>
-                    );
-                  })}
-                </ul>
-              ) : (
-                <p className="text-sm italic text-gray-400">
-                  {t("details.organizers_info.no_permissions")}
-                </p>
-              )}
-            </div>
-          </Card>
-        ))}
-      </div>
+                            ({t("integrations.documentation.test_dataset")})
+                          </a>
+                        </span>
+                      )}
+                  </Heading>
+                  <div className="flex-shrink-0 flex max-sm:flex-col gap-4">
+                    <CopyText text={organizer.id} />
+                  </div>
+                </div>
+
+                <div className="mt-2 ml-1">
+                  {organizer.permissions.length > 0 ? (
+                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-1 text-sm text-gray-700">
+                      {organizer.permissions.map((permission, id) => {
+                        const isHovered = hoveredPermissionId === id;
+                        return (
+                          <li key={id} className="flex items-start gap-2">
+                            <Tooltip
+                              visible={isHovered}
+                              text={permission.id}
+                              className="w-auto"
+                            >
+                              <div
+                                onMouseEnter={() => setHoveredPermissionId(id)}
+                                onMouseLeave={() =>
+                                  setHoveredPermissionId(null)
+                                }
+                                className="flex items-center gap-2"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faCheckSquare}
+                                  className="text-green-500"
+                                  size="lg"
+                                />
+                                {permission.label}
+                              </div>
+                            </Tooltip>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  ) : (
+                    <p className="text-sm italic text-gray-400">
+                      {t("details.organizers_info.no_permissions")}
+                    </p>
+                  )}
+                </div>
+              </Card>
+            ))}
+          </div>
+        </>
+      )}
       {sectionName === "Live" && (
         <ButtonPrimary
           className="self-start"
@@ -164,19 +151,6 @@ const OrganizersSection = ({
           {t("details.organizers_info.add")}
         </ButtonPrimary>
       )}
-      <QuestionDialog
-        isVisible={!!toBeDeletedId}
-        onClose={() => {
-          setToBeDeletedId("");
-        }}
-        title={t("details.organizers_info.delete_dialog.title")}
-        question={t("details.organizers_info.delete_dialog.question", {
-          name: organizers.find((organizer) => organizer.id === toBeDeletedId)
-            ?.name[i18n.language],
-        })}
-        onConfirm={handleDeleteOrganizer}
-        onCancel={() => setToBeDeletedId("")}
-      />
       <Dialog
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
