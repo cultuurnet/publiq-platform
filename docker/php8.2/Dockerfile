@@ -26,7 +26,7 @@ RUN a2enmod rewrite
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -y nodejs
 
-RUN npx --yes playwright@1.63.0 install-deps chromium
+RUN npx --yes playwright install-deps chromium
 
 # Chromium cannot write to the default $HOME/.cache when 'docker compose exec' runs as a non-root uid
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright

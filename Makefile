@@ -1,4 +1,4 @@
-.PHONY: up up-build down bash install composer-install npm-install key-generate migrate lint stan ci config
+.PHONY: up down bash install composer-install npm-install key-generate migrate lint stan ci config
 
 ifeq ($(CI),true)
 DOCKER_COMPOSE_OPTIONS = -u 451:451 -T
@@ -8,10 +8,6 @@ endif
 
 up:
 	docker compose up -d
-
-# 'docker compose up' reuses an existing image even when the Dockerfile changed, so CI has to force the build
-up-build:
-	docker compose up -d --build
 
 down:
 	docker compose down
