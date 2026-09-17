@@ -26,9 +26,18 @@ RUN a2enmod rewrite
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -y nodejs
 
+RUN npx --yes playwright@1.63.0 install-deps chromium
+
+# Chromium cannot write to the default $HOME/.cache when 'docker compose exec' runs as a non-root uid
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+RUN mkdir -p /ms-playwright && chmod 777 /ms-playwright
+
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+RUN sed -ri -e 's!^Listen 80$!Listen 80\nListen 8000!' /etc/apache2/ports.conf
+RUN sed -ri -e 's!<VirtualHost \*:80>!<VirtualHost *:80 *:8000>!' /etc/apache2/sites-available/*.conf
 
 COPY limits.conf /etc/apache2/conf-enabled/limits.conf
 COPY xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini

@@ -1,4 +1,4 @@
-.PHONY: up down bash install composer-install npm-install key-generate migrate lint stan ci config
+.PHONY: up up-build down bash install composer-install npm-install key-generate migrate lint stan ci config
 
 ifeq ($(CI),true)
 DOCKER_COMPOSE_OPTIONS = -u 451:451 -T
@@ -8,6 +8,10 @@ endif
 
 up:
 	docker compose up -d
+
+# 'docker compose up' reuses an existing image even when the Dockerfile changed, so CI has to force the build
+up-build:
+	docker compose up -d --build
 
 down:
 	docker compose down
@@ -90,11 +94,22 @@ npm-types-check:
 
 npm-ci: npm-format npm-lint-check npm-types-check
 
+# 'docker compose exec' does not inherit the calling environment, so the vars the e2e tests need have to be forwarded explicitly
+
+# HOME is overridden because DOCKER_COMPOSE_OPTIONS runs as uid 451 in CI, and that uid has no home directory in the image.
+E2E_DOCKER_OPTIONS = -e HOME=/tmp \
+	-e CI \
+	-e E2E_TEST_BASE_URL \
+	-e E2E_TEST_EMAIL -e E2E_TEST_PASSWORD \
+	-e E2E_TEST_V1_EMAIL -e E2E_TEST_V1_PASSWORD \
+	-e E2E_TEST_ADMIN_EMAIL -e E2E_TEST_ADMIN_PASSWORD \
+	-e KEYCLOAK_LOGIN_ENABLED
+
 e2e-install:
-	npx playwright install chromium --with-deps
+	docker compose exec $(DOCKER_COMPOSE_OPTIONS) -e HOME=/tmp platform npx playwright install chromium
 
 test-e2e:
-	npx playwright test $(options)
+	docker compose exec $(DOCKER_COMPOSE_OPTIONS) $(E2E_DOCKER_OPTIONS) platform npx playwright test $(options)
 
 test-e2e-filter:
-	npx playwright test "$(filter)" $(options)
+	docker compose exec $(DOCKER_COMPOSE_OPTIONS) $(E2E_DOCKER_OPTIONS) platform npx playwright test "$(filter)" $(options)
