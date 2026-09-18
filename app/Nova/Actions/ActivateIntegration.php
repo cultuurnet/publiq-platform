@@ -7,13 +7,15 @@ namespace App\Nova\Actions;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Organizations\Models\OrganizationModel;
+use App\Nova\Resources\Organization as OrganizationResource;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\Rule;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Actions\ActionResponse;
 use Laravel\Nova\Fields\ActionFields;
-use Laravel\Nova\Fields\Select;
+use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Ramsey\Uuid\Uuid;
@@ -32,16 +34,15 @@ final class ActivateIntegration extends Action
         /** @var IntegrationModel $integration */
         $integration = $integrations->first();
 
-        /** @var string $organizationIdAsString */
-        $organizationIdAsString = $fields->get('organization');
-        $organizationId = Uuid::fromString($organizationIdAsString);
+        /** @var OrganizationModel $organization */
+        $organization = $fields->get('organization');
 
         /** @var string $couponCode */
         $couponCode = $fields->get('coupon');
 
         $this->integrationRepository->activateWithOrganization(
             Uuid::fromString($integration->id),
-            $organizationId,
+            Uuid::fromString($organization->id),
             $couponCode
         );
 
@@ -51,13 +52,12 @@ final class ActivateIntegration extends Action
     public function fields(NovaRequest $request): array
     {
         $fields = [
-            Select::make('Organization', 'organization')
-                ->options(
-                    OrganizationModel::query()->pluck('name', 'id')
-                )
+            BelongsTo::make('Organization', 'organization', OrganizationResource::class)
+                ->searchable()
+                ->withoutTrashed()
                 ->rules(
                     'required',
-                    'exists:organizations,id'
+                    Rule::exists('organizations', 'id')->whereNull('deleted_at')
                 ),
         ];
         if (config('app.features.coupons')) {

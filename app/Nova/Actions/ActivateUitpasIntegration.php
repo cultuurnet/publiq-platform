@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Nova\Actions;
 
 use App\Domain\Integrations\Environment;
-use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\UdbOrganizer;
@@ -13,16 +12,19 @@ use App\Domain\Integrations\UdbOrganizers;
 use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\UdbUuid;
+use App\Nova\Resources\Organization as OrganizationResource;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\Rule;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Actions\ActionResponse;
 use Laravel\Nova\Fields\ActionFields;
-use Laravel\Nova\Fields\Select;
+use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 final class ActivateUitpasIntegration extends Action
 {
@@ -39,21 +41,19 @@ final class ActivateUitpasIntegration extends Action
         /** @var IntegrationModel $integration */
         $integration = $integrations->first();
 
-        /** @var string $organizationIdAsString */
-        $organizationIdAsString = $fields->get('organization');
-        $organizationId = Uuid::fromString($organizationIdAsString);
+        /** @var OrganizationModel $organization */
+        $organization = $fields->get('organization');
 
-        /** @var string $organizers */
+        /** @var ?string $organizers */
         $organizers = $fields->get('organizers');
 
+        $integrationId = Uuid::fromString($integration->id);
+
         $this->integrationRepository->activateWithOrganization(
-            Uuid::fromString($integration->id),
-            $organizationId,
+            $integrationId,
+            Uuid::fromString($organization->id),
             null,
-            $this->getUdbOrganizers(
-                $organizers,
-                $this->integrationRepository->getById(Uuid::fromString($integration->id))
-            )
+            $this->getUdbOrganizers($organizers, $integrationId)
         );
 
         return Action::message('Integration "' . $integration->name . '" activated.');
@@ -62,13 +62,12 @@ final class ActivateUitpasIntegration extends Action
     public function fields(NovaRequest $request): array
     {
         return [
-            Select::make('Organization', 'organization')
-                ->options(
-                    OrganizationModel::query()->pluck('name', 'id')
-                )
+            BelongsTo::make('Organization', 'organization', OrganizationResource::class)
+                ->searchable()
+                ->withoutTrashed()
                 ->rules(
                     'required',
-                    'exists:organizations,id'
+                    Rule::exists('organizations', 'id')->whereNull('deleted_at')
                 ),
             Text::make('Organizer(s)', 'organizers')
                 ->rules(
@@ -78,14 +77,20 @@ final class ActivateUitpasIntegration extends Action
         ];
     }
 
-    private function getUdbOrganizers(string $organizers, Integration $integration): UdbOrganizers
+    private function getUdbOrganizers(?string $organizers, UuidInterface $integrationId): UdbOrganizers
     {
-        $organizersAsIds = array_map('trim', explode(',', $organizers));
-        $output = new UdbOrganizers();
+        $organizerIds = array_filter(array_map('trim', explode(',', $organizers ?? '')));
 
+        if ($organizerIds === []) {
+            return new UdbOrganizers();
+        }
+
+        $integration = $this->integrationRepository->getById($integrationId);
         $productionClient = $integration->getKeycloakClientByEnv(Environment::Production);
 
-        foreach ($organizersAsIds as $id) {
+        $output = new UdbOrganizers();
+
+        foreach ($organizerIds as $id) {
             $output->add(
                 new UdbOrganizer(
                     Uuid::uuid4(),
