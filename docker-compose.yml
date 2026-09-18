@@ -19,6 +19,7 @@ services:
                 condition: service_healthy
     platform:
         container_name: platform.publiq
+        ipc: host
         networks:
             publiq-platform:
                 aliases:
