@@ -25,9 +25,6 @@ use App\Keycloak\Events\ClientsCreated;
 use App\ProjectAanvraag\Listeners\SyncWidget;
 use App\ProjectAanvraag\ProjectAanvraagClient;
 use App\ProjectAanvraag\ProjectAanvraagUrl;
-use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
-use App\UiTiDv1\UiTiDv1Consumer;
-use App\UiTiDv1\UiTiDv1Environment;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Collection;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -48,8 +45,6 @@ final class SyncWidgetTest extends TestCase
 
     private ContactRepository&MockObject $contactRepository;
 
-    private UiTiDv1ConsumerRepository&MockObject $uiTiDv1ConsumerRepository;
-
     private UserRepository&MockObject $userRepository;
 
     private SyncWidget $syncWidget;
@@ -61,7 +56,6 @@ final class SyncWidgetTest extends TestCase
         $this->client = $this->createMock(ClientInterface::class);
         $this->integrationRepository = $this->createMock(IntegrationRepository::class);
         $this->contactRepository = $this->createMock(ContactRepository::class);
-        $this->uiTiDv1ConsumerRepository = $this->createMock(UiTiDv1ConsumerRepository::class);
         $this->userRepository = $this->createMock(UserRepository::class);
         $logger = $this->createMock(LoggerInterface::class);
 
@@ -72,7 +66,6 @@ final class SyncWidgetTest extends TestCase
             ),
             $this->integrationRepository,
             $this->contactRepository,
-            $this->uiTiDv1ConsumerRepository,
             123,
             $this->userRepository,
             $logger
@@ -85,8 +78,6 @@ final class SyncWidgetTest extends TestCase
 
         $this->givenThereIsAContact($integration->id);
 
-        $this->givenThereAreConsumers($integration->id);
-
         $this->assertRequest($integration, 'application_sent');
 
         $this->syncWidget->handleIntegrationCreated(new IntegrationCreated($integration->id));
@@ -98,50 +89,9 @@ final class SyncWidgetTest extends TestCase
 
         $this->givenThereIsAContact($integration->id);
 
-        $this->givenThereAreConsumers($integration->id);
-
         $this->assertRequest($integration, 'application_sent');
 
         $this->syncWidget->handleClientsCreated(new ClientsCreated($integration->id));
-    }
-
-    public function test_it_syncs_widgets_without_uitidv1_consumers(): void
-    {
-        $integration = $this->givenThereIsAnIntegration(IntegrationStatus::Active);
-
-        $this->givenThereIsAContact($integration->id);
-
-        $this->givenThereAreNoConsumers($integration->id);
-
-        $this->assertRequest($integration, 'active', null, null);
-
-        $this->syncWidget->handleIntegrationActivated(new IntegrationActivated($integration->id));
-    }
-
-    public function test_it_syncs_widgets_with_only_a_production_consumer(): void
-    {
-        $integration = $this->givenThereIsAnIntegration(IntegrationStatus::Active);
-
-        $this->givenThereIsAContact($integration->id);
-
-        $productionConsumer = new UiTiDv1Consumer(
-            Uuid::uuid4(),
-            $integration->id,
-            'consumer-id-production',
-            'consumer-key-production',
-            'consumer-secret-production',
-            'api-key-production',
-            UiTiDv1Environment::Production
-        );
-
-        $this->uiTiDv1ConsumerRepository->expects($this->once())
-            ->method('getByIntegrationId')
-            ->with($integration->id)
-            ->willReturn([$productionConsumer]);
-
-        $this->assertRequest($integration, 'active', null, 'api-key-production');
-
-        $this->syncWidget->handleIntegrationActivated(new IntegrationActivated($integration->id));
     }
 
     public function test_it_handles_integration_activated(): void
@@ -149,8 +99,6 @@ final class SyncWidgetTest extends TestCase
         $integration = $this->givenThereIsAnIntegration(IntegrationStatus::Active);
 
         $this->givenThereIsAContact($integration->id);
-
-        $this->givenThereAreConsumers($integration->id);
 
         $this->assertRequest($integration, 'active');
 
@@ -163,8 +111,6 @@ final class SyncWidgetTest extends TestCase
 
         $this->givenThereIsAContact($integration->id);
 
-        $this->givenThereAreConsumers($integration->id);
-
         $this->assertRequest($integration, 'blocked');
 
         $this->syncWidget->handleIntegrationBlocked(new IntegrationBlocked($integration->id));
@@ -176,8 +122,6 @@ final class SyncWidgetTest extends TestCase
 
         $this->givenThereIsAContact($integration->id);
 
-        $this->givenThereAreConsumers($integration->id);
-
         $this->assertRequest($integration, 'blocked');
 
         $this->syncWidget->handleIntegrationDeleted(new IntegrationDeleted($integration->id));
@@ -188,8 +132,6 @@ final class SyncWidgetTest extends TestCase
         $integration = $this->givenThereIsAnIntegration(IntegrationStatus::Active);
 
         $this->givenThereIsAContact($integration->id);
-
-        $this->givenThereAreConsumers($integration->id);
 
         $this->assertRequest($integration, 'active');
 
@@ -244,42 +186,6 @@ final class SyncWidgetTest extends TestCase
         return $contact;
     }
 
-    private function givenThereAreNoConsumers(UuidInterface $integrationId): void
-    {
-        $this->uiTiDv1ConsumerRepository->expects($this->once())
-            ->method('getByIntegrationId')
-            ->with($integrationId)
-            ->willReturn([]);
-    }
-
-    private function givenThereAreConsumers(UuidInterface $integrationId): void
-    {
-        $testConsumer = new UiTiDv1Consumer(
-            Uuid::uuid4(),
-            $integrationId,
-            'consumer-id-testing',
-            'consumer-key-testing',
-            'consumer-secret-testing',
-            'api-key-testing',
-            UiTiDv1Environment::Testing
-        );
-
-        $productionConsumer = new UiTiDv1Consumer(
-            Uuid::uuid4(),
-            $integrationId,
-            'consumer-id-production',
-            'consumer-key-production',
-            'consumer-secret-production',
-            'api-key-production',
-            UiTiDv1Environment::Production
-        );
-
-        $this->uiTiDv1ConsumerRepository->expects($this->once())
-            ->method('getByIntegrationId')
-            ->with($integrationId)
-            ->willReturn([$testConsumer, $productionConsumer]);
-    }
-
     private function givenThereAreClients(Integration $integration): Integration
     {
         $testClient = new Client(
@@ -301,12 +207,8 @@ final class SyncWidgetTest extends TestCase
         return $integration->withKeycloakClients($testClient, $productionClient);
     }
 
-    private function assertRequest(
-        Integration $integration,
-        string $state,
-        ?string $testApiKeySapi3 = 'api-key-testing',
-        ?string $liveApiKeySapi3 = 'api-key-production'
-    ): void {
+    private function assertRequest(Integration $integration, string $state): void
+    {
         $expectedRequest = new Request(
             'POST',
             ProjectAanvraagUrl::getBaseUri() . 'project/' . $integration->id->toString(),
@@ -316,8 +218,6 @@ final class SyncWidgetTest extends TestCase
                 'name' => $integration->name,
                 'summary' => $integration->description,
                 'groupId' => 123,
-                'testApiKeySapi3' => $testApiKeySapi3,
-                'liveApiKeySapi3' => $liveApiKeySapi3,
                 'testClientId' => 'client-id-testing',
                 'liveClientId' => 'client-id-production',
                 'state' => $state,

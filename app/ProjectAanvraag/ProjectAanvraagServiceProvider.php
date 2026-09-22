@@ -16,7 +16,6 @@ use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Events\ClientsCreated;
 use App\ProjectAanvraag\Listeners\SyncWidget;
-use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Support\Facades\Event;
@@ -55,7 +54,6 @@ final class ProjectAanvraagServiceProvider extends ServiceProvider
                 $this->app->get(ProjectAanvraagClient::class),
                 $this->app->get(IntegrationRepository::class),
                 $this->app->get(ContactRepository::class),
-                $this->app->get(UiTiDv1ConsumerRepository::class),
                 $groupId,
                 $this->app->get(UserRepository::class),
                 $this->app->get(LoggerInterface::class)

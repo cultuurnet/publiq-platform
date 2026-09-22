@@ -21,8 +21,6 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Events\ClientsCreated;
 use App\ProjectAanvraag\ProjectAanvraagClient;
 use App\ProjectAanvraag\Requests\SyncWidgetRequest;
-use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
-use App\UiTiDv1\UiTiDv1Environment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -38,7 +36,6 @@ final class SyncWidget implements ShouldQueue
         private readonly ProjectAanvraagClient $projectAanvraagClient,
         private readonly IntegrationRepository $integrationRepository,
         private readonly ContactRepository $contactRepository,
-        private readonly UiTiDv1ConsumerRepository $uiTiDv1ConsumerRepository,
         private readonly int $groupId,
         private readonly UserRepository $userRepository,
         private readonly LoggerInterface $logger
@@ -130,20 +127,6 @@ final class SyncWidget implements ShouldQueue
             return;
         }
 
-        // UiTiD v1 is being phased out: integrations created after consumer creation was disabled have no consumers
-        // and therefore no SAPI3 api keys. That is expected, so the keys are sent best-effort (null when absent)
-        // instead of blocking the sync. Existing integrations still have consumers and keep sending their keys.
-        $testKey = null;
-        $liveKey = null;
-        foreach ($this->uiTiDv1ConsumerRepository->getByIntegrationId($integration->id) as $uiTiDv1Consumer) {
-            if ($uiTiDv1Consumer->environment === UiTiDv1Environment::Testing) {
-                $testKey = $uiTiDv1Consumer->apiKey;
-            }
-            if ($uiTiDv1Consumer->environment === UiTiDv1Environment::Production) {
-                $liveKey = $uiTiDv1Consumer->apiKey;
-            }
-        }
-
         try {
             $testClient = $integration->getKeycloakClientByEnv(Environment::Testing);
         } catch (KeycloakClientNotFound) {
@@ -171,8 +154,6 @@ final class SyncWidget implements ShouldQueue
                 $integration->description,
                 $integration->status,
                 $this->groupId,
-                $testKey,
-                $liveKey,
                 $testClient->clientId,
                 $liveClient->clientId
             )
