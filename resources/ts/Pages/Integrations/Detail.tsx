@@ -45,6 +45,7 @@ const Detail = ({
   const isMobile = useIsMobile();
 
   const duplicateContactErrorMessage = errors["duplicate_contact"];
+  const duplicateOrganizerErrorMessage = errors["duplicate_organizer"];
 
   const pricingPlans = useGetPricingPlans(integration.type, subscriptions);
 
@@ -161,7 +162,13 @@ const Detail = ({
                     type="organisations"
                     label={t("details.organizers_info.title")}
                   >
-                    <OrganizersInfo {...integration} organizers={organizers} />
+                    <OrganizersInfo
+                      {...integration}
+                      organizers={organizers}
+                      duplicateOrganizerErrorMessage={
+                        duplicateOrganizerErrorMessage
+                      }
+                    />
                   </Tabs.Item>
                 )}
                 <Tabs.Item

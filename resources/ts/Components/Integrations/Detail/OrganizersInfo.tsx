@@ -16,8 +16,12 @@ import type { UiTPASOrganizer } from "../../../types/UiTPASOrganizer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "../../Link";
 import { Tooltip } from "../../Tooltip";
+import { Alert } from "../../Alert";
 
-type Props = Integration & { organizers: Organizer[] };
+type Props = Integration & {
+  organizers: Organizer[];
+  duplicateOrganizerErrorMessage?: string;
+};
 
 const OrganizersSection = ({
   id,
@@ -186,12 +190,19 @@ const OrganizersSection = ({
   );
 };
 
-export const OrganizersInfo = ({ id, organizers }: Props) => {
+export const OrganizersInfo = ({
+  id,
+  organizers,
+  duplicateOrganizerErrorMessage,
+}: Props) => {
   const { t } = useTranslation();
   const byStatus = groupBy(organizers, "status");
 
   return (
     <div className={"flex flex-col gap-2"}>
+      {duplicateOrganizerErrorMessage && (
+        <Alert variant="error">{duplicateOrganizerErrorMessage}</Alert>
+      )}
       <Heading level={3} className="font-semibold">
         {t("details.organizers_info.title")}
       </Heading>
