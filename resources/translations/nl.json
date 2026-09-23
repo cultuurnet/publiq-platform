@@ -302,6 +302,7 @@
       "description": "Hieronder vind je een overzicht van de UiTdatabank organisaties waarvoor je acties kan uitvoeren in de UiTPAS API.",
       "no_permissions": "Geen rechten toegekend",
       "add": "Organisatie toevoegen",
+      "already_added": "reeds toegevoegd",
       "ask_extra_permissions": "Vraag extra rechten voor organisaties",
       "test": {
         "title": "Testomgeving",
