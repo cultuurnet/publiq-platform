@@ -30,9 +30,9 @@ const OrganizersSection = ({
 }) => {
   const { t, i18n } = useTranslation();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [hoveredPermissionId, setHoveredPermissionId] = useState<number | null>(
-    null
-  );
+  const [hoveredPermissionKey, setHoveredPermissionKey] = useState<
+    string | null
+  >(null);
   const form = useForm<{ organizers: UiTPASOrganizer[] }>({
     organizers: [],
   });
@@ -104,33 +104,40 @@ const OrganizersSection = ({
                 <div className="mt-2 ml-1">
                   {organizer.permissions.length > 0 ? (
                     <ul className="grid grid-cols-1 md:grid-cols-2 gap-1 text-sm text-gray-700">
-                      {organizer.permissions.map((permission, id) => {
-                        const isHovered = hoveredPermissionId === id;
-                        return (
-                          <li key={id} className="flex items-start gap-2">
-                            <Tooltip
-                              visible={isHovered}
-                              text={permission.id}
-                              className="w-auto"
+                      {organizer.permissions.map(
+                        (permission, permissionIndex) => {
+                          const permissionKey = `${organizer.id}-${permissionIndex}`;
+                          return (
+                            <li
+                              key={permissionKey}
+                              className="flex items-start gap-2"
                             >
-                              <div
-                                onMouseEnter={() => setHoveredPermissionId(id)}
-                                onMouseLeave={() =>
-                                  setHoveredPermissionId(null)
-                                }
-                                className="flex items-center gap-2"
+                              <Tooltip
+                                visible={hoveredPermissionKey === permissionKey}
+                                text={permission.id}
+                                className="w-auto"
                               >
-                                <FontAwesomeIcon
-                                  icon={faCheckSquare}
-                                  className="text-green-500"
-                                  size="lg"
-                                />
-                                {permission.label}
-                              </div>
-                            </Tooltip>
-                          </li>
-                        );
-                      })}
+                                <div
+                                  onMouseEnter={() =>
+                                    setHoveredPermissionKey(permissionKey)
+                                  }
+                                  onMouseLeave={() =>
+                                    setHoveredPermissionKey(null)
+                                  }
+                                  className="flex items-center gap-2"
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faCheckSquare}
+                                    className="text-green-500"
+                                    size="lg"
+                                  />
+                                  {permission.label}
+                                </div>
+                              </Tooltip>
+                            </li>
+                          );
+                        }
+                      )}
                     </ul>
                   ) : (
                     <p className="text-sm italic text-gray-400">
