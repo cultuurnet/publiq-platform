@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\UiTiDv1\Events;
+namespace App\Keycloak\Events;
 
 use Illuminate\Foundation\Events\Dispatchable;
 use Ramsey\Uuid\UuidInterface;
 
-final readonly class ConsumerCreated
+final readonly class ClientsCreated
 {
     use Dispatchable;
 
