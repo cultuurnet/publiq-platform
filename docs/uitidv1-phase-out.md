@@ -97,7 +97,15 @@ This stage must also delete `UiTiDv1ServiceProvider.php:16,17,87` — the `Event
 
 **Prerequisite — reconcile the drift (finding 2), while the SDK still exists.** For integrations with `status IN (Blocked, Deleted)` that still have `uitidv1_consumers` rows, block them upstream via `UiTiDv1ClusterSDK::blockConsumers()`. A throwaway artisan command is appropriate; do not add a permanent one. If publiq instead accepts the residual risk until shutdown, record that decision explicitly — **this needs a security/product owner, not a silent choice.** This is the last moment the capability exists.
 
-Also capture the three `consumerDetailUrlTemplate` values from `config/uitidv1.php` into the ops runbook before Stage 2b deletes them: after this stage, revoking a legacy key is a UiTiD v1 admin-UI operation and those URLs are the only record of how to get there.
+### Runbook: revoking a legacy UiTiD v1 key after this stage
+
+Once the Block/Unblock actions are gone, revoking a leaked legacy key is a UiTiD v1 admin-UI operation. The consumer detail URL is the `UITID_V1_<ENV>_CONSUMER_DETAILS_URL_TEMPLATE` env var of the deployed environment, with the consumer's `consumer_id` substituted for `%s`. On acceptance all three point at:
+
+```
+https://acc.uitid.be/uitid/rest/admin/serviceconsumers/%s
+```
+
+The production values live only in the deployed environment's configuration — read them out of there before Stage 2b blanks them, since `config/uitidv1.php` and the `.env` blocks are deleted then. Find the `consumer_id` in Nova on the integration's legacy API keys table, or in `uitidv1_consumers.consumer_id`.
 
 Delete together, in one PR (finding 8):
 
