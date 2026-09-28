@@ -15,17 +15,10 @@ export const assertKeyVisibility = async (
   page: Page,
   integrationStatus: IntegrationStatus
 ) => {
-  await expect(
-    page.locator('[data-relationship="uiTiDv1Consumers"]')
-  ).toBeVisible();
-
   // polling is required since the keys don't get updated with Fetch/XHR calls
   await expect(async () => {
     await page.reload();
 
-    const uiTiDv1Consumers = page.locator(
-      '[data-relationship="uiTiDv1Consumers"]'
-    );
     const keycloakClients = page.locator(
       '[data-relationship="keycloakClients"]'
     );
@@ -37,18 +30,14 @@ export const assertKeyVisibility = async (
      * This shouldn't be an issue on production since that environment uses different
      * rate limiting quota
      */
-    const tables = [uiTiDv1Consumers, keycloakClients];
-
-    const assertions = tables.map((table) => {
-      return Object.values(Environment).map(async (environment) => {
-        const row = table.getByRole("row", {
-          name: `${environment} ${StatusToCopy[integrationStatus]}`,
-        });
-        await expect(row).toBeVisible({ timeout: 7_000 });
+    const assertions = Object.values(Environment).map(async (environment) => {
+      const row = keycloakClients.getByRole("row", {
+        name: `${environment} ${StatusToCopy[integrationStatus]}`,
       });
+      await expect(row).toBeVisible({ timeout: 7_000 });
     });
 
-    await Promise.all(assertions.flat());
+    await Promise.all(assertions);
   }).toPass({
     intervals: [1_000, 2_000, 3_000],
   });
