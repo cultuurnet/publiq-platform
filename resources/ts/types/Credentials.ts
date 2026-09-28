@@ -3,9 +3,6 @@ import type { UiTiDv1Environment } from "./UiTiDv1Environment";
 
 export type LegacyAuthConsumer = {
   apiKey: string;
-  consumerId: string;
-  consumerKey: string;
-  consumerSecret: string;
   environment: UiTiDv1Environment;
   id: string;
   integrationId: string;
