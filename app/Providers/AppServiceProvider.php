@@ -16,6 +16,8 @@ use App\Domain\Organizations\Repositories\EloquentOrganizationRepository;
 use App\Domain\Organizations\Repositories\OrganizationRepository;
 use App\Domain\Subscriptions\Repositories\EloquentSubscriptionRepository;
 use App\Domain\Subscriptions\Repositories\SubscriptionRepository;
+use App\UiTiDv1\Repositories\EloquentUiTiDv1ConsumerRepository;
+use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use Illuminate\Support\ServiceProvider;
 
 final class AppServiceProvider extends ServiceProvider
@@ -28,5 +30,6 @@ final class AppServiceProvider extends ServiceProvider
         $this->app->bind(OrganizationRepository::class, EloquentOrganizationRepository::class);
         $this->app->bind(SubscriptionRepository::class, EloquentSubscriptionRepository::class);
         $this->app->bind(KeyVisibilityUpgradeRepository::class, EloquentKeyVisibilityUpgradeRepository::class);
+        $this->app->bind(UiTiDv1ConsumerRepository::class, EloquentUiTiDv1ConsumerRepository::class);
     }
 }

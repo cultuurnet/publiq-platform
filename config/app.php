@@ -199,7 +199,6 @@ return [
         App\Providers\HorizonServiceProvider::class,
         App\Providers\NovaServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        App\UiTiDv1\UiTiDv1ServiceProvider::class,
         App\ProjectAanvraag\ProjectAanvraagServiceProvider::class,
         App\Keycloak\KeycloakServiceProvider::class,
         App\Search\SearchServiceProvider::class,
