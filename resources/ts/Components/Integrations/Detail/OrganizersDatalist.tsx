@@ -8,13 +8,20 @@ import { useTranslation } from "react-i18next";
 import { Alert } from "../../Alert";
 import { ButtonIcon } from "../../ButtonIcon";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { classNames } from "../../../utils/classNames";
 
 type Props = {
   onChange: (organizers: UiTPASOrganizer[]) => void;
   value: UiTPASOrganizer[];
+  existingOrganizerIds?: string[];
 } & Omit<FormElementProps, "onChange" | "component">;
 
-export const OrganizersDatalist = ({ onChange, value, ...props }: Props) => {
+export const OrganizersDatalist = ({
+  onChange,
+  value,
+  existingOrganizerIds = [],
+  ...props
+}: Props) => {
   const { t } = useTranslation();
   const [isSearchListVisible, setIsSearchListVisible] = useState(false);
   const [organizerList, setOrganizerList] = useState<UiTPASOrganizer[]>([]);
@@ -64,12 +71,12 @@ export const OrganizersDatalist = ({ onChange, value, ...props }: Props) => {
     }
   };
 
-  const handleAddOrganizers = (organizer: UiTPASOrganizer) => {
-    const isDuplicate =
-      value.length > 0 &&
-      value.some((existingOrganizer) => existingOrganizer.id === organizer.id);
+  const isOrganizerAlreadyAdded = (organizerId: string) =>
+    existingOrganizerIds.includes(organizerId) ||
+    value.some((existingOrganizer) => existingOrganizer.id === organizerId);
 
-    if (!isDuplicate) {
+  const handleAddOrganizers = (organizer: UiTPASOrganizer) => {
+    if (!isOrganizerAlreadyAdded(organizer.id)) {
       onChange([...value, organizer]);
       setIsSearchListVisible(false);
       setOrganizerList([]);
@@ -130,17 +137,35 @@ export const OrganizersDatalist = ({ onChange, value, ...props }: Props) => {
               organizerList.length > 0 &&
               isSearchListVisible && (
                 <ul className="border rounded absolute bg-white w-full z-50">
-                  {organizerList.map((organizer) => (
-                    <li
-                      tabIndex={0}
-                      key={`${organizer.id}`}
-                      onClick={() => handleAddOrganizers(organizer)}
-                      onKeyDown={(e) => handleKeyDown(e, organizer)}
-                      className="border-b px-3 py-1 hover:bg-gray-100"
-                    >
-                      {organizer.name}
-                    </li>
-                  ))}
+                  {organizerList.map((organizer) => {
+                    const alreadyAdded = isOrganizerAlreadyAdded(organizer.id);
+                    return (
+                      <li
+                        tabIndex={alreadyAdded ? -1 : 0}
+                        aria-disabled={alreadyAdded}
+                        key={`${organizer.id}`}
+                        onClick={() =>
+                          !alreadyAdded && handleAddOrganizers(organizer)
+                        }
+                        onKeyDown={(e) =>
+                          !alreadyAdded && handleKeyDown(e, organizer)
+                        }
+                        className={classNames(
+                          "border-b px-3 py-1",
+                          alreadyAdded
+                            ? "cursor-not-allowed text-gray-400"
+                            : "cursor-pointer hover:bg-gray-100"
+                        )}
+                      >
+                        {organizer.name}
+                        {alreadyAdded && (
+                          <span className="ml-2 text-xs italic">
+                            {t("details.organizers_info.already_added")}
+                          </span>
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
               )}
           </div>
