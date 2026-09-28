@@ -13,8 +13,6 @@ use App\UiTiDv1\Jobs\UnblockConsumer;
 use App\UiTiDv1\Jobs\UnblockConsumerHandler;
 use App\UiTiDv1\Jobs\BlockConsumer;
 use App\UiTiDv1\Jobs\BlockConsumerHandler;
-use App\UiTiDv1\Jobs\CreateMissingConsumers;
-use App\UiTiDv1\Jobs\CreateMissingConsumersHandler;
 use App\UiTiDv1\Listeners\BlockConsumers;
 use App\UiTiDv1\Listeners\CreateConsumers;
 use App\UiTiDv1\Listeners\UnblockConsumers;
@@ -83,8 +81,6 @@ final class UiTiDv1ServiceProvider extends ServiceProvider
 
             Event::listen(UnblockConsumer::class, [UnblockConsumerHandler::class, 'handle']);
             Event::listen(BlockConsumer::class, [BlockConsumerHandler::class, 'handle']);
-
-            Event::listen(CreateMissingConsumers::class, [CreateMissingConsumersHandler::class, 'handle']);
         }
     }
 }

@@ -19,7 +19,6 @@ use App\Nova\Actions\BlockIntegration;
 use App\Nova\Actions\Keycloak\CreateMissingKeycloakClients;
 use App\Nova\Actions\OpenWidgetManager;
 use App\Nova\Actions\UdbOrganizer\RequestUdbOrganizer;
-use App\Nova\Actions\UiTiDv1\CreateMissingUiTiDv1Consumers;
 use App\Nova\Actions\UnblockIntegration;
 use App\Nova\Actions\UiTPAS\SynchronizeUiTPASPermissions;
 use App\Nova\Filters\AdminInformationFilter;
@@ -325,15 +324,6 @@ final class Integration extends Resource
                 ->withName('Synchronize UiTPAS permissions')
                 ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->isUiTPAS())
                 ->canRun(fn (Request $request, IntegrationModel $model) => $model->isUiTPAS()),
-
-            (new CreateMissingUiTiDv1Consumers())
-                ->withName('Create missing UiTiD v1 Consumers')
-                ->onlyOnDetail()
-                ->confirmText('Are you sure you want to create missing UiTiD v1 consumers for this integration?')
-                ->confirmButtonText('Create')
-                ->cancelButtonText('Cancel')
-                ->canSee(fn (Request $request) => $request instanceof ActionRequest || $this->hasMissingUiTiDv1Consumers())
-                ->canRun(fn (Request $request, IntegrationModel $model) => $model->hasMissingUiTiDv1Consumers()),
         ];
 
         if (config(KeycloakConfig::KEYCLOAK_CREATION_ENABLED)) {
