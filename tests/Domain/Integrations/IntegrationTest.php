@@ -6,9 +6,14 @@ namespace Tests\Domain\Integrations;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
+use App\Domain\Integrations\Environment;
+use App\Domain\Integrations\IntegrationStatus;
+use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\UdbUuid;
+use App\UiTiDv1\UiTiDv1Environment;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Tests\CreateIntegration;
@@ -65,5 +70,63 @@ final class IntegrationTest extends TestCase
         $udbOrganizer = $this->givenThereIsAnIntegration(Uuid::uuid4());
 
         $this->assertNull($udbOrganizer->getUdbOrganizerByOrgId(new UdbUuid(Uuid::uuid4()->toString())));
+    }
+
+    #[DataProvider('keycloakEnvironmentVisibilityProvider')]
+    public function testIsKeyVisibleForKeycloakEnvironment(
+        IntegrationStatus $status,
+        KeyVisibility $keyVisibility,
+        Environment $environment,
+        bool $expected
+    ): void {
+        $integration = $this->givenThereIsAnIntegration(Uuid::uuid4(), ['status' => $status])
+            ->withKeyVisibility($keyVisibility);
+
+        $this->assertSame($expected, $integration->isKeyVisibleForEnvironment($environment));
+    }
+
+    public static function keycloakEnvironmentVisibilityProvider(): array
+    {
+        return [
+            'v2 is hidden on acceptance' => [IntegrationStatus::Draft, KeyVisibility::v2, Environment::Acceptance, false],
+            'v2 is visible on testing' => [IntegrationStatus::Draft, KeyVisibility::v2, Environment::Testing, true],
+            'v2 is visible on production' => [IntegrationStatus::Draft, KeyVisibility::v2, Environment::Production, true],
+            'all is visible on testing' => [IntegrationStatus::Draft, KeyVisibility::all, Environment::Testing, true],
+            'all is visible on production' => [IntegrationStatus::Active, KeyVisibility::all, Environment::Production, true],
+            'v1 is hidden on testing' => [IntegrationStatus::Draft, KeyVisibility::v1, Environment::Testing, false],
+            'v1 is hidden on production' => [IntegrationStatus::Draft, KeyVisibility::v1, Environment::Production, false],
+            'v1 is hidden on acceptance' => [IntegrationStatus::Draft, KeyVisibility::v1, Environment::Acceptance, false],
+            'deleted hides v2 on production' => [IntegrationStatus::Deleted, KeyVisibility::v2, Environment::Production, false],
+            'deleted hides v1 on acceptance' => [IntegrationStatus::Deleted, KeyVisibility::v1, Environment::Acceptance, false],
+        ];
+    }
+
+    /**
+     * Pins the inverted UiTiD v1 branch: there v2 is the hidden one, the mirror image of the
+     * Keycloak case above. Removed together with the branch itself.
+     */
+    #[DataProvider('uiTiDv1EnvironmentVisibilityProvider')]
+    public function testIsKeyVisibleForUiTiDv1Environment(
+        IntegrationStatus $status,
+        KeyVisibility $keyVisibility,
+        UiTiDv1Environment $environment,
+        bool $expected
+    ): void {
+        $integration = $this->givenThereIsAnIntegration(Uuid::uuid4(), ['status' => $status])
+            ->withKeyVisibility($keyVisibility);
+
+        $this->assertSame($expected, $integration->isKeyVisibleForEnvironment($environment));
+    }
+
+    public static function uiTiDv1EnvironmentVisibilityProvider(): array
+    {
+        return [
+            'v1 is visible on testing' => [IntegrationStatus::Draft, KeyVisibility::v1, UiTiDv1Environment::Testing, true],
+            'v1 is visible on production' => [IntegrationStatus::Draft, KeyVisibility::v1, UiTiDv1Environment::Production, true],
+            'v1 is hidden on acceptance' => [IntegrationStatus::Draft, KeyVisibility::v1, UiTiDv1Environment::Acceptance, false],
+            'all is visible on production' => [IntegrationStatus::Draft, KeyVisibility::all, UiTiDv1Environment::Production, true],
+            'v2 is hidden on production' => [IntegrationStatus::Draft, KeyVisibility::v2, UiTiDv1Environment::Production, false],
+            'deleted hides v1 on production' => [IntegrationStatus::Deleted, KeyVisibility::v1, UiTiDv1Environment::Production, false],
+        ];
     }
 }
