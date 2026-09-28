@@ -230,7 +230,7 @@ final class Integration extends Resource
                 ->asHtml()
                 ->onlyOnDetail(),
 
-            HasMany::make('UiTiD v1 Consumer Credentials', 'uiTiDv1Consumers', UiTiDv1::class),
+            HasMany::make('Legacy API keys', 'uiTiDv1Consumers', UiTiDv1::class),
         ];
 
         if (config(KeycloakConfig::KEYCLOAK_CREATION_ENABLED)) {

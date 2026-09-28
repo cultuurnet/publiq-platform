@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace App\Nova\Resources;
 
-use App\Domain\Integrations\Integration;
-use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Nova\Resource;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
 use App\UiTiDv1\UiTiDv1Environment;
 use Illuminate\Contracts\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\App;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
@@ -60,17 +57,6 @@ final class UiTiDv1 extends Resource
                     UiTiDv1Environment::Testing->value => UiTiDv1Environment::Testing->name,
                     UiTiDv1Environment::Production->value => UiTiDv1Environment::Production->name,
                 ]),
-            Text::make('Visible for integrator', static function (UiTiDv1ConsumerModel $model) {
-                $uitIdV1Consumer = $model->toDomain();
-                /** @var Integration $integration */
-                $integration = App::get(IntegrationRepository::class)->getById($uitIdV1Consumer->integrationId);
-                $isVisible = $integration->isKeyVisibleForEnvironment($uitIdV1Consumer->environment);
-                return sprintf(
-                    '<span style="color: %s">%s</span>',
-                    $isVisible ? 'default' : 'silver',
-                    $isVisible ? 'Yes' : 'No'
-                );
-            })->asHtml(),
             Text::make('api_key')
                 ->readonly(),
         ];
