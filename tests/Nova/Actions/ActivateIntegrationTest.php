@@ -58,8 +58,8 @@ final class ActivateIntegrationTest extends TestCase
         $this->integrationRepository->expects($this->once())
             ->method('activateWithOrganization')
             ->with(
-                $this->callback(fn (UuidInterface $id) => $id->equals($integrationId)),
-                $this->callback(fn (UuidInterface $id) => $id->equals($organizationId)),
+                $this->callback(fn (UuidInterface $id): bool => $id->equals($integrationId)),
+                $this->callback(fn (UuidInterface $id): bool => $id->equals($organizationId)),
                 'COUPON123'
             );
 
@@ -93,8 +93,8 @@ final class ActivateIntegrationTest extends TestCase
         $this->integrationRepository->expects($this->once())
             ->method('activateWithOrganization')
             ->with(
-                $this->callback(fn (UuidInterface $id) => $id->equals($integrationId)),
-                $this->callback(fn (UuidInterface $id) => $id->equals($organizationId)),
+                $this->callback(fn (UuidInterface $id): bool => $id->equals($integrationId)),
+                $this->callback(fn (UuidInterface $id): bool => $id->equals($organizationId)),
                 null
             );
 

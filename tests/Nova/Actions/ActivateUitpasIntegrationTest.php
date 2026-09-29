@@ -69,16 +69,16 @@ final class ActivateUitpasIntegrationTest extends TestCase
 
         $this->integrationRepository->expects($this->once())
             ->method('getById')
-            ->with($this->callback(fn (UuidInterface $id) => $id->equals($integrationId)))
+            ->with($this->callback(fn (UuidInterface $id): bool => $id->equals($integrationId)))
             ->willReturn($domainIntegration);
 
         $this->integrationRepository->expects($this->once())
             ->method('activateWithOrganization')
             ->with(
-                $this->callback(fn (UuidInterface $id) => $id->equals($integrationId)),
-                $this->callback(fn (UuidInterface $id) => $id->equals($organizationId)),
+                $this->callback(fn (UuidInterface $id): bool => $id->equals($integrationId)),
+                $this->callback(fn (UuidInterface $id): bool => $id->equals($organizationId)),
                 null,
-                $this->callback(function (UdbOrganizers $organizers) use ($integrationId, $organizerId, $productionClient) {
+                $this->callback(function (UdbOrganizers $organizers) use ($integrationId, $organizerId, $productionClient): bool {
                     /** @var UdbOrganizer $organizer */
                     $organizer = $organizers->first();
 
@@ -86,7 +86,8 @@ final class ActivateUitpasIntegrationTest extends TestCase
                         && $organizer->integrationId->equals($integrationId)
                         && $organizer->organizerId->toString() === $organizerId
                         && $organizer->status === UdbOrganizerStatus::Pending
-                        && $organizer->clientId?->equals($productionClient->id);
+                        && $organizer->clientId !== null
+                        && $organizer->clientId->equals($productionClient->id);
                 })
             );
 
@@ -132,7 +133,7 @@ final class ActivateUitpasIntegrationTest extends TestCase
                 $this->anything(),
                 $this->anything(),
                 null,
-                $this->callback(function (UdbOrganizers $organizers) use ($organizerIdA, $organizerIdB) {
+                $this->callback(function (UdbOrganizers $organizers) use ($organizerIdA, $organizerIdB): bool {
                     $ids = array_map(
                         fn (UdbOrganizer $organizer): string => $organizer->organizerId->toString(),
                         $organizers->all()
@@ -218,10 +219,10 @@ final class ActivateUitpasIntegrationTest extends TestCase
         $this->integrationRepository->expects($this->once())
             ->method('activateWithOrganization')
             ->with(
-                $this->callback(fn (UuidInterface $id) => $id->equals($integrationId)),
-                $this->callback(fn (UuidInterface $id) => $id->equals($organizationId)),
+                $this->callback(fn (UuidInterface $id): bool => $id->equals($integrationId)),
+                $this->callback(fn (UuidInterface $id): bool => $id->equals($organizationId)),
                 null,
-                $this->callback(fn (UdbOrganizers $organizers) => count($organizers) === 0)
+                $this->callback(fn (UdbOrganizers $organizers): bool => count($organizers) === 0)
             );
 
         $fields = new ActionFields(
