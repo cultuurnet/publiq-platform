@@ -304,13 +304,25 @@ final class IntegrationController extends Controller
     {
         $integration = $this->integrationRepository->getById(Uuid::fromString($integrationId));
 
-        $organizerIds = collect($integration->udbOrganizers())->map(fn (UdbOrganizer $organizer) => $organizer->organizerId);
-        $newOrganizers = array_filter(
-            UdbOrganizerMapper::mapUpdateOrganizers($request, $integration),
-            fn (UdbOrganizer $organizer) => !in_array($organizer->organizerId, $organizerIds->toArray(), true)
-        );
+        $submittedOrganizers = collect(UdbOrganizerMapper::mapUpdateOrganizers($request, $integration))
+            ->unique(fn (UdbOrganizer $organizer) => $organizer->organizerId->toString());
 
-        $this->organizerRepository->createInBulk(new UdbOrganizers($newOrganizers));
+        $newOrganizers = $submittedOrganizers
+            ->reject(fn (UdbOrganizer $organizer) => $integration->getUdbOrganizerByOrgId($organizer->organizerId) !== null)
+            ->values()
+            ->all();
+
+        if ($newOrganizers !== []) {
+            try {
+                $this->organizerRepository->createInBulk(new UdbOrganizers($newOrganizers));
+            } catch (UniqueConstraintViolationException) {
+                return Redirect::back()->withErrors(['duplicate_organizer' => __('errors.organizer.duplicate')]);
+            }
+        }
+
+        if (count($newOrganizers) !== $submittedOrganizers->count()) {
+            return Redirect::back()->withErrors(['duplicate_organizer' => __('errors.organizer.duplicate')]);
+        }
 
         return Redirect::back();
     }

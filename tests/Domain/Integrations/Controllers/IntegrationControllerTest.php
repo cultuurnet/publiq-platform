@@ -23,6 +23,7 @@ use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Models\IntegrationUrlModel;
 use App\Domain\Integrations\Models\UdbOrganizerModel;
+use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\Organizations\Address;
@@ -36,6 +37,8 @@ use App\Domain\UdbUuid;
 use App\Keycloak\Models\KeycloakClientModel;
 use App\ProjectAanvraag\ProjectAanvraagUrl;
 use App\Router\TranslatedRoute;
+use Exception;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -223,6 +226,161 @@ final class IntegrationControllerTest extends TestCase
 
         $this->assertDatabaseHas('udb_organizers', [
             'id' => $organizer->id->toString(),
+        ]);
+    }
+
+    public function test_it_can_add_a_new_organizer(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $this->givenThereIsAKeycloakClient($integration);
+
+        $organizerId = Uuid::uuid4()->toString();
+
+        $response = $this->post("/integrations/{$integration->id}/organizers", [
+            'organizers' => [
+                [
+                    'id' => $organizerId,
+                    'name' => 'Test Organizer',
+                ],
+            ],
+        ]);
+
+        $response->assertRedirect('/');
+        $response->assertSessionDoesntHaveErrors();
+
+        $this->assertDatabaseHas('udb_organizers', [
+            'integration_id' => $integration->id->toString(),
+            'organizer_id' => $organizerId,
+        ]);
+    }
+
+    public function test_it_can_not_add_an_organizer_that_is_already_active_on_the_integration(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $this->givenThereIsAKeycloakClient($integration);
+        $organizer = $this->givenThereIsAnOrganizerOnIntegration($integration);
+
+        $response = $this->post("/integrations/{$integration->id}/organizers", [
+            'organizers' => [
+                [
+                    'id' => $organizer->organizerId->toString(),
+                    'name' => 'Test Organizer',
+                ],
+            ],
+        ]);
+
+        $response->assertRedirect('/');
+        $response->assertSessionHasErrors('duplicate_organizer');
+
+        $this->assertDatabaseCount('udb_organizers', 1);
+        $this->assertDatabaseHas('udb_organizers', [
+            'integration_id' => $integration->id->toString(),
+            'organizer_id' => $organizer->organizerId->toString(),
+        ]);
+    }
+
+    public function test_it_adds_the_new_organizers_of_a_batch_that_also_contains_an_already_active_one(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $this->givenThereIsAKeycloakClient($integration);
+        $organizer = $this->givenThereIsAnOrganizerOnIntegration($integration);
+
+        $newOrganizerId = Uuid::uuid4()->toString();
+
+        $response = $this->post("/integrations/{$integration->id}/organizers", [
+            'organizers' => [
+                [
+                    'id' => $organizer->organizerId->toString(),
+                    'name' => 'Test Organizer',
+                ],
+                [
+                    'id' => $newOrganizerId,
+                    'name' => 'Another Organizer',
+                ],
+            ],
+        ]);
+
+        $response->assertRedirect('/');
+        $response->assertSessionHasErrors('duplicate_organizer');
+
+        $this->assertDatabaseCount('udb_organizers', 2);
+        $this->assertDatabaseHas('udb_organizers', [
+            'integration_id' => $integration->id->toString(),
+            'organizer_id' => $newOrganizerId,
+        ]);
+    }
+
+    public function test_it_shows_a_duplicate_error_when_the_insert_races_another_request(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $this->givenThereIsAKeycloakClient($integration);
+
+        // The pre-filter can only see the organizers attached at the time of
+        // this request, so a concurrent request attaching the same organizer
+        // is only caught by the unique constraint on insert.
+        $organizerRepository = $this->createMock(UdbOrganizerRepository::class);
+        $organizerRepository->method('createInBulk')
+            ->willThrowException(new UniqueConstraintViolationException('mysql', '', [], new Exception()));
+        app()->instance(UdbOrganizerRepository::class, $organizerRepository);
+
+        $response = $this->post("/integrations/{$integration->id}/organizers", [
+            'organizers' => [
+                [
+                    'id' => Uuid::uuid4()->toString(),
+                    'name' => 'Test Organizer',
+                ],
+            ],
+        ]);
+
+        $response->assertRedirect('/');
+        $response->assertSessionHasErrors('duplicate_organizer');
+    }
+
+    public function test_it_can_not_add_the_same_new_organizer_twice_in_one_request(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $this->givenThereIsAKeycloakClient($integration);
+
+        $organizerId = Uuid::uuid4()->toString();
+
+        // Both entries are "new" from the integration's current point of view,
+        // so this is a client-side slip rather than an "already added" mistake:
+        // unique() silently collapses them instead of raising duplicate_organizer.
+        $response = $this->post("/integrations/{$integration->id}/organizers", [
+            'organizers' => [
+                [
+                    'id' => $organizerId,
+                    'name' => 'Test Organizer',
+                ],
+                [
+                    'id' => $organizerId,
+                    'name' => 'Test Organizer',
+                ],
+            ],
+        ]);
+
+        $response->assertRedirect('/');
+        $response->assertSessionDoesntHaveErrors();
+
+        $this->assertDatabaseCount('udb_organizers', 1);
+        $this->assertDatabaseHas('udb_organizers', [
+            'integration_id' => $integration->id->toString(),
+            'organizer_id' => $organizerId,
         ]);
     }
 

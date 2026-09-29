@@ -13,7 +13,7 @@ final class UpdateIntegrationUdbOrganizersRequest extends FormRequest
         return [
             'organizers' => ['required', 'array'],
             'organizers.*.name' => ['required', 'string'],
-            'organizers.*.id' => ['required', 'string'],
+            'organizers.*.id' => ['required', 'string', 'uuid'],
         ];
     }
 }
