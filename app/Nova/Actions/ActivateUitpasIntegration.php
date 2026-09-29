@@ -79,7 +79,12 @@ final class ActivateUitpasIntegration extends Action
 
     private function getUdbOrganizers(?string $organizers, UuidInterface $integrationId): UdbOrganizers
     {
-        $organizerIds = array_filter(array_map('trim', explode(',', $organizers ?? '')));
+        $organizerIds = array_unique(
+            array_filter(
+                array_map('trim', explode(',', $organizers ?? '')),
+                static fn (string $id): bool => $id !== ''
+            )
+        );
 
         if ($organizerIds === []) {
             return new UdbOrganizers();

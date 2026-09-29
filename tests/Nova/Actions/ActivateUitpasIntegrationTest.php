@@ -153,6 +153,53 @@ final class ActivateUitpasIntegrationTest extends TestCase
         $this->handler->handle($fields, new Collection([$integration]));
     }
 
+    public function test_it_ignores_duplicate_ids_in_the_organizers_list(): void
+    {
+        $integrationId = Uuid::uuid4();
+        $organizationId = Uuid::uuid4();
+        $organizerId = 'd541dbd6-b818-432d-b2be-d51dfc5c0c51';
+
+        $integration = new IntegrationModel();
+        $integration->id = $integrationId->toString();
+        $integration->name = 'My UiTPAS integration';
+
+        $organization = new OrganizationModel();
+        $organization->id = $organizationId->toString();
+
+        $domainIntegration = $this->givenThereIsAnIntegration($integrationId);
+        $domainIntegration = $domainIntegration->withKeycloakClients($this->givenThereIsAKeycloakClient($domainIntegration));
+
+        $this->integrationRepository->expects($this->once())
+            ->method('getById')
+            ->willReturn($domainIntegration);
+
+        $this->integrationRepository->expects($this->once())
+            ->method('activateWithOrganization')
+            ->with(
+                $this->anything(),
+                $this->anything(),
+                null,
+                $this->callback(function (UdbOrganizers $organizers) use ($organizerId): bool {
+                    $ids = array_map(
+                        fn (UdbOrganizer $organizer): string => $organizer->organizerId->toString(),
+                        $organizers->all()
+                    );
+
+                    return $ids === [$organizerId];
+                })
+            );
+
+        $fields = new ActionFields(
+            collect([
+                'organization' => $organization,
+                'organizers' => "{$organizerId},{$organizerId}",
+            ]),
+            collect()
+        );
+
+        $this->handler->handle($fields, new Collection([$integration]));
+    }
+
     public function test_it_activates_the_integration_when_no_organizers_are_given(): void
     {
         $integrationId = Uuid::uuid4();
