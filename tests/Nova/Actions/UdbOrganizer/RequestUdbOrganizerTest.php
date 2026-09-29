@@ -11,6 +11,7 @@ use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Nova\Actions\UdbOrganizer\RequestUdbOrganizer;
 use App\Search\Sapi3\SearchService;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\ActionFields;
 use PDOException;
@@ -117,7 +118,7 @@ final class RequestUdbOrganizerTest extends TestCase
 
         $this->udbOrganizerRepository->expects($this->once())
             ->method('create')
-            ->willThrowException(new PDOException('Db is on fire! Duplicate found', 23000));
+            ->willThrowException($this->givenADuplicateOrganizerException());
 
         $integrations = new Collection([$this->integrationModel]);
 
@@ -129,5 +130,30 @@ final class RequestUdbOrganizerTest extends TestCase
         $json = $response->jsonSerialize();
 
         $this->assertEquals('Organizer "' . self::ORGANIZER_ID . '" was already added.', $json['danger']);
+    }
+
+    /**
+     * Shaped like the exception Laravel really throws on a duplicate insert: a
+     * UniqueConstraintViolationException whose SQLSTATE code is the *string*
+     * '23000'. PDO assigns that code to the property directly rather than
+     * through the constructor, which only accepts an int, so this does the same.
+     */
+    private function givenADuplicateOrganizerException(): UniqueConstraintViolationException
+    {
+        $sqlStateViolation = new class ('SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry') extends PDOException {
+            public function __construct(string $message)
+            {
+                parent::__construct($message);
+
+                $this->code = '23000';
+            }
+        };
+
+        return new UniqueConstraintViolationException(
+            'mysql',
+            'insert into `udb_organizers` (`integration_id`, `organizer_id`) values (?, ?)',
+            [self::INTEGRATION_ID, self::ORGANIZER_ID],
+            $sqlStateViolation
+        );
     }
 }

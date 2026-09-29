@@ -13,6 +13,7 @@ use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\UdbUuid;
 use App\Search\Sapi3\SearchService;
 use Illuminate\Bus\Queueable;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
@@ -67,12 +68,9 @@ final class RequestUdbOrganizer extends Action
             );
 
             $this->organizerRepository->create($udbOrganizer);
+        } catch (UniqueConstraintViolationException) {
+            return Action::danger('Organizer "' . $organizationId . '" was already added.');
         } catch (PDOException $e) {
-            if ($e->getCode() === 23000) {
-                // Handle integrity constraint violation
-                return Action::danger('Organizer "' . $organizationId . '" was already added.');
-            }
-
             return Action::danger($e->getMessage());
         }
 
