@@ -406,7 +406,7 @@ final class InsightlyOpportunityResourceTest extends TestCase
         $this->insightlyClient->expects($this->once())
             ->method('sendRequest')
             ->with(self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedLinksGetRequest, $actualRequest)))
-            ->willReturn(new Response(200, [], Json::encode($opportunityLinks)), );
+            ->willReturn(new Response(200, [], Json::encode($opportunityLinks)));
 
         $this->expectException(ContactCannotBeUnlinked::class);
         $this->resource->unlinkContact($opportunityId, $contactId);
