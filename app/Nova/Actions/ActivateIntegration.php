@@ -37,7 +37,7 @@ final class ActivateIntegration extends Action
         /** @var OrganizationModel $organization */
         $organization = $fields->get('organization');
 
-        /** @var string $couponCode */
+        /** @var ?string $couponCode */
         $couponCode = $fields->get('coupon');
 
         $this->integrationRepository->activateWithOrganization(
