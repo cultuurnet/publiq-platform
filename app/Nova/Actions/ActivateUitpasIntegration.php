@@ -96,11 +96,17 @@ final class ActivateUitpasIntegration extends Action
         $output = new UdbOrganizers();
 
         foreach ($organizerIds as $id) {
+            $organizerId = new UdbUuid($id);
+
+            if ($integration->getUdbOrganizerByOrgId($organizerId) !== null) {
+                continue;
+            }
+
             $output->add(
                 new UdbOrganizer(
                     Uuid::uuid4(),
                     $integration->id,
-                    new UdbUuid($id),
+                    $organizerId,
                     UdbOrganizerStatus::Pending,
                     $productionClient->id
                 )
