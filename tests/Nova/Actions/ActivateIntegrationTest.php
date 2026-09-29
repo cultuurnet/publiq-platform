@@ -10,6 +10,7 @@ use App\Domain\Organizations\Models\OrganizationModel;
 use App\Nova\Actions\ActivateIntegration;
 use App\Nova\Resources\Organization as OrganizationResource;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\Rules\Exists;
 use Laravel\Nova\Fields\ActionFields;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -41,6 +42,23 @@ final class ActivateIntegrationTest extends TestCase
         $this->assertSame('organization', $organizationField->attribute);
         $this->assertSame(OrganizationResource::class, $organizationField->resourceClass);
         $this->assertTrue($organizationField->searchable);
+    }
+
+    public function test_the_organization_field_excludes_soft_deleted_organizations(): void
+    {
+        $fields = $this->handler->fields(NovaRequest::create('/'));
+
+        $organizationField = $fields[0];
+
+        $this->assertInstanceOf(BelongsTo::class, $organizationField);
+        $this->assertFalse($organizationField->displaysWithTrashed);
+
+        $rules = $organizationField->rules;
+
+        $this->assertIsArray($rules);
+        $this->assertSame('required', $rules[0]);
+        $this->assertInstanceOf(Exists::class, $rules[1]);
+        $this->assertSame('exists:organizations,id,deleted_at,"NULL"', (string) $rules[1]);
     }
 
     public function test_it_activates_the_integration_with_the_selected_organization(): void
