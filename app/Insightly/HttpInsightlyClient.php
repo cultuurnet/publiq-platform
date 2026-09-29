@@ -26,7 +26,7 @@ final class HttpInsightlyClient implements InsightlyClient
     public function __construct(
         private readonly ClientInterface $httpClient,
         private readonly string $apiKey,
-        readonly Pipelines $pipelines
+        public readonly Pipelines $pipelines
     ) {
     }
 
