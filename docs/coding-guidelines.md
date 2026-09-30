@@ -53,7 +53,7 @@ Comments are acceptable when explaining **why** something is done (not **what**)
 
 ## Testing
 
-- Use `testXxx()` method-name style for test methods, not `@test`/`#[Test]` annotations
+- Use `test_it_does_work()` method-name style for test methods, not `@test`/`#[Test]` annotations
 - Mock objects use intersection types: `Connection&MockObject`
 - `#[DataProvider]` is fine for parameterized cases
 - Test file location mirrors source: `app/Foo/Bar.php` → `tests/Foo/BarTest.php`

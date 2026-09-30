@@ -56,7 +56,6 @@ final class IntegrationControllerTest extends TestCase
     {
         $systemUser = UserModel::createSystemUser();
         $this->actingAs($systemUser);
-        $this->givenTheContactKeyVisibilityIs($systemUser->email, KeyVisibility::v1);
 
         $integrationType = IntegrationType::SearchApi;
         $subscription = $this->givenThereIsASubscription(integrationType: $integrationType, subscriptionCategory: SubscriptionCategory::Custom);
@@ -91,7 +90,7 @@ final class IntegrationControllerTest extends TestCase
             'description' => 'Test Integration description',
             'status' => IntegrationStatus::Draft->value,
             'partner_status' => IntegrationPartnerStatus::THIRD_PARTY->value,
-            'key_visibility' => KeyVisibility::v1->value,
+            'key_visibility' => KeyVisibility::v2->value,
         ]);
 
         $this->assertDatabaseHas('contacts', [
@@ -113,11 +112,45 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
+    public function test_it_stores_an_integration_with_key_visibility_v2_for_a_v1_contributor(): void
+    {
+        $systemUser = UserModel::createSystemUser();
+        $this->actingAs($systemUser);
+        $this->givenTheContactKeyVisibilityIs($systemUser->email, KeyVisibility::v1);
+
+        $subscription = $this->givenThereIsASubscription(
+            integrationType: IntegrationType::SearchApi,
+            subscriptionCategory: SubscriptionCategory::Custom
+        );
+
+        $this->post(
+            '/integrations',
+            [
+                'integrationType' => IntegrationType::SearchApi->value,
+                'subscriptionId' => $subscription->id->toString(),
+                'integrationName' => 'Test Integration',
+                'description' => 'Test Integration description',
+                'firstNameFunctionalContact' => 'Jack',
+                'lastNameFunctionalContact' => 'Bauer',
+                'emailFunctionalContact' => 'jack.bauer@test.com',
+                'firstNameTechnicalContact' => 'John',
+                'lastNameTechnicalContact' => 'Doe',
+                'emailTechnicalContact' => 'john.doe@test.com',
+                'agreement' => 'true',
+                'privacy' => 'some privacy',
+            ]
+        );
+
+        $this->assertDatabaseHas('integrations', [
+            'name' => 'Test Integration',
+            'key_visibility' => KeyVisibility::v2->value,
+        ]);
+    }
+
     public function test_it_can_store_an_integration_with_a_coupon(): void
     {
         $systemUser = UserModel::createSystemUser();
         $this->actingAs($systemUser);
-        $this->givenTheContactKeyVisibilityIs($systemUser->email, KeyVisibility::v2);
 
         $coupon = $this->givenThereIsACoupon();
 
