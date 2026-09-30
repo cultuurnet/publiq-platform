@@ -27,7 +27,7 @@ final class BladeMailTemplateResolverTest extends TestCase
     }
 
     #[DataProvider('subjectProvider')]
-    public function testGetSubjectInterpolateCorrectly(MailTemplate $template, array $variables, string $expected): void
+    public function test_get_subject_interpolate_correctly(MailTemplate $template, array $variables, string $expected): void
     {
         $this->assertSame($expected, $this->resolver->getSubject($template, $variables));
     }
@@ -48,7 +48,7 @@ final class BladeMailTemplateResolverTest extends TestCase
         ];
     }
 
-    public function testRenderReturnsViewHtml(): void
+    public function test_render_returns_view_html(): void
     {
         $view = $this->createMock(View::class);
         $view->expects($this->once())
@@ -76,7 +76,7 @@ final class BladeMailTemplateResolverTest extends TestCase
         $this->assertSame('<html>content</html>', $output);
     }
 
-    public function testRenderUsesSpecificTemplateIfExists(): void
+    public function test_render_uses_specific_template_if_exists(): void
     {
         $template = new MailTemplate(
             TemplateName::INTEGRATION_ACTIVATED,
@@ -107,7 +107,7 @@ final class BladeMailTemplateResolverTest extends TestCase
         $this->assertSame('<html>specific</html>', $output);
     }
 
-    public function testRenderUsesGenericTemplateIfSpecificDoesNotExist(): void
+    public function test_render_uses_generic_template_if_specific_does_not_exist(): void
     {
         $template = new MailTemplate(
             TemplateName::INTEGRATION_ACTIVATED,
@@ -140,7 +140,7 @@ final class BladeMailTemplateResolverTest extends TestCase
         $this->assertSame('<html>generic</html>', $output);
     }
 
-    public function testRenderThrowsWhenNoTemplateExists(): void
+    public function test_render_throws_when_no_template_exists(): void
     {
         $template = new MailTemplate(
             TemplateName::INTEGRATION_ACTIVATED,
