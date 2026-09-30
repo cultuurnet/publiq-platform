@@ -14,7 +14,7 @@ use Tests\TestCase;
 
 final class RealmsTest extends TestCase
 {
-    public function testBuildCreatesRealmsCollection(): void
+    public function test_build_creates_realms_collection(): void
     {
         $scopes = [
             Environment::Acceptance->value => [
@@ -80,7 +80,7 @@ final class RealmsTest extends TestCase
         }
     }
 
-    public function testSkipEmptyEnvironments(): void
+    public function test_skip_empty_environments(): void
     {
         Config::set('keycloak.environments', [
             Environment::Acceptance->value => [

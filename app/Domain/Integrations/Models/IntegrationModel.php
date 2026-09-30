@@ -31,7 +31,6 @@ use App\Mails\Template\TemplateName;
 use App\Models\UuidModel;
 use App\Nova\Filters\AdminInformationFilter;
 use App\UiTiDv1\Models\UiTiDv1ConsumerModel;
-use App\UiTiDv1\UiTiDv1Environment;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -334,11 +333,6 @@ final class IntegrationModel extends UuidModel
     public function keycloakClients(): HasMany
     {
         return $this->hasMany(KeycloakClientModel::class, 'integration_id');
-    }
-
-    public function hasMissingUiTiDv1Consumers(): bool
-    {
-        return $this->uiTiDv1Consumers()->count() < count(UiTiDv1Environment::cases());
     }
 
     public function hasMissingKeycloakConsumers(): bool

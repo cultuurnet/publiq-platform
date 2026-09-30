@@ -57,7 +57,7 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
         $keycloakRepo->create($this->keycloakClient);
     }
 
-    public function testCreate(): void
+    public function test_create(): void
     {
         $this->repository->create($this->organizer1);
 
@@ -69,7 +69,7 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
         ]);
     }
 
-    public function testCreateWithDirectApproval(): void
+    public function test_create_with_direct_approval(): void
     {
         $org = new UdbOrganizer(
             Uuid::uuid4(),
@@ -94,7 +94,7 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
         });
     }
 
-    public function testCreateInBulk(): void
+    public function test_create_in_bulk(): void
     {
         $organizers = new UdbOrganizers([
             $this->organizer1,
@@ -113,7 +113,7 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
         }
     }
 
-    public function testUpdateStatus(): void
+    public function test_update_status(): void
     {
         $this->repository->create($this->organizer1);
         $this->repository->create($this->organizer2);
@@ -137,7 +137,7 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
         Event::assertDispatched(UdbOrganizerApproved::class);
     }
 
-    public function testItCanDeleteAnUdbOrganizer(): void
+    public function test_it_can_delete_an_udb_organizer(): void
     {
         $this->repository->create($this->organizer1);
         $this->repository->delete($this->organizer1->integrationId, $this->organizer1->organizerId);
@@ -149,14 +149,14 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
         ]);
     }
 
-    public function testItCanGetAnUdbOrganizerById(): void
+    public function test_it_can_get_an_udb_organizer_by_id(): void
     {
         $this->repository->create($this->organizer1);
 
         $this->assertEquals($this->organizer1, $this->repository->getById($this->organizer1->id));
     }
 
-    public function testItCanGetByIntegrationAndOrganizerId(): void
+    public function test_it_can_get_by_integration_and_organizer_id(): void
     {
         $this->repository->create($this->organizer1);
 

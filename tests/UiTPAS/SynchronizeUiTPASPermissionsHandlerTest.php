@@ -59,7 +59,7 @@ final class SynchronizeUiTPASPermissionsHandlerTest extends TestCase
         );
     }
 
-    public function testCanSyncUiTPASOrganizers(): void
+    public function test_can_sync_uitpas_organizers(): void
     {
         $this->UiTPASApiInterface->expects($this->exactly(2))
             ->method('updatePermissions')
@@ -98,7 +98,7 @@ final class SynchronizeUiTPASPermissionsHandlerTest extends TestCase
     }
 
 
-    public function testGivesErrorWithFailedSync(): void
+    public function test_gives_error_with_failed_sync(): void
     {
         $this->UiTPASApiInterface->expects($this->exactly(3))
             ->method('updatePermissions')
