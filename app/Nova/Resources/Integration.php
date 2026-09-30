@@ -129,7 +129,18 @@ final class Integration extends Resource
                 ->filterable()
                 ->sortable()
                 ->required()
-                ->dependsOn(
+                // UiTiD v1 consumers are no longer created, so a new integration can only ever be v2.
+                // Updating keeps the legacy options: Nova renders the current value against the option
+                // list, so dropping v1 or all would blank the select on existing integrations.
+                ->dependsOnCreating(
+                    ['type'],
+                    function (Select $field) {
+                        $field->options([
+                            KeyVisibility::v2->value => KeyVisibility::v2->name,
+                        ]);
+                    }
+                )
+                ->dependsOnUpdating(
                     ['type'],
                     function (Select $field, NovaRequest $request, FormData $formData) {
                         if ($formData->string('type')->toString() !== IntegrationType::UiTPAS->value) {
@@ -230,7 +241,7 @@ final class Integration extends Resource
                 ->asHtml()
                 ->onlyOnDetail(),
 
-            HasMany::make('UiTiD v1 Consumer Credentials', 'uiTiDv1Consumers', UiTiDv1::class),
+            HasMany::make('Legacy API keys', 'uiTiDv1Consumers', UiTiDv1::class),
         ];
 
         if (config(KeycloakConfig::KEYCLOAK_CREATION_ENABLED)) {

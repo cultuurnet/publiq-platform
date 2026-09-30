@@ -41,9 +41,7 @@ export const Credentials = ({
 }: Props) => {
   const { t } = useTranslation();
   const hasCredentials =
-    keyVisibility !== KeyVisibility.v2
-      ? legacyAuthConsumers.length > 0
-      : authClients.length > 0;
+    authClients.length > 0 || legacyAuthConsumers.length > 0;
 
   const isV1Upgraded =
     keyVisibility === KeyVisibility.v1 && !!keyVisibilityUpgrade;

@@ -15,7 +15,6 @@ use App\Domain\UdbUuid;
 use App\Keycloak\Client;
 use App\Keycloak\Client as KeycloakClient;
 use App\UiTiDv1\UiTiDv1Consumer;
-use App\UiTiDv1\UiTiDv1Environment;
 use Ramsey\Uuid\UuidInterface;
 
 final class Integration
@@ -219,12 +218,11 @@ final class Integration
         ));
     }
 
-    public function isKeyVisibleForEnvironment(UiTiDv1Environment|Environment $environment): bool
+    public function isKeyVisibleForEnvironment(Environment $environment): bool
     {
-        $keyVisibility = ($environment instanceof UiTiDv1Environment) ? KeyVisibility::v2 : KeyVisibility::v1;
-        return $environment->value !== 'acc' &&
+        return $environment !== Environment::Acceptance &&
             $this->status !== IntegrationStatus::Deleted &&
-            $this->getKeyVisibility() !== $keyVisibility;
+            $this->getKeyVisibility() !== KeyVisibility::v1;
     }
 
     /** @throws KeycloakClientNotFound */

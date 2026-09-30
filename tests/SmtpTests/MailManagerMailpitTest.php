@@ -82,7 +82,7 @@ final class MailManagerMailpitTest extends TestCase
     }
 
     #[DataProvider('mails')]
-    public function testMailWasSent(
+    public function test_mail_was_sent(
         IntegrationCreatedWithContacts|IntegrationActivated|IntegrationApproved|IntegrationActivationRequested|IntegrationDeleted|ActivationExpired $event,
         IntegrationStatus $integrationStatus,
         string $name,

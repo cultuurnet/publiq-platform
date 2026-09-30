@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Domain\Integrations\Controllers;
 
 use App\Domain\Auth\CurrentUser;
-use App\Domain\Contacts\ContactType;
-use App\Domain\Contacts\Repositories\ContactKeyVisibilityRepository;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Coupons\Repositories\CouponRepository;
 use App\Domain\Integrations\FormRequests\KeyVisibilityUpgradeRequest;
@@ -23,7 +21,6 @@ use App\Domain\Integrations\GetIntegrationOrganizersWithTestOrganizer;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\IntegrationUrl;
-use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Mappers\KeyVisibilityUpgradeMapper;
 use App\Domain\Integrations\Mappers\OrganizationMapper;
 use App\Domain\Integrations\Mappers\StoreContactMapper;
@@ -53,7 +50,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
@@ -68,7 +64,6 @@ final class IntegrationController extends Controller
         private readonly IntegrationRepository $integrationRepository,
         private readonly IntegrationUrlRepository $integrationUrlRepository,
         private readonly ContactRepository $contactRepository,
-        private readonly ContactKeyVisibilityRepository $contactKeyVisibilityRepository,
         private readonly OrganizationRepository $organizationRepository,
         private readonly UdbOrganizerRepository $organizerRepository,
         private readonly CouponRepository $couponRepository,
@@ -131,7 +126,6 @@ final class IntegrationController extends Controller
         }
 
         $integration = StoreIntegrationMapper::map($request, $this->currentUser);
-        $integration = $integration->withKeyVisibility($this->getKeyVisibility($integration));
 
         if ($request->filled('coupon')) {
             $this->integrationRepository->saveWithCoupon($integration, $request->input('coupon'));
@@ -359,18 +353,6 @@ final class IntegrationController extends Controller
                 'id' => $id,
             ]
         );
-    }
-
-    private function getKeyVisibility(Integration $integration): KeyVisibility
-    {
-        $contacts = new Collection($integration->contacts());
-        $contributor = $contacts->firstWhere('type', ContactType::Contributor);
-
-        if ($contributor === null) {
-            return KeyVisibility::v2;
-        }
-
-        return $this->contactKeyVisibilityRepository->findByEmail($contributor->email);
     }
 
     private function guardCoupon(Request $request): ?RedirectResponse

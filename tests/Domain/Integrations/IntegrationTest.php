@@ -6,9 +6,13 @@ namespace Tests\Domain\Integrations;
 
 use App\Domain\Contacts\Contact;
 use App\Domain\Contacts\ContactType;
+use App\Domain\Integrations\Environment;
+use App\Domain\Integrations\IntegrationStatus;
+use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\UdbUuid;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Tests\CreateIntegration;
@@ -18,7 +22,7 @@ final class IntegrationTest extends TestCase
 {
     use CreateIntegration;
 
-    public function testFilterUniqueContactsWithPreferredContactType(): void
+    public function test_filter_unique_contacts_with_preferred_contact_type(): void
     {
         $integrationId = Uuid::uuid4();
         $integration = $this->givenThereIsAnIntegration($integrationId)->withContacts(
@@ -47,7 +51,7 @@ final class IntegrationTest extends TestCase
         return new Contact(Uuid::uuid4(), $integrationId, $email, $type, 'John', 'Snow');
     }
 
-    public function testGetUdbOrganizerByOrgId(): void
+    public function test_get_udb_organizer_by_org_id(): void
     {
         $integrationId = Uuid::uuid4();
         $orgId = new UdbUuid(Uuid::uuid4()->toString());
@@ -60,10 +64,40 @@ final class IntegrationTest extends TestCase
         $this->assertSame($organizer, $result);
     }
 
-    public function testGetUdbOrganizerByOrgIdReturnsNull(): void
+    public function test_get_udb_organizer_by_org_id_returns_null(): void
     {
         $udbOrganizer = $this->givenThereIsAnIntegration(Uuid::uuid4());
 
         $this->assertNull($udbOrganizer->getUdbOrganizerByOrgId(new UdbUuid(Uuid::uuid4()->toString())));
     }
+
+    #[DataProvider('keycloakEnvironmentVisibilityProvider')]
+    public function test_is_key_visible_for_keycloak_environment(
+        IntegrationStatus $status,
+        KeyVisibility $keyVisibility,
+        Environment $environment,
+        bool $expected
+    ): void {
+        $integration = $this->givenThereIsAnIntegration(Uuid::uuid4(), ['status' => $status])
+            ->withKeyVisibility($keyVisibility);
+
+        $this->assertSame($expected, $integration->isKeyVisibleForEnvironment($environment));
+    }
+
+    public static function keycloakEnvironmentVisibilityProvider(): array
+    {
+        return [
+            'v2 is hidden on acceptance' => [IntegrationStatus::Draft, KeyVisibility::v2, Environment::Acceptance, false],
+            'v2 is visible on testing' => [IntegrationStatus::Draft, KeyVisibility::v2, Environment::Testing, true],
+            'v2 is visible on production' => [IntegrationStatus::Draft, KeyVisibility::v2, Environment::Production, true],
+            'all is visible on testing' => [IntegrationStatus::Draft, KeyVisibility::all, Environment::Testing, true],
+            'all is visible on production' => [IntegrationStatus::Active, KeyVisibility::all, Environment::Production, true],
+            'v1 is hidden on testing' => [IntegrationStatus::Draft, KeyVisibility::v1, Environment::Testing, false],
+            'v1 is hidden on production' => [IntegrationStatus::Draft, KeyVisibility::v1, Environment::Production, false],
+            'v1 is hidden on acceptance' => [IntegrationStatus::Draft, KeyVisibility::v1, Environment::Acceptance, false],
+            'deleted hides v2 on production' => [IntegrationStatus::Deleted, KeyVisibility::v2, Environment::Production, false],
+            'deleted hides v1 on acceptance' => [IntegrationStatus::Deleted, KeyVisibility::v1, Environment::Acceptance, false],
+        ];
+    }
+
 }

@@ -40,7 +40,7 @@ final class SmtpMailerTest extends TestCase
         );
     }
 
-    public function testMailSendSuccessful(): void
+    public function test_mail_send_successful(): void
     {
         $from = new Address('from@publiq.be');
         $to = new Address('to@publiq.be');
@@ -77,7 +77,7 @@ final class SmtpMailerTest extends TestCase
         $this->smtpMailer->send($from, $to, $this->mailTemplate);
     }
 
-    public function testMailFailedToSendWithTransportException(): void
+    public function test_mail_failed_to_send_with_transport_exception(): void
     {
         $from = new Address('from@publiq.be');
         $to = new Address('to@publiq.be');
@@ -103,7 +103,7 @@ final class SmtpMailerTest extends TestCase
         $this->smtpMailer->send($from, $to, $this->mailTemplate);
     }
 
-    public function testMailFailedToSendWithGenericThrowable(): void
+    public function test_mail_failed_to_send_with_generic_throwable(): void
     {
         $from = new Address('from@publiq.be');
         $to = new Address('to@publiq.be');
