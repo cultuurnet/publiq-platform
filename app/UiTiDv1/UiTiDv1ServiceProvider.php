@@ -4,23 +4,9 @@ declare(strict_types=1);
 
 namespace App\UiTiDv1;
 
-use App\Domain\Integrations\Events\IntegrationBlocked;
-use App\Domain\Integrations\Events\IntegrationCreated;
-use App\Domain\Integrations\Events\IntegrationDeleted;
-use App\Domain\Integrations\Events\IntegrationUnblocked;
-use App\Domain\Integrations\Events\IntegrationUpdated;
-use App\UiTiDv1\Jobs\UnblockConsumer;
-use App\UiTiDv1\Jobs\UnblockConsumerHandler;
-use App\UiTiDv1\Jobs\BlockConsumer;
-use App\UiTiDv1\Jobs\BlockConsumerHandler;
-use App\UiTiDv1\Listeners\BlockConsumers;
-use App\UiTiDv1\Listeners\CreateConsumers;
-use App\UiTiDv1\Listeners\UnblockConsumers;
-use App\UiTiDv1\Listeners\UpdateConsumers;
 use App\UiTiDv1\Repositories\EloquentUiTiDv1ConsumerRepository;
 use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
 final class UiTiDv1ServiceProvider extends ServiceProvider
@@ -67,20 +53,5 @@ final class UiTiDv1ServiceProvider extends ServiceProvider
                 App::get(UiTiDv1ClusterSDK::class)
             );
         });
-
-        if (config('uitidv1.enabled')) {
-            // By default, the UiTiD V1 integration is enabled. For testing purposes this can be disabled inside the .env file.
-
-            // May always be registered even if there are no configured environments, because in that case the cluster SDK
-            // will just not have any environment SDKs to loop over and so it simply won't do anything. But it won't crash either.
-            Event::listen(IntegrationCreated::class, [CreateConsumers::class, 'handle']);
-            Event::listen(IntegrationUpdated::class, [UpdateConsumers::class, 'handle']);
-            Event::listen(IntegrationBlocked::class, [BlockConsumers::class, 'handle']);
-            Event::listen(IntegrationUnblocked::class, [UnblockConsumers::class, 'handle']);
-            Event::listen(IntegrationDeleted::class, [BlockConsumers::class, 'handle']);
-
-            Event::listen(UnblockConsumer::class, [UnblockConsumerHandler::class, 'handle']);
-            Event::listen(BlockConsumer::class, [BlockConsumerHandler::class, 'handle']);
-        }
     }
 }
