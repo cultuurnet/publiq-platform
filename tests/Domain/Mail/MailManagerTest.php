@@ -102,7 +102,7 @@ final class MailManagerTest extends TestCase
         ];
     }
 
-    public function testDoNoTSentUiTPASMailTwice(): void
+    public function test_do_not_send_uitpas_mail_twice(): void
     {
         $integration = (new Integration(
             Uuid::fromString(self::INTEGRATION_ID),
@@ -131,7 +131,7 @@ final class MailManagerTest extends TestCase
     }
 
     #[DataProvider('mailDataProvider')]
-    public function testSendMail(
+    public function test_send_mail(
         IntegrationType $integrationType,
         object $event,
         string $method,

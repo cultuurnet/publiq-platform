@@ -12,7 +12,7 @@ use Ramsey\Uuid\Uuid;
 
 final class UiTiDv1ConsumerTest extends TestCase
 {
-    public function testItDoesNotSerializeTheConsumerCredentials(): void
+    public function test_it_does_not_serialize_the_consumer_credentials(): void
     {
         $id = Uuid::uuid4();
         $integrationId = Uuid::uuid4();

@@ -92,7 +92,7 @@ final class SendUiTPASMailsMailpitTest extends TestCase
     }
 
     #[DataProvider('mails')]
-    public function testMailWasSentIntegrationCreatedWithContacts(
+    public function test_mail_was_sent_integration_created_with_contacts(
         IntegrationCreatedWithContacts|IntegrationActivationRequested|UdbOrganizerRequested|UdbOrganizerApproved|UdbOrganizerRejected $event,
         IntegrationStatus $integrationStatus,
         string $name,

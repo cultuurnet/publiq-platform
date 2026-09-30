@@ -18,7 +18,7 @@ final class IntegrationTest extends TestCase
 {
     use CreateIntegration;
 
-    public function testFilterUniqueContactsWithPreferredContactType(): void
+    public function test_filter_unique_contacts_with_preferred_contact_type(): void
     {
         $integrationId = Uuid::uuid4();
         $integration = $this->givenThereIsAnIntegration($integrationId)->withContacts(
@@ -47,7 +47,7 @@ final class IntegrationTest extends TestCase
         return new Contact(Uuid::uuid4(), $integrationId, $email, $type, 'John', 'Snow');
     }
 
-    public function testGetUdbOrganizerByOrgId(): void
+    public function test_get_udb_organizer_by_org_id(): void
     {
         $integrationId = Uuid::uuid4();
         $orgId = new UdbUuid(Uuid::uuid4()->toString());
@@ -60,7 +60,7 @@ final class IntegrationTest extends TestCase
         $this->assertSame($organizer, $result);
     }
 
-    public function testGetUdbOrganizerByOrgIdReturnsNull(): void
+    public function test_get_udb_organizer_by_org_id_returns_null(): void
     {
         $udbOrganizer = $this->givenThereIsAnIntegration(Uuid::uuid4());
 
