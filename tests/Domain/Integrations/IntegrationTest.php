@@ -72,7 +72,7 @@ final class IntegrationTest extends TestCase
     }
 
     #[DataProvider('keycloakEnvironmentVisibilityProvider')]
-    public function testIsKeyVisibleForKeycloakEnvironment(
+    public function test_is_key_visible_for_keycloak_environment(
         IntegrationStatus $status,
         KeyVisibility $keyVisibility,
         Environment $environment,
