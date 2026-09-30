@@ -17,7 +17,7 @@ export async function createIntegration(page: Page, type: IntegrationType) {
   await page.getByRole("link", { name: "Create Integration" }).click();
   await page.getByPlaceholder("Name").fill(name);
   await page.locator("#type").selectOption(type);
-  await page.locator("#key_visibility").selectOption("all");
+  await page.locator("#key_visibility").selectOption("v2");
   await page.getByPlaceholder("Description").fill(faker.lorem.lines(2));
   await page
     .locator("[dusk='subscriptions-select']")
