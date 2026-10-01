@@ -39,6 +39,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use Tests\CreatesTestData;
 use Tests\GivenSubscription;
 use Tests\Keycloak\RealmFactory;
@@ -439,77 +440,20 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'code' => $couponCode,
         ]);
 
-        $integrationId = Uuid::uuid4();
-
-        $subscription = $this->givenThereIsASubscription();
-
-        $searchIntegration = new Integration(
-            $integrationId,
-            IntegrationType::SearchApi,
-            'Search Integration',
-            'Search Integration description',
-            $subscription->id,
-            IntegrationStatus::Draft,
-            IntegrationPartnerStatus::THIRD_PARTY,
-        );
-
-        $this->integrationRepository->save($searchIntegration);
-
-        $keycloakClient = new Client(Uuid::uuid4(), $integrationId, 'test-client-prod', 'test-secret-prod', Environment::Production);
-
-        (new EloquentKeycloakClientRepository($this->givenAllRealms()))
-            ->create($keycloakClient);
-
-        $existingOrganizer = new UdbOrganizer(
-            Uuid::uuid4(),
-            $integrationId,
-            new UdbUuid(Uuid::uuid4()->toString()),
-            UdbOrganizerStatus::Pending,
-            $keycloakClient->id
-        );
-
-        (new EloquentUdbOrganizerRepository())->create($existingOrganizer);
-
-        $newOrganizer = new UdbOrganizer(
-            Uuid::uuid4(),
-            $integrationId,
-            new UdbUuid(Uuid::uuid4()->toString()),
-            UdbOrganizerStatus::Pending,
-            $keycloakClient->id
-        );
-
-        $duplicate = new UdbOrganizer(
-            Uuid::uuid4(),
-            $integrationId,
-            $existingOrganizer->organizerId,
-            UdbOrganizerStatus::Pending,
-            $keycloakClient->id
-        );
+        [$integrationId, $newOrganizer, $alreadyAddedOrganizer] = $this->givenAnIntegrationWithAnExistingOrganizer();
 
         try {
             $this->integrationRepository->requestActivation(
                 $integrationId,
                 Uuid::uuid4(),
                 $couponCode,
-                new UdbOrganizers([$newOrganizer, $duplicate])
+                new UdbOrganizers([$newOrganizer, $alreadyAddedOrganizer])
             );
             $this->fail('Expected UdbOrganizerAlreadyExists to be thrown.');
         } catch (UdbOrganizerAlreadyExists) {
         }
 
-        $this->assertDatabaseMissing('udb_organizers', [
-            'id' => $newOrganizer->id->toString(),
-        ]);
-
-        $this->assertDatabaseMissing('udb_organizers', [
-            'id' => $duplicate->id->toString(),
-        ]);
-
-        $this->assertDatabaseHas('integrations', [
-            'id' => $integrationId->toString(),
-            'organization_id' => null,
-            'status' => IntegrationStatus::Draft,
-        ]);
+        $this->assertActivationWasRolledBack($integrationId);
 
         $this->assertDatabaseHas('coupons', [
             'id' => $couponId->toString(),
@@ -522,77 +466,20 @@ final class EloquentIntegrationRepositoryTest extends TestCase
 
     public function test_it_rolls_back_activating_with_an_organizer_that_is_already_added(): void
     {
-        $integrationId = Uuid::uuid4();
-
-        $subscription = $this->givenThereIsASubscription();
-
-        $searchIntegration = new Integration(
-            $integrationId,
-            IntegrationType::SearchApi,
-            'Search Integration',
-            'Search Integration description',
-            $subscription->id,
-            IntegrationStatus::Draft,
-            IntegrationPartnerStatus::THIRD_PARTY,
-        );
-
-        $this->integrationRepository->save($searchIntegration);
-
-        $keycloakClient = new Client(Uuid::uuid4(), $integrationId, 'test-client-prod', 'test-secret-prod', Environment::Production);
-
-        (new EloquentKeycloakClientRepository($this->givenAllRealms()))
-            ->create($keycloakClient);
-
-        $existingOrganizer = new UdbOrganizer(
-            Uuid::uuid4(),
-            $integrationId,
-            new UdbUuid(Uuid::uuid4()->toString()),
-            UdbOrganizerStatus::Pending,
-            $keycloakClient->id
-        );
-
-        (new EloquentUdbOrganizerRepository())->create($existingOrganizer);
-
-        $newOrganizer = new UdbOrganizer(
-            Uuid::uuid4(),
-            $integrationId,
-            new UdbUuid(Uuid::uuid4()->toString()),
-            UdbOrganizerStatus::Pending,
-            $keycloakClient->id
-        );
-
-        $duplicate = new UdbOrganizer(
-            Uuid::uuid4(),
-            $integrationId,
-            $existingOrganizer->organizerId,
-            UdbOrganizerStatus::Pending,
-            $keycloakClient->id
-        );
+        [$integrationId, $newOrganizer, $alreadyAddedOrganizer] = $this->givenAnIntegrationWithAnExistingOrganizer();
 
         try {
             $this->integrationRepository->activateWithOrganization(
                 $integrationId,
                 Uuid::uuid4(),
                 null,
-                new UdbOrganizers([$newOrganizer, $duplicate])
+                new UdbOrganizers([$newOrganizer, $alreadyAddedOrganizer])
             );
             $this->fail('Expected UdbOrganizerAlreadyExists to be thrown.');
         } catch (UdbOrganizerAlreadyExists) {
         }
 
-        $this->assertDatabaseMissing('udb_organizers', [
-            'id' => $newOrganizer->id->toString(),
-        ]);
-
-        $this->assertDatabaseMissing('udb_organizers', [
-            'id' => $duplicate->id->toString(),
-        ]);
-
-        $this->assertDatabaseHas('integrations', [
-            'id' => $integrationId->toString(),
-            'organization_id' => null,
-            'status' => IntegrationStatus::Draft,
-        ]);
+        $this->assertActivationWasRolledBack($integrationId);
 
         Event::assertNotDispatched(IntegrationActivated::class);
     }
@@ -1068,6 +955,69 @@ final class EloquentIntegrationRepositoryTest extends TestCase
             'type' => ContactType::Technical->value,
             'first_name' => 'Grote',
             'last_name' => 'Smurf',
+        ]);
+    }
+
+    /**
+     * @return array{UuidInterface, UdbOrganizer, UdbOrganizer} the integration, an organizer that is not linked yet
+     *                                                          and one that duplicates the already linked organizer
+     */
+    private function givenAnIntegrationWithAnExistingOrganizer(): array
+    {
+        $integrationId = Uuid::uuid4();
+
+        $this->integrationRepository->save(new Integration(
+            $integrationId,
+            IntegrationType::SearchApi,
+            'Search Integration',
+            'Search Integration description',
+            $this->givenThereIsASubscription()->id,
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
+        ));
+
+        $keycloakClient = new Client(Uuid::uuid4(), $integrationId, 'test-client-prod', 'test-secret-prod', Environment::Production);
+
+        (new EloquentKeycloakClientRepository($this->givenAllRealms()))
+            ->create($keycloakClient);
+
+        $existingOrganizer = new UdbOrganizer(
+            Uuid::uuid4(),
+            $integrationId,
+            new UdbUuid(Uuid::uuid4()->toString()),
+            UdbOrganizerStatus::Pending,
+            $keycloakClient->id
+        );
+
+        (new EloquentUdbOrganizerRepository())->create($existingOrganizer);
+
+        return [
+            $integrationId,
+            new UdbOrganizer(
+                Uuid::uuid4(),
+                $integrationId,
+                new UdbUuid(Uuid::uuid4()->toString()),
+                UdbOrganizerStatus::Pending,
+                $keycloakClient->id
+            ),
+            new UdbOrganizer(
+                Uuid::uuid4(),
+                $integrationId,
+                $existingOrganizer->organizerId,
+                UdbOrganizerStatus::Pending,
+                $keycloakClient->id
+            ),
+        ];
+    }
+
+    private function assertActivationWasRolledBack(UuidInterface $integrationId): void
+    {
+        $this->assertDatabaseCount('udb_organizers', 1);
+
+        $this->assertDatabaseHas('integrations', [
+            'id' => $integrationId->toString(),
+            'organization_id' => null,
+            'status' => IntegrationStatus::Draft,
         ]);
     }
 }
