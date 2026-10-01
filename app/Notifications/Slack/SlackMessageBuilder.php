@@ -43,7 +43,7 @@ final readonly class SlackMessageBuilder implements MessageBuilder
 
     public function toMessageWithOrganizer(Integration $integration, UdbOrganizer $udbOrganizer): string
     {
-        $client = $integration->getKeycloakClientByEnv(Environment::Production);
+        $client = $integration->findKeycloakClientByEnv(Environment::Production);
 
         $organizerName = $this->fetchNameForUdb3Organizer->getName($this->searchService->findOrganizers($udbOrganizer->organizerId));
 
@@ -53,7 +53,7 @@ final readonly class SlackMessageBuilder implements MessageBuilder
         $message .= PHP_EOL;
         $message .= PHP_EOL . '• *Open in publiq-platform:* ' . $this->appUrl . '/admin/resources/integrations/' . $integration->id->toString();
         $message .= PHP_EOL . '• *Open in UDB:* ' . $this->udbRootUri . 'organizers/' . $udbOrganizer->organizerId . '/preview';
-        $message .= PHP_EOL . '• *Open in UiTPAS:* ' . $this->uitpasRootUri . $client->clientId;
+        $message .= PHP_EOL . '• *Open in UiTPAS:* ' . ($client ? $this->uitpasRootUri . $client->clientId : 'N/A');
 
         return $message;
     }
