@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Nova\Actions\UdbOrganizer;
 
 use App\Domain\Integrations\Environment;
+use App\Domain\Integrations\Exceptions\UdbOrganizerAlreadyExists;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
@@ -67,13 +68,10 @@ final class RequestUdbOrganizer extends Action
             );
 
             $this->organizerRepository->create($udbOrganizer);
+        } catch (UdbOrganizerAlreadyExists) {
+            return Action::danger('Organizer "' . $organizationId . '" was already added.');
         } catch (PDOException $e) {
-            if ($e->getCode() === 23000) {
-                // Handle integrity constraint violation
-                return Action::danger('Organizer "' . $organizationId . '" was already added.');
-            }
-
-            return Action::danger($e->getMessage());
+            return Action::danger('Could not add organizer "' . $organizationId . '".');
         }
 
         return Action::message('Organizer "' . $organizationId . '" added.');

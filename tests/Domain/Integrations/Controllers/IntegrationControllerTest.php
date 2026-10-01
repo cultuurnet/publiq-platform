@@ -226,6 +226,44 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
+    public function test_it_skips_organizers_that_are_already_added(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $this->givenThereIsAKeycloakClient($integration);
+
+        $existingOrganizer = $this->givenThereIsAnOrganizerOnIntegration($integration);
+        $newOrganizerId = Uuid::uuid4()->toString();
+
+        $response = $this->post(
+            "/integrations/{$integration->id}/organizers",
+            [
+                'organizers' => [
+                    ['id' => $existingOrganizer->organizerId->toString(), 'name' => 'Already added'],
+                    ['id' => $newOrganizerId, 'name' => 'Brand new'],
+                ],
+            ]
+        );
+
+        $response->assertRedirect('/');
+
+        $this->assertDatabaseHas('udb_organizers', [
+            'id' => $existingOrganizer->id->toString(),
+            'organizer_id' => $existingOrganizer->organizerId->toString(),
+            'status' => UdbOrganizerStatus::Approved->value,
+        ]);
+
+        $this->assertDatabaseCount('udb_organizers', 2);
+
+        $this->assertDatabaseHas('udb_organizers', [
+            'integration_id' => $integration->id->toString(),
+            'organizer_id' => $newOrganizerId,
+            'status' => UdbOrganizerStatus::Pending->value,
+        ]);
+    }
+
     public function test_it_can_not_request_activation_if_not_authorized(): void
     {
         $this->actingAs(UserModel::createSystemUser());
