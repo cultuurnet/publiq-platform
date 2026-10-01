@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace Tests\Nova\Actions\UdbOrganizer;
 
 use App\Domain\Integrations\Environment;
+use App\Domain\Integrations\Exceptions\UdbOrganizerAlreadyExists;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizer;
+use App\Domain\UdbUuid;
 use App\Nova\Actions\UdbOrganizer\RequestUdbOrganizer;
 use App\Search\Sapi3\SearchService;
-use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Exceptions;
 use Laravel\Nova\Fields\ActionFields;
@@ -119,7 +120,10 @@ final class RequestUdbOrganizerTest extends TestCase
 
         $this->udbOrganizerRepository->expects($this->once())
             ->method('create')
-            ->willThrowException($this->givenADuplicateOrganizerException());
+            ->willThrowException(UdbOrganizerAlreadyExists::onIntegration(
+                Uuid::fromString(self::INTEGRATION_ID),
+                new UdbUuid(self::ORGANIZER_ID)
+            ));
 
         $integrations = new Collection([$this->integrationModel]);
 
@@ -164,15 +168,5 @@ final class RequestUdbOrganizerTest extends TestCase
 
         $this->assertEquals('Could not add organizer "' . self::ORGANIZER_ID . '".', $json['danger']);
         Exceptions::assertReported(PDOException::class);
-    }
-
-    private function givenADuplicateOrganizerException(): UniqueConstraintViolationException
-    {
-        return new UniqueConstraintViolationException(
-            'mysql',
-            'insert into `udb_organizers` (`integration_id`, `organizer_id`) values (?, ?)',
-            [self::INTEGRATION_ID, self::ORGANIZER_ID],
-            new PDOException('SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry')
-        );
     }
 }

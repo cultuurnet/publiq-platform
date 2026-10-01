@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Domain\Integrations\Repositories;
 
 use App\Domain\Integrations\Environment;
+use App\Domain\Integrations\Exceptions\UdbOrganizerAlreadyExists;
 use App\Domain\Integrations\Repositories\EloquentUdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizers;
@@ -92,6 +93,47 @@ final class EloquentUdbOrganizerRepositoryTest extends TestCase
             return $org->organizerId === $event->udbId &&
                 $org->integrationId->toString() === $event->integrationId->toString();
         });
+    }
+
+    public function testCreateRejectsADuplicateOrganizer(): void
+    {
+        $this->repository->create($this->organizer1);
+
+        $this->expectException(UdbOrganizerAlreadyExists::class);
+
+        $this->repository->create(new UdbOrganizer(
+            Uuid::uuid4(),
+            $this->organizer1->integrationId,
+            $this->organizer1->organizerId,
+            UdbOrganizerStatus::Pending,
+            $this->keycloakClient->id
+        ));
+    }
+
+    public function testCreateInBulkSkipsOrganizersThatAreAlreadyAdded(): void
+    {
+        $this->repository->create($this->organizer1);
+
+        $duplicate = new UdbOrganizer(
+            Uuid::uuid4(),
+            $this->organizer1->integrationId,
+            $this->organizer1->organizerId,
+            UdbOrganizerStatus::Pending,
+            $this->keycloakClient->id
+        );
+
+        $this->repository->createInBulk(new UdbOrganizers([$duplicate, $this->organizer2]));
+
+        $this->assertDatabaseMissing('udb_organizers', [
+            'id' => $duplicate->id->toString(),
+        ]);
+
+        $this->assertDatabaseHas('udb_organizers', [
+            'id' => $this->organizer2->id->toString(),
+            'integration_id' => $this->organizer2->integrationId->toString(),
+            'organizer_id' => $this->organizer2->organizerId,
+            'status' => UdbOrganizerStatus::Pending->value,
+        ]);
     }
 
     public function testCreateInBulk(): void
