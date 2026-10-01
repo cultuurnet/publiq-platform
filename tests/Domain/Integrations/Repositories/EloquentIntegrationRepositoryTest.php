@@ -11,6 +11,7 @@ use App\Domain\Integrations\Environment;
 use App\Domain\Integrations\Events\IntegrationActivated;
 use App\Domain\Integrations\Events\IntegrationActivationRequested;
 use App\Domain\Integrations\Exceptions\InconsistentIntegrationType;
+use App\Domain\Integrations\Exceptions\UdbOrganizerAlreadyExists;
 use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\IntegrationPartnerStatus;
 use App\Domain\Integrations\IntegrationStatus;
@@ -425,6 +426,175 @@ final class EloquentIntegrationRepositoryTest extends TestCase
         }
 
         Event::assertDispatched(IntegrationActivationRequested::class);
+    }
+
+    public function test_it_rolls_back_requesting_activation_with_an_organizer_that_is_already_added(): void
+    {
+        $couponId = Uuid::uuid4();
+        $couponCode = '123';
+        CouponModel::query()->insert([
+            'id' => $couponId->toString(),
+            'is_distributed' => false,
+            'integration_id' => null,
+            'code' => $couponCode,
+        ]);
+
+        $integrationId = Uuid::uuid4();
+
+        $subscription = $this->givenThereIsASubscription();
+
+        $searchIntegration = new Integration(
+            $integrationId,
+            IntegrationType::SearchApi,
+            'Search Integration',
+            'Search Integration description',
+            $subscription->id,
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
+        );
+
+        $this->integrationRepository->save($searchIntegration);
+
+        $keycloakClient = new Client(Uuid::uuid4(), $integrationId, 'test-client-prod', 'test-secret-prod', Environment::Production);
+
+        (new EloquentKeycloakClientRepository($this->givenAllRealms()))
+            ->create($keycloakClient);
+
+        $existingOrganizer = new UdbOrganizer(
+            Uuid::uuid4(),
+            $integrationId,
+            new UdbUuid(Uuid::uuid4()->toString()),
+            UdbOrganizerStatus::Pending,
+            $keycloakClient->id
+        );
+
+        (new EloquentUdbOrganizerRepository())->create($existingOrganizer);
+
+        $newOrganizer = new UdbOrganizer(
+            Uuid::uuid4(),
+            $integrationId,
+            new UdbUuid(Uuid::uuid4()->toString()),
+            UdbOrganizerStatus::Pending,
+            $keycloakClient->id
+        );
+
+        $duplicate = new UdbOrganizer(
+            Uuid::uuid4(),
+            $integrationId,
+            $existingOrganizer->organizerId,
+            UdbOrganizerStatus::Pending,
+            $keycloakClient->id
+        );
+
+        try {
+            $this->integrationRepository->requestActivation(
+                $integrationId,
+                Uuid::uuid4(),
+                $couponCode,
+                new UdbOrganizers([$newOrganizer, $duplicate])
+            );
+            $this->fail('Expected UdbOrganizerAlreadyExists to be thrown.');
+        } catch (UdbOrganizerAlreadyExists) {
+        }
+
+        $this->assertDatabaseMissing('udb_organizers', [
+            'id' => $newOrganizer->id->toString(),
+        ]);
+
+        $this->assertDatabaseMissing('udb_organizers', [
+            'id' => $duplicate->id->toString(),
+        ]);
+
+        $this->assertDatabaseHas('integrations', [
+            'id' => $integrationId->toString(),
+            'organization_id' => null,
+            'status' => IntegrationStatus::Draft,
+        ]);
+
+        $this->assertDatabaseHas('coupons', [
+            'id' => $couponId->toString(),
+            'is_distributed' => false,
+            'integration_id' => null,
+        ]);
+
+        Event::assertNotDispatched(IntegrationActivationRequested::class);
+    }
+
+    public function test_it_rolls_back_activating_with_an_organizer_that_is_already_added(): void
+    {
+        $integrationId = Uuid::uuid4();
+
+        $subscription = $this->givenThereIsASubscription();
+
+        $searchIntegration = new Integration(
+            $integrationId,
+            IntegrationType::SearchApi,
+            'Search Integration',
+            'Search Integration description',
+            $subscription->id,
+            IntegrationStatus::Draft,
+            IntegrationPartnerStatus::THIRD_PARTY,
+        );
+
+        $this->integrationRepository->save($searchIntegration);
+
+        $keycloakClient = new Client(Uuid::uuid4(), $integrationId, 'test-client-prod', 'test-secret-prod', Environment::Production);
+
+        (new EloquentKeycloakClientRepository($this->givenAllRealms()))
+            ->create($keycloakClient);
+
+        $existingOrganizer = new UdbOrganizer(
+            Uuid::uuid4(),
+            $integrationId,
+            new UdbUuid(Uuid::uuid4()->toString()),
+            UdbOrganizerStatus::Pending,
+            $keycloakClient->id
+        );
+
+        (new EloquentUdbOrganizerRepository())->create($existingOrganizer);
+
+        $newOrganizer = new UdbOrganizer(
+            Uuid::uuid4(),
+            $integrationId,
+            new UdbUuid(Uuid::uuid4()->toString()),
+            UdbOrganizerStatus::Pending,
+            $keycloakClient->id
+        );
+
+        $duplicate = new UdbOrganizer(
+            Uuid::uuid4(),
+            $integrationId,
+            $existingOrganizer->organizerId,
+            UdbOrganizerStatus::Pending,
+            $keycloakClient->id
+        );
+
+        try {
+            $this->integrationRepository->activateWithOrganization(
+                $integrationId,
+                Uuid::uuid4(),
+                null,
+                new UdbOrganizers([$newOrganizer, $duplicate])
+            );
+            $this->fail('Expected UdbOrganizerAlreadyExists to be thrown.');
+        } catch (UdbOrganizerAlreadyExists) {
+        }
+
+        $this->assertDatabaseMissing('udb_organizers', [
+            'id' => $newOrganizer->id->toString(),
+        ]);
+
+        $this->assertDatabaseMissing('udb_organizers', [
+            'id' => $duplicate->id->toString(),
+        ]);
+
+        $this->assertDatabaseHas('integrations', [
+            'id' => $integrationId->toString(),
+            'organization_id' => null,
+            'status' => IntegrationStatus::Draft,
+        ]);
+
+        Event::assertNotDispatched(IntegrationActivated::class);
     }
 
     public function test_it_can_request_activation_with_coupon(): void
