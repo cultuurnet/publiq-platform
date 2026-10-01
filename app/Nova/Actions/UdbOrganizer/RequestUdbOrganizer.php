@@ -71,7 +71,9 @@ final class RequestUdbOrganizer extends Action
         } catch (UniqueConstraintViolationException) {
             return Action::danger('Organizer "' . $organizationId . '" was already added.');
         } catch (PDOException $e) {
-            return Action::danger($e->getMessage());
+            report($e);
+
+            return Action::danger('Could not add organizer "' . $organizationId . '".');
         }
 
         return Action::message('Organizer "' . $organizationId . '" added.');

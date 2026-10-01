@@ -13,6 +13,7 @@ use App\Nova\Actions\UdbOrganizer\RequestUdbOrganizer;
 use App\Search\Sapi3\SearchService;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Exceptions;
 use Laravel\Nova\Fields\ActionFields;
 use PDOException;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -130,6 +131,39 @@ final class RequestUdbOrganizerTest extends TestCase
         $json = $response->jsonSerialize();
 
         $this->assertEquals('Organizer "' . self::ORGANIZER_ID . '" was already added.', $json['danger']);
+    }
+
+    public function test_it_hides_database_errors(): void
+    {
+        Exceptions::fake();
+
+        $integration = $this->givenThereIsAnIntegration(Uuid::fromString(self::INTEGRATION_ID));
+        $integration = $integration->withKeycloakClients($this->givenThereIsAKeycloakClient($integration));
+
+        $this->integrationRepository->expects($this->once())
+            ->method('getById')
+            ->willReturn($integration);
+
+        $this->searchService->expects($this->once())
+            ->method('findUiTPASOrganizers')
+            ->with(self::ORGANIZER_ID)
+            ->willReturn($this->givenUitpasOrganizers(self::INTEGRATION_ID, 'My organisation', 1));
+
+        $this->udbOrganizerRepository->expects($this->once())
+            ->method('create')
+            ->willThrowException(new PDOException('SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row'));
+
+        $integrations = new Collection([$this->integrationModel]);
+
+        $response = $this->handler->handle(new ActionFields(
+            collect(['organizer_id' => self::ORGANIZER_ID, 'environment' => Environment::Production->value]),
+            collect()
+        ), $integrations);
+
+        $json = $response->jsonSerialize();
+
+        $this->assertEquals('Could not add organizer "' . self::ORGANIZER_ID . '".', $json['danger']);
+        Exceptions::assertReported(PDOException::class);
     }
 
     /**
