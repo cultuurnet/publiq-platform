@@ -166,28 +166,13 @@ final class RequestUdbOrganizerTest extends TestCase
         Exceptions::assertReported(PDOException::class);
     }
 
-    /**
-     * Shaped like the exception Laravel really throws on a duplicate insert: a
-     * UniqueConstraintViolationException whose SQLSTATE code is the *string*
-     * '23000'. PDO assigns that code to the property directly rather than
-     * through the constructor, which only accepts an int, so this does the same.
-     */
     private function givenADuplicateOrganizerException(): UniqueConstraintViolationException
     {
-        $sqlStateViolation = new class ('SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry') extends PDOException {
-            public function __construct(string $message)
-            {
-                parent::__construct($message);
-
-                $this->code = '23000';
-            }
-        };
-
         return new UniqueConstraintViolationException(
             'mysql',
             'insert into `udb_organizers` (`integration_id`, `organizer_id`) values (?, ?)',
             [self::INTEGRATION_ID, self::ORGANIZER_ID],
-            $sqlStateViolation
+            new PDOException('SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry')
         );
     }
 }
