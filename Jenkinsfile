@@ -19,23 +19,50 @@ pipeline {
         }
 
         stage('Setup and build') {
-            agent { label 'ubuntu && 24.04 && php8.2 && nodejs22' }
-            environment {
-                GIT_SHORT_COMMIT = util.shortCommitRef()
-                ARTIFACT_VERSION = "${env.PIPELINE_VERSION}" + '+sha.' + "${env.GIT_SHORT_COMMIT}"
-            }
-                        steps {
-                sh label: 'Install rubygems', script: 'bundle install --deployment'
-                withCredentials([usernamePassword(credentialsId: 'nova.laravel.com', usernameVariable: 'USER', passwordVariable: 'PASSWORD')]) {
-                sh label: 'Build binaries', script: 'bundle exec rake build NOVA_USER=${USER} NOVA_LICENSE_KEY=${PASSWORD}'
+            stages {
+                stage('Build frontend') {
+                    agent {
+                        docker {
+                            image 'base_images/node/22'
+                            label 'docker'
+                        }
+                    }
+                    environment {
+                        npm_config_cache = '/tmp/.npm-cache'
+                    }
+                    steps {
+                        sh label: 'Install node modules', script: 'npm ci'
+                        sh label: 'Build frontend', script: 'npm run build'
+                        sh label: 'Install production node modules', script: 'npm ci --omit=dev'
+                        stash name: 'frontend', includes: 'public/build/**,node_modules/**'
+                    }
+                    post {
+                        cleanup {
+                            cleanWs()
+                        }
+                    }
                 }
-                sh label: 'Build artifact', script: "bundle exec rake build_artifact ARTIFACT_VERSION=${env.ARTIFACT_VERSION}"
-                archiveArtifacts artifacts: "pkg/*${env.ARTIFACT_VERSION}*.deb", onlyIfSuccessful: true
-            }
 
-            post {
-                cleanup {
-                    cleanWs()
+                stage('Build backend and artifact') {
+                    agent { label 'ubuntu && 24.04 && php8.2' }
+                    environment {
+                        GIT_SHORT_COMMIT = util.shortCommitRef()
+                        ARTIFACT_VERSION = "${env.PIPELINE_VERSION}" + '+sha.' + "${env.GIT_SHORT_COMMIT}"
+                    }
+                    steps {
+                        sh label: 'Install rubygems', script: 'bundle install --deployment'
+                        withCredentials([usernamePassword(credentialsId: 'nova.laravel.com', usernameVariable: 'USER', passwordVariable: 'PASSWORD')]) {
+                            sh label: 'Build backend', script: 'bundle exec rake build_backend NOVA_USER=${USER} NOVA_LICENSE_KEY=${PASSWORD}'
+                        }
+                        unstash 'frontend'
+                        sh label: 'Build artifact', script: "bundle exec rake build_artifact ARTIFACT_VERSION=${env.ARTIFACT_VERSION}"
+                        archiveArtifacts artifacts: "pkg/*${env.ARTIFACT_VERSION}*.deb", onlyIfSuccessful: true
+                    }
+                    post {
+                        cleanup {
+                            cleanWs()
+                        }
+                    }
                 }
             }
         }
@@ -84,7 +111,13 @@ pipeline {
         }
 
         stage('Acceptance tests') {
-            agent { label 'ubuntu && 24.04 && nodejs22' }
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.63.0-noble'
+                    label 'container'
+                    args  '-e HOME=/tmp'
+                }
+            }
             environment {
                 E2E_TEST_BASE_URL      = 'https://platform-acc.publiq.be'
                 KEYCLOAK_LOGIN_ENABLED = 'true'
@@ -93,7 +126,6 @@ pipeline {
                 stage('Setup') {
                     steps {
                         sh label: 'Install dependencies', script: 'npm install'
-                        sh label: 'Initialize playwright', script: 'npx playwright install chromium'
                     }
                 }
                 stage('Run acceptance tests') {
