@@ -31,6 +31,10 @@ pipeline {
                         npm_config_cache = '/tmp/.npm-cache'
                     }
                     steps {
+                        script {
+                            // Pins the acceptance tests' Playwright image to the version in the lockfile
+                            env.PLAYWRIGHT_VERSION = readJSON(file: 'package-lock.json').packages['node_modules/@playwright/test'].version
+                        }
                         sh label: 'Install node modules', script: 'npm ci'
                         sh label: 'Build frontend', script: 'npm run build'
                         sh label: 'Install production node modules', script: 'npm ci --omit=dev'
@@ -113,7 +117,8 @@ pipeline {
         stage('Acceptance tests') {
             agent {
                 docker {
-                    image 'mcr.microsoft.com/playwright:v1.63.0-noble'
+                    image "playwright:v${env.PLAYWRIGHT_VERSION}-noble"
+                    registryUrl 'https://mcr.microsoft.com'
                     label 'container'
                     args  '-e HOME=/tmp'
                 }
@@ -125,7 +130,7 @@ pipeline {
             stages {
                 stage('Setup') {
                     steps {
-                        sh label: 'Install dependencies', script: 'npm install'
+                        sh label: 'Install dependencies', script: 'npm ci'
                     }
                 }
                 stage('Run acceptance tests') {
