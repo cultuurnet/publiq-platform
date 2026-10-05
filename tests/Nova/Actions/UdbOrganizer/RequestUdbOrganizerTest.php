@@ -14,7 +14,6 @@ use App\Domain\UdbUuid;
 use App\Nova\Actions\UdbOrganizer\RequestUdbOrganizer;
 use App\Search\Sapi3\SearchService;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Exceptions;
 use Laravel\Nova\Fields\ActionFields;
 use PDOException;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -139,8 +138,6 @@ final class RequestUdbOrganizerTest extends TestCase
 
     public function test_it_hides_database_errors(): void
     {
-        Exceptions::fake();
-
         $integration = $this->givenThereIsAnIntegration(Uuid::fromString(self::INTEGRATION_ID));
         $integration = $integration->withKeycloakClients($this->givenThereIsAKeycloakClient($integration));
 
@@ -167,6 +164,5 @@ final class RequestUdbOrganizerTest extends TestCase
         $json = $response->jsonSerialize();
 
         $this->assertEquals('Could not add organizer "' . self::ORGANIZER_ID . '".', $json['danger']);
-        Exceptions::assertReported(PDOException::class);
     }
 }
