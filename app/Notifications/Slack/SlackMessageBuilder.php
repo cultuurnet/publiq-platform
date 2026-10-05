@@ -53,7 +53,9 @@ final readonly class SlackMessageBuilder implements MessageBuilder
         $message .= PHP_EOL;
         $message .= PHP_EOL . '• *Open in publiq-platform:* ' . $this->appUrl . '/admin/resources/integrations/' . $integration->id->toString();
         $message .= PHP_EOL . '• *Open in UDB:* ' . $this->udbRootUri . 'organizers/' . $udbOrganizer->organizerId . '/preview';
-        $message .= PHP_EOL . '• *Open in UiTPAS:* ' . ($client ? $this->uitpasRootUri . $client->clientId : 'N/A');
+        $message .= PHP_EOL . '• *Open in UiTPAS:* ' . ($client
+            ? $this->uitpasRootUri . $client->clientId
+            : ':warning: no production client, run the *Create Missing Keycloak Clients* action in publiq-platform');
 
         return $message;
     }

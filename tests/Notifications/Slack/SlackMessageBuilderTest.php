@@ -63,7 +63,7 @@ final class SlackMessageBuilderTest extends TestCase
         $this->assertStringContainsString('• *Open in UiTPAS:* https://uitpas.test/clients/client-prod', $message);
     }
 
-    public function test_it_still_builds_a_message_without_a_production_client(): void
+    public function test_it_warns_the_agent_when_there_is_no_production_client(): void
     {
         $integrationId = Uuid::uuid4();
 
@@ -77,7 +77,10 @@ final class SlackMessageBuilderTest extends TestCase
             $this->givenThereIsAnOrganizer($integrationId)
         );
 
-        $this->assertStringContainsString('• *Open in UiTPAS:* N/A', $message);
+        $this->assertStringContainsString(
+            '• *Open in UiTPAS:* :warning: no production client, run the *Create Missing Keycloak Clients* action in publiq-platform',
+            $message
+        );
         $this->assertStringContainsString('• *Open in publiq-platform:* https://platform.test', $message);
     }
 
