@@ -46,7 +46,7 @@ final class ProjectAanvraagServiceProvider extends ServiceProvider
 
             if ($groupId <= 0) {
                 throw new RuntimeException(
-                    'PROJECT_AANVRAAG_WIDGET_GROUP_ID is missing or invalid, refusing to sync widgets with group id ' . $groupId
+'PROJECT_AANVRAAG_WIDGET_GROUP_ID is missing or invalid, got: ' . $groupId
                 );
             }
 
