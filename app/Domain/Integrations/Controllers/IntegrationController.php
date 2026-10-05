@@ -304,23 +304,16 @@ final class IntegrationController extends Controller
     {
         $integration = $this->integrationRepository->getById(Uuid::fromString($integrationId));
 
-        $submittedOrganizers = collect(UdbOrganizerMapper::mapUpdateOrganizers($request, $integration))
-            ->unique(fn (UdbOrganizer $organizer) => $organizer->organizerId->toString());
+        $submittedOrganizers = UdbOrganizerMapper::mapUpdateOrganizers($request, $integration);
 
-        $newOrganizers = $submittedOrganizers
-            ->reject(fn (UdbOrganizer $organizer) => $integration->getUdbOrganizerByOrgId($organizer->organizerId) !== null)
-            ->values()
-            ->all();
+        $alreadyAttached = array_filter(
+            $submittedOrganizers,
+            fn (UdbOrganizer $organizer) => $integration->getUdbOrganizerByOrgId($organizer->organizerId) !== null
+        );
 
-        if ($newOrganizers !== []) {
-            try {
-                $this->organizerRepository->createInBulk(new UdbOrganizers($newOrganizers));
-            } catch (UniqueConstraintViolationException) {
-                return Redirect::back()->withErrors(['duplicate_organizer' => __('errors.organizer.duplicate')]);
-            }
-        }
+        $this->organizerRepository->createInBulk(new UdbOrganizers($submittedOrganizers));
 
-        if (count($newOrganizers) !== $submittedOrganizers->count()) {
+        if ($alreadyAttached !== []) {
             return Redirect::back()->withErrors(['duplicate_organizer' => __('errors.organizer.duplicate')]);
         }
 

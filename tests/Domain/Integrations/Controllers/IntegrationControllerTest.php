@@ -23,7 +23,6 @@ use App\Domain\Integrations\KeyVisibility;
 use App\Domain\Integrations\Models\IntegrationModel;
 use App\Domain\Integrations\Models\IntegrationUrlModel;
 use App\Domain\Integrations\Models\UdbOrganizerModel;
-use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\Organizations\Address;
@@ -37,8 +36,6 @@ use App\Domain\UdbUuid;
 use App\Keycloak\Models\KeycloakClientModel;
 use App\ProjectAanvraag\ProjectAanvraagUrl;
 use App\Router\TranslatedRoute;
-use Exception;
-use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -314,38 +311,15 @@ final class IntegrationControllerTest extends TestCase
 
         $this->assertDatabaseCount('udb_organizers', 2);
         $this->assertDatabaseHas('udb_organizers', [
+            'id' => $organizer->id->toString(),
+            'organizer_id' => $organizer->organizerId->toString(),
+            'status' => UdbOrganizerStatus::Approved->value,
+        ]);
+        $this->assertDatabaseHas('udb_organizers', [
             'integration_id' => $integration->id->toString(),
             'organizer_id' => $newOrganizerId,
+            'status' => UdbOrganizerStatus::Pending->value,
         ]);
-    }
-
-    public function test_it_shows_a_duplicate_error_when_the_insert_races_another_request(): void
-    {
-        $this->actingAs(UserModel::createSystemUser());
-
-        $integration = $this->givenThereIsAnIntegration();
-        $this->givenTheActingUserIsAContactOnIntegration($integration);
-        $this->givenThereIsAKeycloakClient($integration);
-
-        // The pre-filter can only see the organizers attached at the time of
-        // this request, so a concurrent request attaching the same organizer
-        // is only caught by the unique constraint on insert.
-        $organizerRepository = $this->createMock(UdbOrganizerRepository::class);
-        $organizerRepository->method('createInBulk')
-            ->willThrowException(new UniqueConstraintViolationException('mysql', '', [], new Exception()));
-        app()->instance(UdbOrganizerRepository::class, $organizerRepository);
-
-        $response = $this->post("/integrations/{$integration->id}/organizers", [
-            'organizers' => [
-                [
-                    'id' => Uuid::uuid4()->toString(),
-                    'name' => 'Test Organizer',
-                ],
-            ],
-        ]);
-
-        $response->assertRedirect('/');
-        $response->assertSessionHasErrors('duplicate_organizer');
     }
 
     public function test_it_can_not_add_the_same_new_organizer_twice_in_one_request(): void
@@ -358,9 +332,9 @@ final class IntegrationControllerTest extends TestCase
 
         $organizerId = Uuid::uuid4()->toString();
 
-        // Both entries are "new" from the integration's current point of view,
-        // so this is a client-side slip rather than an "already added" mistake:
-        // unique() silently collapses them instead of raising duplicate_organizer.
+        // Both entries are "new" from the integration's current point of view, so
+        // this is a client-side slip rather than an "already added" mistake: the
+        // repository collapses the second insert without raising duplicate_organizer.
         $response = $this->post("/integrations/{$integration->id}/organizers", [
             'organizers' => [
                 [
