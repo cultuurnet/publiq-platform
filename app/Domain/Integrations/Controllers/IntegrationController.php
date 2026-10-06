@@ -36,6 +36,7 @@ use App\Domain\Integrations\Mappers\UpdateIntegrationUrlsMapper;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Domain\Integrations\Repositories\IntegrationUrlRepository;
 use App\Domain\Integrations\Repositories\UdbOrganizerRepository;
+use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizers;
 use App\Domain\KeyVisibilityUpgrades\KeyVisibilityUpgrade;
 use App\Domain\KeyVisibilityUpgrades\Repositories\KeyVisibilityUpgradeRepository;
@@ -303,9 +304,18 @@ final class IntegrationController extends Controller
     {
         $integration = $this->integrationRepository->getById(Uuid::fromString($integrationId));
 
-        $this->organizerRepository->createInBulk(
-            new UdbOrganizers(UdbOrganizerMapper::mapUpdateOrganizers($request, $integration))
+        $submittedOrganizers = UdbOrganizerMapper::mapUpdateOrganizers($request, $integration);
+
+        $alreadyAttached = array_filter(
+            $submittedOrganizers,
+            fn (UdbOrganizer $organizer) => $integration->getUdbOrganizerByOrgId($organizer->organizerId) !== null
         );
+
+        $this->organizerRepository->createInBulk(new UdbOrganizers($submittedOrganizers));
+
+        if ($alreadyAttached !== []) {
+            return Redirect::back()->withErrors(['duplicate_organizer' => __('errors.organizer.duplicate')]);
+        }
 
         return Redirect::back();
     }
