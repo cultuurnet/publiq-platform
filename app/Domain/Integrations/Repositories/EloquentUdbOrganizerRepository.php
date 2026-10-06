@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Domain\Integrations\Repositories;
 
+use App\Domain\Integrations\Exceptions\UdbOrganizerAlreadyExists;
 use App\Domain\Integrations\Models\UdbOrganizerModel;
 use App\Domain\Integrations\UdbOrganizer;
 use App\Domain\Integrations\UdbOrganizers;
 use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\UdbUuid;
 use App\UiTPAS\Event\UdbOrganizerApproved;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\UuidInterface;
 
@@ -17,13 +19,17 @@ final class EloquentUdbOrganizerRepository implements UdbOrganizerRepository
 {
     public function create(UdbOrganizer $organizer): void
     {
-        UdbOrganizerModel::query()->create([
-            'id' => $organizer->id->toString(),
-            'integration_id' => $organizer->integrationId->toString(),
-            'organizer_id' => $organizer->organizerId->toString(),
-            'status' => $organizer->status->value,
-            'client_id' => empty($organizer->clientId) ? null : $organizer->clientId->toString(),
-        ]);
+        try {
+            UdbOrganizerModel::query()->create([
+                'id' => $organizer->id->toString(),
+                'integration_id' => $organizer->integrationId->toString(),
+                'organizer_id' => $organizer->organizerId->toString(),
+                'status' => $organizer->status->value,
+                'client_id' => empty($organizer->clientId) ? null : $organizer->clientId->toString(),
+            ]);
+        } catch (UniqueConstraintViolationException) {
+            throw UdbOrganizerAlreadyExists::onIntegration($organizer->integrationId, $organizer->organizerId);
+        }
 
         if ($organizer->status === UdbOrganizerStatus::Approved) {
             UdbOrganizerApproved::dispatch($organizer->organizerId, $organizer->integrationId);
@@ -34,7 +40,11 @@ final class EloquentUdbOrganizerRepository implements UdbOrganizerRepository
     {
         DB::transaction(function () use ($organizers): void {
             foreach ($organizers as $organizer) {
-                $this->create($organizer);
+                try {
+                    $this->create($organizer);
+                } catch (UdbOrganizerAlreadyExists) {
+                    continue;
+                }
             }
         });
     }
