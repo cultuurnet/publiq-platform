@@ -14,10 +14,12 @@ use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\UdbUuid;
 use App\Nova\Actions\ActivateUitpasIntegration;
 use App\Nova\Resources\Organization as OrganizationResource;
+use Closure;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\Rules\Exists;
 use Laravel\Nova\Fields\ActionFields;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use PHPUnit\Framework\MockObject\MockObject;
 use Ramsey\Uuid\Uuid;
@@ -67,6 +69,61 @@ final class ActivateUitpasIntegrationTest extends TestCase
         $this->assertSame('required', $rules[0]);
         $this->assertInstanceOf(Exists::class, $rules[1]);
         $this->assertSame('exists:organizations,id,deleted_at,"NULL"', (string) $rules[1]);
+    }
+
+    public function test_the_organizers_field_accepts_a_comma_separated_list_of_valid_ids(): void
+    {
+        $this->assertSame(
+            [],
+            $this->validateOrganizers(' d541dbd6-b818-432d-b2be-d51dfc5c0c51 , 68498691-4ff0-8010-ae61-c1ece25eaf38 ,')
+        );
+    }
+
+    public function test_the_organizers_field_accepts_an_empty_value(): void
+    {
+        $this->assertSame([], $this->validateOrganizers(null));
+        $this->assertSame([], $this->validateOrganizers(''));
+    }
+
+    public function test_the_organizers_field_rejects_ids_that_are_not_uuids(): void
+    {
+        $this->assertSame(
+            [
+                '"not-a-uuid" is not a valid organizer id.',
+                '"https://udb.be/organizer/d541dbd6-b818-432d-b2be-d51dfc5c0c51" is not a valid organizer id.',
+            ],
+            $this->validateOrganizers(
+                'not-a-uuid,d541dbd6-b818-432d-b2be-d51dfc5c0c51,https://udb.be/organizer/d541dbd6-b818-432d-b2be-d51dfc5c0c51'
+            )
+        );
+    }
+
+    /**
+     * @return string[]
+     */
+    private function validateOrganizers(?string $organizers): array
+    {
+        $fields = $this->handler->fields(NovaRequest::create('/'));
+
+        $organizersField = $fields[1];
+
+        $this->assertInstanceOf(Text::class, $organizersField);
+        $this->assertSame('organizers', $organizersField->attribute);
+
+        $rules = $organizersField->rules;
+
+        $this->assertIsArray($rules);
+        $this->assertSame('nullable', $rules[0]);
+        $this->assertSame('string', $rules[1]);
+        $this->assertInstanceOf(Closure::class, $rules[2]);
+
+        $failures = [];
+
+        $rules[2]('organizers', $organizers, static function (string $message) use (&$failures): void {
+            $failures[] = $message;
+        });
+
+        return $failures;
     }
 
     public function test_it_activates_the_integration_with_the_selected_organization_and_organizers(): void

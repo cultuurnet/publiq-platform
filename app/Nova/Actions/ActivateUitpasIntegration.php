@@ -13,6 +13,7 @@ use App\Domain\Integrations\UdbOrganizerStatus;
 use App\Domain\Organizations\Models\OrganizationModel;
 use App\Domain\UdbUuid;
 use App\Nova\Resources\Organization as OrganizationResource;
+use Closure;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Collection;
@@ -72,19 +73,34 @@ final class ActivateUitpasIntegration extends Action
             Text::make('Organizer(s)', 'organizers')
                 ->rules(
                     'nullable',
-                    'string'
+                    'string',
+                    static function (string $attribute, mixed $value, Closure $fail): void {
+                        foreach (self::splitOrganizerIds(is_string($value) ? $value : null) as $id) {
+                            if (!preg_match(UdbUuid::UUID_REGEX, $id)) {
+                                $fail(sprintf('"%s" is not a valid organizer id.', $id));
+                            }
+                        }
+                    }
                 ),
         ];
     }
 
-    private function getUdbOrganizers(?string $organizers, UuidInterface $integrationId): UdbOrganizers
+    /**
+     * @return string[]
+     */
+    private static function splitOrganizerIds(?string $organizers): array
     {
-        $organizerIds = array_unique(
+        return array_unique(
             array_filter(
                 array_map('trim', explode(',', $organizers ?? '')),
                 static fn (string $id): bool => $id !== ''
             )
         );
+    }
+
+    private function getUdbOrganizers(?string $organizers, UuidInterface $integrationId): UdbOrganizers
+    {
+        $organizerIds = self::splitOrganizerIds($organizers);
 
         if ($organizerIds === []) {
             return new UdbOrganizers();
