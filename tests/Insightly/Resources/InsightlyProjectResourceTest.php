@@ -345,7 +345,7 @@ final class InsightlyProjectResourceTest extends TestCase
         $this->insightlyClient->expects($this->once())
             ->method('sendRequest')
             ->with(self::callback(fn ($actualRequest): bool => self::assertRequestIsTheSame($expectedLinksGetRequest, $actualRequest)))
-            ->willReturn(new Response(200, [], Json::encode($projectLinks)), );
+            ->willReturn(new Response(200, [], Json::encode($projectLinks)));
 
         $this->expectException(ContactCannotBeUnlinked::class);
         $this->resource->unlinkContact($projectId, $contactId);

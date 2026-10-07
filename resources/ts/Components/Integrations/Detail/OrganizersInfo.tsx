@@ -4,23 +4,24 @@ import { Trans, useTranslation } from "react-i18next";
 import type { Integration } from "../../../types/Integration";
 import { Card } from "../../Card";
 import { CopyText } from "../../CopyText";
-import { ButtonIcon } from "../../ButtonIcon";
-import { faCheckSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faCheckSquare } from "@fortawesome/free-solid-svg-icons";
 import type { Organizer } from "../../../types/Organizer";
 import { groupBy } from "lodash";
 import { ButtonPrimary } from "../../ButtonPrimary";
-import { QuestionDialog } from "../../QuestionDialog";
 import { router, useForm } from "@inertiajs/react";
 import { Dialog } from "../../Dialog";
 import { ButtonSecondary } from "../../ButtonSecondary";
 import { OrganizersDatalist } from "./OrganizersDatalist";
 import type { UiTPASOrganizer } from "../../../types/UiTPASOrganizer";
-import { classNames } from "../../../utils/classNames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "../../Link";
 import { Tooltip } from "../../Tooltip";
+import { Alert } from "../../Alert";
 
-type Props = Integration & { organizers: Organizer[] };
+type Props = Integration & {
+  organizers: Organizer[];
+  duplicateOrganizerErrorMessage?: string;
+};
 
 const OrganizersSection = ({
   id,
@@ -32,22 +33,14 @@ const OrganizersSection = ({
   sectionName: Organizer["status"];
 }) => {
   const { t, i18n } = useTranslation();
-  const [toBeDeletedId, setToBeDeletedId] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [hoveredPermissionId, setHoveredPermissionId] = useState<number | null>(
-    null
-  );
+  const [hoveredPermissionKey, setHoveredPermissionKey] = useState<
+    string | null
+  >(null);
   const form = useForm<{ organizers: UiTPASOrganizer[] }>({
     organizers: [],
   });
   const uitpasTestOrg = import.meta.env.VITE_UITPAS_TEST_ORG;
-
-  const handleDeleteOrganizer = () => {
-    router.delete(`/integrations/${id}/organizers/${toBeDeletedId}`, {
-      preserveScroll: true,
-      preserveState: false,
-    });
-  };
 
   const handleUpdateOrganizers = () =>
     router.post(`/integrations/${id}/organizers`, form.data, {
@@ -109,48 +102,46 @@ const OrganizersSection = ({
                   </Heading>
                   <div className="flex-shrink-0 flex max-sm:flex-col gap-4">
                     <CopyText text={organizer.id} />
-                    <ButtonIcon
-                      data-testid={organizer.name[i18n.language]}
-                      icon={faTrash}
-                      className={classNames(
-                        sectionName !== "Live" && "invisible max-sm:hidden",
-                        "text-icon-gray"
-                      )}
-                      onClick={() => setToBeDeletedId(organizer.id)}
-                    />
                   </div>
                 </div>
 
                 <div className="mt-2 ml-1">
                   {organizer.permissions.length > 0 ? (
                     <ul className="grid grid-cols-1 md:grid-cols-2 gap-1 text-sm text-gray-700">
-                      {organizer.permissions.map((permission, id) => {
-                        const isHovered = hoveredPermissionId === id;
-                        return (
-                          <li key={id} className="flex items-start gap-2">
-                            <Tooltip
-                              visible={isHovered}
-                              text={permission.id}
-                              className="w-auto"
+                      {organizer.permissions.map(
+                        (permission, permissionIndex) => {
+                          const permissionKey = `${organizer.id}-${permissionIndex}`;
+                          return (
+                            <li
+                              key={permissionKey}
+                              className="flex items-start gap-2"
                             >
-                              <div
-                                onMouseEnter={() => setHoveredPermissionId(id)}
-                                onMouseLeave={() =>
-                                  setHoveredPermissionId(null)
-                                }
-                                className="flex items-center gap-2"
+                              <Tooltip
+                                visible={hoveredPermissionKey === permissionKey}
+                                text={permission.id}
+                                className="w-auto"
                               >
-                                <FontAwesomeIcon
-                                  icon={faCheckSquare}
-                                  className="text-green-500"
-                                  size="lg"
-                                />
-                                {permission.label}
-                              </div>
-                            </Tooltip>
-                          </li>
-                        );
-                      })}
+                                <div
+                                  onMouseEnter={() =>
+                                    setHoveredPermissionKey(permissionKey)
+                                  }
+                                  onMouseLeave={() =>
+                                    setHoveredPermissionKey(null)
+                                  }
+                                  className="flex items-center gap-2"
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faCheckSquare}
+                                    className="text-green-500"
+                                    size="lg"
+                                  />
+                                  {permission.label}
+                                </div>
+                              </Tooltip>
+                            </li>
+                          );
+                        }
+                      )}
                     </ul>
                   ) : (
                     <p className="text-sm italic text-gray-400">
@@ -171,19 +162,6 @@ const OrganizersSection = ({
           {t("details.organizers_info.add")}
         </ButtonPrimary>
       )}
-      <QuestionDialog
-        isVisible={!!toBeDeletedId}
-        onClose={() => {
-          setToBeDeletedId("");
-        }}
-        title={t("details.organizers_info.delete_dialog.title")}
-        question={t("details.organizers_info.delete_dialog.question", {
-          name: organizers?.find((organizer) => organizer.id === toBeDeletedId)
-            ?.name[i18n.language],
-        })}
-        onConfirm={handleDeleteOrganizer}
-        onCancel={() => setToBeDeletedId("")}
-      />
       <Dialog
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
@@ -212,12 +190,19 @@ const OrganizersSection = ({
   );
 };
 
-export const OrganizersInfo = ({ id, organizers }: Props) => {
+export const OrganizersInfo = ({
+  id,
+  organizers,
+  duplicateOrganizerErrorMessage,
+}: Props) => {
   const { t } = useTranslation();
   const byStatus = groupBy(organizers, "status");
 
   return (
     <div className={"flex flex-col gap-2"}>
+      {duplicateOrganizerErrorMessage && (
+        <Alert variant="error">{duplicateOrganizerErrorMessage}</Alert>
+      )}
       <Heading level={3} className="font-semibold">
         {t("details.organizers_info.title")}
       </Heading>
