@@ -226,6 +226,190 @@ final class IntegrationControllerTest extends TestCase
         ]);
     }
 
+    public function test_it_can_add_a_new_organizer(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $this->givenThereIsAKeycloakClient($integration);
+
+        $organizerId = Uuid::uuid4()->toString();
+
+        $response = $this->post("/integrations/{$integration->id}/organizers", [
+            'organizers' => [
+                [
+                    'id' => $organizerId,
+                    'name' => 'Test Organizer',
+                ],
+            ],
+        ]);
+
+        $response->assertRedirect('/');
+        $response->assertSessionDoesntHaveErrors();
+
+        $this->assertDatabaseHas('udb_organizers', [
+            'integration_id' => $integration->id->toString(),
+            'organizer_id' => $organizerId,
+        ]);
+    }
+
+    public function test_it_can_not_add_an_organizer_that_is_already_active_on_the_integration(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $this->givenThereIsAKeycloakClient($integration);
+        $organizer = $this->givenThereIsAnOrganizerOnIntegration($integration);
+
+        $response = $this->post("/integrations/{$integration->id}/organizers", [
+            'organizers' => [
+                [
+                    'id' => $organizer->organizerId->toString(),
+                    'name' => 'Test Organizer',
+                ],
+            ],
+        ]);
+
+        $response->assertRedirect('/');
+        $response->assertSessionHasErrors('duplicate_organizer');
+
+        $this->assertDatabaseCount('udb_organizers', 1);
+        $this->assertDatabaseHas('udb_organizers', [
+            'integration_id' => $integration->id->toString(),
+            'organizer_id' => $organizer->organizerId->toString(),
+        ]);
+    }
+
+    public function test_it_adds_the_new_organizers_of_a_batch_that_also_contains_an_already_active_one(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $this->givenThereIsAKeycloakClient($integration);
+        $organizer = $this->givenThereIsAnOrganizerOnIntegration($integration);
+
+        $newOrganizerId = Uuid::uuid4()->toString();
+
+        $response = $this->post("/integrations/{$integration->id}/organizers", [
+            'organizers' => [
+                [
+                    'id' => $organizer->organizerId->toString(),
+                    'name' => 'Test Organizer',
+                ],
+                [
+                    'id' => $newOrganizerId,
+                    'name' => 'Another Organizer',
+                ],
+            ],
+        ]);
+
+        $response->assertRedirect('/');
+        $response->assertSessionHasErrors('duplicate_organizer');
+
+        $this->assertDatabaseCount('udb_organizers', 2);
+        $this->assertDatabaseHas('udb_organizers', [
+            'id' => $organizer->id->toString(),
+            'organizer_id' => $organizer->organizerId->toString(),
+            'status' => UdbOrganizerStatus::Approved->value,
+        ]);
+        $this->assertDatabaseHas('udb_organizers', [
+            'integration_id' => $integration->id->toString(),
+            'organizer_id' => $newOrganizerId,
+            'status' => UdbOrganizerStatus::Pending->value,
+        ]);
+    }
+
+    public function test_it_can_not_add_the_same_new_organizer_twice_in_one_request(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $this->givenThereIsAKeycloakClient($integration);
+
+        $organizerId = Uuid::uuid4()->toString();
+
+        // Both entries are "new" from the integration's current point of view, so
+        // this is a client-side slip rather than an "already added" mistake: the
+        // repository collapses the second insert without raising duplicate_organizer.
+        $response = $this->post("/integrations/{$integration->id}/organizers", [
+            'organizers' => [
+                [
+                    'id' => $organizerId,
+                    'name' => 'Test Organizer',
+                ],
+                [
+                    'id' => $organizerId,
+                    'name' => 'Test Organizer',
+                ],
+            ],
+        ]);
+
+        $response->assertRedirect('/');
+        $response->assertSessionDoesntHaveErrors();
+
+        $this->assertDatabaseCount('udb_organizers', 1);
+        $this->assertDatabaseHas('udb_organizers', [
+            'integration_id' => $integration->id->toString(),
+            'organizer_id' => $organizerId,
+        ]);
+    }
+
+    public function test_it_can_add_an_organizer_with_a_legacy_udb_uuid(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $this->givenThereIsAKeycloakClient($integration);
+
+        // Legacy UiTdatabank ids are uppercase and miss the fourth hyphen, e.g.
+        // FFFFFFFF-FFFF-FFFF-FFFFFFFFFFFFFFFF instead of ffffffff-ffff-ffff-ffff-ffffffffffff.
+        $legacyOrganizerId = 'A1B2C3D4-E5F6-4789-AB123456789ABCDE';
+
+        $response = $this->post("/integrations/{$integration->id}/organizers", [
+            'organizers' => [
+                [
+                    'id' => $legacyOrganizerId,
+                    'name' => 'Legacy Organizer',
+                ],
+            ],
+        ]);
+
+        $response->assertRedirect('/');
+        $response->assertSessionDoesntHaveErrors();
+
+        $this->assertDatabaseHas('udb_organizers', [
+            'integration_id' => $integration->id->toString(),
+            'organizer_id' => $legacyOrganizerId,
+        ]);
+    }
+
+    public function test_it_can_not_add_an_organizer_with_an_invalid_udb_uuid(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integration = $this->givenThereIsAnIntegration();
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $this->givenThereIsAKeycloakClient($integration);
+
+        $response = $this->post("/integrations/{$integration->id}/organizers", [
+            'organizers' => [
+                [
+                    'id' => 'not-a-uuid',
+                    'name' => 'Test Organizer',
+                ],
+            ],
+        ]);
+
+        $response->assertSessionHasErrors('organizers.0.id');
+
+        $this->assertDatabaseCount('udb_organizers', 0);
+    }
+
     public function test_it_can_not_request_activation_if_not_authorized(): void
     {
         $this->actingAs(UserModel::createSystemUser());
