@@ -12,9 +12,15 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 type Props = {
   onChange: (organizers: UiTPASOrganizer[]) => void;
   value: UiTPASOrganizer[];
+  existingOrganizerIds?: string[];
 } & Omit<FormElementProps, "onChange" | "component">;
 
-export const OrganizersDatalist = ({ onChange, value, ...props }: Props) => {
+export const OrganizersDatalist = ({
+  onChange,
+  value,
+  existingOrganizerIds = [],
+  ...props
+}: Props) => {
   const { t } = useTranslation();
   const [isSearchListVisible, setIsSearchListVisible] = useState(false);
   const [organizerList, setOrganizerList] = useState<UiTPASOrganizer[]>([]);
@@ -64,18 +70,21 @@ export const OrganizersDatalist = ({ onChange, value, ...props }: Props) => {
     }
   };
 
-  const handleAddOrganizers = (organizer: UiTPASOrganizer) => {
-    const isDuplicate =
-      value.length > 0 &&
-      value.some((existingOrganizer) => existingOrganizer.id === organizer.id);
+  // Organizers that are already active on the integration, or that were picked
+  // earlier in this same dialog, are dropped from the search results: adding
+  // them again is a no-op the backend rejects with a duplicate error.
+  const selectableOrganizers = organizerList.filter(
+    (organizer) =>
+      !existingOrganizerIds.includes(organizer.id) &&
+      !value.some((selectedOrganizer) => selectedOrganizer.id === organizer.id)
+  );
 
-    if (!isDuplicate) {
-      onChange([...value, organizer]);
-      setIsSearchListVisible(false);
-      setOrganizerList([]);
-      if (organizersInputRef.current) {
-        organizersInputRef.current.value = "";
-      }
+  const handleAddOrganizers = (organizer: UiTPASOrganizer) => {
+    onChange([...value, organizer]);
+    setIsSearchListVisible(false);
+    setOrganizerList([]);
+    if (organizersInputRef.current) {
+      organizersInputRef.current.value = "";
     }
   };
 
@@ -126,23 +135,21 @@ export const OrganizersDatalist = ({ onChange, value, ...props }: Props) => {
               ref={organizersInputRef}
               onChange={(e) => handleInputOnChange(e)}
             />
-            {organizerList &&
-              organizerList.length > 0 &&
-              isSearchListVisible && (
-                <ul className="border rounded absolute bg-white w-full z-50">
-                  {organizerList.map((organizer) => (
-                    <li
-                      tabIndex={0}
-                      key={`${organizer.id}`}
-                      onClick={() => handleAddOrganizers(organizer)}
-                      onKeyDown={(e) => handleKeyDown(e, organizer)}
-                      className="border-b px-3 py-1 hover:bg-gray-100"
-                    >
-                      {organizer.name}
-                    </li>
-                  ))}
-                </ul>
-              )}
+            {selectableOrganizers.length > 0 && isSearchListVisible && (
+              <ul className="border rounded absolute bg-white w-full z-50">
+                {selectableOrganizers.map((organizer) => (
+                  <li
+                    tabIndex={0}
+                    key={`${organizer.id}`}
+                    onClick={() => handleAddOrganizers(organizer)}
+                    onKeyDown={(e) => handleKeyDown(e, organizer)}
+                    className="border-b px-3 py-1 hover:bg-gray-100"
+                  >
+                    {organizer.name}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         }
       />

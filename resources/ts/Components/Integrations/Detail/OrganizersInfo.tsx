@@ -184,6 +184,7 @@ const OrganizersSection = ({
         <OrganizersDatalist
           onChange={(organizers) => form.setData("organizers", organizers)}
           value={form.data.organizers}
+          existingOrganizerIds={organizers?.map((organizer) => organizer.id)}
         />
       </Dialog>
     </>
