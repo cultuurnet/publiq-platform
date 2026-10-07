@@ -38,7 +38,8 @@ pipeline {
                         sh label: 'Install node modules', script: 'npm ci'
                         sh label: 'Build frontend', script: 'npm run build'
                         sh label: 'Install production node modules', script: 'npm ci --omit=dev'
-                        stash name: 'frontend', includes: 'public/build/**,node_modules/**'
+                        sh label: 'Archive build', script: 'tar czf frontend.tgz public/build node_modules'
+                        stash name: 'frontend', includes: 'frontend.tgz'
                     }
                     post {
                         cleanup {
@@ -59,6 +60,7 @@ pipeline {
                             sh label: 'Build backend', script: 'bundle exec rake build_backend NOVA_USER=${USER} NOVA_LICENSE_KEY=${PASSWORD}'
                         }
                         unstash 'frontend'
+                        sh label: 'Extract build', script: 'tar xzf frontend.tgz && rm frontend.tgz'
                         sh label: 'Build artifact', script: "bundle exec rake build_artifact ARTIFACT_VERSION=${env.ARTIFACT_VERSION}"
                         archiveArtifacts artifacts: "pkg/*${env.ARTIFACT_VERSION}*.deb", onlyIfSuccessful: true
                     }
