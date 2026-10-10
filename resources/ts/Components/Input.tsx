@@ -4,13 +4,13 @@ import { classNames } from "../utils/classNames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { IconProp } from "@fortawesome/fontawesome-svg-core";
 
-type Props = ComponentProps<"input"> & {
+type Props = Omit<ComponentProps<"input">, "children"> & {
   iconBack?: IconProp;
   inputId?: string;
 };
 
 const InputComponent = (
-  { children, className, iconBack, disabled, inputId, ...props }: Props,
+  { className, iconBack, disabled, inputId, ...props }: Props,
   ref: ForwardedRef<HTMLInputElement>
 ) => {
   return (
@@ -25,9 +25,7 @@ const InputComponent = (
         id={inputId}
         ref={ref}
         {...props}
-      >
-        {children}
-      </input>
+      />
       {iconBack && (
         <FontAwesomeIcon
           icon={iconBack}
