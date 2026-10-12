@@ -257,8 +257,9 @@ export const ContactInfo = ({
             label={`${t("integration_form.contact.last_name")}`}
             error={storeContactForm.errors["lastName"]}
             className="w-full"
-            component={
+            component={(id) => (
               <Input
+                id={id}
                 type="text"
                 name="lastName"
                 value={storeContactForm.data.lastName}
@@ -267,14 +268,15 @@ export const ContactInfo = ({
                 }
                 className="w-full"
               />
-            }
+            )}
           />
           <FormElement
             label={`${t("integration_form.contact.first_name")}`}
             error={storeContactForm.errors["firstName"]}
             className="w-full"
-            component={
+            component={(id) => (
               <Input
+                id={id}
                 type="text"
                 name="firstName"
                 value={storeContactForm.data.firstName}
@@ -282,14 +284,15 @@ export const ContactInfo = ({
                   storeContactForm.setData("firstName", e.target.value)
                 }
               />
-            }
+            )}
           />
         </div>
         <FormElement
           label={`${t("integration_form.contact.email")}`}
           error={storeContactForm.errors["email"]}
-          component={
+          component={(id) => (
             <Input
+              id={id}
               type="text"
               name="email"
               value={storeContactForm.data.email}
@@ -297,7 +300,7 @@ export const ContactInfo = ({
                 storeContactForm.setData("email", e.target.value)
               }
             />
-          }
+          )}
         />
       </Dialog>
       {toBeEditedContact && (
@@ -342,8 +345,9 @@ export const ContactInfo = ({
               label={`${t("integration_form.contact.last_name")}`}
               error={errors[`${formContactType}.lastName`]}
               className="w-full"
-              component={
+              component={(id) => (
                 <Input
+                  id={id}
                   type="text"
                   name={`${formContactType}.lastName`}
                   value={toBeEditedContact?.lastName}
@@ -355,14 +359,15 @@ export const ContactInfo = ({
                   }
                   disabled={isMobileContactVisible}
                 />
-              }
+              )}
             />
             <FormElement
               label={`${t("integration_form.contact.first_name")}`}
               error={errors[`${formContactType}.firstName`]}
               className="w-full"
-              component={
+              component={(id) => (
                 <Input
+                  id={id}
                   type="text"
                   name={`${formContactType}.firstName`}
                   value={toBeEditedContact?.firstName}
@@ -374,14 +379,15 @@ export const ContactInfo = ({
                   }
                   disabled={isMobileContactVisible}
                 />
-              }
+              )}
             />
           </div>
           <FormElement
             label={`${t("integration_form.contact.email")}`}
             error={errors[`${formContactType}.email`]}
-            component={
+            component={(id) => (
               <Input
+                id={id}
                 type="email"
                 name={`${formContactType}.email`}
                 value={toBeEditedContact?.email}
@@ -393,7 +399,7 @@ export const ContactInfo = ({
                 }
                 disabled={isMobileContactVisible}
               />
-            }
+            )}
           />
         </Dialog>
       )}

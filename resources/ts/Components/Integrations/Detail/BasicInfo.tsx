@@ -34,21 +34,23 @@ export const BasicInfo = ({
         <FormElement
           label={`${t("details.basic_info.name")}`}
           error={errors["integrationName"]}
-          component={
+          component={(id) => (
             <Input
+              id={id}
               type="text"
               name="integrationName"
               value={name}
               onChange={(e) => onChangeName(e.target.value)}
               className="md:min-w-[40rem]"
             />
-          }
+          )}
         />
         <FormElement
           label={`${t("details.basic_info.description")}`}
           error={errors["description"]}
-          component={
+          component={(id) => (
             <textarea
+              id={id}
               rows={4}
               className={classNames(
                 "appearance-none rounded-lg block w-full  text-gray-700 border border-gray-500 py-3 px-4 leading-tight md:min-w-[40rem]"
@@ -57,20 +59,21 @@ export const BasicInfo = ({
               value={description}
               onChange={(e) => onChangeDescription(e.target.value)}
             />
-          }
+          )}
         />
         <FormElement
           label={`${t("details.basic_info.website")}`}
           error={errors["website"]}
-          component={
+          component={(id) => (
             <Input
+              id={id}
               type="text"
               name="website"
               value={website}
               onChange={(e) => onChangeWebsite(e.target.value)}
               className="md:min-w-[40rem]"
             />
-          }
+          )}
         />
       </div>
     </div>

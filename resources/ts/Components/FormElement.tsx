@@ -1,5 +1,5 @@
 import type { ComponentProps, ReactElement } from "react";
-import React, { cloneElement, memo, useId } from "react";
+import React, { memo, useId } from "react";
 import { classNames } from "../utils/classNames";
 import type { Theme } from "../types/Theme";
 
@@ -80,7 +80,7 @@ export type Props = {
   labelWeight?: LabelWeight;
   error?: string;
   info?: string;
-  component: ReactElement<Record<string, unknown>>;
+  component: (id: string) => ReactElement;
   elementId?: string;
   required?: boolean;
 } & ComponentProps<"div">;
@@ -98,8 +98,6 @@ export const FormElement = ({
   required = false,
 }: Props) => {
   const id = useId();
-
-  const clonedComponent = cloneElement(component, { ...component.props, id });
 
   return (
     <div id={elementId} className={classNames("flex flex-col ", className)}>
@@ -122,7 +120,7 @@ export const FormElement = ({
                 required={required}
               />
             )}
-            <div className={InputStyle[labelPosition]}>{clonedComponent}</div>
+            <div className={InputStyle[labelPosition]}>{component(id)}</div>
           </div>
         </>
       </Wrapper>

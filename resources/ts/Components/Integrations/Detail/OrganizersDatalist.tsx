@@ -118,8 +118,8 @@ export const OrganizersDatalist = ({ onChange, value, ...props }: Props) => {
         required
         className="w-full relative"
         {...props}
-        component={
-          <div>
+        component={(id) => (
+          <div id={id}>
             <Input
               type="text"
               name="organizers"
@@ -144,7 +144,7 @@ export const OrganizersDatalist = ({ onChange, value, ...props }: Props) => {
                 </ul>
               )}
           </div>
-        }
+        )}
       />
     </>
   );

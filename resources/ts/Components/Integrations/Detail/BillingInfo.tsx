@@ -41,15 +41,16 @@ export const BillingInfo = ({
           {t("details.billing_info.title.subscription")}
         </Heading>
         <FormElement
-          component={
+          component={(id) => (
             <Input
+              id={id}
               type="text"
               name="price"
               value={pricingPlan.label}
               className="md:min-w-[40rem]"
               disabled
             />
-          }
+          )}
         />
         <div className="flex flex-col gap-3 col-span-2 col-start-2 lg:max-w-[35%]">
           {coupon?.isDistributed && (
@@ -96,8 +97,9 @@ export const BillingInfo = ({
                 label={`${t("details.billing_info.name")}`}
                 error={errors["organization.name"]}
                 className="w-full"
-                component={
+                component={(id) => (
                   <Input
+                    id={id}
                     type="text"
                     name="organization.name"
                     className="md:min-w-[40rem]"
@@ -110,15 +112,16 @@ export const BillingInfo = ({
                       })
                     }
                   />
-                }
+                )}
               />
               <div className="max-md:flex max-md:flex-col md:grid md:grid-cols-5 gap-3 md:min-w-[40rem]">
                 <FormElement
                   label={`${t("details.billing_info.address.street")}`}
                   error={errors["organization.address.street"]}
                   className="col-span-2"
-                  component={
+                  component={(id) => (
                     <Input
+                      id={id}
                       type="text"
                       name="organization.address.street"
                       value={data.organization?.address?.street ?? ""}
@@ -133,14 +136,15 @@ export const BillingInfo = ({
                         })
                       }
                     />
-                  }
+                  )}
                 />
                 <FormElement
                   label={`${t("details.billing_info.address.postcode")}`}
                   error={errors["organization.address.zip"]}
                   className="col-span-1"
-                  component={
+                  component={(id) => (
                     <Input
+                      id={id}
                       type="text"
                       name="organization.address.zip"
                       value={data.organization?.address?.zip ?? ""}
@@ -155,14 +159,15 @@ export const BillingInfo = ({
                         })
                       }
                     />
-                  }
+                  )}
                 />
                 <FormElement
                   label={`${t("details.billing_info.address.city")}`}
                   error={errors["organization.address.city"]}
                   className="col-span-2"
-                  component={
+                  component={(id) => (
                     <Input
+                      id={id}
                       type="text"
                       name="organization.address.city"
                       value={data.organization?.address?.city ?? ""}
@@ -177,15 +182,16 @@ export const BillingInfo = ({
                         })
                       }
                     />
-                  }
+                  )}
                 />
               </div>
               <FormElement
                 label={`${t("details.billing_info.invoiceEmail")}`}
                 error={errors["organization.invoiceEmail"]}
                 className="w-full"
-                component={
+                component={(id) => (
                   <Input
+                    id={id}
                     type="text"
                     name="organization.invoiceEmail"
                     value={data.organization?.invoiceEmail}
@@ -198,14 +204,15 @@ export const BillingInfo = ({
                       })
                     }
                   />
-                }
+                )}
               />
               <FormElement
                 label={`${t("details.billing_info.vat")}`}
                 error={errors["organization.vat"]}
                 className="w-full"
-                component={
+                component={(id) => (
                   <Input
+                    id={id}
                     type="text"
                     name="organization.vat"
                     value={data.organization?.vat}
@@ -218,7 +225,7 @@ export const BillingInfo = ({
                       })
                     }
                   />
-                }
+                )}
               />
             </div>
           </div>

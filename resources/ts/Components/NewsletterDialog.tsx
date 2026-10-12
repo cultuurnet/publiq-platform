@@ -69,15 +69,16 @@ export const NewsletterDialog = ({ isVisible, onClose }: Props) => {
           label={`${t("footer.newsletter_dialog.email")}`}
           className="col-span-2"
           error={errors["email"] || errors["mailjet"]}
-          component={
+          component={(id) => (
             <Input
+              id={id}
               type="text"
               name="email"
               placeholder={t("footer.newsletter_dialog.placeholder")}
               value={data.email}
               onChange={(e) => setData("email", e.target.value)}
             />
-          }
+          )}
         />
       ) : (
         <Alert

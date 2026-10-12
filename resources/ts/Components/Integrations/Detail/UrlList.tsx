@@ -69,8 +69,8 @@ export const UrlList = ({
                 elementId={url.id}
                 error={errors[`${url.type}.${url.environment}.${index}`]}
                 label={t(`details.integration_settings.${environment}`)}
-                component={
-                  <div className="flex gap-2">
+                component={(id) => (
+                  <div id={id} className="flex gap-2">
                     <Input
                       type="text"
                       name="url"
@@ -86,7 +86,7 @@ export const UrlList = ({
                       />
                     )}
                   </div>
-                }
+                )}
               />
             ))}
             {(type !== IntegrationUrlType.Login || urls.length === 0) && (
