@@ -47,14 +47,14 @@ export const BillingInfo = ({
               type="text"
               name="price"
               value={pricingPlan.label}
-              className="md:min-w-[40rem]"
+              className="md:min-w-160"
               disabled
             />
           )}
         />
         <div className="flex flex-col gap-3 col-span-2 col-start-2 lg:max-w-[35%]">
           {coupon?.isDistributed && (
-            <Alert className="md:min-w-[40rem]" variant="success">
+            <Alert className="md:min-w-160" variant="success">
               {t("details.billing_info.coupon_used", {
                 price: formatCurrency(subscription.currency, coupon.reduction),
               })}
@@ -62,7 +62,7 @@ export const BillingInfo = ({
           )}
           {status !== IntegrationStatus.Active &&
             subscription.integrationType !== IntegrationType.EntryApi && (
-              <Alert className="md:min-w-[40rem]" variant="info">
+              <Alert className="md:min-w-160" variant="info">
                 {t("details.billing_info.free_until_live")}
               </Alert>
             )}
@@ -73,7 +73,7 @@ export const BillingInfo = ({
           <Heading level={4} className="font-semibold">
             {t("details.billing_info.to_pay")}
           </Heading>
-          <div className="w-full block relative md:min-w-[40rem]">
+          <div className="w-full block relative md:min-w-160">
             {t(`pricing_plan.basic.price`, {
               price: formatPricing({
                 currency: subscription.currency,
@@ -102,7 +102,7 @@ export const BillingInfo = ({
                     id={id}
                     type="text"
                     name="organization.name"
-                    className="md:min-w-[40rem]"
+                    className="md:min-w-160"
                     value={data.organization.name}
                     onChange={(e) =>
                       setData("organization", {
@@ -114,7 +114,7 @@ export const BillingInfo = ({
                   />
                 )}
               />
-              <div className="max-md:flex max-md:flex-col md:grid md:grid-cols-5 gap-3 md:min-w-[40rem]">
+              <div className="max-md:flex max-md:flex-col md:grid md:grid-cols-5 gap-3 md:min-w-160">
                 <FormElement
                   label={`${t("details.billing_info.address.street")}`}
                   error={errors["organization.address.street"]}
@@ -195,7 +195,7 @@ export const BillingInfo = ({
                     type="text"
                     name="organization.invoiceEmail"
                     value={data.organization?.invoiceEmail}
-                    className="md:min-w-[40rem]"
+                    className="md:min-w-160"
                     onChange={(e) =>
                       setData("organization", {
                         // We know organization exists
@@ -216,7 +216,7 @@ export const BillingInfo = ({
                     type="text"
                     name="organization.vat"
                     value={data.organization?.vat}
-                    className="md:min-w-[40rem]"
+                    className="md:min-w-160"
                     onChange={(e) =>
                       setData("organization", {
                         // We know organization exists

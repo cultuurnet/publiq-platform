@@ -41,7 +41,7 @@ export const BasicInfo = ({
               name="integrationName"
               value={name}
               onChange={(e) => onChangeName(e.target.value)}
-              className="md:min-w-[40rem]"
+              className="md:min-w-160"
             />
           )}
         />
@@ -53,7 +53,7 @@ export const BasicInfo = ({
               id={id}
               rows={4}
               className={classNames(
-                "appearance-none rounded-lg block w-full  text-gray-700 border border-gray-500 py-3 px-4 leading-tight md:min-w-[40rem]"
+                "appearance-none rounded-lg block w-full  text-gray-700 border border-gray-500 py-3 px-4 leading-tight md:min-w-160"
               )}
               name="description"
               value={description}
@@ -71,7 +71,7 @@ export const BasicInfo = ({
               name="website"
               value={website}
               onChange={(e) => onChangeWebsite(e.target.value)}
-              className="md:min-w-[40rem]"
+              className="md:min-w-160"
             />
           )}
         />

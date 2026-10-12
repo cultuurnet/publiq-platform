@@ -76,7 +76,8 @@ const OrganizersSection = ({
             {organizers.map((organizer, index) => (
               <Card
                 key={organizer.id}
-                className={`m-0 drop-shadow-none border border-gray-200 border-t-0 first:border-t z-[${organizers.length - index}]`}
+                className="m-0 drop-shadow-none border border-gray-200 border-t-0 first:border-t"
+                style={{ zIndex: organizers.length - index }}
               >
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2 md:gap-4">
                   <Heading
@@ -100,7 +101,7 @@ const OrganizersSection = ({
                         </span>
                       )}
                   </Heading>
-                  <div className="flex-shrink-0 flex max-sm:flex-col gap-4">
+                  <div className="shrink-0 flex max-sm:flex-col gap-4">
                     <CopyText text={organizer.id} />
                   </div>
                 </div>
@@ -184,6 +185,7 @@ const OrganizersSection = ({
         <OrganizersDatalist
           onChange={(organizers) => form.setData("organizers", organizers)}
           value={form.data.organizers}
+          existingOrganizerIds={organizers?.map((organizer) => organizer.id)}
         />
       </Dialog>
     </>

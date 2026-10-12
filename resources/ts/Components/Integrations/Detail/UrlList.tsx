@@ -76,7 +76,7 @@ export const UrlList = ({
                       name="url"
                       value={url.url}
                       onChange={(e) => onChangeUrlValue(url.id, e.target.value)}
-                      className="md:min-w-[40rem]"
+                      className="md:min-w-160"
                     />
                     {type !== IntegrationUrlType.Login && (
                       <ButtonIcon

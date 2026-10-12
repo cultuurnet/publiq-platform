@@ -46,9 +46,7 @@ export const Card = ({
   ...props
 }: Props) => {
   const translateRoute = useTranslateRoute();
-  const backgroundColor = active
-    ? "bg-status-green-medium bg-opacity-10"
-    : "bg-white";
+  const backgroundColor = active ? "bg-status-green-medium/10" : "bg-white";
 
   const heading =
     typeof title !== "string" ? (
@@ -87,7 +85,7 @@ export const Card = ({
           heading
         )}
         {!!badge && (
-          <span className="text-publiq-gray-400 bg-publiq-gray-50 uppercase border border-publiq-gray-400 text-xs font-medium  mr-2 px-2.5 py-0.5 rounded">
+          <span className="text-publiq-gray-400 bg-publiq-gray-50 uppercase border border-publiq-gray-400 text-xs font-medium  mr-2 px-2.5 py-0.5 rounded-sm">
             {badge.replaceAll("-", " ")}
           </span>
         )}
@@ -128,7 +126,7 @@ export const Card = ({
         {description && (
           <p
             className={classNames(
-              "text-gray-700 text-base min-h-[5rem] break-words",
+              "text-gray-700 text-base min-h-20 wrap-break-word",
               backgroundColor
             )}
           >
