@@ -1,18 +1,21 @@
-import React, { forwardRef } from "react";
-import type { ComponentProps, ForwardedRef } from "react";
+import React from "react";
+import type { ComponentProps } from "react";
 import { classNames } from "../utils/classNames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { IconProp } from "@fortawesome/fontawesome-svg-core";
 
-type Props = ComponentProps<"input"> & {
+type Props = Omit<ComponentProps<"input">, "children"> & {
   iconBack?: IconProp;
   inputId?: string;
 };
 
-const InputComponent = (
-  { children, className, iconBack, disabled, inputId, ...props }: Props,
-  ref: ForwardedRef<HTMLInputElement>
-) => {
+export const Input = ({
+  className,
+  iconBack,
+  disabled,
+  inputId,
+  ...props
+}: Props) => {
   return (
     <div className={classNames("block relative w-full", className)}>
       <input
@@ -23,11 +26,8 @@ const InputComponent = (
         )}
         disabled={disabled}
         id={inputId}
-        ref={ref}
         {...props}
-      >
-        {children}
-      </input>
+      />
       {iconBack && (
         <FontAwesomeIcon
           icon={iconBack}
@@ -37,5 +37,3 @@ const InputComponent = (
     </div>
   );
 };
-
-export const Input = forwardRef(InputComponent);
