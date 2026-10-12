@@ -45,6 +45,7 @@ const Detail = ({
   const isMobile = useIsMobile();
 
   const duplicateContactErrorMessage = errors["duplicate_contact"];
+  const duplicateOrganizerErrorMessage = errors["duplicate_organizer"];
 
   const pricingPlans = useGetPricingPlans(integration.type, subscriptions);
 
@@ -141,65 +142,80 @@ const Detail = ({
         <div className="w-full flex flex-col gap-5 pb-3">
           <PricingPlanProvider pricingPlan={pricingPlan}>
             <CouponInfoProvider couponInfo={integration.coupon}>
-              <Tabs active={activeTab} onChange={changeTabInUrl}>
-                <Tabs.Item
-                  type="credentials"
-                  label={
-                    integration.type === IntegrationType.Widgets
-                      ? t("details.credentials.widgets")
-                      : t("details.credentials.title")
-                  }
-                >
-                  <Credentials
-                    {...integration}
-                    email={email}
-                    keyVisibleUntil={keyVisibleUntil}
-                  />
-                </Tabs.Item>
-                {isUitpasIntegration && (
-                  <Tabs.Item
-                    type="organisations"
-                    label={t("details.organizers_info.title")}
-                  >
-                    <OrganizersInfo {...integration} organizers={organizers} />
-                  </Tabs.Item>
-                )}
-                <Tabs.Item
-                  type="settings"
-                  label={t("details.integration_settings.title")}
-                >
-                  <IntegrationSettings
-                    {...integration}
-                    isMobile={isMobile}
-                    onChangeIsFormDirty={handleChangeIsFormDirty}
-                    isKeepChangesDialogVisible={isKeepChangesDialogVisible}
-                    onConfirmLeaveTab={handleConfirmLeaveTab}
-                    onCancelLeaveTab={handleCancelLeaveTab}
-                  />
-                </Tabs.Item>
-                <Tabs.Item
-                  type="contacts"
-                  label={t("details.contact_info.title")}
-                >
-                  <ContactInfo
-                    {...integration}
-                    isMobile={isMobile}
-                    duplicateContactErrorMessage={duplicateContactErrorMessage}
-                  />
-                </Tabs.Item>
-                <Tabs.Item
-                  type="billing"
-                  label={t("details.billing_info.title.billing")}
-                >
-                  <BillingInfo {...integration} />
-                </Tabs.Item>
-                <Tabs.Item
-                  type="delete"
-                  label={t("details.delete_integration.title")}
-                >
-                  <DeleteIntegration {...integration} />
-                </Tabs.Item>
-              </Tabs>
+              <Tabs
+                active={activeTab}
+                onChange={changeTabInUrl}
+                items={[
+                  {
+                    type: "credentials",
+                    label:
+                      integration.type === IntegrationType.Widgets
+                        ? t("details.credentials.widgets")
+                        : t("details.credentials.title"),
+                    content: (
+                      <Credentials
+                        {...integration}
+                        email={email}
+                        keyVisibleUntil={keyVisibleUntil}
+                      />
+                    ),
+                  },
+                  ...(isUitpasIntegration
+                    ? [
+                        {
+                          type: "organisations",
+                          label: t("details.organizers_info.title"),
+                          content: (
+                            <OrganizersInfo
+                              {...integration}
+                              organizers={organizers}
+                              duplicateOrganizerErrorMessage={
+                                duplicateOrganizerErrorMessage
+                              }
+                            />
+                          ),
+                        },
+                      ]
+                    : []),
+                  {
+                    type: "settings",
+                    label: t("details.integration_settings.title"),
+                    content: (
+                      <IntegrationSettings
+                        {...integration}
+                        isMobile={isMobile}
+                        onChangeIsFormDirty={handleChangeIsFormDirty}
+                        isKeepChangesDialogVisible={isKeepChangesDialogVisible}
+                        onConfirmLeaveTab={handleConfirmLeaveTab}
+                        onCancelLeaveTab={handleCancelLeaveTab}
+                      />
+                    ),
+                  },
+                  {
+                    type: "contacts",
+                    label: t("details.contact_info.title"),
+                    content: (
+                      <ContactInfo
+                        {...integration}
+                        isMobile={isMobile}
+                        duplicateContactErrorMessage={
+                          duplicateContactErrorMessage
+                        }
+                      />
+                    ),
+                  },
+                  {
+                    type: "billing",
+                    label: t("details.billing_info.title.billing"),
+                    content: <BillingInfo {...integration} />,
+                  },
+                  {
+                    type: "delete",
+                    label: t("details.delete_integration.title"),
+                    content: <DeleteIntegration {...integration} />,
+                  },
+                ]}
+              />
             </CouponInfoProvider>
           </PricingPlanProvider>
         </div>

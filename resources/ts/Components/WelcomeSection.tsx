@@ -63,7 +63,7 @@ export const WelcomeSection = ({ className, ...props }: Props) => {
   return (
     <section
       className={classNames(
-        "flex flex-col items-start w-full gap-7 md:min-w-[40rem] max-w-screen-xl min-h-screen pb-8 mb-16 font-light tracking-wide",
+        "flex flex-col items-start w-full gap-7 md:min-w-160 max-w-(--breakpoint-xl) min-h-screen pb-8 mb-16 font-light tracking-wide",
         className
       )}
       {...props}

@@ -93,10 +93,7 @@ export const IntegrationCard = ({
       {type !== IntegrationType.Widgets &&
         keyVisibility !== KeyVisibility.v1 && (
           <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center gap-3">
-            <Heading
-              level={5}
-              className="font-semibold min-w-[10rem] self-start"
-            >
+            <Heading level={5} className="font-semibold min-w-40 self-start">
               {t("integrations.test")}
             </Heading>
             <div className="flex flex-col gap-2">
@@ -113,7 +110,7 @@ export const IntegrationCard = ({
               className={classNames(
                 keyVisibility === KeyVisibility.all &&
                   "max-md:hidden invisible",
-                "font-semibold min-w-[10rem]"
+                "font-semibold min-w-40"
               )}
             >
               {t("integrations.test")}
@@ -127,10 +124,7 @@ export const IntegrationCard = ({
       {type === IntegrationType.Widgets &&
         status !== IntegrationStatus.Active && (
           <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center justify-start gap-3">
-            <Heading
-              level={5}
-              className="font-semibold min-w-[10rem] self-start"
-            >
+            <Heading level={5} className="font-semibold min-w-40 self-start">
               {t("integrations.test")}
             </Heading>
             <OpenWidgetBuilderButton type={type} id={id} />
@@ -139,10 +133,7 @@ export const IntegrationCard = ({
       {keyVisibility !== KeyVisibility.v1 &&
         type !== IntegrationType.Widgets && (
           <section className="flex-1 inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">
-            <Heading
-              className="font-semibold min-w-[10rem] self-start"
-              level={5}
-            >
+            <Heading className="font-semibold min-w-40 self-start" level={5}>
               {t("integrations.live")}
             </Heading>
             <div className="flex flex-col gap-3 self-start">
@@ -171,7 +162,7 @@ export const IntegrationCard = ({
         )}
       {type === IntegrationType.Widgets && (
         <section className="flex-1 flex max-md:flex-col max-md:items-start md:items-center justify-start gap-3">
-          <Heading level={5} className="font-semibold min-w-[10rem] self-start">
+          <Heading level={5} className="font-semibold min-w-40 self-start">
             {t("integrations.live")}
           </Heading>
           <div className="flex flex-col gap-3 self-start">
@@ -195,7 +186,7 @@ export const IntegrationCard = ({
                 className={classNames(
                   keyVisibility === KeyVisibility.all &&
                     "max-md:hidden invisible",
-                  "font-semibold min-w-[10rem] self-start"
+                  "font-semibold min-w-40 self-start"
                 )}
                 level={5}
               >
@@ -222,7 +213,7 @@ export const IntegrationCard = ({
           </section>
         )}
       <section className="flex-1 inline-flex gap-3 max-md:flex-col max-md:items-start md:items-center">
-        <Heading className="font-semibold min-w-[10rem] self-start" level={5}>
+        <Heading className="font-semibold min-w-40 self-start" level={5}>
           {t("integrations.documentation.title")}
         </Heading>
         <div className="flex flex-col gap-2">
@@ -288,7 +279,7 @@ export const IntegrationCard = ({
       <div
         className={classNames(
           "flex flex-col gap-4 mx-8 my-6 items-stretch ",
-          hasAnyCredentials && "min-h-[10rem]"
+          hasAnyCredentials && "min-h-40"
         )}
       >
         {hasAnyCredentials ? (

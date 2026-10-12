@@ -10,7 +10,10 @@ final readonly class UdbUuid
 {
     // This is the regex also used in UDB3
     // Matches general UUID format but does not enforce UUIDv4 version or variant bits.
-    private const UUID_REGEX = '/\A[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-?[0-9A-Fa-f]{12}\z/';
+    // The last hyphen is optional because a lot of legacy organizers and places
+    // are stored as FFFFFFFF-FFFF-FFFF-FFFFFFFFFFFFFFFF instead of
+    // ffffffff-ffff-ffff-ffff-ffffffffffff.
+    public const UUID_REGEX = '/\A[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-?[0-9A-Fa-f]{12}\z/';
 
     public function __construct(public string $value)
     {

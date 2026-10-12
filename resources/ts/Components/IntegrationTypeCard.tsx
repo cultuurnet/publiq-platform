@@ -23,7 +23,7 @@ export const IntegrationTypeCard = ({
   const { t } = useTranslation();
   const translateRoute = useTranslateRoute();
   const afterStyles =
-    "md:after:hidden md:after:absolute md:after:drop-shadow-triangle md:after:bottom-[-2rem] md:after:right-[0rem] md:after:w-0 md:after:h-0 md:after:border-r-[3rem] md:after:border-r-white md:after:border-b-[2rem] md:after:border-b-transparent md:hover:after:block";
+    "md:after:hidden md:after:absolute md:after:drop-shadow-triangle md:after:-bottom-8 md:after:right-0 md:after:w-0 md:after:h-0 md:after:border-r-[3rem] md:after:border-r-white md:after:border-b-[2rem] md:after:border-b-transparent md:hover:after:block";
   const url = new URL(
     translateRoute("/integrations/new"),
     document.location.origin
@@ -39,7 +39,7 @@ export const IntegrationTypeCard = ({
       img={image}
       description={description}
       className={classNames(
-        "md:max-w-sm md:hover:translate-y-[-2rem] md:overflow-visible md:transition-transform md:duration-500 group",
+        "md:max-w-sm md:hover:-translate-y-8 md:overflow-visible md:transition-transform md:duration-500 group",
         afterStyles
       )}
       role="button"
@@ -48,7 +48,7 @@ export const IntegrationTypeCard = ({
       textCenter
     >
       <div className="flex flex-col gap-3">
-        <div className="flex flex-col flex-1 justify-between min-h-[10rem] gap-7">
+        <div className="flex flex-col flex-1 justify-between min-h-40 gap-7">
           <ul className="flex flex-col gap-3">
             {features.map((feature) => (
               <li key={feature} className="flex items-start gap-2">

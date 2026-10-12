@@ -19,11 +19,11 @@ export const ButtonSecondary = ({
   return (
     <button
       className={classNames(
-        "relative inline-flex items-center justify-center px-7 py-2 max-md:px-5 font-light border hover:bg-opacity-10",
+        "relative inline-flex items-center justify-center px-7 py-2 max-md:px-5 font-light border",
         variant === "default" &&
-          "border-publiq-blue text-publiq-blue hover:bg-publiq-blue-dark",
+          "border-publiq-blue text-publiq-blue hover:bg-publiq-blue-dark/10",
         variant === "danger" &&
-          "border-status-red-dark text-status-red-dark hover:bg-status-red",
+          "border-status-red-dark text-status-red-dark hover:bg-status-red/10",
         className
       )}
       {...props}
