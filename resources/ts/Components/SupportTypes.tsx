@@ -12,7 +12,7 @@ import { IconSlack } from "./icons/IconSlack";
 import { IconCustomizedSupport } from "./icons/IconCustomizedSupport";
 
 const imageStyle =
-  "h-full w-auto aspect-square max-h-[10rem] min-w-[15rem] max-sm:w-full object-cover";
+  "h-full w-auto aspect-square max-h-40 min-w-60 max-sm:w-full object-cover";
 
 const getSupportTypes = (t: TFunction) => [
   {

@@ -98,7 +98,7 @@ export const Alert = ({
         <ButtonIcon
           icon={faXmark}
           size="lg"
-          className="hover:bg-opacity-40"
+          className="hover:bg-icon-gray-light/40"
           onClick={onClose}
         />
       )}

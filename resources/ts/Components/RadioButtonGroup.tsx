@@ -9,7 +9,7 @@ export const RadioButtonGroupLabel = ({
   name: string | ReactElement<Record<string, unknown>>;
   description: string | ReactElement<Record<string, unknown>>;
 }) => (
-  <div className="flex flex-col flex-grow justify-between md:flex-row items-center gap-2">
+  <div className="flex flex-col grow justify-between md:flex-row items-center gap-2">
     <span>{name}</span>
     <span className="text-neutral-700 font-thin max-md:text-center text-sm">
       {description}
@@ -76,7 +76,7 @@ export const RadioButtonGroup = ({
           key={option.value}
           className={classNames(
             optionClasses(index, option),
-            "flex items-center gap-5 px-10 py-3 max-md:px-5 max-md:py-2 w-[100%] h-[100%]"
+            "flex items-center gap-5 px-10 py-3 max-md:px-5 max-md:py-2 w-full h-full"
           )}
         >
           <input
@@ -87,11 +87,8 @@ export const RadioButtonGroup = ({
             checked={value === option.value}
             onChange={() => onChange(option.value)}
           />
-          <div className="flex flex-grow">
-            <label
-              htmlFor={option.value}
-              className="flex flex-grow cursor-pointer"
-            >
+          <div className="flex grow">
+            <label htmlFor={option.value} className="flex grow cursor-pointer">
               {option.label}
             </label>
           </div>

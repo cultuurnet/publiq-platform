@@ -107,7 +107,7 @@ export const OrganizersDatalist = ({
           value.map((organizer, index) => (
             <div
               key={`${organizer}${index}`}
-              className="border rounded px-2 py-1 flex gap-1"
+              className="border rounded-sm px-2 py-1 flex gap-1"
             >
               <p>{organizer.name}</p>
               <ButtonIcon
@@ -136,7 +136,7 @@ export const OrganizersDatalist = ({
               onChange={(e) => handleInputOnChange(e)}
             />
             {selectableOrganizers.length > 0 && isSearchListVisible && (
-              <ul className="border rounded absolute bg-white w-full z-50">
+              <ul className="border rounded-sm absolute bg-white w-full z-50">
                 {selectableOrganizers.map((organizer) => (
                   <li
                     tabIndex={0}

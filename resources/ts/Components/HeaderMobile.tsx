@@ -17,7 +17,7 @@ export default function HeaderMobile() {
   }, []);
 
   return (
-    <header className="w-full min-h-[4rem] flex items-center justify-between px-7 bg-white shadow-lg  z-40 md:hidden">
+    <header className="w-full min-h-16 flex items-center justify-between px-7 bg-white shadow-lg  z-40 md:hidden">
       <Link href="/">
         <PubliqLogoMobile />
       </Link>
