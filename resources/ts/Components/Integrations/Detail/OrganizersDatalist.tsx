@@ -95,9 +95,9 @@ export const OrganizersDatalist = ({ onChange, value, ...props }: Props) => {
     <>
       <div className="flex gap-2 flex-wrap">
         {value.length > 0 &&
-          value.map((organizer, index) => (
+          value.map((organizer) => (
             <div
-              key={`${organizer}${index}`}
+              key={organizer.id}
               className="border rounded px-2 py-1 flex gap-1"
             >
               <p>{organizer.name}</p>
