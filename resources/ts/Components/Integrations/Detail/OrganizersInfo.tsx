@@ -76,7 +76,8 @@ const OrganizersSection = ({
             {organizers.map((organizer, index) => (
               <Card
                 key={organizer.id}
-                className={`m-0 drop-shadow-none border border-gray-200 border-t-0 first:border-t z-[${organizers.length - index}]`}
+                className="m-0 drop-shadow-none border border-gray-200 border-t-0 first:border-t"
+                style={{ zIndex: organizers.length - index }}
               >
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2 md:gap-4">
                   <Heading

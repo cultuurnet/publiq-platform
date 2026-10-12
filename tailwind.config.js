@@ -1,11 +1,8 @@
 /* eslint-disable no-undef */
 /** @type {import('tailwindcss').Config} */
 
-const zIndexClasses = new Array(100).fill(0).map((_, i) => `z-[${i}]`);
-
 module.exports = {
   content: ["./resources/ts/**/*.{jsx,tsx}"],
-  safelist: [...zIndexClasses],
   theme: {
     extend: {
       animation: {
