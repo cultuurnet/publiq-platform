@@ -23,7 +23,7 @@ pipeline {
                 stage('Build frontend') {
                     agent {
                         docker {
-                            image 'base_images/node/22'
+                            image 'base_images/node:22'
                             label 'docker'
                         }
                     }
