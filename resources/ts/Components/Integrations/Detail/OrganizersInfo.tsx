@@ -101,7 +101,7 @@ const OrganizersSection = ({
                         </span>
                       )}
                   </Heading>
-                  <div className="flex-shrink-0 flex max-sm:flex-col gap-4">
+                  <div className="shrink-0 flex max-sm:flex-col gap-4">
                     <CopyText text={organizer.id} />
                   </div>
                 </div>

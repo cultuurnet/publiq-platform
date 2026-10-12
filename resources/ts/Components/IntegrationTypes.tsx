@@ -10,7 +10,7 @@ import { classNames } from "../utils/classNames";
 import { IconUiTPAS } from "./icons/IconUiTPAS";
 
 export const integrationIconClasses =
-  "h-full w-auto aspect-square max-h-[10rem] object-contain";
+  "h-full w-auto aspect-square max-h-40 object-contain";
 
 export const integrationTypesIcons = {
   [IntegrationType.EntryApi]: IconEntryApi,

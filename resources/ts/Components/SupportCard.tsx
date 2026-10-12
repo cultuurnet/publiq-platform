@@ -45,7 +45,7 @@ export const SupportCard = ({
   return (
     <div className="w-full flex flex-col bg-white drop-shadow-card">
       <div className="flex flex-1 max-sm:flex-col md:gap-5">
-        <div className="flex flex-shrink-1">{imgUrl}</div>
+        <div className="flex shrink">{imgUrl}</div>
         <div className="flex flex-col max-sm:pb-4 max-sm:px-4 md:p-4 gap-5">
           <div className="flex flex-col gap-3 pr-10">
             <Heading level={3} className="font-semibold">
@@ -77,7 +77,7 @@ export const SupportCard = ({
               </div>
             ) : (
               <ButtonLinkSecondary
-                className="min-w-[15rem] max-sm:min-w-[10rem] max-sm:px-3"
+                className="min-w-60 max-sm:min-w-40 max-sm:px-3"
                 href={actionUrl}
               >
                 {actionTitle}

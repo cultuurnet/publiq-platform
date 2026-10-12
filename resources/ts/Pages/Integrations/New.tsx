@@ -193,7 +193,7 @@ const New = ({ subscriptions }: Props) => {
               component={
                 <textarea
                   rows={3}
-                  className="appearance-none block w-full rounded-lg bg-white text-gray-700 border border-gray-200 py-3 px-4 leading-tight focus:outline-none focus:border-gray-500"
+                  className="appearance-none block w-full rounded-lg bg-white text-gray-700 border border-gray-200 py-3 px-4 leading-tight focus:outline-hidden focus:border-gray-500"
                   name="description"
                   value={data.description}
                   onChange={(e) => setData("description", e.target.value)}
@@ -360,7 +360,7 @@ const New = ({ subscriptions }: Props) => {
                 <input
                   type="checkbox"
                   name="agreement"
-                  className="text-publiq-blue-dark focus:ring-publiq-blue-dark rounded-sm"
+                  className="text-publiq-blue-dark focus:ring-publiq-blue-dark rounded-xs"
                   checked={data.agreement === "true"}
                   onChange={() =>
                     setData(
@@ -394,7 +394,7 @@ const New = ({ subscriptions }: Props) => {
                   <input
                     type="checkbox"
                     name="uitpasAgreement"
-                    className="text-publiq-blue-dark focus:ring-publiq-blue-dark rounded-sm"
+                    className="text-publiq-blue-dark focus:ring-publiq-blue-dark rounded-xs"
                     checked={data.uitpasAgreement === "true"}
                     onChange={() =>
                       setData(
@@ -418,7 +418,7 @@ const New = ({ subscriptions }: Props) => {
                     <input
                       type="checkbox"
                       name="hasCoupon"
-                      className="text-publiq-blue-dark focus:ring-publiq-blue-dark rounded-sm"
+                      className="text-publiq-blue-dark focus:ring-publiq-blue-dark rounded-xs"
                       checked={hasCoupon}
                       onChange={() => setHasCoupon((prev) => !prev)}
                     />

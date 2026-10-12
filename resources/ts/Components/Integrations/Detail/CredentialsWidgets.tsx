@@ -25,10 +25,10 @@ export const CredentialsWidgets = ({
       <Heading className="font-semibold lg:min-w-60" level={4}>
         {t("integrations.products.widgets")}
       </Heading>
-      <div className="flex flex-col gap-6 min-w-[40rem]">
+      <div className="flex flex-col gap-6 min-w-160">
         {status !== IntegrationStatus.Active && (
           <div>
-            <Heading className="font-semibold flex min-w-[5rem]" level={4}>
+            <Heading className="font-semibold flex min-w-20" level={4}>
               {t("details.credentials.test")}
             </Heading>
             <OpenWidgetBuilderButton type={type} id={id} />
@@ -36,7 +36,7 @@ export const CredentialsWidgets = ({
         )}
         <div className="flex flex-col gap-3">
           <div>
-            <Heading className="font-semibold flex min-w-[5rem]" level={4}>
+            <Heading className="font-semibold flex min-w-20" level={4}>
               {t("details.credentials.live")}
             </Heading>
             <StatusLight status={status} />

@@ -78,13 +78,13 @@ export const CredentialsAuthClients = ({
       ) : (
         <div className="flex flex-col flex-1 gap-4">
           <div className="flex flex-col gap-3">
-            <Heading className="font-semibold flex min-w-[5rem]" level={4}>
+            <Heading className="font-semibold flex min-w-20" level={4}>
               {t("details.credentials.test")}
             </Heading>
             <IntegrationClientCredentials client={testClient} />
           </div>
           <div className="flex flex-col gap-2">
-            <Heading className="font-semibold min-w-[5rem]" level={4}>
+            <Heading className="font-semibold min-w-20" level={4}>
               {t("details.credentials.live")}
             </Heading>
             <StatusLight status={status} />

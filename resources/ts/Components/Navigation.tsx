@@ -72,7 +72,7 @@ export default function Navigation({
   );
 
   const afterStyles =
-    "md:after:block md:after:border-b-4 md:after:absolute md:after:top-[3rem] md:after:left-0 md:after:bottom-0 md:after:right-0 md:after:border-publiq-blue md:after:transform md:after:scale-x-0 md:after:transition md:after:duration-300 md:after:hover:scale-x-100";
+    "md:after:block md:after:border-b-4 md:after:absolute md:after:top-12 md:after:left-0 md:after:bottom-0 md:after:right-0 md:after:border-publiq-blue md:after:transform md:after:scale-x-0 md:after:transition md:after:duration-300 md:hover:after:scale-x-100";
 
   return (
     <section className={classes} {...props}>
