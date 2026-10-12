@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { use } from "react";
 import { Dialog } from "./Dialog";
 import { ButtonSecondary } from "./ButtonSecondary";
 import { ButtonPrimary } from "./ButtonPrimary";
@@ -29,7 +29,7 @@ const PriceOverview = ({
 }) => {
   const { t } = useTranslation();
 
-  const couponInfo = useContext(CouponInfoContext);
+  const couponInfo = use(CouponInfoContext);
 
   return (
     <section className="flex flex-col flex-1 gap-2 border-t mt-4 pt-4 text-sm">

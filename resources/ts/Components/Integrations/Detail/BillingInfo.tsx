@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { use } from "react";
 import { Heading } from "../../Heading";
 import { FormElement } from "../../FormElement";
 import { Input } from "../../Input";
@@ -32,7 +32,7 @@ export const BillingInfo = ({
 
   const errors = err as Record<string, string | undefined>;
 
-  const pricingPlan = useContext(PricingPlanContext);
+  const pricingPlan = use(PricingPlanContext);
 
   return (
     <>

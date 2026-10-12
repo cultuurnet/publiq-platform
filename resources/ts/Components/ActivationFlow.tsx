@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { use, useState } from "react";
 import type { IntegrationStatus } from "../types/IntegrationStatus";
 import { router } from "@inertiajs/react";
 import { ActivationDialog } from "./ActivationDialog";
@@ -23,7 +23,7 @@ export const ActivationFlow = ({ id, subscription, type, email }: Props) => {
   const [isActivationDialogVisible, setIsActivationDialogVisible] =
     useState(!!isDialogVisible);
 
-  const pricingPlan = useContext(PricingPlanContext);
+  const pricingPlan = use(PricingPlanContext);
 
   return (
     <>
