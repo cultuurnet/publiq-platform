@@ -46,7 +46,7 @@ export const Card = ({
   ...props
 }: Props) => {
   const translateRoute = useTranslateRoute();
-  const backgroundColor = active ? "bg-status-green-medium bg-opacity-10" : "bg-white";
+  const backgroundColor = active ? "bg-status-green-medium/10" : "bg-white";
 
   const heading =
     typeof title !== "string" ? (
