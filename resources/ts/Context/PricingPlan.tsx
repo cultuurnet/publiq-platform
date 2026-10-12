@@ -14,8 +14,6 @@ export const PricingPlanProvider = ({
   children: ReactNode;
 }) => {
   return (
-    <PricingPlanContext.Provider value={pricingPlan}>
-      {children}
-    </PricingPlanContext.Provider>
+    <PricingPlanContext value={pricingPlan}>{children}</PricingPlanContext>
   );
 };

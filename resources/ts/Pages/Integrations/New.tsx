@@ -174,14 +174,15 @@ const New = ({ subscriptions }: Props) => {
               label={t("integration_form.integration_name")}
               labelSize="2xl"
               info={t("integration_form.description_name")}
-              component={
+              component={(id) => (
                 <Input
+                  id={id}
                   type="text"
                   name="integrationName"
                   value={data.integrationName}
                   onChange={(e) => setData("integrationName", e.target.value)}
                 />
-              }
+              )}
               error={errors.integrationName}
             />
           </Card>
@@ -190,15 +191,16 @@ const New = ({ subscriptions }: Props) => {
               label={t("integration_form.aim.label")}
               labelSize="2xl"
               info={t("integration_form.aim.info")}
-              component={
+              component={(id) => (
                 <textarea
+                  id={id}
                   rows={3}
                   className="appearance-none block w-full rounded-lg bg-white text-gray-700 border border-gray-200 py-3 px-4 leading-tight focus:outline-hidden focus:border-gray-500"
                   name="description"
                   value={data.description}
                   onChange={(e) => setData("description", e.target.value)}
                 />
-              }
+              )}
               error={errors.description}
             />
           </Card>
@@ -207,14 +209,15 @@ const New = ({ subscriptions }: Props) => {
               label={t("integration_form.website.label")}
               labelSize="2xl"
               info={t("integration_form.website.info")}
-              component={
+              component={(id) => (
                 <Input
+                  id={id}
                   type="text"
                   name="website"
                   value={data.website}
                   onChange={(e) => setData("website", e.target.value)}
                 />
-              }
+              )}
               error={errors.website}
             />
           </Card>
@@ -226,8 +229,9 @@ const New = ({ subscriptions }: Props) => {
               <div className="grid grid-cols-3 max-md:flex max-md:flex-col gap-5 ">
                 <FormElement
                   label={t("integration_form.contact.last_name")}
-                  component={
+                  component={(id) => (
                     <Input
+                      id={id}
                       type="text"
                       name="lastNameFunctionalContact"
                       value={data.lastNameFunctionalContact}
@@ -236,13 +240,14 @@ const New = ({ subscriptions }: Props) => {
                       }
                       placeholder={t("integration_form.contact.last_name")}
                     />
-                  }
+                  )}
                   error={errors.lastNameFunctionalContact}
                 />
                 <FormElement
                   label={t("integration_form.contact.first_name")}
-                  component={
+                  component={(id) => (
                     <Input
+                      id={id}
                       type="text"
                       name="firstNameFunctionalContact"
                       value={data.firstNameFunctionalContact}
@@ -251,13 +256,14 @@ const New = ({ subscriptions }: Props) => {
                       }
                       placeholder={t("integration_form.contact.first_name")}
                     />
-                  }
+                  )}
                   error={errors.firstNameFunctionalContact}
                 />
                 <FormElement
                   label={t("integration_form.contact.email")}
-                  component={
+                  component={(id) => (
                     <Input
+                      id={id}
                       type="email"
                       name="emailFunctionalContact"
                       value={data.emailFunctionalContact}
@@ -266,7 +272,7 @@ const New = ({ subscriptions }: Props) => {
                       }
                       placeholder={t("integration_form.contact.email")}
                     />
-                  }
+                  )}
                   error={errors.emailFunctionalContact}
                 />
               </div>
@@ -283,8 +289,9 @@ const New = ({ subscriptions }: Props) => {
             <div className="grid grid-cols-3 max-md:flex max-md:flex-col gap-5">
               <FormElement
                 label={t("integration_form.contact.last_name")}
-                component={
+                component={(id) => (
                   <Input
+                    id={id}
                     type="text"
                     name="lastNameTechnicalContact"
                     value={data.lastNameTechnicalContact}
@@ -293,13 +300,14 @@ const New = ({ subscriptions }: Props) => {
                     }
                     placeholder={t("integration_form.contact.last_name")}
                   />
-                }
+                )}
                 error={errors.lastNameTechnicalContact}
               />
               <FormElement
                 label={t("integration_form.contact.first_name")}
-                component={
+                component={(id) => (
                   <Input
+                    id={id}
                     type="text"
                     name="firstNameTechnicalContact"
                     value={data.firstNameTechnicalContact}
@@ -308,14 +316,15 @@ const New = ({ subscriptions }: Props) => {
                     }
                     placeholder={t("integration_form.contact.first_name")}
                   />
-                }
+                )}
                 error={errors.firstNameTechnicalContact}
               />
 
               <FormElement
                 label={t("integration_form.contact.email")}
-                component={
+                component={(id) => (
                   <Input
+                    id={id}
                     type="email"
                     name="emailPartner"
                     value={data.emailTechnicalContact}
@@ -324,7 +333,7 @@ const New = ({ subscriptions }: Props) => {
                     }
                     placeholder={t("integration_form.contact.email")}
                   />
-                }
+                )}
                 error={errors.emailTechnicalContact}
               />
             </div>
@@ -356,8 +365,9 @@ const New = ({ subscriptions }: Props) => {
               labelPosition="right"
               labelSize="base"
               labelWeight="normal"
-              component={
+              component={(id) => (
                 <input
+                  id={id}
                   type="checkbox"
                   name="agreement"
                   className="text-publiq-blue-dark focus:ring-publiq-blue-dark rounded-xs"
@@ -369,7 +379,7 @@ const New = ({ subscriptions }: Props) => {
                     )
                   }
                 />
-              }
+              )}
               error={errors.agreement}
             />
             {activeType === IntegrationType.UiTPAS && (
@@ -390,8 +400,9 @@ const New = ({ subscriptions }: Props) => {
                 labelPosition="right"
                 labelSize="base"
                 labelWeight="normal"
-                component={
+                component={(id) => (
                   <input
+                    id={id}
                     type="checkbox"
                     name="uitpasAgreement"
                     className="text-publiq-blue-dark focus:ring-publiq-blue-dark rounded-xs"
@@ -403,7 +414,7 @@ const New = ({ subscriptions }: Props) => {
                       )
                     }
                   />
-                }
+                )}
                 error={errors.uitpasAgreement}
               />
             )}
@@ -414,27 +425,29 @@ const New = ({ subscriptions }: Props) => {
                   labelPosition="right"
                   labelSize="base"
                   labelWeight="normal"
-                  component={
+                  component={(id) => (
                     <input
+                      id={id}
                       type="checkbox"
                       name="hasCoupon"
                       className="text-publiq-blue-dark focus:ring-publiq-blue-dark rounded-xs"
                       checked={hasCoupon}
                       onChange={() => setHasCoupon((prev) => !prev)}
                     />
-                  }
+                  )}
                 />
                 {hasCoupon && (
                   <FormElement
-                    component={
+                    component={(id) => (
                       <Input
+                        id={id}
                         type="text"
                         name="coupon"
                         value={data.coupon}
                         onChange={(e) => setData("coupon", e.target.value)}
                         placeholder={t("integration_form.code")}
                       />
-                    }
+                    )}
                     error={errors.coupon}
                   />
                 )}

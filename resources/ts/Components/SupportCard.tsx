@@ -107,14 +107,15 @@ export const SupportCard = ({
             label={t("footer.newsletter_dialog.email")}
             className="w-full"
             error={errors["email"]}
-            component={
+            component={(id) => (
               <Input
+                id={id}
                 type="text"
                 name="email"
                 value={data.email}
                 onChange={(e) => setData("email", e.target.value)}
               />
-            }
+            )}
           />
         </form>
       </Dialog>

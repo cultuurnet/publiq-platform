@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { use } from "react";
 import { Dialog } from "./Dialog";
 import { ButtonSecondary } from "./ButtonSecondary";
 import { ButtonPrimary } from "./ButtonPrimary";
@@ -29,7 +29,7 @@ const PriceOverview = ({
 }) => {
   const { t } = useTranslation();
 
-  const couponInfo = useContext(CouponInfoContext);
+  const couponInfo = use(CouponInfoContext);
 
   return (
     <section className="flex flex-col flex-1 gap-2 border-t mt-4 pt-4 text-sm">
@@ -169,8 +169,9 @@ export const ActivationDialog = ({
             required
             error={organizationFormErrors["organization.name"]}
             className="w-full"
-            component={
+            component={(id) => (
               <Input
+                id={id}
                 type="text"
                 name="organization.name"
                 onChange={(e) => {
@@ -182,7 +183,7 @@ export const ActivationDialog = ({
                   });
                 }}
               />
-            }
+            )}
           />
           <div className="max-md:flex max-md:flex-col md:grid md:grid-cols-5 gap-3">
             <FormElement
@@ -190,8 +191,9 @@ export const ActivationDialog = ({
               required
               error={organizationFormErrors["organization.address.street"]}
               className="col-span-2"
-              component={
+              component={(id) => (
                 <Input
+                  id={id}
                   type="text"
                   name="organization.address.street"
                   onChange={(e) => {
@@ -206,15 +208,16 @@ export const ActivationDialog = ({
                     });
                   }}
                 />
-              }
+              )}
             />
             <FormElement
               label={`${t("details.billing_info.address.postcode")}`}
               required
               error={organizationFormErrors["organization.address.zip"]}
               className="col-span-1"
-              component={
+              component={(id) => (
                 <Input
+                  id={id}
                   type="text"
                   name="organization.address.zip"
                   onChange={(e) => {
@@ -229,15 +232,16 @@ export const ActivationDialog = ({
                     });
                   }}
                 />
-              }
+              )}
             />
             <FormElement
               label={`${t("details.billing_info.address.city")}`}
               required
               error={organizationFormErrors["organization.address.city"]}
               className="col-span-2"
-              component={
+              component={(id) => (
                 <Input
+                  id={id}
                   type="text"
                   name="organization.address.city"
                   onChange={(e) => {
@@ -252,7 +256,7 @@ export const ActivationDialog = ({
                     });
                   }}
                 />
-              }
+              )}
             />
           </div>
         </div>
@@ -302,8 +306,9 @@ export const ActivationDialog = ({
               required
               error={organizationFormErrors["organization.vat"]}
               className="w-full"
-              component={
+              component={(id) => (
                 <Input
+                  id={id}
                   type="text"
                   name="organization.vat"
                   onChange={(e) => {
@@ -315,15 +320,16 @@ export const ActivationDialog = ({
                     });
                   }}
                 />
-              }
+              )}
             />
             <FormElement
               label={`${t("integrations.activation_dialog.contact")}`}
               required
               error={organizationFormErrors["organization.invoiceEmail"]}
               info={`${t("integrations.activation_dialog.contact_description")}`}
-              component={
+              component={(id) => (
                 <Input
+                  id={id}
                   type="text"
                   name="invoiceEmail"
                   onChange={(e) => {
@@ -335,14 +341,15 @@ export const ActivationDialog = ({
                     });
                   }}
                 />
-              }
+              )}
             />
             <FormElement
               label={`${t("integrations.activation_dialog.coupon")}`}
               error={organizationForm.errors.coupon}
               className="col-span-2"
-              component={
+              component={(id) => (
                 <Input
+                  id={id}
                   type="text"
                   name="coupon"
                   value={organizationForm.data.coupon}
@@ -350,7 +357,7 @@ export const ActivationDialog = ({
                     organizationForm.setData("coupon", e.target.value)
                   }
                 />
-              }
+              )}
             />
           </>
         )}

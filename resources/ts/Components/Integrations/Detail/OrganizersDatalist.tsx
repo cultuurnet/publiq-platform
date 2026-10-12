@@ -104,9 +104,9 @@ export const OrganizersDatalist = ({
     <>
       <div className="flex gap-2 flex-wrap">
         {value.length > 0 &&
-          value.map((organizer, index) => (
+          value.map((organizer) => (
             <div
-              key={`${organizer}${index}`}
+              key={organizer.id}
               className="border rounded-sm px-2 py-1 flex gap-1"
             >
               <p>{organizer.name}</p>
@@ -127,8 +127,8 @@ export const OrganizersDatalist = ({
         required
         className="w-full relative"
         {...props}
-        component={
-          <div>
+        component={(id) => (
+          <div id={id}>
             <Input
               type="text"
               name="organizers"
@@ -151,7 +151,7 @@ export const OrganizersDatalist = ({
               </ul>
             )}
           </div>
-        }
+        )}
       />
     </>
   );
