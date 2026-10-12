@@ -69,7 +69,6 @@ module.exports = {
         "alert-warning": "#FCF0CB",
         "alert-warning-dark": "#E69336",
       },
-      textColor: ({ theme }) => theme("colors.publiq-gray.900"),
       fontFamily: {
         sans: [
           "ui-sans-serif",
