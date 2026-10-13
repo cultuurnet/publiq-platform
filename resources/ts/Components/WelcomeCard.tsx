@@ -19,7 +19,7 @@ export const WelcomeCard = ({
   return (
     <div className="w-full flex flex-col bg-white drop-shadow-card">
       <div className="flex flex-1 max-sm:flex-col py-6">
-        <div className="flex items-center justify-center min-w-[13rem] max-sm:py-4">
+        <div className="flex items-center justify-center min-w-52 max-sm:py-4">
           {imgUrl}
         </div>
         <div className="flex flex-col max-sm:pb-4 max-sm:px-4 gap-5">
@@ -31,7 +31,7 @@ export const WelcomeCard = ({
           </div>
           <div className="flex max-sm:self-center max-sm:flex-col gap-7 items-center">
             <ButtonLinkSecondary
-              className="min-w-[19rem] max-sm:min-w-[10rem] max-sm:px-3"
+              className="min-w-76 max-sm:min-w-40 max-sm:px-3"
               href={actionUrl}
             >
               {actionTitle}

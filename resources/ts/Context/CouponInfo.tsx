@@ -14,9 +14,5 @@ export const CouponInfoProvider = ({
   couponInfo: Integration["coupon"];
   children: ReactNode;
 }) => {
-  return (
-    <CouponInfoContext.Provider value={couponInfo}>
-      {children}
-    </CouponInfoContext.Provider>
-  );
+  return <CouponInfoContext value={couponInfo}>{children}</CouponInfoContext>;
 };

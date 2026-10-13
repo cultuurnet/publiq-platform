@@ -1,85 +1,45 @@
-import type { ComponentProps, PropsWithChildren, ReactElement } from "react";
-import React, { cloneElement, useMemo } from "react";
+import type { ComponentProps, ReactNode } from "react";
+import React from "react";
 import { classNames } from "../utils/classNames";
 
 type OnTabChange = (tab: string) => void;
 
-type ItemProps = { type: string; label: string; onChange?: OnTabChange } & Omit<
-  ComponentProps<"li">,
-  "onChange"
->;
-
-const Item = ({ type, label, className, onChange }: ItemProps) => {
-  return (
-    <button
-      onClick={() => onChange!(type)}
-      aria-current="page"
-      className={classNames("inline-block p-3", className)}
-    >
-      <li className="mr-2">{label}</li>
-    </button>
-  );
+export type TabItem = {
+  type: string;
+  label: string;
+  content: ReactNode;
 };
 
 type Props = {
   active: string;
   onChange: OnTabChange;
-} & Omit<ComponentProps<"div">, "onChange">;
+  items: TabItem[];
+} & Omit<ComponentProps<"div">, "onChange" | "children">;
 
-export const Tabs = ({ children, active, onChange, ...props }: Props) => {
-  const tabItems = useMemo(
-    () =>
-      React.Children.toArray(children).filter(
-        (child) =>
-          typeof child === "object" && "type" in child && child.type === Item
-      ) as ReactElement<
-        PropsWithChildren<{ className?: string; type: string }>
-      >[],
-    [children]
-  );
-
-  const styledTabItems = useMemo(
-    () =>
-      tabItems.map((item) => {
-        const isActive = item.props.type === active;
-
-        if (!isActive) {
-          return cloneElement(item, {
-            ...item.props,
-            // @ts-expect-error
-            onChange,
-          });
-        }
-
-        return cloneElement(item, {
-          ...item.props,
-          className: classNames(
-            item.props.className,
-            "text-publiq-blue-light border-publiq-blue border-b-[3px]"
-          ),
-          // @ts-expect-error
-          onChange,
-        });
-      }),
-    [active, onChange, tabItems]
-  );
-
-  const tabContent = useMemo(
-    () =>
-      tabItems.find((tabItem) => tabItem.props.type === active)?.props.children,
-    [active, tabItems]
-  );
+export const Tabs = ({ active, onChange, items, ...props }: Props) => {
+  const activeItem = items.find((item) => item.type === active);
 
   return (
     <div className="flex flex-col gap-3 px-4" {...props}>
       <ul className="flex flex-wrap text-sm text-center text-gray-500 border-b border-gray-300">
-        {styledTabItems}
+        {items.map((item) => (
+          <button
+            key={item.type}
+            onClick={() => onChange(item.type)}
+            aria-current="page"
+            className={classNames(
+              "inline-block p-3",
+              item.type === active &&
+                "text-publiq-blue-light border-publiq-blue border-b-[3px]"
+            )}
+          >
+            <li className="mr-2">{item.label}</li>
+          </button>
+        ))}
       </ul>
       <div className="flex flex-col gap-10 max-md:px-5 px-12 py-5">
-        {tabContent}
+        {activeItem?.content}
       </div>
     </div>
   );
 };
-
-Tabs.Item = Item;

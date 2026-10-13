@@ -97,7 +97,7 @@ const Index = ({ integrations, paginationInfo, credentials }: Props) => {
         <Input
           type="text"
           name="search"
-          className="max-w-[30rem] max-lg:max-w-[20rem]"
+          className="max-w-120 max-lg:max-w-[20rem]"
           iconBack={faSearch}
           defaultValue={searchFromUrl ?? ""}
           onChange={handleChangeSearchInput}

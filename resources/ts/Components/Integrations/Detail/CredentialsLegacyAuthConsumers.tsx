@@ -54,7 +54,7 @@ export const CredentialsLegacyAuthConsumers = ({
       <Heading className="font-semibold lg:min-w-60" level={4}>
         {t("details.credentials.uitid_v1")}
       </Heading>
-      <div className="flex flex-col gap-4 min-w-[40rem]">
+      <div className="flex flex-col gap-4 min-w-160">
         <Heading className="font-semibold" level={4}>
           {t("details.credentials.test")}
         </Heading>
