@@ -48,19 +48,43 @@ pipeline {
                     }
                 }
 
-                stage('Build backend and artifact') {
-                    agent { label 'ubuntu && 20.04 && php8.3' }
+                stage('Build backend') {
+                    agent {
+                        docker {
+                            image 'build_images/php:8.3'
+                            label 'docker'
+                            alwaysPull true
+                        }
+                    }
+                    steps {
+                        withCredentials([usernamePassword(credentialsId: 'nova.laravel.com', usernameVariable: 'NOVA_USER', passwordVariable: 'NOVA_LICENSE_KEY')]) {
+                            sh label: 'Configure Nova credentials', script: 'composer config --global http-basic.nova.laravel.com "${NOVA_USER}" "${NOVA_LICENSE_KEY}"'
+                        }
+                        sh label: 'Install composer packages', script: 'composer install --no-dev --optimize-autoloader --prefer-dist --no-scripts --no-interaction'
+                        sh label: 'Publish Laravel packages', script: 'cp .env.ci .env && php artisan package:discover && php artisan horizon:install && php artisan nova:publish'
+                        sh label: 'Archive build', script: 'tar czf /tmp/backend.tgz --exclude=./.git . && mv /tmp/backend.tgz backend.tgz'
+                        stash name: 'backend', includes: 'backend.tgz'
+                    }
+                    post {
+                        cleanup {
+                            cleanWs()
+                        }
+                    }
+                }
+
+                stage('Build artifact') {
+                    agent { label 'ubuntu && 24.04' }
                     environment {
                         GIT_SHORT_COMMIT = util.shortCommitRef()
                         ARTIFACT_VERSION = "${env.PIPELINE_VERSION}" + '+sha.' + "${env.GIT_SHORT_COMMIT}"
                     }
                     steps {
-                        sh label: 'Install rubygems', script: 'bundle install --deployment'
-                        withCredentials([usernamePassword(credentialsId: 'nova.laravel.com', usernameVariable: 'USER', passwordVariable: 'PASSWORD')]) {
-                            sh label: 'Build backend', script: 'bundle exec rake build_backend NOVA_USER=${USER} NOVA_LICENSE_KEY=${PASSWORD}'
-                        }
+                        sh label: 'Remove checkout', script: 'find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +'
+                        unstash 'backend'
+                        sh label: 'Extract backend', script: 'tar xzf backend.tgz && rm backend.tgz'
                         unstash 'frontend'
-                        sh label: 'Extract build', script: 'tar xzf frontend.tgz && rm frontend.tgz'
+                        sh label: 'Extract frontend', script: 'tar xzf frontend.tgz && rm frontend.tgz'
+                        sh label: 'Install rubygems', script: 'bundle install --deployment'
                         sh label: 'Build artifact', script: "bundle exec rake build_artifact ARTIFACT_VERSION=${env.ARTIFACT_VERSION}"
                         archiveArtifacts artifacts: "pkg/*${env.ARTIFACT_VERSION}*.deb", onlyIfSuccessful: true
                     }
