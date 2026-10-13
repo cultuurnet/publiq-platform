@@ -73,7 +73,7 @@ pipeline {
                 }
 
                 stage('Build artifact') {
-                    agent { label 'ubuntu && 24.04' }
+                    agent { label 'ubuntu && 24.04 && !container' }
                     environment {
                         GIT_SHORT_COMMIT = util.shortCommitRef()
                         ARTIFACT_VERSION = "${env.PIPELINE_VERSION}" + '+sha.' + "${env.GIT_SHORT_COMMIT}"
