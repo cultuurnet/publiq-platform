@@ -1,4 +1,4 @@
-FROM php:8.2-apache
+FROM php:8.3-apache
 
 ARG ENABLE_XDEBUG
 
@@ -43,7 +43,7 @@ COPY limits.conf /etc/apache2/conf-enabled/limits.conf
 COPY xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 RUN if [ "$ENABLE_XDEBUG" = "true" ] ; then \
-      pecl install xdebug-3.1.5 && \
+      pecl install xdebug-3.3.2 && \
       docker-php-ext-enable xdebug ; \
   else \
       rm /usr/local/etc/php/conf.d/xdebug.ini ; \

@@ -5,7 +5,7 @@
     "license": "MIT",
     "version": "0.1.0",
     "require": {
-        "php": "^8.2.0",
+        "php": "^8.3.0",
         "ext-simplexml": "*",
         "auth0/auth0-php": "^9.0",
         "barryvdh/laravel-debugbar": "^4.0",

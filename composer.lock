@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8c8ff7916c48787ee35b442017945f91",
+    "content-hash": "228ef8847c3fcc43e4165e655886cfaa",
     "packages": [
         {
             "name": "Publiq/insightly-link",
@@ -15073,7 +15073,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.2.0",
+        "php": "^8.3.0",
         "ext-simplexml": "*"
     },
     "platform-dev": {},
