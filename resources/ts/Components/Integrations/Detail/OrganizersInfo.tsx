@@ -16,8 +16,12 @@ import type { UiTPASOrganizer } from "../../../types/UiTPASOrganizer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "../../Link";
 import { Tooltip } from "../../Tooltip";
+import { Alert } from "../../Alert";
 
-type Props = Integration & { organizers: Organizer[] };
+type Props = Integration & {
+  organizers: Organizer[];
+  duplicateOrganizerErrorMessage?: string;
+};
 
 const OrganizersSection = ({
   id,
@@ -72,7 +76,8 @@ const OrganizersSection = ({
             {organizers.map((organizer, index) => (
               <Card
                 key={organizer.id}
-                className={`m-0 drop-shadow-none border border-gray-200 border-t-0 first:border-t z-[${organizers.length - index}]`}
+                className="m-0 drop-shadow-none border border-gray-200 border-t-0 first:border-t"
+                style={{ zIndex: organizers.length - index }}
               >
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2 md:gap-4">
                   <Heading
@@ -96,7 +101,7 @@ const OrganizersSection = ({
                         </span>
                       )}
                   </Heading>
-                  <div className="flex-shrink-0 flex max-sm:flex-col gap-4">
+                  <div className="shrink-0 flex max-sm:flex-col gap-4">
                     <CopyText text={organizer.id} />
                   </div>
                 </div>
@@ -180,18 +185,26 @@ const OrganizersSection = ({
         <OrganizersDatalist
           onChange={(organizers) => form.setData("organizers", organizers)}
           value={form.data.organizers}
+          existingOrganizerIds={organizers?.map((organizer) => organizer.id)}
         />
       </Dialog>
     </>
   );
 };
 
-export const OrganizersInfo = ({ id, organizers }: Props) => {
+export const OrganizersInfo = ({
+  id,
+  organizers,
+  duplicateOrganizerErrorMessage,
+}: Props) => {
   const { t } = useTranslation();
   const byStatus = groupBy(organizers, "status");
 
   return (
     <div className={"flex flex-col gap-2"}>
+      {duplicateOrganizerErrorMessage && (
+        <Alert variant="error">{duplicateOrganizerErrorMessage}</Alert>
+      )}
       <Heading level={3} className="font-semibold">
         {t("details.organizers_info.title")}
       </Heading>

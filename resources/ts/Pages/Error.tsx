@@ -39,7 +39,7 @@ const Error = ({ statusCode }: Props) => {
       </div>
     );
   return (
-    <div className="max-w-[35rem] mt-16 mb-24">
+    <div className="max-w-140 mt-16 mb-24">
       <Card
         title={t("error.500.title")}
         textCenter

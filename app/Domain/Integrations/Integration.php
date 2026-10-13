@@ -230,13 +230,24 @@ final class Integration
     /** @throws KeycloakClientNotFound */
     public function getKeycloakClientByEnv(Environment $environment): Client
     {
+        $client = $this->findKeycloakClientByEnv($environment);
+
+        if ($client === null) {
+            throw KeycloakClientNotFound::byEnvironment($environment);
+        }
+
+        return $client;
+    }
+
+    public function findKeycloakClientByEnv(Environment $environment): ?Client
+    {
         foreach ($this->keycloakClients() as $client) {
             if ($client->environment === $environment) {
                 return $client;
             }
         }
 
-        throw KeycloakClientNotFound::byEnvironment($environment);
+        return null;
     }
 
     /**
