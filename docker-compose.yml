@@ -1,6 +1,6 @@
 services:
-    platform-base-php-8-2:
-        build: docker/php8.2
+    platform-base-php-8-3:
+        build: docker/php8.3
         volumes:
             - .:/var/www/html:cached
         working_dir: /var/www/html
@@ -25,7 +25,7 @@ services:
                 aliases:
                     - platform.publiq.local
         extends:
-            service: platform-base-php-8-2
+            service: platform-base-php-8-3
         ports:
             - '8000:80'
             - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
@@ -33,7 +33,7 @@ services:
 #         container_name: platform-xdebug.publiq
 #         restart: no
 #         extends:
-#             service: platform-base-php-8-2
+#             service: platform-base-php-8-3
 #         profiles:
 #             - xdebug
 #         networks:
@@ -41,7 +41,7 @@ services:
 #                 aliases:
 #                     - platform-xdebug.publiq.local
 #         build:
-#             context: docker/php8.2
+#             context: docker/php8.3
 #             args:
 #                 ENABLE_XDEBUG: "true"
 #         environment:

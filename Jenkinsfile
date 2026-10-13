@@ -49,7 +49,7 @@ pipeline {
                 }
 
                 stage('Build backend and artifact') {
-                    agent { label 'ubuntu && 24.04 && php8.2' }
+                    agent { label 'ubuntu && 20.04 && php8.3' }
                     environment {
                         GIT_SHORT_COMMIT = util.shortCommitRef()
                         ARTIFACT_VERSION = "${env.PIPELINE_VERSION}" + '+sha.' + "${env.GIT_SHORT_COMMIT}"
