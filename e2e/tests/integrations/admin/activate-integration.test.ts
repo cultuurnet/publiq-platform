@@ -9,7 +9,8 @@ test.use({ storageState: "playwright/.auth/admin.json" });
 
 test("As an admin I can activate an integration", async ({ page }) => {
   // create organization
-  const { id: organizationId } = await createOrganization(page);
+  const { id: organizationId, name: organizationName } =
+    await createOrganization(page);
 
   // create integration
   const { id: integrationId } = await createIntegration(
@@ -25,7 +26,14 @@ test("As an admin I can activate an integration", async ({ page }) => {
 
   await page.locator(`[dusk="${integrationId}-control-selector"]`).click();
   await page.getByRole("button", { name: "Activate Integration" }).click();
-  await page.locator("#organization").selectOption(organizationId);
+  await page.locator('[dusk="organizations-search-input-selected"]').click();
+  await page
+    .locator('[dusk="organizations-search-input-dropdown"] input[type="search"]')
+    .fill(organizationName);
+  await page
+    .locator('[dusk="organizations-search-input-results"]')
+    .getByText(organizationName, { exact: true })
+    .click();
   await page.locator("[dusk='confirm-action-button']").click();
 
   await expect(
