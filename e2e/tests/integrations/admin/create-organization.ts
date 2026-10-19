@@ -5,7 +5,7 @@ export async function createOrganization(page: Page) {
   await page.goto("/admin");
   await page.getByRole("link", { name: "Organizations" }).click();
   await page.getByRole("link", { name: "Create Organization" }).click();
-  const name = faker.company.name();
+  const name = `${faker.company.name()} ${faker.string.alphanumeric(6)}`;
   await page.getByPlaceholder("Name").fill(name);
   await page.getByPlaceholder("Street").fill(faker.location.streetAddress());
   await page.getByPlaceholder("City").fill(faker.location.city());
