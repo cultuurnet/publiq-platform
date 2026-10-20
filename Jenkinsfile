@@ -19,12 +19,13 @@ pipeline {
         }
 
         stage('Setup and build') {
+            agent { label 'docker' }
             stages {
                 stage('Build frontend') {
                     agent {
                         docker {
                             image 'base_images/node:22'
-                            label 'docker'
+                            reuseNode true
                         }
                     }
                     environment {
@@ -38,13 +39,6 @@ pipeline {
                         sh label: 'Install node modules', script: 'npm ci'
                         sh label: 'Build frontend', script: 'npm run build'
                         sh label: 'Install production node modules', script: 'npm ci --omit=dev'
-                        sh label: 'Archive build', script: 'tar czf frontend.tgz public/build node_modules'
-                        stash name: 'frontend', includes: 'frontend.tgz'
-                    }
-                    post {
-                        cleanup {
-                            cleanWs()
-                        }
                     }
                 }
 
@@ -52,7 +46,7 @@ pipeline {
                     agent {
                         docker {
                             image 'build_images/php:8.3'
-                            label 'docker'
+                            reuseNode true
                             alwaysPull true
                         }
                     }
@@ -62,37 +56,30 @@ pipeline {
                         }
                         sh label: 'Install composer packages', script: 'composer install --no-dev --optimize-autoloader --prefer-dist --no-scripts --no-interaction'
                         sh label: 'Publish Laravel packages', script: 'cp .env.ci .env && php artisan package:discover && php artisan horizon:install && php artisan nova:publish'
-                        sh label: 'Archive build', script: 'tar czf /tmp/backend.tgz --exclude=./.git . && mv /tmp/backend.tgz backend.tgz'
-                        stash name: 'backend', includes: 'backend.tgz'
-                    }
-                    post {
-                        cleanup {
-                            cleanWs()
-                        }
                     }
                 }
 
                 stage('Build artifact') {
-                    agent any
+                    agent {
+                        docker {
+                            image 'base_images/ruby:2.7'
+                            reuseNode true
+                        }
+                    }
                     environment {
                         GIT_SHORT_COMMIT = util.shortCommitRef()
                         ARTIFACT_VERSION = "${env.PIPELINE_VERSION}" + '+sha.' + "${env.GIT_SHORT_COMMIT}"
                     }
                     steps {
-                        sh label: 'Remove checkout', script: 'find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +'
-                        unstash 'backend'
-                        sh label: 'Extract backend', script: 'tar xzf backend.tgz && rm backend.tgz'
-                        unstash 'frontend'
-                        sh label: 'Extract frontend', script: 'tar xzf frontend.tgz && rm frontend.tgz'
                         sh label: 'Install rubygems', script: 'bundle install --deployment'
                         sh label: 'Build artifact', script: "bundle exec rake build_artifact ARTIFACT_VERSION=${env.ARTIFACT_VERSION}"
                         archiveArtifacts artifacts: "pkg/*${env.ARTIFACT_VERSION}*.deb", onlyIfSuccessful: true
                     }
-                    post {
-                        cleanup {
-                            cleanWs()
-                        }
-                    }
+                }
+            }
+            post {
+                cleanup {
+                    cleanWs()
                 }
             }
         }
