@@ -28,6 +28,7 @@ pipeline {
                             reuseNode true
                         }
                     }
+                    options { skipDefaultCheckout() }
                     environment {
                         npm_config_cache = '/tmp/.npm-cache'
                     }
@@ -50,6 +51,7 @@ pipeline {
                             alwaysPull true
                         }
                     }
+                    options { skipDefaultCheckout() }
                     steps {
                         withCredentials([usernamePassword(credentialsId: 'nova.laravel.com', usernameVariable: 'NOVA_USER', passwordVariable: 'NOVA_LICENSE_KEY')]) {
                             sh label: 'Configure Nova credentials', script: 'composer config --global http-basic.nova.laravel.com "${NOVA_USER}" "${NOVA_LICENSE_KEY}"'
@@ -66,6 +68,7 @@ pipeline {
                             reuseNode true
                         }
                     }
+                    options { skipDefaultCheckout() }
                     environment {
                         GIT_SHORT_COMMIT = util.shortCommitRef()
                         ARTIFACT_VERSION = "${env.PIPELINE_VERSION}" + '+sha.' + "${env.GIT_SHORT_COMMIT}"
