@@ -11,6 +11,7 @@ use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client\ApiClient;
 use App\Keycloak\Clients;
 use App\Keycloak\ClientId\ClientIdUuidStrategy;
+use App\Keycloak\Events\ClientsCreated;
 use App\Keycloak\Events\MissingClientsDetected;
 use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Realms;
@@ -69,6 +70,12 @@ final class CreateClients implements ShouldQueue
                 'environment' => $client->environment->value,
             ]);
         }
+
+        if ($clients->isEmpty()) {
+            return;
+        }
+
+        ClientsCreated::dispatch($event->id);
     }
 
     private function createClientsInKeycloak(Integration $integration, Realms $realms): Clients
