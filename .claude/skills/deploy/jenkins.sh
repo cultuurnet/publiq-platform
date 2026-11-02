@@ -41,6 +41,22 @@ case "${1:-}" in
       | jq -r '"#\(.id) \(.name) \(.status)", (.stages[] | "  \(.name): \(.status)")'
     api "$JOB/$n/wfapi/pendingInputActions" | jq -r '.[] | "  waiting: \(.message) (input \(.id))"'
     ;;
+  start)
+    # Starts a new run, which always builds the newest main, and prints its number once it leaves the queue.
+    queue=$(api -X POST -D - -o /dev/null "$JOB/build" | tr -d '\r' | sed -n 's/^[Ll]ocation: //p')
+    if [ -z "$queue" ]; then
+      echo "Jenkins did not return a queue item." >&2
+      exit 1
+    fi
+    while :; do
+      n=$(api "${queue%/}/api/json" | jq -r '.executable.number // empty')
+      if [ -n "$n" ]; then
+        echo "Started #$n."
+        break
+      fi
+      sleep 5
+    done
+    ;;
   proceed)
     # Approves the one pending input of a run, e.g. "Deploy to Testing?".
     n=$(run_number "${2:-}")
@@ -70,7 +86,7 @@ case "${1:-}" in
     api "$JOB/$n/consoleText" | tail -n "$(run_number "${3:-80}")"
     ;;
   *)
-    echo "Usage: $0 runs [count] | status <run> | proceed <run> | wait <run> | log <run> [lines]" >&2
+    echo "Usage: $0 runs [count] | start | status <run> | proceed <run> | wait <run> | log <run> [lines]" >&2
     exit 2
     ;;
 esac

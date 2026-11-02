@@ -164,7 +164,7 @@ More info can be found on our [Confluence](https://confluence.publiq.be/pages/vi
 The `.claude/skills` folder holds two [Claude Code](https://claude.com/claude-code) skills:
 
 - `/release` drafts a GitHub release tagged with the current date and time, with the PRs since the previous release grouped into Fixed, Added, Changed, Internal and Dependabot. You publish it yourself.
-- `/deploy` follows the `platform-api` pipeline on Jenkins and approves `Deploy to Testing?` and `Deploy to Production?`, asking you before each one.
+- `/deploy` starts the `platform-api` pipeline on Jenkins for the newest release and approves `Deploy to Testing?` and `Deploy to Production?`, asking you before each step.
 
 `/deploy` needs your own Jenkins API token (Jenkins profile, Security, API Token) in `~/.config/jenkins/publiq.env`:
 
