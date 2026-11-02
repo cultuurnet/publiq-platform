@@ -159,6 +159,23 @@ You can access the Mailpit web interface at http://localhost:8025/ to view and m
 This project uses dependabot to keep libraries up-to-date.
 More info can be found on our [Confluence](https://confluence.publiq.be/pages/viewpage.action?pageId=159482246).
 
+## Releasing with Claude Code
+
+The `.claude/skills` folder holds two [Claude Code](https://claude.com/claude-code) skills:
+
+- `/release` drafts a GitHub release tagged with the current date and time, with the PRs since the previous release grouped into Fixed, Added, Changed, Internal and Dependabot. You publish it yourself.
+- `/deploy` follows the `platform-api` pipeline on Jenkins and approves `Deploy to Testing?` and `Deploy to Production?`, asking you before each one.
+
+`/deploy` needs your own Jenkins API token (Jenkins profile, Security, API Token) in `~/.config/jenkins/publiq.env`:
+
+```
+JENKINS_URL=https://jenkins.publiq.be
+JENKINS_USER=<your jenkins username>
+JENKINS_TOKEN=<your token>
+```
+
+Run `chmod 600 ~/.config/jenkins/publiq.env`. Approving a deploy step with `.claude/skills/deploy/jenkins.sh proceed` acts as you, so do not add it to the allowed commands in your Claude Code settings.
+
 ## Makefile
 
 - Bringing up the application containers
