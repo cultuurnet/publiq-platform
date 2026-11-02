@@ -28,3 +28,5 @@ database/uitpas
 .bundle
 nova_users.php
 .npm
+/.claude/*
+!/.claude/skills/
