@@ -11,11 +11,14 @@ use App\Domain\Integrations\Integration;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
 use App\Keycloak\Client;
 use App\Keycloak\Client\ApiClient;
+use App\Keycloak\Events\ClientsCreated;
 use App\Keycloak\Events\MissingClientsDetected;
+use App\Keycloak\Exception\KeyCloakApiFailed;
 use App\Keycloak\Listeners\CreateClients;
 use App\Keycloak\Realm;
 use App\Keycloak\Realms;
 use App\Keycloak\Repositories\KeycloakClientRepository;
+use Illuminate\Support\Facades\Event;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
@@ -117,6 +120,8 @@ final class CreateClientsTest extends TestCase
             });
 
         $this->handler->handleCreateClients(new IntegrationCreated($this->integration->id));
+
+        $this->assertClientsCreatedIsDispatchedOnce();
     }
 
     public function test_failed(): void
@@ -196,6 +201,8 @@ final class CreateClientsTest extends TestCase
             });
 
         $this->handler->handleCreatingMissingClients(new MissingClientsDetected($this->integration->id));
+
+        $this->assertClientsCreatedIsDispatchedOnce();
     }
 
     public function test_handle_creating_missing_clients_no_missing_realms(): void
@@ -211,5 +218,45 @@ final class CreateClientsTest extends TestCase
             ->with(sprintf('%s - already has all Keycloak clients', $integrationId));
 
         $this->handler->handleCreatingMissingClients(new MissingClientsDetected($integrationId));
+
+        Event::assertNotDispatched(ClientsCreated::class);
+    }
+
+    public function test_it_does_not_dispatch_clients_created_when_all_keycloak_calls_fail(): void
+    {
+        $this->integrationRepository->expects($this->once())
+            ->method('getById')
+            ->with($this->integration->id)
+            ->willReturn($this->integration);
+
+        $this->apiClient->expects($this->exactly($this->realms->count()))
+            ->method('createClient')
+            ->willThrowException(KeyCloakApiFailed::failedToCreateClient('Something went wrong'));
+
+        $this->apiClient->expects($this->never())
+            ->method('addScopeToClient');
+
+        $this->keycloakClientRepository->expects($this->once())
+            ->method('create')
+            ->with();
+
+        $this->logger->expects($this->never())
+            ->method('info');
+
+        $this->logger->expects($this->exactly($this->realms->count()))
+            ->method('error');
+
+        $this->handler->handleCreateClients(new IntegrationCreated($this->integration->id));
+
+        Event::assertNotDispatched(ClientsCreated::class);
+    }
+
+    private function assertClientsCreatedIsDispatchedOnce(): void
+    {
+        Event::assertDispatchedTimes(ClientsCreated::class, 1);
+        Event::assertDispatched(
+            ClientsCreated::class,
+            fn (ClientsCreated $event): bool => $event->id->equals($this->integration->id)
+        );
     }
 }

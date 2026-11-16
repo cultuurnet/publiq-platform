@@ -139,7 +139,7 @@ final class InsightlyContactResourceTest extends TestCase
     {
         $expectedRequest = new Request(
             'GET',
-            '/Contacts/Search?field_name=email_address&field_value=info@publiq.be&brief=true'
+            'Contacts/Search/?field_name=EMAIL_ADDRESS&field_value=info@publiq.be'
         );
 
         $foundContacts = [
