@@ -532,6 +532,53 @@ final class IntegrationControllerTest extends TestCase
         Event::assertDispatched(IntegrationActivationRequested::class);
     }
 
+    public function test_it_can_not_request_activation_with_an_organizer_that_is_already_added(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $organization = $this->givenThereIsAnOrganization();
+        $integrationType = IntegrationType::UiTPAS;
+        $subscription = $this->givenThereIsASubscription(integrationType: $integrationType, subscriptionCategory: SubscriptionCategory::Basic);
+        $integration = $this->givenThereIsAnIntegration(integrationType: $integrationType, subscriptionId: $subscription->id);
+
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $this->givenThereIsAKeycloakClient($integration);
+        $organizer = $this->givenThereIsAnOrganizerOnIntegration($integration);
+
+        $response = $this->post(
+            "/integrations/{$integration->id}/activation",
+            [
+                'organization' => [
+                    'id' => $organization->id->toString(),
+                    'name' => $organization->name,
+                    'address' => [
+                        'street' => $organization->address->street,
+                        'zip' => $organization->address->zip,
+                        'city' => $organization->address->city,
+                        'country' => $organization->address->country,
+                    ],
+                ],
+                'organizers' => [
+                    [
+                        'id' => $organizer->organizerId->toString(),
+                        'name' => 'Test Organizer',
+                    ],
+                ],
+            ]
+        );
+
+        $response->assertRedirect('/');
+        $response->assertSessionHasErrors(['organizers' => __('errors.organizer.duplicate')]);
+
+        $this->assertDatabaseCount('udb_organizers', 1);
+        $this->assertDatabaseHas('integrations', [
+            'id' => $integration->id->toString(),
+            'status' => IntegrationStatus::Draft,
+        ]);
+
+        Event::assertNotDispatched(IntegrationActivationRequested::class);
+    }
+
     public function test_it_can_update_an_integration(): void
     {
         $this->actingAs(UserModel::createSystemUser());
