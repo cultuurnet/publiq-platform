@@ -568,7 +568,7 @@ final class IntegrationControllerTest extends TestCase
         );
 
         $response->assertRedirect('/');
-        $response->assertSessionHasErrors('organizers');
+        $response->assertSessionHasErrors(['organizers' => __('errors.organizer.duplicate')]);
 
         $this->assertDatabaseCount('udb_organizers', 1);
         $this->assertDatabaseHas('integrations', [
