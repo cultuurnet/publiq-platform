@@ -9,10 +9,10 @@ use App\Insightly\InsightlyClient;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Contracts\Queue\ShouldQueueAfterCommit;
 use Psr\Log\LoggerInterface;
 
-final class DeleteOrganization implements ShouldQueue
+final class DeleteOrganization implements ShouldQueueAfterCommit
 {
     use Queueable;
 
