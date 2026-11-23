@@ -9,6 +9,7 @@ use App\Domain\Contacts\ContactType;
 use App\Domain\Contacts\Repositories\ContactKeyVisibilityRepository;
 use App\Domain\Contacts\Repositories\ContactRepository;
 use App\Domain\Coupons\Repositories\CouponRepository;
+use App\Domain\Integrations\Exceptions\UdbOrganizerAlreadyExists;
 use App\Domain\Integrations\FormRequests\KeyVisibilityUpgradeRequest;
 use App\Domain\Integrations\FormRequests\RequestActivationRequest;
 use App\Domain\Integrations\FormRequests\StoreContactRequest;
@@ -338,12 +339,16 @@ final class IntegrationController extends Controller
         $organization = OrganizationMapper::mapActivationRequest($request);
         $this->organizationRepository->save($organization);
 
-        $this->integrationRepository->requestActivation(
-            Uuid::fromString($id),
-            $organization->id,
-            $request->input('coupon'),
-            UdbOrganizerMapper::mapActivationRequest($request, $integration)
-        );
+        try {
+            $this->integrationRepository->requestActivation(
+                Uuid::fromString($id),
+                $organization->id,
+                $request->input('coupon'),
+                UdbOrganizerMapper::mapActivationRequest($request, $integration)
+            );
+        } catch (UdbOrganizerAlreadyExists) {
+            return Redirect::back()->withErrors(['organizers' => __('errors.organizer.duplicate')]);
+        }
 
         return Redirect::back();
     }
