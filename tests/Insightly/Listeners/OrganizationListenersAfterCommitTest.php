@@ -36,7 +36,7 @@ final class OrganizationListenersAfterCommitTest extends TestCase
     {
         parent::setUp();
 
-        Event::fakeExcept([
+        $events = Event::fakeExcept([
             'eloquent.created: ' . OrganizationModel::class,
             'eloquent.updated: ' . OrganizationModel::class,
             'eloquent.deleted: ' . OrganizationModel::class,
@@ -45,6 +45,12 @@ final class OrganizationListenersAfterCommitTest extends TestCase
             OrganizationDeleted::class,
             JobQueued::class,
         ]);
+
+        // The InsightlyServiceProvider already registers these listeners when Insightly is enabled
+        $events->dispatcher->forget(OrganizationCreated::class);
+        $events->dispatcher->forget(OrganizationUpdated::class);
+        $events->dispatcher->forget(OrganizationDeleted::class);
+
         Event::listen(OrganizationCreated::class, [CreateOrganization::class, 'handle']);
         Event::listen(OrganizationUpdated::class, [UpdateOrganization::class, 'handle']);
         Event::listen(OrganizationDeleted::class, [DeleteOrganization::class, 'handle']);
