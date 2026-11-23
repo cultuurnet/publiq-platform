@@ -18,11 +18,9 @@ use App\Domain\Integrations\Events\IntegrationUpdated;
 use App\Domain\Integrations\Exceptions\KeycloakClientNotFound;
 use App\Domain\Integrations\IntegrationType;
 use App\Domain\Integrations\Repositories\IntegrationRepository;
+use App\Keycloak\Events\ClientsCreated;
 use App\ProjectAanvraag\ProjectAanvraagClient;
 use App\ProjectAanvraag\Requests\SyncWidgetRequest;
-use App\UiTiDv1\Events\ConsumerCreated;
-use App\UiTiDv1\Repositories\UiTiDv1ConsumerRepository;
-use App\UiTiDv1\UiTiDv1Environment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -38,7 +36,6 @@ final class SyncWidget implements ShouldQueue
         private readonly ProjectAanvraagClient $projectAanvraagClient,
         private readonly IntegrationRepository $integrationRepository,
         private readonly ContactRepository $contactRepository,
-        private readonly UiTiDv1ConsumerRepository $uiTiDv1ConsumerRepository,
         private readonly int $groupId,
         private readonly UserRepository $userRepository,
         private readonly LoggerInterface $logger
@@ -56,10 +53,9 @@ final class SyncWidget implements ShouldQueue
         $this->handle($contact->integrationId);
     }
 
-    public function handleConsumerCreated(ConsumerCreated $consumerCreated): void
+    public function handleClientsCreated(ClientsCreated $clientsCreated): void
     {
-        $consumer = $this->uiTiDv1ConsumerRepository->getById($consumerCreated->id);
-        $this->handle($consumer->integrationId);
+        $this->handle($clientsCreated->id);
     }
 
     public function handleIntegrationActivated(IntegrationActivated $integrationActivated): void
@@ -131,39 +127,6 @@ final class SyncWidget implements ShouldQueue
             return;
         }
 
-        $uiTiDv1Consumers = $this->uiTiDv1ConsumerRepository->getByIntegrationId($integration->id);
-        if (count($uiTiDv1Consumers) === 0) {
-            $this->logger->info(
-                'Integration {integrationId} has no UiTiDv1 consumers, skipping widget creation',
-                ['integrationId' => $integration->id->toString()]
-            );
-            return;
-        }
-        $testKey = null;
-        $liveKey = null;
-        foreach ($uiTiDv1Consumers as $uiTiDv1Consumer) {
-            if ($uiTiDv1Consumer->environment === UiTiDv1Environment::Testing) {
-                $testKey = $uiTiDv1Consumer->apiKey;
-            }
-            if ($uiTiDv1Consumer->environment === UiTiDv1Environment::Production) {
-                $liveKey = $uiTiDv1Consumer->apiKey;
-            }
-        }
-        if ($testKey === null) {
-            $this->logger->info(
-                'Integration {integrationId} has no UiTiDv1 testing consumer, skipping widget creation',
-                ['integrationId' => $integration->id->toString()]
-            );
-            return;
-        }
-        if ($liveKey === null) {
-            $this->logger->info(
-                'Integration {integrationId} has no UiTiDv1 production consumer, skipping widget creation',
-                ['integrationId' => $integration->id->toString()]
-            );
-            return;
-        }
-
         try {
             $testClient = $integration->getKeycloakClientByEnv(Environment::Testing);
         } catch (KeycloakClientNotFound) {
@@ -191,8 +154,6 @@ final class SyncWidget implements ShouldQueue
                 $integration->description,
                 $integration->status,
                 $this->groupId,
-                $testKey,
-                $liveKey,
                 $testClient->clientId,
                 $liveClient->clientId
             )
@@ -202,7 +163,7 @@ final class SyncWidget implements ShouldQueue
     public function failed(
         IntegrationCreated|
         ContactCreated|
-        ConsumerCreated|
+        ClientsCreated|
         IntegrationActivated|
         IntegrationBlocked|
         IntegrationUnblocked|
@@ -216,9 +177,9 @@ final class SyncWidget implements ShouldQueue
             IntegrationBlocked::class,
             IntegrationUnblocked::class,
             IntegrationDeleted::class,
-            IntegrationUpdated::class => 'integration',
+            IntegrationUpdated::class,
+            ClientsCreated::class => 'integration',
             ContactCreated::class => 'contact',
-            ConsumerCreated::class => 'consumer',
         };
 
         $this->logger->error('Failed to create widget', [
