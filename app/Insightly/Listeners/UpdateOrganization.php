@@ -10,10 +10,10 @@ use App\Insightly\InsightlyClient;
 use App\Insightly\Repositories\InsightlyMappingRepository;
 use App\Insightly\Resources\ResourceType;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Contracts\Queue\ShouldQueueAfterCommit;
 use Psr\Log\LoggerInterface;
 
-final class UpdateOrganization implements ShouldQueue
+final class UpdateOrganization implements ShouldQueueAfterCommit
 {
     use Queueable;
 

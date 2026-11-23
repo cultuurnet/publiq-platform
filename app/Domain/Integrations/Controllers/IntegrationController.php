@@ -337,15 +337,18 @@ final class IntegrationController extends Controller
 
         $integration = $this->integrationRepository->getById(Uuid::fromString($id));
         $organization = OrganizationMapper::mapActivationRequest($request);
-        $this->organizationRepository->save($organization);
 
         try {
-            $this->integrationRepository->requestActivation(
-                Uuid::fromString($id),
-                $organization->id,
-                $request->input('coupon'),
-                UdbOrganizerMapper::mapActivationRequest($request, $integration)
-            );
+            DB::transaction(function () use ($id, $organization, $request, $integration): void {
+                $this->organizationRepository->save($organization);
+
+                $this->integrationRepository->requestActivation(
+                    Uuid::fromString($id),
+                    $organization->id,
+                    $request->input('coupon'),
+                    UdbOrganizerMapper::mapActivationRequest($request, $integration)
+                );
+            });
         } catch (UdbOrganizerAlreadyExists) {
             return Redirect::back()->withErrors(['organizers' => __('errors.organizer.duplicate')]);
         }

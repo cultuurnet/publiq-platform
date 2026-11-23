@@ -579,6 +579,52 @@ final class IntegrationControllerTest extends TestCase
         Event::assertNotDispatched(IntegrationActivationRequested::class);
     }
 
+    public function test_it_does_not_persist_a_new_organization_when_requesting_activation_fails(): void
+    {
+        $this->actingAs(UserModel::createSystemUser());
+
+        $integrationType = IntegrationType::UiTPAS;
+        $subscription = $this->givenThereIsASubscription(integrationType: $integrationType, subscriptionCategory: SubscriptionCategory::Basic);
+        $integration = $this->givenThereIsAnIntegration(integrationType: $integrationType, subscriptionId: $subscription->id);
+
+        $this->givenTheActingUserIsAContactOnIntegration($integration);
+        $this->givenThereIsAKeycloakClient($integration);
+        $organizer = $this->givenThereIsAnOrganizerOnIntegration($integration);
+
+        $response = $this->post(
+            "/integrations/{$integration->id}/activation",
+            [
+                'organization' => [
+                    'name' => 'New Organization',
+                    'address' => [
+                        'street' => 'Henegouwenkaai 41-43',
+                        'zip' => '1080',
+                        'city' => 'Brussel',
+                        'country' => 'BE',
+                    ],
+                ],
+                'organizers' => [
+                    [
+                        'id' => $organizer->organizerId->toString(),
+                        'name' => 'Test Organizer',
+                    ],
+                ],
+            ]
+        );
+
+        $response->assertRedirect('/');
+        $response->assertSessionHasErrors('organizers');
+
+        $this->assertDatabaseMissing('organizations', [
+            'name' => 'New Organization',
+        ]);
+        $this->assertDatabaseHas('integrations', [
+            'id' => $integration->id->toString(),
+            'organization_id' => null,
+            'status' => IntegrationStatus::Draft,
+        ]);
+    }
+
     public function test_it_can_update_an_integration(): void
     {
         $this->actingAs(UserModel::createSystemUser());
