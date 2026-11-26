@@ -67,6 +67,7 @@ final class CallbackControllerTest extends TestCase
             'acr' => 'highest',
         ]);
 
+        Auth::shouldReceive('check')->andReturn(false);
         Auth::shouldReceive('login')->once();
 
         Config::set('nova.users', []);
@@ -87,6 +88,7 @@ final class CallbackControllerTest extends TestCase
             'acr' => 'lowest',
         ]);
 
+        Auth::shouldReceive('check')->andReturn(false);
         Auth::shouldReceive('login')->once();
 
         $this->givenRedirect();

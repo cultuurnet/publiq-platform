@@ -7,6 +7,7 @@ namespace App\Domain\Auth\Controllers;
 use App\Domain\Auth\Models\UserModel;
 use App\Keycloak\KeycloakConfig;
 use Auth0\SDK\Auth0;
+use Auth0\SDK\Exception\StateException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,6 +15,15 @@ use Illuminate\Support\Facades\Session;
 
 final readonly class CallbackController
 {
+    private const LOGIN_RETRIED = 'auth.login_retried';
+
+    private const RECOVERABLE_STATE_ERRORS = [
+        StateException::MSG_INVALID_STATE,
+        StateException::MSG_MISSING_CODE,
+        StateException::MSG_MISSING_CODE_VERIFIER,
+        StateException::MSG_MISSING_NONCE,
+    ];
+
     /** @param array<string> $loginParams */
     public function __construct(private array $loginParams)
     {
@@ -24,7 +34,24 @@ final readonly class CallbackController
         /** @var Auth0 $auth0 */
         $auth0 = app(Auth0::class);
 
-        if ($auth0->exchange()) {
+        // exchange() purges the Auth0 session before it validates the state, and that session is the login.
+        if (Auth::check()) {
+            return redirect()->intended('/');
+        }
+
+        try {
+            $exchanged = $auth0->exchange();
+        } catch (StateException $exception) {
+            if (!in_array($exception->getMessage(), self::RECOVERABLE_STATE_ERRORS, true)) {
+                throw $exception;
+            }
+
+            return $this->recoverFromInvalidCallback($request);
+        }
+
+        Session::forget(self::LOGIN_RETRIED);
+
+        if ($exchanged) {
             $user = $auth0->getUser();
 
             if ($user === null) {
@@ -49,6 +76,23 @@ final readonly class CallbackController
         }
 
         return redirect()->intended('/');
+    }
+
+    /**
+     * The state of a login is single-use and only lives in the browser that started it, so a second tab,
+     * a bookmarked Keycloak page or another browser all end up here.
+     * Keycloak usually still has a session, so a fresh login completes without the user noticing.
+     * The login is only restarted once, so a browser that drops our cookies doesn't loop between us and Keycloak.
+     */
+    private function recoverFromInvalidCallback(Request $request): RedirectResponse
+    {
+        if ($request->query('error') !== null || Session::pull(self::LOGIN_RETRIED, false)) {
+            return redirect('/');
+        }
+
+        Session::put(self::LOGIN_RETRIED, true);
+
+        return redirect()->route('login');
     }
 
     private function addAcrEnforcementParam(): array
